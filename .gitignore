@@ -1,0 +1,47 @@
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+logs/
+
+# Build outputs
+dist/
+build/
+target/
+out/
+*.egg-info/
+artifacts/
+
+# Node
+node_modules/
+
+# Java
+.gradle/
+*.class
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Env
+.env
+.env.*
+!.env.example
+.venv/
+
+# Temporary files
+tmp/
+temp/
+
+# Local data
+.data/
+
+# Tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/

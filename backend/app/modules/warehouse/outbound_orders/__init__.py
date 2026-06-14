@@ -1,0 +1,1 @@
+"""Warehouse outbound order module."""

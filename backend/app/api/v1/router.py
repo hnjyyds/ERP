@@ -1,0 +1,58 @@
+from fastapi import APIRouter
+
+from app.api.v1 import (
+    auth,
+    customers,
+    dashboard,
+    document_parties,
+    export_contracts,
+    export_quotations,
+    finance,
+    followup,
+    health,
+    inbound_orders,
+    inbound_plans,
+    outbound_orders,
+    outbound_plans,
+    partners,
+    products,
+    purchase_contracts,
+    purchase_inquiries,
+    purchase_invoice_notices,
+    quality_inspections,
+    reporting,
+    sample_deliveries,
+    sample_records,
+    sample_requests,
+    shipments,
+    suppliers,
+    system,
+)
+
+api_router = APIRouter()
+api_router.include_router(health.router)
+api_router.include_router(auth.router)
+api_router.include_router(system.router)
+api_router.include_router(dashboard.router)
+api_router.include_router(products.router)
+api_router.include_router(customers.router)
+api_router.include_router(suppliers.router)
+api_router.include_router(partners.router)
+api_router.include_router(document_parties.router)
+api_router.include_router(sample_requests.router)
+api_router.include_router(sample_records.router)
+api_router.include_router(sample_deliveries.router)
+api_router.include_router(export_quotations.router)
+api_router.include_router(export_contracts.router)
+api_router.include_router(shipments.router)
+api_router.include_router(finance.router)
+api_router.include_router(reporting.router)
+api_router.include_router(purchase_inquiries.router)
+api_router.include_router(purchase_contracts.router)
+api_router.include_router(purchase_invoice_notices.router)
+api_router.include_router(followup.router)
+api_router.include_router(quality_inspections.router)
+api_router.include_router(inbound_plans.router)
+api_router.include_router(inbound_orders.router)
+api_router.include_router(outbound_plans.router)
+api_router.include_router(outbound_orders.router)
