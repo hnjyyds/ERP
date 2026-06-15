@@ -29,6 +29,25 @@ export interface AuthSession {
   menus: MenuItem[]
 }
 
+export type AppLanguage = 'zh-CN' | 'en-US'
+export type AppTimeZone = 'Asia/Shanghai' | 'UTC'
+
+export interface I18nLanguageConfig {
+  code: AppLanguage
+  label: string
+  description: string
+  time_zone: AppTimeZone
+}
+
+export interface I18nConfig {
+  default_language: AppLanguage
+  supported_languages: I18nLanguageConfig[]
+  messages: Record<AppLanguage, Record<string, string>>
+  path_labels: Record<string, Record<AppLanguage, string>>
+  page_titles: Record<string, Record<AppLanguage, string>>
+  sidebar_groups: Record<string, Record<AppLanguage, string>>
+}
+
 export interface Announcement {
   id: string
   title: string
@@ -2932,6 +2951,10 @@ export function getCurrentSession(): Promise<{ user: CurrentUser; menus: MenuIte
   return request<{ user: CurrentUser; menus: MenuItem[] }>('/auth/me')
 }
 
+export function getI18nConfig(): Promise<I18nConfig> {
+  return request<I18nConfig>('/system/i18n')
+}
+
 export function getDashboard(): Promise<Dashboard> {
   return request<Dashboard>('/dashboard')
 }
@@ -3413,6 +3436,12 @@ export function createScheduleEvent(payload: ScheduleCreatePayload): Promise<Sch
   return request<ScheduleEvent>('/schedules', {
     method: 'POST',
     body: JSON.stringify(payload),
+  })
+}
+
+export function deleteScheduleEvent(scheduleId: string): Promise<ScheduleEvent> {
+  return request<ScheduleEvent>(`/schedules/${scheduleId}`, {
+    method: 'DELETE',
   })
 }
 

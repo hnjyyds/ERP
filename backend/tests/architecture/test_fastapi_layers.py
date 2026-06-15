@@ -1,4 +1,5 @@
 import ast
+import inspect
 from pathlib import Path
 
 from fastapi.routing import APIRoute
@@ -24,16 +25,49 @@ def _import_modules(file_path: Path) -> list[str]:
     return modules
 
 
-def test_api_routes_have_explicit_response_models() -> None:
+def _api_routes_with_paths() -> list[tuple[str, APIRoute]]:
     app = create_app()
+    collected: list[tuple[str, APIRoute]] = []
+
+    def collect(routes: list[object], prefix: str = "") -> None:
+        for route in routes:
+            if isinstance(route, APIRoute):
+                collected.append((f"{prefix}{route.path}", route))
+                continue
+            original_router = getattr(route, "original_router", None)
+            include_context = getattr(route, "include_context", None)
+            if original_router is None or include_context is None:
+                continue
+            collect(original_router.routes, f"{prefix}{include_context.prefix}")
+
+    collect(app.routes)
+    return collected
+
+
+def test_api_routes_have_explicit_response_models() -> None:
     api_routes = [
         route
-        for route in app.routes
-        if isinstance(route, APIRoute) and route.path.startswith("/api/v1")
+        for path, route in _api_routes_with_paths()
+        if path.startswith("/api/v1")
     ]
 
     assert api_routes
     assert all(route.response_model is not None for route in api_routes)
+
+
+def test_dashboard_mutation_routes_wrap_path_identifiers_in_schema_dependencies() -> None:
+    from app.api.v1 import dashboard
+
+    raw_identifier_params = {"schedule_id", "notification_id", "shortcut_id"}
+    endpoints = (
+        dashboard.delete_schedule_event,
+        dashboard.mark_notification_read,
+        dashboard.delete_shortcut,
+    )
+
+    for endpoint in endpoints:
+        endpoint_params = set(inspect.signature(endpoint).parameters)
+        assert endpoint_params.isdisjoint(raw_identifier_params)
 
 
 def test_api_layer_does_not_import_repository_or_models() -> None:

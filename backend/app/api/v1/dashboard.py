@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Path, status
 
 from app.api.deps import get_bearer_token
 from app.modules.system.auth.providers import get_auth_service
@@ -11,10 +11,13 @@ from app.modules.system.dashboard.schemas import (
     AnnouncementCreate,
     AnnouncementResponse,
     DashboardResponse,
+    NotificationPath,
     NotificationResponse,
     ScheduleCreate,
+    ScheduleEventPath,
     ScheduleEventResponse,
     ShortcutCreate,
+    ShortcutPath,
     ShortcutResponse,
 )
 from app.modules.system.dashboard.services import DashboardService
@@ -32,6 +35,24 @@ def _can_create_announcement(user: CurrentUserResponse) -> bool:
         ANNOUNCEMENT_CREATE_PERMISSION in user.permissions
         or bool(ADMIN_ROLE_NAMES.intersection(normalized_roles))
     )
+
+
+def _resolve_schedule_event_path(
+    schedule_id: Annotated[str, Path(min_length=1, max_length=80)],
+) -> ScheduleEventPath:
+    return ScheduleEventPath(schedule_id=schedule_id)
+
+
+def _resolve_notification_path(
+    notification_id: Annotated[str, Path(min_length=1, max_length=80)],
+) -> NotificationPath:
+    return NotificationPath(notification_id=notification_id)
+
+
+def _resolve_shortcut_path(
+    shortcut_id: Annotated[str, Path(min_length=1, max_length=80)],
+) -> ShortcutPath:
+    return ShortcutPath(shortcut_id=shortcut_id)
 
 
 @router.get("/dashboard", response_model=ApiResponse[DashboardResponse])
@@ -67,6 +88,26 @@ async def create_schedule_event(
     return ApiResponse(data=schedule_event)
 
 
+@router.delete("/schedules/{schedule_id}", response_model=ApiResponse[ScheduleEventResponse])
+async def delete_schedule_event(
+    path: Annotated[ScheduleEventPath, Depends(_resolve_schedule_event_path)],
+    token: Annotated[str, Depends(get_bearer_token)],
+    service: Annotated[DashboardService, Depends(get_dashboard_service)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+) -> ApiResponse[ScheduleEventResponse]:
+    try:
+        current = await auth_service.get_current_user(token)
+    except InvalidTokenError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
+    schedule_event = await service.delete_schedule_event(
+        user_id=current.user.id,
+        schedule_id=path.schedule_id,
+    )
+    if schedule_event is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="日程不存在")
+    return ApiResponse(data=schedule_event)
+
+
 @router.post(
     "/announcements",
     status_code=status.HTTP_201_CREATED,
@@ -93,7 +134,7 @@ async def create_announcement(
     response_model=ApiResponse[NotificationResponse],
 )
 async def mark_notification_read(
-    notification_id: str,
+    path: Annotated[NotificationPath, Depends(_resolve_notification_path)],
     token: Annotated[str, Depends(get_bearer_token)],
     service: Annotated[DashboardService, Depends(get_dashboard_service)],
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
@@ -104,7 +145,7 @@ async def mark_notification_read(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
     notification = await service.mark_notification_read(
         user_id=current.user.id,
-        notification_id=notification_id,
+        notification_id=path.notification_id,
     )
     if notification is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="提醒不存在")
@@ -132,7 +173,7 @@ async def create_shortcut(
 
 @router.delete("/shortcuts/{shortcut_id}", response_model=ApiResponse[ShortcutResponse])
 async def delete_shortcut(
-    shortcut_id: str,
+    path: Annotated[ShortcutPath, Depends(_resolve_shortcut_path)],
     token: Annotated[str, Depends(get_bearer_token)],
     service: Annotated[DashboardService, Depends(get_dashboard_service)],
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
@@ -141,7 +182,7 @@ async def delete_shortcut(
         current = await auth_service.get_current_user(token)
     except InvalidTokenError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
-    shortcut = await service.delete_shortcut(user_id=current.user.id, shortcut_id=shortcut_id)
+    shortcut = await service.delete_shortcut(user_id=current.user.id, shortcut_id=path.shortcut_id)
     if shortcut is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="快捷入口不存在")
     return ApiResponse(data=shortcut)

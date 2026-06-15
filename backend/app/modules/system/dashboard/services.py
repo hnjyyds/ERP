@@ -66,6 +66,19 @@ class DashboardService:
             )
         return self._schedule_response(row)
 
+    async def delete_schedule_event(
+        self,
+        *,
+        user_id: str,
+        schedule_id: str,
+    ) -> ScheduleEventResponse | None:
+        async with UnitOfWork(self._repository.session):
+            row = await self._repository.delete_schedule_event(
+                user_id=user_id,
+                schedule_id=schedule_id,
+            )
+        return self._schedule_response(row) if row else None
+
     async def create_announcement(self, *, payload: AnnouncementCreate) -> AnnouncementResponse:
         async with UnitOfWork(self._repository.session):
             row = await self._repository.create_announcement(

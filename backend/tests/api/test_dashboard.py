@@ -81,6 +81,49 @@ async def test_schedule_create_is_visible_on_dashboard(
     assert "跟进采购合同节点" in event_titles
 
 
+async def test_schedule_delete_is_limited_to_owner_and_refreshes_dashboard(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    admin_token = await _login_token(api_client, username="admin", password="admin123")
+    payload = {
+        "title": "待删除日程",
+        "description": "验证删除后不再出现在工作台",
+        "starts_at": "2026-06-15T14:00:00+08:00",
+        "ends_at": "2026-06-15T15:00:00+08:00",
+    }
+
+    create_response = await api_client.post(
+        "/api/v1/schedules",
+        headers={"Authorization": f"Bearer {token}"},
+        json=payload,
+    )
+    schedule = create_response.json()["data"]
+
+    forbidden_response = await api_client.delete(
+        f"/api/v1/schedules/{schedule['id']}",
+        headers={"Authorization": f"Bearer {admin_token}"},
+    )
+    assert forbidden_response.status_code == 404
+
+    delete_response = await api_client.delete(
+        f"/api/v1/schedules/{schedule['id']}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert delete_response.status_code == 200
+    assert delete_response.json()["data"]["id"] == schedule["id"]
+
+    refreshed = await api_client.get(
+        "/api/v1/dashboard",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    dashboard = refreshed.json()["data"]
+    schedule_ids = {item["id"] for item in dashboard["schedule_events"]}
+    assert schedule["id"] not in schedule_ids
+    assert dashboard["summary"]["today_schedule_count"] == 1
+
+
 async def test_announcement_create_is_visible_on_dashboard(
     api_client: AsyncClient,
     seeded_system: None,

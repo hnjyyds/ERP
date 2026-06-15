@@ -53,12 +53,18 @@ body {
   background: var(--erp-bg);
 }
 
+.react-shell-home {
+  height: 100vh;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .react-sidebar {
   position: sticky;
   top: 0;
   display: grid;
   height: 100vh;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr);
   --sidebar-type-brand: 1rem;
   --sidebar-type-primary: 1rem;
   --sidebar-type-nav: 0.9375rem;
@@ -100,6 +106,17 @@ body {
   padding: 28px clamp(18px, 3vw, 44px) 48px;
 }
 
+.react-shell-home .react-workspace {
+  height: 100vh;
+  min-height: 0;
+  overflow: hidden;
+  padding-bottom: 24px;
+}
+
+.react-shell-home .react-nav {
+  overflow: hidden;
+}
+
 .react-topbar {
   position: sticky;
   top: 0;
@@ -120,17 +137,39 @@ body {
   padding: 18px clamp(18px, 3vw, 44px) 14px;
 }
 
-.react-topbar .ant-tag {
-  display: inline-flex;
-  gap: 5px;
-  align-items: center;
-  min-height: 32px;
-  margin: 0;
-  border-radius: 6px;
-}
-
 .react-topbar h1 {
   font-weight: 820;
+}
+
+.react-topbar-actions {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+}
+
+.topbar-settings-button {
+  display: inline-grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #968547;
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background-color 0.18s ease-out,
+    color 0.18s ease-out,
+    transform 0.18s ease-out;
+}
+
+.topbar-settings-button:hover,
+.topbar-settings-button:focus-visible {
+  background: rgba(150, 133, 71, 0.1);
+  color: #353535;
+  outline: none;
+  transform: translateY(-1px);
 }
 
 .workspace-alert {
@@ -153,8 +192,15 @@ body {
   --dash-weight-item: 760;
   --dash-weight-body: 500;
   --dash-weight-meta: 660;
+  min-height: 0;
   font-size: var(--dash-type-body);
   font-kerning: normal;
+}
+
+.react-shell-home .dashboard-workbench {
+  grid-template-rows: auto auto minmax(0, 1fr);
+  height: calc(100vh - 132px);
+  overflow: hidden;
 }
 
 .dashboard-board {
@@ -162,6 +208,57 @@ body {
   grid-template-columns: minmax(0, 1.38fr) minmax(380px, 0.86fr);
   gap: 12px;
   min-width: 0;
+}
+
+.react-shell-home .dashboard-board {
+  position: relative;
+  isolation: isolate;
+  grid-template-rows: minmax(174px, 0.78fr) minmax(150px, 0.56fr) minmax(140px, 0.5fr);
+  align-items: stretch;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.react-shell-home .dashboard-board::before {
+  position: relative;
+  z-index: 0;
+  grid-column: 2;
+  grid-row: 1 / 4;
+  border-left: 1px solid rgba(222, 216, 203, 0.72);
+  border-radius: 0 10px 10px 0;
+  content: "";
+  background: linear-gradient(90deg, rgba(250, 246, 236, 0.42), rgba(255, 254, 251, 0.12));
+  pointer-events: none;
+}
+
+.react-shell-home .dashboard-board > * {
+  z-index: 1;
+}
+
+.react-shell-home .dashboard-panel-primary {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.react-shell-home .dashboard-panel-reminders {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.react-shell-home .dashboard-panel-schedule {
+  grid-column: 1;
+  grid-row: 2 / span 2;
+}
+
+.react-shell-home .dashboard-shortcut-panel {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.react-shell-home .dashboard-announcements-panel {
+  grid-column: 2;
+  grid-row: 3;
 }
 
 .partner-page {
@@ -454,7 +551,21 @@ body {
   border: 1px solid rgba(222, 216, 203, 0.86);
   border-radius: 8px;
   background: rgba(255, 254, 250, 0.7);
-  padding: 8px 12px;
+  padding: 16px 18px;
+}
+
+.react-shell-home .metric-strip {
+  align-items: center;
+  justify-content: flex-start;
+  gap: clamp(24px, 4vw, 68px);
+  border: 0;
+  border-top: 1px solid rgba(222, 216, 203, 0.7);
+  border-bottom: 1px solid rgba(222, 216, 203, 0.7);
+  border-radius: 0;
+  background:
+    linear-gradient(90deg, rgba(250, 246, 236, 0.68), rgba(255, 254, 251, 0.24) 68%, transparent),
+    transparent;
+  padding: 15px 4px 16px;
 }
 
 .metric-cell {
@@ -490,12 +601,18 @@ body {
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   align-content: center;
-  column-gap: 8px;
-  row-gap: 2px;
-  min-height: 46px;
+  column-gap: 10px;
+  row-gap: 4px;
+  min-height: 62px;
   min-width: 150px;
   background: transparent;
-  padding: 4px 10px;
+  padding: 8px 12px;
+}
+
+.react-shell-home .metric-strip .metric-cell {
+  min-width: 118px;
+  min-height: 58px;
+  padding: 0;
 }
 
 .metric-strip .metric-icon {
@@ -508,6 +625,13 @@ body {
   border-radius: 7px;
   background: rgba(154, 91, 22, 0.09);
   color: var(--erp-accent);
+}
+
+.react-shell-home .metric-strip .metric-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: rgba(154, 91, 22, 0.08);
 }
 
 .metric-strip .metric-label {
@@ -539,6 +663,15 @@ body {
   box-shadow: none;
 }
 
+.react-shell-home .dashboard-panel {
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: hidden;
+}
+
 .dashboard-panel-primary {
   min-height: 236px;
 }
@@ -551,6 +684,25 @@ body {
 
 .dashboard-panel-schedule {
   min-height: 390px;
+}
+
+.react-shell-home .dashboard-panel-primary,
+.react-shell-home .dashboard-panel-reminders,
+.react-shell-home .dashboard-shortcut-panel,
+.react-shell-home .dashboard-panel-schedule,
+.react-shell-home .dashboard-announcements-panel {
+  min-height: 0;
+}
+
+.react-shell-home .dashboard-panel-primary,
+.react-shell-home .dashboard-panel-schedule {
+  padding: 18px 10px 18px 0;
+}
+
+.react-shell-home .dashboard-panel-reminders,
+.react-shell-home .dashboard-shortcut-panel,
+.react-shell-home .dashboard-announcements-panel {
+  padding: 18px 18px 18px 24px;
 }
 
 .dashboard-panel-schedule .ant-table-container {
@@ -648,6 +800,11 @@ body {
 }
 
 .dashboard-timeline {
+  --timeline-time-width: 150px;
+  --timeline-pin-width: 18px;
+  --timeline-pin-half: 9px;
+  --timeline-column-gap: 20px;
+  --timeline-row-padding-x: 18px;
   position: relative;
   display: grid;
   gap: 2px;
@@ -658,7 +815,10 @@ body {
   position: absolute;
   top: 20px;
   bottom: 20px;
-  left: 96px;
+  left: calc(
+    var(--timeline-row-padding-x) + var(--timeline-time-width) + var(--timeline-column-gap) +
+      var(--timeline-pin-half)
+  );
   width: 1px;
   content: "";
   background: rgba(222, 216, 203, 0.96);
@@ -667,18 +827,18 @@ body {
 .dashboard-timeline-item {
   position: relative;
   display: grid;
-  grid-template-columns: 80px 18px minmax(0, 1fr);
-  gap: 12px;
+  grid-template-columns: var(--timeline-time-width) var(--timeline-pin-width) minmax(0, 1fr);
+  gap: var(--timeline-column-gap);
   align-items: start;
   width: 100%;
-  min-height: 84px;
+  min-height: 112px;
   border: 0;
   border-radius: 8px;
   background: transparent;
   color: inherit;
   cursor: pointer;
   font: inherit;
-  padding: 13px 10px;
+  padding: 14px 18px;
   text-align: left;
   transition: background 150ms ease;
 }
@@ -691,8 +851,11 @@ body {
 
 .dashboard-timeline-time {
   display: grid;
-  gap: 5px;
-  justify-items: end;
+  gap: 6px;
+  justify-items: start;
+  max-width: var(--timeline-time-width);
+  padding-inline: 0 20px;
+  text-align: left;
 }
 
 .dashboard-timeline-time strong {
@@ -710,12 +873,85 @@ body {
   white-space: nowrap;
 }
 
+.dashboard-timeline-countdown {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  justify-content: flex-start;
+  max-width: 100%;
+  flex-wrap: wrap;
+  gap: 3px 4px;
+  border-radius: 7px;
+  background: rgba(150, 133, 71, 0.1);
+  color: #7b6e37;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 760;
+  line-height: 1.1;
+  padding: 5px 7px;
+  text-align: left;
+}
+
+.dashboard-timeline-countdown-parts,
+.dashboard-timeline-countdown-piece {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.dashboard-timeline-countdown-parts {
+  max-width: 100%;
+  flex-wrap: wrap;
+  gap: 2px 0;
+}
+
+.dashboard-timeline-countdown-piece {
+  gap: 1px;
+}
+
+.dashboard-timeline-countdown-value {
+  font-size: 0.8125rem;
+  font-weight: 840;
+  line-height: 1;
+}
+
+.dashboard-timeline-countdown-unit {
+  font-size: 0.6875rem;
+  font-weight: 760;
+}
+
+.dashboard-timeline-countdown-dot {
+  width: 3px;
+  height: 3px;
+  align-self: center;
+  margin: 0 5px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+.dashboard-timeline-countdown.soon {
+  background: rgba(154, 91, 22, 0.12);
+  color: #9a5b16;
+}
+
+.dashboard-timeline-countdown.active {
+  background: rgba(31, 93, 72, 0.12);
+  color: #1f5d48;
+}
+
+.dashboard-timeline-countdown.done,
+.dashboard-timeline-countdown.muted {
+  background: rgba(116, 109, 96, 0.1);
+  color: #746d60;
+}
+
 .dashboard-timeline-pin {
   position: relative;
   z-index: 1;
+  justify-self: center;
   width: 10px;
   height: 10px;
-  margin-top: 3px;
+  margin-top: 6px;
   border: 2px solid #fffefb;
   border-radius: 999px;
   background: #968547;
@@ -931,10 +1167,8 @@ body {
   background: rgba(250, 246, 236, 0.88);
 }
 
-.dashboard-toolbar button:first-child {
-  border-color: #2f3633;
-  background: #2f3633;
-  color: #fffefb;
+.panel-link-button {
+  color: #7b5c22;
 }
 
 .dashboard-panel-heading {
@@ -945,8 +1179,35 @@ body {
   margin-bottom: 12px;
 }
 
+.react-shell-home .dashboard-panel-heading {
+  align-items: center;
+  margin-bottom: 16px;
+}
+
 .dashboard-panel-heading .panel-title {
   margin-bottom: 0;
+}
+
+.dashboard-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.react-shell-home .panel-link-button {
+  min-height: 28px;
+  border: 0;
+  background: transparent;
+  color: #7b5c22;
+  padding: 0 2px;
+}
+
+.react-shell-home .panel-link-button:hover {
+  background: transparent;
+  color: #353535;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .table-action {
@@ -1196,6 +1457,266 @@ body {
   opacity: 0.58;
 }
 
+.react-shell-home .dashboard-task-list,
+.react-shell-home .dashboard-reminders,
+.react-shell-home .dashboard-shortcuts,
+.react-shell-home .dashboard-announcements,
+.react-shell-home .dashboard-timeline {
+  overflow: hidden;
+}
+
+.react-shell-home .dashboard-task-list {
+  gap: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.react-shell-home .dashboard-task {
+  min-height: 76px;
+  border-radius: 0;
+  background: transparent;
+  padding: 14px 0;
+}
+
+.react-shell-home .dashboard-task + .dashboard-task {
+  border-top-color: rgba(222, 216, 203, 0.86);
+}
+
+.react-shell-home .dashboard-task:hover {
+  background: linear-gradient(90deg, rgba(250, 246, 236, 0.74), transparent);
+}
+
+.react-shell-home .dashboard-task-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+}
+
+.react-shell-home .dashboard-reminder {
+  min-height: 118px;
+  border-left-width: 2px;
+  border-radius: 0 8px 8px 0;
+  background: linear-gradient(90deg, rgba(250, 246, 236, 0.72), rgba(255, 254, 251, 0.28));
+  padding: 14px 0 14px 14px;
+}
+
+.react-shell-home .dashboard-timeline-item {
+  min-height: 94px;
+  padding-block: 10px;
+}
+
+.react-shell-home .dashboard-announcement p {
+  -webkit-line-clamp: 1;
+}
+
+.react-shell-home .dashboard-shortcuts {
+  gap: 0;
+}
+
+.react-shell-home .dashboard-shortcut-row {
+  border: 0;
+  border-bottom: 1px solid rgba(222, 216, 203, 0.7);
+  border-radius: 0;
+  background: transparent;
+}
+
+.react-shell-home .dashboard-shortcut-row:hover {
+  background: rgba(250, 246, 236, 0.62);
+}
+
+.react-shell-home .dashboard-shortcut {
+  min-height: 50px;
+  padding-inline: 0 10px;
+}
+
+.react-shell-home .dashboard-shortcut-delete {
+  border-left-color: rgba(222, 216, 203, 0.62);
+}
+
+.react-shell-home .dashboard-announcements {
+  gap: 0;
+}
+
+.react-shell-home .dashboard-announcement {
+  grid-template-columns: 86px minmax(0, 1fr);
+  border-bottom: 0;
+  padding: 0;
+}
+
+.react-shell-home .dashboard-announcement time {
+  border-radius: 8px;
+  background: rgba(150, 133, 71, 0.09);
+}
+
+.dashboard-dedicated-page {
+  --dash-type-section: 1.5rem;
+  --dash-type-item: 1.125rem;
+  --dash-type-body: 1rem;
+  --dash-type-meta: 0.875rem;
+  --dash-type-data: 1.375rem;
+  --dash-weight-section: 820;
+  --dash-weight-item: 760;
+  --dash-weight-body: 500;
+  --dash-weight-meta: 660;
+  max-width: 1480px;
+  font-size: var(--dash-type-body);
+}
+
+.dashboard-full-panel {
+  grid-column: 1 / -1;
+}
+
+.dashboard-page-heading {
+  align-items: center;
+  border-bottom: 1px solid rgba(235, 229, 215, 0.76);
+  padding-bottom: 12px;
+}
+
+.dashboard-section-count {
+  display: inline-grid;
+  min-width: 38px;
+  height: 34px;
+  place-items: center;
+  border-radius: 8px;
+  background: rgba(150, 133, 71, 0.1);
+  color: #7b6e37;
+  font-size: var(--dash-type-item, 1.125rem);
+  font-weight: 820;
+}
+
+.dashboard-kanban {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.dashboard-kanban-column {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-height: 360px;
+  border: 1px solid rgba(235, 229, 215, 0.86);
+  border-radius: 8px;
+  background: rgba(251, 249, 243, 0.72);
+  padding: 12px;
+}
+
+.dashboard-kanban-column header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #353535;
+}
+
+.dashboard-kanban-column header strong {
+  font-size: var(--dash-type-item, 1.125rem);
+  font-weight: var(--dash-weight-item, 760);
+}
+
+.dashboard-kanban-column header span {
+  display: inline-grid;
+  min-width: 28px;
+  height: 26px;
+  place-items: center;
+  border-radius: 999px;
+  background: #fffefb;
+  color: #7b6e37;
+  font-size: var(--dash-type-meta, 0.875rem);
+  font-weight: var(--dash-weight-meta, 660);
+}
+
+.dashboard-kanban-items {
+  display: grid;
+  gap: 10px;
+}
+
+.dashboard-task-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid rgba(222, 216, 203, 0.86);
+  border-radius: 8px;
+  background: rgba(255, 254, 251, 0.86);
+  padding: 14px;
+}
+
+.dashboard-task-card div {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.dashboard-task-card strong {
+  overflow: hidden;
+  color: #353535;
+  font-size: var(--dash-type-item, 1.125rem);
+  font-weight: var(--dash-weight-item, 760);
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-task-card span {
+  color: #6d6658;
+  font-size: var(--dash-type-meta, 0.875rem);
+  font-weight: var(--dash-weight-meta, 660);
+}
+
+.dashboard-reminder-list,
+.dashboard-announcement-list {
+  display: grid;
+  gap: 12px;
+}
+
+.dashboard-announcement-card {
+  display: grid;
+  grid-template-columns: 108px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  border: 1px solid rgba(222, 216, 203, 0.86);
+  border-radius: 8px;
+  background: rgba(255, 254, 251, 0.74);
+  padding: 16px;
+}
+
+.dashboard-announcement-card time {
+  width: fit-content;
+  border-radius: 7px;
+  background: rgba(150, 133, 71, 0.1);
+  color: #7b6e37;
+  font-size: var(--dash-type-meta, 0.875rem);
+  font-weight: var(--dash-weight-meta, 660);
+  line-height: 1.25;
+  padding: 8px 10px;
+}
+
+.dashboard-announcement-card div {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.dashboard-announcement-card strong {
+  color: #353535;
+  font-size: var(--dash-type-item, 1.125rem);
+  font-weight: var(--dash-weight-item, 760);
+  line-height: 1.35;
+}
+
+.dashboard-announcement-card p {
+  margin: 0;
+  color: #6d6658;
+  font-size: var(--dash-type-body, 1rem);
+  font-weight: var(--dash-weight-body, 500);
+  line-height: 1.65;
+}
+
+.dashboard-shortcuts-full {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .dashboard-form {
   display: grid;
   gap: 10px;
@@ -1275,6 +1796,10 @@ body {
   padding-top: 4px;
 }
 
+.modal-actions.split {
+  justify-content: space-between;
+}
+
 .secondary-inline {
   min-height: 36px;
   border: 1px solid color-mix(in srgb, var(--erp-border) 88%, white);
@@ -1285,6 +1810,26 @@ body {
   font: inherit;
   font-weight: 800;
   padding: 0 16px;
+}
+
+.danger-inline {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(173, 52, 52, 0.28);
+  border-radius: 6px;
+  background: rgba(173, 52, 52, 0.08);
+  color: #9b3030;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  padding: 0 14px;
+}
+
+.danger-inline:disabled {
+  cursor: wait;
+  opacity: 0.6;
 }
 
 .module-panel {
@@ -2123,12 +2668,6 @@ textarea {
   color: #d7c681;
 }
 
-.sidebar-settings {
-  margin-top: 12px;
-  border-top: 1px solid #ded8cb;
-  padding-top: 10px;
-}
-
 .settings-panel {
   display: grid;
   gap: 10px;
@@ -2180,15 +2719,133 @@ textarea {
   min-height: 36px;
 }
 
+.settings-window {
+  display: grid;
+  gap: 18px;
+  padding-top: 4px;
+}
+
+.settings-window-user {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  border: 1px solid #ebe5d7;
+  border-radius: 8px;
+  background: #fbf9f3;
+  padding: 12px;
+}
+
+.settings-window-user .user-meta span,
+.settings-field > span {
+  color: #746d60;
+  font-size: var(--dash-type-meta, 0.875rem);
+  font-weight: var(--dash-weight-meta, 660);
+}
+
+.settings-window-user .user-meta strong {
+  display: block;
+  margin-top: 2px;
+  color: #353535;
+  font-size: 1.05rem;
+  font-weight: 820;
+  line-height: 1.3;
+}
+
+.settings-window-user .user-meta small {
+  display: block;
+  margin-top: 2px;
+  color: #6d6658;
+  font-size: var(--dash-type-meta, 0.875rem);
+  font-weight: 620;
+  line-height: 1.35;
+}
+
+.settings-field {
+  display: grid;
+  gap: 8px;
+}
+
+.settings-language-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.settings-language-options button {
+  display: grid;
+  min-height: 74px;
+  gap: 5px;
+  align-content: center;
+  border: 1px solid #ded8cb;
+  border-radius: 8px;
+  background: rgba(255, 254, 251, 0.8);
+  color: #4b4841;
+  cursor: pointer;
+  font: inherit;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.settings-language-options button.active {
+  border-color: #353535;
+  background: #353535;
+  color: #fffefa;
+}
+
+.settings-language-options strong {
+  font-size: 1rem;
+  font-weight: 820;
+  line-height: 1.2;
+}
+
+.settings-language-options small {
+  color: currentColor;
+  font-size: var(--dash-type-meta, 0.875rem);
+  font-weight: 620;
+  line-height: 1.35;
+  opacity: 0.72;
+}
+
+.settings-timezone {
+  display: grid;
+  gap: 4px;
+  border: 1px solid #ebe5d7;
+  border-radius: 8px;
+  background: rgba(251, 249, 243, 0.78);
+  padding: 12px;
+}
+
+.settings-timezone strong {
+  color: #353535;
+  font-size: 1rem;
+  font-weight: 820;
+}
+
+.settings-timezone small {
+  color: #6d6658;
+  font-size: var(--dash-type-meta, 0.875rem);
+  font-weight: 620;
+  line-height: 1.45;
+}
+
 @media (max-width: 980px) {
   .react-shell {
     grid-template-columns: 1fr;
   }
 
+  .react-shell-home,
+  .react-shell-home .react-workspace,
+  .react-shell-home .dashboard-workbench,
+  .react-shell-home .dashboard-board {
+    height: auto;
+    overflow: visible;
+  }
+
   .react-sidebar {
     position: static;
     height: auto;
-    grid-template-rows: auto auto auto;
+    grid-template-rows: auto auto;
     padding: 18px;
   }
 
@@ -2219,6 +2876,20 @@ textarea {
   .dashboard-grid,
   .dashboard-board,
   .business-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .react-shell-home .dashboard-panel-primary,
+  .react-shell-home .dashboard-panel-reminders,
+  .react-shell-home .dashboard-panel-schedule,
+  .react-shell-home .dashboard-shortcut-panel,
+  .react-shell-home .dashboard-announcements-panel {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .dashboard-kanban,
+  .dashboard-shortcuts-full {
     grid-template-columns: 1fr;
   }
 
@@ -2309,12 +2980,22 @@ textarea {
     justify-self: start;
   }
 
-  .dashboard-timeline::before {
-    left: 78px;
+  .dashboard-timeline {
+    --timeline-time-width: 110px;
+    --timeline-pin-width: 16px;
+    --timeline-pin-half: 8px;
+    --timeline-column-gap: 14px;
+    --timeline-row-padding-x: 12px;
   }
 
   .dashboard-timeline-item {
-    grid-template-columns: 62px 16px minmax(0, 1fr);
+    grid-template-columns: var(--timeline-time-width) var(--timeline-pin-width) minmax(0, 1fr);
+    gap: var(--timeline-column-gap);
+    padding-inline: var(--timeline-row-padding-x);
+  }
+
+  .dashboard-timeline-time {
+    padding-inline: 0 12px;
   }
 
   .dashboard-announcement {

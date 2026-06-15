@@ -75,6 +75,24 @@ class ShortcutCreate(BaseModel):
     sort_order: int = Field(default=100, ge=0, le=9999)
 
 
+class ScheduleEventPath(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    schedule_id: str = Field(min_length=1, max_length=80)
+
+
+class NotificationPath(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    notification_id: str = Field(min_length=1, max_length=80)
+
+
+class ShortcutPath(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    shortcut_id: str = Field(min_length=1, max_length=80)
+
+
 class DashboardSummary(BaseModel):
     model_config = ConfigDict(extra="forbid")
 

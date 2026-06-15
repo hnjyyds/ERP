@@ -6,11 +6,11 @@ import {
   Input,
   Modal,
   Skeleton,
-  Space,
   Table,
   Tag,
   Typography,
 } from 'antd'
+import enUS from 'antd/locale/en_US'
 import zhCN from 'antd/locale/zh_CN'
 import {
   Banner as SemiBanner,
@@ -42,6 +42,7 @@ import {
   Send,
   Settings,
   ShieldCheck,
+  Trash2,
   UserRound,
   UsersRound,
   Wallet,
@@ -103,6 +104,7 @@ import {
   createScheduleEvent,
   createSupplier,
   deleteDashboardShortcut,
+  deleteScheduleEvent,
   exportExportContract,
   exportProducts,
   exportExportQuotation,
@@ -116,6 +118,7 @@ import {
   generateShipmentFromContracts,
   getCurrentSession,
   getDashboard,
+  getI18nConfig,
   getFinanceOverview,
   getExportQuotationHistory,
   getExportQuotationPurchaseReferences,
@@ -244,6 +247,9 @@ import {
   type InboundPlanSchedulePayload,
   type InventoryBalance,
   type InventoryLedger,
+  type AppLanguage,
+  type AppTimeZone,
+  type I18nConfig,
   type MenuItem,
   type MiscFeeAllocation,
   type MiscFeeAllocationCreatePayload,
@@ -380,6 +386,11 @@ import {
 } from './api'
 
 const dashboardPath = '/'
+const dashboardTodosPath = '/workspace/todos'
+const dashboardSchedulesPath = '/workspace/schedules'
+const dashboardNotificationsPath = '/workspace/notifications'
+const dashboardAnnouncementsPath = '/workspace/announcements'
+const dashboardShortcutsPath = '/workspace/shortcuts'
 const productPath = '/masterdata/products'
 const customerPath = '/masterdata/customers'
 const supplierPath = '/masterdata/suppliers'
@@ -402,6 +413,210 @@ const warehouseOutboundPlanPath = '/warehouse/outbound-plans'
 const warehouseOutboundOrderPath = '/warehouse/outbound-orders'
 const financePath = '/finance'
 const reportingPath = '/reporting'
+
+const dashboardSectionPaths = new Set([
+  dashboardPath,
+  dashboardTodosPath,
+  dashboardSchedulesPath,
+  dashboardNotificationsPath,
+  dashboardAnnouncementsPath,
+  dashboardShortcutsPath,
+])
+
+type AppSettings = {
+  language: AppLanguage
+  timeZone: AppTimeZone
+}
+
+type TranslationKey =
+  | 'app.brandName'
+  | 'app.productName'
+  | 'common.cancel'
+  | 'common.close'
+  | 'common.create'
+  | 'common.delete'
+  | 'common.refresh'
+  | 'common.viewAll'
+  | 'common.notSet'
+  | 'common.none'
+  | 'settings.open'
+  | 'settings.title'
+  | 'settings.account'
+  | 'settings.language'
+  | 'settings.timeZone'
+  | 'settings.timeZoneHint'
+  | 'settings.logout'
+  | 'dashboard.aria'
+  | 'dashboard.announcement'
+  | 'dashboard.todo'
+  | 'dashboard.unreadNotifications'
+  | 'dashboard.todaySchedule'
+  | 'dashboard.shortcuts'
+  | 'dashboard.addSchedule'
+  | 'dashboard.publishAnnouncement'
+  | 'dashboard.addShortcut'
+  | 'dashboard.myTodos'
+  | 'dashboard.messages'
+  | 'dashboard.mySchedule'
+  | 'dashboard.companyAnnouncements'
+  | 'dashboard.noTodos'
+  | 'dashboard.noNotifications'
+  | 'dashboard.noSchedules'
+  | 'dashboard.noShortcuts'
+  | 'dashboard.noAnnouncements'
+  | 'dashboard.goHandle'
+  | 'dashboard.handle'
+  | 'dashboard.read'
+  | 'dashboard.publish'
+  | 'dashboard.add'
+  | 'dashboard.title'
+  | 'dashboard.content'
+  | 'dashboard.start'
+  | 'dashboard.end'
+  | 'dashboard.note'
+  | 'dashboard.shortcutEntry'
+  | 'dashboard.shortcutName'
+  | 'dashboard.createdAt'
+  | 'dashboard.scheduleDetail'
+  | 'dashboard.deleteSchedule'
+  | 'dashboard.deleteScheduleTitle'
+  | 'dashboard.deleteScheduleConfirm'
+  | 'dashboard.scheduleCreated'
+  | 'dashboard.scheduleDeleted'
+  | 'dashboard.scheduleRequired'
+  | 'dashboard.scheduleTimeInvalid'
+  | 'dashboard.announcementDeniedTitle'
+  | 'dashboard.announcementDenied'
+  | 'dashboard.announcementRequired'
+  | 'dashboard.announcementCreated'
+  | 'dashboard.shortcutRequired'
+  | 'dashboard.shortcutCreated'
+  | 'dashboard.shortcutDeleted'
+  | 'dashboard.notificationHandled'
+  | 'dashboard.operationFailed'
+  | 'dashboard.deadline'
+  | 'dashboard.noNote'
+  | 'dashboard.pendingConfirm'
+  | 'dashboard.countdownPrefix'
+  | 'dashboard.inProgress'
+  | 'dashboard.ended'
+  | 'dashboard.minutes'
+  | 'dashboard.hours'
+  | 'dashboard.days'
+  | 'dashboard.minutesShort'
+  | 'dashboard.hoursShort'
+  | 'dashboard.daysShort'
+  | 'dashboard.secondsShort'
+  | 'status.completed'
+  | 'status.pending'
+  | 'severity.high'
+  | 'severity.urgent'
+  | 'severity.warning'
+  | 'todo.approval'
+  | 'todo.followup'
+  | 'todo.system'
+  | 'page.businessModule'
+
+const appSettingsStorageKey = 'yuanjing_app_settings'
+
+const fallbackI18nConfig: I18nConfig = {
+  default_language: 'zh-CN',
+  supported_languages: [
+    { code: 'zh-CN', label: '中文', description: 'UTC+8 / Asia Shanghai', time_zone: 'Asia/Shanghai' },
+    { code: 'en-US', label: 'English', description: 'UTC', time_zone: 'UTC' },
+  ],
+  messages: {
+    'zh-CN': {},
+    'en-US': {},
+  },
+  path_labels: {},
+  page_titles: {},
+  sidebar_groups: {},
+}
+
+let runtimeI18nConfig: I18nConfig = fallbackI18nConfig
+
+function timeZoneForLanguage(language: AppLanguage, config: I18nConfig = runtimeI18nConfig): AppTimeZone {
+  return (
+    config.supported_languages.find((option) => option.code === language)?.time_zone ??
+    (language === 'en-US' ? 'UTC' : 'Asia/Shanghai')
+  )
+}
+
+function normalizeAppSettings(value: Partial<AppSettings> | null, config: I18nConfig = runtimeI18nConfig): AppSettings {
+  const languages = new Set(config.supported_languages.map((option) => option.code))
+  const defaultLanguage = languages.has(config.default_language) ? config.default_language : 'zh-CN'
+  const language = value?.language && languages.has(value.language) ? value.language : defaultLanguage
+  return { language, timeZone: timeZoneForLanguage(language, config) }
+}
+
+function readAppSettings(): AppSettings {
+  try {
+    const raw = localStorage.getItem(appSettingsStorageKey)
+    return normalizeAppSettings(raw ? JSON.parse(raw) : null)
+  } catch {
+    return normalizeAppSettings(null)
+  }
+}
+
+function saveAppSettings(settings: AppSettings) {
+  localStorage.setItem(appSettingsStorageKey, JSON.stringify(settings))
+}
+
+let runtimeSettings: AppSettings = normalizeAppSettings(null)
+
+function applyRuntimeSettings(settings: AppSettings, config: I18nConfig = runtimeI18nConfig) {
+  runtimeSettings = settings
+  runtimeI18nConfig = config
+}
+
+const fallbackTranslations: Record<AppLanguage, Partial<Record<TranslationKey, string>>> = {
+  'zh-CN': {
+    'app.brandName': '新裴贸易',
+    'app.productName': '业务管理系统',
+    'common.close': '关闭',
+    'common.refresh': '刷新',
+    'common.viewAll': '查看全部',
+    'dashboard.mySchedule': '我的日程',
+    'dashboard.operationFailed': '操作失败',
+    'page.businessModule': '业务模块',
+    'settings.title': '系统设置',
+  },
+  'en-US': {
+    'app.brandName': 'Xinpei Trade',
+    'app.productName': 'Business Management',
+    'common.close': 'Close',
+    'common.refresh': 'Refresh',
+    'common.viewAll': 'View all',
+    'dashboard.mySchedule': 'My schedule',
+    'dashboard.operationFailed': 'Operation failed',
+    'page.businessModule': 'Business module',
+    'settings.title': 'Settings',
+  },
+}
+
+function t(key: TranslationKey, settings: AppSettings = runtimeSettings) {
+  return runtimeI18nConfig.messages[settings.language]?.[key] ?? fallbackTranslations[settings.language]?.[key] ?? key
+}
+
+function timeZoneLabel(settings: AppSettings = runtimeSettings) {
+  return (
+    runtimeI18nConfig.supported_languages.find((option) => option.code === settings.language)?.description ??
+    (settings.timeZone === 'UTC' ? 'UTC' : 'UTC+8 / Asia Shanghai')
+  )
+}
+
+function joinDisplay(values: string[], settings: AppSettings = runtimeSettings) {
+  return values.join(settings.language === 'en-US' ? ', ' : '、')
+}
+
+function translatePathLabel(path: string, fallback: string, settings: AppSettings = runtimeSettings) {
+  return runtimeI18nConfig.path_labels[path]?.[settings.language] ?? fallback
+}
+
+function groupLabel(id: string, fallback: string, settings: AppSettings = runtimeSettings) {
+  return runtimeI18nConfig.sidebar_groups[id]?.[settings.language] ?? fallback
+}
 
 const menuIconMap: Record<string, LucideIcon> = {
   'bar-chart-3': BarChart3,
@@ -1743,6 +1958,18 @@ function App() {
   const [booting, setBooting] = useState(true)
   const [loadingDashboard, setLoadingDashboard] = useState(false)
   const [error, setError] = useState('')
+  const [i18nConfig, setI18nConfig] = useState<I18nConfig>(fallbackI18nConfig)
+  const [appSettings, setAppSettings] = useState<AppSettings>(() => readAppSettings())
+  const [settingsOpen, setSettingsOpen] = useState(false)
+
+  applyRuntimeSettings(appSettings, i18nConfig)
+
+  const antdLocale = appSettings.language === 'en-US' ? enUS : zhCN
+
+  useEffect(() => {
+    saveAppSettings(appSettings)
+    document.documentElement.lang = appSettings.language
+  }, [appSettings])
 
   useEffect(() => {
     const onPopState = () => setActivePath(window.location.pathname || dashboardPath)
@@ -1754,6 +1981,18 @@ function App() {
     let cancelled = false
 
     async function bootstrap() {
+      let nextI18nConfig = fallbackI18nConfig
+      try {
+        nextI18nConfig = await getI18nConfig()
+        if (cancelled) return
+        setI18nConfig(nextI18nConfig)
+        setAppSettings((current) => normalizeAppSettings(current, nextI18nConfig))
+      } catch (caught) {
+        if (!cancelled) {
+          setError(caught instanceof Error ? caught.message : '系统配置加载失败')
+        }
+      }
+
       if (!hasAuthToken()) {
         setBooting(false)
         return
@@ -1784,12 +2023,15 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (!session || activePath !== dashboardPath) return
+    if (!session || !dashboardSectionPaths.has(activePath)) return
     void loadDashboard()
   }, [session, activePath])
 
   const activeMenu = useMemo(() => {
     if (!session) return null
+    if (dashboardSectionPaths.has(activePath)) {
+      return session.menus.find((item) => item.path === dashboardPath) ?? session.menus[0] ?? null
+    }
     return session.menus.find((item) => item.path === activePath) ?? session.menus[0] ?? null
   }, [activePath, session])
 
@@ -1799,10 +2041,14 @@ function App() {
     try {
       setDashboard(await getDashboard())
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '工作桌面加载失败')
+      setError(caught instanceof Error ? caught.message : `${t('dashboard.mySchedule')} ${t('dashboard.operationFailed')}`)
     } finally {
       setLoadingDashboard(false)
     }
+  }
+
+  function updateLanguage(language: AppLanguage) {
+    setAppSettings(normalizeAppSettings({ language }, i18nConfig))
   }
 
   function navigate(path: string) {
@@ -1814,15 +2060,16 @@ function App() {
     clearAuthToken()
     setSession(null)
     setDashboard(null)
+    setSettingsOpen(false)
     setActivePath(dashboardPath)
     window.history.pushState({}, '', dashboardPath)
   }
 
   if (booting) {
     return (
-      <ConfigProvider locale={zhCN}>
+      <ConfigProvider locale={antdLocale}>
         <main className="login-shell">
-          <section className="login-panel" aria-label="加载工作台">
+          <section className="login-panel" aria-label={t('dashboard.mySchedule')}>
             <Skeleton active paragraph={{ rows: 4 }} />
           </section>
         </main>
@@ -1832,7 +2079,7 @@ function App() {
 
   if (!session) {
     return (
-      <ConfigProvider locale={zhCN} theme={erpAntTheme}>
+      <ConfigProvider locale={antdLocale} theme={erpAntTheme}>
         <LoginPage
           error={error}
           onLogin={(nextSession) => {
@@ -1848,24 +2095,27 @@ function App() {
 
   const dashboardMenu = session.menus.find((item) => item.path === dashboardPath)
   const sidebarMenuGroups = getSidebarMenuGroups(session.menus)
+  const isDashboardActive = dashboardSectionPaths.has(activePath)
+  const isDashboardHome = activePath === dashboardPath
 
   return (
-    <ConfigProvider locale={zhCN} theme={erpAntTheme}>
-      <main className="react-shell">
-        <aside className="react-sidebar">
-          <div className="brand" aria-label="新裴贸易业务管理系统">
+    <ConfigProvider locale={antdLocale} theme={erpAntTheme}>
+      <>
+        <main className={isDashboardHome ? 'react-shell react-shell-home' : 'react-shell'}>
+          <aside className="react-sidebar">
+          <div className="brand" aria-label={`${t('app.brandName')} ${t('app.productName')}`}>
             <div className="brand-wordmark" aria-label="D-DUTCH">D-DUTCH</div>
             <div>
-              <strong>新裴贸易</strong>
-              <span>业务管理系统</span>
+              <strong>{t('app.brandName')}</strong>
+              <span>{t('app.productName')}</span>
             </div>
           </div>
 
           <nav className="react-nav" aria-label="主导航">
             {dashboardMenu ? (
               <a
-                aria-current={dashboardMenu.path === activePath ? 'page' : undefined}
-                className={dashboardMenu.path === activePath ? 'nav-link nav-dashboard active' : 'nav-link nav-dashboard'}
+                aria-current={isDashboardActive ? 'page' : undefined}
+                className={isDashboardActive ? 'nav-link nav-dashboard active' : 'nav-link nav-dashboard'}
                 href={dashboardMenu.path}
                 onClick={(event) => {
                   event.preventDefault()
@@ -1873,11 +2123,11 @@ function App() {
                 }}
               >
                 <LayoutDashboard className="nav-link-icon" size={17} strokeWidth={2} />
-                <span>{dashboardMenu.label}</span>
+                <span>{translatePathLabel(dashboardMenu.path, dashboardMenu.label)}</span>
               </a>
             ) : null}
 
-            <div className="nav-groups" aria-label="业务模块">
+            <div className="nav-groups" aria-label={t('page.businessModule')}>
               {sidebarMenuGroups.map((group) => {
                 const GroupIcon = group.icon
                 const isGroupActive = group.items.some((item) => item.path === activePath)
@@ -1886,7 +2136,7 @@ function App() {
                   <details className="nav-group" key={group.id} open={isGroupActive || undefined}>
                     <summary className="nav-group-summary">
                       <GroupIcon size={16} strokeWidth={2} />
-                      <span>{group.label}</span>
+                      <span>{groupLabel(group.id, group.label)}</span>
                       <ChevronDown className="nav-group-chevron" size={15} />
                     </summary>
                     <div className="nav-group-items">
@@ -1905,7 +2155,7 @@ function App() {
                             }}
                           >
                             <MenuIcon className="nav-link-icon" size={16} strokeWidth={2} />
-                            <span>{item.label}</span>
+                            <span>{translatePathLabel(item.path, item.label)}</span>
                           </a>
                         )
                       })}
@@ -1916,53 +2166,28 @@ function App() {
             </div>
           </nav>
 
-          <section className="sidebar-settings" aria-label="系统设置">
-            <details className="settings-group">
-              <summary className="settings-summary">
-                <Settings size={16} strokeWidth={2} />
-                <span>系统设置</span>
-                <ChevronDown className="nav-group-chevron" size={15} />
-              </summary>
-              <div className="settings-panel">
-                <div className="settings-user">
-                  <div className="user-avatar" aria-hidden="true">
-                    <UserRound size={16} />
-                  </div>
-                  <div className="user-meta">
-                    <strong>{session.user.display_name}</strong>
-                    <span>{session.user.department_name} · {session.user.roles.join('、')}</span>
-                  </div>
-                </div>
-                <button className="text-button settings-logout" type="button" onClick={logout}>
-                  <LogOut size={16} />
-                  <span>退出登录</span>
+          </aside>
+
+          <section className="react-workspace">
+            <header className="react-topbar">
+              <div>
+                <p className="eyebrow">
+                  {activeMenu ? translatePathLabel(activeMenu.path, activeMenu.label) : pageTitle(dashboardPath, null)}
+                </p>
+                <h1>{pageTitle(activePath, activeMenu)}</h1>
+              </div>
+              <div className="react-topbar-actions">
+                <button
+                  aria-label={t('settings.open')}
+                  className="topbar-settings-button"
+                  title={t('settings.open')}
+                  type="button"
+                  onClick={() => setSettingsOpen(true)}
+                >
+                  <Settings size={22} strokeWidth={2} />
                 </button>
               </div>
-            </details>
-          </section>
-        </aside>
-
-        <section className="react-workspace">
-          <header className="react-topbar">
-            <div>
-              <p className="eyebrow">{activeMenu?.label ?? '工作桌面'}</p>
-              <h1>{pageTitle(activePath, activeMenu)}</h1>
-            </div>
-            <Space>
-              <Tag color="green">
-                <ShieldCheck size={14} />
-                <span>{session.user.username}</span>
-              </Tag>
-              <Button
-                icon={<RefreshCw size={16} />}
-                onClick={() => {
-                  if (activePath === dashboardPath) void loadDashboard()
-                }}
-              >
-                刷新
-              </Button>
-            </Space>
-          </header>
+            </header>
 
           {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
@@ -1974,6 +2199,16 @@ function App() {
               onNavigate={navigate}
               onRefresh={loadDashboard}
             />
+          ) : activePath === dashboardTodosPath ? (
+            <DashboardTodosPage dashboard={dashboard} loading={loadingDashboard} onNavigate={navigate} />
+          ) : activePath === dashboardSchedulesPath ? (
+            <DashboardSchedulesPage dashboard={dashboard} loading={loadingDashboard} onRefresh={loadDashboard} />
+          ) : activePath === dashboardNotificationsPath ? (
+            <DashboardNotificationsPage dashboard={dashboard} loading={loadingDashboard} onRefresh={loadDashboard} />
+          ) : activePath === dashboardAnnouncementsPath ? (
+            <DashboardAnnouncementsPage dashboard={dashboard} loading={loadingDashboard} />
+          ) : activePath === dashboardShortcutsPath ? (
+            <DashboardShortcutsPage dashboard={dashboard} loading={loadingDashboard} onNavigate={navigate} onRefresh={loadDashboard} />
           ) : activePath === productPath ? (
             <ProductsPage />
           ) : activePath === customerPath ? (
@@ -2021,8 +2256,66 @@ function App() {
           ) : (
             <ModulePage menu={activeMenu} />
           )}
-        </section>
-      </main>
+          </section>
+        </main>
+
+        <Modal
+          centered
+          footer={null}
+          open={settingsOpen}
+          title={t('settings.title')}
+          width={520}
+          onCancel={() => setSettingsOpen(false)}
+        >
+          <section className="settings-window">
+            <div className="settings-window-user">
+              <div className="user-avatar" aria-hidden="true">
+                <UserRound size={17} />
+              </div>
+              <div className="user-meta">
+                <span>{t('settings.account')}</span>
+                <strong>{session.user.display_name}</strong>
+                <small>{session.user.department_name} · {joinDisplay(session.user.roles)}</small>
+              </div>
+            </div>
+
+            <div className="settings-field">
+              <span>{t('settings.language')}</span>
+              <div className="settings-language-options">
+                {i18nConfig.supported_languages.map((option) => (
+                  <button
+                    className={option.code === appSettings.language ? 'active' : ''}
+                    key={option.code}
+                    type="button"
+                    onClick={() => updateLanguage(option.code)}
+                  >
+                    <strong>{option.label}</strong>
+                    <small>{option.description}</small>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="settings-field">
+              <span>{t('settings.timeZone')}</span>
+              <div className="settings-timezone">
+                <strong>{timeZoneLabel(appSettings)}</strong>
+                <small>{t('settings.timeZoneHint')}</small>
+              </div>
+            </div>
+
+            <div className="modal-actions split">
+              <button className="danger-inline" type="button" onClick={logout}>
+                <LogOut size={15} />
+                {t('settings.logout')}
+              </button>
+              <button className="secondary-inline" type="button" onClick={() => setSettingsOpen(false)}>
+                {t('common.close')}
+              </button>
+            </div>
+          </section>
+        </Modal>
+      </>
     </ConfigProvider>
   )
 }
@@ -2203,10 +2496,59 @@ const shortcutTargetOptions = [
   { label: '财务管理', path: financePath, icon: 'wallet' },
 ]
 
-function dateTimeLocalValue(date: Date) {
-  const offset = date.getTimezoneOffset()
-  const local = new Date(date.getTime() - offset * 60 * 1000)
-  return local.toISOString().slice(0, 16)
+function timeZoneOffsetMinutes(timeZone: AppTimeZone) {
+  return timeZone === 'Asia/Shanghai' ? 8 * 60 : 0
+}
+
+function dateTimeLocalValue(date: Date, settings: AppSettings = runtimeSettings) {
+  const zoned = new Date(date.getTime() + timeZoneOffsetMinutes(settings.timeZone) * 60_000)
+  return zoned.toISOString().slice(0, 16)
+}
+
+function parseDateTimeLocal(value: string, settings: AppSettings = runtimeSettings) {
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/)
+  if (!match) return null
+  const [, year, month, day, hour, minute] = match
+  const utcMs =
+    Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute)) -
+    timeZoneOffsetMinutes(settings.timeZone) * 60_000
+  return new Date(utcMs)
+}
+
+function dateTimeLocalToIso(value: string, settings: AppSettings = runtimeSettings) {
+  return parseDateTimeLocal(value, settings)?.toISOString() ?? ''
+}
+
+function normalizeApiDateValue(value: string) {
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return `${value}T00:00:00Z`
+  if (/[zZ]$|[+-]\d{2}:?\d{2}$/.test(value)) return value
+  return `${value}Z`
+}
+
+function parseApiDate(value: string | null) {
+  if (!value) return null
+  const date = new Date(normalizeApiDateValue(value))
+  return Number.isNaN(date.getTime()) ? null : date
+}
+
+function dateParts(value: string | null, settings: AppSettings = runtimeSettings) {
+  const date = parseApiDate(value)
+  if (!date) return null
+  const parts = new Intl.DateTimeFormat(settings.language, {
+    day: '2-digit',
+    hour: '2-digit',
+    hour12: false,
+    hourCycle: 'h23',
+    minute: '2-digit',
+    month: '2-digit',
+    timeZone: settings.timeZone,
+    year: 'numeric',
+  }).formatToParts(date)
+  const map = Object.fromEntries(parts.map((part) => [part.type, part.value]))
+  return {
+    date: `${map.year}-${map.month}-${map.day}`,
+    time: `${map.hour}:${map.minute}`,
+  }
 }
 
 function initialDashboardScheduleForm(): DashboardScheduleFormState {
@@ -2229,7 +2571,7 @@ function initialDashboardAnnouncementForm(): DashboardAnnouncementFormState {
 
 function initialDashboardShortcutForm(): DashboardShortcutFormState {
   const first = shortcutTargetOptions[0]
-  return { label: first.label, target_path: first.path, icon: first.icon }
+  return { label: translatePathLabel(first.path, first.label), target_path: first.path, icon: first.icon }
 }
 
 function todoTargetPath(todo: TodoTask) {
@@ -2240,16 +2582,122 @@ function todoTargetPath(todo: TodoTask) {
 
 function todoSourceLabel(value: string) {
   const labels: Record<string, string> = {
-    approval: '审批',
-    followup: '跟进',
-    system: '系统',
+    approval: t('todo.approval'),
+    followup: t('todo.followup'),
+    system: t('todo.system'),
   }
   return labels[value] ?? value
 }
 
 function formatTime(value: string | null) {
-  const text = formatDateTime(value)
-  return text === '-' ? '-' : text.slice(11, 16)
+  return dateParts(value)?.time ?? '-'
+}
+
+type CountdownSegment = {
+  value: string
+  unit: string
+}
+
+function formatCountdownSegments(diffMs: number): CountdownSegment[] {
+  const totalSeconds = Math.max(0, Math.ceil(diffMs / 1000))
+  const days = Math.floor(totalSeconds / 86_400)
+  const hours = Math.floor((totalSeconds % 86_400) / 3_600)
+  const minutes = Math.floor((totalSeconds % 3_600) / 60)
+  const seconds = totalSeconds % 60
+  const pad = (value: number) => value.toString().padStart(2, '0')
+
+  if (days > 0) {
+    return [
+      { value: days.toString(), unit: t('dashboard.daysShort') },
+      { value: pad(hours), unit: t('dashboard.hoursShort') },
+      { value: pad(minutes), unit: t('dashboard.minutesShort') },
+      { value: pad(seconds), unit: t('dashboard.secondsShort') },
+    ]
+  }
+
+  if (hours > 0) {
+    return [
+      { value: hours.toString(), unit: t('dashboard.hoursShort') },
+      { value: pad(minutes), unit: t('dashboard.minutesShort') },
+      { value: pad(seconds), unit: t('dashboard.secondsShort') },
+    ]
+  }
+
+  return [
+    { value: minutes.toString(), unit: t('dashboard.minutesShort') },
+    { value: pad(seconds), unit: t('dashboard.secondsShort') },
+  ]
+}
+
+function scheduleCountdownLabel(startsAt: string | null, endsAt: string | null, nowMs: number) {
+  const startMs = parseApiDate(startsAt)?.getTime() ?? Number.NaN
+  const endMs = parseApiDate(endsAt)?.getTime() ?? Number.NaN
+
+  if (Number.isNaN(startMs)) return { label: t('dashboard.pendingConfirm'), tone: 'muted' }
+  if (nowMs < startMs) {
+    return {
+      segments: formatCountdownSegments(startMs - nowMs),
+      tone: startMs - nowMs <= 24 * 60 * 60 * 1000 ? 'soon' : 'upcoming',
+    }
+  }
+  if (!Number.isNaN(endMs) && nowMs <= endMs) return { label: t('dashboard.inProgress'), tone: 'active' }
+  return { label: t('dashboard.ended'), tone: 'done' }
+}
+
+function DashboardScheduleTimeline({
+  events,
+  currentTimeMs,
+  onSelect,
+}: {
+  events: ScheduleEvent[]
+  currentTimeMs: number
+  onSelect: (event: ScheduleEvent) => void
+}) {
+  return (
+    <div className="dashboard-timeline">
+      {events.map((event) => {
+        const countdown = scheduleCountdownLabel(event.starts_at, event.ends_at, currentTimeMs)
+
+        return (
+          <button
+            className="dashboard-timeline-item"
+            key={event.id}
+            type="button"
+            onClick={() => onSelect(event)}
+          >
+            <span className="dashboard-timeline-time">
+              <strong>{formatTime(event.starts_at)}</strong>
+              <small>{formatDate(event.starts_at)}</small>
+              <em className={`dashboard-timeline-countdown ${countdown.tone}`}>
+                {countdown.segments ? (
+                  <span className="dashboard-timeline-countdown-parts">
+                    {countdown.segments.map((segment, index) => (
+                      <span className="dashboard-timeline-countdown-piece" key={`${segment.unit}-${index}`}>
+                        <span className="dashboard-timeline-countdown-value">{segment.value}</span>
+                        <span className="dashboard-timeline-countdown-unit">{segment.unit}</span>
+                        {index < countdown.segments.length - 1 ? (
+                          <span className="dashboard-timeline-countdown-dot" aria-hidden="true" />
+                        ) : null}
+                      </span>
+                    ))}
+                  </span>
+                ) : (
+                  countdown.label
+                )}
+              </em>
+            </span>
+            <span className="dashboard-timeline-pin" aria-hidden="true" />
+            <span className="dashboard-timeline-content">
+              <span className="dashboard-timeline-title">{event.title}</span>
+              <span className="dashboard-timeline-note">
+                {event.description?.trim() || `${formatTime(event.starts_at)} 至 ${formatTime(event.ends_at)}`}
+              </span>
+            </span>
+          </button>
+        )
+      })}
+    </div>
+  )
 }
 
 function DashboardPage({
@@ -2279,6 +2727,12 @@ function DashboardPage({
   const [busyAction, setBusyAction] = useState<string | null>(null)
   const [actionMessage, setActionMessage] = useState('')
   const [actionError, setActionError] = useState('')
+  const [currentTimeMs, setCurrentTimeMs] = useState(() => Date.now())
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setCurrentTimeMs(Date.now()), 1000)
+    return () => window.clearInterval(timer)
+  }, [])
 
   if (loading && !dashboard) {
     return <Skeleton active paragraph={{ rows: 10 }} />
@@ -2286,14 +2740,19 @@ function DashboardPage({
 
   const summary = dashboard?.summary
   const shortcuts = dashboard?.shortcuts ?? []
+  const previewTodos = dashboard?.todos.slice(0, 2) ?? []
+  const previewNotifications = dashboard?.notifications.slice(0, 1) ?? []
+  const previewSchedules = dashboard?.schedule_events.slice(0, 3) ?? []
+  const previewShortcuts = shortcuts.slice(0, 2)
+  const previewAnnouncements = dashboard?.announcements.slice(0, 1) ?? []
   const canPublishAnnouncement = canCreateAnnouncement(currentUser)
 
   function showAnnouncementDenied() {
     Modal.warning({
       centered: true,
-      content: '发布公告仅限管理员账号操作。',
-      okText: '知道了',
-      title: '无权限',
+      content: t('dashboard.announcementDenied'),
+      okText: t('common.close'),
+      title: t('dashboard.announcementDeniedTitle'),
     })
   }
 
@@ -2314,7 +2773,7 @@ function DashboardPage({
       setActionMessage(success)
       await onRefresh()
     } catch (caught) {
-      setActionError(caught instanceof Error ? caught.message : '操作失败')
+      setActionError(caught instanceof Error ? caught.message : t('dashboard.operationFailed'))
     } finally {
       setBusyAction(null)
     }
@@ -2323,20 +2782,20 @@ function DashboardPage({
   async function submitSchedule(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!scheduleForm.title.trim() || !scheduleForm.starts_at || !scheduleForm.ends_at) {
-      setActionError('请填写日程标题和时间')
+      setActionError(t('dashboard.scheduleRequired'))
       return
     }
-    const startsAt = new Date(scheduleForm.starts_at)
-    const endsAt = new Date(scheduleForm.ends_at)
-    if (Number.isNaN(startsAt.getTime()) || Number.isNaN(endsAt.getTime()) || endsAt <= startsAt) {
-      setActionError('请检查日程开始和结束时间')
+    const startsAt = parseDateTimeLocal(scheduleForm.starts_at)
+    const endsAt = parseDateTimeLocal(scheduleForm.ends_at)
+    if (!startsAt || !endsAt || Number.isNaN(startsAt.getTime()) || Number.isNaN(endsAt.getTime()) || endsAt <= startsAt) {
+      setActionError(t('dashboard.scheduleTimeInvalid'))
       return
     }
     const payload: ScheduleCreatePayload = {
       title: scheduleForm.title.trim(),
       description: scheduleForm.description.trim() || undefined,
-      starts_at: startsAt.toISOString(),
-      ends_at: endsAt.toISOString(),
+      starts_at: dateTimeLocalToIso(scheduleForm.starts_at),
+      ends_at: dateTimeLocalToIso(scheduleForm.ends_at),
     }
     await runDashboardAction(
       'schedule',
@@ -2345,7 +2804,7 @@ function DashboardPage({
         setScheduleForm(initialDashboardScheduleForm())
         setCreateModal(null)
       },
-      '日程已新增',
+      t('dashboard.scheduleCreated'),
     )
   }
 
@@ -2361,7 +2820,7 @@ function DashboardPage({
       content: announcementForm.content.trim(),
     }
     if (!payload.title || !payload.content) {
-      setActionError('请填写公告标题和内容')
+      setActionError(t('dashboard.announcementRequired'))
       return
     }
     await runDashboardAction(
@@ -2371,7 +2830,7 @@ function DashboardPage({
         setAnnouncementForm(initialDashboardAnnouncementForm())
         setCreateModal(null)
       },
-      '公告已发布',
+      t('dashboard.announcementCreated'),
     )
   }
 
@@ -2384,7 +2843,7 @@ function DashboardPage({
       sort_order: 100 + shortcuts.length,
     }
     if (!payload.label || !payload.target_path) {
-      setActionError('请填写快捷入口名称')
+      setActionError(t('dashboard.shortcutRequired'))
       return
     }
     await runDashboardAction(
@@ -2394,7 +2853,7 @@ function DashboardPage({
         setShortcutForm(initialDashboardShortcutForm())
         setCreateModal(null)
       },
-      '快捷入口已新增',
+      t('dashboard.shortcutCreated'),
     )
   }
 
@@ -2404,7 +2863,7 @@ function DashboardPage({
       async () => {
         await markNotificationRead(notification.id)
       },
-      '提醒已处理',
+      t('dashboard.notificationHandled'),
     )
   }
 
@@ -2414,54 +2873,91 @@ function DashboardPage({
       async () => {
         await deleteDashboardShortcut(shortcut.id)
       },
-      '快捷入口已删除',
+      t('dashboard.shortcutDeleted'),
     )
+  }
+
+  function confirmRemoveSchedule(schedule: ScheduleEvent) {
+    Modal.confirm({
+      centered: true,
+      content: t('dashboard.deleteScheduleConfirm'),
+      okButtonProps: { danger: true },
+      okText: t('dashboard.deleteSchedule'),
+      cancelText: t('common.cancel'),
+      title: t('dashboard.deleteScheduleTitle'),
+      onOk: () =>
+        runDashboardAction(
+          `schedule-delete-${schedule.id}`,
+          async () => {
+            await deleteScheduleEvent(schedule.id)
+            setSelectedSchedule(null)
+          },
+          t('dashboard.scheduleDeleted'),
+        ),
+    })
   }
 
   function applyShortcutTarget(path: string) {
     const option = shortcutTargetOptions.find((item) => item.path === path) ?? shortcutTargetOptions[0]
-    setShortcutForm({ label: option.label, target_path: option.path, icon: option.icon })
+    setShortcutForm({ label: translatePathLabel(option.path, option.label), target_path: option.path, icon: option.icon })
   }
 
   return (
     <section className="dashboard-grid dashboard-workbench">
-      <div className="metric-strip" aria-label="工作概览">
-        <Metric icon={<FileText size={17} />} label="公告" value={summary?.announcement_count ?? 0} />
-        <Metric icon={<ClipboardCheck size={17} />} label="待办" value={summary?.todo_count ?? 0} intent="warning" />
+      <div className="metric-strip" aria-label={t('dashboard.aria')}>
+        <Metric icon={<FileText size={17} />} label={t('dashboard.announcement')} value={summary?.announcement_count ?? 0} />
+        <Metric icon={<ClipboardCheck size={17} />} label={t('dashboard.todo')} value={summary?.todo_count ?? 0} intent="warning" />
         <Metric
           icon={<Bell size={17} />}
-          label="未读提醒"
+          label={t('dashboard.unreadNotifications')}
           value={summary?.unread_notification_count ?? 0}
           intent="danger"
         />
-        <Metric icon={<CalendarClock size={17} />} label="今日日程" value={summary?.today_schedule_count ?? 0} />
-        <Metric icon={<LayoutDashboard size={17} />} label="快捷入口" value={summary?.shortcut_count ?? 0} />
+        <Metric icon={<CalendarClock size={17} />} label={t('dashboard.todaySchedule')} value={summary?.today_schedule_count ?? 0} />
+        <Metric icon={<LayoutDashboard size={17} />} label={t('dashboard.shortcuts')} value={summary?.shortcut_count ?? 0} />
       </div>
 
       {actionError ? <div className="dashboard-feedback error">{actionError}</div> : null}
       {actionMessage ? <div className="dashboard-feedback success">{actionMessage}</div> : null}
 
-      <div className="dashboard-toolbar" aria-label="工作桌面操作">
-        <button type="button" onClick={() => setCreateModal('schedule')}>
+      <div className="dashboard-toolbar" aria-label={t('dashboard.aria')}>
+        <button
+          type="button"
+          onClick={() => {
+            setScheduleForm(initialDashboardScheduleForm())
+            setCreateModal('schedule')
+          }}
+        >
           <CalendarClock size={15} />
-          <span>新增日程</span>
+          <span>{t('dashboard.addSchedule')}</span>
         </button>
         <button type="button" onClick={openAnnouncementModal}>
           <FileText size={15} />
-          <span>发布公告</span>
+          <span>{t('dashboard.publishAnnouncement')}</span>
         </button>
-        <button type="button" onClick={() => setCreateModal('shortcut')}>
+        <button
+          type="button"
+          onClick={() => {
+            setShortcutForm(initialDashboardShortcutForm())
+            setCreateModal('shortcut')
+          }}
+        >
           <LayoutDashboard size={15} />
-          <span>添加入口</span>
+          <span>{t('dashboard.addShortcut')}</span>
         </button>
       </div>
 
       <div className="dashboard-board">
         <section className="workspace-panel dashboard-panel dashboard-panel-primary">
-          <PanelTitle icon={<ClipboardCheck size={18} />} title="我的待办" />
+          <div className="dashboard-panel-heading">
+            <PanelTitle icon={<ClipboardCheck size={18} />} title={t('dashboard.myTodos')} />
+            <button className="panel-action-button panel-link-button" type="button" onClick={() => onNavigate(dashboardTodosPath)}>
+              {t('common.viewAll')}
+            </button>
+          </div>
           <div className="dashboard-task-list">
-            {dashboard?.todos.length ? (
-              dashboard.todos.map((todo) => (
+            {previewTodos.length ? (
+              previewTodos.map((todo) => (
                 <article className="dashboard-task" key={todo.id}>
                   <div className="dashboard-task-icon" aria-hidden="true">
                     <ClipboardCheck size={17} />
@@ -2473,25 +2969,30 @@ function DashboardPage({
                     </div>
                     <div className="dashboard-task-meta">
                       <span>{todoSourceLabel(todo.source_type)}</span>
-                      <span>截止 {formatDate(todo.due_at)}</span>
+                      <span>{t('dashboard.deadline')} {formatDate(todo.due_at)}</span>
                     </div>
                   </div>
                   <button className="table-action" type="button" onClick={() => onNavigate(todoTargetPath(todo))}>
-                    去办理
+                    {t('dashboard.goHandle')}
                   </button>
                 </article>
               ))
             ) : (
-              <div className="dashboard-empty">暂无待办</div>
+              <div className="dashboard-empty">{t('dashboard.noTodos')}</div>
             )}
           </div>
         </section>
 
         <section className="workspace-panel dashboard-panel dashboard-panel-reminders">
-          <PanelTitle icon={<Bell size={18} />} title="消息提醒" />
+          <div className="dashboard-panel-heading">
+            <PanelTitle icon={<Bell size={18} />} title={t('dashboard.messages')} />
+            <button className="panel-action-button panel-link-button" type="button" onClick={() => onNavigate(dashboardNotificationsPath)}>
+              {t('common.viewAll')}
+            </button>
+          </div>
           <div className="dashboard-reminders">
-            {dashboard?.notifications.length ? (
-              dashboard.notifications.map((notification) => (
+            {previewNotifications.length ? (
+              previewNotifications.map((notification) => (
                 <div className="dashboard-reminder" key={notification.id}>
                   <div>
                     <strong>{notification.title}</strong>
@@ -2500,7 +3001,7 @@ function DashboardPage({
                   <div className="dashboard-reminder-actions">
                     {severityTag(notification.severity)}
                     {notification.is_read ? (
-                      <Tag color="green">已读</Tag>
+                      <Tag color="green">{t('dashboard.read')}</Tag>
                     ) : (
                       <button
                         className="table-action"
@@ -2508,58 +3009,58 @@ function DashboardPage({
                         type="button"
                         onClick={() => void readNotification(notification)}
                       >
-                        处理
+                        {t('dashboard.handle')}
                       </button>
                     )}
                   </div>
                 </div>
               ))
             ) : (
-              <div className="dashboard-empty">暂无提醒</div>
+              <div className="dashboard-empty">{t('dashboard.noNotifications')}</div>
             )}
           </div>
         </section>
 
         <section className="workspace-panel dashboard-panel dashboard-panel-schedule">
-          <PanelTitle icon={<CalendarClock size={18} />} title="我的日程" />
-          <div className="dashboard-timeline">
-            {dashboard?.schedule_events.length ? (
-              dashboard.schedule_events.map((event) => (
-                <button
-                  className="dashboard-timeline-item"
-                  key={event.id}
-                  type="button"
-                  onClick={() => setSelectedSchedule(event)}
-                >
-                  <span className="dashboard-timeline-time">
-                    <strong>{formatTime(event.starts_at)}</strong>
-                    <small>{formatDate(event.starts_at)}</small>
-                  </span>
-                  <span className="dashboard-timeline-pin" aria-hidden="true" />
-                  <span className="dashboard-timeline-content">
-                    <span className="dashboard-timeline-title">{event.title}</span>
-                    <span className="dashboard-timeline-note">
-                      {event.description?.trim() || `${formatTime(event.starts_at)} 至 ${formatTime(event.ends_at)}`}
-                    </span>
-                  </span>
-                </button>
-              ))
-            ) : (
-              <div className="dashboard-empty">暂无日程</div>
-            )}
+          <div className="dashboard-panel-heading">
+            <PanelTitle icon={<CalendarClock size={18} />} title={t('dashboard.mySchedule')} />
+            <button className="panel-action-button panel-link-button" type="button" onClick={() => onNavigate(dashboardSchedulesPath)}>
+              {t('common.viewAll')}
+            </button>
           </div>
+          {previewSchedules.length ? (
+            <DashboardScheduleTimeline
+              currentTimeMs={currentTimeMs}
+              events={previewSchedules}
+              onSelect={(event) => setSelectedSchedule(event)}
+            />
+          ) : (
+            <div className="dashboard-empty">{t('dashboard.noSchedules')}</div>
+          )}
         </section>
 
         <section className="workspace-panel dashboard-panel dashboard-shortcut-panel">
           <div className="dashboard-panel-heading">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="快捷入口" />
-            <button className="panel-action-button" type="button" onClick={() => setCreateModal('shortcut')}>
-              添加
-            </button>
+            <PanelTitle icon={<LayoutDashboard size={18} />} title={t('dashboard.shortcuts')} />
+            <div className="dashboard-panel-actions">
+              <button className="panel-action-button panel-link-button" type="button" onClick={() => onNavigate(dashboardShortcutsPath)}>
+                {t('common.viewAll')}
+              </button>
+              <button
+                className="panel-action-button"
+                type="button"
+                onClick={() => {
+                  setShortcutForm(initialDashboardShortcutForm())
+                  setCreateModal('shortcut')
+                }}
+              >
+                {t('dashboard.add')}
+              </button>
+            </div>
           </div>
           <div className="dashboard-shortcuts">
-            {shortcuts.length ? (
-              shortcuts.map((shortcut) => {
+            {previewShortcuts.length ? (
+              previewShortcuts.map((shortcut) => {
                 const ShortcutIcon = resolveShortcutIcon(shortcut.icon)
 
                 return (
@@ -2579,27 +3080,29 @@ function DashboardPage({
                       type="button"
                       onClick={() => void removeShortcut(shortcut)}
                     >
-                      删除
+                      {t('common.delete')}
                     </button>
                   </div>
                 )
               })
             ) : (
-              <div className="dashboard-empty">暂无快捷入口</div>
+              <div className="dashboard-empty">{t('dashboard.noShortcuts')}</div>
             )}
           </div>
         </section>
 
-        <section className="workspace-panel dashboard-panel">
+        <section className="workspace-panel dashboard-panel dashboard-announcements-panel">
           <div className="dashboard-panel-heading">
-            <PanelTitle icon={<Search size={18} />} title="公司公告" />
-            <button className="panel-action-button" type="button" onClick={openAnnouncementModal}>
-              发布
-            </button>
+            <PanelTitle icon={<Search size={18} />} title={t('dashboard.companyAnnouncements')} />
+            <div className="dashboard-panel-actions">
+              <button className="panel-action-button panel-link-button" type="button" onClick={() => onNavigate(dashboardAnnouncementsPath)}>
+                {t('common.viewAll')}
+              </button>
+            </div>
           </div>
           <div className="dashboard-announcements">
-            {dashboard?.announcements.length ? (
-              dashboard.announcements.map((announcement) => (
+            {previewAnnouncements.length ? (
+              previewAnnouncements.map((announcement) => (
                 <article className="dashboard-announcement" key={announcement.id}>
                   <time dateTime={announcement.published_at}>{formatDate(announcement.published_at)}</time>
                   <div>
@@ -2609,7 +3112,7 @@ function DashboardPage({
                 </article>
               ))
             ) : (
-              <div className="dashboard-empty">暂无公告</div>
+              <div className="dashboard-empty">{t('dashboard.noAnnouncements')}</div>
             )}
           </div>
         </section>
@@ -2619,7 +3122,7 @@ function DashboardPage({
         centered
         footer={null}
         open={Boolean(selectedSchedule)}
-        title="日程详情"
+        title={t('dashboard.scheduleDetail')}
         width={560}
         onCancel={() => setSelectedSchedule(null)}
       >
@@ -2633,25 +3136,34 @@ function DashboardPage({
             </header>
             <dl className="dashboard-detail-list">
               <div>
-                <dt>开始</dt>
+                <dt>{t('dashboard.start')}</dt>
                 <dd>{formatDateTime(selectedSchedule.starts_at)}</dd>
               </div>
               <div>
-                <dt>结束</dt>
+                <dt>{t('dashboard.end')}</dt>
                 <dd>{formatDateTime(selectedSchedule.ends_at)}</dd>
               </div>
               <div>
-                <dt>创建时间</dt>
+                <dt>{t('dashboard.createdAt')}</dt>
                 <dd>{formatDateTime(selectedSchedule.created_at)}</dd>
               </div>
             </dl>
             <div className="dashboard-detail-note">
-              <span>备注</span>
-              <p>{selectedSchedule.description?.trim() || '暂无备注'}</p>
+              <span>{t('dashboard.note')}</span>
+              <p>{selectedSchedule.description?.trim() || t('dashboard.noNote')}</p>
             </div>
-            <div className="modal-actions">
+            <div className="modal-actions split">
+              <button
+                className="danger-inline"
+                disabled={busyAction === `schedule-delete-${selectedSchedule.id}`}
+                type="button"
+                onClick={() => confirmRemoveSchedule(selectedSchedule)}
+              >
+                <Trash2 size={15} />
+                {t('dashboard.deleteSchedule')}
+              </button>
               <button className="secondary-inline" type="button" onClick={() => setSelectedSchedule(null)}>
-                关闭
+                {t('common.close')}
               </button>
             </div>
           </section>
@@ -2662,13 +3174,13 @@ function DashboardPage({
         centered
         footer={null}
         open={createModal === 'schedule'}
-        title="新增日程"
+        title={t('dashboard.addSchedule')}
         width={620}
         onCancel={() => setCreateModal(null)}
       >
         <form className="dashboard-form modal-dashboard-form" onSubmit={submitSchedule}>
           <label>
-            <span>标题</span>
+            <span>{t('dashboard.title')}</span>
             <input
               value={scheduleForm.title}
               onChange={(event) => setScheduleForm({ ...scheduleForm, title: event.target.value })}
@@ -2676,7 +3188,7 @@ function DashboardPage({
           </label>
           <div className="dashboard-form-row">
             <label>
-              <span>开始</span>
+              <span>{t('dashboard.start')}</span>
               <input
                 type="datetime-local"
                 value={scheduleForm.starts_at}
@@ -2684,7 +3196,7 @@ function DashboardPage({
               />
             </label>
             <label>
-              <span>结束</span>
+              <span>{t('dashboard.end')}</span>
               <input
                 type="datetime-local"
                 value={scheduleForm.ends_at}
@@ -2693,7 +3205,7 @@ function DashboardPage({
             </label>
           </div>
           <label>
-            <span>备注</span>
+            <span>{t('dashboard.note')}</span>
             <textarea
               rows={3}
               value={scheduleForm.description}
@@ -2702,10 +3214,10 @@ function DashboardPage({
           </label>
           <div className="modal-actions">
             <button className="secondary-inline" type="button" onClick={() => setCreateModal(null)}>
-              取消
+              {t('common.cancel')}
             </button>
             <button className="inline-submit" disabled={busyAction === 'schedule'} type="submit">
-              新增日程
+              {t('dashboard.addSchedule')}
             </button>
           </div>
         </form>
@@ -2715,20 +3227,20 @@ function DashboardPage({
         centered
         footer={null}
         open={createModal === 'announcement'}
-        title="发布公告"
+        title={t('dashboard.publishAnnouncement')}
         width={620}
         onCancel={() => setCreateModal(null)}
       >
         <form className="dashboard-form modal-dashboard-form" onSubmit={submitAnnouncement}>
           <label>
-            <span>标题</span>
+            <span>{t('dashboard.title')}</span>
             <input
               value={announcementForm.title}
               onChange={(event) => setAnnouncementForm({ ...announcementForm, title: event.target.value })}
             />
           </label>
           <label>
-            <span>内容</span>
+            <span>{t('dashboard.content')}</span>
             <textarea
               rows={4}
               value={announcementForm.content}
@@ -2737,10 +3249,10 @@ function DashboardPage({
           </label>
           <div className="modal-actions">
             <button className="secondary-inline" type="button" onClick={() => setCreateModal(null)}>
-              取消
+              {t('common.cancel')}
             </button>
             <button className="inline-submit" disabled={busyAction === 'announcement'} type="submit">
-              发布公告
+              {t('dashboard.publishAnnouncement')}
             </button>
           </div>
         </form>
@@ -2750,24 +3262,24 @@ function DashboardPage({
         centered
         footer={null}
         open={createModal === 'shortcut'}
-        title="添加快捷入口"
+        title={t('dashboard.addShortcut')}
         width={560}
         onCancel={() => setCreateModal(null)}
       >
         <form className="dashboard-form modal-dashboard-form" onSubmit={submitShortcut}>
           <div className="dashboard-form-row">
             <label>
-              <span>入口</span>
+              <span>{t('dashboard.shortcutEntry')}</span>
               <select value={shortcutForm.target_path} onChange={(event) => applyShortcutTarget(event.target.value)}>
                 {shortcutTargetOptions.map((option) => (
                   <option key={option.path} value={option.path}>
-                    {option.label}
+                    {translatePathLabel(option.path, option.label)}
                   </option>
                 ))}
               </select>
             </label>
             <label>
-              <span>名称</span>
+              <span>{t('dashboard.shortcutName')}</span>
               <input
                 value={shortcutForm.label}
                 onChange={(event) => setShortcutForm({ ...shortcutForm, label: event.target.value })}
@@ -2776,14 +3288,402 @@ function DashboardPage({
           </div>
           <div className="modal-actions">
             <button className="secondary-inline" type="button" onClick={() => setCreateModal(null)}>
-              取消
+              {t('common.cancel')}
             </button>
             <button className="inline-submit" disabled={busyAction === 'shortcut'} type="submit">
-              添加入口
+              {t('dashboard.addShortcut')}
             </button>
           </div>
         </form>
       </Modal>
+    </section>
+  )
+}
+
+function DashboardTodosPage({
+  dashboard,
+  loading,
+  onNavigate,
+}: {
+  dashboard: Dashboard | null
+  loading: boolean
+  onNavigate: (path: string) => void
+}) {
+  if (loading && !dashboard) {
+    return <Skeleton active paragraph={{ rows: 8 }} />
+  }
+
+  const todos = dashboard?.todos ?? []
+  const groupedTodos = [
+    { id: 'approval', label: t('todo.approval'), items: todos.filter((todo) => todo.source_type === 'approval') },
+    { id: 'followup', label: t('todo.followup'), items: todos.filter((todo) => todo.source_type === 'followup') },
+    {
+      id: 'system',
+      label: t('todo.system'),
+      items: todos.filter((todo) => todo.source_type !== 'approval' && todo.source_type !== 'followup'),
+    },
+  ]
+
+  return (
+    <section className="dashboard-grid dashboard-dedicated-page">
+      <section className="workspace-panel dashboard-panel dashboard-full-panel">
+        <div className="dashboard-panel-heading dashboard-page-heading">
+          <PanelTitle icon={<ClipboardCheck size={18} />} title={t('dashboard.myTodos')} />
+          <span className="dashboard-section-count">{todos.length}</span>
+        </div>
+        {todos.length ? (
+          <div className="dashboard-kanban">
+            {groupedTodos.map((group) => (
+              <section className="dashboard-kanban-column" key={group.id}>
+                <header>
+                  <strong>{group.label}</strong>
+                  <span>{group.items.length}</span>
+                </header>
+                <div className="dashboard-kanban-items">
+                  {group.items.length ? (
+                    group.items.map((todo) => (
+                      <article className="dashboard-task-card" key={todo.id}>
+                        <div>
+                          <strong>{todo.title}</strong>
+                          <span>{t('dashboard.deadline')} {formatDate(todo.due_at)}</span>
+                        </div>
+                        <button className="table-action" type="button" onClick={() => onNavigate(todoTargetPath(todo))}>
+                          {t('dashboard.goHandle')}
+                        </button>
+                      </article>
+                    ))
+                  ) : (
+                    <div className="dashboard-empty">{t('common.none')}</div>
+                  )}
+                </div>
+              </section>
+            ))}
+          </div>
+        ) : (
+          <div className="dashboard-empty">{t('dashboard.noTodos')}</div>
+        )}
+      </section>
+    </section>
+  )
+}
+
+function DashboardSchedulesPage({
+  dashboard,
+  loading,
+  onRefresh,
+}: {
+  dashboard: Dashboard | null
+  loading: boolean
+  onRefresh: () => Promise<void>
+}) {
+  const [selectedSchedule, setSelectedSchedule] = useState<ScheduleEvent | null>(null)
+  const [busyAction, setBusyAction] = useState<string | null>(null)
+  const [actionMessage, setActionMessage] = useState('')
+  const [actionError, setActionError] = useState('')
+  const [currentTimeMs, setCurrentTimeMs] = useState(() => Date.now())
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setCurrentTimeMs(Date.now()), 1000)
+    return () => window.clearInterval(timer)
+  }, [])
+
+  if (loading && !dashboard) {
+    return <Skeleton active paragraph={{ rows: 8 }} />
+  }
+
+  const schedules = dashboard?.schedule_events ?? []
+
+  function confirmRemoveSchedule(schedule: ScheduleEvent) {
+    Modal.confirm({
+      centered: true,
+      content: t('dashboard.deleteScheduleConfirm'),
+      okButtonProps: { danger: true },
+      okText: t('dashboard.deleteSchedule'),
+      cancelText: t('common.cancel'),
+      title: t('dashboard.deleteScheduleTitle'),
+      onOk: async () => {
+        setBusyAction(`schedule-delete-${schedule.id}`)
+        setActionMessage('')
+        setActionError('')
+        try {
+          await deleteScheduleEvent(schedule.id)
+          setSelectedSchedule(null)
+          setActionMessage(t('dashboard.scheduleDeleted'))
+          await onRefresh()
+        } catch (caught) {
+          setActionError(caught instanceof Error ? caught.message : t('dashboard.operationFailed'))
+        } finally {
+          setBusyAction(null)
+        }
+      },
+    })
+  }
+
+  return (
+    <section className="dashboard-grid dashboard-dedicated-page">
+      {actionError ? <div className="dashboard-feedback error">{actionError}</div> : null}
+      {actionMessage ? <div className="dashboard-feedback success">{actionMessage}</div> : null}
+      <section className="workspace-panel dashboard-panel dashboard-full-panel">
+        <div className="dashboard-panel-heading dashboard-page-heading">
+          <PanelTitle icon={<CalendarClock size={18} />} title={t('dashboard.mySchedule')} />
+          <span className="dashboard-section-count">{schedules.length}</span>
+        </div>
+        {schedules.length ? (
+          <DashboardScheduleTimeline
+            currentTimeMs={currentTimeMs}
+            events={schedules}
+            onSelect={(event) => setSelectedSchedule(event)}
+          />
+        ) : (
+          <div className="dashboard-empty">{t('dashboard.noSchedules')}</div>
+        )}
+      </section>
+
+      <Modal
+        centered
+        footer={null}
+        open={Boolean(selectedSchedule)}
+        title={t('dashboard.scheduleDetail')}
+        width={560}
+        onCancel={() => setSelectedSchedule(null)}
+      >
+        {selectedSchedule ? (
+          <section className="dashboard-detail">
+            <header className="dashboard-detail-heading">
+              <strong>{selectedSchedule.title}</strong>
+              <span>
+                {formatDateTime(selectedSchedule.starts_at)} 至 {formatDateTime(selectedSchedule.ends_at)}
+              </span>
+            </header>
+            <dl className="dashboard-detail-list">
+              <div>
+                <dt>{t('dashboard.start')}</dt>
+                <dd>{formatDateTime(selectedSchedule.starts_at)}</dd>
+              </div>
+              <div>
+                <dt>{t('dashboard.end')}</dt>
+                <dd>{formatDateTime(selectedSchedule.ends_at)}</dd>
+              </div>
+              <div>
+                <dt>{t('dashboard.createdAt')}</dt>
+                <dd>{formatDateTime(selectedSchedule.created_at)}</dd>
+              </div>
+            </dl>
+            <div className="dashboard-detail-note">
+              <span>{t('dashboard.note')}</span>
+              <p>{selectedSchedule.description?.trim() || t('dashboard.noNote')}</p>
+            </div>
+            <div className="modal-actions split">
+              <button
+                className="danger-inline"
+                disabled={busyAction === `schedule-delete-${selectedSchedule.id}`}
+                type="button"
+                onClick={() => confirmRemoveSchedule(selectedSchedule)}
+              >
+                <Trash2 size={15} />
+                {t('dashboard.deleteSchedule')}
+              </button>
+              <button className="secondary-inline" type="button" onClick={() => setSelectedSchedule(null)}>
+                {t('common.close')}
+              </button>
+            </div>
+          </section>
+        ) : null}
+      </Modal>
+    </section>
+  )
+}
+
+function DashboardNotificationsPage({
+  dashboard,
+  loading,
+  onRefresh,
+}: {
+  dashboard: Dashboard | null
+  loading: boolean
+  onRefresh: () => Promise<void>
+}) {
+  const [busyAction, setBusyAction] = useState<string | null>(null)
+  const [actionMessage, setActionMessage] = useState('')
+  const [actionError, setActionError] = useState('')
+
+  if (loading && !dashboard) {
+    return <Skeleton active paragraph={{ rows: 8 }} />
+  }
+
+  const notifications = dashboard?.notifications ?? []
+
+  async function readNotification(notification: NotificationItem) {
+    setBusyAction(`notification-${notification.id}`)
+    setActionMessage('')
+    setActionError('')
+    try {
+      await markNotificationRead(notification.id)
+      setActionMessage(t('dashboard.notificationHandled'))
+      await onRefresh()
+    } catch (caught) {
+      setActionError(caught instanceof Error ? caught.message : t('dashboard.operationFailed'))
+    } finally {
+      setBusyAction(null)
+    }
+  }
+
+  return (
+    <section className="dashboard-grid dashboard-dedicated-page">
+      {actionError ? <div className="dashboard-feedback error">{actionError}</div> : null}
+      {actionMessage ? <div className="dashboard-feedback success">{actionMessage}</div> : null}
+      <section className="workspace-panel dashboard-panel dashboard-full-panel">
+        <div className="dashboard-panel-heading dashboard-page-heading">
+          <PanelTitle icon={<Bell size={18} />} title={t('dashboard.messages')} />
+          <span className="dashboard-section-count">{notifications.length}</span>
+        </div>
+        {notifications.length ? (
+          <div className="dashboard-reminder-list">
+            {notifications.map((notification) => (
+              <article className="dashboard-reminder" key={notification.id}>
+                <div>
+                  <strong>{notification.title}</strong>
+                  <span>{notification.message}</span>
+                </div>
+                <div className="dashboard-reminder-actions">
+                  {severityTag(notification.severity)}
+                  {notification.is_read ? (
+                    <Tag color="green">{t('dashboard.read')}</Tag>
+                  ) : (
+                    <button
+                      className="table-action"
+                      disabled={busyAction === `notification-${notification.id}`}
+                      type="button"
+                      onClick={() => void readNotification(notification)}
+                    >
+                      {t('dashboard.handle')}
+                    </button>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="dashboard-empty">{t('dashboard.noNotifications')}</div>
+        )}
+      </section>
+    </section>
+  )
+}
+
+function DashboardAnnouncementsPage({
+  dashboard,
+  loading,
+}: {
+  dashboard: Dashboard | null
+  loading: boolean
+}) {
+  if (loading && !dashboard) {
+    return <Skeleton active paragraph={{ rows: 8 }} />
+  }
+
+  const announcements = dashboard?.announcements ?? []
+
+  return (
+    <section className="dashboard-grid dashboard-dedicated-page">
+      <section className="workspace-panel dashboard-panel dashboard-full-panel">
+        <div className="dashboard-panel-heading dashboard-page-heading">
+          <PanelTitle icon={<Search size={18} />} title={t('dashboard.companyAnnouncements')} />
+          <span className="dashboard-section-count">{announcements.length}</span>
+        </div>
+        {announcements.length ? (
+          <div className="dashboard-announcement-list">
+            {announcements.map((announcement) => (
+              <article className="dashboard-announcement-card" key={announcement.id}>
+                <time dateTime={announcement.published_at}>{formatDate(announcement.published_at)}</time>
+                <div>
+                  <strong>{announcement.title}</strong>
+                  <p>{announcement.content}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="dashboard-empty">{t('dashboard.noAnnouncements')}</div>
+        )}
+      </section>
+    </section>
+  )
+}
+
+function DashboardShortcutsPage({
+  dashboard,
+  loading,
+  onNavigate,
+  onRefresh,
+}: {
+  dashboard: Dashboard | null
+  loading: boolean
+  onNavigate: (path: string) => void
+  onRefresh: () => Promise<void>
+}) {
+  const [busyAction, setBusyAction] = useState<string | null>(null)
+  const [actionMessage, setActionMessage] = useState('')
+  const [actionError, setActionError] = useState('')
+
+  if (loading && !dashboard) {
+    return <Skeleton active paragraph={{ rows: 8 }} />
+  }
+
+  const shortcuts = dashboard?.shortcuts ?? []
+
+  async function removeShortcut(shortcut: DashboardShortcut) {
+    setBusyAction(`shortcut-${shortcut.id}`)
+    setActionMessage('')
+    setActionError('')
+    try {
+      await deleteDashboardShortcut(shortcut.id)
+      setActionMessage(t('dashboard.shortcutDeleted'))
+      await onRefresh()
+    } catch (caught) {
+      setActionError(caught instanceof Error ? caught.message : t('dashboard.operationFailed'))
+    } finally {
+      setBusyAction(null)
+    }
+  }
+
+  return (
+    <section className="dashboard-grid dashboard-dedicated-page">
+      {actionError ? <div className="dashboard-feedback error">{actionError}</div> : null}
+      {actionMessage ? <div className="dashboard-feedback success">{actionMessage}</div> : null}
+      <section className="workspace-panel dashboard-panel dashboard-full-panel">
+        <div className="dashboard-panel-heading dashboard-page-heading">
+          <PanelTitle icon={<LayoutDashboard size={18} />} title={t('dashboard.shortcuts')} />
+          <span className="dashboard-section-count">{shortcuts.length}</span>
+        </div>
+        {shortcuts.length ? (
+          <div className="dashboard-shortcuts dashboard-shortcuts-full">
+            {shortcuts.map((shortcut) => {
+              const ShortcutIcon = resolveShortcutIcon(shortcut.icon)
+
+              return (
+                <div className="dashboard-shortcut-row" key={shortcut.id}>
+                  <button className="dashboard-shortcut" type="button" onClick={() => onNavigate(shortcut.target_path)}>
+                    <ShortcutIcon size={17} strokeWidth={2} />
+                    <span>{shortcut.label}</span>
+                    <Send className="dashboard-shortcut-arrow" size={15} strokeWidth={2} />
+                  </button>
+                  <button
+                    className="dashboard-shortcut-delete"
+                    disabled={busyAction === `shortcut-${shortcut.id}`}
+                    type="button"
+                    onClick={() => void removeShortcut(shortcut)}
+                  >
+                    {t('common.delete')}
+                  </button>
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          <div className="dashboard-empty">{t('dashboard.noShortcuts')}</div>
+        )}
+      </section>
     </section>
   )
 }
@@ -22841,30 +23741,7 @@ function partnerStatusLabel(value: string): string {
 }
 
 function pageTitle(path: string, menu: MenuItem | null): string {
-  if (path === dashboardPath) return '工作桌面'
-  if (path === productPath) return '商品资料和配件明细'
-  if (path === customerPath) return '客户资料和信用联系人'
-  if (path === supplierPath) return '供应商资料和信用联系人'
-  if (path === partnerPath) return '合作伙伴和费用联系人'
-  if (path === documentPartyPath) return '单证资料和常用引用'
-  if (path === sampleRequestPath) return '打样管理和费用进度'
-  if (path === sampleRecordPath) return '样品登记和数量台账'
-  if (path === sampleDeliveryPath) return '寄样管理和费用统计'
-  if (path === exportQuotationPath) return '出口报价和历史参考'
-  if (path === exportContractPath) return '出口合同和履约跟踪'
-  if (path === shipmentPath) return '出货明细和出运计划'
-  if (path === purchaseInquiryPath) return '采购询价和供应商报价'
-  if (path === purchaseContractPath) return '采购合同和付款交货提醒'
-  if (path === purchaseInvoiceNoticePath) return '开票通知和税票催收'
-  if (path === followupPath) return '采购跟单和逾期预警'
-  if (path === qualityInspectionPath) return 'QC 查验和入库判定'
-  if (path === warehouseInboundPlanPath) return '入库计划和库位预安排'
-  if (path === warehouseInboundOrderPath) return '货物入库和库存台账'
-  if (path === warehouseOutboundPlanPath) return '出库计划和待出库清单'
-  if (path === warehouseOutboundOrderPath) return '货物出库和出库记录'
-  if (path === reportingPath) return '经理查询和审批统计'
-  if (path === financePath) return '财务管理和利润概览'
-  return menu?.label ?? '业务模块'
+  return runtimeI18nConfig.page_titles[path]?.[runtimeSettings.language] ?? menu?.label ?? t('page.businessModule')
 }
 
 function Metric({
@@ -22898,9 +23775,9 @@ function PanelTitle({ icon, title }: { icon: ReactNode; title: string }) {
 
 function statusTag(value: string) {
   const labelMap: Record<string, string> = {
-    completed: '已完成',
-    done: '已完成',
-    pending: '待处理',
+    completed: t('status.completed'),
+    done: t('status.completed'),
+    pending: t('status.pending'),
   }
   const color = value === 'done' || value === 'completed' ? 'green' : 'gold'
   return <Tag color={color}>{labelMap[value] ?? value}</Tag>
@@ -22909,20 +23786,20 @@ function statusTag(value: string) {
 function severityTag(value: string) {
   const color = value === 'high' || value === 'urgent' ? 'red' : value === 'warning' ? 'gold' : 'blue'
   const labelMap: Record<string, string> = {
-    high: '高',
-    urgent: '紧急',
-    warning: '预警',
+    high: t('severity.high'),
+    urgent: t('severity.urgent'),
+    warning: t('severity.warning'),
   }
   return <Tag color={color}>{labelMap[value] ?? value}</Tag>
 }
 
 function formatDate(value: string | null) {
-  return value ? value.slice(0, 10) : '-'
+  return dateParts(value)?.date ?? '-'
 }
 
 function formatDateTime(value: string | null) {
-  if (!value) return '-'
-  return value.replace('T', ' ').slice(0, 16)
+  const parts = dateParts(value)
+  return parts ? `${parts.date} ${parts.time}` : '-'
 }
 
 export default App

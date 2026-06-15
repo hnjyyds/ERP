@@ -179,6 +179,25 @@ class DashboardRepository:
         await self.session.flush()
         return self._map_schedule_event(event)
 
+    async def delete_schedule_event(
+        self,
+        *,
+        user_id: str,
+        schedule_id: str,
+    ) -> ScheduleEventRow | None:
+        event = await self.session.scalar(
+            select(ScheduleEvent).where(
+                ScheduleEvent.id == schedule_id,
+                ScheduleEvent.owner_user_id == user_id,
+            )
+        )
+        if event is None:
+            return None
+        row = self._map_schedule_event(event)
+        await self.session.delete(event)
+        await self.session.flush()
+        return row
+
     async def create_announcement(
         self,
         *,
