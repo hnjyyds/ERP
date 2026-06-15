@@ -19,6 +19,7 @@ async def seed_system_demo_data(session: AsyncSession) -> None:
     permissions = [
         Permission(id="perm-dashboard-view", code="dashboard:view", name="查看工作桌面"),
         Permission(id="perm-schedule-create", code="schedule:create", name="新增个人日程"),
+        Permission(id="perm-announcement-create", code="announcement:create", name="发布公司公告"),
         Permission(
             id="perm-product-view",
             code="masterdata:product:view",
@@ -424,10 +425,12 @@ async def seed_system_demo_data(session: AsyncSession) -> None:
         Permission(id="perm-reporting-view", code="reporting:view", name="查看经理查询"),
     ]
     roles = [
+        Role(id="role-admin", name="管理员", code="admin"),
         Role(id="role-sales-manager", name="业务主管", code="sales_manager"),
         Role(id="role-finance", name="财务", code="finance"),
     ]
     departments = [
+        Department(id="dept-admin", name="管理部", parent_id=None, sort_order=5),
         Department(id="dept-sales", name="业务部", parent_id=None, sort_order=10),
         Department(id="dept-finance", name="财务部", parent_id=None, sort_order=20),
     ]
@@ -665,9 +668,20 @@ async def seed_system_demo_data(session: AsyncSession) -> None:
         existing.is_active = menu.is_active
     await session.flush()
 
+    admin_salt = "admin-salt"
     demo_salt = "demo-salt"
     finance_salt = "finance-salt"
     users = [
+        User(
+            id="u-admin",
+            username="admin",
+            display_name="演示管理员",
+            department_id="dept-admin",
+            password_hash=hash_password("admin123", admin_salt),
+            password_salt=admin_salt,
+            is_active=True,
+            created_at=datetime.now(UTC),
+        ),
         User(
             id="u-001",
             username="demo",
@@ -690,10 +704,21 @@ async def seed_system_demo_data(session: AsyncSession) -> None:
         ),
     ]
     user_roles = [
+        UserRole(id="ur-admin", user_id="u-admin", role_id="role-admin"),
         UserRole(id="ur-demo-sales-manager", user_id="u-001", role_id="role-sales-manager"),
         UserRole(id="ur-finance", user_id="u-finance", role_id="role-finance"),
     ]
     role_permissions = [
+        RolePermission(
+            id="rp-admin-dashboard",
+            role_id="role-admin",
+            permission_id="perm-dashboard-view",
+        ),
+        RolePermission(
+            id="rp-admin-announcement-create",
+            role_id="role-admin",
+            permission_id="perm-announcement-create",
+        ),
         RolePermission(
             id="rp-sales-dashboard",
             role_id="role-sales-manager",

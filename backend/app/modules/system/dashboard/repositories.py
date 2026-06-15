@@ -179,9 +179,97 @@ class DashboardRepository:
         await self.session.flush()
         return self._map_schedule_event(event)
 
+    async def create_announcement(
+        self,
+        *,
+        title: str,
+        content: str,
+        published_at: datetime,
+    ) -> AnnouncementRow:
+        announcement = CompanyAnnouncement(
+            title=title,
+            content=content,
+            published_at=published_at,
+            is_active=True,
+        )
+        self.session.add(announcement)
+        await self.session.flush()
+        return self._map_announcement(announcement)
+
+    async def mark_notification_read(
+        self,
+        *,
+        user_id: str,
+        notification_id: str,
+    ) -> NotificationRow | None:
+        notification = await self.session.scalar(
+            select(Notification).where(
+                Notification.id == notification_id,
+                Notification.owner_user_id == user_id,
+            )
+        )
+        if notification is None:
+            return None
+        notification.is_read = True
+        await self.session.flush()
+        return self._map_notification(notification)
+
+    async def create_shortcut(
+        self,
+        *,
+        user_id: str,
+        label: str,
+        target_path: str,
+        icon: str,
+        sort_order: int,
+    ) -> ShortcutRow:
+        shortcut = DashboardShortcut(
+            owner_user_id=user_id,
+            label=label,
+            target_path=target_path,
+            icon=icon,
+            sort_order=sort_order,
+        )
+        self.session.add(shortcut)
+        await self.session.flush()
+        return self._map_shortcut(shortcut)
+
+    async def delete_shortcut(self, *, user_id: str, shortcut_id: str) -> ShortcutRow | None:
+        shortcut = await self.session.scalar(
+            select(DashboardShortcut).where(
+                DashboardShortcut.id == shortcut_id,
+                DashboardShortcut.owner_user_id == user_id,
+            )
+        )
+        if shortcut is None:
+            return None
+        row = self._map_shortcut(shortcut)
+        await self.session.delete(shortcut)
+        await self.session.flush()
+        return row
+
     async def _scalars(self, statement: Select[tuple[ModelT]]) -> list[ModelT]:
         result = await self.session.scalars(statement)
         return list(result)
+
+    def _map_announcement(self, item: CompanyAnnouncement) -> AnnouncementRow:
+        return AnnouncementRow(
+            id=item.id,
+            title=item.title,
+            content=item.content,
+            published_at=item.published_at,
+        )
+
+    def _map_notification(self, item: Notification) -> NotificationRow:
+        return NotificationRow(
+            id=item.id,
+            owner_user_id=item.owner_user_id,
+            title=item.title,
+            message=item.message,
+            severity=item.severity,
+            is_read=item.is_read,
+            created_at=item.created_at,
+        )
 
     def _map_schedule_event(self, item: ScheduleEvent) -> ScheduleEventRow:
         return ScheduleEventRow(
@@ -192,4 +280,14 @@ class DashboardRepository:
             starts_at=item.starts_at,
             ends_at=item.ends_at,
             created_at=item.created_at,
+        )
+
+    def _map_shortcut(self, item: DashboardShortcut) -> ShortcutRow:
+        return ShortcutRow(
+            id=item.id,
+            owner_user_id=item.owner_user_id,
+            label=item.label,
+            target_path=item.target_path,
+            icon=item.icon,
+            sort_order=item.sort_order,
         )

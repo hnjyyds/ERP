@@ -4,6 +4,7 @@ import {
   ConfigProvider,
   Descriptions,
   Input,
+  Modal,
   Skeleton,
   Space,
   Table,
@@ -20,19 +21,32 @@ import {
   BarChart3,
   Bell,
   CalendarClock,
+  ChevronDown,
   CheckCircle2,
+  ClipboardCheck,
+  Factory,
+  FilePenLine,
+  FileStack,
+  FileText,
+  FlaskConical,
+  Handshake,
+  Images,
   KeyRound,
   LayoutDashboard,
   LogOut,
+  Package,
   PackagePlus,
   RefreshCw,
   Save,
   Search,
   Send,
+  Settings,
   ShieldCheck,
   UserRound,
+  UsersRound,
   Wallet,
   Warehouse,
+  type LucideIcon,
 } from 'lucide-react'
 import type { FormEvent, ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
@@ -62,8 +76,10 @@ import {
   clearAuthToken,
   addPurchaseInquiryQuotation,
   claimBankReceipt,
+  createAnnouncement,
   createFollowupTemplate,
   createBankReceipt,
+  createDashboardShortcut,
   createFinancialSettlement,
   createFeePaymentRequest,
   createMiscFeeAllocation,
@@ -84,7 +100,9 @@ import {
   createSampleDelivery,
   createSampleRecord,
   createSampleRequest,
+  createScheduleEvent,
   createSupplier,
+  deleteDashboardShortcut,
   exportExportContract,
   exportProducts,
   exportExportQuotation,
@@ -158,8 +176,10 @@ import {
   listVerificationUsage,
   lookupDocumentParties,
   login,
+  markNotificationRead,
   setAuthToken,
   type Announcement,
+  type AnnouncementCreatePayload,
   type ApprovalDocument,
   type ApprovalQuery,
   type ApprovalTypeSummary,
@@ -184,7 +204,9 @@ import {
   type CustomerShipmentStatistic,
   type CustomerTransaction,
   type CustomerUpdatePayload,
+  type CurrentUser,
   type Dashboard,
+  type DashboardShortcut,
   type DocumentParty,
   type DocumentPartyCreatePayload,
   type DocumentPartyUpdatePayload,
@@ -275,6 +297,7 @@ import {
   type PurchaseInquiryTemplate,
   type PurchaseInquiryTemplatePayload,
   type ReceivableItem,
+  type ScheduleCreatePayload,
   type ScheduleEvent,
   type SampleFee,
   type SampleFeePayload,
@@ -314,6 +337,7 @@ import {
   type SupplierPaymentRequest,
   type SupplierTransaction,
   type SupplierUpdatePayload,
+  type ShortcutCreatePayload,
   type SalesMonthlyShipmentStatistic,
   type StatusAmountStatistic,
   type TaxRefundRegisterPayload,
@@ -378,6 +402,125 @@ const warehouseOutboundPlanPath = '/warehouse/outbound-plans'
 const warehouseOutboundOrderPath = '/warehouse/outbound-orders'
 const financePath = '/finance'
 const reportingPath = '/reporting'
+
+const menuIconMap: Record<string, LucideIcon> = {
+  'bar-chart-3': BarChart3,
+  'calendar-clock': CalendarClock,
+  'check-circle': CheckCircle2,
+  'clipboard-check': ClipboardCheck,
+  factory: Factory,
+  'file-pen-line': FilePenLine,
+  'file-stack': FileStack,
+  'file-text': FileText,
+  'flask-conical': FlaskConical,
+  handshake: Handshake,
+  images: Images,
+  package: Package,
+  search: Search,
+  send: Send,
+  users: UsersRound,
+  wallet: Wallet,
+  warehouse: Warehouse,
+}
+
+const sidebarNavGroups: Array<{
+  id: string
+  label: string
+  icon: LucideIcon
+  paths: string[]
+}> = [
+  {
+    id: 'masterdata',
+    label: '基础资料',
+    icon: Package,
+    paths: [productPath, customerPath, supplierPath, partnerPath, documentPartyPath],
+  },
+  {
+    id: 'sample',
+    label: '样品业务',
+    icon: Images,
+    paths: [sampleRequestPath, sampleRecordPath, sampleDeliveryPath],
+  },
+  {
+    id: 'sales',
+    label: '销售出口',
+    icon: Send,
+    paths: [exportQuotationPath, exportContractPath, shipmentPath],
+  },
+  {
+    id: 'purchase',
+    label: '采购业务',
+    icon: ClipboardCheck,
+    paths: [purchaseInquiryPath, purchaseContractPath, purchaseInvoiceNoticePath, followupPath],
+  },
+  {
+    id: 'warehouse',
+    label: '质检仓库',
+    icon: Warehouse,
+    paths: [
+      qualityInspectionPath,
+      warehouseInboundPlanPath,
+      warehouseInboundOrderPath,
+      warehouseOutboundPlanPath,
+      warehouseOutboundOrderPath,
+    ],
+  },
+  {
+    id: 'finance',
+    label: '财务报表',
+    icon: BarChart3,
+    paths: [financePath, reportingPath],
+  },
+]
+
+function resolveMenuIcon(item: MenuItem) {
+  if (item.path === dashboardPath) return LayoutDashboard
+  return menuIconMap[item.icon] ?? LayoutDashboard
+}
+
+function resolveShortcutIcon(icon: string) {
+  return menuIconMap[icon] ?? LayoutDashboard
+}
+
+const announcementCreatePermission = 'announcement:create'
+const adminRoleNames = new Set(['管理员', 'admin', 'administrator'])
+
+function canCreateAnnouncement(user: CurrentUser) {
+  return (
+    user.permissions.includes(announcementCreatePermission) ||
+    user.roles.some((role) => adminRoleNames.has(role.trim().toLowerCase()))
+  )
+}
+
+function getSidebarMenuGroups(menus: MenuItem[]) {
+  const menuByPath = new Map(menus.map((item) => [item.path, item]))
+  const groupedPaths = new Set<string>()
+  const groups = sidebarNavGroups
+    .map((group) => {
+      const items = group.paths
+        .map((path) => menuByPath.get(path))
+        .filter((item): item is MenuItem => Boolean(item))
+
+      items.forEach((item) => groupedPaths.add(item.path))
+
+      return { ...group, items }
+    })
+    .filter((group) => group.items.length > 0)
+  const otherItems = menus.filter((item) => item.path !== dashboardPath && !groupedPaths.has(item.path))
+
+  if (otherItems.length === 0) return groups
+
+  return [
+    ...groups,
+    {
+      id: 'other',
+      label: '其他',
+      icon: LayoutDashboard,
+      paths: [],
+      items: otherItems,
+    },
+  ]
+}
 
 const erpAntTheme = {
   token: {
@@ -1703,6 +1846,9 @@ function App() {
     )
   }
 
+  const dashboardMenu = session.menus.find((item) => item.path === dashboardPath)
+  const sidebarMenuGroups = getSidebarMenuGroups(session.menus)
+
   return (
     <ConfigProvider locale={zhCN} theme={erpAntTheme}>
       <main className="react-shell">
@@ -1716,30 +1862,84 @@ function App() {
           </div>
 
           <nav className="react-nav" aria-label="主导航">
-            {session.menus.map((item) => (
+            {dashboardMenu ? (
               <a
-                key={item.id}
-                aria-current={item.path === activePath ? 'page' : undefined}
-                className={item.path === activePath ? 'nav-link active' : 'nav-link'}
-                href={item.path}
+                aria-current={dashboardMenu.path === activePath ? 'page' : undefined}
+                className={dashboardMenu.path === activePath ? 'nav-link nav-dashboard active' : 'nav-link nav-dashboard'}
+                href={dashboardMenu.path}
                 onClick={(event) => {
                   event.preventDefault()
-                  navigate(item.path)
+                  navigate(dashboardMenu.path)
                 }}
               >
-                <span>{item.label}</span>
+                <LayoutDashboard className="nav-link-icon" size={17} strokeWidth={2} />
+                <span>{dashboardMenu.label}</span>
               </a>
-            ))}
+            ) : null}
+
+            <div className="nav-groups" aria-label="业务模块">
+              {sidebarMenuGroups.map((group) => {
+                const GroupIcon = group.icon
+                const isGroupActive = group.items.some((item) => item.path === activePath)
+
+                return (
+                  <details className="nav-group" key={group.id} open={isGroupActive || undefined}>
+                    <summary className="nav-group-summary">
+                      <GroupIcon size={16} strokeWidth={2} />
+                      <span>{group.label}</span>
+                      <ChevronDown className="nav-group-chevron" size={15} />
+                    </summary>
+                    <div className="nav-group-items">
+                      {group.items.map((item) => {
+                        const MenuIcon = resolveMenuIcon(item)
+
+                        return (
+                          <a
+                            key={item.id}
+                            aria-current={item.path === activePath ? 'page' : undefined}
+                            className={item.path === activePath ? 'nav-link active' : 'nav-link'}
+                            href={item.path}
+                            onClick={(event) => {
+                              event.preventDefault()
+                              navigate(item.path)
+                            }}
+                          >
+                            <MenuIcon className="nav-link-icon" size={16} strokeWidth={2} />
+                            <span>{item.label}</span>
+                          </a>
+                        )
+                      })}
+                    </div>
+                  </details>
+                )
+              })}
+            </div>
           </nav>
 
-          <div className="user-block">
-            <strong>{session.user.display_name}</strong>
-            <span>{session.user.department_name} · {session.user.roles.join('、')}</span>
-            <button className="text-button" type="button" onClick={logout}>
-              <LogOut size={16} />
-              <span>退出登录</span>
-            </button>
-          </div>
+          <section className="sidebar-settings" aria-label="系统设置">
+            <details className="settings-group">
+              <summary className="settings-summary">
+                <Settings size={16} strokeWidth={2} />
+                <span>系统设置</span>
+                <ChevronDown className="nav-group-chevron" size={15} />
+              </summary>
+              <div className="settings-panel">
+                <div className="settings-user">
+                  <div className="user-avatar" aria-hidden="true">
+                    <UserRound size={16} />
+                  </div>
+                  <div className="user-meta">
+                    <strong>{session.user.display_name}</strong>
+                    <span>{session.user.department_name} · {session.user.roles.join('、')}</span>
+                  </div>
+                </div>
+                <button className="text-button settings-logout" type="button" onClick={logout}>
+                  <LogOut size={16} />
+                  <span>退出登录</span>
+                </button>
+              </div>
+            </details>
+          </section>
         </aside>
 
         <section className="react-workspace">
@@ -1767,7 +1967,13 @@ function App() {
           {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
           {activePath === dashboardPath ? (
-            <DashboardPage dashboard={dashboard} loading={loadingDashboard} />
+            <DashboardPage
+              currentUser={session.user}
+              dashboard={dashboard}
+              loading={loadingDashboard}
+              onNavigate={navigate}
+              onRefresh={loadDashboard}
+            />
           ) : activePath === productPath ? (
             <ProductsPage />
           ) : activePath === customerPath ? (
@@ -1968,100 +2174,616 @@ function LoginPage({
   )
 }
 
+type DashboardScheduleFormState = {
+  title: string
+  description: string
+  starts_at: string
+  ends_at: string
+}
+
+type DashboardAnnouncementFormState = {
+  title: string
+  content: string
+}
+
+type DashboardShortcutFormState = {
+  label: string
+  target_path: string
+  icon: string
+}
+
+const shortcutTargetOptions = [
+  { label: '出口合同', path: exportContractPath, icon: 'file-text' },
+  { label: '采购跟单', path: followupPath, icon: 'calendar-clock' },
+  { label: '商品资料', path: productPath, icon: 'package' },
+  { label: '客户资料', path: customerPath, icon: 'users' },
+  { label: '采购合同', path: purchaseContractPath, icon: 'clipboard-check' },
+  { label: 'QC 查验', path: qualityInspectionPath, icon: 'check-circle' },
+  { label: '货物入库', path: warehouseInboundOrderPath, icon: 'warehouse' },
+  { label: '财务管理', path: financePath, icon: 'wallet' },
+]
+
+function dateTimeLocalValue(date: Date) {
+  const offset = date.getTimezoneOffset()
+  const local = new Date(date.getTime() - offset * 60 * 1000)
+  return local.toISOString().slice(0, 16)
+}
+
+function initialDashboardScheduleForm(): DashboardScheduleFormState {
+  const startsAt = new Date()
+  startsAt.setMinutes(0, 0, 0)
+  startsAt.setHours(startsAt.getHours() + 1)
+  const endsAt = new Date(startsAt)
+  endsAt.setHours(endsAt.getHours() + 1)
+  return {
+    title: '',
+    description: '',
+    starts_at: dateTimeLocalValue(startsAt),
+    ends_at: dateTimeLocalValue(endsAt),
+  }
+}
+
+function initialDashboardAnnouncementForm(): DashboardAnnouncementFormState {
+  return { title: '', content: '' }
+}
+
+function initialDashboardShortcutForm(): DashboardShortcutFormState {
+  const first = shortcutTargetOptions[0]
+  return { label: first.label, target_path: first.path, icon: first.icon }
+}
+
+function todoTargetPath(todo: TodoTask) {
+  if (todo.source_type === 'followup') return followupPath
+  if (todo.source_type === 'approval') return reportingPath
+  return dashboardPath
+}
+
+function todoSourceLabel(value: string) {
+  const labels: Record<string, string> = {
+    approval: '审批',
+    followup: '跟进',
+    system: '系统',
+  }
+  return labels[value] ?? value
+}
+
+function formatTime(value: string | null) {
+  const text = formatDateTime(value)
+  return text === '-' ? '-' : text.slice(11, 16)
+}
+
 function DashboardPage({
+  currentUser,
   dashboard,
   loading,
+  onNavigate,
+  onRefresh,
 }: {
+  currentUser: CurrentUser
   dashboard: Dashboard | null
   loading: boolean
+  onNavigate: (path: string) => void
+  onRefresh: () => Promise<void>
 }) {
+  const [scheduleForm, setScheduleForm] = useState<DashboardScheduleFormState>(() =>
+    initialDashboardScheduleForm(),
+  )
+  const [announcementForm, setAnnouncementForm] = useState<DashboardAnnouncementFormState>(() =>
+    initialDashboardAnnouncementForm(),
+  )
+  const [shortcutForm, setShortcutForm] = useState<DashboardShortcutFormState>(() =>
+    initialDashboardShortcutForm(),
+  )
+  const [createModal, setCreateModal] = useState<'schedule' | 'announcement' | 'shortcut' | null>(null)
+  const [selectedSchedule, setSelectedSchedule] = useState<ScheduleEvent | null>(null)
+  const [busyAction, setBusyAction] = useState<string | null>(null)
+  const [actionMessage, setActionMessage] = useState('')
+  const [actionError, setActionError] = useState('')
+
   if (loading && !dashboard) {
     return <Skeleton active paragraph={{ rows: 10 }} />
   }
 
   const summary = dashboard?.summary
+  const shortcuts = dashboard?.shortcuts ?? []
+  const canPublishAnnouncement = canCreateAnnouncement(currentUser)
+
+  function showAnnouncementDenied() {
+    Modal.warning({
+      centered: true,
+      content: '发布公告仅限管理员账号操作。',
+      okText: '知道了',
+      title: '无权限',
+    })
+  }
+
+  function openAnnouncementModal() {
+    if (!canPublishAnnouncement) {
+      showAnnouncementDenied()
+      return
+    }
+    setCreateModal('announcement')
+  }
+
+  async function runDashboardAction(action: string, handler: () => Promise<void>, success: string) {
+    setBusyAction(action)
+    setActionError('')
+    setActionMessage('')
+    try {
+      await handler()
+      setActionMessage(success)
+      await onRefresh()
+    } catch (caught) {
+      setActionError(caught instanceof Error ? caught.message : '操作失败')
+    } finally {
+      setBusyAction(null)
+    }
+  }
+
+  async function submitSchedule(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!scheduleForm.title.trim() || !scheduleForm.starts_at || !scheduleForm.ends_at) {
+      setActionError('请填写日程标题和时间')
+      return
+    }
+    const startsAt = new Date(scheduleForm.starts_at)
+    const endsAt = new Date(scheduleForm.ends_at)
+    if (Number.isNaN(startsAt.getTime()) || Number.isNaN(endsAt.getTime()) || endsAt <= startsAt) {
+      setActionError('请检查日程开始和结束时间')
+      return
+    }
+    const payload: ScheduleCreatePayload = {
+      title: scheduleForm.title.trim(),
+      description: scheduleForm.description.trim() || undefined,
+      starts_at: startsAt.toISOString(),
+      ends_at: endsAt.toISOString(),
+    }
+    await runDashboardAction(
+      'schedule',
+      async () => {
+        await createScheduleEvent(payload)
+        setScheduleForm(initialDashboardScheduleForm())
+        setCreateModal(null)
+      },
+      '日程已新增',
+    )
+  }
+
+  async function submitAnnouncement(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!canPublishAnnouncement) {
+      setCreateModal(null)
+      showAnnouncementDenied()
+      return
+    }
+    const payload: AnnouncementCreatePayload = {
+      title: announcementForm.title.trim(),
+      content: announcementForm.content.trim(),
+    }
+    if (!payload.title || !payload.content) {
+      setActionError('请填写公告标题和内容')
+      return
+    }
+    await runDashboardAction(
+      'announcement',
+      async () => {
+        await createAnnouncement(payload)
+        setAnnouncementForm(initialDashboardAnnouncementForm())
+        setCreateModal(null)
+      },
+      '公告已发布',
+    )
+  }
+
+  async function submitShortcut(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const payload: ShortcutCreatePayload = {
+      label: shortcutForm.label.trim(),
+      target_path: shortcutForm.target_path,
+      icon: shortcutForm.icon,
+      sort_order: 100 + shortcuts.length,
+    }
+    if (!payload.label || !payload.target_path) {
+      setActionError('请填写快捷入口名称')
+      return
+    }
+    await runDashboardAction(
+      'shortcut',
+      async () => {
+        await createDashboardShortcut(payload)
+        setShortcutForm(initialDashboardShortcutForm())
+        setCreateModal(null)
+      },
+      '快捷入口已新增',
+    )
+  }
+
+  async function readNotification(notification: NotificationItem) {
+    await runDashboardAction(
+      `notification-${notification.id}`,
+      async () => {
+        await markNotificationRead(notification.id)
+      },
+      '提醒已处理',
+    )
+  }
+
+  async function removeShortcut(shortcut: DashboardShortcut) {
+    await runDashboardAction(
+      `shortcut-${shortcut.id}`,
+      async () => {
+        await deleteDashboardShortcut(shortcut.id)
+      },
+      '快捷入口已删除',
+    )
+  }
+
+  function applyShortcutTarget(path: string) {
+    const option = shortcutTargetOptions.find((item) => item.path === path) ?? shortcutTargetOptions[0]
+    setShortcutForm({ label: option.label, target_path: option.path, icon: option.icon })
+  }
 
   return (
-    <section className="dashboard-grid">
+    <section className="dashboard-grid dashboard-workbench">
       <div className="metric-strip" aria-label="工作概览">
-        <Metric label="公告" value={summary?.announcement_count ?? 0} />
-        <Metric label="待办" value={summary?.todo_count ?? 0} intent="warning" />
-        <Metric label="未读提醒" value={summary?.unread_notification_count ?? 0} intent="danger" />
-        <Metric label="今日日程" value={summary?.today_schedule_count ?? 0} />
-        <Metric label="快捷入口" value={summary?.shortcut_count ?? 0} />
+        <Metric icon={<FileText size={17} />} label="公告" value={summary?.announcement_count ?? 0} />
+        <Metric icon={<ClipboardCheck size={17} />} label="待办" value={summary?.todo_count ?? 0} intent="warning" />
+        <Metric
+          icon={<Bell size={17} />}
+          label="未读提醒"
+          value={summary?.unread_notification_count ?? 0}
+          intent="danger"
+        />
+        <Metric icon={<CalendarClock size={17} />} label="今日日程" value={summary?.today_schedule_count ?? 0} />
+        <Metric icon={<LayoutDashboard size={17} />} label="快捷入口" value={summary?.shortcut_count ?? 0} />
       </div>
 
-      <section className="workspace-panel wide-panel">
-        <PanelTitle icon={<CalendarClock size={18} />} title="我的待办" />
-        <Table<TodoTask>
-          columns={[
-            { title: '事项', dataIndex: 'title' },
-            { title: '来源', dataIndex: 'source_type', width: 160 },
-            { title: '截止', dataIndex: 'due_at', width: 140, render: formatDate },
-            {
-              title: '状态',
-              dataIndex: 'status',
-              width: 120,
-              render: (value: string) => statusTag(value),
-            },
-          ]}
-          dataSource={dashboard?.todos ?? []}
-          locale={{ emptyText: '暂无待办' }}
-          pagination={false}
-          rowKey="id"
-          size="small"
-        />
-      </section>
+      {actionError ? <div className="dashboard-feedback error">{actionError}</div> : null}
+      {actionMessage ? <div className="dashboard-feedback success">{actionMessage}</div> : null}
 
-      <section className="workspace-panel">
-        <PanelTitle icon={<Bell size={18} />} title="消息提醒" />
-        <Table<NotificationItem>
-          columns={[
-            { title: '标题', dataIndex: 'title' },
-            {
-              title: '等级',
-              dataIndex: 'severity',
-              width: 96,
-              render: (value: string) => severityTag(value),
-            },
-          ]}
-          dataSource={dashboard?.notifications ?? []}
-          locale={{ emptyText: '暂无提醒' }}
-          pagination={false}
-          rowKey="id"
-          size="small"
-        />
-      </section>
+      <div className="dashboard-toolbar" aria-label="工作桌面操作">
+        <button type="button" onClick={() => setCreateModal('schedule')}>
+          <CalendarClock size={15} />
+          <span>新增日程</span>
+        </button>
+        <button type="button" onClick={openAnnouncementModal}>
+          <FileText size={15} />
+          <span>发布公告</span>
+        </button>
+        <button type="button" onClick={() => setCreateModal('shortcut')}>
+          <LayoutDashboard size={15} />
+          <span>添加入口</span>
+        </button>
+      </div>
 
-      <section className="workspace-panel">
-        <PanelTitle icon={<CalendarClock size={18} />} title="我的日程" />
-        <Table<ScheduleEvent>
-          columns={[
-            { title: '日程', dataIndex: 'title' },
-            { title: '开始', dataIndex: 'starts_at', width: 145, render: formatDateTime },
-          ]}
-          dataSource={dashboard?.schedule_events ?? []}
-          locale={{ emptyText: '暂无日程' }}
-          pagination={false}
-          rowKey="id"
-          size="small"
-        />
-      </section>
+      <div className="dashboard-board">
+        <section className="workspace-panel dashboard-panel dashboard-panel-primary">
+          <PanelTitle icon={<ClipboardCheck size={18} />} title="我的待办" />
+          <div className="dashboard-task-list">
+            {dashboard?.todos.length ? (
+              dashboard.todos.map((todo) => (
+                <article className="dashboard-task" key={todo.id}>
+                  <div className="dashboard-task-icon" aria-hidden="true">
+                    <ClipboardCheck size={17} />
+                  </div>
+                  <div className="dashboard-task-body">
+                    <div className="dashboard-task-title">
+                      <strong>{todo.title}</strong>
+                      {statusTag(todo.status)}
+                    </div>
+                    <div className="dashboard-task-meta">
+                      <span>{todoSourceLabel(todo.source_type)}</span>
+                      <span>截止 {formatDate(todo.due_at)}</span>
+                    </div>
+                  </div>
+                  <button className="table-action" type="button" onClick={() => onNavigate(todoTargetPath(todo))}>
+                    去办理
+                  </button>
+                </article>
+              ))
+            ) : (
+              <div className="dashboard-empty">暂无待办</div>
+            )}
+          </div>
+        </section>
 
-      <section className="workspace-panel wide-panel">
-        <PanelTitle icon={<Search size={18} />} title="公司公告" />
-        <Table<Announcement>
-          columns={[
-            { title: '标题', dataIndex: 'title' },
-            { title: '发布时间', dataIndex: 'published_at', width: 145, render: formatDate },
-          ]}
-          dataSource={dashboard?.announcements ?? []}
-          locale={{ emptyText: '暂无公告' }}
-          pagination={false}
-          rowKey="id"
-          size="small"
-        />
-      </section>
+        <section className="workspace-panel dashboard-panel dashboard-panel-reminders">
+          <PanelTitle icon={<Bell size={18} />} title="消息提醒" />
+          <div className="dashboard-reminders">
+            {dashboard?.notifications.length ? (
+              dashboard.notifications.map((notification) => (
+                <div className="dashboard-reminder" key={notification.id}>
+                  <div>
+                    <strong>{notification.title}</strong>
+                    <span>{notification.message}</span>
+                  </div>
+                  <div className="dashboard-reminder-actions">
+                    {severityTag(notification.severity)}
+                    {notification.is_read ? (
+                      <Tag color="green">已读</Tag>
+                    ) : (
+                      <button
+                        className="table-action"
+                        disabled={busyAction === `notification-${notification.id}`}
+                        type="button"
+                        onClick={() => void readNotification(notification)}
+                      >
+                        处理
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="dashboard-empty">暂无提醒</div>
+            )}
+          </div>
+        </section>
+
+        <section className="workspace-panel dashboard-panel dashboard-panel-schedule">
+          <PanelTitle icon={<CalendarClock size={18} />} title="我的日程" />
+          <div className="dashboard-timeline">
+            {dashboard?.schedule_events.length ? (
+              dashboard.schedule_events.map((event) => (
+                <button
+                  className="dashboard-timeline-item"
+                  key={event.id}
+                  type="button"
+                  onClick={() => setSelectedSchedule(event)}
+                >
+                  <span className="dashboard-timeline-time">
+                    <strong>{formatTime(event.starts_at)}</strong>
+                    <small>{formatDate(event.starts_at)}</small>
+                  </span>
+                  <span className="dashboard-timeline-pin" aria-hidden="true" />
+                  <span className="dashboard-timeline-content">
+                    <span className="dashboard-timeline-title">{event.title}</span>
+                    <span className="dashboard-timeline-note">
+                      {event.description?.trim() || `${formatTime(event.starts_at)} 至 ${formatTime(event.ends_at)}`}
+                    </span>
+                  </span>
+                </button>
+              ))
+            ) : (
+              <div className="dashboard-empty">暂无日程</div>
+            )}
+          </div>
+        </section>
+
+        <section className="workspace-panel dashboard-panel dashboard-shortcut-panel">
+          <div className="dashboard-panel-heading">
+            <PanelTitle icon={<LayoutDashboard size={18} />} title="快捷入口" />
+            <button className="panel-action-button" type="button" onClick={() => setCreateModal('shortcut')}>
+              添加
+            </button>
+          </div>
+          <div className="dashboard-shortcuts">
+            {shortcuts.length ? (
+              shortcuts.map((shortcut) => {
+                const ShortcutIcon = resolveShortcutIcon(shortcut.icon)
+
+                return (
+                  <div className="dashboard-shortcut-row" key={shortcut.id}>
+                    <button
+                      className="dashboard-shortcut"
+                      type="button"
+                      onClick={() => onNavigate(shortcut.target_path)}
+                    >
+                      <ShortcutIcon size={17} strokeWidth={2} />
+                      <span>{shortcut.label}</span>
+                      <Send className="dashboard-shortcut-arrow" size={15} strokeWidth={2} />
+                    </button>
+                    <button
+                      className="dashboard-shortcut-delete"
+                      disabled={busyAction === `shortcut-${shortcut.id}`}
+                      type="button"
+                      onClick={() => void removeShortcut(shortcut)}
+                    >
+                      删除
+                    </button>
+                  </div>
+                )
+              })
+            ) : (
+              <div className="dashboard-empty">暂无快捷入口</div>
+            )}
+          </div>
+        </section>
+
+        <section className="workspace-panel dashboard-panel">
+          <div className="dashboard-panel-heading">
+            <PanelTitle icon={<Search size={18} />} title="公司公告" />
+            <button className="panel-action-button" type="button" onClick={openAnnouncementModal}>
+              发布
+            </button>
+          </div>
+          <div className="dashboard-announcements">
+            {dashboard?.announcements.length ? (
+              dashboard.announcements.map((announcement) => (
+                <article className="dashboard-announcement" key={announcement.id}>
+                  <time dateTime={announcement.published_at}>{formatDate(announcement.published_at)}</time>
+                  <div>
+                    <strong>{announcement.title}</strong>
+                    <p>{announcement.content}</p>
+                  </div>
+                </article>
+              ))
+            ) : (
+              <div className="dashboard-empty">暂无公告</div>
+            )}
+          </div>
+        </section>
+      </div>
+
+      <Modal
+        centered
+        footer={null}
+        open={Boolean(selectedSchedule)}
+        title="日程详情"
+        width={560}
+        onCancel={() => setSelectedSchedule(null)}
+      >
+        {selectedSchedule ? (
+          <section className="dashboard-detail">
+            <header className="dashboard-detail-heading">
+              <strong>{selectedSchedule.title}</strong>
+              <span>
+                {formatDateTime(selectedSchedule.starts_at)} 至 {formatDateTime(selectedSchedule.ends_at)}
+              </span>
+            </header>
+            <dl className="dashboard-detail-list">
+              <div>
+                <dt>开始</dt>
+                <dd>{formatDateTime(selectedSchedule.starts_at)}</dd>
+              </div>
+              <div>
+                <dt>结束</dt>
+                <dd>{formatDateTime(selectedSchedule.ends_at)}</dd>
+              </div>
+              <div>
+                <dt>创建时间</dt>
+                <dd>{formatDateTime(selectedSchedule.created_at)}</dd>
+              </div>
+            </dl>
+            <div className="dashboard-detail-note">
+              <span>备注</span>
+              <p>{selectedSchedule.description?.trim() || '暂无备注'}</p>
+            </div>
+            <div className="modal-actions">
+              <button className="secondary-inline" type="button" onClick={() => setSelectedSchedule(null)}>
+                关闭
+              </button>
+            </div>
+          </section>
+        ) : null}
+      </Modal>
+
+      <Modal
+        centered
+        footer={null}
+        open={createModal === 'schedule'}
+        title="新增日程"
+        width={620}
+        onCancel={() => setCreateModal(null)}
+      >
+        <form className="dashboard-form modal-dashboard-form" onSubmit={submitSchedule}>
+          <label>
+            <span>标题</span>
+            <input
+              value={scheduleForm.title}
+              onChange={(event) => setScheduleForm({ ...scheduleForm, title: event.target.value })}
+            />
+          </label>
+          <div className="dashboard-form-row">
+            <label>
+              <span>开始</span>
+              <input
+                type="datetime-local"
+                value={scheduleForm.starts_at}
+                onChange={(event) => setScheduleForm({ ...scheduleForm, starts_at: event.target.value })}
+              />
+            </label>
+            <label>
+              <span>结束</span>
+              <input
+                type="datetime-local"
+                value={scheduleForm.ends_at}
+                onChange={(event) => setScheduleForm({ ...scheduleForm, ends_at: event.target.value })}
+              />
+            </label>
+          </div>
+          <label>
+            <span>备注</span>
+            <textarea
+              rows={3}
+              value={scheduleForm.description}
+              onChange={(event) => setScheduleForm({ ...scheduleForm, description: event.target.value })}
+            />
+          </label>
+          <div className="modal-actions">
+            <button className="secondary-inline" type="button" onClick={() => setCreateModal(null)}>
+              取消
+            </button>
+            <button className="inline-submit" disabled={busyAction === 'schedule'} type="submit">
+              新增日程
+            </button>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal
+        centered
+        footer={null}
+        open={createModal === 'announcement'}
+        title="发布公告"
+        width={620}
+        onCancel={() => setCreateModal(null)}
+      >
+        <form className="dashboard-form modal-dashboard-form" onSubmit={submitAnnouncement}>
+          <label>
+            <span>标题</span>
+            <input
+              value={announcementForm.title}
+              onChange={(event) => setAnnouncementForm({ ...announcementForm, title: event.target.value })}
+            />
+          </label>
+          <label>
+            <span>内容</span>
+            <textarea
+              rows={4}
+              value={announcementForm.content}
+              onChange={(event) => setAnnouncementForm({ ...announcementForm, content: event.target.value })}
+            />
+          </label>
+          <div className="modal-actions">
+            <button className="secondary-inline" type="button" onClick={() => setCreateModal(null)}>
+              取消
+            </button>
+            <button className="inline-submit" disabled={busyAction === 'announcement'} type="submit">
+              发布公告
+            </button>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal
+        centered
+        footer={null}
+        open={createModal === 'shortcut'}
+        title="添加快捷入口"
+        width={560}
+        onCancel={() => setCreateModal(null)}
+      >
+        <form className="dashboard-form modal-dashboard-form" onSubmit={submitShortcut}>
+          <div className="dashboard-form-row">
+            <label>
+              <span>入口</span>
+              <select value={shortcutForm.target_path} onChange={(event) => applyShortcutTarget(event.target.value)}>
+                {shortcutTargetOptions.map((option) => (
+                  <option key={option.path} value={option.path}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>名称</span>
+              <input
+                value={shortcutForm.label}
+                onChange={(event) => setShortcutForm({ ...shortcutForm, label: event.target.value })}
+              />
+            </label>
+          </div>
+          <div className="modal-actions">
+            <button className="secondary-inline" type="button" onClick={() => setCreateModal(null)}>
+              取消
+            </button>
+            <button className="inline-submit" disabled={busyAction === 'shortcut'} type="submit">
+              添加入口
+            </button>
+          </div>
+        </form>
+      </Modal>
     </section>
   )
 }
@@ -22146,18 +22868,21 @@ function pageTitle(path: string, menu: MenuItem | null): string {
 }
 
 function Metric({
+  icon,
   label,
   value,
   intent = 'normal',
 }: {
+  icon?: ReactNode
   label: string
   value: number | string
   intent?: 'normal' | 'warning' | 'danger'
 }) {
   return (
     <div className={`metric-cell ${intent}`}>
-      <span>{label}</span>
-      <strong>{value}</strong>
+      {icon ? <span className="metric-icon">{icon}</span> : null}
+      <span className="metric-label">{label}</span>
+      <strong className="metric-value">{value}</strong>
     </div>
   )
 }
@@ -22172,13 +22897,23 @@ function PanelTitle({ icon, title }: { icon: ReactNode; title: string }) {
 }
 
 function statusTag(value: string) {
+  const labelMap: Record<string, string> = {
+    completed: '已完成',
+    done: '已完成',
+    pending: '待处理',
+  }
   const color = value === 'done' || value === 'completed' ? 'green' : 'gold'
-  return <Tag color={color}>{value}</Tag>
+  return <Tag color={color}>{labelMap[value] ?? value}</Tag>
 }
 
 function severityTag(value: string) {
   const color = value === 'high' || value === 'urgent' ? 'red' : value === 'warning' ? 'gold' : 'blue'
-  return <Tag color={color}>{value}</Tag>
+  const labelMap: Record<string, string> = {
+    high: '高',
+    urgent: '紧急',
+    warning: '预警',
+  }
+  return <Tag color={color}>{labelMap[value] ?? value}</Tag>
 }
 
 function formatDate(value: string | null) {

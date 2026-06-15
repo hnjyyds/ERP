@@ -10,12 +10,14 @@ from app.modules.system.dashboard.repositories import (
     TodoTaskRow,
 )
 from app.modules.system.dashboard.schemas import (
+    AnnouncementCreate,
     AnnouncementResponse,
     DashboardResponse,
     DashboardSummary,
     NotificationResponse,
     ScheduleCreate,
     ScheduleEventResponse,
+    ShortcutCreate,
     ShortcutResponse,
     TodoTaskResponse,
 )
@@ -63,6 +65,57 @@ class DashboardService:
                 created_at=datetime.now(UTC),
             )
         return self._schedule_response(row)
+
+    async def create_announcement(self, *, payload: AnnouncementCreate) -> AnnouncementResponse:
+        async with UnitOfWork(self._repository.session):
+            row = await self._repository.create_announcement(
+                title=payload.title,
+                content=payload.content,
+                published_at=datetime.now(UTC),
+            )
+        return self._announcement_response(row)
+
+    async def mark_notification_read(
+        self,
+        *,
+        user_id: str,
+        notification_id: str,
+    ) -> NotificationResponse | None:
+        async with UnitOfWork(self._repository.session):
+            row = await self._repository.mark_notification_read(
+                user_id=user_id,
+                notification_id=notification_id,
+            )
+        return self._notification_response(row) if row else None
+
+    async def create_shortcut(
+        self,
+        *,
+        user_id: str,
+        payload: ShortcutCreate,
+    ) -> ShortcutResponse:
+        async with UnitOfWork(self._repository.session):
+            row = await self._repository.create_shortcut(
+                user_id=user_id,
+                label=payload.label,
+                target_path=payload.target_path,
+                icon=payload.icon,
+                sort_order=payload.sort_order,
+            )
+        return self._shortcut_response(row)
+
+    async def delete_shortcut(
+        self,
+        *,
+        user_id: str,
+        shortcut_id: str,
+    ) -> ShortcutResponse | None:
+        async with UnitOfWork(self._repository.session):
+            row = await self._repository.delete_shortcut(
+                user_id=user_id,
+                shortcut_id=shortcut_id,
+            )
+        return self._shortcut_response(row) if row else None
 
     def _announcement_response(self, row: AnnouncementRow) -> AnnouncementResponse:
         return AnnouncementResponse(

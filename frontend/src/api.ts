@@ -884,6 +884,18 @@ export interface ScheduleCreatePayload {
   ends_at: string
 }
 
+export interface AnnouncementCreatePayload {
+  title: string
+  content: string
+}
+
+export interface ShortcutCreatePayload {
+  label: string
+  target_path: string
+  icon?: string
+  sort_order?: number
+}
+
 export interface ProductAccessory {
   id: string
   product_id: string
@@ -2922,6 +2934,32 @@ export function getCurrentSession(): Promise<{ user: CurrentUser; menus: MenuIte
 
 export function getDashboard(): Promise<Dashboard> {
   return request<Dashboard>('/dashboard')
+}
+
+export function createAnnouncement(payload: AnnouncementCreatePayload): Promise<Announcement> {
+  return request<Announcement>('/announcements', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function markNotificationRead(notificationId: string): Promise<NotificationItem> {
+  return request<NotificationItem>(`/notifications/${notificationId}/read`, {
+    method: 'PATCH',
+  })
+}
+
+export function createDashboardShortcut(payload: ShortcutCreatePayload): Promise<DashboardShortcut> {
+  return request<DashboardShortcut>('/shortcuts', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function deleteDashboardShortcut(shortcutId: string): Promise<DashboardShortcut> {
+  return request<DashboardShortcut>(`/shortcuts/${shortcutId}`, {
+    method: 'DELETE',
+  })
 }
 
 export function getFinanceOverview(): Promise<FinanceOverview> {

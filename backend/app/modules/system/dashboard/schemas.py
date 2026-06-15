@@ -12,6 +12,13 @@ class AnnouncementResponse(BaseModel):
     published_at: datetime
 
 
+class AnnouncementCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    title: str = Field(min_length=1, max_length=200)
+    content: str = Field(min_length=1, max_length=4000)
+
+
 class TodoTaskResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -57,6 +64,15 @@ class ShortcutResponse(BaseModel):
     target_path: str
     icon: str
     sort_order: int
+
+
+class ShortcutCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    label: str = Field(min_length=1, max_length=80)
+    target_path: str = Field(min_length=1, max_length=200)
+    icon: str = Field(default="layout-dashboard", min_length=1, max_length=60)
+    sort_order: int = Field(default=100, ge=0, le=9999)
 
 
 class DashboardSummary(BaseModel):
