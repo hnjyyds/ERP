@@ -10,10 +10,12 @@ from app.modules.masterdata.products.repositories import (
 from app.modules.masterdata.products.schemas import (
     ProductAccessoryCreate,
     ProductAccessoryResponse,
+    ProductAccessoryUpdate,
     ProductCreate,
     ProductExportResponse,
     ProductListResponse,
     ProductResponse,
+    ProductUpdate,
 )
 from app.modules.system.auth.schemas import CurrentUserResponse
 
@@ -23,6 +25,10 @@ class PermissionDeniedError(Exception):
 
 
 class ProductNotFoundError(Exception):
+    pass
+
+
+class ProductAccessoryNotFoundError(Exception):
     pass
 
 
@@ -50,6 +56,7 @@ class ProductService:
                 package_info=payload.package_info,
                 unit=payload.unit,
                 image_url=payload.image_url,
+                status=payload.status,
             )
             accessories = [
                 await self._repository.add_accessory(
@@ -62,6 +69,49 @@ class ProductService:
                 )
                 for item in payload.accessories
             ]
+        return self._product_response(product, accessories)
+
+    async def update_product(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        product_id: str,
+        payload: ProductUpdate,
+    ) -> ProductResponse:
+        self._require(current_user, "masterdata:product:edit")
+        async with UnitOfWork(self._repository.session):
+            product = await self._repository.update_product(
+                product_id=product_id,
+                code=payload.code,
+                cn_name=payload.cn_name,
+                en_name=payload.en_name,
+                specification=payload.specification,
+                model=payload.model,
+                customs_code=payload.customs_code,
+                tax_rate=payload.tax_rate,
+                rebate_rate=payload.rebate_rate,
+                package_info=payload.package_info,
+                unit=payload.unit,
+                image_url=payload.image_url,
+                status=payload.status,
+            )
+            if product is None:
+                raise ProductNotFoundError
+            accessories = await self._repository.list_accessories(product_id)
+        return self._product_response(product, accessories)
+
+    async def deactivate_product(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        product_id: str,
+    ) -> ProductResponse:
+        self._require(current_user, "masterdata:product:edit")
+        async with UnitOfWork(self._repository.session):
+            product = await self._repository.deactivate_product(product_id)
+            if product is None:
+                raise ProductNotFoundError
+            accessories = await self._repository.list_accessories(product_id)
         return self._product_response(product, accessories)
 
     async def add_accessory(
@@ -84,6 +134,52 @@ class ProductService:
                 default_supplier_name=payload.default_supplier_name,
                 purchase_split_rule=payload.purchase_split_rule,
             )
+        return self._accessory_response(row)
+
+    async def update_accessory(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        product_id: str,
+        accessory_id: str,
+        payload: ProductAccessoryUpdate,
+    ) -> ProductAccessoryResponse:
+        self._require(current_user, "masterdata:product:edit")
+        product = await self._repository.get_product(product_id)
+        if product is None:
+            raise ProductNotFoundError
+        async with UnitOfWork(self._repository.session):
+            row = await self._repository.update_accessory(
+                product_id=product_id,
+                accessory_id=accessory_id,
+                accessory_name=payload.accessory_name,
+                unit_consumption=payload.unit_consumption,
+                unit=payload.unit,
+                default_supplier_name=payload.default_supplier_name,
+                purchase_split_rule=payload.purchase_split_rule,
+            )
+            if row is None:
+                raise ProductAccessoryNotFoundError
+        return self._accessory_response(row)
+
+    async def delete_accessory(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        product_id: str,
+        accessory_id: str,
+    ) -> ProductAccessoryResponse:
+        self._require(current_user, "masterdata:product:edit")
+        product = await self._repository.get_product(product_id)
+        if product is None:
+            raise ProductNotFoundError
+        async with UnitOfWork(self._repository.session):
+            row = await self._repository.delete_accessory(
+                product_id=product_id,
+                accessory_id=accessory_id,
+            )
+            if row is None:
+                raise ProductAccessoryNotFoundError
         return self._accessory_response(row)
 
     async def get_product(
@@ -165,6 +261,7 @@ class ProductService:
             package_info=product.package_info,
             unit=product.unit,
             image_url=product.image_url,
+            status=product.status,
             accessories=[self._accessory_response(item) for item in accessories],
         )
 

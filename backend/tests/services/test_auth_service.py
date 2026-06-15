@@ -17,8 +17,13 @@ async def test_auth_service_verifies_password_and_token_round_trip(
 
         auth_session = await service.login(username="demo", password="demo123")
         current = await service.get_current_user(auth_session.access_token)
+        assignable_users = await service.list_assignable_users()
 
     assert current.user.id == "u-001"
+    assert current.user.avatar_type == "preset"
+    assert current.user.avatar_value == "amber-orbit"
+    demo_assignee = next(user for user in assignable_users.users if user.id == "u-001")
+    assert demo_assignee.avatar_value == "amber-orbit"
     assert [item.label for item in current.menus] == [
         "工作桌面",
         "商品资料",

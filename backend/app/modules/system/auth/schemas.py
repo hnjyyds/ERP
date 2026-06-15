@@ -1,6 +1,22 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+AvatarType = Literal["preset", "upload"]
+DEFAULT_AVATAR_TYPE: AvatarType = "preset"
+DEFAULT_AVATAR_VALUE = "amber-orbit"
+ORGANIZATION_AVATAR_PRESETS = frozenset(
+    {
+        "amber-orbit",
+        "sage-pulse",
+        "copper-wave",
+        "blueprint-grid",
+        "ink-halo",
+        "rose-signal",
+    }
+)
+AVATAR_VALUE_MAX_LENGTH = 1_500_000
 
 
 class LoginRequest(BaseModel):
@@ -28,6 +44,8 @@ class CurrentUserResponse(BaseModel):
     username: str
     display_name: str
     department_name: str
+    avatar_type: AvatarType = DEFAULT_AVATAR_TYPE
+    avatar_value: str = DEFAULT_AVATAR_VALUE
     roles: list[str]
     permissions: list[str]
 
@@ -39,12 +57,21 @@ class AssignableUserResponse(BaseModel):
     username: str
     display_name: str
     department_name: str
+    avatar_type: AvatarType = DEFAULT_AVATAR_TYPE
+    avatar_value: str = DEFAULT_AVATAR_VALUE
 
 
 class AssignableUserListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     users: list[AssignableUserResponse]
+
+
+class CurrentUserAvatarUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    avatar_type: AvatarType
+    avatar_value: str = Field(min_length=1, max_length=AVATAR_VALUE_MAX_LENGTH)
 
 
 class OrganizationDepartmentResponse(BaseModel):
@@ -81,6 +108,8 @@ class OrganizationUserResponse(BaseModel):
     display_name: str
     department_id: str
     department_name: str
+    avatar_type: AvatarType = DEFAULT_AVATAR_TYPE
+    avatar_value: str = DEFAULT_AVATAR_VALUE
     roles: list[OrganizationRoleResponse]
     is_active: bool
     created_at: datetime
@@ -109,6 +138,8 @@ class OrganizationUserCreate(BaseModel):
     department_id: str = Field(min_length=1, max_length=64)
     role_ids: list[str] = Field(default_factory=list)
     is_active: bool = True
+    avatar_type: AvatarType = DEFAULT_AVATAR_TYPE
+    avatar_value: str = Field(default=DEFAULT_AVATAR_VALUE, max_length=AVATAR_VALUE_MAX_LENGTH)
 
     @field_validator("role_ids")
     @classmethod
@@ -123,6 +154,8 @@ class OrganizationUserUpdate(BaseModel):
     department_id: str | None = Field(default=None, min_length=1, max_length=64)
     role_ids: list[str] | None = None
     is_active: bool | None = None
+    avatar_type: AvatarType | None = None
+    avatar_value: str | None = Field(default=None, max_length=AVATAR_VALUE_MAX_LENGTH)
 
     @field_validator("role_ids")
     @classmethod

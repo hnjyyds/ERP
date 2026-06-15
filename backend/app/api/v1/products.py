@@ -7,13 +7,16 @@ from app.modules.masterdata.products.providers import get_product_service
 from app.modules.masterdata.products.schemas import (
     ProductAccessoryCreate,
     ProductAccessoryResponse,
+    ProductAccessoryUpdate,
     ProductCreate,
     ProductExportResponse,
     ProductListResponse,
     ProductResponse,
+    ProductUpdate,
 )
 from app.modules.masterdata.products.services import (
     PermissionDeniedError,
+    ProductAccessoryNotFoundError,
     ProductNotFoundError,
     ProductService,
 )
@@ -97,6 +100,45 @@ async def get_product(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
 
 
+@router.put("/{product_id}", response_model=ApiResponse[ProductResponse])
+async def update_product(
+    product_id: str,
+    payload: ProductUpdate,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[ProductService, Depends(get_product_service)],
+) -> ApiResponse[ProductResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        product = await service.update_product(
+            current_user=user,
+            product_id=product_id,
+            payload=payload,
+        )
+        return ApiResponse(data=product)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except ProductNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
+
+
+@router.delete("/{product_id}", response_model=ApiResponse[ProductResponse])
+async def deactivate_product(
+    product_id: str,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[ProductService, Depends(get_product_service)],
+) -> ApiResponse[ProductResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        product = await service.deactivate_product(current_user=user, product_id=product_id)
+        return ApiResponse(data=product)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except ProductNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
+
+
 @router.post(
     "/{product_id}/accessories",
     status_code=status.HTTP_201_CREATED,
@@ -121,3 +163,59 @@ async def add_accessory(
         _raise_permission_denied()
     except ProductNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
+
+
+@router.put(
+    "/{product_id}/accessories/{accessory_id}",
+    response_model=ApiResponse[ProductAccessoryResponse],
+)
+async def update_accessory(
+    product_id: str,
+    accessory_id: str,
+    payload: ProductAccessoryUpdate,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[ProductService, Depends(get_product_service)],
+) -> ApiResponse[ProductAccessoryResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        accessory = await service.update_accessory(
+            current_user=user,
+            product_id=product_id,
+            accessory_id=accessory_id,
+            payload=payload,
+        )
+        return ApiResponse(data=accessory)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except ProductNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
+    except ProductAccessoryNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="配件不存在") from None
+
+
+@router.delete(
+    "/{product_id}/accessories/{accessory_id}",
+    response_model=ApiResponse[ProductAccessoryResponse],
+)
+async def delete_accessory(
+    product_id: str,
+    accessory_id: str,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[ProductService, Depends(get_product_service)],
+) -> ApiResponse[ProductAccessoryResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        accessory = await service.delete_accessory(
+            current_user=user,
+            product_id=product_id,
+            accessory_id=accessory_id,
+        )
+        return ApiResponse(data=accessory)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except ProductNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
+    except ProductAccessoryNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="配件不存在") from None

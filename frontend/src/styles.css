@@ -423,6 +423,10 @@ body {
   align-items: start;
 }
 
+.product-business-grid .list-panel {
+  grid-column: 1 / -1;
+}
+
 .list-panel {
   min-height: 0;
 }
@@ -441,6 +445,13 @@ body {
     top: 92px;
     max-height: calc(100vh - 112px);
     overflow: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .entity-modal-grid,
+  .entity-modal-grid.two {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -465,6 +476,27 @@ body {
   color: var(--erp-muted);
   font-size: 13px;
   font-weight: 700;
+}
+
+.inline-filters .ant-select,
+.record-form .ant-select,
+.dashboard-form .ant-select {
+  width: 100%;
+}
+
+.inline-filters .ant-select-selector,
+.record-form .ant-select-selector,
+.dashboard-form .ant-select-selector {
+  min-height: 34px;
+  border-color: #bfcabf !important;
+  background: var(--erp-surface) !important;
+}
+
+.inline-filters .ant-select-focused .ant-select-selector,
+.record-form .ant-select-focused .ant-select-selector,
+.dashboard-form .ant-select-focused .ant-select-selector {
+  border-color: var(--erp-primary) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--erp-primary) 20%, transparent) !important;
 }
 
 .inline-filters select,
@@ -493,6 +525,58 @@ body {
 
 .compact-section {
   margin-top: 16px;
+}
+
+.section-actions,
+.table-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-actions {
+  justify-content: flex-end;
+}
+
+.table-actions {
+  justify-content: flex-start;
+}
+
+.entity-modal-form {
+  max-height: min(76vh, 760px);
+  overflow: auto;
+  padding: 6px 4px 2px;
+}
+
+.entity-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px 16px;
+}
+
+.entity-modal-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.entity-modal-span {
+  grid-column: 1 / -1;
+}
+
+.entity-modal-section {
+  margin-top: 18px;
+  border-top: 1px solid rgba(222, 216, 203, 0.78);
+  padding-top: 14px;
+}
+
+.entity-modal-form .modal-actions {
+  position: sticky;
+  right: 0;
+  bottom: -2px;
+  margin-top: 18px;
+  border-top: 1px solid rgba(222, 216, 203, 0.72);
+  background: linear-gradient(180deg, rgba(255, 254, 251, 0.86), #fffefb);
+  padding: 14px 0 2px;
 }
 
 .fee-records {
@@ -1422,6 +1506,202 @@ body {
   font-weight: var(--dash-weight-body, 500);
 }
 
+.app-avatar {
+  position: relative;
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(150, 133, 71, 0.18);
+  border-radius: 50%;
+  background: #f5f0e5;
+  color: #6d5b27;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.42),
+    0 8px 18px rgba(53, 53, 53, 0.07);
+  font-weight: 860;
+  isolation: isolate;
+}
+
+.app-avatar-sm {
+  width: 32px;
+  height: 32px;
+  font-size: 0.88rem;
+}
+
+.app-avatar-md {
+  width: 42px;
+  height: 42px;
+  font-size: 1rem;
+}
+
+.app-avatar-lg {
+  width: 62px;
+  height: 62px;
+  font-size: 1.38rem;
+}
+
+.app-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.app-avatar-initial {
+  position: relative;
+  z-index: 2;
+}
+
+.app-avatar-amber-orbit {
+  background: #f4ead8;
+  color: #76551f;
+}
+
+.app-avatar-sage-pulse {
+  background: #e7f0e9;
+  color: #2e6f58;
+}
+
+.app-avatar-copper-wave {
+  background: #f2e4d7;
+  color: #8b4d20;
+}
+
+.app-avatar-blueprint-grid {
+  background: #e5edf1;
+  color: #2b5f72;
+}
+
+.app-avatar-ink-halo {
+  background: #e9e8e3;
+  color: #313534;
+}
+
+.app-avatar-rose-signal {
+  background: #f3e4e2;
+  color: #8d4b4c;
+}
+
+.app-avatar-orbit,
+.app-avatar-pulse,
+.app-avatar-wave,
+.app-avatar-grid,
+.app-avatar-halo,
+.app-avatar-signal {
+  position: absolute;
+  inset: 6px;
+  z-index: 1;
+  border-radius: inherit;
+  opacity: 0.82;
+}
+
+.app-avatar-orbit {
+  border: 1px solid rgba(150, 133, 71, 0.42);
+  border-left-color: transparent;
+  animation: avatar-orbit 4.8s linear infinite;
+}
+
+.app-avatar-pulse {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(47, 124, 95, 0.24), transparent 38%),
+    radial-gradient(circle at 50% 50%, rgba(47, 124, 95, 0.12), transparent 62%);
+  animation: avatar-pulse 2.4s ease-in-out infinite;
+}
+
+.app-avatar-wave {
+  inset: 0;
+  background:
+    linear-gradient(135deg, transparent 28%, rgba(154, 91, 22, 0.18) 29%, transparent 44%),
+    linear-gradient(135deg, transparent 52%, rgba(154, 91, 22, 0.16) 53%, transparent 68%);
+  animation: avatar-wave 3.6s ease-in-out infinite;
+}
+
+.app-avatar-grid {
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(43, 95, 114, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(43, 95, 114, 0.16) 1px, transparent 1px);
+  background-size: 10px 10px;
+  animation: avatar-grid 5.2s linear infinite;
+}
+
+.app-avatar-halo {
+  border: 1px solid rgba(49, 53, 52, 0.26);
+  box-shadow: 0 0 0 5px rgba(49, 53, 52, 0.05);
+  animation: avatar-halo 2.9s ease-in-out infinite;
+}
+
+.app-avatar-signal {
+  inset: auto;
+  width: 76%;
+  height: 76%;
+  border: 1px solid rgba(141, 75, 76, 0.2);
+  box-shadow:
+    0 0 0 8px rgba(141, 75, 76, 0.06),
+    0 0 0 16px rgba(141, 75, 76, 0.035);
+  animation: avatar-signal 3.2s ease-in-out infinite;
+}
+
+@keyframes avatar-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes avatar-pulse {
+  0%,
+  100% {
+    transform: scale(0.88);
+    opacity: 0.66;
+  }
+
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes avatar-wave {
+  0%,
+  100% {
+    transform: translateX(-8%);
+  }
+
+  50% {
+    transform: translateX(8%);
+  }
+}
+
+@keyframes avatar-grid {
+  to {
+    background-position: 10px 10px;
+  }
+}
+
+@keyframes avatar-halo {
+  0%,
+  100% {
+    transform: scale(0.92);
+  }
+
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes avatar-signal {
+  0%,
+  100% {
+    transform: scale(0.86);
+    opacity: 0.52;
+  }
+
+  50% {
+    transform: scale(1);
+    opacity: 0.92;
+  }
+}
+
 .dashboard-detail {
   display: grid;
   gap: 14px;
@@ -2341,6 +2621,116 @@ body {
   border-color: rgba(150, 133, 71, 0.36);
   background: rgba(150, 133, 71, 0.12);
   color: #7b6e37;
+}
+
+.user-avatar-picker {
+  display: grid;
+  gap: 14px;
+  border: 1px solid rgba(150, 133, 71, 0.16);
+  border-radius: 8px;
+  background: rgba(250, 247, 239, 0.62);
+  padding: 14px;
+}
+
+.user-avatar-picker-current {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+.user-avatar-picker-current > div > span,
+.user-avatar-picker-current small {
+  display: block;
+  color: #756e61;
+  font-size: 0.9rem;
+  font-weight: 680;
+}
+
+.user-avatar-picker-current strong {
+  display: block;
+  margin: 3px 0;
+  color: #252b28;
+  font-size: 1.08rem;
+  font-weight: 840;
+}
+
+.user-avatar-picker-presets {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.user-avatar-picker-presets button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  min-height: 48px;
+  border: 1px solid rgba(150, 133, 71, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 254, 251, 0.76);
+  color: #4d4a43;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 760;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.user-avatar-picker-presets button.selected {
+  border-color: rgba(150, 133, 71, 0.42);
+  background: rgba(150, 133, 71, 0.12);
+  box-shadow: inset 3px 0 0 #968547;
+}
+
+.user-avatar-picker-upload-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.user-avatar-picker-upload {
+  position: relative;
+  display: inline-flex !important;
+  width: fit-content !important;
+  min-height: 38px;
+  align-items: center;
+  gap: 8px !important;
+  border: 1px solid rgba(150, 133, 71, 0.24);
+  border-radius: 8px;
+  background: rgba(255, 254, 251, 0.88);
+  color: #7b6e37;
+  cursor: pointer;
+  font-weight: 780;
+  padding: 0 12px;
+}
+
+.user-avatar-picker-upload input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.user-avatar-picker-upload-row small {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #756e61;
+  font-size: 0.88rem;
+  font-weight: 640;
+}
+
+.user-avatar-picker-error {
+  margin: -4px 0 0;
+  color: #b42318;
+  font-size: 0.9rem;
+  font-weight: 720;
 }
 
 .organization-toggle {
@@ -3335,6 +3725,15 @@ textarea {
   font-size: var(--dash-type-meta, 0.875rem);
   font-weight: 620;
   line-height: 1.35;
+}
+
+.settings-avatar-editor {
+  display: grid;
+  gap: 10px;
+}
+
+.settings-avatar-editor > button {
+  justify-self: end;
 }
 
 .settings-field {

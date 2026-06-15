@@ -16,6 +16,11 @@ from app.modules.system.auth.schemas import (
     AssignableUserResponse,
     AuthSessionResponse,
     CurrentUserResponse,
+    CurrentUserAvatarUpdate,
+    DEFAULT_AVATAR_TYPE,
+    DEFAULT_AVATAR_VALUE,
+    ORGANIZATION_AVATAR_PRESETS,
+    AvatarType,
     CurrentUserSessionResponse,
     MenuItemResponse,
     MenuListResponse,
@@ -27,6 +32,10 @@ class InvalidCredentialsError(Exception):
 
 
 class InvalidTokenError(Exception):
+    pass
+
+
+class InvalidAvatarError(Exception):
     pass
 
 
@@ -106,6 +115,30 @@ class AuthService:
         current = await self.get_current_user(access_token)
         return MenuListResponse(menus=current.menus)
 
+    async def update_current_user_avatar(
+        self,
+        *,
+        access_token: str,
+        payload: CurrentUserAvatarUpdate,
+    ) -> CurrentUserSessionResponse:
+        token = self._token_service.verify_access_token(access_token)
+        avatar_type, avatar_value = self._normalize_avatar(
+            avatar_type=payload.avatar_type,
+            avatar_value=payload.avatar_value,
+        )
+        identity = await self._repository.update_user_avatar(
+            user_id=token.user_id,
+            avatar_type=avatar_type,
+            avatar_value=avatar_value,
+        )
+        if identity is None:
+            raise InvalidTokenError
+        menus = await self._repository.list_menus_for_permissions(identity.permissions)
+        return CurrentUserSessionResponse(
+            user=self._user_response(identity),
+            menus=[self._menu_response(row) for row in menus],
+        )
+
     async def list_assignable_users(self) -> AssignableUserListResponse:
         rows = await self._repository.list_active_users()
         return AssignableUserListResponse(users=[self._assignable_user_response(row) for row in rows])
@@ -120,6 +153,8 @@ class AuthService:
             username=identity.username,
             display_name=identity.display_name,
             department_name=identity.department_name,
+            avatar_type=self._response_avatar_type(identity.avatar_type),
+            avatar_value=identity.avatar_value or DEFAULT_AVATAR_VALUE,
             roles=identity.roles,
             permissions=identity.permissions,
         )
@@ -140,4 +175,26 @@ class AuthService:
             username=row.username,
             display_name=row.display_name,
             department_name=row.department_name,
+            avatar_type=self._response_avatar_type(row.avatar_type),
+            avatar_value=row.avatar_value or DEFAULT_AVATAR_VALUE,
         )
+
+    def _normalize_avatar(self, *, avatar_type: str, avatar_value: str) -> tuple[AvatarType, str]:
+        normalized_value = avatar_value.strip() or DEFAULT_AVATAR_VALUE
+        if avatar_type == "preset":
+            if normalized_value not in ORGANIZATION_AVATAR_PRESETS:
+                raise InvalidAvatarError
+            return "preset", normalized_value
+
+        if avatar_type != "upload":
+            raise InvalidAvatarError
+        if not normalized_value.startswith("data:image/"):
+            raise InvalidAvatarError
+        if ";base64," not in normalized_value[:64]:
+            raise InvalidAvatarError
+        return "upload", normalized_value
+
+    def _response_avatar_type(self, avatar_type: str) -> AvatarType:
+        if avatar_type == "upload":
+            return "upload"
+        return DEFAULT_AVATAR_TYPE

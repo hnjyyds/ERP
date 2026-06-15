@@ -5,6 +5,7 @@ import {
   Descriptions,
   Input,
   Modal,
+  Select,
   Skeleton,
   Table,
   Tag,
@@ -23,7 +24,6 @@ import {
   CalendarClock,
   ChevronDown,
   CheckCircle2,
-  Copy,
   ClipboardCheck,
   Factory,
   FilePenLine,
@@ -57,7 +57,6 @@ import { Component, useEffect, useMemo, useState } from 'react'
 import {
   addCustomerContact,
   addManualProfitCost,
-  addProductAccessory,
   addPartnerContact,
   addSampleRecordImage,
   addSampleRecordStockEvent,
@@ -99,7 +98,6 @@ import {
   createExportQuotation,
   createPartner,
   createPurchaseInquiry,
-  createProduct,
   createSampleDelivery,
   createSampleRecord,
   createSampleRequest,
@@ -107,7 +105,6 @@ import {
   createSupplier,
   deleteScheduleEvent,
   exportExportContract,
-  exportProducts,
   exportExportQuotation,
   generateFollowupPlanFromPurchaseContract,
   generateInboundOrderFromPlan,
@@ -120,7 +117,6 @@ import {
   getCurrentSession,
   getDashboard,
   getI18nConfig,
-  getOrganizationOptions,
   getFinanceOverview,
   getExportQuotationHistory,
   getExportQuotationPurchaseReferences,
@@ -131,7 +127,6 @@ import {
   getSampleDeliverySampleHistory,
   hasAuthToken,
   listAssignableUsers,
-  listOrganizationUsers,
   listCustomerTransactions,
   listCustomers,
   listDocumentParties,
@@ -159,7 +154,6 @@ import {
   listPayables,
   listPaymentRequests,
   listPartners,
-  listProducts,
   listExportContracts,
   listExportQuotations,
   listQualityInspections,
@@ -184,10 +178,8 @@ import {
   lookupDocumentParties,
   login,
   markNotificationRead,
-  createOrganizationUser,
-  deleteOrganizationUser,
-  resetOrganizationUserPassword,
   setAuthToken,
+  updateCurrentUserAvatar,
   type AssignableUser,
   type Announcement,
   type AnnouncementCreatePayload,
@@ -263,16 +255,6 @@ import {
   type MiscFeeItem,
   type MiscFeeItemCreatePayload,
   type NotificationItem,
-  type OrganizationDepartment,
-  type OrganizationOptions,
-  type OrganizationPermission,
-  type OrganizationPasswordResetResult,
-  type OrganizationRole,
-  type OrganizationRolePermissionUpdatePayload,
-  type OrganizationUser,
-  type OrganizationUserCreatePayload,
-  type OrganizationUserCreateResult,
-  type OrganizationUserUpdatePayload,
   type OutboundOrder,
   type OutboundOrderApprovePayload,
   type OutboundOrderGeneratePayload,
@@ -287,10 +269,6 @@ import {
   type PartnerFeeInvoiceCreatePayload,
   type PartnerUpdatePayload,
   type ManualProfitCostCreatePayload,
-  type Product,
-  type ProductAccessoryPayload,
-  type ProductCreatePayload,
-  type ProductExport,
   type ProfitCostItem,
   type ReportDocumentStatistic,
   type ReportingStatistics,
@@ -388,9 +366,7 @@ import {
   updateExportContract,
   updateExportQuotation,
   updateFollowupTemplate,
-  updateOrganizationRolePermissions,
   updateQualityInspection,
-  updateOrganizationUser,
   updatePurchaseContract,
   updatePurchaseInquiry,
   updatePartner,
@@ -437,6 +413,8 @@ import {
   dashboardSectionPaths,
 } from './routes'
 import { erpAntTheme } from './theme'
+import { ProductsPage } from './pages/masterdata/ProductsPage'
+import { OrganizationUsersPage } from './pages/organization/OrganizationUsersPage'
 import {
   partnerTypeOptions,
   partnerStatusOptions,
@@ -496,7 +474,15 @@ import {
   outboundOrderModeOptions,
   freightMethodOptions,
 } from '../shared/formOptions'
-import { Metric, PanelTitle } from '../shared/ui'
+import {
+  FormSelect,
+  Metric,
+  PanelTitle,
+  UserAvatar,
+  UserAvatarPicker,
+  defaultAvatarPreset,
+  type UserAvatarPickerValue,
+} from '../shared/ui'
 
 type AppSettings = {
   language: AppLanguage
@@ -1087,33 +1073,6 @@ type ManualProfitCostFormState = {
   source_no: string
   reason: string
   remark: string
-}
-
-type ProductFormState = {
-  code: string
-  cn_name: string
-  en_name: string
-  specification: string
-  model: string
-  customs_code: string
-  tax_rate: string
-  rebate_rate: string
-  package_info: string
-  unit: string
-  image_url: string
-  accessory_name: string
-  accessory_unit_consumption: string
-  accessory_unit: string
-  accessory_supplier: string
-  accessory_rule: string
-}
-
-type ProductAccessoryFormState = {
-  accessory_name: string
-  unit_consumption: string
-  unit: string
-  supplier: string
-  rule: string
 }
 
 type CustomerFormState = {
@@ -1719,6 +1678,8 @@ function App() {
   const [i18nConfig, setI18nConfig] = useState<I18nConfig>(fallbackI18nConfig)
   const [appSettings, setAppSettings] = useState<AppSettings>(() => readAppSettings())
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [settingsAvatarDraft, setSettingsAvatarDraft] = useState<UserAvatarPickerValue | null>(null)
+  const [savingSettingsAvatar, setSavingSettingsAvatar] = useState(false)
 
   applyRuntimeSettings(appSettings, i18nConfig)
 
@@ -1829,6 +1790,14 @@ function App() {
     void loadDashboard()
   }, [session, activePath])
 
+  useEffect(() => {
+    if (!settingsOpen || !session) return
+    setSettingsAvatarDraft({
+      avatar_type: session.user.avatar_type,
+      avatar_value: session.user.avatar_value || defaultAvatarPreset,
+    })
+  }, [settingsOpen, session])
+
   const activeMenu = useMemo(() => {
     if (!session) return null
     if (dashboardSectionPaths.has(activePath)) {
@@ -1851,6 +1820,24 @@ function App() {
 
   function updateLanguage(language: AppLanguage) {
     setAppSettings(normalizeAppSettings({ language }, i18nConfig))
+  }
+
+  async function saveCurrentUserAvatar() {
+    if (!session || !settingsAvatarDraft) return
+    setSavingSettingsAvatar(true)
+    setError('')
+    try {
+      const current = await updateCurrentUserAvatar(settingsAvatarDraft)
+      setSession({
+        ...session,
+        user: current.user,
+        menus: current.menus,
+      })
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : '头像保存失败')
+    } finally {
+      setSavingSettingsAvatar(false)
+    }
   }
 
   function navigate(path: string) {
@@ -2009,7 +1996,7 @@ function App() {
             ) : activePath === dashboardAnnouncementsPath ? (
               <DashboardAnnouncementsPage dashboard={dashboard} loading={loadingDashboard} />
             ) : activePath === organizationUsersPath ? (
-              <OrganizationUsersPage currentUser={session.user} />
+              <OrganizationUsersPage currentUser={session.user} translate={t} />
             ) : activePath === productPath ? (
               <ProductsPage />
             ) : activePath === customerPath ? (
@@ -2066,20 +2053,42 @@ function App() {
           footer={null}
           open={settingsOpen}
           title={t('settings.title')}
-          width={520}
+          width={720}
           onCancel={() => setSettingsOpen(false)}
         >
           <section className="settings-window">
             <div className="settings-window-user">
-              <div className="user-avatar" aria-hidden="true">
-                <UserRound size={17} />
-              </div>
+              <UserAvatar
+                avatarType={session.user.avatar_type}
+                avatarValue={session.user.avatar_value}
+                label={session.user.display_name}
+                size="sm"
+              />
               <div className="user-meta">
                 <span>{t('settings.account')}</span>
                 <strong>{session.user.display_name}</strong>
                 <small>{session.user.department_name} · {joinDisplay(session.user.roles)}</small>
               </div>
             </div>
+
+            {settingsAvatarDraft ? (
+              <div className="settings-avatar-editor">
+                <UserAvatarPicker
+                  description="保存后会同步到当前账号和待办指派列表。"
+                  label={session.user.display_name}
+                  value={settingsAvatarDraft}
+                  onChange={setSettingsAvatarDraft}
+                />
+                <button
+                  className="secondary-inline"
+                  disabled={savingSettingsAvatar}
+                  type="button"
+                  onClick={() => void saveCurrentUserAvatar()}
+                >
+                  保存头像
+                </button>
+              </div>
+            ) : null}
 
             <div className="settings-field">
               <span>{t('settings.language')}</span>
@@ -2523,20 +2532,20 @@ function DashboardPage({
 
   useEffect(() => {
     if (createModal !== 'todo' || assignableUsers.length) return
-    let ignored = false
+    let isRequestCancelled = false
 
     listAssignableUsers()
       .then((result) => {
-        if (!ignored) setAssignableUsers(result.users)
+        if (!isRequestCancelled) setAssignableUsers(result.users)
       })
       .catch((caught) => {
-        if (!ignored) {
+        if (!isRequestCancelled) {
           setActionError(caught instanceof Error ? caught.message : t('dashboard.operationFailed'))
         }
       })
 
     return () => {
-      ignored = true
+      isRequestCancelled = true
     }
   }, [assignableUsers.length, createModal])
 
@@ -2560,6 +2569,8 @@ function DashboardPage({
               username: currentUser.username,
               display_name: currentUser.display_name,
               department_name: currentUser.department_name,
+              avatar_type: currentUser.avatar_type,
+              avatar_value: currentUser.avatar_value || defaultAvatarPreset,
             }
           : null),
     )
@@ -3026,9 +3037,13 @@ function DashboardPage({
                         type="button"
                         onClick={() => toggleTodoAssignee(user.id)}
                       >
-                        <span className="dashboard-assignee-avatar">
-                          <AtSign size={14} />
-                        </span>
+                        <UserAvatar
+                          avatarType={user.avatar_type}
+                          avatarValue={user.avatar_value}
+                          className="dashboard-assignee-avatar"
+                          label={user.display_name}
+                          size="sm"
+                        />
                         <span>
                           <strong>{user.display_name}</strong>
                           <small>
@@ -3466,1114 +3481,6 @@ function DashboardAnnouncementsPage({
   )
 }
 
-type OrganizationUserFormState = {
-  username: string
-  display_name: string
-  department_id: string
-  role_ids: string[]
-  is_active: boolean
-}
-
-type PasswordRevealState = {
-  title: string
-  username: string
-  password: string
-}
-
-const permissionGroupLabels: Record<string, string> = {
-  system: '系统管理',
-  organization: '组织管理',
-  dashboard: '工作桌面',
-  schedule: '日程公告',
-  announcement: '日程公告',
-  masterdata: '基础资料',
-  sample: '样品业务',
-  sales: '销售出口',
-  purchase: '采购业务',
-  followup: '采购业务',
-  quality: '质检仓库',
-  warehouse: '质检仓库',
-  finance: '财务报表',
-  reporting: '财务报表',
-}
-
-function groupOrganizationPermissions(permissions: OrganizationPermission[]) {
-  const groups = new Map<string, OrganizationPermission[]>()
-  permissions.forEach((permission) => {
-    const namespace = permission.code.split(':')[0] ?? 'other'
-    const label = permissionGroupLabels[namespace] ?? '其他权限'
-    groups.set(label, [...(groups.get(label) ?? []), permission])
-  })
-  return Array.from(groups.entries()).map(([label, items]) => ({
-    label,
-    items,
-  }))
-}
-
-function safeOrganizationText(value: unknown, fallback = '') {
-  return typeof value === 'string' && value.trim() ? value : fallback
-}
-
-function normalizeOrganizationPermission(
-  permission: Partial<OrganizationPermission> | null | undefined,
-): OrganizationPermission {
-  const code = safeOrganizationText(permission?.code)
-  const name = safeOrganizationText(permission?.name, code || '未命名权限')
-  return {
-    id: safeOrganizationText(permission?.id, code || name),
-    code,
-    name,
-  }
-}
-
-function normalizeOrganizationRole(role: Partial<OrganizationRole> | null | undefined): OrganizationRole {
-  const code = safeOrganizationText(role?.code)
-  const name = safeOrganizationText(role?.name, code || '未命名角色')
-  return {
-    id: safeOrganizationText(role?.id, code || name),
-    name,
-    code,
-    permissions: Array.isArray(role?.permissions)
-      ? role.permissions.map((permission) => normalizeOrganizationPermission(permission))
-      : [],
-  }
-}
-
-function normalizeOrganizationDepartment(
-  department: Partial<OrganizationDepartment> | null | undefined,
-): OrganizationDepartment {
-  const name = safeOrganizationText(department?.name, '未命名部门')
-  return {
-    id: safeOrganizationText(department?.id, name),
-    name,
-    parent_id: typeof department?.parent_id === 'string' ? department.parent_id : null,
-    sort_order: typeof department?.sort_order === 'number' ? department.sort_order : 0,
-  }
-}
-
-function normalizeOrganizationUser(user: Partial<OrganizationUser> | null | undefined): OrganizationUser {
-  const username = safeOrganizationText(user?.username, 'unknown')
-  const displayName = safeOrganizationText(user?.display_name, username)
-  return {
-    id: safeOrganizationText(user?.id, username),
-    username,
-    display_name: displayName,
-    department_id: safeOrganizationText(user?.department_id),
-    department_name: safeOrganizationText(user?.department_name, '未分配部门'),
-    roles: Array.isArray(user?.roles) ? user.roles.map((role) => normalizeOrganizationRole(role)) : [],
-    is_active: typeof user?.is_active === 'boolean' ? user.is_active : true,
-    created_at: safeOrganizationText(user?.created_at),
-    password_set: typeof user?.password_set === 'boolean' ? user.password_set : true,
-  }
-}
-
-function normalizeOrganizationOptions(
-  options: Partial<OrganizationOptions> | null | undefined,
-): OrganizationOptions {
-  return {
-    departments: Array.isArray(options?.departments)
-      ? options.departments.map((department) => normalizeOrganizationDepartment(department))
-      : [],
-    roles: Array.isArray(options?.roles) ? options.roles.map((role) => normalizeOrganizationRole(role)) : [],
-    permissions: Array.isArray(options?.permissions)
-      ? options.permissions.map((permission) => normalizeOrganizationPermission(permission))
-      : [],
-  }
-}
-
-function normalizeOrganizationUserList(
-  userList: Partial<{ users: Array<Partial<OrganizationUser> | null | undefined> }> | null | undefined,
-) {
-  return Array.isArray(userList?.users) ? userList.users.map((user) => normalizeOrganizationUser(user)) : []
-}
-
-function OrganizationUsersPage({ currentUser }: { currentUser: CurrentUser }) {
-  const canManageOrganization = currentUser.permissions.includes(superAdminPermission)
-  const [users, setUsers] = useState<OrganizationUser[]>([])
-  const [departments, setDepartments] = useState<OrganizationDepartment[]>([])
-  const [roles, setRoles] = useState<OrganizationRole[]>([])
-  const [permissions, setPermissions] = useState<OrganizationPermission[]>([])
-  const [selectedUserId, setSelectedUserId] = useState('')
-  const [selectedRoleId, setSelectedRoleId] = useState('')
-  const [permissionFormIds, setPermissionFormIds] = useState<string[]>([])
-  const [query, setQuery] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [busyAction, setBusyAction] = useState<string | null>(null)
-  const [actionMessage, setActionMessage] = useState('')
-  const [actionError, setActionError] = useState('')
-  const [userModalMode, setUserModalMode] = useState<'create' | 'edit' | null>(null)
-  const [form, setForm] = useState<OrganizationUserFormState>(() => ({
-    username: '',
-    display_name: '',
-    department_id: '',
-    role_ids: [],
-    is_active: true,
-  }))
-  const [passwordReveal, setPasswordReveal] = useState<PasswordRevealState | null>(null)
-
-  useEffect(() => {
-    if (!canManageOrganization) {
-      setLoading(false)
-      setActionError('缺少组织管理权限')
-      return
-    }
-    void loadOrganization()
-  }, [canManageOrganization])
-
-  const activeUsers = users.filter((user) => user.is_active)
-  const inactiveUsers = users.filter((user) => !user.is_active)
-  const selectedUser = users.find((user) => user.id === selectedUserId) ?? users[0] ?? null
-  const selectedRole = roles.find((role) => role.id === selectedRoleId) ?? roles[0] ?? null
-  const permissionGroups = groupOrganizationPermissions(permissions)
-  const filteredUsers = users.filter((user) => {
-    const keyword = query.trim().toLowerCase()
-    if (!keyword) return true
-    return [user.username, user.display_name, user.department_name, user.roles.map((role) => role.name).join(' ')]
-      .join(' ')
-      .toLowerCase()
-      .includes(keyword)
-  })
-
-  async function loadOrganization(nextSelectedId?: string, nextRoleId?: string) {
-    setLoading(true)
-    setActionError('')
-    try {
-      const [options, userList] = await Promise.all([getOrganizationOptions(), listOrganizationUsers()])
-      const normalizedOptions = normalizeOrganizationOptions(options)
-      const normalizedUsers = normalizeOrganizationUserList(userList)
-      setDepartments(normalizedOptions.departments)
-      setRoles(normalizedOptions.roles)
-      setPermissions(normalizedOptions.permissions)
-      setUsers(normalizedUsers)
-      const preferredId =
-        nextSelectedId ??
-        (selectedUserId && normalizedUsers.some((user) => user.id === selectedUserId) ? selectedUserId : '')
-      setSelectedUserId(preferredId || normalizedUsers[0]?.id || '')
-      const preferredRoleId =
-        nextRoleId ??
-        (selectedRoleId && normalizedOptions.roles.some((role) => role.id === selectedRoleId)
-          ? selectedRoleId
-          : '')
-      const nextRole =
-        normalizedOptions.roles.find((role) => role.id === preferredRoleId) ?? normalizedOptions.roles[0] ?? null
-      setSelectedRoleId(nextRole?.id ?? '')
-      setPermissionFormIds(nextRole?.permissions.map((permission) => permission.id) ?? [])
-    } catch (caught) {
-      setActionError(caught instanceof Error ? caught.message : '组织管理数据加载失败')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  function resetCreateForm() {
-    setForm({
-      username: '',
-      display_name: '',
-      department_id: departments[0]?.id ?? '',
-      role_ids: roles[0] ? [roles[0].id] : [],
-      is_active: true,
-    })
-  }
-
-  function openCreateModal() {
-    resetCreateForm()
-    setUserModalMode('create')
-  }
-
-  function openEditModal(user: OrganizationUser) {
-    setForm({
-      username: user.username,
-      display_name: user.display_name,
-      department_id: user.department_id,
-      role_ids: user.roles.map((role) => role.id),
-      is_active: user.is_active,
-    })
-    setUserModalMode('edit')
-  }
-
-  function toggleRole(roleId: string) {
-    setForm((current) => {
-      const exists = current.role_ids.includes(roleId)
-      return {
-        ...current,
-        role_ids: exists
-          ? current.role_ids.filter((id) => id !== roleId)
-          : [...current.role_ids, roleId],
-      }
-    })
-  }
-
-  function selectRoleForPermissions(role: OrganizationRole) {
-    setSelectedRoleId(role.id)
-    setPermissionFormIds(role.permissions.map((permission) => permission.id))
-  }
-
-  function togglePermission(permissionId: string) {
-    setPermissionFormIds((current) =>
-      current.includes(permissionId)
-        ? current.filter((id) => id !== permissionId)
-        : [...current, permissionId],
-    )
-  }
-
-  async function submitRolePermissions() {
-    if (!selectedRole) return
-    setBusyAction(`permissions-${selectedRole.id}`)
-    setActionError('')
-    setActionMessage('')
-    try {
-      const payload: OrganizationRolePermissionUpdatePayload = {
-        permission_ids: permissionFormIds,
-      }
-      const updated = await updateOrganizationRolePermissions(selectedRole.id, payload)
-      setActionMessage(`${updated.name} 权限已更新`)
-      await loadOrganization(undefined, updated.id)
-    } catch (caught) {
-      setActionError(caught instanceof Error ? caught.message : '权限保存失败')
-    } finally {
-      setBusyAction(null)
-    }
-  }
-
-  async function copyPassword(password: string) {
-    try {
-      await navigator.clipboard.writeText(password)
-      setActionMessage('密码已复制')
-    } catch {
-      setActionError('复制失败，请手动选择密码')
-    }
-  }
-
-  async function submitUserForm(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (!form.username.trim() || !form.display_name.trim() || !form.department_id) {
-      setActionError('请填写用户名、姓名和部门')
-      return
-    }
-    setBusyAction(userModalMode ?? 'user')
-    setActionError('')
-    setActionMessage('')
-    try {
-      if (userModalMode === 'create') {
-        const payload: OrganizationUserCreatePayload = {
-          username: form.username.trim(),
-          display_name: form.display_name.trim(),
-          department_id: form.department_id,
-          role_ids: form.role_ids,
-          is_active: form.is_active,
-        }
-        const created: OrganizationUserCreateResult = await createOrganizationUser(payload)
-        setUserModalMode(null)
-        setPasswordReveal({
-          title: '初始密码',
-          username: created.user.username,
-          password: created.initial_password,
-        })
-        setActionMessage('用户已创建')
-        await loadOrganization(created.user.id)
-      }
-      if (userModalMode === 'edit' && selectedUser) {
-        const payload: OrganizationUserUpdatePayload = {
-          display_name: form.display_name.trim(),
-          department_id: form.department_id,
-          role_ids: form.role_ids,
-          is_active: form.is_active,
-        }
-        const updated = await updateOrganizationUser(selectedUser.id, payload)
-        setUserModalMode(null)
-        setActionMessage('用户已更新')
-        await loadOrganization(updated.id)
-      }
-    } catch (caught) {
-      setActionError(caught instanceof Error ? caught.message : '操作失败')
-    } finally {
-      setBusyAction(null)
-    }
-  }
-
-  function confirmDeactivate(user: OrganizationUser) {
-    Modal.confirm({
-      centered: true,
-      title: '删除用户',
-      content: `删除后 ${user.display_name} 将无法登录，历史业务记录会保留。是否继续？`,
-      okText: '删除',
-      cancelText: t('common.cancel'),
-      okButtonProps: { danger: true },
-      onOk: async () => {
-        setBusyAction(`delete-${user.id}`)
-        setActionError('')
-        setActionMessage('')
-        try {
-          const deleted = await deleteOrganizationUser(user.id)
-          setActionMessage('用户已停用')
-          await loadOrganization(deleted.id)
-        } catch (caught) {
-          setActionError(caught instanceof Error ? caught.message : '删除失败')
-        } finally {
-          setBusyAction(null)
-        }
-      },
-    })
-  }
-
-  function confirmResetPassword(user: OrganizationUser) {
-    Modal.confirm({
-      centered: true,
-      title: '重置密码',
-      content: `系统将为 ${user.display_name} 生成新的临时密码，旧密码会立即失效。`,
-      okText: '重置密码',
-      cancelText: t('common.cancel'),
-      onOk: async () => {
-        setBusyAction(`reset-${user.id}`)
-        setActionError('')
-        setActionMessage('')
-        try {
-          const reset: OrganizationPasswordResetResult = await resetOrganizationUserPassword(user.id)
-          setPasswordReveal({
-            title: '临时密码',
-            username: reset.user.username,
-            password: reset.temporary_password,
-          })
-          setActionMessage('密码已重置')
-          await loadOrganization(reset.user.id)
-        } catch (caught) {
-          setActionError(caught instanceof Error ? caught.message : '重置失败')
-        } finally {
-          setBusyAction(null)
-        }
-      },
-    })
-  }
-
-  if (loading && users.length === 0) {
-    return <Skeleton active paragraph={{ rows: 10 }} />
-  }
-
-  return (
-    <section className="organization-page">
-      {actionError ? <div className="dashboard-feedback error">{actionError}</div> : null}
-      {actionMessage ? <div className="dashboard-feedback success">{actionMessage}</div> : null}
-
-      <div className="organization-summary" aria-label="组织概览">
-        <Metric label="用户" value={users.length} icon={<UsersRound size={17} />} />
-        <Metric label="启用" value={activeUsers.length} icon={<ShieldCheck size={17} />} />
-        <Metric label="停用" value={inactiveUsers.length} icon={<Trash2 size={17} />} intent="warning" />
-        <Metric label="部门" value={departments.length} icon={<LayoutDashboard size={17} />} />
-        <Metric label="角色" value={roles.length} icon={<KeyRound size={17} />} />
-      </div>
-
-      <div className="organization-toolbar">
-        <label className="organization-search">
-          <Search size={17} />
-          <input
-            placeholder="搜索用户、部门或角色"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
-        </label>
-        <button className="inline-submit" type="button" onClick={openCreateModal}>
-          <Plus size={15} />
-          新增用户
-        </button>
-      </div>
-
-      <div className="organization-layout">
-        <section className="organization-list" aria-label="用户列表">
-          {filteredUsers.length ? (
-            filteredUsers.map((user) => (
-              <button
-                aria-pressed={selectedUser?.id === user.id}
-                className={selectedUser?.id === user.id ? 'organization-user-row active' : 'organization-user-row'}
-                key={user.id}
-                type="button"
-                onClick={() => setSelectedUserId(user.id)}
-              >
-                <span className="organization-user-avatar">
-                  {user.display_name.slice(0, 1).toUpperCase()}
-                </span>
-                <span className="organization-user-main">
-                  <strong>{user.display_name}</strong>
-                  <small>
-                    {user.username} · {user.department_name || '未分配部门'}
-                  </small>
-                </span>
-                <span className={user.is_active ? 'organization-status active' : 'organization-status inactive'}>
-                  {user.is_active ? '启用' : '停用'}
-                </span>
-              </button>
-            ))
-          ) : (
-            <div className="dashboard-empty">没有匹配的用户</div>
-          )}
-        </section>
-
-        <section className="organization-detail" aria-label="用户详情">
-          {selectedUser ? (
-            <>
-              <div className="organization-detail-head">
-                <div>
-                  <span className="organization-user-avatar large">
-                    {selectedUser.display_name.slice(0, 1).toUpperCase()}
-                  </span>
-                  <div>
-                    <p>{selectedUser.username}</p>
-                    <h2>{selectedUser.display_name}</h2>
-                  </div>
-                </div>
-                <span className={selectedUser.is_active ? 'organization-status active' : 'organization-status inactive'}>
-                  {selectedUser.is_active ? '启用中' : '已停用'}
-                </span>
-              </div>
-
-              <div className="organization-detail-grid">
-                <div>
-                  <span>部门</span>
-                  <strong>{selectedUser.department_name || '未分配部门'}</strong>
-                </div>
-                <div>
-                  <span>角色</span>
-                  <strong>{selectedUser.roles.map((role) => role.name).join('、') || '暂无角色'}</strong>
-                </div>
-                <div>
-                  <span>密码</span>
-                  <strong>{selectedUser.password_set ? '已设置，不显示明文' : '未设置'}</strong>
-                </div>
-                <div>
-                  <span>创建时间</span>
-                  <strong>{formatDateTime(selectedUser.created_at)}</strong>
-                </div>
-              </div>
-
-              <div className="organization-actions">
-                <button className="secondary-inline" type="button" onClick={() => openEditModal(selectedUser)}>
-                  <Save size={15} />
-                  编辑资料
-                </button>
-                <button
-                  className="secondary-inline"
-                  disabled={busyAction === `reset-${selectedUser.id}`}
-                  type="button"
-                  onClick={() => confirmResetPassword(selectedUser)}
-                >
-                  <KeyRound size={15} />
-                  重置密码
-                </button>
-                <button
-                  className="danger-inline"
-                  disabled={selectedUser.id === currentUser.id || busyAction === `delete-${selectedUser.id}`}
-                  type="button"
-                  onClick={() => confirmDeactivate(selectedUser)}
-                >
-                  <Trash2 size={15} />
-                  删除用户
-                </button>
-              </div>
-            </>
-          ) : (
-            <div className="dashboard-empty">请选择用户</div>
-          )}
-        </section>
-      </div>
-
-      <section className="organization-permissions" aria-label="角色权限配置">
-        <div className="organization-permissions-head">
-          <div>
-            <span>权限配置</span>
-            <h2>角色权限</h2>
-            <p>权限通过角色分配给用户；超级管理员权限决定是否能进入组织管理和发布公司公告。</p>
-          </div>
-          <button
-            className="inline-submit"
-            disabled={!selectedRole || busyAction === `permissions-${selectedRole.id}`}
-            type="button"
-            onClick={() => void submitRolePermissions()}
-          >
-            <Save size={15} />
-            保存权限
-          </button>
-        </div>
-
-        <div className="organization-permission-layout">
-          <div className="organization-role-list" aria-label="角色列表">
-            {roles.map((role) => (
-              <button
-                aria-pressed={selectedRole?.id === role.id}
-                className={selectedRole?.id === role.id ? 'active' : ''}
-                key={role.id}
-                type="button"
-                onClick={() => selectRoleForPermissions(role)}
-              >
-                <span>{role.name}</span>
-                <small>{role.permissions.length} 项权限</small>
-              </button>
-            ))}
-          </div>
-
-          <div className="organization-permission-groups">
-            {permissionGroups.map((group) => (
-              <section key={group.label}>
-                <h3>{group.label}</h3>
-                <div>
-                  {group.items.map((permission) => {
-                    const checked = permissionFormIds.includes(permission.id)
-                    return (
-                      <button
-                        aria-pressed={checked}
-                        className={checked ? 'selected' : ''}
-                        key={permission.id}
-                        type="button"
-                        onClick={() => togglePermission(permission.id)}
-                      >
-                        <CheckCircle2 size={15} />
-                        <span>{permission.name}</span>
-                        <small>{permission.code}</small>
-                      </button>
-                    )
-                  })}
-                </div>
-              </section>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <Modal
-        centered
-        footer={null}
-        open={Boolean(userModalMode)}
-        title={userModalMode === 'create' ? '新增用户' : '编辑用户'}
-        width={640}
-        onCancel={() => setUserModalMode(null)}
-      >
-        <form className="dashboard-form modal-dashboard-form organization-form" onSubmit={submitUserForm}>
-          <div className="dashboard-form-row">
-            <label>
-              <span>用户名</span>
-              <input
-                disabled={userModalMode === 'edit'}
-                placeholder="用于登录，如 sales.chen"
-                value={form.username}
-                onChange={(event) => setForm({ ...form, username: event.target.value })}
-              />
-            </label>
-            <label>
-              <span>姓名</span>
-              <input
-                value={form.display_name}
-                onChange={(event) => setForm({ ...form, display_name: event.target.value })}
-              />
-            </label>
-          </div>
-          <label>
-            <span>部门</span>
-            <select
-              value={form.department_id}
-              onChange={(event) => setForm({ ...form, department_id: event.target.value })}
-            >
-              {departments.map((department) => (
-                <option key={department.id} value={department.id}>
-                  {department.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div className="organization-role-picker">
-            <span>角色</span>
-            <div>
-              {roles.map((role) => {
-                const checked = form.role_ids.includes(role.id)
-                return (
-                  <button
-                    aria-pressed={checked}
-                    className={checked ? 'selected' : ''}
-                    key={role.id}
-                    type="button"
-                    onClick={() => toggleRole(role.id)}
-                  >
-                    <ShieldCheck size={15} />
-                    {role.name}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-          <label className="organization-toggle">
-            <input
-              checked={form.is_active}
-              type="checkbox"
-              onChange={(event) => setForm({ ...form, is_active: event.target.checked })}
-            />
-            <span>账号启用</span>
-          </label>
-          {userModalMode === 'create' ? (
-            <div className="organization-password-note">
-              系统会自动生成初始密码，创建成功后只展示一次。
-            </div>
-          ) : null}
-          <div className="modal-actions">
-            <button className="secondary-inline" type="button" onClick={() => setUserModalMode(null)}>
-              {t('common.cancel')}
-            </button>
-            <button className="inline-submit" disabled={busyAction === userModalMode} type="submit">
-              {userModalMode === 'create' ? '创建用户' : '保存修改'}
-            </button>
-          </div>
-        </form>
-      </Modal>
-
-      <Modal
-        centered
-        footer={null}
-        open={Boolean(passwordReveal)}
-        title={passwordReveal?.title ?? '密码'}
-        width={520}
-        onCancel={() => setPasswordReveal(null)}
-      >
-        {passwordReveal ? (
-          <section className="organization-password-reveal">
-            <p>
-              {passwordReveal.username} 的{passwordReveal.title}仅展示这一次，请复制后交给账号使用人。
-            </p>
-            <div>
-              <code>{passwordReveal.password}</code>
-              <button className="inline-submit" type="button" onClick={() => void copyPassword(passwordReveal.password)}>
-                <Copy size={15} />
-                复制
-              </button>
-            </div>
-            <div className="modal-actions">
-              <button className="secondary-inline" type="button" onClick={() => setPasswordReveal(null)}>
-                {t('common.close')}
-              </button>
-            </div>
-          </section>
-        ) : null}
-      </Modal>
-    </section>
-  )
-}
-
-function ProductsPage() {
-  const [products, setProducts] = useState<Product[]>([])
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
-  const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
-  const [exportResult, setExportResult] = useState<ProductExport | null>(null)
-  const [form, setForm] = useState<ProductFormState>(() => initialProductForm())
-  const [accessoryForm, setAccessoryForm] = useState<ProductAccessoryFormState>(() =>
-    initialProductAccessoryForm(),
-  )
-
-  const selectedProduct = useMemo(
-    () => products.find((item) => item.id === selectedProductId) ?? products[0] ?? null,
-    [products, selectedProductId],
-  )
-
-  useEffect(() => {
-    void loadProducts()
-  }, [])
-
-  async function loadProducts(preferredId?: string) {
-    setLoading(true)
-    setError('')
-    try {
-      const result = await listProducts(search.trim() || undefined)
-      setProducts(result.items)
-      const nextSelectedId =
-        preferredId ??
-        (result.items.some((item) => item.id === selectedProductId) ? selectedProductId : null) ??
-        result.items[0]?.id ??
-        null
-      setSelectedProductId(nextSelectedId)
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '商品资料加载失败')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  async function submitProduct(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setSubmitting(true)
-    setMessage('')
-    setError('')
-    setExportResult(null)
-    try {
-      const created = await createProduct(productPayload(form))
-      setMessage(`已新增商品 ${created.code}`)
-      setForm(initialProductForm())
-      await loadProducts(created.id)
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '商品新增失败')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  async function submitAccessory(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (!selectedProduct) return
-    setSubmitting(true)
-    setMessage('')
-    setError('')
-    try {
-      const accessory = await addProductAccessory(
-        selectedProduct.id,
-        accessoryPayload(accessoryForm),
-      )
-      setProducts((current) =>
-        current.map((product) =>
-          product.id === selectedProduct.id
-            ? { ...product, accessories: [...product.accessories, accessory] }
-            : product,
-        ),
-      )
-      setMessage(`已追加配件 ${accessory.accessory_name}`)
-      setAccessoryForm(initialProductAccessoryForm())
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '配件追加失败')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  async function exportProductCsv() {
-    setMessage('')
-    setError('')
-    try {
-      const result = await exportProducts()
-      setExportResult(result)
-      setMessage(`CSV 已生成：${result.filename}`)
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '商品导出失败')
-    }
-  }
-
-  return (
-    <section className="product-page">
-      <div className="summary-strip" aria-label="商品资料概览">
-        <Metric label="商品" value={products.length} />
-        <Metric label="配件明细" value={products.reduce((sum, item) => sum + item.accessories.length, 0)} />
-        <Metric label="有图片" value={products.filter((item) => Boolean(item.image_url)).length} />
-        <Metric label="导出" value={exportResult ? 1 : 0} />
-      </div>
-
-      {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
-
-      <section className="business-grid">
-        <section className="workspace-panel list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="商品列表" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadProducts()
-              }}
-            >
-              <label>
-                商品搜索
-                <Input
-                  value={search}
-                  placeholder="编号 / 中文 / 英文 / 海关编码"
-                  onChange={(event) => setSearch(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-              <Button icon={<RefreshCw size={16} />} onClick={exportProductCsv}>
-                导出
-              </Button>
-            </form>
-          </div>
-
-          <Table<Product>
-            columns={[
-              {
-                title: '编号',
-                dataIndex: 'code',
-                render: (value: string) => <button className="row-button" type="button">{value}</button>,
-              },
-              { title: '中文名称', dataIndex: 'cn_name' },
-              { title: '英文名称', dataIndex: 'en_name' },
-              { title: '海关编码', dataIndex: 'customs_code' },
-              { title: '单位', dataIndex: 'unit', width: 80 },
-              {
-                title: '配件',
-                dataIndex: 'accessories',
-                width: 80,
-                render: (_, record) => record.accessories.length,
-              },
-            ]}
-            dataSource={products}
-            loading={loading}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedProduct?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => setSelectedProductId(record.id),
-            })}
-          />
-        </section>
-
-        <section className="workspace-panel form-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="新增商品" />
-          <form className="record-form" onSubmit={submitProduct}>
-            <label>
-              产品编号
-              <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
-            </label>
-            <label>
-              商品单位
-              <Input value={form.unit} onChange={(event) => setForm({ ...form, unit: event.target.value })} />
-            </label>
-            <label>
-              中文名称
-              <Input value={form.cn_name} onChange={(event) => setForm({ ...form, cn_name: event.target.value })} />
-            </label>
-            <label>
-              英文名称
-              <Input value={form.en_name} onChange={(event) => setForm({ ...form, en_name: event.target.value })} />
-            </label>
-            <label>
-              规格
-              <Input
-                value={form.specification}
-                onChange={(event) => setForm({ ...form, specification: event.target.value })}
-              />
-            </label>
-            <label>
-              型号
-              <Input value={form.model} onChange={(event) => setForm({ ...form, model: event.target.value })} />
-            </label>
-            <label>
-              海关编码
-              <Input
-                value={form.customs_code}
-                onChange={(event) => setForm({ ...form, customs_code: event.target.value })}
-              />
-            </label>
-            <label>
-              税率
-              <Input
-                type="number"
-                max="1"
-                min="0"
-                step="0.01"
-                value={form.tax_rate}
-                onChange={(event) => setForm({ ...form, tax_rate: event.target.value })}
-              />
-            </label>
-            <label>
-              退税率
-              <Input
-                type="number"
-                max="1"
-                min="0"
-                step="0.01"
-                value={form.rebate_rate}
-                onChange={(event) => setForm({ ...form, rebate_rate: event.target.value })}
-              />
-            </label>
-            <label>
-              包装资料
-              <Input.TextArea
-                rows={3}
-                value={form.package_info}
-                onChange={(event) => setForm({ ...form, package_info: event.target.value })}
-              />
-            </label>
-            <label>
-              图片地址
-              <Input
-                value={form.image_url}
-                onChange={(event) => setForm({ ...form, image_url: event.target.value })}
-              />
-            </label>
-            <div className="form-divider">首个配件</div>
-            <label>
-              配件名称
-              <Input
-                value={form.accessory_name}
-                onChange={(event) => setForm({ ...form, accessory_name: event.target.value })}
-              />
-            </label>
-            <label>
-              单耗
-              <Input
-                type="number"
-                min="0"
-                step="0.01"
-                value={form.accessory_unit_consumption}
-                onChange={(event) =>
-                  setForm({ ...form, accessory_unit_consumption: event.target.value })
-                }
-              />
-            </label>
-            <label>
-              配件单位
-              <Input
-                value={form.accessory_unit}
-                onChange={(event) => setForm({ ...form, accessory_unit: event.target.value })}
-              />
-            </label>
-            <label>
-              默认供应商
-              <Input
-                value={form.accessory_supplier}
-                onChange={(event) => setForm({ ...form, accessory_supplier: event.target.value })}
-              />
-            </label>
-            <label>
-              采购拆分
-              <select
-                value={form.accessory_rule}
-                onChange={(event) => setForm({ ...form, accessory_rule: event.target.value })}
-              >
-                <option value="by_supplier">按供应商分单</option>
-                <option value="by_accessory">按配件分单</option>
-              </select>
-            </label>
-            <Button htmlType="submit" loading={submitting} type="primary">
-              新增商品
-            </Button>
-          </form>
-        </section>
-
-        <section className="workspace-panel detail-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="商品明细" />
-          {selectedProduct ? (
-            <>
-              <div className="product-detail-layout">
-                <div className="product-photo">
-                  {selectedProduct.image_url ? (
-                    <img src={selectedProduct.image_url} alt="" />
-                  ) : (
-                    <span>暂无图片</span>
-                  )}
-                </div>
-                <dl className="detail-list">
-                  <div>
-                    <dt>中文名称</dt>
-                    <dd>{selectedProduct.cn_name}</dd>
-                  </div>
-                  <div>
-                    <dt>英文名称</dt>
-                    <dd>{selectedProduct.en_name}</dd>
-                  </div>
-                  <div>
-                    <dt>规格/型号</dt>
-                    <dd>{selectedProduct.specification ?? '未填'} / {selectedProduct.model ?? '未填'}</dd>
-                  </div>
-                  <div>
-                    <dt>海关编码</dt>
-                    <dd>{selectedProduct.customs_code}</dd>
-                  </div>
-                  <div>
-                    <dt>税率/退税率</dt>
-                    <dd>{selectedProduct.tax_rate} / {selectedProduct.rebate_rate}</dd>
-                  </div>
-                  <div>
-                    <dt>包装资料</dt>
-                    <dd>{selectedProduct.package_info}</dd>
-                  </div>
-                </dl>
-              </div>
-
-              <Table
-                className="compact-section"
-                columns={[
-                  { title: '配件名称', dataIndex: 'accessory_name' },
-                  { title: '单耗', dataIndex: 'unit_consumption' },
-                  { title: '单位', dataIndex: 'unit' },
-                  { title: '默认供应商', dataIndex: 'default_supplier_name' },
-                  {
-                    title: '采购拆分',
-                    dataIndex: 'purchase_split_rule',
-                    render: accessoryRuleLabel,
-                  },
-                ]}
-                dataSource={selectedProduct.accessories}
-                pagination={false}
-                rowKey="id"
-                size="small"
-              />
-
-              <form className="record-form compact-section" onSubmit={submitAccessory}>
-                <div className="form-divider">追加配件</div>
-                <label>
-                  追加配件名称
-                  <Input
-                    value={accessoryForm.accessory_name}
-                    onChange={(event) =>
-                      setAccessoryForm({ ...accessoryForm, accessory_name: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  追加单耗
-                  <Input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={accessoryForm.unit_consumption}
-                    onChange={(event) =>
-                      setAccessoryForm({ ...accessoryForm, unit_consumption: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  追加单位
-                  <Input
-                    value={accessoryForm.unit}
-                    onChange={(event) => setAccessoryForm({ ...accessoryForm, unit: event.target.value })}
-                  />
-                </label>
-                <label>
-                  追加供应商
-                  <Input
-                    value={accessoryForm.supplier}
-                    onChange={(event) => setAccessoryForm({ ...accessoryForm, supplier: event.target.value })}
-                  />
-                </label>
-                <label>
-                  追加拆分
-                  <select
-                    value={accessoryForm.rule}
-                    onChange={(event) => setAccessoryForm({ ...accessoryForm, rule: event.target.value })}
-                  >
-                    <option value="by_supplier">按供应商分单</option>
-                    <option value="by_accessory">按配件分单</option>
-                  </select>
-                </label>
-                <Button htmlType="submit" loading={submitting}>
-                  追加配件
-                </Button>
-              </form>
-
-              {exportResult ? (
-                <section className="export-preview compact-section">
-                  <strong>{exportResult.filename}</strong>
-                  <pre>{exportResult.content.slice(0, 1200)}</pre>
-                </section>
-              ) : null}
-            </>
-          ) : (
-            <div className="module-state">暂无商品资料</div>
-          )}
-        </section>
-      </section>
-
-    </section>
-  )
-}
-
 
 function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([])
@@ -4804,10 +3711,10 @@ function CustomersPage() {
             </label>
             <label>
               客户状态
-              <select value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value })}>
+              <FormSelect value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value })}>
                 <option value="active">启用</option>
                 <option value="inactive">停用</option>
-              </select>
+              </FormSelect>
             </label>
             <label>
               客户中文名称
@@ -5291,10 +4198,10 @@ function SuppliersPage() {
             </label>
             <label>
               供应商状态
-              <select value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value })}>
+              <FormSelect value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value })}>
                 <option value="active">启用</option>
                 <option value="inactive">停用</option>
-              </select>
+              </FormSelect>
             </label>
             <label>
               供应商中文名称
@@ -5703,14 +4610,11 @@ function PartnersPage() {
               </label>
               <label>
                 类型筛选
-                <select value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}>
-                  <option value="">全部类型</option>
-                  {partnerTypeOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </select>
+                <Select
+                  options={[{ value: '', label: '全部类型' }, ...partnerTypeOptions]}
+                  value={typeFilter}
+                  onChange={setTypeFilter}
+                />
               </label>
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
@@ -5755,13 +4659,11 @@ function PartnersPage() {
             </label>
             <label>
               合作伙伴状态
-              <select value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value })}>
-                {partnerStatusOptions.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </select>
+              <Select
+                options={partnerStatusOptions}
+                value={form.status}
+                onChange={(value) => setForm({ ...form, status: value })}
+              />
             </label>
             <label>
               合作伙伴中文名称
@@ -5773,16 +4675,11 @@ function PartnersPage() {
             </label>
             <label>
               合作伙伴类型
-              <select
+              <Select
+                options={partnerTypeOptions}
                 value={form.partner_type}
-                onChange={(event) => setForm({ ...form, partner_type: event.target.value })}
-              >
-                {partnerTypeOptions.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </select>
+                onChange={(value) => setForm({ ...form, partner_type: value })}
+              />
             </label>
             <label>
               合作伙伴国家
@@ -5894,16 +4791,11 @@ function PartnersPage() {
                 </label>
                 <label>
                   编辑合作伙伴类型
-                  <select
+                  <Select
+                    options={partnerTypeOptions}
                     value={editForm.partner_type}
-                    onChange={(event) => setEditForm({ ...editForm, partner_type: event.target.value })}
-                  >
-                    {partnerTypeOptions.map((item) => (
-                      <option key={item.value} value={item.value}>
-                        {item.label}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(value) => setEditForm({ ...editForm, partner_type: value })}
+                  />
                 </label>
                 <label>
                   编辑合作伙伴国家
@@ -5914,16 +4806,11 @@ function PartnersPage() {
                 </label>
                 <label>
                   编辑合作伙伴状态
-                  <select
+                  <Select
+                    options={partnerStatusOptions}
                     value={editForm.status}
-                    onChange={(event) => setEditForm({ ...editForm, status: event.target.value })}
-                  >
-                    {partnerStatusOptions.map((item) => (
-                      <option key={item.value} value={item.value}>
-                        {item.label}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(value) => setEditForm({ ...editForm, status: value })}
+                  />
                 </label>
                 <Button htmlType="submit" loading={submitting} type="primary">
                   更新合作伙伴
@@ -6117,14 +5004,14 @@ function DocumentPartiesPage() {
               </label>
               <label>
                 单证类型筛选
-                <select value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}>
+                <FormSelect value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}>
                   <option value="">全部类型</option>
                   {documentPartyTypeOptions.map((item) => (
                     <option key={item.value} value={item.value}>
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 客户标识筛选
@@ -6179,14 +5066,14 @@ function DocumentPartiesPage() {
             </label>
             <label>
               单证资料状态
-              <select value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value })}>
+              <FormSelect value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value })}>
                 <option value="active">启用</option>
                 <option value="inactive">停用</option>
-              </select>
+              </FormSelect>
             </label>
             <label>
               单证资料类型
-              <select
+              <FormSelect
                 value={form.party_type}
                 onChange={(event) => setForm({ ...form, party_type: event.target.value })}
               >
@@ -6195,7 +5082,7 @@ function DocumentPartiesPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
             </label>
             <label>
               单证资料国家
@@ -6332,7 +5219,7 @@ function DocumentPartiesPage() {
                 <div className="form-divider">编辑单证资料</div>
                 <label>
                   编辑单证资料类型
-                  <select
+                  <FormSelect
                     value={editForm.party_type}
                     onChange={(event) => setEditForm({ ...editForm, party_type: event.target.value })}
                   >
@@ -6341,7 +5228,7 @@ function DocumentPartiesPage() {
                         {item.label}
                       </option>
                     ))}
-                  </select>
+                  </FormSelect>
                 </label>
                 <label>
                   编辑单证资料名称
@@ -6627,14 +5514,14 @@ function SampleRequestsPage() {
               </label>
               <label>
                 打样状态筛选
-                <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+                <FormSelect value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
                   <option value="">全部状态</option>
                   {sampleStatusOptions.map((item) => (
                     <option key={item.value} value={item.value}>
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 打样客户筛选
@@ -6691,7 +5578,7 @@ function SampleRequestsPage() {
               <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
             </label>
             <label htmlFor="sample-request-status">打样状态</label>
-            <select
+            <FormSelect
               id="sample-request-status"
               value={form.status}
               onChange={(event) => setForm({ ...form, status: event.target.value })}
@@ -6701,7 +5588,7 @@ function SampleRequestsPage() {
                   {item.label}
                 </option>
               ))}
-            </select>
+            </FormSelect>
             <label>
               打样日期
               <Input
@@ -6754,7 +5641,7 @@ function SampleRequestsPage() {
               />
             </label>
             <label htmlFor="sample-request-destination">打样去向</label>
-            <select
+            <FormSelect
               id="sample-request-destination"
               value={form.destination}
               onChange={(event) => setForm({ ...form, destination: event.target.value })}
@@ -6764,7 +5651,7 @@ function SampleRequestsPage() {
                   {item.label}
                 </option>
               ))}
-            </select>
+            </FormSelect>
             <label>
               客户打样要求
               <Input.TextArea
@@ -6884,7 +5771,7 @@ function SampleRequestsPage() {
               <form className="record-form compact-section" onSubmit={submitProgress}>
                 <div className="form-divider">打样进度</div>
                 <label htmlFor="sample-progress-stage">进度阶段</label>
-                <select
+                <FormSelect
                   id="sample-progress-stage"
                   value={progressForm.stage}
                   onChange={(event) => setProgressForm({ ...progressForm, stage: event.target.value })}
@@ -6894,9 +5781,9 @@ function SampleRequestsPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
                 <label htmlFor="sample-progress-status">进度状态</label>
-                <select
+                <FormSelect
                   id="sample-progress-status"
                   value={progressForm.status}
                   onChange={(event) => setProgressForm({ ...progressForm, status: event.target.value })}
@@ -6906,7 +5793,7 @@ function SampleRequestsPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
                 <label>
                   进度日期
                   <Input
@@ -6954,7 +5841,7 @@ function SampleRequestsPage() {
               <form className="record-form compact-section" onSubmit={submitFee}>
                 <div className="form-divider">打样费用</div>
                 <label htmlFor="sample-fee-type">打样费用类型</label>
-                <select
+                <FormSelect
                   id="sample-fee-type"
                   value={feeForm.fee_type}
                   onChange={(event) => setFeeForm({ ...feeForm, fee_type: event.target.value })}
@@ -6964,7 +5851,7 @@ function SampleRequestsPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
                 <label>
                   打样费用金额
                   <Input
@@ -6983,7 +5870,7 @@ function SampleRequestsPage() {
                   />
                 </label>
                 <label htmlFor="sample-fee-payee-type">收款方类型</label>
-                <select
+                <FormSelect
                   id="sample-fee-payee-type"
                   value={feeForm.payee_type}
                   onChange={(event) => setFeeForm({ ...feeForm, payee_type: event.target.value })}
@@ -6993,7 +5880,7 @@ function SampleRequestsPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
                 <label>
                   收款方名称
                   <Input
@@ -7211,14 +6098,14 @@ function SampleRecordsPage() {
               </label>
               <label>
                 样品分类筛选
-                <select value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}>
+                <FormSelect value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}>
                   <option value="">全部分类</option>
                   {sampleRecordTypeOptions.map((item) => (
                     <option key={item.value} value={item.value}>
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 样品客户筛选
@@ -7275,7 +6162,7 @@ function SampleRecordsPage() {
               <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
             </label>
             <label htmlFor="sample-record-type">样品分类</label>
-            <select
+            <FormSelect
               id="sample-record-type"
               value={form.sample_type}
               onChange={(event) => setForm({ ...form, sample_type: event.target.value })}
@@ -7285,9 +6172,9 @@ function SampleRecordsPage() {
                   {item.label}
                 </option>
               ))}
-            </select>
+            </FormSelect>
             <label htmlFor="sample-record-status">样品状态</label>
-            <select
+            <FormSelect
               id="sample-record-status"
               value={form.status}
               onChange={(event) => setForm({ ...form, status: event.target.value })}
@@ -7297,7 +6184,7 @@ function SampleRecordsPage() {
                   {item.label}
                 </option>
               ))}
-            </select>
+            </FormSelect>
             <label>
               收样数量
               <Input
@@ -7384,7 +6271,7 @@ function SampleRecordsPage() {
               <Input value={form.unit} onChange={(event) => setForm({ ...form, unit: event.target.value })} />
             </label>
             <label htmlFor="sample-record-source-type">样品来源</label>
-            <select
+            <FormSelect
               id="sample-record-source-type"
               value={form.source_type}
               onChange={(event) => setForm({ ...form, source_type: event.target.value })}
@@ -7394,7 +6281,7 @@ function SampleRecordsPage() {
                   {item.label}
                 </option>
               ))}
-            </select>
+            </FormSelect>
             <label>
               来源单号
               <Input
@@ -7573,7 +6460,7 @@ function SampleRecordsPage() {
                 <form className="record-form" onSubmit={submitStockEvent}>
                   <div className="form-divider">数量事件</div>
                   <label htmlFor="sample-stock-event-type">事件类型</label>
-                  <select
+                  <FormSelect
                     id="sample-stock-event-type"
                     value={stockForm.event_type}
                     onChange={(event) => setStockForm({ ...stockForm, event_type: event.target.value })}
@@ -7583,7 +6470,7 @@ function SampleRecordsPage() {
                         {item.label}
                       </option>
                     ))}
-                  </select>
+                  </FormSelect>
                   <label>
                     数量
                     <Input
@@ -7907,7 +6794,7 @@ function SampleDeliveriesPage() {
                 />
               </label>
               <label htmlFor="sample-delivery-status-filter">审核状态</label>
-              <select
+              <FormSelect
                 id="sample-delivery-status-filter"
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
@@ -7920,7 +6807,7 @@ function SampleDeliveriesPage() {
                       {item.label}
                     </option>
                   ))}
-              </select>
+              </FormSelect>
               <label>
                 客户标识
                 <Input
@@ -8099,7 +6986,7 @@ function SampleDeliveriesPage() {
             </div>
             <div className="form-pair two">
               <label htmlFor="sample-delivery-sample-type">样品分类</label>
-              <select
+              <FormSelect
                 id="sample-delivery-sample-type"
                 value={form.sample_type}
                 onChange={(event) => setForm({ ...form, sample_type: event.target.value })}
@@ -8109,7 +6996,7 @@ function SampleDeliveriesPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
               <label>
                 产品编号
                 <Input
@@ -8151,7 +7038,7 @@ function SampleDeliveriesPage() {
             <div className="form-divider">费用登记</div>
             <div className="form-pair two">
               <label htmlFor="sample-delivery-fee-type">费用类型</label>
-              <select
+              <FormSelect
                 id="sample-delivery-fee-type"
                 value={form.fee_type}
                 onChange={(event) => setForm({ ...form, fee_type: event.target.value })}
@@ -8161,7 +7048,7 @@ function SampleDeliveriesPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
               <label>
                 金额
                 <Input
@@ -8182,7 +7069,7 @@ function SampleDeliveriesPage() {
                 />
               </label>
               <label htmlFor="sample-delivery-fee-payer">承担方</label>
-              <select
+              <FormSelect
                 id="sample-delivery-fee-payer"
                 value={form.fee_payer_type}
                 onChange={(event) => setForm({ ...form, fee_payer_type: event.target.value })}
@@ -8192,7 +7079,7 @@ function SampleDeliveriesPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
             </div>
             <label>
               费用备注
@@ -8309,7 +7196,7 @@ function SampleDeliveriesPage() {
                     />
                   </label>
                   <label htmlFor="sample-delivery-track-status">物流状态</label>
-                  <select
+                  <FormSelect
                     id="sample-delivery-track-status"
                     value={trackingForm.status}
                     onChange={(event) => setTrackingForm({ ...trackingForm, status: event.target.value })}
@@ -8319,7 +7206,7 @@ function SampleDeliveriesPage() {
                         {item.label}
                       </option>
                     ))}
-                  </select>
+                  </FormSelect>
                 </div>
                 <Button htmlType="submit" loading={submitting}>
                   更新物流
@@ -8698,7 +7585,7 @@ function ExportQuotationsPage() {
                 />
               </label>
               <label htmlFor="export-quotation-status-filter">审批状态</label>
-              <select
+              <FormSelect
                 id="export-quotation-status-filter"
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
@@ -8711,7 +7598,7 @@ function ExportQuotationsPage() {
                       {item.label}
                     </option>
                   ))}
-              </select>
+              </FormSelect>
               <label>
                 客户标识
                 <Input
@@ -8893,7 +7780,7 @@ function ExportQuotationsPage() {
             </div>
             <div className="form-pair two">
               <label htmlFor="export-quotation-freight-method">货运方式</label>
-              <select
+              <FormSelect
                 id="export-quotation-freight-method"
                 value={form.freight_method}
                 onChange={(event) => setForm({ ...form, freight_method: event.target.value })}
@@ -8903,7 +7790,7 @@ function ExportQuotationsPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
               <label>
                 运费
                 <Input
@@ -9469,7 +8356,7 @@ function ExportContractsPage() {
                 />
               </label>
               <label htmlFor="export-contract-status-filter">审批状态</label>
-              <select
+              <FormSelect
                 id="export-contract-status-filter"
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
@@ -9480,7 +8367,7 @@ function ExportContractsPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
               <label>
                 客户标识
                 <Input
@@ -10290,7 +9177,7 @@ function ShipmentsPage() {
                 />
               </label>
               <label htmlFor="shipment-status-filter">审批状态</label>
-              <select
+              <FormSelect
                 id="shipment-status-filter"
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
@@ -10301,7 +9188,7 @@ function ShipmentsPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
               <label>
                 客户标识
                 <Input
@@ -10381,7 +9268,7 @@ function ShipmentsPage() {
                 />
               </label>
               <label htmlFor="shipment-method">运输方式</label>
-              <select
+              <FormSelect
                 id="shipment-method"
                 value={form.shipping_method}
                 onChange={(event) => setForm({ ...form, shipping_method: event.target.value })}
@@ -10391,7 +9278,7 @@ function ShipmentsPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
             </div>
             <div className="form-divider">出口合同选择</div>
             <div className="form-pair two">
@@ -10959,7 +9846,7 @@ function PurchaseInquiriesPage() {
                 />
               </label>
               <label htmlFor="purchase-inquiry-status-filter">询价状态</label>
-              <select
+              <FormSelect
                 id="purchase-inquiry-status-filter"
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
@@ -10970,7 +9857,7 @@ function PurchaseInquiriesPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
               <label>
                 商品标识
                 <Input
@@ -11677,7 +10564,7 @@ function PurchaseContractsPage() {
                 />
               </label>
               <label htmlFor="purchase-contract-status-filter">审批状态</label>
-              <select
+              <FormSelect
                 id="purchase-contract-status-filter"
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
@@ -11688,9 +10575,9 @@ function PurchaseContractsPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
               <label htmlFor="purchase-contract-source-filter">来源类型</label>
-              <select
+              <FormSelect
                 id="purchase-contract-source-filter"
                 value={sourceFilter}
                 onChange={(event) => setSourceFilter(event.target.value)}
@@ -11701,7 +10588,7 @@ function PurchaseContractsPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
               <label>
                 供应商标识
                 <Input
@@ -11811,7 +10698,7 @@ function PurchaseContractsPage() {
                 />
               </label>
               <label htmlFor="purchase-contract-source-type">来源</label>
-              <select
+              <FormSelect
                 id="purchase-contract-source-type"
                 value={form.source_type}
                 onChange={(event) =>
@@ -11826,7 +10713,7 @@ function PurchaseContractsPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
             </div>
             <label>
               付款条款
@@ -12488,7 +11375,7 @@ function PurchaseInvoiceNoticesPage() {
                 />
               </label>
               <label htmlFor="purchase-invoice-status-filter">通知状态</label>
-              <select
+              <FormSelect
                 id="purchase-invoice-status-filter"
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
@@ -12499,7 +11386,7 @@ function PurchaseInvoiceNoticesPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
               <label>
                 供应商标识
                 <Input
@@ -13230,7 +12117,7 @@ function FollowupPage() {
                 />
               </label>
               <label htmlFor="followup-status-filter">整体状态</label>
-              <select
+              <FormSelect
                 id="followup-status-filter"
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
@@ -13241,7 +12128,7 @@ function FollowupPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
               <label>
                 供应商标识
                 <Input
@@ -13306,7 +12193,7 @@ function FollowupPage() {
                 />
               </label>
               <label htmlFor="followup-template-default">默认模板</label>
-              <select
+              <FormSelect
                 id="followup-template-default"
                 value={String(templateForm.is_default)}
                 onChange={(event) =>
@@ -13315,7 +12202,7 @@ function FollowupPage() {
               >
                 <option value="true">是</option>
                 <option value="false">否</option>
-              </select>
+              </FormSelect>
             </div>
             <label className="checkbox-label" htmlFor="followup-template-enabled">
               <input
@@ -13425,7 +12312,7 @@ function FollowupPage() {
             </label>
             <div className="form-pair two">
               <label htmlFor="followup-source-node">节点</label>
-              <select
+              <FormSelect
                 id="followup-source-node"
                 value={sourceEventForm.node_code}
                 onChange={(event) =>
@@ -13441,9 +12328,9 @@ function FollowupPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
               <label htmlFor="followup-source-type">来源类型</label>
-              <select
+              <FormSelect
                 id="followup-source-type"
                 value={sourceEventForm.source_record_type}
                 onChange={(event) =>
@@ -13455,7 +12342,7 @@ function FollowupPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
             </div>
             <div className="form-pair two">
               <label htmlFor="followup-source-id">
@@ -13772,7 +12659,7 @@ function QualityInspectionsPage() {
               </label>
               <label htmlFor="quality-result-filter">
                 查验结果
-                <select
+                <FormSelect
                   id="quality-result-filter"
                   value={resultFilter}
                   onChange={(event) => setResultFilter(event.target.value)}
@@ -13783,7 +12670,7 @@ function QualityInspectionsPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 供应商标识
@@ -13889,7 +12776,7 @@ function QualityInspectionsPage() {
               </label>
               <label htmlFor="quality-result">
                 查验结果
-                <select
+                <FormSelect
                   id="quality-result"
                   value={form.result}
                   onChange={(event) => setForm({ ...form, result: event.target.value })}
@@ -13899,7 +12786,7 @@ function QualityInspectionsPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
             </div>
             <div className="form-pair two">
@@ -14001,7 +12888,7 @@ function QualityInspectionsPage() {
             <div className="form-pair two">
               <label htmlFor="quality-line-result">
                 明细结果
-                <select
+                <FormSelect
                   id="quality-line-result"
                   value={form.line_result}
                   onChange={(event) => setForm({ ...form, line_result: event.target.value })}
@@ -14011,7 +12898,7 @@ function QualityInspectionsPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label htmlFor="quality-line-remark">
                 明细备注
@@ -14035,7 +12922,7 @@ function QualityInspectionsPage() {
               </label>
               <label htmlFor="quality-severity">
                 严重度
-                <select
+                <FormSelect
                   id="quality-severity"
                   value={form.severity}
                   onChange={(event) => setForm({ ...form, severity: event.target.value })}
@@ -14045,11 +12932,11 @@ function QualityInspectionsPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label htmlFor="quality-issue-status">
                 处理状态
-                <select
+                <FormSelect
                   id="quality-issue-status"
                   value={form.issue_status}
                   onChange={(event) => setForm({ ...form, issue_status: event.target.value })}
@@ -14059,7 +12946,7 @@ function QualityInspectionsPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
             </div>
             <label htmlFor="quality-description">
@@ -14359,7 +13246,7 @@ function InboundPlansPage() {
               </label>
               <label htmlFor="inbound-status-filter">
                 入库状态
-                <select
+                <FormSelect
                   id="inbound-status-filter"
                   value={statusFilter}
                   onChange={(event) => setStatusFilter(event.target.value)}
@@ -14370,11 +13257,11 @@ function InboundPlansPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label htmlFor="inbound-type-filter">
                 入库类型
-                <select
+                <FormSelect
                   id="inbound-type-filter"
                   value={typeFilter}
                   onChange={(event) => setTypeFilter(event.target.value)}
@@ -14385,7 +13272,7 @@ function InboundPlansPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 供应商标识
@@ -14461,7 +13348,7 @@ function InboundPlansPage() {
             <div className="form-pair two">
               <label htmlFor="inbound-plan-type">
                 入库类型
-                <select
+                <FormSelect
                   id="inbound-plan-type"
                   value={generateForm.inbound_type}
                   onChange={(event) =>
@@ -14473,7 +13360,7 @@ function InboundPlansPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label htmlFor="inbound-plan-date">
                 计划入库日
@@ -14907,7 +13794,7 @@ function InboundOrdersPage() {
               </label>
               <label htmlFor="inbound-order-status-filter">
                 单据状态
-                <select
+                <FormSelect
                   id="inbound-order-status-filter"
                   value={statusFilter}
                   onChange={(event) => setStatusFilter(event.target.value)}
@@ -14918,11 +13805,11 @@ function InboundOrdersPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label htmlFor="inbound-order-mode-filter">
                 入库模式
-                <select
+                <FormSelect
                   id="inbound-order-mode-filter"
                   value={modeFilter}
                   onChange={(event) => setModeFilter(event.target.value)}
@@ -14933,7 +13820,7 @@ function InboundOrdersPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 供应商标识
@@ -14997,7 +13884,7 @@ function InboundOrdersPage() {
             <div className="form-divider">从入库计划生成</div>
             <label htmlFor="inbound-order-plan-id">
               入库计划
-              <select
+              <FormSelect
                 id="inbound-order-plan-id"
                 required
                 value={form.plan_id}
@@ -15009,7 +13896,7 @@ function InboundOrdersPage() {
                     {plan.code} / {plan.purchase_contract_no} / {inboundPlanStatusLabel(plan.status)}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
             </label>
             <label htmlFor="inbound-order-code">
               入库单号
@@ -15023,7 +13910,7 @@ function InboundOrdersPage() {
             <div className="form-pair two">
               <label htmlFor="inbound-order-mode">
                 入库模式
-                <select
+                <FormSelect
                   id="inbound-order-mode"
                   value={form.inbound_mode}
                   onChange={(event) => setForm({ ...form, inbound_mode: event.target.value })}
@@ -15033,7 +13920,7 @@ function InboundOrdersPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label htmlFor="inbound-order-date">
                 入库日期
@@ -15494,7 +14381,7 @@ function OutboundPlansPage() {
               </label>
               <label htmlFor="outbound-status-filter">
                 出库状态
-                <select
+                <FormSelect
                   id="outbound-status-filter"
                   value={statusFilter}
                   onChange={(event) => setStatusFilter(event.target.value)}
@@ -15505,11 +14392,11 @@ function OutboundPlansPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label htmlFor="outbound-type-filter">
                 出库类型
-                <select
+                <FormSelect
                   id="outbound-type-filter"
                   value={typeFilter}
                   onChange={(event) => setTypeFilter(event.target.value)}
@@ -15520,11 +14407,11 @@ function OutboundPlansPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label htmlFor="outbound-source-filter">
                 来源类型
-                <select
+                <FormSelect
                   id="outbound-source-filter"
                   value={sourceFilter}
                   onChange={(event) => setSourceFilter(event.target.value)}
@@ -15535,7 +14422,7 @@ function OutboundPlansPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 客户标识
@@ -15599,7 +14486,7 @@ function OutboundPlansPage() {
             <div className="form-divider">从发货计划生成</div>
             <label htmlFor="outbound-plan-shipment-id">
               发货计划
-              <select
+              <FormSelect
                 id="outbound-plan-shipment-id"
                 required
                 value={generateForm.shipment_plan_id}
@@ -15611,12 +14498,12 @@ function OutboundPlansPage() {
                     {shipment.code} / {shipment.customer_name ?? '未设置客户'} / {formatDate(shipment.planned_ship_date)}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
             </label>
             <div className="form-pair two">
               <label htmlFor="outbound-plan-type">
                 出库类型
-                <select
+                <FormSelect
                   id="outbound-plan-type"
                   value={generateForm.outbound_type}
                   onChange={(event) =>
@@ -15628,7 +14515,7 @@ function OutboundPlansPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label htmlFor="outbound-plan-date">
                 计划出库日
@@ -16069,7 +14956,7 @@ function OutboundOrdersPage() {
               </label>
               <label htmlFor="outbound-order-status-filter">
                 单据状态
-                <select
+                <FormSelect
                   id="outbound-order-status-filter"
                   value={statusFilter}
                   onChange={(event) => setStatusFilter(event.target.value)}
@@ -16080,11 +14967,11 @@ function OutboundOrdersPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label htmlFor="outbound-order-mode-filter">
                 出库模式
-                <select
+                <FormSelect
                   id="outbound-order-mode-filter"
                   value={modeFilter}
                   onChange={(event) => setModeFilter(event.target.value)}
@@ -16095,11 +14982,11 @@ function OutboundOrdersPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label htmlFor="outbound-order-type-filter">
                 出库类型
-                <select
+                <FormSelect
                   id="outbound-order-type-filter"
                   value={typeFilter}
                   onChange={(event) => setTypeFilter(event.target.value)}
@@ -16110,7 +14997,7 @@ function OutboundOrdersPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 客户标识
@@ -16175,7 +15062,7 @@ function OutboundOrdersPage() {
             <div className="form-divider">从出库计划生成</div>
             <label htmlFor="outbound-order-plan-id">
               出库计划
-              <select
+              <FormSelect
                 id="outbound-order-plan-id"
                 required
                 value={form.plan_id}
@@ -16187,7 +15074,7 @@ function OutboundOrdersPage() {
                     {plan.code} / {plan.source_code} / {outboundPlanStatusLabel(plan.status)}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
             </label>
             <label htmlFor="outbound-order-code">
               出库单号
@@ -16201,7 +15088,7 @@ function OutboundOrdersPage() {
             <div className="form-pair two">
               <label htmlFor="outbound-order-mode">
                 出库模式
-                <select
+                <FormSelect
                   id="outbound-order-mode"
                   value={form.outbound_mode}
                   onChange={(event) => setForm({ ...form, outbound_mode: event.target.value })}
@@ -16211,7 +15098,7 @@ function OutboundOrdersPage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label htmlFor="outbound-order-date">
                 出库日期
@@ -16685,7 +15572,7 @@ function ReportingPage() {
           >
             <label>
               单据类型
-              <select
+              <FormSelect
                 value={documentTypeFilter}
                 onChange={(event) => setDocumentTypeFilter(event.target.value)}
               >
@@ -16695,18 +15582,18 @@ function ReportingPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
             </label>
             <label>
               审批状态
-              <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+              <FormSelect value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
                 <option value="">全部状态</option>
                 {reportingStatusOptions.map((item) => (
                   <option key={item.value} value={item.value}>
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
             </label>
             <label>
               申请人标识
@@ -16823,7 +15710,7 @@ function ReportingPage() {
             </label>
             <label>
               统计状态
-              <select
+              <FormSelect
                 value={statisticsStatusFilter}
                 onChange={(event) => setStatisticsStatusFilter(event.target.value)}
               >
@@ -16833,7 +15720,7 @@ function ReportingPage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
             </label>
             <label>
               客户标识
@@ -18227,7 +17114,7 @@ function FinancePage() {
               </label>
               <label>
                 水单状态
-                <select
+                <FormSelect
                   value={receiptStatusFilter}
                   onChange={(event) => setReceiptStatusFilter(event.target.value)}
                 >
@@ -18237,7 +17124,7 @@ function FinancePage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 客户标识
@@ -18361,7 +17248,7 @@ function FinancePage() {
               </label>
               <label>
                 收款性质
-                <select
+                <FormSelect
                   value={receiptForm.receipt_type}
                   onChange={(event) => setReceiptForm({ ...receiptForm, receipt_type: event.target.value })}
                 >
@@ -18370,7 +17257,7 @@ function FinancePage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
             </div>
             <label>
@@ -18472,7 +17359,7 @@ function FinancePage() {
                   <div className="form-pair two">
                     <label>
                       分摊类型
-                      <select
+                      <FormSelect
                         value={allocationForm.allocation_type}
                         onChange={(event) =>
                           setAllocationForm({ ...allocationForm, allocation_type: event.target.value })
@@ -18483,7 +17370,7 @@ function FinancePage() {
                             {item.label}
                           </option>
                         ))}
-                      </select>
+                      </FormSelect>
                     </label>
                     <label>
                       分摊日期
@@ -18671,7 +17558,7 @@ function FinancePage() {
               </label>
               <label>
                 付款状态
-                <select
+                <FormSelect
                   value={invoiceStatusFilter}
                   onChange={(event) => setInvoiceStatusFilter(event.target.value)}
                 >
@@ -18681,7 +17568,7 @@ function FinancePage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 供应商标识
@@ -18931,7 +17818,7 @@ function FinancePage() {
               <div className="form-pair three">
                 <label>
                   付款类别
-                  <select
+                  <FormSelect
                     value={paymentRequestForm.payment_type}
                     onChange={(event) =>
                       setPaymentRequestForm({ ...paymentRequestForm, payment_type: event.target.value })
@@ -18942,7 +17829,7 @@ function FinancePage() {
                         {item.label}
                       </option>
                     ))}
-                  </select>
+                  </FormSelect>
                 </label>
                 <label>
                   申请日期
@@ -19115,7 +18002,7 @@ function FinancePage() {
               </label>
               <label>
                 应付状态
-                <select
+                <FormSelect
                   value={payableStatusFilter}
                   onChange={(event) => setPayableStatusFilter(event.target.value)}
                 >
@@ -19125,7 +18012,7 @@ function FinancePage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 供应商标识
@@ -19194,7 +18081,7 @@ function FinancePage() {
               </label>
               <label>
                 发票状态
-                <select
+                <FormSelect
                   value={feeInvoiceStatusFilter}
                   onChange={(event) => setFeeInvoiceStatusFilter(event.target.value)}
                 >
@@ -19204,18 +18091,18 @@ function FinancePage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 费用类型
-                <select value={feeInvoiceTypeFilter} onChange={(event) => setFeeInvoiceTypeFilter(event.target.value)}>
+                <FormSelect value={feeInvoiceTypeFilter} onChange={(event) => setFeeInvoiceTypeFilter(event.target.value)}>
                   <option value="">全部类型</option>
                   {feeTypeOptions.map((item) => (
                     <option key={item.value} value={item.value}>
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 合作伙伴标识
@@ -19325,7 +18212,7 @@ function FinancePage() {
             <div className="form-pair two">
               <label>
                 合作伙伴类型
-                <select
+                <FormSelect
                   value={partnerFeeInvoiceForm.partner_type}
                   onChange={(event) =>
                     setPartnerFeeInvoiceForm({ ...partnerFeeInvoiceForm, partner_type: event.target.value })
@@ -19337,11 +18224,11 @@ function FinancePage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 费用类型
-                <select
+                <FormSelect
                   value={partnerFeeInvoiceForm.fee_type}
                   onChange={(event) =>
                     setPartnerFeeInvoiceForm({ ...partnerFeeInvoiceForm, fee_type: event.target.value })
@@ -19352,7 +18239,7 @@ function FinancePage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
             </div>
             <div className="form-pair two">
@@ -19663,7 +18550,7 @@ function FinancePage() {
               </label>
               <label>
                 应付状态
-                <select
+                <FormSelect
                   value={feePayableStatusFilter}
                   onChange={(event) => setFeePayableStatusFilter(event.target.value)}
                 >
@@ -19673,18 +18560,18 @@ function FinancePage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 费用类型
-                <select value={feePayableTypeFilter} onChange={(event) => setFeePayableTypeFilter(event.target.value)}>
+                <FormSelect value={feePayableTypeFilter} onChange={(event) => setFeePayableTypeFilter(event.target.value)}>
                   <option value="">全部类型</option>
                   {feeTypeOptions.map((item) => (
                     <option key={item.value} value={item.value}>
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 合作伙伴标识
@@ -19753,7 +18640,7 @@ function FinancePage() {
               </label>
               <label>
                 进度状态
-                <select
+                <FormSelect
                   value={verificationStatusFilter}
                   onChange={(event) => setVerificationStatusFilter(event.target.value)}
                 >
@@ -19763,11 +18650,11 @@ function FinancePage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 提醒状态
-                <select
+                <FormSelect
                   value={verificationReminderFilter}
                   onChange={(event) => setVerificationReminderFilter(event.target.value)}
                 >
@@ -19777,7 +18664,7 @@ function FinancePage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 业务员标识
@@ -20224,7 +19111,7 @@ function FinancePage() {
               </label>
               <label>
                 进度状态
-                <select
+                <FormSelect
                   value={verificationUsageStatusFilter}
                   onChange={(event) => setVerificationUsageStatusFilter(event.target.value)}
                 >
@@ -20234,11 +19121,11 @@ function FinancePage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 提醒状态
-                <select
+                <FormSelect
                   value={verificationUsageReminderFilter}
                   onChange={(event) => setVerificationUsageReminderFilter(event.target.value)}
                 >
@@ -20248,7 +19135,7 @@ function FinancePage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 出运单号
@@ -20307,7 +19194,7 @@ function FinancePage() {
               </label>
               <label>
                 项目分类
-                <select
+                <FormSelect
                   value={miscFeeItemCategoryFilter}
                   onChange={(event) => setMiscFeeItemCategoryFilter(event.target.value)}
                 >
@@ -20317,11 +19204,11 @@ function FinancePage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 启停状态
-                <select
+                <FormSelect
                   value={miscFeeItemStatusFilter}
                   onChange={(event) => setMiscFeeItemStatusFilter(event.target.value)}
                 >
@@ -20331,7 +19218,7 @@ function FinancePage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
@@ -20395,7 +19282,7 @@ function FinancePage() {
             <div className="form-pair two">
               <label>
                 项目分类
-                <select
+                <FormSelect
                   value={miscFeeItemForm.category}
                   onChange={(event) =>
                     setMiscFeeItemForm({ ...miscFeeItemForm, category: event.target.value })
@@ -20406,11 +19293,11 @@ function FinancePage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 默认分摊方式
-                <select
+                <FormSelect
                   value={miscFeeItemForm.default_allocation_method}
                   onChange={(event) =>
                     setMiscFeeItemForm({
@@ -20424,7 +19311,7 @@ function FinancePage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
             </div>
             <label className="checkbox-line">
@@ -20582,7 +19469,7 @@ function FinancePage() {
             </div>
             <label>
               分摊方式
-              <select
+              <FormSelect
                 value={miscFeeAllocationForm.allocation_method}
                 onChange={(event) =>
                   setMiscFeeAllocationForm({
@@ -20596,7 +19483,7 @@ function FinancePage() {
                     {item.label}
                   </option>
                 ))}
-              </select>
+              </FormSelect>
             </label>
             <label>
               分摊依据
@@ -20647,7 +19534,7 @@ function FinancePage() {
               </label>
               <label>
                 分类
-                <select
+                <FormSelect
                   value={miscFeeAllocationCategoryFilter}
                   onChange={(event) => {
                     setMiscFeeAllocationCategoryFilter(event.target.value)
@@ -20660,7 +19547,7 @@ function FinancePage() {
                       {item.label}
                     </option>
                   ))}
-                </select>
+                </FormSelect>
               </label>
               <label>
                 出运单号
@@ -20911,14 +19798,14 @@ function FinancePage() {
             </label>
             <label>
               成本类型
-              <select
+              <FormSelect
                 value={manualProfitCostForm.cost_type}
                 onChange={(event) =>
                   setManualProfitCostForm({ ...manualProfitCostForm, cost_type: event.target.value })
                 }
               >
                 <option value="other_cost">其他成本</option>
-              </select>
+              </FormSelect>
             </label>
             <label>
               成本日期
@@ -21707,73 +20594,7 @@ function profitCostDirectionTag(value: string): ReactNode {
   return <Tag color={color}>{label}</Tag>
 }
 
-function initialProductForm(): ProductFormState {
-  return {
-    code: `P-${Date.now().toString().slice(-6)}`,
-    cn_name: '',
-    en_name: '',
-    specification: '',
-    model: '',
-    customs_code: '',
-    tax_rate: '0.13',
-    rebate_rate: '0.09',
-    package_info: '',
-    unit: 'pcs',
-    image_url: '',
-    accessory_name: '',
-    accessory_unit_consumption: '1',
-    accessory_unit: 'pcs',
-    accessory_supplier: '',
-    accessory_rule: 'by_supplier',
-  }
-}
 
-function initialProductAccessoryForm(): ProductAccessoryFormState {
-  return {
-    accessory_name: '',
-    unit_consumption: '1',
-    unit: 'pcs',
-    supplier: '',
-    rule: 'by_supplier',
-  }
-}
-
-function productPayload(form: ProductFormState): ProductCreatePayload {
-  return {
-    code: form.code.trim(),
-    cn_name: form.cn_name.trim(),
-    en_name: form.en_name.trim(),
-    specification: emptyToNull(form.specification),
-    model: emptyToNull(form.model),
-    customs_code: form.customs_code.trim(),
-    tax_rate: form.tax_rate,
-    rebate_rate: form.rebate_rate,
-    package_info: form.package_info.trim(),
-    unit: form.unit.trim(),
-    image_url: emptyToNull(form.image_url),
-    accessories: [initialAccessoryPayload(form)],
-  }
-}
-
-function initialAccessoryPayload(form: ProductFormState): ProductAccessoryPayload {
-  return {
-    accessory_name: form.accessory_name.trim(),
-    unit_consumption: form.accessory_unit_consumption,
-    unit: form.accessory_unit.trim(),
-    default_supplier_name: emptyToNull(form.accessory_supplier),
-    purchase_split_rule: form.accessory_rule,
-  }
-}
-
-function accessoryPayload(form: ProductAccessoryFormState): ProductAccessoryPayload {
-  return {
-    accessory_name: form.accessory_name.trim(),
-    unit_consumption: form.unit_consumption,
-    unit: form.unit.trim(),
-    default_supplier_name: emptyToNull(form.supplier),
-    purchase_split_rule: form.rule,
-  }
-}
 
 function emptyToNull(value: string): string | null {
   const trimmed = value.trim()
@@ -24096,9 +22917,7 @@ function supplierStatusLabel(value: string): string {
   return value === 'inactive' ? '停用' : '启用'
 }
 
-function accessoryRuleLabel(value: string): string {
-  return value === 'by_accessory' ? '按配件分单' : '按供应商分单'
-}
+
 
 function initialPartnerForm(): PartnerFormState {
   return {

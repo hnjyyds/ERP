@@ -22,6 +22,7 @@ class ProductRow:
     package_info: str
     unit: str
     image_url: str | None
+    status: str
     created_at: datetime
 
 
@@ -55,6 +56,7 @@ class ProductRepository:
         package_info: str,
         unit: str,
         image_url: str | None,
+        status: str = "active",
     ) -> ProductRow:
         product = Product(
             code=code,
@@ -68,8 +70,52 @@ class ProductRepository:
             package_info=package_info,
             unit=unit,
             image_url=image_url,
+            status=status,
         )
         self.session.add(product)
+        await self.session.flush()
+        return self._map_product(product)
+
+    async def update_product(
+        self,
+        *,
+        product_id: str,
+        code: str,
+        cn_name: str,
+        en_name: str,
+        specification: str | None,
+        model: str | None,
+        customs_code: str,
+        tax_rate: Decimal | str,
+        rebate_rate: Decimal | str,
+        package_info: str,
+        unit: str,
+        image_url: str | None,
+        status: str,
+    ) -> ProductRow | None:
+        product = await self.session.scalar(select(Product).where(Product.id == product_id))
+        if product is None:
+            return None
+        product.code = code
+        product.cn_name = cn_name
+        product.en_name = en_name
+        product.specification = specification
+        product.model = model
+        product.customs_code = customs_code
+        product.tax_rate = Decimal(str(tax_rate))
+        product.rebate_rate = Decimal(str(rebate_rate))
+        product.package_info = package_info
+        product.unit = unit
+        product.image_url = image_url
+        product.status = status
+        await self.session.flush()
+        return self._map_product(product)
+
+    async def deactivate_product(self, product_id: str) -> ProductRow | None:
+        product = await self.session.scalar(select(Product).where(Product.id == product_id))
+        if product is None:
+            return None
+        product.status = "inactive"
         await self.session.flush()
         return self._map_product(product)
 
@@ -95,6 +141,52 @@ class ProductRepository:
         await self.session.flush()
         return self._map_accessory(accessory)
 
+    async def update_accessory(
+        self,
+        *,
+        product_id: str,
+        accessory_id: str,
+        accessory_name: str,
+        unit_consumption: Decimal | str,
+        unit: str,
+        default_supplier_name: str | None,
+        purchase_split_rule: str,
+    ) -> ProductAccessoryRow | None:
+        accessory = await self.session.scalar(
+            select(ProductAccessory).where(
+                ProductAccessory.id == accessory_id,
+                ProductAccessory.product_id == product_id,
+            )
+        )
+        if accessory is None:
+            return None
+        accessory.accessory_name = accessory_name
+        accessory.unit_consumption = Decimal(str(unit_consumption))
+        accessory.unit = unit
+        accessory.default_supplier_name = default_supplier_name
+        accessory.purchase_split_rule = purchase_split_rule
+        await self.session.flush()
+        return self._map_accessory(accessory)
+
+    async def delete_accessory(
+        self,
+        *,
+        product_id: str,
+        accessory_id: str,
+    ) -> ProductAccessoryRow | None:
+        accessory = await self.session.scalar(
+            select(ProductAccessory).where(
+                ProductAccessory.id == accessory_id,
+                ProductAccessory.product_id == product_id,
+            )
+        )
+        if accessory is None:
+            return None
+        row = self._map_accessory(accessory)
+        await self.session.delete(accessory)
+        await self.session.flush()
+        return row
+
     async def get_product(self, product_id: str) -> ProductRow | None:
         product = await self.session.scalar(select(Product).where(Product.id == product_id))
         if product is None:
@@ -113,11 +205,15 @@ class ProductRepository:
         self,
         *,
         q: str | None = None,
+        include_inactive: bool = False,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[ProductRow], int]:
         statement = select(Product)
         count_statement = select(func.count()).select_from(Product)
+        if not include_inactive:
+            statement = statement.where(Product.status == "active")
+            count_statement = count_statement.where(Product.status == "active")
         if q:
             pattern = f"%{q}%"
             condition = or_(
@@ -156,6 +252,7 @@ class ProductRepository:
             package_info=product.package_info,
             unit=product.unit,
             image_url=product.image_url,
+            status=product.status,
             created_at=product.created_at,
         )
 

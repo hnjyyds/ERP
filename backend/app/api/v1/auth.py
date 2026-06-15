@@ -7,10 +7,16 @@ from app.modules.system.auth.providers import get_auth_service
 from app.modules.system.auth.schemas import (
     AssignableUserListResponse,
     AuthSessionResponse,
+    CurrentUserAvatarUpdate,
     CurrentUserSessionResponse,
     LoginRequest,
 )
-from app.modules.system.auth.services import AuthService, InvalidCredentialsError, InvalidTokenError
+from app.modules.system.auth.services import (
+    AuthService,
+    InvalidAvatarError,
+    InvalidCredentialsError,
+    InvalidTokenError,
+)
 from app.schemas.responses import ApiResponse
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -43,6 +49,27 @@ async def get_me(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="登录已失效",
+        ) from None
+
+
+@router.patch("/me/avatar", response_model=ApiResponse[CurrentUserSessionResponse])
+async def update_me_avatar(
+    payload: CurrentUserAvatarUpdate,
+    token: Annotated[str, Depends(get_bearer_token)],
+    service: Annotated[AuthService, Depends(get_auth_service)],
+) -> ApiResponse[CurrentUserSessionResponse]:
+    try:
+        current = await service.update_current_user_avatar(access_token=token, payload=payload)
+        return ApiResponse(data=current)
+    except InvalidTokenError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="登录已失效",
+        ) from None
+    except InvalidAvatarError:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="头像配置无效",
         ) from None
 
 

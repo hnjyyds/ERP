@@ -32,6 +32,8 @@ async def test_super_admin_can_manage_users_and_role_permissions_without_passwor
             "department_id": sales_department["id"],
             "role_ids": [sales_role["id"]],
             "is_active": True,
+            "avatar_type": "preset",
+            "avatar_value": "copper-wave",
         },
     )
 
@@ -39,6 +41,8 @@ async def test_super_admin_can_manage_users_and_role_permissions_without_passwor
     created = create_response.json()["data"]
     assert len(created["initial_password"]) >= 10
     assert created["user"]["username"] == "ops.user"
+    assert created["user"]["avatar_type"] == "preset"
+    assert created["user"]["avatar_value"] == "copper-wave"
     assert created["user"]["password_set"] is True
     assert "password_hash" not in created["user"]
     assert "password_salt" not in created["user"]
@@ -55,16 +59,26 @@ async def test_super_admin_can_manage_users_and_role_permissions_without_passwor
     created_list_item = next(item for item in list_body["users"] if item["username"] == "ops.user")
     assert created["initial_password"] not in str(list_body)
     assert created_list_item["password_set"] is True
+    assert created_list_item["avatar_value"] == "copper-wave"
     assert "initial_password" not in created_list_item
     assert "temporary_password" not in created_list_item
 
+    uploaded_avatar = "data:image/png;base64,iVBORw0KGgo="
     update_response = await api_client.patch(
         f"/api/v1/organization/users/{created['user']['id']}",
         headers=headers,
-        json={"display_name": "运营主管", "role_ids": ["role-finance"], "is_active": True},
+        json={
+            "display_name": "运营主管",
+            "role_ids": ["role-finance"],
+            "is_active": True,
+            "avatar_type": "upload",
+            "avatar_value": uploaded_avatar,
+        },
     )
     assert update_response.status_code == 200
     assert update_response.json()["data"]["display_name"] == "运营主管"
+    assert update_response.json()["data"]["avatar_type"] == "upload"
+    assert update_response.json()["data"]["avatar_value"] == uploaded_avatar
     assert [role["code"] for role in update_response.json()["data"]["roles"]] == ["finance"]
 
     reset_response = await api_client.post(

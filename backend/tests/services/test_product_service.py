@@ -2,7 +2,7 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.modules.masterdata.products.repositories import ProductRepository
-from app.modules.masterdata.products.schemas import ProductCreate
+from app.modules.masterdata.products.schemas import ProductCreate, ProductUpdate
 from app.modules.masterdata.products.services import PermissionDeniedError, ProductService
 from app.modules.system.auth.schemas import CurrentUserResponse
 
@@ -47,7 +47,48 @@ async def test_product_service_creates_product_with_accessories(
         )
 
     assert product.code == "P-CUP-001"
+    assert product.status == "active"
     assert product.accessories[0].accessory_name == "杯盖"
+
+
+async def test_product_service_updates_and_deactivates_product(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    user = _user_with_permissions(["masterdata:product:edit", "masterdata:product:view"])
+    async with session_factory() as session:
+        service = ProductService(ProductRepository(session))
+        product = await service.create_product(
+            current_user=user,
+            payload=ProductCreate(
+                code="P-BOX-001",
+                cn_name="礼盒",
+                en_name="Gift Box",
+                customs_code="4819200000",
+                tax_rate="0.13",
+                rebate_rate="0.09",
+                package_info="60 pcs/carton",
+                unit="pcs",
+            ),
+        )
+        updated = await service.update_product(
+            current_user=user,
+            product_id=product.id,
+            payload=ProductUpdate(
+                code="P-BOX-001",
+                cn_name="礼盒-更新",
+                en_name="Gift Box Updated",
+                customs_code="4819200000",
+                tax_rate="0.13",
+                rebate_rate="0.09",
+                package_info="40 pcs/carton",
+                unit="pcs",
+                status="active",
+            ),
+        )
+        deactivated = await service.deactivate_product(current_user=user, product_id=product.id)
+
+    assert updated.cn_name == "礼盒-更新"
+    assert deactivated.status == "inactive"
 
 
 async def test_product_service_rejects_missing_permission(

@@ -20,6 +20,8 @@ async def test_login_returns_token_user_and_permission_menus(
     assert data["user"]["username"] == "demo"
     assert data["user"]["display_name"] == "演示业务主管"
     assert data["user"]["department_name"] == "业务部"
+    assert data["user"]["avatar_type"] == "preset"
+    assert data["user"]["avatar_value"] == "amber-orbit"
     assert data["user"]["roles"] == ["业务主管"]
     assert set(data["user"]["permissions"]) == {
         "dashboard:view",
@@ -161,6 +163,7 @@ async def test_current_user_and_menus_require_bearer_token(
     )
     assert me_response.status_code == 200
     assert me_response.json()["data"]["user"]["display_name"] == "演示财务"
+    assert me_response.json()["data"]["user"]["avatar_value"] == "sage-pulse"
 
     menus_response = await api_client.get(
         "/api/v1/system/menus",
@@ -194,6 +197,40 @@ async def test_assignable_users_require_authentication(
     users = response.json()["data"]["users"]
     assert {item["id"] for item in users} == {"u-admin", "u-001", "u-finance"}
     assert {item["display_name"] for item in users} == {"演示管理员", "演示业务主管", "演示财务"}
+    assert all("avatar_type" in item and "avatar_value" in item for item in users)
 
     unauthorized_response = await api_client.get("/api/v1/auth/users")
     assert unauthorized_response.status_code == 401
+
+
+async def test_current_user_can_update_own_avatar(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    login_response = await api_client.post(
+        "/api/v1/auth/login",
+        json={"username": "demo", "password": "demo123"},
+    )
+    token = login_response.json()["data"]["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    update_response = await api_client.patch(
+        "/api/v1/auth/me/avatar",
+        headers=headers,
+        json={"avatar_type": "preset", "avatar_value": "blueprint-grid"},
+    )
+
+    assert update_response.status_code == 200
+    assert update_response.json()["data"]["user"]["avatar_value"] == "blueprint-grid"
+    assert update_response.json()["data"]["menus"]
+
+    current_response = await api_client.get("/api/v1/auth/me", headers=headers)
+    assert current_response.status_code == 200
+    assert current_response.json()["data"]["user"]["avatar_value"] == "blueprint-grid"
+
+    invalid_response = await api_client.patch(
+        "/api/v1/auth/me/avatar",
+        headers=headers,
+        json={"avatar_type": "preset", "avatar_value": "unknown-avatar"},
+    )
+    assert invalid_response.status_code == 422

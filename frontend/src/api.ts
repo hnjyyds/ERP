@@ -17,11 +17,20 @@ export interface MenuItem {
   sort_order: number
 }
 
+export type UserAvatarType = 'preset' | 'upload'
+
+export interface UserAvatarFields {
+  avatar_type: UserAvatarType
+  avatar_value: string
+}
+
 export interface CurrentUser {
   id: string
   username: string
   display_name: string
   department_name: string
+  avatar_type: UserAvatarType
+  avatar_value: string
   roles: string[]
   permissions: string[]
 }
@@ -31,6 +40,8 @@ export interface AssignableUser {
   username: string
   display_name: string
   department_name: string
+  avatar_type: UserAvatarType
+  avatar_value: string
 }
 
 export interface OrganizationDepartment {
@@ -59,6 +70,8 @@ export interface OrganizationUser {
   display_name: string
   department_id: string
   department_name: string
+  avatar_type: UserAvatarType
+  avatar_value: string
   roles: OrganizationRole[]
   is_active: boolean
   created_at: string
@@ -77,6 +90,8 @@ export interface OrganizationUserCreatePayload {
   department_id: string
   role_ids: string[]
   is_active: boolean
+  avatar_type: UserAvatarType
+  avatar_value: string
 }
 
 export interface OrganizationUserUpdatePayload {
@@ -84,6 +99,8 @@ export interface OrganizationUserUpdatePayload {
   department_id?: string
   role_ids?: string[]
   is_active?: boolean
+  avatar_type?: UserAvatarType
+  avatar_value?: string
 }
 
 export interface OrganizationRolePermissionUpdatePayload {
@@ -105,6 +122,11 @@ export interface AuthSession {
   token_type: string
   user: CurrentUser
   menus: MenuItem[]
+}
+
+export interface CurrentUserAvatarUpdatePayload {
+  avatar_type: UserAvatarType
+  avatar_value: string
 }
 
 export type AppLanguage = 'zh-CN' | 'en-US'
@@ -1031,6 +1053,7 @@ export interface Product {
   package_info: string
   unit: string
   image_url: string | null
+  status: string
   accessories: ProductAccessory[]
 }
 
@@ -1059,7 +1082,12 @@ export interface ProductCreatePayload {
   package_info: string
   unit: string
   image_url?: string | null
+  status?: string
   accessories: ProductAccessoryPayload[]
+}
+
+export type ProductUpdatePayload = Omit<ProductCreatePayload, 'accessories'> & {
+  status: string
 }
 
 export interface ProductExport {
@@ -3092,6 +3120,15 @@ export function getCurrentSession(): Promise<{ user: CurrentUser; menus: MenuIte
   return request<{ user: CurrentUser; menus: MenuItem[] }>('/auth/me')
 }
 
+export function updateCurrentUserAvatar(
+  payload: CurrentUserAvatarUpdatePayload,
+): Promise<{ user: CurrentUser; menus: MenuItem[] }> {
+  return request<{ user: CurrentUser; menus: MenuItem[] }>('/auth/me/avatar', {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
+}
+
 export function listAssignableUsers(): Promise<{ users: AssignableUser[] }> {
   return request<{ users: AssignableUser[] }>('/auth/users')
 }
@@ -3658,6 +3695,19 @@ export function createProduct(payload: ProductCreatePayload): Promise<Product> {
   })
 }
 
+export function updateProduct(productId: string, payload: ProductUpdatePayload): Promise<Product> {
+  return request<Product>(`/masterdata/products/${productId}`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function deactivateProduct(productId: string): Promise<Product> {
+  return request<Product>(`/masterdata/products/${productId}`, {
+    method: 'DELETE',
+  })
+}
+
 export function addProductAccessory(
   productId: string,
   payload: ProductAccessoryPayload,
@@ -3665,6 +3715,26 @@ export function addProductAccessory(
   return request<ProductAccessory>(`/masterdata/products/${productId}/accessories`, {
     method: 'POST',
     body: JSON.stringify(payload),
+  })
+}
+
+export function updateProductAccessory(
+  productId: string,
+  accessoryId: string,
+  payload: ProductAccessoryPayload,
+): Promise<ProductAccessory> {
+  return request<ProductAccessory>(`/masterdata/products/${productId}/accessories/${accessoryId}`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function deleteProductAccessory(
+  productId: string,
+  accessoryId: string,
+): Promise<ProductAccessory> {
+  return request<ProductAccessory>(`/masterdata/products/${productId}/accessories/${accessoryId}`, {
+    method: 'DELETE',
   })
 }
 

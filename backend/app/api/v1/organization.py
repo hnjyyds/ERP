@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.api.deps import get_bearer_token
 from app.modules.system.auth.organization_services import (
+    OrganizationInvalidAvatarError,
     OrganizationPermissionDeniedError,
     OrganizationReferenceNotFoundError,
     OrganizationSelfDeactivateError,
@@ -101,6 +102,11 @@ async def create_organization_user(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail="部门或角色不存在",
         ) from None
+    except OrganizationInvalidAvatarError:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="头像配置无效",
+        ) from None
 
 
 @router.patch("/users/{user_id}", response_model=ApiResponse[OrganizationUserResponse])
@@ -132,6 +138,11 @@ async def update_organization_user(
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail="部门或角色不存在",
+        ) from None
+    except OrganizationInvalidAvatarError:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="头像配置无效",
         ) from None
 
 

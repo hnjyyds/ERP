@@ -18,6 +18,7 @@ from app.modules.masterdata.customers import models as customer_models  # noqa: 
 from app.modules.masterdata.document_parties import models as document_party_models  # noqa: F401
 from app.modules.masterdata.partners import models as partner_models  # noqa: F401
 from app.modules.masterdata.products import models as product_models  # noqa: F401
+from app.modules.masterdata.products.migrations import ensure_product_schema
 from app.modules.masterdata.suppliers import models as supplier_models  # noqa: F401
 from app.modules.purchase.contracts import models as purchase_contract_models  # noqa: F401
 from app.modules.purchase.inquiries import models as purchase_inquiry_models  # noqa: F401
@@ -32,6 +33,7 @@ from app.modules.sample.deliveries import models as sample_delivery_models  # no
 from app.modules.sample.records import models as sample_record_models  # noqa: F401
 from app.modules.sample.requests import models as sample_request_models  # noqa: F401
 from app.modules.system.auth import models as auth_models  # noqa: F401
+from app.modules.system.auth.migrations import ensure_auth_schema
 from app.modules.system.auth.seed import seed_system_demo_data
 from app.modules.system.dashboard import models as dashboard_models  # noqa: F401
 from app.modules.system.dashboard.migrations import ensure_dashboard_schema
@@ -47,7 +49,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
     async with engine.begin() as connection:
         await connection.run_sync(Base.metadata.create_all)
+        await connection.run_sync(ensure_auth_schema)
         await connection.run_sync(ensure_dashboard_schema)
+        await connection.run_sync(ensure_product_schema)
 
     if settings.seed_demo_data:
         async with SessionLocal() as session:

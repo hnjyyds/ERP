@@ -15,6 +15,10 @@ from app.modules.system.auth.repositories import (
     RoleRow,
 )
 from app.modules.system.auth.schemas import (
+    DEFAULT_AVATAR_TYPE,
+    DEFAULT_AVATAR_VALUE,
+    ORGANIZATION_AVATAR_PRESETS,
+    AvatarType,
     CurrentUserResponse,
     OrganizationDepartmentResponse,
     OrganizationOptionsResponse,
@@ -45,6 +49,10 @@ class OrganizationReferenceNotFoundError(Exception):
 
 
 class OrganizationUsernameTakenError(Exception):
+    pass
+
+
+class OrganizationInvalidAvatarError(Exception):
     pass
 
 
@@ -99,6 +107,10 @@ class OrganizationService:
 
         initial_password = self._generate_password()
         salt = secrets.token_hex(16)
+        avatar_type, avatar_value = self._normalize_avatar(
+            avatar_type=payload.avatar_type,
+            avatar_value=payload.avatar_value,
+        )
 
         async with UnitOfWork(self._repository.session):
             created = await self._repository.create_organization_user(
@@ -109,6 +121,8 @@ class OrganizationService:
                 password_hash=hash_password(initial_password, salt),
                 password_salt=salt,
                 is_active=payload.is_active,
+                avatar_type=avatar_type,
+                avatar_value=avatar_value,
                 created_at=datetime.now(UTC),
             )
             await self._repository.set_organization_user_roles(
@@ -145,6 +159,10 @@ class OrganizationService:
         next_active = existing.is_active if payload.is_active is None else payload.is_active
         if user_id == current_user.id and not next_active:
             raise OrganizationSelfDeactivateError
+        avatar_type, avatar_value = self._normalize_avatar(
+            avatar_type=payload.avatar_type or existing.avatar_type,
+            avatar_value=payload.avatar_value if payload.avatar_value is not None else existing.avatar_value,
+        )
 
         async with UnitOfWork(self._repository.session):
             updated = await self._repository.update_organization_user(
@@ -152,6 +170,8 @@ class OrganizationService:
                 display_name=(payload.display_name or existing.display_name).strip(),
                 department_id=next_department_id,
                 is_active=next_active,
+                avatar_type=avatar_type,
+                avatar_value=avatar_value,
             )
             if updated is None:
                 raise OrganizationUserNotFoundError
@@ -181,6 +201,8 @@ class OrganizationService:
                 display_name=existing.display_name,
                 department_id=existing.department_id,
                 is_active=False,
+                avatar_type=existing.avatar_type,
+                avatar_value=existing.avatar_value,
             )
 
         if updated is None:
@@ -269,6 +291,21 @@ class OrganizationService:
         if SUPER_ADMIN_PERMISSION not in current_user.permissions:
             raise OrganizationPermissionDeniedError
 
+    def _normalize_avatar(self, *, avatar_type: str, avatar_value: str) -> tuple[AvatarType, str]:
+        normalized_type = avatar_type if avatar_type in {"preset", "upload"} else DEFAULT_AVATAR_TYPE
+        normalized_value = avatar_value.strip() or DEFAULT_AVATAR_VALUE
+
+        if normalized_type == "preset":
+            if normalized_value not in ORGANIZATION_AVATAR_PRESETS:
+                raise OrganizationInvalidAvatarError
+            return "preset", normalized_value
+
+        if not normalized_value.startswith("data:image/"):
+            raise OrganizationInvalidAvatarError
+        if ";base64," not in normalized_value[:64]:
+            raise OrganizationInvalidAvatarError
+        return "upload", normalized_value
+
     def _user_response(self, row: OrganizationUserRow) -> OrganizationUserResponse:
         return OrganizationUserResponse(
             id=row.id,
@@ -276,6 +313,8 @@ class OrganizationService:
             display_name=row.display_name,
             department_id=row.department_id,
             department_name=row.department_name,
+            avatar_type=self._response_avatar_type(row.avatar_type),
+            avatar_value=row.avatar_value or DEFAULT_AVATAR_VALUE,
             roles=[self._role_response(role) for role in row.roles],
             is_active=row.is_active,
             created_at=row.created_at,
@@ -300,6 +339,11 @@ class OrganizationService:
 
     def _permission_response(self, row: PermissionRow) -> OrganizationPermissionResponse:
         return OrganizationPermissionResponse(id=row.id, code=row.code, name=row.name)
+
+    def _response_avatar_type(self, avatar_type: str) -> AvatarType:
+        if avatar_type == "upload":
+            return "upload"
+        return "preset"
 
     def _generate_password(self) -> str:
         alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789"

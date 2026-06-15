@@ -53,6 +53,7 @@ async def test_product_create_detail_search_and_export(
     product = create_response.json()["data"]
     assert product["code"] == "P-BAG-001"
     assert product["customs_code"] == "4202920000"
+    assert product["status"] == "active"
     assert product["accessories"][0]["accessory_name"] == "棉绳"
     assert product["accessories"][0]["unit_consumption"] == "0.45"
 
@@ -116,6 +117,93 @@ async def test_product_accessory_can_be_added_after_create(
     )
     accessories = detail_response.json()["data"]["accessories"]
     assert [item["accessory_name"] for item in accessories] == ["棉绳", "金属扣"]
+
+
+async def test_product_can_be_updated_and_deactivated(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    create_response = await api_client.post(
+        "/api/v1/masterdata/products",
+        headers={"Authorization": f"Bearer {token}"},
+        json=_product_payload(code="P-BAG-003"),
+    )
+    product = create_response.json()["data"]
+
+    update_payload = _product_payload(code="P-BAG-003")
+    update_payload.update(
+        {
+            "cn_name": "环保购物袋-更新",
+            "en_name": "Eco Shopping Bag Updated",
+            "package_info": "50 pcs/carton",
+            "status": "active",
+        }
+    )
+    update_payload.pop("accessories")
+    update_response = await api_client.put(
+        f"/api/v1/masterdata/products/{product['id']}",
+        headers={"Authorization": f"Bearer {token}"},
+        json=update_payload,
+    )
+    assert update_response.status_code == 200
+    assert update_response.json()["data"]["cn_name"] == "环保购物袋-更新"
+    assert update_response.json()["data"]["package_info"] == "50 pcs/carton"
+
+    deactivate_response = await api_client.delete(
+        f"/api/v1/masterdata/products/{product['id']}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert deactivate_response.status_code == 200
+    assert deactivate_response.json()["data"]["status"] == "inactive"
+
+    list_response = await api_client.get(
+        "/api/v1/masterdata/products",
+        headers={"Authorization": f"Bearer {token}"},
+        params={"q": "P-BAG-003"},
+    )
+    assert list_response.status_code == 200
+    assert list_response.json()["data"]["total"] == 0
+
+
+async def test_product_accessory_can_be_updated_and_deleted(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    create_response = await api_client.post(
+        "/api/v1/masterdata/products",
+        headers={"Authorization": f"Bearer {token}"},
+        json=_product_payload(code="P-BAG-004"),
+    )
+    product = create_response.json()["data"]
+    accessory = product["accessories"][0]
+
+    update_response = await api_client.put(
+        f"/api/v1/masterdata/products/{product['id']}/accessories/{accessory['id']}",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "accessory_name": "棉绳-更新",
+            "unit_consumption": "0.55",
+            "unit": "m",
+            "default_supplier_name": "远景辅料供应商",
+            "purchase_split_rule": "by_accessory",
+        },
+    )
+    assert update_response.status_code == 200
+    assert update_response.json()["data"]["accessory_name"] == "棉绳-更新"
+
+    delete_response = await api_client.delete(
+        f"/api/v1/masterdata/products/{product['id']}/accessories/{accessory['id']}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert delete_response.status_code == 200
+
+    detail_response = await api_client.get(
+        f"/api/v1/masterdata/products/{product['id']}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert detail_response.json()["data"]["accessories"] == []
 
 
 async def test_product_endpoints_require_login(

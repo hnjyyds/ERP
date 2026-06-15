@@ -31,6 +31,8 @@ class UserIdentityRow:
     username: str
     display_name: str
     department_name: str
+    avatar_type: str
+    avatar_value: str
     password_hash: str
     password_salt: str
     roles: list[str]
@@ -43,6 +45,8 @@ class AssignableUserRow:
     username: str
     display_name: str
     department_name: str
+    avatar_type: str
+    avatar_value: str
 
 
 @dataclass(frozen=True)
@@ -75,6 +79,8 @@ class OrganizationUserRow:
     display_name: str
     department_id: str
     department_name: str
+    avatar_type: str
+    avatar_value: str
     roles: list[RoleRow]
     is_active: bool
     created_at: datetime
@@ -137,6 +143,8 @@ class AuthRepository:
                 username=user.username,
                 display_name=user.display_name,
                 department_name=department.name,
+                avatar_type=user.avatar_type,
+                avatar_value=user.avatar_value,
             )
             for user, department in rows
         ]
@@ -156,6 +164,8 @@ class AuthRepository:
                 username=user.username,
                 display_name=user.display_name,
                 department_name=department.name,
+                avatar_type=user.avatar_type,
+                avatar_value=user.avatar_value,
             )
             for user, department in rows
         }
@@ -243,6 +253,8 @@ class AuthRepository:
         password_hash: str,
         password_salt: str,
         is_active: bool,
+        avatar_type: str,
+        avatar_value: str,
         created_at: datetime,
     ) -> OrganizationUserRow:
         user = User(
@@ -253,6 +265,8 @@ class AuthRepository:
             password_hash=password_hash,
             password_salt=password_salt,
             is_active=is_active,
+            avatar_type=avatar_type,
+            avatar_value=avatar_value,
             created_at=created_at,
         )
         self.session.add(user)
@@ -266,6 +280,8 @@ class AuthRepository:
         display_name: str,
         department_id: str,
         is_active: bool,
+        avatar_type: str,
+        avatar_value: str,
     ) -> OrganizationUserRow | None:
         user = await self.session.scalar(select(User).where(User.id == user_id))
         if user is None:
@@ -273,6 +289,8 @@ class AuthRepository:
         user.display_name = display_name
         user.department_id = department_id
         user.is_active = is_active
+        user.avatar_type = avatar_type
+        user.avatar_value = avatar_value
         await self.session.flush()
         return await self._organization_user_row(user)
 
@@ -328,6 +346,23 @@ class AuthRepository:
         await self.session.flush()
         return await self._organization_user_row(user)
 
+    async def update_user_avatar(
+        self,
+        *,
+        user_id: str,
+        avatar_type: str,
+        avatar_value: str,
+    ) -> UserIdentityRow | None:
+        user = await self.session.scalar(
+            select(User).where(User.id == user_id, User.is_active.is_(True))
+        )
+        if user is None:
+            return None
+        user.avatar_type = avatar_type
+        user.avatar_value = avatar_value
+        await self.session.flush()
+        return await self._identity_for_user(user)
+
     async def _identity_for_user(self, user: User) -> UserIdentityRow:
         department = await self.session.scalar(
             select(Department).where(Department.id == user.department_id)
@@ -354,6 +389,8 @@ class AuthRepository:
             username=user.username,
             display_name=user.display_name,
             department_name=department.name if department else "",
+            avatar_type=user.avatar_type,
+            avatar_value=user.avatar_value,
             password_hash=user.password_hash,
             password_salt=user.password_salt,
             roles=roles,
@@ -371,6 +408,8 @@ class AuthRepository:
             display_name=user.display_name,
             department_id=user.department_id,
             department_name=department.name if department else "",
+            avatar_type=user.avatar_type,
+            avatar_value=user.avatar_value,
             roles=roles,
             is_active=user.is_active,
             created_at=user.created_at,
