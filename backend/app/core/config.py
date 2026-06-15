@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     app_name: str = "Yuanjing Trade Management API"
     api_v1_prefix: str = "/api/v1"
     database_url: str = "sqlite+aiosqlite:///./.data/yuanjing.db"
-    seed_demo_data: bool = True
+    seed_demo_data: bool = False
     demo_user_id: str = "u-001"
     auth_secret_key: str = "dev-only-change-me"
 

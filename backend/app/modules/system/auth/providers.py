@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_session
 from app.core.config import get_settings
+from app.modules.system.auth.organization_services import OrganizationService
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.services import AuthService, TokenService
 
@@ -17,3 +18,9 @@ async def get_auth_service(
         repository=AuthRepository(session),
         token_service=TokenService(secret_key=settings.auth_secret_key),
     )
+
+
+async def get_organization_service(
+    session: Annotated[AsyncSession, Depends(get_session)],
+) -> OrganizationService:
+    return OrganizationService(repository=AuthRepository(session))

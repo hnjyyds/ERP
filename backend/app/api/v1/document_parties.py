@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -30,11 +30,11 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少单证资料权限")
 
 
-def _raise_invalid_party_type() -> None:
+def _raise_invalid_party_type() -> NoReturn:
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail="单证资料类型无效",
@@ -58,11 +58,11 @@ async def list_document_parties(
             party_type=party_type,
             customer_id=customer_id,
         )
+        return ApiResponse(data=parties)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_party_type()
-    return ApiResponse(data=parties)
 
 
 @router.post(
@@ -79,11 +79,11 @@ async def create_document_party(
     user = await _current_user(token, auth_service)
     try:
         party = await service.create_party(current_user=user, payload=payload)
+        return ApiResponse(data=party)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_party_type()
-    return ApiResponse(data=party)
 
 
 @router.get("/lookup", response_model=ApiResponse[DocumentPartyListResponse])
@@ -101,11 +101,11 @@ async def lookup_document_parties(
             party_type=party_type,
             customer_id=customer_id,
         )
+        return ApiResponse(data=parties)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_party_type()
-    return ApiResponse(data=parties)
 
 
 @router.get("/{party_id}", response_model=ApiResponse[DocumentPartyResponse])
@@ -118,6 +118,7 @@ async def get_document_party(
     user = await _current_user(token, auth_service)
     try:
         party = await service.get_party(current_user=user, party_id=party_id)
+        return ApiResponse(data=party)
     except PermissionDeniedError:
         _raise_permission_denied()
     except DocumentPartyNotFoundError:
@@ -125,7 +126,6 @@ async def get_document_party(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="单证资料不存在",
         ) from None
-    return ApiResponse(data=party)
 
 
 @router.put("/{party_id}", response_model=ApiResponse[DocumentPartyResponse])
@@ -143,6 +143,7 @@ async def update_document_party(
             party_id=party_id,
             payload=payload,
         )
+        return ApiResponse(data=party)
     except PermissionDeniedError:
         _raise_permission_denied()
     except DocumentPartyNotFoundError:
@@ -152,4 +153,3 @@ async def update_document_party(
         ) from None
     except ValueError:
         _raise_invalid_party_type()
-    return ApiResponse(data=party)

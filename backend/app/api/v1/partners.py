@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -33,11 +33,11 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少合作伙伴权限")
 
 
-def _raise_invalid_partner_type() -> None:
+def _raise_invalid_partner_type() -> NoReturn:
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail="合作伙伴类型无效",
@@ -59,11 +59,11 @@ async def list_partners(
             q=q,
             partner_type=partner_type,
         )
+        return ApiResponse(data=partners)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_partner_type()
-    return ApiResponse(data=partners)
 
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=ApiResponse[PartnerResponse])
@@ -76,11 +76,11 @@ async def create_partner(
     user = await _current_user(token, auth_service)
     try:
         partner = await service.create_partner(current_user=user, payload=payload)
+        return ApiResponse(data=partner)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_partner_type()
-    return ApiResponse(data=partner)
 
 
 @router.get("/{partner_id}", response_model=ApiResponse[PartnerResponse])
@@ -93,6 +93,7 @@ async def get_partner(
     user = await _current_user(token, auth_service)
     try:
         partner = await service.get_partner(current_user=user, partner_id=partner_id)
+        return ApiResponse(data=partner)
     except PermissionDeniedError:
         _raise_permission_denied()
     except PartnerNotFoundError:
@@ -100,7 +101,6 @@ async def get_partner(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="合作伙伴不存在",
         ) from None
-    return ApiResponse(data=partner)
 
 
 @router.put("/{partner_id}", response_model=ApiResponse[PartnerResponse])
@@ -118,6 +118,7 @@ async def update_partner(
             partner_id=partner_id,
             payload=payload,
         )
+        return ApiResponse(data=partner)
     except PermissionDeniedError:
         _raise_permission_denied()
     except PartnerNotFoundError:
@@ -127,7 +128,6 @@ async def update_partner(
         ) from None
     except ValueError:
         _raise_invalid_partner_type()
-    return ApiResponse(data=partner)
 
 
 @router.post(
@@ -149,6 +149,7 @@ async def add_partner_contact(
             partner_id=partner_id,
             payload=payload,
         )
+        return ApiResponse(data=contact)
     except PermissionDeniedError:
         _raise_permission_denied()
     except PartnerNotFoundError:
@@ -156,7 +157,6 @@ async def add_partner_contact(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="合作伙伴不存在",
         ) from None
-    return ApiResponse(data=contact)
 
 
 @router.get(
@@ -175,6 +175,7 @@ async def list_partner_fee_records(
             current_user=user,
             partner_id=partner_id,
         )
+        return ApiResponse(data=fee_records)
     except PermissionDeniedError:
         _raise_permission_denied()
     except PartnerNotFoundError:
@@ -182,4 +183,3 @@ async def list_partner_fee_records(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="合作伙伴不存在",
         ) from None
-    return ApiResponse(data=fee_records)

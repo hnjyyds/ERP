@@ -7,6 +7,7 @@ from app.modules.system.dashboard.repositories import (
     NotificationRow,
     ScheduleEventRow,
     ShortcutRow,
+    TodoAssigneeRow,
     TodoTaskRow,
 )
 from app.modules.system.dashboard.schemas import (
@@ -19,8 +20,15 @@ from app.modules.system.dashboard.schemas import (
     ScheduleEventResponse,
     ShortcutCreate,
     ShortcutResponse,
+    TodoCreate,
+    TodoCreateResponse,
     TodoTaskResponse,
 )
+from app.modules.system.auth.schemas import AssignableUserResponse, CurrentUserResponse
+
+
+class TodoAssigneeNotFoundError(Exception):
+    pass
 
 
 class DashboardService:
@@ -88,6 +96,37 @@ class DashboardService:
             )
         return self._announcement_response(row)
 
+    async def create_todo_tasks(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        payload: TodoCreate,
+        assignees: list[AssignableUserResponse],
+    ) -> TodoCreateResponse:
+        assignees_by_id = {assignee.id: assignee for assignee in assignees}
+        missing_assignees = [
+            user_id for user_id in payload.assignee_user_ids if user_id not in assignees_by_id
+        ]
+        if missing_assignees:
+            raise TodoAssigneeNotFoundError
+
+        ordered_assignees = [
+            TodoAssigneeRow(
+                user_id=assignees_by_id[user_id].id,
+                display_name=assignees_by_id[user_id].display_name,
+            )
+            for user_id in payload.assignee_user_ids
+        ]
+        async with UnitOfWork(self._repository.session):
+            rows = await self._repository.create_todo_tasks(
+                title=payload.title.strip(),
+                content=payload.content.strip(),
+                creator_user_id=current_user.id,
+                creator_user_name=current_user.display_name,
+                assignees=ordered_assignees,
+            )
+        return TodoCreateResponse(items=[self._todo_response(row) for row in rows])
+
     async def mark_notification_read(
         self,
         *,
@@ -142,11 +181,20 @@ class DashboardService:
         return TodoTaskResponse(
             id=row.id,
             owner_user_id=row.owner_user_id,
+            owner_user_name=row.owner_user_name,
+            creator_user_id=row.creator_user_id,
+            creator_user_name=row.creator_user_name,
             title=row.title,
+            content=row.content,
             source_type=row.source_type,
             source_id=row.source_id,
             due_at=row.due_at,
             status=row.status,
+            assignment_type=(
+                "self"
+                if row.source_type == "manual" and row.creator_user_id == row.owner_user_id
+                else "assigned"
+            ),
         )
 
     def _notification_response(self, row: NotificationRow) -> NotificationResponse:

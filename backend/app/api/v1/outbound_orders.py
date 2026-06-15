@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -31,22 +31,22 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少货物出库权限")
 
 
-def _raise_invalid_order() -> None:
+def _raise_invalid_order() -> NoReturn:
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail="货物出库数据无效",
     )
 
 
-def _raise_order_not_found() -> None:
+def _raise_order_not_found() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="出库单不存在")
 
 
-def _raise_plan_not_found() -> None:
+def _raise_plan_not_found() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="出库计划不存在")
 
 
@@ -73,11 +73,11 @@ async def list_outbound_orders(
             customer_id=customer_id,
             source_id=source_id,
         )
+        return ApiResponse(data=orders)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_order()
-    return ApiResponse(data=orders)
 
 
 @router.post(
@@ -94,13 +94,13 @@ async def generate_outbound_order_from_plan(
     user = await _current_user(token, auth_service)
     try:
         order = await service.generate_from_plan(current_user=user, payload=payload)
+        return ApiResponse(data=order)
     except PermissionDeniedError:
         _raise_permission_denied()
     except OutboundOrderPlanNotFoundError:
         _raise_plan_not_found()
     except ValueError:
         _raise_invalid_order()
-    return ApiResponse(data=order)
 
 
 @router.get("/{order_id}", response_model=ApiResponse[OutboundOrderResponse])
@@ -113,11 +113,11 @@ async def get_outbound_order(
     user = await _current_user(token, auth_service)
     try:
         order = await service.get_order(current_user=user, order_id=order_id)
+        return ApiResponse(data=order)
     except PermissionDeniedError:
         _raise_permission_denied()
     except OutboundOrderNotFoundError:
         _raise_order_not_found()
-    return ApiResponse(data=order)
 
 
 @router.post("/{order_id}/submit", response_model=ApiResponse[OutboundOrderResponse])
@@ -130,13 +130,13 @@ async def submit_outbound_order(
     user = await _current_user(token, auth_service)
     try:
         order = await service.submit_order(current_user=user, order_id=order_id)
+        return ApiResponse(data=order)
     except PermissionDeniedError:
         _raise_permission_denied()
     except OutboundOrderNotFoundError:
         _raise_order_not_found()
     except ValueError:
         _raise_invalid_order()
-    return ApiResponse(data=order)
 
 
 @router.post("/{order_id}/approve", response_model=ApiResponse[OutboundOrderResponse])
@@ -150,6 +150,7 @@ async def approve_outbound_order(
     user = await _current_user(token, auth_service)
     try:
         order = await service.approve_order(current_user=user, order_id=order_id, payload=payload)
+        return ApiResponse(data=order)
     except PermissionDeniedError:
         _raise_permission_denied()
     except OutboundOrderNotFoundError:
@@ -158,4 +159,3 @@ async def approve_outbound_order(
         _raise_plan_not_found()
     except ValueError:
         _raise_invalid_order()
-    return ApiResponse(data=order)

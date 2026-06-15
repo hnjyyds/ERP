@@ -1,0 +1,9 @@
+dist
+node_modules
+src/legacy
+package-lock.json
+
+# Baseline files are kept out of Prettier until they are split into smaller modules.
+src/api.ts
+src/app/App.tsx
+src/styles.css

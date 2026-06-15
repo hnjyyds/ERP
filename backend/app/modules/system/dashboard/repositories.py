@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Sequence
 from typing import TypeVar
 
 from sqlalchemy import Select, func, select
@@ -28,7 +29,11 @@ class AnnouncementRow:
 class TodoTaskRow:
     id: str
     owner_user_id: str
+    owner_user_name: str | None
+    creator_user_id: str | None
+    creator_user_name: str | None
     title: str
+    content: str
     source_type: str
     source_id: str | None
     due_at: datetime | None
@@ -67,6 +72,12 @@ class ShortcutRow:
     sort_order: int
 
 
+@dataclass(frozen=True)
+class TodoAssigneeRow:
+    user_id: str
+    display_name: str
+
+
 class DashboardRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
@@ -99,18 +110,7 @@ class DashboardRepository:
             .where(TodoTask.owner_user_id == user_id)
             .order_by(TodoTask.due_at.asc().nulls_last(), TodoTask.id.asc())
         )
-        return [
-            TodoTaskRow(
-                id=item.id,
-                owner_user_id=item.owner_user_id,
-                title=item.title,
-                source_type=item.source_type,
-                source_id=item.source_id,
-                due_at=item.due_at,
-                status=item.status,
-            )
-            for item in await self._scalars(statement)
-        ]
+        return [self._map_todo_task(item) for item in await self._scalars(statement)]
 
     async def list_notifications(self, user_id: str) -> list[NotificationRow]:
         statement = (
@@ -215,6 +215,35 @@ class DashboardRepository:
         await self.session.flush()
         return self._map_announcement(announcement)
 
+    async def create_todo_tasks(
+        self,
+        *,
+        title: str,
+        content: str,
+        creator_user_id: str,
+        creator_user_name: str,
+        assignees: Sequence[TodoAssigneeRow],
+        due_at: datetime | None = None,
+    ) -> list[TodoTaskRow]:
+        tasks = [
+            TodoTask(
+                owner_user_id=assignee.user_id,
+                owner_user_name=assignee.display_name,
+                creator_user_id=creator_user_id,
+                creator_user_name=creator_user_name,
+                title=title,
+                content=content,
+                source_type="manual",
+                source_id=None,
+                due_at=due_at,
+                status="pending",
+            )
+            for assignee in assignees
+        ]
+        self.session.add_all(tasks)
+        await self.session.flush()
+        return [self._map_todo_task(task) for task in tasks]
+
     async def mark_notification_read(
         self,
         *,
@@ -277,6 +306,21 @@ class DashboardRepository:
             title=item.title,
             content=item.content,
             published_at=item.published_at,
+        )
+
+    def _map_todo_task(self, item: TodoTask) -> TodoTaskRow:
+        return TodoTaskRow(
+            id=item.id,
+            owner_user_id=item.owner_user_id,
+            owner_user_name=item.owner_user_name,
+            creator_user_id=item.creator_user_id,
+            creator_user_name=item.creator_user_name,
+            title=item.title,
+            content=item.content,
+            source_type=item.source_type,
+            source_id=item.source_id,
+            due_at=item.due_at,
+            status=item.status,
         )
 
     def _map_notification(self, item: Notification) -> NotificationRow:

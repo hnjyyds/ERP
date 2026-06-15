@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -37,26 +37,26 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少采购跟单权限")
 
 
-def _raise_invalid_followup() -> None:
+def _raise_invalid_followup() -> NoReturn:
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail="采购跟单数据无效",
     )
 
 
-def _raise_template_not_found() -> None:
+def _raise_template_not_found() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="跟单模板不存在")
 
 
-def _raise_plan_not_found() -> None:
+def _raise_plan_not_found() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="跟单计划不存在")
 
 
-def _raise_node_not_found() -> None:
+def _raise_node_not_found() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="跟单节点不存在")
 
 
@@ -69,9 +69,9 @@ async def list_followup_templates(
     user = await _current_user(token, auth_service)
     try:
         templates = await service.list_templates(current_user=user)
+        return ApiResponse(data=templates)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=templates)
 
 
 @router.post(
@@ -88,9 +88,9 @@ async def create_followup_template(
     user = await _current_user(token, auth_service)
     try:
         template = await service.create_template(current_user=user, payload=payload)
+        return ApiResponse(data=template)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=template)
 
 
 @router.put(
@@ -111,11 +111,11 @@ async def update_followup_template(
             template_id=template_id,
             payload=payload,
         )
+        return ApiResponse(data=template)
     except PermissionDeniedError:
         _raise_permission_denied()
     except FollowupTemplateNotFoundError:
         _raise_template_not_found()
-    return ApiResponse(data=template)
 
 
 @router.get("/plans", response_model=ApiResponse[PurchaseFollowPlanListResponse])
@@ -137,11 +137,11 @@ async def list_followup_plans(
             supplier_id=supplier_id,
             purchase_contract_id=purchase_contract_id,
         )
+        return ApiResponse(data=plans)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_followup()
-    return ApiResponse(data=plans)
 
 
 @router.post(
@@ -162,13 +162,13 @@ async def generate_followup_plan_from_purchase_contract(
             purchase_contract_id=payload.purchase_contract_id,
             as_of=payload.as_of,
         )
+        return ApiResponse(data=plan)
     except PermissionDeniedError:
         _raise_permission_denied()
     except FollowupPlanNotFoundError:
         _raise_plan_not_found()
     except ValueError:
         _raise_invalid_followup()
-    return ApiResponse(data=plan)
 
 
 @router.get(
@@ -184,9 +184,9 @@ async def list_overdue_followup_nodes(
     user = await _current_user(token, auth_service)
     try:
         overdue = await service.scan_overdue_nodes(current_user=user, as_of=as_of)
+        return ApiResponse(data=overdue)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=overdue)
 
 
 @router.post("/sample-events", response_model=ApiResponse[PurchaseFollowPlanResponse])
@@ -202,11 +202,11 @@ async def sync_followup_sample_events(
             current_user=user,
             purchase_contract_id=payload.purchase_contract_id,
         )
+        return ApiResponse(data=plan)
     except PermissionDeniedError:
         _raise_permission_denied()
     except FollowupPlanNotFoundError:
         _raise_plan_not_found()
-    return ApiResponse(data=plan)
 
 
 @router.post("/source-events", response_model=ApiResponse[PurchaseFollowPlanResponse])
@@ -219,13 +219,13 @@ async def sync_followup_source_event(
     user = await _current_user(token, auth_service)
     try:
         plan = await service.sync_source_event(current_user=user, payload=payload)
+        return ApiResponse(data=plan)
     except PermissionDeniedError:
         _raise_permission_denied()
     except FollowupPlanNotFoundError:
         _raise_plan_not_found()
     except FollowupNodeNotFoundError:
         _raise_node_not_found()
-    return ApiResponse(data=plan)
 
 
 @router.get("/{plan_id}", response_model=ApiResponse[PurchaseFollowPlanResponse])
@@ -238,8 +238,8 @@ async def get_followup_plan(
     user = await _current_user(token, auth_service)
     try:
         plan = await service.get_plan(current_user=user, plan_id=plan_id)
+        return ApiResponse(data=plan)
     except PermissionDeniedError:
         _raise_permission_denied()
     except FollowupPlanNotFoundError:
         _raise_plan_not_found()
-    return ApiResponse(data=plan)

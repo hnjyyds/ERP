@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -31,18 +31,18 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少出货明细权限")
 
 
-def _raise_invalid_shipment() -> None:
+def _raise_invalid_shipment() -> NoReturn:
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail="出货明细数据无效",
     )
 
 
-def _raise_shipment_not_found() -> None:
+def _raise_shipment_not_found() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="出货明细不存在")
 
 
@@ -65,11 +65,11 @@ async def list_shipments(
             customer_id=customer_id,
             contract_id=contract_id,
         )
+        return ApiResponse(data=shipments)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_shipment()
-    return ApiResponse(data=shipments)
 
 
 @router.post(
@@ -89,13 +89,13 @@ async def generate_shipment_from_contracts(
             current_user=user,
             payload=payload,
         )
+        return ApiResponse(data=shipment)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ShipmentNotFoundError:
         _raise_shipment_not_found()
     except ValueError:
         _raise_invalid_shipment()
-    return ApiResponse(data=shipment)
 
 
 @router.get("/reminders", response_model=ApiResponse[ShipmentReminderListResponse])
@@ -107,9 +107,9 @@ async def list_shipment_reminders(
     user = await _current_user(token, auth_service)
     try:
         reminders = await service.list_reminders(current_user=user)
+        return ApiResponse(data=reminders)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=reminders)
 
 
 @router.get("/{shipment_id}", response_model=ApiResponse[ShipmentPlanResponse])
@@ -122,11 +122,11 @@ async def get_shipment(
     user = await _current_user(token, auth_service)
     try:
         shipment = await service.get_shipment(current_user=user, shipment_id=shipment_id)
+        return ApiResponse(data=shipment)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ShipmentNotFoundError:
         _raise_shipment_not_found()
-    return ApiResponse(data=shipment)
 
 
 @router.post("/{shipment_id}/submit", response_model=ApiResponse[ShipmentPlanResponse])
@@ -142,13 +142,13 @@ async def submit_shipment(
             current_user=user,
             shipment_id=shipment_id,
         )
+        return ApiResponse(data=shipment)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ShipmentNotFoundError:
         _raise_shipment_not_found()
     except ValueError:
         _raise_invalid_shipment()
-    return ApiResponse(data=shipment)
 
 
 @router.post("/{shipment_id}/approve", response_model=ApiResponse[ShipmentPlanResponse])
@@ -166,10 +166,10 @@ async def approve_shipment(
             shipment_id=shipment_id,
             payload=payload,
         )
+        return ApiResponse(data=shipment)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ShipmentNotFoundError:
         _raise_shipment_not_found()
     except ValueError:
         _raise_invalid_shipment()
-    return ApiResponse(data=shipment)

@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -31,11 +31,11 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少经理查询权限")
 
 
-def _raise_unprocessable(message: str) -> None:
+def _raise_unprocessable(message: str) -> NoReturn:
     raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=message)
 
 
@@ -60,11 +60,11 @@ async def list_approval_documents(
             date_from=date_from,
             date_to=date_to,
         )
+        return ApiResponse(data=approvals)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError as exc:
         _raise_unprocessable(str(exc))
-    return ApiResponse(data=approvals)
 
 
 @router.get("/statistics", response_model=ApiResponse[ReportingStatisticsResponse])
@@ -90,8 +90,8 @@ async def get_reporting_statistics(
             sales_user_id=sales_user_id,
             approval_status=approval_status,
         )
+        return ApiResponse(data=statistics)
     except StatisticsPermissionDeniedError:
         _raise_permission_denied()
     except ValueError as exc:
         _raise_unprocessable(str(exc))
-    return ApiResponse(data=statistics)

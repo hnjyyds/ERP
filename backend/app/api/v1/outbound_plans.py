@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -31,22 +31,22 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少出库计划权限")
 
 
-def _raise_invalid_plan() -> None:
+def _raise_invalid_plan() -> NoReturn:
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail="出库计划数据无效",
     )
 
 
-def _raise_plan_not_found() -> None:
+def _raise_plan_not_found() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="出库计划不存在")
 
 
-def _raise_shipment_not_found() -> None:
+def _raise_shipment_not_found() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="出货明细不存在")
 
 
@@ -73,11 +73,11 @@ async def list_outbound_plans(
             customer_id=customer_id,
             source_id=source_id,
         )
+        return ApiResponse(data=plans)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_plan()
-    return ApiResponse(data=plans)
 
 
 @router.post(
@@ -94,13 +94,13 @@ async def generate_outbound_plan_from_shipment(
     user = await _current_user(token, auth_service)
     try:
         plan = await service.generate_from_shipment(current_user=user, payload=payload)
+        return ApiResponse(data=plan)
     except PermissionDeniedError:
         _raise_permission_denied()
     except OutboundPlanShipmentNotFoundError:
         _raise_shipment_not_found()
     except ValueError:
         _raise_invalid_plan()
-    return ApiResponse(data=plan)
 
 
 @router.get("/{plan_id}", response_model=ApiResponse[OutboundPlanResponse])
@@ -113,11 +113,11 @@ async def get_outbound_plan(
     user = await _current_user(token, auth_service)
     try:
         plan = await service.get_plan(current_user=user, plan_id=plan_id)
+        return ApiResponse(data=plan)
     except PermissionDeniedError:
         _raise_permission_denied()
     except OutboundPlanNotFoundError:
         _raise_plan_not_found()
-    return ApiResponse(data=plan)
 
 
 @router.post("/{plan_id}/schedule", response_model=ApiResponse[OutboundPlanResponse])
@@ -131,10 +131,10 @@ async def schedule_outbound_plan(
     user = await _current_user(token, auth_service)
     try:
         plan = await service.schedule_plan(current_user=user, plan_id=plan_id, payload=payload)
+        return ApiResponse(data=plan)
     except PermissionDeniedError:
         _raise_permission_denied()
     except OutboundPlanNotFoundError:
         _raise_plan_not_found()
     except ValueError:
         _raise_invalid_plan()
-    return ApiResponse(data=plan)

@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -34,11 +34,11 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少打样管理权限")
 
 
-def _raise_invalid_sample_request() -> None:
+def _raise_invalid_sample_request() -> NoReturn:
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail="打样数据无效",
@@ -62,11 +62,11 @@ async def list_sample_requests(
             status=status_filter,
             customer_id=customer_id,
         )
+        return ApiResponse(data=requests)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_sample_request()
-    return ApiResponse(data=requests)
 
 
 @router.post(
@@ -83,11 +83,11 @@ async def create_sample_request(
     user = await _current_user(token, auth_service)
     try:
         sample_request = await service.create_request(current_user=user, payload=payload)
+        return ApiResponse(data=sample_request)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_sample_request()
-    return ApiResponse(data=sample_request)
 
 
 @router.get("/{request_id}", response_model=ApiResponse[SampleRequestResponse])
@@ -100,11 +100,11 @@ async def get_sample_request(
     user = await _current_user(token, auth_service)
     try:
         sample_request = await service.get_request(current_user=user, request_id=request_id)
+        return ApiResponse(data=sample_request)
     except PermissionDeniedError:
         _raise_permission_denied()
     except SampleRequestNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="打样单不存在") from None
-    return ApiResponse(data=sample_request)
 
 
 @router.post(
@@ -126,13 +126,13 @@ async def add_sample_progress(
             request_id=request_id,
             payload=payload,
         )
+        return ApiResponse(data=progress)
     except PermissionDeniedError:
         _raise_permission_denied()
     except SampleRequestNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="打样单不存在") from None
     except ValueError:
         _raise_invalid_sample_request()
-    return ApiResponse(data=progress)
 
 
 @router.post(
@@ -154,11 +154,11 @@ async def add_sample_fee(
             request_id=request_id,
             payload=payload,
         )
+        return ApiResponse(data=fee)
     except PermissionDeniedError:
         _raise_permission_denied()
     except SampleRequestNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="打样单不存在") from None
-    return ApiResponse(data=fee)
 
 
 @router.post(
@@ -179,6 +179,7 @@ async def request_sample_fee_payment(
             request_id=request_id,
             fee_id=fee_id,
         )
+        return ApiResponse(data=fee)
     except PermissionDeniedError:
         _raise_permission_denied()
     except SampleRequestNotFoundError:
@@ -191,4 +192,3 @@ async def request_sample_fee_payment(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="打样费用不存在",
         ) from None
-    return ApiResponse(data=fee)

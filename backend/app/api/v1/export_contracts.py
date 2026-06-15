@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -34,18 +34,18 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少出口合同权限")
 
 
-def _raise_invalid_contract() -> None:
+def _raise_invalid_contract() -> NoReturn:
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail="出口合同数据无效",
     )
 
 
-def _raise_contract_not_found() -> None:
+def _raise_contract_not_found() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="出口合同不存在")
 
 
@@ -66,11 +66,11 @@ async def list_export_contracts(
             approval_status=approval_status,
             customer_id=customer_id,
         )
+        return ApiResponse(data=contracts)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_contract()
-    return ApiResponse(data=contracts)
 
 
 @router.post(
@@ -87,9 +87,9 @@ async def create_export_contract(
     user = await _current_user(token, auth_service)
     try:
         contract = await service.create_contract(current_user=user, payload=payload)
+        return ApiResponse(data=contract)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=contract)
 
 
 @router.get("/{contract_id}", response_model=ApiResponse[ExportContractResponse])
@@ -102,11 +102,11 @@ async def get_export_contract(
     user = await _current_user(token, auth_service)
     try:
         contract = await service.get_contract(current_user=user, contract_id=contract_id)
+        return ApiResponse(data=contract)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ExportContractNotFoundError:
         _raise_contract_not_found()
-    return ApiResponse(data=contract)
 
 
 @router.put("/{contract_id}", response_model=ApiResponse[ExportContractResponse])
@@ -124,13 +124,13 @@ async def update_export_contract(
             contract_id=contract_id,
             payload=payload,
         )
+        return ApiResponse(data=contract)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ExportContractNotFoundError:
         _raise_contract_not_found()
     except ValueError:
         _raise_invalid_contract()
-    return ApiResponse(data=contract)
 
 
 @router.post("/{contract_id}/submit", response_model=ApiResponse[ExportContractResponse])
@@ -146,13 +146,13 @@ async def submit_export_contract(
             current_user=user,
             contract_id=contract_id,
         )
+        return ApiResponse(data=contract)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ExportContractNotFoundError:
         _raise_contract_not_found()
     except ValueError:
         _raise_invalid_contract()
-    return ApiResponse(data=contract)
 
 
 @router.post("/{contract_id}/approve", response_model=ApiResponse[ExportContractResponse])
@@ -170,13 +170,13 @@ async def approve_export_contract(
             contract_id=contract_id,
             payload=payload,
         )
+        return ApiResponse(data=contract)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ExportContractNotFoundError:
         _raise_contract_not_found()
     except ValueError:
         _raise_invalid_contract()
-    return ApiResponse(data=contract)
 
 
 @router.post("/{contract_id}/signature", response_model=ApiResponse[ExportContractResponse])
@@ -194,11 +194,11 @@ async def register_export_contract_signature(
             contract_id=contract_id,
             payload=payload,
         )
+        return ApiResponse(data=contract)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ExportContractNotFoundError:
         _raise_contract_not_found()
-    return ApiResponse(data=contract)
 
 
 @router.post(
@@ -220,11 +220,11 @@ async def add_export_contract_advance_payment(
             contract_id=contract_id,
             payload=payload,
         )
+        return ApiResponse(data=payment)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ExportContractNotFoundError:
         _raise_contract_not_found()
-    return ApiResponse(data=payment)
 
 
 @router.get("/{contract_id}/export", response_model=ApiResponse[ExportContractExportResponse])
@@ -242,10 +242,10 @@ async def export_export_contract(
             contract_id=contract_id,
             export_format=export_format,
         )
+        return ApiResponse(data=export)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ExportContractNotFoundError:
         _raise_contract_not_found()
     except ValueError:
         _raise_invalid_contract()
-    return ApiResponse(data=export)

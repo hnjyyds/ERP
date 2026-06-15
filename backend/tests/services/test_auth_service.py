@@ -41,6 +41,7 @@ async def test_auth_service_verifies_password_and_token_round_trip(
         "货物入库",
         "出库计划",
         "货物出库",
+        "经理查询",
     ]
 
 

@@ -34,6 +34,7 @@ from app.modules.sample.requests import models as sample_request_models  # noqa:
 from app.modules.system.auth import models as auth_models  # noqa: F401
 from app.modules.system.auth.seed import seed_system_demo_data
 from app.modules.system.dashboard import models as dashboard_models  # noqa: F401
+from app.modules.system.dashboard.migrations import ensure_dashboard_schema
 from app.modules.system.dashboard.seed import seed_dashboard_demo_data
 from app.modules.warehouse.inbound_orders import models as inbound_order_models  # noqa: F401
 from app.modules.warehouse.inbound_plans import models as inbound_plan_models  # noqa: F401
@@ -46,6 +47,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
     async with engine.begin() as connection:
         await connection.run_sync(Base.metadata.create_all)
+        await connection.run_sync(ensure_dashboard_schema)
 
     if settings.seed_demo_data:
         async with SessionLocal() as session:

@@ -25,6 +25,6 @@ async def list_current_user_menus(
 ) -> ApiResponse[MenuListResponse]:
     try:
         menus = await service.get_menus(token)
+        return ApiResponse(data=menus)
     except InvalidTokenError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
-    return ApiResponse(data=menus)

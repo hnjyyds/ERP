@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -35,18 +35,18 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少出口报价权限")
 
 
-def _raise_invalid_quotation() -> None:
+def _raise_invalid_quotation() -> NoReturn:
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail="出口报价数据无效",
     )
 
 
-def _raise_quotation_not_found() -> None:
+def _raise_quotation_not_found() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="出口报价不存在")
 
 
@@ -67,11 +67,11 @@ async def list_export_quotations(
             approval_status=approval_status,
             customer_id=customer_id,
         )
+        return ApiResponse(data=quotations)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_quotation()
-    return ApiResponse(data=quotations)
 
 
 @router.post(
@@ -88,9 +88,9 @@ async def create_export_quotation(
     user = await _current_user(token, auth_service)
     try:
         quotation = await service.create_quotation(current_user=user, payload=payload)
+        return ApiResponse(data=quotation)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=quotation)
 
 
 @router.get("/history", response_model=ApiResponse[ExportQuotationListResponse])
@@ -108,9 +108,9 @@ async def get_export_quotation_history(
             customer_id=customer_id,
             product_id=product_id,
         )
+        return ApiResponse(data=history)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=history)
 
 
 @router.get(
@@ -129,9 +129,9 @@ async def get_export_quotation_purchase_references(
             current_user=user,
             product_id=product_id,
         )
+        return ApiResponse(data=references)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=references)
 
 
 @router.get("/{quotation_id}", response_model=ApiResponse[ExportQuotationResponse])
@@ -144,11 +144,11 @@ async def get_export_quotation(
     user = await _current_user(token, auth_service)
     try:
         quotation = await service.get_quotation(current_user=user, quotation_id=quotation_id)
+        return ApiResponse(data=quotation)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ExportQuotationNotFoundError:
         _raise_quotation_not_found()
-    return ApiResponse(data=quotation)
 
 
 @router.put("/{quotation_id}", response_model=ApiResponse[ExportQuotationResponse])
@@ -166,13 +166,13 @@ async def update_export_quotation(
             quotation_id=quotation_id,
             payload=payload,
         )
+        return ApiResponse(data=quotation)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ExportQuotationNotFoundError:
         _raise_quotation_not_found()
     except ValueError:
         _raise_invalid_quotation()
-    return ApiResponse(data=quotation)
 
 
 @router.post("/{quotation_id}/submit", response_model=ApiResponse[ExportQuotationResponse])
@@ -188,13 +188,13 @@ async def submit_export_quotation(
             current_user=user,
             quotation_id=quotation_id,
         )
+        return ApiResponse(data=quotation)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ExportQuotationNotFoundError:
         _raise_quotation_not_found()
     except ValueError:
         _raise_invalid_quotation()
-    return ApiResponse(data=quotation)
 
 
 @router.post("/{quotation_id}/approve", response_model=ApiResponse[ExportQuotationResponse])
@@ -212,13 +212,13 @@ async def approve_export_quotation(
             quotation_id=quotation_id,
             payload=payload,
         )
+        return ApiResponse(data=quotation)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ExportQuotationNotFoundError:
         _raise_quotation_not_found()
     except ValueError:
         _raise_invalid_quotation()
-    return ApiResponse(data=quotation)
 
 
 @router.post(
@@ -239,13 +239,13 @@ async def confirm_export_quotation_contract(
             quotation_id=quotation_id,
             payload=payload,
         )
+        return ApiResponse(data=contract)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ExportQuotationNotFoundError:
         _raise_quotation_not_found()
     except ValueError:
         _raise_invalid_quotation()
-    return ApiResponse(data=contract)
 
 
 @router.get(
@@ -264,11 +264,11 @@ async def get_export_quotation_sample_deliveries(
             current_user=user,
             quotation_id=quotation_id,
         )
+        return ApiResponse(data=deliveries)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ExportQuotationNotFoundError:
         _raise_quotation_not_found()
-    return ApiResponse(data=deliveries)
 
 
 @router.get("/{quotation_id}/export", response_model=ApiResponse[ExportQuotationExportResponse])
@@ -286,10 +286,10 @@ async def export_export_quotation(
             quotation_id=quotation_id,
             export_format=export_format,
         )
+        return ApiResponse(data=export)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ExportQuotationNotFoundError:
         _raise_quotation_not_found()
     except ValueError:
         _raise_invalid_quotation()
-    return ApiResponse(data=export)

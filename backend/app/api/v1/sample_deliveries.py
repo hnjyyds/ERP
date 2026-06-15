@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -33,11 +33,11 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少寄样管理权限")
 
 
-def _raise_invalid_sample_delivery() -> None:
+def _raise_invalid_sample_delivery() -> NoReturn:
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail="寄样数据无效",
@@ -63,11 +63,11 @@ async def list_sample_deliveries(
             customer_id=customer_id,
             express_company=express_company,
         )
+        return ApiResponse(data=deliveries)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_sample_delivery()
-    return ApiResponse(data=deliveries)
 
 
 @router.post(
@@ -84,11 +84,11 @@ async def create_sample_delivery(
     user = await _current_user(token, auth_service)
     try:
         delivery = await service.create_delivery(current_user=user, payload=payload)
+        return ApiResponse(data=delivery)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_sample_delivery()
-    return ApiResponse(data=delivery)
 
 
 @router.put("/{delivery_id}", response_model=ApiResponse[SampleDeliveryResponse])
@@ -106,13 +106,13 @@ async def update_sample_delivery(
             delivery_id=delivery_id,
             payload=payload,
         )
+        return ApiResponse(data=delivery)
     except PermissionDeniedError:
         _raise_permission_denied()
     except SampleDeliveryNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="寄样单不存在") from None
     except ValueError:
         _raise_invalid_sample_delivery()
-    return ApiResponse(data=delivery)
 
 
 @router.get("/fee-statistics", response_model=ApiResponse[SampleDeliveryFeeStatisticsResponse])
@@ -134,9 +134,9 @@ async def get_sample_delivery_fee_statistics(
             date_to=date_to,
             express_company=express_company,
         )
+        return ApiResponse(data=statistics)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=statistics)
 
 
 @router.get(
@@ -155,9 +155,9 @@ async def get_sample_delivery_history(
             current_user=user,
             sample_record_id=sample_record_id,
         )
+        return ApiResponse(data=history)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=history)
 
 
 @router.get("/quote-history", response_model=ApiResponse[SampleDeliveryListResponse])
@@ -175,9 +175,9 @@ async def get_sample_delivery_quote_history(
             customer_id=customer_id,
             product_id=product_id,
         )
+        return ApiResponse(data=history)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=history)
 
 
 @router.get("/{delivery_id}", response_model=ApiResponse[SampleDeliveryResponse])
@@ -190,11 +190,11 @@ async def get_sample_delivery(
     user = await _current_user(token, auth_service)
     try:
         delivery = await service.get_delivery(current_user=user, delivery_id=delivery_id)
+        return ApiResponse(data=delivery)
     except PermissionDeniedError:
         _raise_permission_denied()
     except SampleDeliveryNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="寄样单不存在") from None
-    return ApiResponse(data=delivery)
 
 
 @router.post("/{delivery_id}/submit", response_model=ApiResponse[SampleDeliveryResponse])
@@ -207,13 +207,13 @@ async def submit_sample_delivery(
     user = await _current_user(token, auth_service)
     try:
         delivery = await service.submit_delivery(current_user=user, delivery_id=delivery_id)
+        return ApiResponse(data=delivery)
     except PermissionDeniedError:
         _raise_permission_denied()
     except SampleDeliveryNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="寄样单不存在") from None
     except ValueError:
         _raise_invalid_sample_delivery()
-    return ApiResponse(data=delivery)
 
 
 @router.post("/{delivery_id}/approve", response_model=ApiResponse[SampleDeliveryResponse])
@@ -231,13 +231,13 @@ async def approve_sample_delivery(
             delivery_id=delivery_id,
             payload=payload,
         )
+        return ApiResponse(data=delivery)
     except PermissionDeniedError:
         _raise_permission_denied()
     except SampleDeliveryNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="寄样单不存在") from None
     except ValueError:
         _raise_invalid_sample_delivery()
-    return ApiResponse(data=delivery)
 
 
 @router.post("/{delivery_id}/tracking", response_model=ApiResponse[SampleDeliveryResponse])
@@ -255,10 +255,10 @@ async def update_sample_delivery_tracking(
             delivery_id=delivery_id,
             payload=payload,
         )
+        return ApiResponse(data=delivery)
     except PermissionDeniedError:
         _raise_permission_denied()
     except SampleDeliveryNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="寄样单不存在") from None
     except ValueError:
         _raise_invalid_sample_delivery()
-    return ApiResponse(data=delivery)

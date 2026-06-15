@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -32,7 +32,7 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少商品资料权限")
 
 
@@ -46,9 +46,9 @@ async def list_products(
     user = await _current_user(token, auth_service)
     try:
         products = await service.list_products(current_user=user, q=q)
+        return ApiResponse(data=products)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=products)
 
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=ApiResponse[ProductResponse])
@@ -61,9 +61,9 @@ async def create_product(
     user = await _current_user(token, auth_service)
     try:
         product = await service.create_product(current_user=user, payload=payload)
+        return ApiResponse(data=product)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=product)
 
 
 @router.get("/export", response_model=ApiResponse[ProductExportResponse])
@@ -75,9 +75,9 @@ async def export_products(
     user = await _current_user(token, auth_service)
     try:
         export = await service.export_products(current_user=user)
+        return ApiResponse(data=export)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=export)
 
 
 @router.get("/{product_id}", response_model=ApiResponse[ProductResponse])
@@ -90,11 +90,11 @@ async def get_product(
     user = await _current_user(token, auth_service)
     try:
         product = await service.get_product(current_user=user, product_id=product_id)
+        return ApiResponse(data=product)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ProductNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
-    return ApiResponse(data=product)
 
 
 @router.post(
@@ -116,8 +116,8 @@ async def add_accessory(
             product_id=product_id,
             payload=payload,
         )
+        return ApiResponse(data=accessory)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ProductNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
-    return ApiResponse(data=accessory)

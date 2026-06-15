@@ -26,7 +26,11 @@ class TodoTask(Base):
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_new_id)
     owner_user_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    owner_user_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    creator_user_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    creator_user_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
     title: Mapped[str] = mapped_column(String(200), nullable=False)
+    content: Mapped[str] = mapped_column(Text, default="", nullable=False)
     source_type: Mapped[str] = mapped_column(String(50), nullable=False)
     source_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
     due_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

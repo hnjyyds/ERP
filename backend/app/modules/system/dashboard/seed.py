@@ -21,6 +21,10 @@ async def seed_dashboard_demo_data(session: AsyncSession, *, user_id: str) -> No
 
     timezone = ZoneInfo("Asia/Shanghai")
     published_at = datetime(2026, 6, 13, 9, 0, tzinfo=timezone)
+    owner_user_name = {
+        "u-001": "演示业务主管",
+        "u-finance": "演示财务",
+    }.get(user_id)
 
     existing_announcement = await session.scalar(select(CompanyAnnouncement.id).limit(1))
     if existing_announcement is None:
@@ -37,7 +41,11 @@ async def seed_dashboard_demo_data(session: AsyncSession, *, user_id: str) -> No
         [
             TodoTask(
                 owner_user_id=user_id,
+                owner_user_name=owner_user_name,
+                creator_user_id="system",
+                creator_user_name="系统流程",
                 title="审批出口合同 YJ-EC-202606-001",
+                content="出口合同已提交审批，请确认合同金额、客户和交期。",
                 source_type="approval",
                 source_id="YJ-EC-202606-001",
                 due_at=datetime(2026, 6, 13, 17, 0, tzinfo=timezone),
@@ -45,7 +53,11 @@ async def seed_dashboard_demo_data(session: AsyncSession, *, user_id: str) -> No
             ),
             TodoTask(
                 owner_user_id=user_id,
+                owner_user_name=owner_user_name,
+                creator_user_id="system",
+                creator_user_name="系统流程",
                 title="跟进采购合同确认样提交",
+                content="确认样提交节点即将到期，请跟进供应商反馈。",
                 source_type="followup",
                 source_id="YJ-PC-202606-001",
                 due_at=datetime(2026, 6, 14, 10, 0, tzinfo=timezone),

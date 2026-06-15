@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -33,7 +33,7 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少供应商资料权限")
 
 
@@ -54,9 +54,9 @@ async def list_suppliers(
             country=country,
             credit_grade=credit_grade,
         )
+        return ApiResponse(data=suppliers)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=suppliers)
 
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=ApiResponse[SupplierResponse])
@@ -69,9 +69,9 @@ async def create_supplier(
     user = await _current_user(token, auth_service)
     try:
         supplier = await service.create_supplier(current_user=user, payload=payload)
+        return ApiResponse(data=supplier)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=supplier)
 
 
 @router.get("/{supplier_id}", response_model=ApiResponse[SupplierResponse])
@@ -84,11 +84,11 @@ async def get_supplier(
     user = await _current_user(token, auth_service)
     try:
         supplier = await service.get_supplier(current_user=user, supplier_id=supplier_id)
+        return ApiResponse(data=supplier)
     except PermissionDeniedError:
         _raise_permission_denied()
     except SupplierNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="供应商不存在") from None
-    return ApiResponse(data=supplier)
 
 
 @router.put("/{supplier_id}", response_model=ApiResponse[SupplierResponse])
@@ -106,11 +106,11 @@ async def update_supplier(
             supplier_id=supplier_id,
             payload=payload,
         )
+        return ApiResponse(data=supplier)
     except PermissionDeniedError:
         _raise_permission_denied()
     except SupplierNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="供应商不存在") from None
-    return ApiResponse(data=supplier)
 
 
 @router.post(
@@ -132,11 +132,11 @@ async def add_supplier_contact(
             supplier_id=supplier_id,
             payload=payload,
         )
+        return ApiResponse(data=contact)
     except PermissionDeniedError:
         _raise_permission_denied()
     except SupplierNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="供应商不存在") from None
-    return ApiResponse(data=contact)
 
 
 @router.get(
@@ -155,8 +155,8 @@ async def list_supplier_transactions(
             current_user=user,
             supplier_id=supplier_id,
         )
+        return ApiResponse(data=transactions)
     except PermissionDeniedError:
         _raise_permission_denied()
     except SupplierNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="供应商不存在") from None
-    return ApiResponse(data=transactions)

@@ -4,6 +4,10 @@ export interface ApiResponse<T> {
   error: { code: string; message: string } | null
 }
 
+type ApiErrorBody = Partial<ApiResponse<unknown>> & {
+  detail?: string | Array<{ msg?: string }>
+}
+
 export interface MenuItem {
   id: string
   label: string
@@ -20,6 +24,80 @@ export interface CurrentUser {
   department_name: string
   roles: string[]
   permissions: string[]
+}
+
+export interface AssignableUser {
+  id: string
+  username: string
+  display_name: string
+  department_name: string
+}
+
+export interface OrganizationDepartment {
+  id: string
+  name: string
+  parent_id: string | null
+  sort_order: number
+}
+
+export interface OrganizationRole {
+  id: string
+  name: string
+  code: string
+  permissions: OrganizationPermission[]
+}
+
+export interface OrganizationPermission {
+  id: string
+  code: string
+  name: string
+}
+
+export interface OrganizationUser {
+  id: string
+  username: string
+  display_name: string
+  department_id: string
+  department_name: string
+  roles: OrganizationRole[]
+  is_active: boolean
+  created_at: string
+  password_set: boolean
+}
+
+export interface OrganizationOptions {
+  departments: OrganizationDepartment[]
+  roles: OrganizationRole[]
+  permissions: OrganizationPermission[]
+}
+
+export interface OrganizationUserCreatePayload {
+  username: string
+  display_name: string
+  department_id: string
+  role_ids: string[]
+  is_active: boolean
+}
+
+export interface OrganizationUserUpdatePayload {
+  display_name?: string
+  department_id?: string
+  role_ids?: string[]
+  is_active?: boolean
+}
+
+export interface OrganizationRolePermissionUpdatePayload {
+  permission_ids: string[]
+}
+
+export interface OrganizationUserCreateResult {
+  user: OrganizationUser
+  initial_password: string
+}
+
+export interface OrganizationPasswordResetResult {
+  user: OrganizationUser
+  temporary_password: string
 }
 
 export interface AuthSession {
@@ -58,11 +136,16 @@ export interface Announcement {
 export interface TodoTask {
   id: string
   owner_user_id: string
+  owner_user_name: string | null
+  creator_user_id: string | null
+  creator_user_name: string | null
   title: string
+  content: string
   source_type: string
   source_id: string | null
   due_at: string | null
   status: string
+  assignment_type: 'assigned' | 'self'
 }
 
 export interface NotificationItem {
@@ -906,6 +989,16 @@ export interface ScheduleCreatePayload {
 export interface AnnouncementCreatePayload {
   title: string
   content: string
+}
+
+export interface TodoCreatePayload {
+  title: string
+  content: string
+  assignee_user_ids: string[]
+}
+
+export interface TodoCreateResult {
+  items: TodoTask[]
 }
 
 export interface ShortcutCreatePayload {
@@ -2902,6 +2995,7 @@ export interface PurchaseInquiryTemplatePayload {
 }
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? '/api/v1'
+export const authExpiredEventName = 'yuanjing-auth-expired'
 
 let authToken = localStorage.getItem('yuanjing_access_token') ?? ''
 
@@ -2919,6 +3013,29 @@ export function hasAuthToken(): boolean {
   return authToken.length > 0
 }
 
+function notifyAuthExpired(): void {
+  if (!authToken) return
+  clearAuthToken()
+  window.dispatchEvent(new Event(authExpiredEventName))
+}
+
+async function readApiErrorMessage(response: Response): Promise<string> {
+  try {
+    const body = (await response.json()) as ApiErrorBody
+    if (body.error?.message) return body.error.message
+    if (typeof body.detail === 'string') return body.detail
+    if (Array.isArray(body.detail)) {
+      return body.detail
+        .map((item) => item.msg)
+        .filter((message): message is string => Boolean(message))
+        .join('；')
+    }
+  } catch {
+    return ''
+  }
+  return ''
+}
+
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const response = await fetch(`${apiBaseUrl}${path}`, {
     ...init,
@@ -2930,7 +3047,12 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   })
 
   if (!response.ok) {
-    throw new Error(`请求失败：${response.status}`)
+    const message = await readApiErrorMessage(response)
+    if (response.status === 401) {
+      notifyAuthExpired()
+      throw new Error(message || '登录状态已失效')
+    }
+    throw new Error(message || `请求失败：${response.status}`)
   }
 
   const body = (await response.json()) as ApiResponse<T>
@@ -2940,15 +3062,87 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   return body.data
 }
 
-export function login(username: string, password: string): Promise<AuthSession> {
-  return request<AuthSession>('/auth/login', {
+export async function login(username: string, password: string): Promise<AuthSession> {
+  const nextUsername = username.trim()
+  if (!nextUsername || !password) {
+    throw new Error('请填写用户名和密码')
+  }
+
+  const response = await fetch(`${apiBaseUrl}/auth/login`, {
     method: 'POST',
-    body: JSON.stringify({ username, password }),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username: nextUsername, password }),
   })
+
+  if (!response.ok) {
+    const message = await readApiErrorMessage(response)
+    if (response.status === 401) throw new Error(message || '用户名或密码错误')
+    if (response.status === 422) throw new Error('请填写用户名和密码')
+    throw new Error(message || '登录失败，请稍后重试')
+  }
+
+  const body = (await response.json()) as ApiResponse<AuthSession>
+  if (!body.success || body.error) {
+    throw new Error(body.error?.message ?? '用户名或密码错误')
+  }
+  return body.data
 }
 
 export function getCurrentSession(): Promise<{ user: CurrentUser; menus: MenuItem[] }> {
   return request<{ user: CurrentUser; menus: MenuItem[] }>('/auth/me')
+}
+
+export function listAssignableUsers(): Promise<{ users: AssignableUser[] }> {
+  return request<{ users: AssignableUser[] }>('/auth/users')
+}
+
+export function getOrganizationOptions(): Promise<OrganizationOptions> {
+  return request<OrganizationOptions>('/organization/options')
+}
+
+export function listOrganizationUsers(): Promise<{ users: OrganizationUser[] }> {
+  return request<{ users: OrganizationUser[] }>('/organization/users')
+}
+
+export function createOrganizationUser(
+  payload: OrganizationUserCreatePayload,
+): Promise<OrganizationUserCreateResult> {
+  return request<OrganizationUserCreateResult>('/organization/users', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function updateOrganizationUser(
+  userId: string,
+  payload: OrganizationUserUpdatePayload,
+): Promise<OrganizationUser> {
+  return request<OrganizationUser>(`/organization/users/${userId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function deleteOrganizationUser(userId: string): Promise<OrganizationUser> {
+  return request<OrganizationUser>(`/organization/users/${userId}`, {
+    method: 'DELETE',
+  })
+}
+
+export function resetOrganizationUserPassword(userId: string): Promise<OrganizationPasswordResetResult> {
+  return request<OrganizationPasswordResetResult>(`/organization/users/${userId}/reset-password`, {
+    method: 'POST',
+  })
+}
+
+export function updateOrganizationRolePermissions(
+  roleId: string,
+  payload: OrganizationRolePermissionUpdatePayload,
+): Promise<OrganizationRole> {
+  return request<OrganizationRole>(`/organization/roles/${roleId}/permissions`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
 }
 
 export function getI18nConfig(): Promise<I18nConfig> {
@@ -2961,6 +3155,13 @@ export function getDashboard(): Promise<Dashboard> {
 
 export function createAnnouncement(payload: AnnouncementCreatePayload): Promise<Announcement> {
   return request<Announcement>('/announcements', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function createTodos(payload: TodoCreatePayload): Promise<TodoCreateResult> {
+  return request<TodoCreateResult>('/todos', {
     method: 'POST',
     body: JSON.stringify(payload),
   })

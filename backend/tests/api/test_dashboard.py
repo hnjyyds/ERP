@@ -46,7 +46,86 @@ async def test_dashboard_returns_pdf_required_sections(
         "shortcut_count": 2,
     }
     assert dashboard["todos"][0]["source_type"] == "approval"
+    assert dashboard["todos"][0]["assignment_type"] == "assigned"
     assert dashboard["notifications"][0]["severity"] == "warning"
+
+
+async def test_todo_create_supports_self_and_assigned_users(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    payload = {
+        "title": "整理下周寄样清单",
+        "content": "确认样品、快递单和客户地址。",
+        "assignee_user_ids": ["u-001", "u-finance"],
+    }
+
+    create_response = await api_client.post(
+        "/api/v1/todos",
+        headers={"Authorization": f"Bearer {token}"},
+        json=payload,
+    )
+    assert create_response.status_code == 201
+    created = create_response.json()["data"]
+    assert len(created["items"]) == 2
+    assert {item["owner_user_id"] for item in created["items"]} == {"u-001", "u-finance"}
+    assert {item["title"] for item in created["items"]} == {payload["title"]}
+    assert {item["content"] for item in created["items"]} == {payload["content"]}
+    assert {item["source_type"] for item in created["items"]} == {"manual"}
+    assert {item["creator_user_id"] for item in created["items"]} == {"u-001"}
+    assert {item["creator_user_name"] for item in created["items"]} == {"演示业务主管"}
+    assert {
+        (item["owner_user_id"], item["assignment_type"]) for item in created["items"]
+    } == {
+        ("u-001", "self"),
+        ("u-finance", "assigned"),
+    }
+
+    dashboard_response = await api_client.get(
+        "/api/v1/dashboard",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    dashboard = dashboard_response.json()["data"]
+    personal_todos = [
+        item for item in dashboard["todos"] if item["assignment_type"] == "self"
+    ]
+    assigned_todos = [
+        item for item in dashboard["todos"] if item["assignment_type"] == "assigned"
+    ]
+    assert dashboard["summary"]["todo_count"] == 3
+    assert {item["title"] for item in personal_todos} == {payload["title"]}
+    assert len(assigned_todos) == 2
+
+    finance_token = await _login_token(api_client, username="finance", password="finance123")
+    finance_dashboard_response = await api_client.get(
+        "/api/v1/dashboard",
+        headers={"Authorization": f"Bearer {finance_token}"},
+    )
+    finance_todos = finance_dashboard_response.json()["data"]["todos"]
+    assigned_to_finance = [item for item in finance_todos if item["title"] == payload["title"]]
+    assert len(assigned_to_finance) == 1
+    assert assigned_to_finance[0]["owner_user_name"] == "演示财务"
+    assert assigned_to_finance[0]["assignment_type"] == "assigned"
+
+
+async def test_personal_todo_create_rejects_unexpected_fields(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    response = await api_client.post(
+        "/api/v1/todos",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "title": "非法字段测试",
+            "content": "这个字段不应该被接受",
+            "assignee_user_ids": ["u-001"],
+            "owner_user_id": "u-002",
+        },
+    )
+
+    assert response.status_code == 422
 
 
 async def test_schedule_create_is_visible_on_dashboard(
@@ -161,6 +240,50 @@ async def test_announcement_create_requires_admin_permission(
         json={
             "title": "普通用户公告",
             "content": "普通业务账号不应能发布公司公告。",
+        },
+    )
+
+    assert response.status_code == 403
+    assert response.json()["detail"] == "无权限发布公告"
+
+
+async def test_announcement_create_requires_super_admin_even_with_announcement_permission(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    super_admin_token = await _login_token(
+        api_client,
+        username="admin",
+        password="admin123",
+    )
+    options_response = await api_client.get(
+        "/api/v1/organization/options",
+        headers={"Authorization": f"Bearer {super_admin_token}"},
+    )
+    permission_by_code = {
+        item["code"]: item
+        for item in options_response.json()["data"]["permissions"]
+    }
+    grant_response = await api_client.patch(
+        "/api/v1/organization/roles/role-finance/permissions",
+        headers={"Authorization": f"Bearer {super_admin_token}"},
+        json={
+            "permission_ids": [
+                permission_by_code["dashboard:view"]["id"],
+                permission_by_code["finance:view"]["id"],
+                permission_by_code["announcement:create"]["id"],
+            ],
+        },
+    )
+    assert grant_response.status_code == 200
+
+    finance_token = await _login_token(api_client, username="finance", password="finance123")
+    response = await api_client.post(
+        "/api/v1/announcements",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        json={
+            "title": "财务公告",
+            "content": "拥有公告创建权限但不是超级管理员，仍不可发布。",
         },
     )
 

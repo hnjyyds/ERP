@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -33,7 +33,7 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少客户资料权限")
 
 
@@ -54,9 +54,9 @@ async def list_customers(
             country=country,
             credit_grade=credit_grade,
         )
+        return ApiResponse(data=customers)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=customers)
 
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=ApiResponse[CustomerResponse])
@@ -69,9 +69,9 @@ async def create_customer(
     user = await _current_user(token, auth_service)
     try:
         customer = await service.create_customer(current_user=user, payload=payload)
+        return ApiResponse(data=customer)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=customer)
 
 
 @router.get("/{customer_id}", response_model=ApiResponse[CustomerResponse])
@@ -84,11 +84,11 @@ async def get_customer(
     user = await _current_user(token, auth_service)
     try:
         customer = await service.get_customer(current_user=user, customer_id=customer_id)
+        return ApiResponse(data=customer)
     except PermissionDeniedError:
         _raise_permission_denied()
     except CustomerNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="客户不存在") from None
-    return ApiResponse(data=customer)
 
 
 @router.put("/{customer_id}", response_model=ApiResponse[CustomerResponse])
@@ -106,11 +106,11 @@ async def update_customer(
             customer_id=customer_id,
             payload=payload,
         )
+        return ApiResponse(data=customer)
     except PermissionDeniedError:
         _raise_permission_denied()
     except CustomerNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="客户不存在") from None
-    return ApiResponse(data=customer)
 
 
 @router.post(
@@ -132,11 +132,11 @@ async def add_customer_contact(
             customer_id=customer_id,
             payload=payload,
         )
+        return ApiResponse(data=contact)
     except PermissionDeniedError:
         _raise_permission_denied()
     except CustomerNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="客户不存在") from None
-    return ApiResponse(data=contact)
 
 
 @router.get(
@@ -155,8 +155,8 @@ async def list_customer_transactions(
             current_user=user,
             customer_id=customer_id,
         )
+        return ApiResponse(data=transactions)
     except PermissionDeniedError:
         _raise_permission_denied()
     except CustomerNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="客户不存在") from None
-    return ApiResponse(data=transactions)

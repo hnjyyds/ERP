@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -31,22 +31,22 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少 QC 查验权限")
 
 
-def _raise_invalid_inspection() -> None:
+def _raise_invalid_inspection() -> NoReturn:
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail="QC 查验数据无效",
     )
 
 
-def _raise_inspection_not_found() -> None:
+def _raise_inspection_not_found() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="QC 查验不存在")
 
 
-def _raise_purchase_contract_not_found() -> None:
+def _raise_purchase_contract_not_found() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="采购合同不存在")
 
 
@@ -69,11 +69,11 @@ async def list_quality_inspections(
             supplier_id=supplier_id,
             purchase_contract_id=purchase_contract_id,
         )
+        return ApiResponse(data=inspections)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_inspection()
-    return ApiResponse(data=inspections)
 
 
 @router.post(
@@ -90,13 +90,13 @@ async def create_quality_inspection(
     user = await _current_user(token, auth_service)
     try:
         inspection = await service.create_inspection(current_user=user, payload=payload)
+        return ApiResponse(data=inspection)
     except PermissionDeniedError:
         _raise_permission_denied()
     except QualityInspectionPurchaseContractNotFoundError:
         _raise_purchase_contract_not_found()
     except ValueError:
         _raise_invalid_inspection()
-    return ApiResponse(data=inspection)
 
 
 @router.get(
@@ -115,11 +115,11 @@ async def get_quality_inbound_eligibility(
             current_user=user,
             purchase_contract_id=purchase_contract_id,
         )
+        return ApiResponse(data=eligibility)
     except PermissionDeniedError:
         _raise_permission_denied()
     except QualityInspectionPurchaseContractNotFoundError:
         _raise_purchase_contract_not_found()
-    return ApiResponse(data=eligibility)
 
 
 @router.get("/{inspection_id}", response_model=ApiResponse[QualityInspectionResponse])
@@ -132,11 +132,11 @@ async def get_quality_inspection(
     user = await _current_user(token, auth_service)
     try:
         inspection = await service.get_inspection(current_user=user, inspection_id=inspection_id)
+        return ApiResponse(data=inspection)
     except PermissionDeniedError:
         _raise_permission_denied()
     except QualityInspectionNotFoundError:
         _raise_inspection_not_found()
-    return ApiResponse(data=inspection)
 
 
 @router.put("/{inspection_id}", response_model=ApiResponse[QualityInspectionResponse])
@@ -154,10 +154,10 @@ async def update_quality_inspection(
             inspection_id=inspection_id,
             payload=payload,
         )
+        return ApiResponse(data=inspection)
     except PermissionDeniedError:
         _raise_permission_denied()
     except QualityInspectionNotFoundError:
         _raise_inspection_not_found()
     except ValueError:
         _raise_invalid_inspection()
-    return ApiResponse(data=inspection)

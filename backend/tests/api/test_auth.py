@@ -174,3 +174,26 @@ async def test_current_user_and_menus_require_bearer_token(
 
     unauthorized_response = await api_client.get("/api/v1/system/menus")
     assert unauthorized_response.status_code == 401
+
+
+async def test_assignable_users_require_authentication(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    login_response = await api_client.post(
+        "/api/v1/auth/login",
+        json={"username": "demo", "password": "demo123"},
+    )
+    token = login_response.json()["data"]["access_token"]
+
+    response = await api_client.get(
+        "/api/v1/auth/users",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 200
+    users = response.json()["data"]["users"]
+    assert {item["id"] for item in users} == {"u-admin", "u-001", "u-finance"}
+    assert {item["display_name"] for item in users} == {"演示管理员", "演示业务主管", "演示财务"}
+
+    unauthorized_response = await api_client.get("/api/v1/auth/users")
+    assert unauthorized_response.status_code == 401

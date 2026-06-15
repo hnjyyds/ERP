@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -34,18 +34,18 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少开票通知权限")
 
 
-def _raise_invalid_notice() -> None:
+def _raise_invalid_notice() -> NoReturn:
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail="开票通知数据无效",
     )
 
 
-def _raise_notice_not_found() -> None:
+def _raise_notice_not_found() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="开票通知不存在")
 
 
@@ -71,11 +71,11 @@ async def list_purchase_invoice_notices(
             supplier_id=supplier_id,
             customs_declaration_id=customs_declaration_id,
         )
+        return ApiResponse(data=notices)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_notice()
-    return ApiResponse(data=notices)
 
 
 @router.post(
@@ -98,11 +98,11 @@ async def generate_purchase_invoice_notices_from_customs_declaration(
             current_user=user,
             payload=payload,
         )
+        return ApiResponse(data=notices)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_notice()
-    return ApiResponse(data=notices)
 
 
 @router.get(
@@ -120,9 +120,9 @@ async def list_purchase_invoice_notice_reminders(
     user = await _current_user(token, auth_service)
     try:
         reminders = await service.list_reminders(current_user=user)
+        return ApiResponse(data=reminders)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=reminders)
 
 
 @router.get("/{notice_id}", response_model=ApiResponse[PurchaseInvoiceNoticeResponse])
@@ -138,11 +138,11 @@ async def get_purchase_invoice_notice(
     user = await _current_user(token, auth_service)
     try:
         notice = await service.get_notice(current_user=user, notice_id=notice_id)
+        return ApiResponse(data=notice)
     except PermissionDeniedError:
         _raise_permission_denied()
     except PurchaseInvoiceNoticeNotFoundError:
         _raise_notice_not_found()
-    return ApiResponse(data=notice)
 
 
 @router.post(
@@ -166,13 +166,13 @@ async def send_purchase_invoice_notice(
             notice_id=notice_id,
             payload=payload,
         )
+        return ApiResponse(data=notice)
     except PermissionDeniedError:
         _raise_permission_denied()
     except PurchaseInvoiceNoticeNotFoundError:
         _raise_notice_not_found()
     except ValueError:
         _raise_invalid_notice()
-    return ApiResponse(data=notice)
 
 
 @router.post(
@@ -196,10 +196,10 @@ async def receive_purchase_invoice_notice_tax_invoice(
             notice_id=notice_id,
             payload=payload,
         )
+        return ApiResponse(data=notice)
     except PermissionDeniedError:
         _raise_permission_denied()
     except PurchaseInvoiceNoticeNotFoundError:
         _raise_notice_not_found()
     except ValueError:
         _raise_invalid_notice()
-    return ApiResponse(data=notice)

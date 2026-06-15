@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -34,11 +34,11 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少样品登记权限")
 
 
-def _raise_invalid_sample_record() -> None:
+def _raise_invalid_sample_record() -> NoReturn:
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail="样品登记数据无效",
@@ -64,11 +64,11 @@ async def list_sample_records(
             customer_id=customer_id,
             purchase_contract_id=purchase_contract_id,
         )
+        return ApiResponse(data=records)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_sample_record()
-    return ApiResponse(data=records)
 
 
 @router.post(
@@ -85,11 +85,11 @@ async def create_sample_record(
     user = await _current_user(token, auth_service)
     try:
         record = await service.create_record(current_user=user, payload=payload)
+        return ApiResponse(data=record)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_sample_record()
-    return ApiResponse(data=record)
 
 
 @router.get("/{record_id}", response_model=ApiResponse[SampleRecordResponse])
@@ -102,11 +102,11 @@ async def get_sample_record(
     user = await _current_user(token, auth_service)
     try:
         record = await service.get_record(current_user=user, record_id=record_id)
+        return ApiResponse(data=record)
     except PermissionDeniedError:
         _raise_permission_denied()
     except SampleRecordNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="样品不存在") from None
-    return ApiResponse(data=record)
 
 
 @router.post(
@@ -124,11 +124,11 @@ async def add_sample_image(
     user = await _current_user(token, auth_service)
     try:
         image = await service.add_image(current_user=user, record_id=record_id, payload=payload)
+        return ApiResponse(data=image)
     except PermissionDeniedError:
         _raise_permission_denied()
     except SampleRecordNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="样品不存在") from None
-    return ApiResponse(data=image)
 
 
 @router.post(
@@ -150,10 +150,10 @@ async def add_sample_stock_event(
             record_id=record_id,
             payload=payload,
         )
+        return ApiResponse(data=stock_event)
     except PermissionDeniedError:
         _raise_permission_denied()
     except SampleRecordNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="样品不存在") from None
     except (SampleStockError, ValueError):
         _raise_invalid_sample_record()
-    return ApiResponse(data=stock_event)

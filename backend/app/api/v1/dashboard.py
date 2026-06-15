@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Path, status
 
 from app.api.deps import get_bearer_token
+from app.modules.system.auth.permissions import SUPER_ADMIN_PERMISSION
 from app.modules.system.auth.providers import get_auth_service
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.auth.services import AuthService, InvalidTokenError
@@ -19,22 +20,27 @@ from app.modules.system.dashboard.schemas import (
     ShortcutCreate,
     ShortcutPath,
     ShortcutResponse,
+    TodoCreate,
+    TodoCreateResponse,
 )
-from app.modules.system.dashboard.services import DashboardService
+from app.modules.system.dashboard.services import (
+    DashboardService,
+    TodoAssigneeNotFoundError,
+)
 from app.schemas.responses import ApiResponse
 
 router = APIRouter(tags=["dashboard"])
 
-ANNOUNCEMENT_CREATE_PERMISSION = "announcement:create"
-ADMIN_ROLE_NAMES = {"管理员", "admin", "administrator"}
+
+async def _current_user(token: str, auth_service: AuthService) -> CurrentUserResponse:
+    try:
+        return (await auth_service.get_current_user(token)).user
+    except InvalidTokenError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
 def _can_create_announcement(user: CurrentUserResponse) -> bool:
-    normalized_roles = {role.strip().lower() for role in user.roles}
-    return (
-        ANNOUNCEMENT_CREATE_PERMISSION in user.permissions
-        or bool(ADMIN_ROLE_NAMES.intersection(normalized_roles))
-    )
+    return SUPER_ADMIN_PERMISSION in user.permissions
 
 
 def _resolve_schedule_event_path(
@@ -61,11 +67,8 @@ async def get_dashboard(
     service: Annotated[DashboardService, Depends(get_dashboard_service)],
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
 ) -> ApiResponse[DashboardResponse]:
-    try:
-        current = await auth_service.get_current_user(token)
-    except InvalidTokenError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
-    dashboard = await service.get_dashboard(user_id=current.user.id)
+    current_user = await _current_user(token, auth_service)
+    dashboard = await service.get_dashboard(user_id=current_user.id)
     return ApiResponse(data=dashboard)
 
 
@@ -80,11 +83,8 @@ async def create_schedule_event(
     service: Annotated[DashboardService, Depends(get_dashboard_service)],
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
 ) -> ApiResponse[ScheduleEventResponse]:
-    try:
-        current = await auth_service.get_current_user(token)
-    except InvalidTokenError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
-    schedule_event = await service.create_schedule_event(user_id=current.user.id, payload=payload)
+    current_user = await _current_user(token, auth_service)
+    schedule_event = await service.create_schedule_event(user_id=current_user.id, payload=payload)
     return ApiResponse(data=schedule_event)
 
 
@@ -95,12 +95,9 @@ async def delete_schedule_event(
     service: Annotated[DashboardService, Depends(get_dashboard_service)],
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
 ) -> ApiResponse[ScheduleEventResponse]:
-    try:
-        current = await auth_service.get_current_user(token)
-    except InvalidTokenError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
+    current_user = await _current_user(token, auth_service)
     schedule_event = await service.delete_schedule_event(
-        user_id=current.user.id,
+        user_id=current_user.id,
         schedule_id=path.schedule_id,
     )
     if schedule_event is None:
@@ -119,14 +116,38 @@ async def create_announcement(
     service: Annotated[DashboardService, Depends(get_dashboard_service)],
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
 ) -> ApiResponse[AnnouncementResponse]:
-    try:
-        current = await auth_service.get_current_user(token)
-    except InvalidTokenError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
-    if not _can_create_announcement(current.user):
+    current_user = await _current_user(token, auth_service)
+    if not _can_create_announcement(current_user):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="无权限发布公告")
     announcement = await service.create_announcement(payload=payload)
     return ApiResponse(data=announcement)
+
+
+@router.post(
+    "/todos",
+    status_code=status.HTTP_201_CREATED,
+    response_model=ApiResponse[TodoCreateResponse],
+)
+async def create_todo_tasks(
+    payload: TodoCreate,
+    token: Annotated[str, Depends(get_bearer_token)],
+    service: Annotated[DashboardService, Depends(get_dashboard_service)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+) -> ApiResponse[TodoCreateResponse]:
+    current_user = await _current_user(token, auth_service)
+    assignees = await auth_service.list_assignable_users_by_ids(payload.assignee_user_ids)
+    try:
+        todos = await service.create_todo_tasks(
+            current_user=current_user,
+            payload=payload,
+            assignees=assignees,
+        )
+        return ApiResponse(data=todos)
+    except TodoAssigneeNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="指派人不存在",
+        ) from None
 
 
 @router.patch(
@@ -139,12 +160,9 @@ async def mark_notification_read(
     service: Annotated[DashboardService, Depends(get_dashboard_service)],
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
 ) -> ApiResponse[NotificationResponse]:
-    try:
-        current = await auth_service.get_current_user(token)
-    except InvalidTokenError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
+    current_user = await _current_user(token, auth_service)
     notification = await service.mark_notification_read(
-        user_id=current.user.id,
+        user_id=current_user.id,
         notification_id=path.notification_id,
     )
     if notification is None:
@@ -163,11 +181,8 @@ async def create_shortcut(
     service: Annotated[DashboardService, Depends(get_dashboard_service)],
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
 ) -> ApiResponse[ShortcutResponse]:
-    try:
-        current = await auth_service.get_current_user(token)
-    except InvalidTokenError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
-    shortcut = await service.create_shortcut(user_id=current.user.id, payload=payload)
+    current_user = await _current_user(token, auth_service)
+    shortcut = await service.create_shortcut(user_id=current_user.id, payload=payload)
     return ApiResponse(data=shortcut)
 
 
@@ -178,11 +193,8 @@ async def delete_shortcut(
     service: Annotated[DashboardService, Depends(get_dashboard_service)],
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
 ) -> ApiResponse[ShortcutResponse]:
-    try:
-        current = await auth_service.get_current_user(token)
-    except InvalidTokenError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
-    shortcut = await service.delete_shortcut(user_id=current.user.id, shortcut_id=path.shortcut_id)
+    current_user = await _current_user(token, auth_service)
+    shortcut = await service.delete_shortcut(user_id=current_user.id, shortcut_id=path.shortcut_id)
     if shortcut is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="快捷入口不存在")
     return ApiResponse(data=shortcut)

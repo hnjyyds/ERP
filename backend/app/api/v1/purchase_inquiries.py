@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -35,18 +35,18 @@ async def _current_user(token: str, auth_service: AuthService) -> CurrentUserRes
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
 
 
-def _raise_permission_denied() -> None:
+def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少采购询价权限")
 
 
-def _raise_invalid_inquiry() -> None:
+def _raise_invalid_inquiry() -> NoReturn:
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail="采购询价数据无效",
     )
 
 
-def _raise_inquiry_not_found() -> None:
+def _raise_inquiry_not_found() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="采购询价不存在")
 
 
@@ -72,11 +72,11 @@ async def list_purchase_inquiries(
             product_id=product_id,
             supplier_id=supplier_id,
         )
+        return ApiResponse(data=inquiries)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:
         _raise_invalid_inquiry()
-    return ApiResponse(data=inquiries)
 
 
 @router.post(
@@ -93,9 +93,9 @@ async def create_purchase_inquiry(
     user = await _current_user(token, auth_service)
     try:
         inquiry = await service.create_inquiry(current_user=user, payload=payload)
+        return ApiResponse(data=inquiry)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=inquiry)
 
 
 @router.put("/{inquiry_id}", response_model=ApiResponse[PurchaseInquiryResponse])
@@ -113,13 +113,13 @@ async def update_purchase_inquiry(
             inquiry_id=inquiry_id,
             payload=payload,
         )
+        return ApiResponse(data=inquiry)
     except PermissionDeniedError:
         _raise_permission_denied()
     except PurchaseInquiryNotFoundError:
         _raise_inquiry_not_found()
     except ValueError:
         _raise_invalid_inquiry()
-    return ApiResponse(data=inquiry)
 
 
 @router.get(
@@ -138,9 +138,9 @@ async def get_purchase_inquiry_references(
             current_user=user,
             product_id=product_id,
         )
+        return ApiResponse(data=references)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=references)
 
 
 @router.get(
@@ -161,9 +161,9 @@ async def get_purchase_inquiry_supplier_samples(
             product_id=product_id,
             supplier_id=supplier_id,
         )
+        return ApiResponse(data=samples)
     except PermissionDeniedError:
         _raise_permission_denied()
-    return ApiResponse(data=samples)
 
 
 @router.get("/{inquiry_id}", response_model=ApiResponse[PurchaseInquiryResponse])
@@ -176,11 +176,11 @@ async def get_purchase_inquiry(
     user = await _current_user(token, auth_service)
     try:
         inquiry = await service.get_inquiry(current_user=user, inquiry_id=inquiry_id)
+        return ApiResponse(data=inquiry)
     except PermissionDeniedError:
         _raise_permission_denied()
     except PurchaseInquiryNotFoundError:
         _raise_inquiry_not_found()
-    return ApiResponse(data=inquiry)
 
 
 @router.post(
@@ -202,13 +202,13 @@ async def add_purchase_inquiry_supplier_quotation(
             inquiry_id=inquiry_id,
             payload=payload,
         )
+        return ApiResponse(data=inquiry)
     except PermissionDeniedError:
         _raise_permission_denied()
     except PurchaseInquiryNotFoundError:
         _raise_inquiry_not_found()
     except ValueError:
         _raise_invalid_inquiry()
-    return ApiResponse(data=inquiry)
 
 
 @router.post(
@@ -229,8 +229,8 @@ async def send_purchase_inquiry_template(
             inquiry_id=inquiry_id,
             payload=payload,
         )
+        return ApiResponse(data=template)
     except PermissionDeniedError:
         _raise_permission_denied()
     except PurchaseInquiryNotFoundError:
         _raise_inquiry_not_found()
-    return ApiResponse(data=template)
