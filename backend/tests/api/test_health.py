@@ -7,6 +7,8 @@ async def test_health_endpoint_returns_stable_api_response(api_client: AsyncClie
     assert response.status_code == 200
     assert response.json() == {
         "success": True,
+        "code": "SUCCESS",
+        "message": "请求成功",
         "data": {"status": "ok", "service": "yuanjing-trade-api"},
         "error": None,
     }

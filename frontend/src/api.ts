@@ -1,5 +1,7 @@
 export interface ApiResponse<T> {
   success: boolean
+  code: string
+  message: string
   data: T
   error: { code: string; message: string } | null
 }
@@ -68,7 +70,7 @@ export interface OrganizationUser {
   id: string
   username: string
   display_name: string
-  department_id: string
+  department_id: string | null
   department_name: string
   avatar_type: UserAvatarType
   avatar_value: string
@@ -101,6 +103,18 @@ export interface OrganizationUserUpdatePayload {
   is_active?: boolean
   avatar_type?: UserAvatarType
   avatar_value?: string
+}
+
+export interface OrganizationDepartmentCreatePayload {
+  name: string
+  parent_id?: string | null
+  sort_order: number
+}
+
+export interface OrganizationDepartmentUpdatePayload {
+  name?: string
+  parent_id?: string | null
+  sort_order?: number
 }
 
 export interface OrganizationRolePermissionUpdatePayload {
@@ -3051,6 +3065,7 @@ async function readApiErrorMessage(response: Response): Promise<string> {
   try {
     const body = (await response.json()) as ApiErrorBody
     if (body.error?.message) return body.error.message
+    if (body.message) return body.message
     if (typeof body.detail === 'string') return body.detail
     if (Array.isArray(body.detail)) {
       return body.detail
@@ -3139,6 +3154,31 @@ export function getOrganizationOptions(): Promise<OrganizationOptions> {
 
 export function listOrganizationUsers(): Promise<{ users: OrganizationUser[] }> {
   return request<{ users: OrganizationUser[] }>('/organization/users')
+}
+
+export function createOrganizationDepartment(
+  payload: OrganizationDepartmentCreatePayload,
+): Promise<OrganizationDepartment> {
+  return request<OrganizationDepartment>('/organization/departments', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function updateOrganizationDepartment(
+  departmentId: string,
+  payload: OrganizationDepartmentUpdatePayload,
+): Promise<OrganizationDepartment> {
+  return request<OrganizationDepartment>(`/organization/departments/${departmentId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function deleteOrganizationDepartment(departmentId: string): Promise<OrganizationDepartment> {
+  return request<OrganizationDepartment>(`/organization/departments/${departmentId}`, {
+    method: 'DELETE',
+  })
 }
 
 export function createOrganizationUser(
@@ -3772,6 +3812,12 @@ export function updateCustomer(
   })
 }
 
+export function deactivateCustomer(customerId: string): Promise<Customer> {
+  return request<Customer>(`/masterdata/customers/${customerId}`, {
+    method: 'DELETE',
+  })
+}
+
 export function addCustomerContact(
   customerId: string,
   payload: CustomerContactPayload,
@@ -3813,6 +3859,12 @@ export function updateSupplier(
   return request<Supplier>(`/masterdata/suppliers/${supplierId}`, {
     method: 'PUT',
     body: JSON.stringify(payload),
+  })
+}
+
+export function deactivateSupplier(supplierId: string): Promise<Supplier> {
+  return request<Supplier>(`/masterdata/suppliers/${supplierId}`, {
+    method: 'DELETE',
   })
 }
 
@@ -3901,6 +3953,12 @@ export function updateDocumentParty(
   return request<DocumentParty>(`/masterdata/document-parties/${partyId}`, {
     method: 'PUT',
     body: JSON.stringify(payload),
+  })
+}
+
+export function deactivateDocumentParty(partyId: string): Promise<DocumentParty> {
+  return request<DocumentParty>(`/masterdata/document-parties/${partyId}`, {
+    method: 'DELETE',
   })
 }
 

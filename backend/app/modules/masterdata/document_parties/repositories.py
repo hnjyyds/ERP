@@ -168,6 +168,16 @@ class DocumentPartyRepository:
             return None
         return self._map_party(party)
 
+    async def set_party_status(self, *, party_id: str, status: str) -> DocumentPartyRow | None:
+        party = await self.session.scalar(select(DocumentParty).where(DocumentParty.id == party_id))
+        if party is None:
+            return None
+        party.status = status
+        if status != "active":
+            party.is_default = False
+        await self.session.flush()
+        return self._map_party(party)
+
     async def list_parties(
         self,
         *,

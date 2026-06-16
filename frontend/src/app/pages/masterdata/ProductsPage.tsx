@@ -283,11 +283,11 @@ export function ProductsPage() {
                 void loadProducts()
               }}
             >
-              <label>
-                商品搜索
+              <label className="inline-filter-search">
+                <span className="visually-hidden">商品搜索</span>
                 <Input
                   value={search}
-                  placeholder="编号 / 中文 / 英文 / 海关编码"
+                  placeholder="搜索 编号 / 中文 / 英文 / 海关编码"
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </label>

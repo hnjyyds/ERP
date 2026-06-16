@@ -20,8 +20,32 @@ async def test_super_admin_can_manage_users_and_role_permissions_without_passwor
     options_response = await api_client.get("/api/v1/organization/options", headers=headers)
     assert options_response.status_code == 200
     options = options_response.json()["data"]
-    sales_department = next(item for item in options["departments"] if item["id"] == "dept-sales")
+    assert options["departments"] == []
     sales_role = next(item for item in options["roles"] if item["code"] == "sales_manager")
+
+    no_department_response = await api_client.post(
+        "/api/v1/organization/users",
+        headers=headers,
+        json={
+            "username": "blocked.no.department",
+            "display_name": "无部门用户",
+            "department_id": "dept-missing",
+            "role_ids": [sales_role["id"]],
+            "is_active": True,
+            "avatar_type": "preset",
+            "avatar_value": "copper-wave",
+        },
+    )
+    assert no_department_response.status_code == 409
+    assert no_department_response.json()["message"] == "请先新增部门"
+
+    department_response = await api_client.post(
+        "/api/v1/organization/departments",
+        headers=headers,
+        json={"name": "业务部", "sort_order": 10},
+    )
+    assert department_response.status_code == 201
+    sales_department = department_response.json()["data"]
 
     create_response = await api_client.post(
         "/api/v1/organization/users",
@@ -108,6 +132,13 @@ async def test_super_admin_can_manage_users_and_role_permissions_without_passwor
     assert delete_response.status_code == 200
     assert delete_response.json()["data"]["is_active"] is False
 
+    delete_department_response = await api_client.delete(
+        f"/api/v1/organization/departments/{sales_department['id']}",
+        headers=headers,
+    )
+    assert delete_department_response.status_code == 409
+    assert delete_department_response.json()["message"] == "部门下已有用户，不能删除"
+
     deleted_login_response = await api_client.post(
         "/api/v1/auth/login",
         json={"username": "ops.user", "password": temporary_password},
@@ -156,6 +187,8 @@ async def test_non_super_admin_cannot_manage_organization_users_or_role_permissi
 
     list_response = await api_client.get("/api/v1/organization/users", headers=headers)
     assert list_response.status_code == 403
+    assert list_response.json()["code"] == "PERMISSION_DENIED"
+    assert list_response.json()["message"] == "缺少组织管理权限"
 
     create_response = await api_client.post(
         "/api/v1/organization/users",
@@ -168,6 +201,7 @@ async def test_non_super_admin_cannot_manage_organization_users_or_role_permissi
         },
     )
     assert create_response.status_code == 403
+    assert create_response.json()["code"] == "PERMISSION_DENIED"
 
     update_role_response = await api_client.patch(
         "/api/v1/organization/roles/role-finance/permissions",
@@ -175,6 +209,7 @@ async def test_non_super_admin_cannot_manage_organization_users_or_role_permissi
         json={"permission_ids": ["perm-dashboard-view"]},
     )
     assert update_role_response.status_code == 403
+    assert update_role_response.json()["code"] == "PERMISSION_DENIED"
 
 
 async def test_only_super_admin_menu_contains_organization_management(

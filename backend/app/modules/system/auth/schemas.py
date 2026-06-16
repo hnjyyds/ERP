@@ -83,6 +83,40 @@ class OrganizationDepartmentResponse(BaseModel):
     sort_order: int
 
 
+class OrganizationDepartmentCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: str = Field(min_length=1, max_length=120)
+    parent_id: str | None = Field(default=None, max_length=64)
+    sort_order: int = Field(default=0, ge=0, le=9999)
+
+    @field_validator("name")
+    @classmethod
+    def clean_name(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("部门名称不能为空")
+        return cleaned
+
+
+class OrganizationDepartmentUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: str | None = Field(default=None, min_length=1, max_length=120)
+    parent_id: str | None = Field(default=None, max_length=64)
+    sort_order: int | None = Field(default=None, ge=0, le=9999)
+
+    @field_validator("name")
+    @classmethod
+    def clean_optional_name(cls, value: str | None) -> str | None:
+        if value is None:
+            return value
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("部门名称不能为空")
+        return cleaned
+
+
 class OrganizationPermissionResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -106,7 +140,7 @@ class OrganizationUserResponse(BaseModel):
     id: str
     username: str
     display_name: str
-    department_id: str
+    department_id: str | None
     department_name: str
     avatar_type: AvatarType = DEFAULT_AVATAR_TYPE
     avatar_value: str = DEFAULT_AVATAR_VALUE

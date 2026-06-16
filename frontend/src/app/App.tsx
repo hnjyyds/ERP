@@ -414,6 +414,9 @@ import {
 } from './routes'
 import { erpAntTheme } from './theme'
 import { ProductsPage } from './pages/masterdata/ProductsPage'
+import { CustomersPage as MasterdataCustomersPage } from './pages/masterdata/CustomersPage'
+import { SuppliersPage as MasterdataSuppliersPage } from './pages/masterdata/SuppliersPage'
+import { DocumentPartiesPage as MasterdataDocumentPartiesPage } from './pages/masterdata/DocumentPartiesPage'
 import { OrganizationUsersPage } from './pages/organization/OrganizationUsersPage'
 import {
   partnerTypeOptions,
@@ -540,6 +543,8 @@ type TranslationKey =
   | 'common.viewAll'
   | 'common.notSet'
   | 'common.none'
+  | 'access.deniedTitle'
+  | 'access.deniedDescription'
   | 'settings.open'
   | 'settings.title'
   | 'settings.account'
@@ -680,6 +685,8 @@ const fallbackTranslations: Record<AppLanguage, Partial<Record<TranslationKey, s
     'common.close': '关闭',
     'common.refresh': '刷新',
     'common.viewAll': '查看全部',
+    'access.deniedTitle': '暂无访问权限',
+    'access.deniedDescription': '当前账号未开通该模块，请联系超级管理员配置权限。',
     'dashboard.addTodo': '新增待办',
     'dashboard.assignees': '指派人',
     'dashboard.assigneeRequired': '请选择指派人',
@@ -701,6 +708,8 @@ const fallbackTranslations: Record<AppLanguage, Partial<Record<TranslationKey, s
     'common.close': 'Close',
     'common.refresh': 'Refresh',
     'common.viewAll': 'View all',
+    'access.deniedTitle': 'No access',
+    'access.deniedDescription': 'This account does not have access to this module. Contact a super administrator.',
     'dashboard.addTodo': 'New task',
     'dashboard.assignees': 'Assignees',
     'dashboard.assigneeRequired': 'Select at least one assignee',
@@ -823,6 +832,28 @@ function resolveMenuIcon(item: MenuItem) {
 }
 
 const superAdminPermission = 'system:super_admin'
+
+function authenticatedPath(path: string) {
+  return path && path !== loginPath ? path : dashboardPath
+}
+
+function canAccessPath(path: string, session: AuthSession) {
+  const normalizedPath = authenticatedPath(path)
+  if (dashboardSectionPaths.has(normalizedPath)) {
+    return session.menus.some((item) => item.path === dashboardPath)
+  }
+  return session.menus.some((item) => item.path === normalizedPath)
+}
+
+function firstAccessiblePath(session: AuthSession) {
+  return session.menus.find((item) => item.path === dashboardPath)?.path ?? session.menus[0]?.path ?? null
+}
+
+function permittedPath(path: string, session: AuthSession) {
+  const normalizedPath = authenticatedPath(path)
+  if (canAccessPath(normalizedPath, session)) return normalizedPath
+  return firstAccessiblePath(session)
+}
 
 function canCreateAnnouncement(user: CurrentUser) {
   return user.permissions.includes(superAdminPermission)
@@ -1692,10 +1723,6 @@ function App() {
     setActivePath(path)
   }
 
-  function authenticatedPath(path: string) {
-    return path && path !== loginPath ? path : dashboardPath
-  }
-
   function redirectToLogin(message?: string) {
     clearAuthToken()
     setSession(null)
@@ -1716,11 +1743,18 @@ function App() {
         replaceRoute(loginPath)
         return
       }
+      if (session) {
+        const nextPath = permittedPath(window.location.pathname || dashboardPath, session)
+        if (nextPath) {
+          replaceRoute(nextPath)
+          return
+        }
+      }
       setActivePath(authenticatedPath(window.location.pathname || dashboardPath))
     }
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)
-  }, [])
+  }, [session])
 
   useEffect(() => {
     const onAuthExpired = () => redirectToLogin('登录状态已失效')
@@ -1752,13 +1786,14 @@ function App() {
       try {
         const current = await getCurrentSession()
         if (cancelled) return
-        setSession({
+        const nextSession: AuthSession = {
           access_token: localStorage.getItem('yuanjing_access_token') ?? '',
           token_type: 'bearer',
           user: current.user,
           menus: current.menus,
-        })
-        replaceRoute(authenticatedPath(window.location.pathname || dashboardPath))
+        }
+        setSession(nextSession)
+        replaceRoute(permittedPath(window.location.pathname || dashboardPath, nextSession) ?? dashboardPath)
       } catch (caught) {
         if (!cancelled) {
           redirectToLogin(caught instanceof Error ? caught.message : '登录状态已失效')
@@ -1781,7 +1816,12 @@ function App() {
       return
     }
     if (session && activePath === loginPath) {
-      replaceRoute(dashboardPath)
+      replaceRoute(firstAccessiblePath(session) ?? dashboardPath)
+      return
+    }
+    if (session && !canAccessPath(activePath, session)) {
+      const fallbackPath = firstAccessiblePath(session)
+      if (fallbackPath) replaceRoute(fallbackPath)
     }
   }, [activePath, booting, session])
 
@@ -1801,9 +1841,9 @@ function App() {
   const activeMenu = useMemo(() => {
     if (!session) return null
     if (dashboardSectionPaths.has(activePath)) {
-      return session.menus.find((item) => item.path === dashboardPath) ?? session.menus[0] ?? null
+      return session.menus.find((item) => item.path === dashboardPath) ?? null
     }
-    return session.menus.find((item) => item.path === activePath) ?? session.menus[0] ?? null
+    return session.menus.find((item) => item.path === activePath) ?? null
   }, [activePath, session])
 
   async function loadDashboard() {
@@ -1841,8 +1881,18 @@ function App() {
   }
 
   function navigate(path: string) {
-    window.history.pushState({}, '', path)
-    setActivePath(path)
+    if (!session) {
+      replaceRoute(loginPath)
+      return
+    }
+    const nextPath = permittedPath(path, session)
+    if (!nextPath) {
+      setError(t('access.deniedDescription'))
+      return
+    }
+    setError('')
+    window.history.pushState({}, '', nextPath)
+    setActivePath(nextPath)
   }
 
   function logout() {
@@ -1873,7 +1923,7 @@ function App() {
           onLogin={(nextSession) => {
             setSession(nextSession)
             setDashboard(null)
-            replaceRoute(dashboardPath)
+            replaceRoute(permittedPath(dashboardPath, nextSession) ?? dashboardPath)
           }}
         />
       </ConfigProvider>
@@ -1884,6 +1934,7 @@ function App() {
   const sidebarMenuGroups = getSidebarMenuGroups(session.menus)
   const isDashboardActive = dashboardSectionPaths.has(activePath)
   const isDashboardHome = activePath === dashboardPath
+  const canViewActivePath = canAccessPath(activePath, session)
 
   return (
     <ConfigProvider locale={antdLocale} theme={erpAntTheme}>
@@ -1979,16 +2030,24 @@ function App() {
           {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
           <PageErrorBoundary pageKey={activePath}>
-            {activePath === dashboardPath ? (
+            {!canViewActivePath ? (
+              <AccessDeniedPage />
+            ) : activePath === dashboardPath ? (
               <DashboardPage
                 currentUser={session.user}
                 dashboard={dashboard}
                 loading={loadingDashboard}
+                canNavigatePath={(path) => canAccessPath(path, session)}
                 onNavigate={navigate}
                 onRefresh={loadDashboard}
               />
             ) : activePath === dashboardTodosPath ? (
-              <DashboardTodosPage dashboard={dashboard} loading={loadingDashboard} onNavigate={navigate} />
+              <DashboardTodosPage
+                dashboard={dashboard}
+                loading={loadingDashboard}
+                canNavigatePath={(path) => canAccessPath(path, session)}
+                onNavigate={navigate}
+              />
             ) : activePath === dashboardSchedulesPath ? (
               <DashboardSchedulesPage dashboard={dashboard} loading={loadingDashboard} onRefresh={loadDashboard} />
             ) : activePath === dashboardNotificationsPath ? (
@@ -2000,13 +2059,13 @@ function App() {
             ) : activePath === productPath ? (
               <ProductsPage />
             ) : activePath === customerPath ? (
-              <CustomersPage />
+              <MasterdataCustomersPage />
             ) : activePath === supplierPath ? (
-              <SuppliersPage />
+              <MasterdataSuppliersPage />
             ) : activePath === partnerPath ? (
               <PartnersPage />
             ) : activePath === documentPartyPath ? (
-              <DocumentPartiesPage />
+              <MasterdataDocumentPartiesPage />
             ) : activePath === sampleRequestPath ? (
               <SampleRequestsPage />
             ) : activePath === sampleRecordPath ? (
@@ -2498,12 +2557,14 @@ function DashboardPage({
   currentUser,
   dashboard,
   loading,
+  canNavigatePath,
   onNavigate,
   onRefresh,
 }: {
   currentUser: CurrentUser
   dashboard: Dashboard | null
   loading: boolean
+  canNavigatePath: (path: string) => boolean
   onNavigate: (path: string) => void
   onRefresh: () => Promise<void>
 }) {
@@ -2810,27 +2871,33 @@ function DashboardPage({
           </div>
           <div className="dashboard-task-list">
             {previewTodos.length ? (
-              previewTodos.map((todo) => (
-                <article className="dashboard-task" key={todo.id}>
-                  <div className="dashboard-task-icon" aria-hidden="true">
-                    <ClipboardCheck size={17} />
-                  </div>
-                  <div className="dashboard-task-body">
-                    <div className="dashboard-task-title">
-                      <strong>{todo.title}</strong>
-                      {statusTag(todo.status)}
+              previewTodos.map((todo) => {
+                const targetPath = todoTargetPath(todo)
+
+                return (
+                  <article className="dashboard-task" key={todo.id}>
+                    <div className="dashboard-task-icon" aria-hidden="true">
+                      <ClipboardCheck size={17} />
                     </div>
-                    {todo.content ? <p className="dashboard-task-content">{todo.content}</p> : null}
-                    <div className="dashboard-task-meta">
-                      <span>{todoSourceLabel(todo.source_type)}</span>
-                      <span>{t('dashboard.deadline')} {formatDate(todo.due_at)}</span>
+                    <div className="dashboard-task-body">
+                      <div className="dashboard-task-title">
+                        <strong>{todo.title}</strong>
+                        {statusTag(todo.status)}
+                      </div>
+                      {todo.content ? <p className="dashboard-task-content">{todo.content}</p> : null}
+                      <div className="dashboard-task-meta">
+                        <span>{todoSourceLabel(todo.source_type)}</span>
+                        <span>{t('dashboard.deadline')} {formatDate(todo.due_at)}</span>
+                      </div>
                     </div>
-                  </div>
-                  <button className="table-action" type="button" onClick={() => onNavigate(todoTargetPath(todo))}>
-                    {t('dashboard.goHandle')}
-                  </button>
-                </article>
-              ))
+                    {canNavigatePath(targetPath) ? (
+                      <button className="table-action" type="button" onClick={() => onNavigate(targetPath)}>
+                        {t('dashboard.goHandle')}
+                      </button>
+                    ) : null}
+                  </article>
+                )
+              })
             ) : (
               <div className="dashboard-empty">{t('dashboard.noTodos')}</div>
             )}
@@ -3173,10 +3240,12 @@ function DashboardPage({
 function DashboardTodosPage({
   dashboard,
   loading,
+  canNavigatePath,
   onNavigate,
 }: {
   dashboard: Dashboard | null
   loading: boolean
+  canNavigatePath: (path: string) => boolean
   onNavigate: (path: string) => void
 }) {
   if (loading && !dashboard) {
@@ -3206,22 +3275,28 @@ function DashboardTodosPage({
                 </header>
                 <div className="dashboard-kanban-items">
                   {group.items.length ? (
-                    group.items.map((todo) => (
-                      <article className="dashboard-task-card" key={todo.id}>
-                        <div>
-                          <strong>{todo.title}</strong>
-                          <p>{todo.content || todoSourceLabel(todo.source_type)}</p>
-                          <span>
-                            {todo.creator_user_name ?? todoSourceLabel(todo.source_type)}
-                            {' / '}
-                            {t('dashboard.deadline')} {formatDate(todo.due_at)}
-                          </span>
-                        </div>
-                        <button className="table-action" type="button" onClick={() => onNavigate(todoTargetPath(todo))}>
-                          {t('dashboard.goHandle')}
-                        </button>
-                      </article>
-                    ))
+                    group.items.map((todo) => {
+                      const targetPath = todoTargetPath(todo)
+
+                      return (
+                        <article className="dashboard-task-card" key={todo.id}>
+                          <div>
+                            <strong>{todo.title}</strong>
+                            <p>{todo.content || todoSourceLabel(todo.source_type)}</p>
+                            <span>
+                              {todo.creator_user_name ?? todoSourceLabel(todo.source_type)}
+                              {' / '}
+                              {t('dashboard.deadline')} {formatDate(todo.due_at)}
+                            </span>
+                          </div>
+                          {canNavigatePath(targetPath) ? (
+                            <button className="table-action" type="button" onClick={() => onNavigate(targetPath)}>
+                              {t('dashboard.goHandle')}
+                            </button>
+                          ) : null}
+                        </article>
+                      )
+                    })
                   ) : (
                     <div className="dashboard-empty">{t('common.none')}</div>
                   )}
@@ -3960,7 +4035,7 @@ function CustomersPage() {
               </section>
             </>
           ) : (
-            <div className="module-state">暂无客户资料</div>
+            null
           )}
         </section>
       </section>
@@ -15444,6 +15519,16 @@ function ModulePage({ menu }: { menu: MenuItem | null }) {
         <strong>{menu?.label ?? '业务模块'}</strong>
         <span>React 工作台入口已就绪</span>
       </div>
+    </section>
+  )
+}
+
+function AccessDeniedPage() {
+  return (
+    <section className="module-panel access-denied-panel" role="alert">
+      <ShieldCheck size={30} strokeWidth={1.8} />
+      <strong>{t('access.deniedTitle')}</strong>
+      <span>{t('access.deniedDescription')}</span>
     </section>
   )
 }

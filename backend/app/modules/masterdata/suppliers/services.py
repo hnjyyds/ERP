@@ -168,6 +168,26 @@ class SupplierService:
         await self._get_accessible_supplier(current_user=current_user, supplier_id=supplier_id)
         return SupplierTransactionListResponse(items=[], total=0)
 
+    async def deactivate_supplier(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        supplier_id: str,
+    ) -> SupplierResponse:
+        self._require(current_user, "masterdata:supplier:edit")
+        await self._get_accessible_supplier(current_user=current_user, supplier_id=supplier_id)
+        async with UnitOfWork(self._repository.session):
+            supplier = await self._repository.set_supplier_status(
+                supplier_id=supplier_id,
+                status="inactive",
+            )
+            if supplier is None:
+                raise SupplierNotFoundError
+        return await self._supplier_response(
+            supplier,
+            can_view_credit_limit=self._can_view_credit_limit(current_user),
+        )
+
     async def _get_accessible_supplier(
         self,
         *,

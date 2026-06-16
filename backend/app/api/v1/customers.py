@@ -113,6 +113,26 @@ async def update_customer(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="客户不存在") from None
 
 
+@router.delete("/{customer_id}", response_model=ApiResponse[CustomerResponse])
+async def delete_customer(
+    customer_id: str,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[CustomerService, Depends(get_customer_service)],
+) -> ApiResponse[CustomerResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        customer = await service.deactivate_customer(
+            current_user=user,
+            customer_id=customer_id,
+        )
+        return ApiResponse(data=customer)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except CustomerNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="客户不存在") from None
+
+
 @router.post(
     "/{customer_id}/contacts",
     status_code=status.HTTP_201_CREATED,

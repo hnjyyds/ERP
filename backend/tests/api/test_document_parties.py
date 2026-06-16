@@ -112,6 +112,22 @@ async def test_document_party_create_detail_search_update_and_lookup(
     assert lookup_data["total"] == 1
     assert lookup_data["items"][0]["id"] == party_id
 
+    delete_response = await api_client.delete(
+        f"/api/v1/masterdata/document-parties/{party_id}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert delete_response.status_code == 200
+    assert delete_response.json()["data"]["status"] == "inactive"
+    assert delete_response.json()["data"]["is_default"] is False
+
+    inactive_lookup_response = await api_client.get(
+        "/api/v1/masterdata/document-parties/lookup",
+        headers={"Authorization": f"Bearer {token}"},
+        params={"party_type": "consignee", "customer_id": "customer-euro-home"},
+    )
+    assert inactive_lookup_response.status_code == 200
+    assert inactive_lookup_response.json()["data"]["total"] == 0
+
 
 async def test_document_party_rejects_unknown_type(
     api_client: AsyncClient,

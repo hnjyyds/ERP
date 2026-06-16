@@ -153,3 +153,23 @@ async def update_document_party(
         ) from None
     except ValueError:
         _raise_invalid_party_type()
+
+
+@router.delete("/{party_id}", response_model=ApiResponse[DocumentPartyResponse])
+async def delete_document_party(
+    party_id: str,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[DocumentPartyService, Depends(get_document_party_service)],
+) -> ApiResponse[DocumentPartyResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        party = await service.deactivate_party(current_user=user, party_id=party_id)
+        return ApiResponse(data=party)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except DocumentPartyNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="单证资料不存在",
+        ) from None

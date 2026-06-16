@@ -19,7 +19,7 @@ async def test_login_returns_token_user_and_permission_menus(
     assert data["user"]["id"] == "u-001"
     assert data["user"]["username"] == "demo"
     assert data["user"]["display_name"] == "演示业务主管"
-    assert data["user"]["department_name"] == "业务部"
+    assert data["user"]["department_name"] == ""
     assert data["user"]["avatar_type"] == "preset"
     assert data["user"]["avatar_value"] == "amber-orbit"
     assert data["user"]["roles"] == ["业务主管"]
@@ -145,6 +145,12 @@ async def test_login_rejects_invalid_password(
     )
 
     assert response.status_code == 401
+    body = response.json()
+    assert body["success"] is False
+    assert body["code"] == "INVALID_CREDENTIALS"
+    assert body["message"] == "用户名或密码错误"
+    assert body["data"] is None
+    assert body["error"] == {"code": "INVALID_CREDENTIALS", "message": "用户名或密码错误"}
 
 
 async def test_current_user_and_menus_require_bearer_token(
@@ -177,6 +183,7 @@ async def test_current_user_and_menus_require_bearer_token(
 
     unauthorized_response = await api_client.get("/api/v1/system/menus")
     assert unauthorized_response.status_code == 401
+    assert unauthorized_response.json()["code"] == "MISSING_CREDENTIALS"
 
 
 async def test_assignable_users_require_authentication(
@@ -201,6 +208,7 @@ async def test_assignable_users_require_authentication(
 
     unauthorized_response = await api_client.get("/api/v1/auth/users")
     assert unauthorized_response.status_code == 401
+    assert unauthorized_response.json()["code"] == "MISSING_CREDENTIALS"
 
 
 async def test_current_user_can_update_own_avatar(
@@ -234,3 +242,4 @@ async def test_current_user_can_update_own_avatar(
         json={"avatar_type": "preset", "avatar_value": "unknown-avatar"},
     )
     assert invalid_response.status_code == 422
+    assert invalid_response.json()["code"] == "VALIDATION_ERROR"

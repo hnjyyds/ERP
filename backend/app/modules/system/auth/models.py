@@ -21,7 +21,7 @@ class User(Base):
     id: Mapped[str] = mapped_column(String(64), primary_key=True)
     username: Mapped[str] = mapped_column(String(80), unique=True, index=True, nullable=False)
     display_name: Mapped[str] = mapped_column(String(120), nullable=False)
-    department_id: Mapped[str] = mapped_column(ForeignKey("departments.id"), nullable=False)
+    department_id: Mapped[str | None] = mapped_column(ForeignKey("departments.id"), nullable=True)
     avatar_type: Mapped[str] = mapped_column(String(20), default="preset", nullable=False)
     avatar_value: Mapped[str] = mapped_column(Text, default="amber-orbit", nullable=False)
     password_hash: Mapped[str] = mapped_column(Text, nullable=False)

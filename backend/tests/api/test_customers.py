@@ -110,6 +110,13 @@ async def test_customer_create_detail_search_update_and_transactions(
     assert transactions_response.status_code == 200
     assert transactions_response.json()["data"] == {"items": [], "total": 0}
 
+    delete_response = await api_client.delete(
+        f"/api/v1/masterdata/customers/{customer_id}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert delete_response.status_code == 200
+    assert delete_response.json()["data"]["status"] == "inactive"
+
 
 async def test_customer_primary_contact_can_be_replaced(
     api_client: AsyncClient,

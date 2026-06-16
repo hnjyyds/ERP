@@ -15,7 +15,7 @@ async def test_auth_repository_returns_typed_user_identity(
 
     assert isinstance(identity, UserIdentityRow)
     assert identity.id == "u-001"
-    assert identity.department_name == "业务部"
+    assert identity.department_name == ""
     assert identity.avatar_type == "preset"
     assert identity.avatar_value == "amber-orbit"
     assert identity.roles == ["业务主管"]

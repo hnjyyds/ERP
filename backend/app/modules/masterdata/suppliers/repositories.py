@@ -169,6 +169,14 @@ class SupplierRepository:
             return None
         return self._map_supplier(supplier)
 
+    async def set_supplier_status(self, *, supplier_id: str, status: str) -> SupplierRow | None:
+        supplier = await self.session.scalar(select(Supplier).where(Supplier.id == supplier_id))
+        if supplier is None:
+            return None
+        supplier.status = status
+        await self.session.flush()
+        return self._map_supplier(supplier)
+
     async def list_contacts(self, supplier_id: str) -> list[SupplierContactRow]:
         rows = await self.session.scalars(
             select(SupplierContact)

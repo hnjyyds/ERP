@@ -169,6 +169,14 @@ class CustomerRepository:
             return None
         return self._map_customer(customer)
 
+    async def set_customer_status(self, *, customer_id: str, status: str) -> CustomerRow | None:
+        customer = await self.session.scalar(select(Customer).where(Customer.id == customer_id))
+        if customer is None:
+            return None
+        customer.status = status
+        await self.session.flush()
+        return self._map_customer(customer)
+
     async def list_contacts(self, customer_id: str) -> list[CustomerContactRow]:
         rows = await self.session.scalars(
             select(CustomerContact)

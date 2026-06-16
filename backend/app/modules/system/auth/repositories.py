@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.system.auth.models import (
@@ -77,7 +77,7 @@ class OrganizationUserRow:
     id: str
     username: str
     display_name: str
-    department_id: str
+    department_id: str | None
     department_name: str
     avatar_type: str
     avatar_value: str
@@ -133,16 +133,16 @@ class AuthRepository:
     async def list_active_users(self) -> list[AssignableUserRow]:
         rows = await self.session.execute(
             select(User, Department)
-            .join(Department, Department.id == User.department_id)
+            .join(Department, Department.id == User.department_id, isouter=True)
             .where(User.is_active.is_(True))
-            .order_by(Department.sort_order.asc(), User.display_name.asc())
+            .order_by(Department.sort_order.asc().nulls_last(), User.display_name.asc())
         )
         return [
             AssignableUserRow(
                 id=user.id,
                 username=user.username,
                 display_name=user.display_name,
-                department_name=department.name,
+                department_name=department.name if department else "",
                 avatar_type=user.avatar_type,
                 avatar_value=user.avatar_value,
             )
@@ -154,16 +154,16 @@ class AuthRepository:
             return []
         rows = await self.session.execute(
             select(User, Department)
-            .join(Department, Department.id == User.department_id)
+            .join(Department, Department.id == User.department_id, isouter=True)
             .where(User.is_active.is_(True), User.id.in_(user_ids))
-            .order_by(Department.sort_order.asc(), User.display_name.asc())
+            .order_by(Department.sort_order.asc().nulls_last(), User.display_name.asc())
         )
         users_by_id = {
             user.id: AssignableUserRow(
                 id=user.id,
                 username=user.username,
                 display_name=user.display_name,
-                department_name=department.name,
+                department_name=department.name if department else "",
                 avatar_type=user.avatar_type,
                 avatar_value=user.avatar_value,
             )
@@ -221,6 +221,68 @@ class AuthRepository:
             return None
         return self._department_row(department)
 
+    async def get_department_by_name(self, name: str) -> DepartmentRow | None:
+        department = await self.session.scalar(
+            select(Department).where(Department.name == name)
+        )
+        if department is None:
+            return None
+        return self._department_row(department)
+
+    async def count_users_in_department(self, department_id: str) -> int:
+        count = await self.session.scalar(
+            select(func.count()).select_from(User).where(User.department_id == department_id)
+        )
+        return int(count or 0)
+
+    async def create_department(
+        self,
+        *,
+        department_id: str,
+        name: str,
+        parent_id: str | None,
+        sort_order: int,
+    ) -> DepartmentRow:
+        department = Department(
+            id=department_id,
+            name=name,
+            parent_id=parent_id,
+            sort_order=sort_order,
+        )
+        self.session.add(department)
+        await self.session.flush()
+        return self._department_row(department)
+
+    async def update_department(
+        self,
+        *,
+        department_id: str,
+        name: str,
+        parent_id: str | None,
+        sort_order: int,
+    ) -> DepartmentRow | None:
+        department = await self.session.scalar(
+            select(Department).where(Department.id == department_id)
+        )
+        if department is None:
+            return None
+        department.name = name
+        department.parent_id = parent_id
+        department.sort_order = sort_order
+        await self.session.flush()
+        return self._department_row(department)
+
+    async def delete_department(self, department_id: str) -> DepartmentRow | None:
+        department = await self.session.scalar(
+            select(Department).where(Department.id == department_id)
+        )
+        if department is None:
+            return None
+        row = self._department_row(department)
+        await self.session.delete(department)
+        await self.session.flush()
+        return row
+
     async def get_user_by_username(self, username: str) -> OrganizationUserRow | None:
         user = await self.session.scalar(select(User).where(User.username == username))
         if user is None:
@@ -249,7 +311,7 @@ class AuthRepository:
         user_id: str,
         username: str,
         display_name: str,
-        department_id: str,
+        department_id: str | None,
         password_hash: str,
         password_salt: str,
         is_active: bool,
@@ -278,7 +340,7 @@ class AuthRepository:
         *,
         user_id: str,
         display_name: str,
-        department_id: str,
+        department_id: str | None,
         is_active: bool,
         avatar_type: str,
         avatar_value: str,
@@ -361,6 +423,8 @@ class AuthRepository:
         user.avatar_type = avatar_type
         user.avatar_value = avatar_value
         await self.session.flush()
+        await self.session.commit()
+        await self.session.refresh(user)
         return await self._identity_for_user(user)
 
     async def _identity_for_user(self, user: User) -> UserIdentityRow:

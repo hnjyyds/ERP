@@ -10,11 +10,7 @@ def system_roles() -> list[Role]:
 
 
 def system_departments() -> list[Department]:
-    return [
-        Department(id="dept-admin", name="管理部", parent_id=None, sort_order=5),
-        Department(id="dept-sales", name="业务部", parent_id=None, sort_order=10),
-        Department(id="dept-finance", name="财务部", parent_id=None, sort_order=20),
-    ]
+    return []
 
 
 def system_menus() -> list[MenuItem]:

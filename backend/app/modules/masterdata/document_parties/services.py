@@ -147,6 +147,23 @@ class DocumentPartyService:
             total=total,
         )
 
+    async def deactivate_party(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        party_id: str,
+    ) -> DocumentPartyResponse:
+        self._require(current_user, "masterdata:document_party:edit")
+        await self._get_accessible_party(current_user=current_user, party_id=party_id)
+        async with UnitOfWork(self._repository.session):
+            party = await self._repository.set_party_status(
+                party_id=party_id,
+                status="inactive",
+            )
+            if party is None:
+                raise DocumentPartyNotFoundError
+        return self._party_response(party)
+
     async def _get_accessible_party(
         self,
         *,

@@ -4,6 +4,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.api.deps import get_bearer_token
 from app.modules.system.auth.organization_services import (
+    OrganizationDepartmentInUseError,
+    OrganizationDepartmentNameTakenError,
+    OrganizationDepartmentNotFoundError,
+    OrganizationDepartmentRequiredError,
     OrganizationInvalidAvatarError,
     OrganizationPermissionDeniedError,
     OrganizationReferenceNotFoundError,
@@ -16,6 +20,9 @@ from app.modules.system.auth.organization_services import (
 from app.modules.system.auth.providers import get_auth_service, get_organization_service
 from app.modules.system.auth.schemas import (
     CurrentUserResponse,
+    OrganizationDepartmentCreate,
+    OrganizationDepartmentResponse,
+    OrganizationDepartmentUpdate,
     OrganizationOptionsResponse,
     OrganizationPasswordResetResponse,
     OrganizationRolePermissionUpdate,
@@ -50,6 +57,10 @@ def _raise_not_found() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="用户不存在")
 
 
+def _raise_department_not_found() -> NoReturn:
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="部门不存在")
+
+
 @router.get("/options", response_model=ApiResponse[OrganizationOptionsResponse])
 async def get_organization_options(
     token: Annotated[str, Depends(get_bearer_token)],
@@ -62,6 +73,92 @@ async def get_organization_options(
         return ApiResponse(data=options)
     except OrganizationPermissionDeniedError:
         _raise_permission_denied()
+
+
+@router.post(
+    "/departments",
+    status_code=status.HTTP_201_CREATED,
+    response_model=ApiResponse[OrganizationDepartmentResponse],
+)
+async def create_organization_department(
+    payload: OrganizationDepartmentCreate,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[OrganizationService, Depends(get_organization_service)],
+) -> ApiResponse[OrganizationDepartmentResponse]:
+    current_user = await _current_user(token, auth_service)
+    try:
+        department = await service.create_department(current_user=current_user, payload=payload)
+        return ApiResponse(data=department)
+    except OrganizationPermissionDeniedError:
+        _raise_permission_denied()
+    except OrganizationDepartmentNameTakenError:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="部门名称已存在") from None
+    except OrganizationReferenceNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="上级部门不存在",
+        ) from None
+
+
+@router.patch(
+    "/departments/{department_id}",
+    response_model=ApiResponse[OrganizationDepartmentResponse],
+)
+async def update_organization_department(
+    department_id: str,
+    payload: OrganizationDepartmentUpdate,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[OrganizationService, Depends(get_organization_service)],
+) -> ApiResponse[OrganizationDepartmentResponse]:
+    current_user = await _current_user(token, auth_service)
+    try:
+        department = await service.update_department(
+            current_user=current_user,
+            department_id=department_id,
+            payload=payload,
+        )
+        return ApiResponse(data=department)
+    except OrganizationPermissionDeniedError:
+        _raise_permission_denied()
+    except OrganizationDepartmentNotFoundError:
+        _raise_department_not_found()
+    except OrganizationDepartmentNameTakenError:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="部门名称已存在") from None
+    except OrganizationReferenceNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="上级部门不存在",
+        ) from None
+
+
+@router.delete(
+    "/departments/{department_id}",
+    response_model=ApiResponse[OrganizationDepartmentResponse],
+)
+async def delete_organization_department(
+    department_id: str,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[OrganizationService, Depends(get_organization_service)],
+) -> ApiResponse[OrganizationDepartmentResponse]:
+    current_user = await _current_user(token, auth_service)
+    try:
+        department = await service.delete_department(
+            current_user=current_user,
+            department_id=department_id,
+        )
+        return ApiResponse(data=department)
+    except OrganizationPermissionDeniedError:
+        _raise_permission_denied()
+    except OrganizationDepartmentNotFoundError:
+        _raise_department_not_found()
+    except OrganizationDepartmentInUseError:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="部门下已有用户，不能删除",
+        ) from None
 
 
 @router.get("/users", response_model=ApiResponse[OrganizationUserListResponse])
@@ -97,6 +194,8 @@ async def create_organization_user(
         _raise_permission_denied()
     except OrganizationUsernameTakenError:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="用户名已存在") from None
+    except OrganizationDepartmentRequiredError:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="请先新增部门") from None
     except OrganizationReferenceNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,

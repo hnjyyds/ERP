@@ -168,6 +168,26 @@ class CustomerService:
         await self._get_accessible_customer(current_user=current_user, customer_id=customer_id)
         return CustomerTransactionListResponse(items=[], total=0)
 
+    async def deactivate_customer(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        customer_id: str,
+    ) -> CustomerResponse:
+        self._require(current_user, "masterdata:customer:edit")
+        await self._get_accessible_customer(current_user=current_user, customer_id=customer_id)
+        async with UnitOfWork(self._repository.session):
+            customer = await self._repository.set_customer_status(
+                customer_id=customer_id,
+                status="inactive",
+            )
+            if customer is None:
+                raise CustomerNotFoundError
+        return await self._customer_response(
+            customer,
+            can_view_credit_limit=self._can_view_credit_limit(current_user),
+        )
+
     async def _get_accessible_customer(
         self,
         *,

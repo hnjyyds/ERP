@@ -1,7 +1,8 @@
 import { Modal, Select, Skeleton } from 'antd'
 import {
-  CheckCircle2,
+  Building2,
   Copy,
+  Pencil,
   KeyRound,
   LayoutDashboard,
   Plus,
@@ -15,15 +16,20 @@ import type { FormEvent } from 'react'
 import { useEffect, useState } from 'react'
 
 import {
+  createOrganizationDepartment,
   createOrganizationUser,
+  deleteOrganizationDepartment,
   deleteOrganizationUser,
   getOrganizationOptions,
   listOrganizationUsers,
   resetOrganizationUserPassword,
+  updateOrganizationDepartment,
   updateOrganizationRolePermissions,
   updateOrganizationUser,
   type CurrentUser,
   type OrganizationDepartment,
+  type OrganizationDepartmentCreatePayload,
+  type OrganizationDepartmentUpdatePayload,
   type OrganizationOptions,
   type OrganizationPermission,
   type OrganizationPasswordResetResult,
@@ -49,40 +55,336 @@ type OrganizationUserFormState = {
   avatar_value: string
 }
 
+type OrganizationDepartmentFormState = {
+  name: string
+  parent_id: string | null
+  sort_order: string
+}
+
 type PasswordRevealState = {
   title: string
   username: string
   password: string
 }
 
-const permissionGroupLabels: Record<string, string> = {
+type OrganizationPermissionSection = {
+  key: string
+  label: string
+  items: OrganizationPermission[]
+}
+
+type OrganizationPermissionGroup = {
+  key: string
+  label: string
+  sections: OrganizationPermissionSection[]
+}
+
+type PermissionSectionDefinition = {
+  key: string
+  label: string
+  prefixes: string[]
+}
+
+type PermissionGroupDefinition = {
+  key: string
+  label: string
+  sections: PermissionSectionDefinition[]
+}
+
+const permissionModuleOrder = [
+  'dashboard',
+  'system',
+  'organization',
+  'masterdata',
+  'sample',
+  'sales',
+  'purchase',
+  'qualityWarehouse',
+  'finance',
+  'other',
+]
+
+const permissionModuleLabels: Record<string, string> = {
+  dashboard: '工作桌面',
   system: '系统管理',
   organization: '组织管理',
-  dashboard: '工作桌面',
-  schedule: '日程公告',
-  announcement: '日程公告',
   masterdata: '基础资料',
   sample: '样品业务',
   sales: '销售出口',
   purchase: '采购业务',
-  followup: '采购业务',
-  quality: '质检仓库',
-  warehouse: '质检仓库',
+  qualityWarehouse: '质检仓库',
   finance: '财务报表',
-  reporting: '财务报表',
+  other: '其他权限',
 }
 
-function groupOrganizationPermissions(permissions: OrganizationPermission[]) {
-  const groups = new Map<string, OrganizationPermission[]>()
-  permissions.forEach((permission) => {
-    const namespace = permission.code.split(':')[0] ?? 'other'
-    const label = permissionGroupLabels[namespace] ?? '其他权限'
-    groups.set(label, [...(groups.get(label) ?? []), permission])
+const permissionSectionLabels: Record<string, string> = {
+  'dashboard:dashboard': '工作桌面',
+  'dashboard:schedule': '个人日程',
+  'dashboard:announcement': '公司公告',
+  'system:system': '系统权限',
+  'organization:user': '组织用户',
+  'organization:role': '角色权限',
+  'masterdata:product': '商品资料',
+  'masterdata:customer': '客户资料',
+  'masterdata:supplier': '供应商资料',
+  'masterdata:partner': '合作伙伴',
+  'masterdata:document_party': '单证资料',
+  'sample:request': '打样管理',
+  'sample:record': '样品登记',
+  'sample:delivery': '寄样管理',
+  'sales:quotation': '出口报价',
+  'sales:contract': '出口合同',
+  'sales:shipment': '出货明细',
+  'purchase:inquiry': '采购询价',
+  'purchase:contract': '采购合同',
+  'purchase:invoice_notice': '开票通知',
+  'purchase:followup': '采购跟单',
+  'followup:template': '跟单模板',
+  'followup:plan': '采购跟单计划',
+  'quality:inspection': 'QC 查验',
+  'warehouse:inbound_plan': '入库计划',
+  'warehouse:inbound_order': '货物入库',
+  'warehouse:outbound_plan': '出库计划',
+  'warehouse:outbound_order': '货物出库',
+  'finance:finance': '财务管理',
+  'finance:reporting': '经理查询',
+}
+
+const sidebarPermissionCatalog: PermissionGroupDefinition[] = [
+  {
+    key: 'dashboard',
+    label: '工作桌面',
+    sections: [
+      {
+        key: 'dashboard:dashboard',
+        label: '工作桌面',
+        prefixes: ['dashboard:', 'schedule:', 'announcement:'],
+      },
+    ],
+  },
+  {
+    key: 'system',
+    label: '系统管理',
+    sections: [
+      {
+        key: 'system:organization',
+        label: '组织管理',
+        prefixes: ['system:', 'organization:'],
+      },
+    ],
+  },
+  {
+    key: 'masterdata',
+    label: '基础资料',
+    sections: [
+      { key: 'masterdata:product', label: '商品资料', prefixes: ['masterdata:product:'] },
+      { key: 'masterdata:customer', label: '客户资料', prefixes: ['masterdata:customer:'] },
+      { key: 'masterdata:supplier', label: '供应商资料', prefixes: ['masterdata:supplier:'] },
+      { key: 'masterdata:partner', label: '合作伙伴', prefixes: ['masterdata:partner:'] },
+      { key: 'masterdata:document_party', label: '单证资料', prefixes: ['masterdata:document_party:'] },
+    ],
+  },
+  {
+    key: 'sample',
+    label: '样品业务',
+    sections: [
+      { key: 'sample:request', label: '打样管理', prefixes: ['sample:request:'] },
+      { key: 'sample:record', label: '样品登记', prefixes: ['sample:record:'] },
+      { key: 'sample:delivery', label: '寄样管理', prefixes: ['sample:delivery:'] },
+    ],
+  },
+  {
+    key: 'sales',
+    label: '销售出口',
+    sections: [
+      { key: 'sales:quotation', label: '出口报价', prefixes: ['sales:quotation:'] },
+      { key: 'sales:contract', label: '出口合同', prefixes: ['sales:contract:'] },
+      { key: 'sales:shipment', label: '出货明细', prefixes: ['sales:shipment:'] },
+    ],
+  },
+  {
+    key: 'purchase',
+    label: '采购业务',
+    sections: [
+      { key: 'purchase:inquiry', label: '采购询价', prefixes: ['purchase:inquiry:'] },
+      { key: 'purchase:contract', label: '采购合同', prefixes: ['purchase:contract:'] },
+      { key: 'purchase:invoice_notice', label: '开票通知', prefixes: ['purchase:invoice_notice:'] },
+      { key: 'purchase:followup', label: '采购跟单', prefixes: ['followup:', 'purchase:followup:'] },
+    ],
+  },
+  {
+    key: 'qualityWarehouse',
+    label: '质检仓库',
+    sections: [
+      { key: 'quality:inspection', label: 'QC 查验', prefixes: ['quality:inspection:'] },
+      { key: 'warehouse:inbound_plan', label: '入库计划', prefixes: ['warehouse:inbound_plan:'] },
+      { key: 'warehouse:inbound_order', label: '货物入库', prefixes: ['warehouse:inbound_order:'] },
+      { key: 'warehouse:outbound_plan', label: '出库计划', prefixes: ['warehouse:outbound_plan:'] },
+      { key: 'warehouse:outbound_order', label: '货物出库', prefixes: ['warehouse:outbound_order:'] },
+    ],
+  },
+  {
+    key: 'finance',
+    label: '财务报表',
+    sections: [
+      { key: 'finance:finance', label: '财务管理', prefixes: ['finance:'] },
+      { key: 'finance:reporting', label: '经理查询', prefixes: ['reporting:'] },
+    ],
+  },
+]
+
+const permissionSectionOrder = [
+  'dashboard:dashboard',
+  'dashboard:schedule',
+  'dashboard:announcement',
+  'system:system',
+  'organization:user',
+  'organization:role',
+  'masterdata:product',
+  'masterdata:customer',
+  'masterdata:supplier',
+  'masterdata:partner',
+  'masterdata:document_party',
+  'sample:request',
+  'sample:record',
+  'sample:delivery',
+  'sales:quotation',
+  'sales:contract',
+  'sales:shipment',
+  'purchase:inquiry',
+  'purchase:contract',
+  'purchase:invoice_notice',
+  'purchase:followup',
+  'followup:template',
+  'followup:plan',
+  'quality:inspection',
+  'warehouse:inbound_plan',
+  'warehouse:inbound_order',
+  'warehouse:outbound_plan',
+  'warehouse:outbound_order',
+  'finance:finance',
+  'finance:reporting',
+]
+
+const permissionActionOrder: Record<string, number> = {
+  view: 10,
+  view_all: 20,
+  create: 30,
+  edit: 40,
+  approve: 50,
+  export: 60,
+  send: 70,
+  'credit:view': 80,
+  'credit:edit': 90,
+  'fee:view': 100,
+  'fee:edit': 110,
+  allow_negative: 120,
+  manage: 130,
+  super_admin: 140,
+}
+
+function permissionModuleKey(permission: OrganizationPermission) {
+  const namespace = permission.code.split(':')[0] ?? 'other'
+  if (namespace === 'schedule' || namespace === 'announcement') return 'dashboard'
+  if (namespace === 'followup') return 'purchase'
+  if (namespace === 'quality' || namespace === 'warehouse') return 'qualityWarehouse'
+  if (namespace === 'reporting') return 'finance'
+  return permissionModuleLabels[namespace] ? namespace : 'other'
+}
+
+function permissionSectionKey(permission: OrganizationPermission) {
+  const [namespace, resource = 'general'] = permission.code.split(':')
+  if (namespace === 'dashboard') return 'dashboard:dashboard'
+  if (namespace === 'schedule') return 'dashboard:schedule'
+  if (namespace === 'announcement') return 'dashboard:announcement'
+  if (namespace === 'system') return 'system:system'
+  if (namespace === 'finance') return 'finance:finance'
+  if (namespace === 'reporting') return 'finance:reporting'
+  return `${namespace ?? 'other'}:${resource}`
+}
+
+function permissionSectionLabel(permission: OrganizationPermission) {
+  const key = permissionSectionKey(permission)
+  if (permissionSectionLabels[key]) return permissionSectionLabels[key]
+  const resource = key.split(':')[1] ?? key
+  return resource
+    .split('_')
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+}
+
+function permissionActionKey(permission: OrganizationPermission) {
+  const parts = permission.code.split(':')
+  return parts.slice(2).join(':') || parts[1] || permission.code
+}
+
+function sortPermissions(items: OrganizationPermission[]) {
+  return [...items].sort((left, right) => {
+    const leftRank = permissionActionOrder[permissionActionKey(left)] ?? 999
+    const rightRank = permissionActionOrder[permissionActionKey(right)] ?? 999
+    return leftRank - rightRank || left.code.localeCompare(right.code)
   })
-  return Array.from(groups.entries()).map(([label, items]) => ({
-    label,
-    items,
+}
+
+function countSelectedPermissions(items: OrganizationPermission[], selectedIds: string[]) {
+  return items.filter((permission) => selectedIds.includes(permission.id)).length
+}
+
+function orderedIndex(order: string[], key: string) {
+  const index = order.indexOf(key)
+  return index >= 0 ? index : order.length
+}
+
+function permissionMatchesSection(permission: OrganizationPermission, section: PermissionSectionDefinition) {
+  return section.prefixes.some((prefix) => permission.code.startsWith(prefix))
+}
+
+function groupOrganizationPermissions(permissions: OrganizationPermission[]): OrganizationPermissionGroup[] {
+  const usedPermissionIds = new Set<string>()
+  const catalogGroups = sidebarPermissionCatalog.map((group) => ({
+    key: group.key,
+    label: group.label,
+    sections: group.sections.map((section) => {
+      const items = sortPermissions(permissions.filter((permission) => permissionMatchesSection(permission, section)))
+      items.forEach((permission) => usedPermissionIds.add(permission.id))
+      return {
+        key: section.key,
+        label: section.label,
+        items,
+      }
+    }),
   }))
+
+  const uncataloguedSections = new Map<string, OrganizationPermissionSection>()
+  permissions.filter((permission) => !usedPermissionIds.has(permission.id)).forEach((permission) => {
+    const moduleKey = permissionModuleKey(permission)
+    const sectionKey = permissionSectionKey(permission)
+    const key = `${moduleKey}:${sectionKey}`
+    const section = uncataloguedSections.get(key) ?? {
+      key: sectionKey,
+      label: permissionSectionLabel(permission),
+      items: [],
+    }
+    section.items.push(permission)
+    uncataloguedSections.set(key, section)
+  })
+
+  if (!uncataloguedSections.size) return catalogGroups
+
+  return [
+    ...catalogGroups,
+    {
+      key: 'other',
+      label: '其他权限',
+      sections: Array.from(uncataloguedSections.values())
+        .sort((left, right) => orderedIndex(permissionSectionOrder, left.key) - orderedIndex(permissionSectionOrder, right.key))
+        .map((section) => ({
+          ...section,
+          items: sortPermissions(section.items),
+        })),
+    },
+  ]
 }
 
 function safeOrganizationText(value: unknown, fallback = '') {
@@ -137,7 +439,7 @@ function normalizeOrganizationUser(user: Partial<OrganizationUser> | null | unde
     id: safeOrganizationText(user?.id, username),
     username,
     display_name: displayName,
-    department_id: safeOrganizationText(user?.department_id),
+    department_id: typeof user?.department_id === 'string' ? user.department_id : null,
     department_name: safeOrganizationText(user?.department_name, '未分配部门'),
     avatar_type: normalizeAvatarType(user?.avatar_type),
     avatar_value: safeOrganizationText(user?.avatar_value, defaultAvatarPreset),
@@ -206,6 +508,7 @@ export function OrganizationUsersPage({
   const [permissions, setPermissions] = useState<OrganizationPermission[]>([])
   const [selectedUserId, setSelectedUserId] = useState('')
   const [selectedRoleId, setSelectedRoleId] = useState('')
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState('')
   const [permissionFormIds, setPermissionFormIds] = useState<string[]>([])
   const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(true)
@@ -213,6 +516,7 @@ export function OrganizationUsersPage({
   const [actionMessage, setActionMessage] = useState('')
   const [actionError, setActionError] = useState('')
   const [userModalMode, setUserModalMode] = useState<'create' | 'edit' | null>(null)
+  const [departmentModalMode, setDepartmentModalMode] = useState<'create' | 'edit' | null>(null)
   const [form, setForm] = useState<OrganizationUserFormState>(() => ({
     username: '',
     display_name: '',
@@ -221,6 +525,11 @@ export function OrganizationUsersPage({
     is_active: true,
     avatar_type: 'preset',
     avatar_value: defaultAvatarPreset,
+  }))
+  const [departmentForm, setDepartmentForm] = useState<OrganizationDepartmentFormState>(() => ({
+    name: '',
+    parent_id: null,
+    sort_order: '0',
   }))
   const [passwordReveal, setPasswordReveal] = useState<PasswordRevealState | null>(null)
 
@@ -237,6 +546,8 @@ export function OrganizationUsersPage({
   const inactiveUsers = users.filter((user) => !user.is_active)
   const selectedUser = users.find((user) => user.id === selectedUserId) ?? users[0] ?? null
   const selectedRole = roles.find((role) => role.id === selectedRoleId) ?? roles[0] ?? null
+  const selectedDepartment =
+    departments.find((department) => department.id === selectedDepartmentId) ?? departments[0] ?? null
   const permissionGroups = groupOrganizationPermissions(permissions)
   const filteredUsers = users.filter((user) => {
     const keyword = query.trim().toLowerCase()
@@ -247,7 +558,7 @@ export function OrganizationUsersPage({
       .includes(keyword)
   })
 
-  async function loadOrganization(nextSelectedId?: string, nextRoleId?: string) {
+  async function loadOrganization(nextSelectedId?: string, nextRoleId?: string, nextDepartmentId?: string) {
     setLoading(true)
     setActionError('')
     try {
@@ -271,6 +582,13 @@ export function OrganizationUsersPage({
         normalizedOptions.roles.find((role) => role.id === preferredRoleId) ?? normalizedOptions.roles[0] ?? null
       setSelectedRoleId(nextRole?.id ?? '')
       setPermissionFormIds(nextRole?.permissions.map((permission) => permission.id) ?? [])
+      const preferredDepartmentId =
+        nextDepartmentId ??
+        (selectedDepartmentId &&
+        normalizedOptions.departments.some((department) => department.id === selectedDepartmentId)
+          ? selectedDepartmentId
+          : '')
+      setSelectedDepartmentId(preferredDepartmentId || normalizedOptions.departments[0]?.id || '')
     } catch (caught) {
       setActionError(caught instanceof Error ? caught.message : '组织管理数据加载失败')
     } finally {
@@ -291,6 +609,10 @@ export function OrganizationUsersPage({
   }
 
   function openCreateModal() {
+    if (!departments.length) {
+      setActionError('请先新增部门')
+      return
+    }
     resetCreateForm()
     setUserModalMode('create')
   }
@@ -299,13 +621,32 @@ export function OrganizationUsersPage({
     setForm({
       username: user.username,
       display_name: user.display_name,
-      department_id: user.department_id,
+      department_id: user.department_id ?? departments[0]?.id ?? '',
       role_ids: user.roles.map((role) => role.id),
       is_active: user.is_active,
       avatar_type: user.avatar_type,
       avatar_value: user.avatar_value || defaultAvatarPreset,
     })
     setUserModalMode('edit')
+  }
+
+  function resetDepartmentForm(department?: OrganizationDepartment) {
+    setDepartmentForm({
+      name: department?.name ?? '',
+      parent_id: department?.parent_id ?? null,
+      sort_order: String(department?.sort_order ?? departments.length * 10),
+    })
+  }
+
+  function openCreateDepartmentModal() {
+    resetDepartmentForm()
+    setDepartmentModalMode('create')
+  }
+
+  function openEditDepartmentModal(department: OrganizationDepartment) {
+    setSelectedDepartmentId(department.id)
+    resetDepartmentForm(department)
+    setDepartmentModalMode('edit')
   }
 
   function toggleRole(roleId: string) {
@@ -330,6 +671,31 @@ export function OrganizationUsersPage({
       current.includes(permissionId)
         ? current.filter((id) => id !== permissionId)
         : [...current, permissionId],
+    )
+  }
+
+  function setPermissionIds(permissionIds: string[], shouldSelect: boolean) {
+    setPermissionFormIds((current) => {
+      const next = new Set(current)
+      permissionIds.forEach((permissionId) => {
+        if (shouldSelect) {
+          next.add(permissionId)
+        } else {
+          next.delete(permissionId)
+        }
+      })
+      return Array.from(next)
+    })
+  }
+
+  function setSectionPermissions(section: OrganizationPermissionSection, shouldSelect: boolean) {
+    setPermissionIds(section.items.map((permission) => permission.id), shouldSelect)
+  }
+
+  function setGroupPermissions(group: OrganizationPermissionGroup, shouldSelect: boolean) {
+    setPermissionIds(
+      group.sections.flatMap((section) => section.items.map((permission) => permission.id)),
+      shouldSelect,
     )
   }
 
@@ -363,8 +729,16 @@ export function OrganizationUsersPage({
 
   async function submitUserForm(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!form.username.trim() || !form.display_name.trim() || !form.department_id) {
-      setActionError('请填写用户名、姓名和部门')
+    if (userModalMode === 'create' && !departments.length) {
+      setActionError('请先新增部门')
+      return
+    }
+    if (!form.username.trim() || !form.display_name.trim()) {
+      setActionError('请填写用户名和姓名')
+      return
+    }
+    if (!form.department_id) {
+      setActionError('请选择部门')
       return
     }
     setBusyAction(userModalMode ?? 'user')
@@ -412,6 +786,47 @@ export function OrganizationUsersPage({
     }
   }
 
+  async function submitDepartmentForm(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const name = departmentForm.name.trim()
+    if (!name) {
+      setActionError('请填写部门名称')
+      return
+    }
+    const sortOrder = Number.parseInt(departmentForm.sort_order, 10)
+    setBusyAction(departmentModalMode === 'edit' ? `department-${selectedDepartment?.id}` : 'department')
+    setActionError('')
+    setActionMessage('')
+    try {
+      if (departmentModalMode === 'create') {
+        const payload: OrganizationDepartmentCreatePayload = {
+          name,
+          parent_id: departmentForm.parent_id || null,
+          sort_order: Number.isNaN(sortOrder) ? 0 : sortOrder,
+        }
+        const created = await createOrganizationDepartment(payload)
+        setDepartmentModalMode(null)
+        setActionMessage('部门已创建')
+        await loadOrganization(undefined, undefined, created.id)
+      }
+      if (departmentModalMode === 'edit' && selectedDepartment) {
+        const payload: OrganizationDepartmentUpdatePayload = {
+          name,
+          parent_id: departmentForm.parent_id || null,
+          sort_order: Number.isNaN(sortOrder) ? selectedDepartment.sort_order : sortOrder,
+        }
+        const updated = await updateOrganizationDepartment(selectedDepartment.id, payload)
+        setDepartmentModalMode(null)
+        setActionMessage('部门已更新')
+        await loadOrganization(undefined, undefined, updated.id)
+      }
+    } catch (caught) {
+      setActionError(caught instanceof Error ? caught.message : '部门保存失败')
+    } finally {
+      setBusyAction(null)
+    }
+  }
+
   function confirmDeactivate(user: OrganizationUser) {
     Modal.confirm({
       centered: true,
@@ -430,6 +845,35 @@ export function OrganizationUsersPage({
           await loadOrganization(deleted.id)
         } catch (caught) {
           setActionError(caught instanceof Error ? caught.message : '删除失败')
+        } finally {
+          setBusyAction(null)
+        }
+      },
+    })
+  }
+
+  function confirmDeleteDepartment(department: OrganizationDepartment) {
+    const relatedUsers = users.filter((user) => user.department_id === department.id)
+    Modal.confirm({
+      centered: true,
+      title: '删除部门',
+      content: relatedUsers.length
+        ? `${department.name} 下还有 ${relatedUsers.length} 个用户，不能删除。`
+        : `删除后 ${department.name} 将从部门列表中移除，是否继续？`,
+      okText: '删除',
+      cancelText: translate('common.cancel'),
+      okButtonProps: { danger: true, disabled: relatedUsers.length > 0 },
+      onOk: async () => {
+        if (relatedUsers.length) return
+        setBusyAction(`department-delete-${department.id}`)
+        setActionError('')
+        setActionMessage('')
+        try {
+          const deleted = await deleteOrganizationDepartment(department.id)
+          setActionMessage('部门已删除')
+          await loadOrganization(undefined, undefined, deleted.id === selectedDepartmentId ? undefined : selectedDepartmentId)
+        } catch (caught) {
+          setActionError(caught instanceof Error ? caught.message : '部门删除失败')
         } finally {
           setBusyAction(null)
         }
@@ -492,11 +936,76 @@ export function OrganizationUsersPage({
             onChange={(event) => setQuery(event.target.value)}
           />
         </label>
-        <button className="inline-submit" type="button" onClick={openCreateModal}>
-          <Plus size={15} />
-          新增用户
-        </button>
+        <div className="organization-toolbar-actions">
+          {!departments.length ? <span>请先新增部门后再添加成员</span> : null}
+          <button
+            className="inline-submit"
+            disabled={!departments.length}
+            type="button"
+            onClick={openCreateModal}
+          >
+            <Plus size={15} />
+            新增用户
+          </button>
+        </div>
       </div>
+
+      <section className="organization-departments" aria-label="部门管理">
+        <header className="organization-departments-head">
+          <div>
+            <Building2 size={18} />
+            <div>
+              <h2>部门管理</h2>
+              <p>初始部门为空，由超级管理员先创建部门，再新增成员。</p>
+            </div>
+          </div>
+          <button className="secondary-inline" type="button" onClick={openCreateDepartmentModal}>
+            <Plus size={15} />
+            新增部门
+          </button>
+        </header>
+        {departments.length ? (
+          <div className="organization-department-grid">
+            {departments.map((department) => {
+              const parent = departments.find((item) => item.id === department.parent_id)
+              const relatedUsers = users.filter((user) => user.department_id === department.id).length
+              return (
+                <article className="organization-department-card" key={department.id}>
+                  <button
+                    className="organization-department-main"
+                    type="button"
+                    onClick={() => openEditDepartmentModal(department)}
+                  >
+                    <strong>{department.name}</strong>
+                    <small>
+                      {parent ? `上级 ${parent.name}` : '一级部门'} · {relatedUsers} 人
+                    </small>
+                  </button>
+                  <button
+                    aria-label={`编辑 ${department.name}`}
+                    className="secondary-inline icon-only"
+                    type="button"
+                    onClick={() => openEditDepartmentModal(department)}
+                  >
+                    <Pencil size={15} />
+                  </button>
+                  <button
+                    aria-label={`删除 ${department.name}`}
+                    className="danger-inline icon-only"
+                    disabled={busyAction === `department-delete-${department.id}`}
+                    type="button"
+                    onClick={() => confirmDeleteDepartment(department)}
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </article>
+              )
+            })}
+          </div>
+        ) : (
+          <div className="organization-department-empty">暂无部门。请先新增部门，再创建成员账号。</div>
+        )}
+      </section>
 
       <div className="organization-layout">
         <section className="organization-list" aria-label="用户列表">
@@ -566,7 +1075,7 @@ export function OrganizationUsersPage({
                 </div>
                 <div>
                   <span>密码</span>
-                  <strong>{selectedUser.password_set ? '已设置，不显示明文' : '未设置'}</strong>
+                  <strong>{selectedUser.password_set ? '******' : '未设置'}</strong>
                 </div>
                 <div>
                   <span>创建时间</span>
@@ -609,8 +1118,8 @@ export function OrganizationUsersPage({
         <div className="organization-permissions-head">
           <div>
             <span>权限配置</span>
-            <h2>角色权限</h2>
-            <p>权限通过角色分配给用户；超级管理员权限决定是否能进入组织管理和发布公司公告。</p>
+            <h2>按侧边栏功能授权</h2>
+            <p>先选择角色，再按左侧导航对应的功能勾选权限；没有勾选的板块不会出现在该角色用户的侧边栏。</p>
           </div>
           <button
             className="inline-submit"
@@ -624,45 +1133,98 @@ export function OrganizationUsersPage({
         </div>
 
         <div className="organization-permission-layout">
-          <div className="organization-role-list" aria-label="角色列表">
-            {roles.map((role) => (
-              <button
-                aria-pressed={selectedRole?.id === role.id}
-                className={selectedRole?.id === role.id ? 'active' : ''}
-                key={role.id}
-                type="button"
-                onClick={() => selectRoleForPermissions(role)}
-              >
-                <span>{role.name}</span>
-                <small>{role.permissions.length} 项权限</small>
-              </button>
-            ))}
+          <div className="organization-role-list" aria-label="选择角色">
+            {roles.length ? (
+              roles.map((role) => (
+                <button
+                  aria-pressed={selectedRole?.id === role.id}
+                  className={selectedRole?.id === role.id ? 'active' : ''}
+                  key={role.id}
+                  type="button"
+                  onClick={() => selectRoleForPermissions(role)}
+                >
+                  <span>{role.name}</span>
+                  <small>{role.permissions.length} 项权限</small>
+                </button>
+              ))
+            ) : (
+              <div className="organization-permission-empty compact">
+                <strong>暂无角色</strong>
+                <span>请先初始化角色后再配置权限。</span>
+              </div>
+            )}
           </div>
 
           <div className="organization-permission-groups">
-            {permissionGroups.map((group) => (
-              <section key={group.label}>
-                <h3>{group.label}</h3>
-                <div>
-                  {group.items.map((permission) => {
-                    const checked = permissionFormIds.includes(permission.id)
-                    return (
-                      <button
-                        aria-pressed={checked}
-                        className={checked ? 'selected' : ''}
-                        key={permission.id}
-                        type="button"
-                        onClick={() => togglePermission(permission.id)}
-                      >
-                        <CheckCircle2 size={15} />
-                        <span>{permission.name}</span>
-                        <small>{permission.code}</small>
-                      </button>
-                    )
-                  })}
-                </div>
-              </section>
-            ))}
+            {permissionGroups.map((group) => {
+              const groupItems = group.sections.flatMap((section) => section.items)
+              const groupSelectedCount = countSelectedPermissions(groupItems, permissionFormIds)
+              const groupFullySelected = groupItems.length > 0 && groupSelectedCount === groupItems.length
+              return (
+                <section className="organization-permission-module" key={group.key}>
+                  <header>
+                    <div>
+                      <span>侧边栏模块</span>
+                      <h3>{group.label}</h3>
+                    </div>
+                    <label className="organization-permission-bulk">
+                      <input
+                        checked={groupFullySelected}
+                        disabled={!groupItems.length}
+                        type="checkbox"
+                        onChange={(event) => setGroupPermissions(group, event.target.checked)}
+                      />
+                      {groupSelectedCount}/{groupItems.length}
+                    </label>
+                  </header>
+                  <div className="organization-permission-sections">
+                    {group.sections.map((section) => {
+                      const selectedCount = countSelectedPermissions(section.items, permissionFormIds)
+                      const sectionFullySelected = section.items.length > 0 && selectedCount === section.items.length
+                      return (
+                        <div className="organization-permission-section" key={section.key}>
+                          <div className="organization-permission-section-head">
+                            <div>
+                              <small>{group.label}</small>
+                              <strong>{section.label}</strong>
+                            </div>
+                            <label>
+                              <input
+                                checked={sectionFullySelected}
+                                disabled={!section.items.length}
+                                type="checkbox"
+                                onChange={(event) => setSectionPermissions(section, event.target.checked)}
+                              />
+                              {selectedCount}/{section.items.length}
+                            </label>
+                          </div>
+                          <div className="organization-permission-checks">
+                            {section.items.length ? (
+                              section.items.map((permission) => {
+                                const checked = permissionFormIds.includes(permission.id)
+                                return (
+                                  <label className={checked ? 'selected' : ''} key={permission.id}>
+                                    <input
+                                      checked={checked}
+                                      type="checkbox"
+                                      onChange={() => togglePermission(permission.id)}
+                                    />
+                                    <span>{permission.name}</span>
+                                    <small>{permission.code}</small>
+                                  </label>
+                                )
+                              })
+                            ) : (
+                              <div className="organization-permission-missing">暂无可配置权限</div>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </section>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -705,11 +1267,13 @@ export function OrganizationUsersPage({
           <label>
             <span>部门</span>
             <Select
+              disabled={!departments.length}
               options={departments.map((department) => ({
                 value: department.id,
                 label: department.name,
               }))}
-              value={form.department_id}
+              placeholder="请选择部门"
+              value={form.department_id || undefined}
               onChange={(value) => setForm({ ...form, department_id: value })}
             />
           </label>
@@ -752,6 +1316,58 @@ export function OrganizationUsersPage({
             </button>
             <button className="inline-submit" disabled={busyAction === userModalMode} type="submit">
               {userModalMode === 'create' ? '创建用户' : '保存修改'}
+            </button>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal
+        centered
+        footer={null}
+        open={Boolean(departmentModalMode)}
+        title={departmentModalMode === 'create' ? '新增部门' : '编辑部门'}
+        width={520}
+        onCancel={() => setDepartmentModalMode(null)}
+      >
+        <form className="dashboard-form modal-dashboard-form organization-form" onSubmit={submitDepartmentForm}>
+          <label>
+            <span>部门名称</span>
+            <input
+              placeholder="如 业务部、财务部"
+              value={departmentForm.name}
+              onChange={(event) => setDepartmentForm({ ...departmentForm, name: event.target.value })}
+            />
+          </label>
+          <label>
+            <span>上级部门</span>
+            <Select
+              allowClear
+              options={departments
+                .filter((department) => department.id !== selectedDepartment?.id)
+                .map((department) => ({
+                  value: department.id,
+                  label: department.name,
+                }))}
+              placeholder="不选择则为一级部门"
+              value={departmentForm.parent_id || undefined}
+              onChange={(value) => setDepartmentForm({ ...departmentForm, parent_id: value ?? null })}
+            />
+          </label>
+          <label>
+            <span>排序</span>
+            <input
+              min={0}
+              type="number"
+              value={departmentForm.sort_order}
+              onChange={(event) => setDepartmentForm({ ...departmentForm, sort_order: event.target.value })}
+            />
+          </label>
+          <div className="modal-actions">
+            <button className="secondary-inline" type="button" onClick={() => setDepartmentModalMode(null)}>
+              {translate('common.cancel')}
+            </button>
+            <button className="inline-submit" disabled={busyAction?.startsWith('department')} type="submit">
+              {departmentModalMode === 'create' ? '创建部门' : '保存部门'}
             </button>
           </div>
         </form>

@@ -113,6 +113,26 @@ async def update_supplier(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="供应商不存在") from None
 
 
+@router.delete("/{supplier_id}", response_model=ApiResponse[SupplierResponse])
+async def delete_supplier(
+    supplier_id: str,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[SupplierService, Depends(get_supplier_service)],
+) -> ApiResponse[SupplierResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        supplier = await service.deactivate_supplier(
+            current_user=user,
+            supplier_id=supplier_id,
+        )
+        return ApiResponse(data=supplier)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except SupplierNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="供应商不存在") from None
+
+
 @router.post(
     "/{supplier_id}/contacts",
     status_code=status.HTTP_201_CREATED,

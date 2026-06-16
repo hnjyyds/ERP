@@ -7,6 +7,7 @@ from app.modules.system.auth.permissions import (
     ORGANIZATION_USER_MANAGE_PERMISSION,
     SUPER_ADMIN_PERMISSION,
 )
+from app.modules.system.auth.seed_permissions import system_permissions
 from app.modules.system.auth.repositories import (
     AuthRepository,
     DepartmentRow,
@@ -20,7 +21,9 @@ from app.modules.system.auth.schemas import (
     ORGANIZATION_AVATAR_PRESETS,
     AvatarType,
     CurrentUserResponse,
+    OrganizationDepartmentCreate,
     OrganizationDepartmentResponse,
+    OrganizationDepartmentUpdate,
     OrganizationOptionsResponse,
     OrganizationPasswordResetResponse,
     OrganizationPermissionResponse,
@@ -45,6 +48,22 @@ class OrganizationUserNotFoundError(Exception):
 
 
 class OrganizationReferenceNotFoundError(Exception):
+    pass
+
+
+class OrganizationDepartmentNotFoundError(Exception):
+    pass
+
+
+class OrganizationDepartmentNameTakenError(Exception):
+    pass
+
+
+class OrganizationDepartmentInUseError(Exception):
+    pass
+
+
+class OrganizationDepartmentRequiredError(Exception):
     pass
 
 
@@ -76,7 +95,7 @@ class OrganizationService:
         self._require_super_admin(current_user)
         departments = await self._repository.list_departments()
         roles = await self._repository.list_roles()
-        permissions = await self._repository.list_permissions()
+        permissions = await self._ensure_permissions_initialized()
         return OrganizationOptionsResponse(
             departments=[self._department_response(row) for row in departments],
             roles=[self._role_response(row) for row in roles],
@@ -99,6 +118,7 @@ class OrganizationService:
         payload: OrganizationUserCreate,
     ) -> OrganizationUserCreateResponse:
         self._require_super_admin(current_user)
+        await self._require_departments_available()
         await self._validate_department(payload.department_id)
         role_ids = await self._validate_role_ids(payload.role_ids)
         existing = await self._repository.get_user_by_username(payload.username)
@@ -150,8 +170,9 @@ class OrganizationService:
         if existing is None:
             raise OrganizationUserNotFoundError
 
-        next_department_id = payload.department_id or existing.department_id
-        await self._validate_department(next_department_id)
+        next_department_id = payload.department_id if payload.department_id is not None else existing.department_id
+        if next_department_id is not None:
+            await self._validate_department(next_department_id)
         role_ids = [role.id for role in existing.roles]
         if payload.role_ids is not None:
             role_ids = await self._validate_role_ids(payload.role_ids)
@@ -236,6 +257,81 @@ class OrganizationService:
             temporary_password=temporary_password,
         )
 
+    async def create_department(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        payload: OrganizationDepartmentCreate,
+    ) -> OrganizationDepartmentResponse:
+        self._require_super_admin(current_user)
+        name = payload.name.strip()
+        await self._ensure_department_name_available(name=name)
+        await self._validate_department_parent(payload.parent_id)
+
+        async with UnitOfWork(self._repository.session):
+            created = await self._repository.create_department(
+                department_id=f"dept-{secrets.token_hex(8)}",
+                name=name,
+                parent_id=payload.parent_id,
+                sort_order=payload.sort_order,
+            )
+
+        return self._department_response(created)
+
+    async def update_department(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        department_id: str,
+        payload: OrganizationDepartmentUpdate,
+    ) -> OrganizationDepartmentResponse:
+        self._require_super_admin(current_user)
+        existing = await self._repository.get_department(department_id)
+        if existing is None:
+            raise OrganizationDepartmentNotFoundError
+
+        next_name = payload.name.strip() if payload.name is not None else existing.name
+        next_parent_id = (
+            payload.parent_id
+            if "parent_id" in payload.model_fields_set
+            else existing.parent_id
+        )
+        next_sort_order = payload.sort_order if payload.sort_order is not None else existing.sort_order
+        await self._ensure_department_name_available(name=next_name, department_id=department_id)
+        await self._validate_department_parent(next_parent_id, department_id=department_id)
+
+        async with UnitOfWork(self._repository.session):
+            updated = await self._repository.update_department(
+                department_id=department_id,
+                name=next_name,
+                parent_id=next_parent_id,
+                sort_order=next_sort_order,
+            )
+
+        if updated is None:
+            raise OrganizationDepartmentNotFoundError
+        return self._department_response(updated)
+
+    async def delete_department(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        department_id: str,
+    ) -> OrganizationDepartmentResponse:
+        self._require_super_admin(current_user)
+        existing = await self._repository.get_department(department_id)
+        if existing is None:
+            raise OrganizationDepartmentNotFoundError
+        if await self._repository.count_users_in_department(department_id) > 0:
+            raise OrganizationDepartmentInUseError
+
+        async with UnitOfWork(self._repository.session):
+            deleted = await self._repository.delete_department(department_id)
+
+        if deleted is None:
+            raise OrganizationDepartmentNotFoundError
+        return self._department_response(deleted)
+
     async def update_role_permissions(
         self,
         *,
@@ -271,6 +367,33 @@ class OrganizationService:
         if await self._repository.get_department(department_id) is None:
             raise OrganizationReferenceNotFoundError
 
+    async def _require_departments_available(self) -> None:
+        if not await self._repository.list_departments():
+            raise OrganizationDepartmentRequiredError
+
+    async def _ensure_department_name_available(
+        self,
+        *,
+        name: str,
+        department_id: str | None = None,
+    ) -> None:
+        existing = await self._repository.get_department_by_name(name)
+        if existing is not None and existing.id != department_id:
+            raise OrganizationDepartmentNameTakenError
+
+    async def _validate_department_parent(
+        self,
+        parent_id: str | None,
+        *,
+        department_id: str | None = None,
+    ) -> None:
+        if parent_id is None:
+            return
+        if parent_id == department_id:
+            raise OrganizationReferenceNotFoundError
+        if await self._repository.get_department(parent_id) is None:
+            raise OrganizationReferenceNotFoundError
+
     async def _validate_role_ids(self, role_ids: list[str]) -> list[str]:
         roles = await self._repository.list_roles_by_ids(role_ids)
         if len(roles) != len(role_ids):
@@ -282,6 +405,16 @@ class OrganizationService:
         if len(permissions) != len(permission_ids):
             raise OrganizationReferenceNotFoundError
         return permissions
+
+    async def _ensure_permissions_initialized(self) -> list[PermissionRow]:
+        permissions = await self._repository.list_permissions()
+        if permissions:
+            return permissions
+
+        async with UnitOfWork(self._repository.session):
+            self._repository.session.add_all(system_permissions())
+
+        return await self._repository.list_permissions()
 
     def _require_manage_users(self, current_user: CurrentUserResponse) -> None:
         if MANAGE_USERS_PERMISSION not in current_user.permissions:
