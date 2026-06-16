@@ -20,7 +20,6 @@ export function CustomersPage() {
       listTransactions={listCustomerTransactions}
       pageTitle="客户资料"
       searchPlaceholder="客户编号 / 中英文名称 / 联系人"
-      showEmptyDetailState={false}
       updateEntity={(id, payload) => updateCustomer(id, payload)}
       addContact={addCustomerContact}
     />

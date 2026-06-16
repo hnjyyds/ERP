@@ -1699,6 +1699,108 @@ type OutboundOrderApprovalFormState = {
   allow_negative: boolean
 }
 
+type NavigateToModule = (path: string) => void
+
+type ModuleNavigationProps = {
+  onNavigate: NavigateToModule
+}
+
+type OperationFlowKind = 'sales' | 'purchase' | 'warehouse' | 'finance'
+
+type OperationFlowStep = {
+  label: string
+  caption: string
+  path: string
+}
+
+type OperationFlowProps = {
+  activeLabel?: string
+  activePath: string
+  kind: OperationFlowKind
+  onNavigate: NavigateToModule
+}
+
+const operationFlows: Record<OperationFlowKind, { title: string; steps: OperationFlowStep[] }> = {
+  sales: {
+    title: '销售主闭环',
+    steps: [
+      { label: '出口报价', caption: '客户询价与报价审批', path: exportQuotationPath },
+      { label: '出口合同', caption: '合同签订与预收款', path: exportContractPath },
+      { label: '出货明细', caption: '出运计划与利润预估', path: shipmentPath },
+      { label: '采购合同', caption: '转采购与供应履约', path: purchaseContractPath },
+      { label: '财务审核', caption: '收款付款与结算', path: financePath },
+    ],
+  },
+  purchase: {
+    title: '采购主闭环',
+    steps: [
+      { label: '采购询价', caption: '供应商询价与比价', path: purchaseInquiryPath },
+      { label: '采购合同', caption: '合同生成与审批', path: purchaseContractPath },
+      { label: '开票通知', caption: '发票通知与签收', path: purchaseInvoiceNoticePath },
+      { label: '采购跟单', caption: '节点跟进与逾期提醒', path: followupPath },
+      { label: '入库计划', caption: '验货后排库位', path: warehouseInboundPlanPath },
+    ],
+  },
+  warehouse: {
+    title: '仓库主闭环',
+    steps: [
+      { label: 'QC查验', caption: '质量查验与入库资格', path: qualityInspectionPath },
+      { label: '入库计划', caption: '排期与库位', path: warehouseInboundPlanPath },
+      { label: '入库单', caption: '入库确认与库存流水', path: warehouseInboundOrderPath },
+      { label: '出库计划', caption: '按出货计划排库', path: warehouseOutboundPlanPath },
+      { label: '出库单', caption: '出库确认与扣减库存', path: warehouseOutboundOrderPath },
+      { label: '财务审核', caption: '关联费用与利润', path: financePath },
+    ],
+  },
+  finance: {
+    title: '财务主闭环',
+    steps: [
+      { label: '银行水单', caption: '认领与分配收款', path: financePath },
+      { label: '应收应付', caption: '合同款项与供应商往来', path: financePath },
+      { label: '费用付款', caption: '杂费与伙伴费用付款', path: financePath },
+      { label: '核销退税', caption: '单证核销与退税登记', path: financePath },
+      { label: '结算核算', caption: '利润核算与成本分摊', path: financePath },
+      { label: '经理报表', caption: '审批与经营统计', path: reportingPath },
+    ],
+  },
+}
+
+function OperationFlowRail({ activeLabel, activePath, kind, onNavigate }: OperationFlowProps) {
+  const flow = operationFlows[kind]
+
+  return (
+    <nav className="operation-flow" aria-label={flow.title}>
+      <div className="operation-flow-title">
+        <span>主闭环</span>
+        <strong>{flow.title}</strong>
+      </div>
+      <ol className="operation-flow-list">
+        {flow.steps.map((step, index) => {
+          const active = activeLabel ? step.label === activeLabel : step.path === activePath
+
+          return (
+            <li key={`${kind}-${step.label}`} className="operation-flow-item">
+              <button
+                aria-current={active ? 'step' : undefined}
+                className={active ? 'operation-flow-step active' : 'operation-flow-step'}
+                type="button"
+                onClick={() => onNavigate(step.path)}
+              >
+                <span className="operation-flow-index">{index + 1}</span>
+                <span className="operation-flow-copy">
+                  <strong>{step.label}</strong>
+                  <small>{step.caption}</small>
+                </span>
+              </button>
+              {index < flow.steps.length - 1 ? <span className="operation-flow-arrow" aria-hidden="true" /> : null}
+            </li>
+          )
+        })}
+      </ol>
+    </nav>
+  )
+}
+
 function App() {
   const [session, setSession] = useState<AuthSession | null>(null)
   const [dashboard, setDashboard] = useState<Dashboard | null>(null)
@@ -2073,33 +2175,33 @@ function App() {
             ) : activePath === sampleDeliveryPath ? (
               <SampleDeliveriesPage />
             ) : activePath === exportQuotationPath ? (
-              <ExportQuotationsPage />
+              <ExportQuotationsPage onNavigate={navigate} />
             ) : activePath === exportContractPath ? (
-              <ExportContractsPage />
+              <ExportContractsPage onNavigate={navigate} />
             ) : activePath === shipmentPath ? (
-              <ShipmentsPage />
+              <ShipmentsPage onNavigate={navigate} />
             ) : activePath === purchaseInquiryPath ? (
-              <PurchaseInquiriesPage />
+              <PurchaseInquiriesPage onNavigate={navigate} />
             ) : activePath === purchaseContractPath ? (
-              <PurchaseContractsPage />
+              <PurchaseContractsPage onNavigate={navigate} />
             ) : activePath === purchaseInvoiceNoticePath ? (
-              <PurchaseInvoiceNoticesPage />
+              <PurchaseInvoiceNoticesPage onNavigate={navigate} />
             ) : activePath === followupPath ? (
-              <FollowupPage />
+              <FollowupPage onNavigate={navigate} />
             ) : activePath === qualityInspectionPath ? (
-              <QualityInspectionsPage />
+              <QualityInspectionsPage onNavigate={navigate} />
             ) : activePath === warehouseInboundPlanPath ? (
-              <InboundPlansPage />
+              <InboundPlansPage onNavigate={navigate} />
             ) : activePath === warehouseInboundOrderPath ? (
-              <InboundOrdersPage />
+              <InboundOrdersPage onNavigate={navigate} />
             ) : activePath === warehouseOutboundPlanPath ? (
-              <OutboundPlansPage />
+              <OutboundPlansPage onNavigate={navigate} />
             ) : activePath === warehouseOutboundOrderPath ? (
-              <OutboundOrdersPage />
+              <OutboundOrdersPage onNavigate={navigate} />
             ) : activePath === reportingPath ? (
-              <ReportingPage />
+              <ReportingPage onNavigate={navigate} />
             ) : activePath === financePath ? (
-              <FinancePage />
+              <FinancePage onNavigate={navigate} />
             ) : (
               <ModulePage menu={activeMenu} />
             )}
@@ -7400,7 +7502,7 @@ function SampleDeliveriesPage() {
   )
 }
 
-function ExportQuotationsPage() {
+function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
   const [quotations, setQuotations] = useState<ExportQuotation[]>([])
   const [selectedQuotationId, setSelectedQuotationId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
@@ -7627,6 +7729,8 @@ function ExportQuotationsPage() {
 
   return (
     <section className="export-quotation-page">
+      <OperationFlowRail activePath={exportQuotationPath} kind="sales" onNavigate={onNavigate} />
+
       <div className="summary-strip" aria-label="出口报价概览">
         <Metric label="报价单" value={quotations.length} />
         <Metric label="待审批" value={quotations.filter((item) => item.approval_status === 'submitted').length} />
@@ -8138,7 +8242,7 @@ function ExportQuotationsPage() {
   )
 }
 
-function ExportContractsPage() {
+function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
   const [contracts, setContracts] = useState<ExportContract[]>([])
   const [selectedContractId, setSelectedContractId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
@@ -8400,6 +8504,8 @@ function ExportContractsPage() {
 
   return (
     <section className="export-contract-page">
+      <OperationFlowRail activePath={exportContractPath} kind="sales" onNavigate={onNavigate} />
+
       <div className="summary-strip" aria-label="出口合同概览">
         <Metric label="合同数" value={contracts.length} />
         <Metric label="待审批" value={contracts.filter((item) => item.approval_status === 'submitted').length} />
@@ -9062,7 +9168,7 @@ function ExportContractsPage() {
   )
 }
 
-function ShipmentsPage() {
+function ShipmentsPage({ onNavigate }: ModuleNavigationProps) {
   const [shipments, setShipments] = useState<ShipmentPlan[]>([])
   const [reminders, setReminders] = useState<ShipmentReminder[]>([])
   const [selectedShipmentId, setSelectedShipmentId] = useState<string | null>(null)
@@ -9221,6 +9327,8 @@ function ShipmentsPage() {
 
   return (
     <section className="shipment-page">
+      <OperationFlowRail activePath={shipmentPath} kind="sales" onNavigate={onNavigate} />
+
       <div className="summary-strip" aria-label="出货明细概览">
         <Metric label="出货单" value={shipments.length} />
         <Metric label="待审批" value={shipments.filter((item) => item.approval_status === 'submitted').length} />
@@ -9700,7 +9808,7 @@ function ShipmentsPage() {
   )
 }
 
-function PurchaseInquiriesPage() {
+function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
   const [inquiries, setInquiries] = useState<PurchaseInquiry[]>([])
   const [selectedInquiryId, setSelectedInquiryId] = useState<string | null>(null)
   const [editingInquiryId, setEditingInquiryId] = useState<string | null>(null)
@@ -9891,6 +9999,8 @@ function PurchaseInquiriesPage() {
 
   return (
     <section className="purchase-inquiry-page">
+      <OperationFlowRail activePath={purchaseInquiryPath} kind="purchase" onNavigate={onNavigate} />
+
       <div className="summary-strip" aria-label="采购询价概览">
         <Metric label="询价单" value={inquiries.length} />
         <Metric label="已发模板" value={sentCount} />
@@ -10408,7 +10518,7 @@ function PurchaseInquiriesPage() {
   )
 }
 
-function PurchaseContractsPage() {
+function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
   const [contracts, setContracts] = useState<PurchaseContract[]>([])
   const [reminders, setReminders] = useState<PurchaseContractReminder[]>([])
   const [selectedContractId, setSelectedContractId] = useState<string | null>(null)
@@ -10608,6 +10718,8 @@ function PurchaseContractsPage() {
 
   return (
     <section className="purchase-contract-page">
+      <OperationFlowRail activePath={purchaseContractPath} kind="purchase" onNavigate={onNavigate} />
+
       <div className="summary-strip" aria-label="采购合同概览">
         <Metric label="采购合同" value={contracts.length} />
         <Metric label="待审批" value={contracts.filter((item) => item.approval_status === 'submitted').length} />
@@ -11263,7 +11375,7 @@ function PurchaseContractsPage() {
   )
 }
 
-function PurchaseInvoiceNoticesPage() {
+function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
   const [notices, setNotices] = useState<PurchaseInvoiceNotice[]>([])
   const [reminders, setReminders] = useState<PurchaseInvoiceNoticeReminder[]>([])
   const [selectedNoticeId, setSelectedNoticeId] = useState<string | null>(null)
@@ -11419,6 +11531,8 @@ function PurchaseInvoiceNoticesPage() {
 
   return (
     <section className="purchase-invoice-page">
+      <OperationFlowRail activePath={purchaseInvoiceNoticePath} kind="purchase" onNavigate={onNavigate} />
+
       <div className="summary-strip" aria-label="开票通知概览">
         <Metric label="开票通知" value={notices.length} />
         <Metric label="已发送" value={sentCount} />
@@ -11974,7 +12088,7 @@ function PurchaseInvoiceLineFields({
   )
 }
 
-function FollowupPage() {
+function FollowupPage({ onNavigate }: ModuleNavigationProps) {
   const [templates, setTemplates] = useState<FollowProcessTemplate[]>([])
   const [plans, setPlans] = useState<PurchaseFollowPlan[]>([])
   const [overdueNodes, setOverdueNodes] = useState<PurchaseFollowOverdueNode[]>([])
@@ -12161,6 +12275,8 @@ function FollowupPage() {
 
   return (
     <section className="followup-page">
+      <OperationFlowRail activePath={followupPath} kind="purchase" onNavigate={onNavigate} />
+
       <div className="summary-strip" aria-label="采购跟单概览">
         <Metric label="跟单计划" value={plans.length} />
         <Metric label="已完成计划" value={completedPlans} />
@@ -12584,7 +12700,7 @@ function FollowupPage() {
   )
 }
 
-function QualityInspectionsPage() {
+function QualityInspectionsPage({ onNavigate }: ModuleNavigationProps) {
   const [inspections, setInspections] = useState<QualityInspection[]>([])
   const [selectedInspectionId, setSelectedInspectionId] = useState<string | null>(null)
   const [editingInspectionId, setEditingInspectionId] = useState<string | null>(null)
@@ -12702,6 +12818,8 @@ function QualityInspectionsPage() {
 
   return (
     <section className="quality-inspection-page">
+      <OperationFlowRail activePath={qualityInspectionPath} kind="warehouse" onNavigate={onNavigate} />
+
       <div className="summary-strip" aria-label="QC 查验概览">
         <Metric label="QC 单数" value={inspections.length} />
         <Metric label="已通过" value={passedCount} />
@@ -13181,7 +13299,7 @@ function QualityInspectionsPage() {
   )
 }
 
-function InboundPlansPage() {
+function InboundPlansPage({ onNavigate }: ModuleNavigationProps) {
   const [plans, setPlans] = useState<InboundPlan[]>([])
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
@@ -13289,6 +13407,8 @@ function InboundPlansPage() {
 
   return (
     <section className="inbound-plan-page">
+      <OperationFlowRail activePath={warehouseInboundPlanPath} kind="warehouse" onNavigate={onNavigate} />
+
       <div className="summary-strip" aria-label="入库计划概览">
         <Metric label="入库计划" value={plans.length} />
         <Metric label="待安排" value={plannedCount} intent={plannedCount > 0 ? 'warning' : 'normal'} />
@@ -13618,7 +13738,7 @@ function InboundPlansPage() {
   )
 }
 
-function InboundOrdersPage() {
+function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
   const [orders, setOrders] = useState<InboundOrder[]>([])
   const [inboundPlans, setInboundPlans] = useState<InboundPlan[]>([])
   const [inventoryBalances, setInventoryBalances] = useState<InventoryBalance[]>([])
@@ -13836,6 +13956,8 @@ function InboundOrdersPage() {
 
   return (
     <section className="inbound-order-page">
+      <OperationFlowRail activePath={warehouseInboundOrderPath} kind="warehouse" onNavigate={onNavigate} />
+
       <div className="summary-strip" aria-label="货物入库概览">
         <Metric label="入库单" value={orders.length} />
         <Metric label="草稿" value={draftCount} />
@@ -14272,7 +14394,7 @@ function InboundOrdersPage() {
   )
 }
 
-function OutboundPlansPage() {
+function OutboundPlansPage({ onNavigate }: ModuleNavigationProps) {
   const [plans, setPlans] = useState<OutboundPlan[]>([])
   const [shipments, setShipments] = useState<ShipmentPlan[]>([])
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null)
@@ -14424,6 +14546,8 @@ function OutboundPlansPage() {
 
   return (
     <section className="outbound-plan-page">
+      <OperationFlowRail activePath={warehouseOutboundPlanPath} kind="warehouse" onNavigate={onNavigate} />
+
       <div className="summary-strip" aria-label="出库计划概览">
         <Metric label="出库计划" value={plans.length} />
         <Metric label="待安排" value={plannedCount} intent={plannedCount > 0 ? 'warning' : 'normal'} />
@@ -14778,7 +14902,7 @@ function OutboundPlansPage() {
   )
 }
 
-function OutboundOrdersPage() {
+function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
   const [orders, setOrders] = useState<OutboundOrder[]>([])
   const [outboundPlans, setOutboundPlans] = useState<OutboundPlan[]>([])
   const [inventoryBalances, setInventoryBalances] = useState<InventoryBalance[]>([])
@@ -14998,6 +15122,8 @@ function OutboundOrdersPage() {
 
   return (
     <section className="outbound-order-page">
+      <OperationFlowRail activePath={warehouseOutboundOrderPath} kind="warehouse" onNavigate={onNavigate} />
+
       <div className="summary-strip" aria-label="货物出库概览">
         <Metric label="出库单" value={orders.length} />
         <Metric label="草稿" value={draftCount} />
@@ -15533,7 +15659,7 @@ function AccessDeniedPage() {
   )
 }
 
-function ReportingPage() {
+function ReportingPage({ onNavigate }: ModuleNavigationProps) {
   const [approvals, setApprovals] = useState<ApprovalQuery | null>(null)
   const [statistics, setStatistics] = useState<ReportingStatistics | null>(null)
   const [documentTypeFilter, setDocumentTypeFilter] = useState('')
@@ -15627,6 +15753,8 @@ function ReportingPage() {
 
   return (
     <section className="reporting-page">
+      <OperationFlowRail activeLabel="经理报表" activePath={reportingPath} kind="finance" onNavigate={onNavigate} />
+
       <div className="summary-strip" aria-label="经理查询概览">
         <Metric label="审批单据" value={approvals?.total ?? 0} />
         <Metric
@@ -16012,7 +16140,7 @@ function ReportingPage() {
   )
 }
 
-function FinancePage() {
+function FinancePage({ onNavigate }: ModuleNavigationProps) {
   const [overview, setOverview] = useState<FinanceOverview | null>(null)
   const [receipts, setReceipts] = useState<BankReceipt[]>([])
   const [receivables, setReceivables] = useState<ReceivableItem[]>([])
@@ -17020,6 +17148,8 @@ function FinancePage() {
 
   return (
     <section className="finance-page">
+      <OperationFlowRail activeLabel="银行水单" activePath={financePath} kind="finance" onNavigate={onNavigate} />
+
       <div className="summary-strip" aria-label="财务管理概览">
         <Metric label="出货单" value={summary?.shipment_count ?? 0} />
         <Metric label="应收金额" value={formatFinanceAmount(summary?.receivable_amount, currencyLabel)} />

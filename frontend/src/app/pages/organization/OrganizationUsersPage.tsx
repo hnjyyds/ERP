@@ -666,6 +666,11 @@ export function OrganizationUsersPage({
     setPermissionFormIds(role.permissions.map((permission) => permission.id))
   }
 
+  function selectRoleIdForPermissions(roleId: string) {
+    const role = roles.find((item) => item.id === roleId)
+    if (role) selectRoleForPermissions(role)
+  }
+
   function togglePermission(permissionId: string) {
     setPermissionFormIds((current) =>
       current.includes(permissionId)
@@ -1121,40 +1126,29 @@ export function OrganizationUsersPage({
             <h2>按侧边栏功能授权</h2>
             <p>先选择角色，再按左侧导航对应的功能勾选权限；没有勾选的板块不会出现在该角色用户的侧边栏。</p>
           </div>
-          <button
-            className="inline-submit"
-            disabled={!selectedRole || busyAction === `permissions-${selectedRole.id}`}
-            type="button"
-            onClick={() => void submitRolePermissions()}
-          >
-            <Save size={15} />
-            保存权限
-          </button>
+          <div className="organization-permission-actions">
+            <label className="organization-permission-role-select">
+              <span>配置角色</span>
+              <Select
+                disabled={!roles.length}
+                options={roles.map((role) => ({ label: role.name, value: role.id }))}
+                value={selectedRole?.id}
+                onChange={selectRoleIdForPermissions}
+              />
+            </label>
+            <button
+              className="inline-submit"
+              disabled={!selectedRole || busyAction === `permissions-${selectedRole.id}`}
+              type="button"
+              onClick={() => void submitRolePermissions()}
+            >
+              <Save size={15} />
+              保存权限
+            </button>
+          </div>
         </div>
 
         <div className="organization-permission-layout">
-          <div className="organization-role-list" aria-label="选择角色">
-            {roles.length ? (
-              roles.map((role) => (
-                <button
-                  aria-pressed={selectedRole?.id === role.id}
-                  className={selectedRole?.id === role.id ? 'active' : ''}
-                  key={role.id}
-                  type="button"
-                  onClick={() => selectRoleForPermissions(role)}
-                >
-                  <span>{role.name}</span>
-                  <small>{role.permissions.length} 项权限</small>
-                </button>
-              ))
-            ) : (
-              <div className="organization-permission-empty compact">
-                <strong>暂无角色</strong>
-                <span>请先初始化角色后再配置权限。</span>
-              </div>
-            )}
-          </div>
-
           <div className="organization-permission-groups">
             {permissionGroups.map((group) => {
               const groupItems = group.sections.flatMap((section) => section.items)

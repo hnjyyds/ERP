@@ -55,7 +55,6 @@ type TradingPartnerPageProps = {
   deactivateEntity: (id: string) => Promise<PartnerEntity>
   addContact: (id: string, payload: PartnerContactPayload) => Promise<PartnerContact>
   listTransactions: (id: string) => Promise<TransactionListResult>
-  showEmptyDetailState?: boolean
 }
 
 export function TradingPartnerPage({
@@ -70,7 +69,6 @@ export function TradingPartnerPage({
   deactivateEntity,
   addContact,
   listTransactions,
-  showEmptyDetailState = true,
 }: TradingPartnerPageProps) {
   const [rows, setRows] = useState<PartnerEntity[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -448,9 +446,7 @@ export function TradingPartnerPage({
                 />
               </section>
             </>
-          ) : (
-            showEmptyDetailState ? <div className="module-state">暂无{entityLabel}资料</div> : null
-          )}
+          ) : null}
         </section>
       </section>
 
