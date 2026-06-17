@@ -1,3 +1,5 @@
+import { ApiError, ERROR_MESSAGES, friendlyMessageFor } from './shared/errors'
+
 export interface ApiResponse<T> {
   success: boolean
   code: string
@@ -53,10 +55,13 @@ export interface OrganizationDepartment {
   sort_order: number
 }
 
+export type OrganizationDataScope = 'self' | 'department' | 'department_tree' | 'all'
+
 export interface OrganizationRole {
   id: string
   name: string
   code: string
+  data_scope: OrganizationDataScope
   permissions: OrganizationPermission[]
 }
 
@@ -64,6 +69,7 @@ export interface OrganizationPermission {
   id: string
   code: string
   name: string
+  category: string
 }
 
 export interface OrganizationUser {
@@ -121,6 +127,19 @@ export interface OrganizationRolePermissionUpdatePayload {
   permission_ids: string[]
 }
 
+export interface OrganizationRoleCreatePayload {
+  name: string
+  code: string
+  data_scope?: OrganizationDataScope
+  permission_ids: string[]
+}
+
+export interface OrganizationRoleUpdatePayload {
+  name?: string
+  code?: string
+  data_scope?: OrganizationDataScope
+}
+
 export interface OrganizationUserCreateResult {
   user: OrganizationUser
   initial_password: string
@@ -130,6 +149,26 @@ export interface OrganizationPasswordResetResult {
   user: OrganizationUser
   temporary_password: string
 }
+
+export interface CompanyInfo {
+  name: string
+  name_en: string | null
+  letterhead: string | null
+  address: string | null
+  address_en: string | null
+  phone: string | null
+  fax: string | null
+  email: string | null
+  website: string | null
+  tax_no: string | null
+  bank_name: string | null
+  bank_account: string | null
+  bank_swift: string | null
+  logo: string | null
+  updated_at: string | null
+}
+
+export type CompanyInfoUpdatePayload = Partial<Omit<CompanyInfo, 'updated_at'>>
 
 export interface AuthSession {
   access_token: string
@@ -3061,22 +3100,24 @@ function notifyAuthExpired(): void {
   window.dispatchEvent(new Event(authExpiredEventName))
 }
 
-async function readApiErrorMessage(response: Response): Promise<string> {
+async function readApiError(response: Response): Promise<{ code: string; message: string }> {
   try {
     const body = (await response.json()) as ApiErrorBody
-    if (body.error?.message) return body.error.message
-    if (body.message) return body.message
-    if (typeof body.detail === 'string') return body.detail
+    const code = body.error?.code ?? body.code ?? 'UNKNOWN'
+    if (body.error?.message) return { code, message: body.error.message }
+    if (body.message) return { code, message: body.message }
+    if (typeof body.detail === 'string') return { code, message: body.detail }
     if (Array.isArray(body.detail)) {
-      return body.detail
+      const message = body.detail
         .map((item) => item.msg)
-        .filter((message): message is string => Boolean(message))
+        .filter((value): value is string => Boolean(value))
         .join('；')
+      return { code, message }
     }
+    return { code, message: '' }
   } catch {
-    return ''
+    return { code: 'UNKNOWN', message: '' }
   }
-  return ''
 }
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
@@ -3090,17 +3131,18 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   })
 
   if (!response.ok) {
-    const message = await readApiErrorMessage(response)
+    const { code, message } = await readApiError(response)
     if (response.status === 401) {
       notifyAuthExpired()
-      throw new Error(message || '登录状态已失效')
     }
-    throw new Error(message || `请求失败：${response.status}`)
+    throw new ApiError(friendlyMessageFor(code, message), code, message, response.status)
   }
 
   const body = (await response.json()) as ApiResponse<T>
   if (!body.success || body.error) {
-    throw new Error(body.error?.message ?? '请求失败')
+    const code = body.error?.code ?? body.code ?? 'UNKNOWN'
+    const message = body.error?.message ?? body.message ?? ''
+    throw new ApiError(friendlyMessageFor(code, message), code, message)
   }
   return body.data
 }
@@ -3118,7 +3160,7 @@ export async function login(username: string, password: string): Promise<AuthSes
   })
 
   if (!response.ok) {
-    const message = await readApiErrorMessage(response)
+    const { message } = await readApiError(response)
     if (response.status === 401) throw new Error(message || '用户名或密码错误')
     if (response.status === 422) throw new Error('请填写用户名和密码')
     throw new Error(message || '登录失败，请稍后重试')
@@ -3217,6 +3259,42 @@ export function updateOrganizationRolePermissions(
   payload: OrganizationRolePermissionUpdatePayload,
 ): Promise<OrganizationRole> {
   return request<OrganizationRole>(`/organization/roles/${roleId}/permissions`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function createOrganizationRole(
+  payload: OrganizationRoleCreatePayload,
+): Promise<OrganizationRole> {
+  return request<OrganizationRole>('/organization/roles', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function updateOrganizationRole(
+  roleId: string,
+  payload: OrganizationRoleUpdatePayload,
+): Promise<OrganizationRole> {
+  return request<OrganizationRole>(`/organization/roles/${roleId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function deleteOrganizationRole(roleId: string): Promise<OrganizationRole> {
+  return request<OrganizationRole>(`/organization/roles/${roleId}`, {
+    method: 'DELETE',
+  })
+}
+
+export function getCompanyInfo(): Promise<CompanyInfo> {
+  return request<CompanyInfo>('/organization/company')
+}
+
+export function updateCompanyInfo(payload: CompanyInfoUpdatePayload): Promise<CompanyInfo> {
+  return request<CompanyInfo>('/organization/company', {
     method: 'PATCH',
     body: JSON.stringify(payload),
   })

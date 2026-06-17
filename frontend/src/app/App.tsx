@@ -18,13 +18,16 @@ import {
   Input as SemiInput,
 } from '@douyinfe/semi-ui'
 import {
+  ArrowLeft,
   AtSign,
   BarChart3,
   Bell,
   CalendarClock,
   ChevronDown,
+  ChevronRight,
   CheckCircle2,
   ClipboardCheck,
+  Coins,
   Factory,
   FilePenLine,
   FileStack,
@@ -409,8 +412,21 @@ import {
   warehouseOutboundPlanPath,
   warehouseOutboundOrderPath,
   financePath,
+  financeOverviewPath,
+  financeReceiptsPath,
+  financePaymentsPath,
+  financeFeesPath,
+  financeTaxPath,
+  financeMiscPath,
+  financeSettlementPath,
+  financeModulePathByModule,
+  financeDetailPath,
+  isFinancePath,
+  parseFinanceView,
   reportingPath,
   dashboardSectionPaths,
+  type FinanceModule,
+  type FinanceView,
 } from './routes'
 import { erpAntTheme } from './theme'
 import { ProductsPage } from './pages/masterdata/ProductsPage'
@@ -486,6 +502,7 @@ import {
   defaultAvatarPreset,
   type UserAvatarPickerValue,
 } from '../shared/ui'
+import { showError } from '../shared/errors'
 
 type AppSettings = {
   language: AppLanguage
@@ -842,7 +859,15 @@ function canAccessPath(path: string, session: AuthSession) {
   if (dashboardSectionPaths.has(normalizedPath)) {
     return session.menus.some((item) => item.path === dashboardPath)
   }
+  if (isFinancePath(normalizedPath)) {
+    return session.menus.some((item) => item.path === financePath)
+  }
   return session.menus.some((item) => item.path === normalizedPath)
+}
+
+function isMenuPathActive(menuPath: string, activePath: string) {
+  if (menuPath === financePath) return isFinancePath(activePath)
+  return menuPath === activePath
 }
 
 function firstAccessiblePath(session: AuthSession) {
@@ -1755,11 +1780,11 @@ const operationFlows: Record<OperationFlowKind, { title: string; steps: Operatio
   finance: {
     title: '财务主闭环',
     steps: [
-      { label: '银行水单', caption: '认领与分配收款', path: financePath },
-      { label: '应收应付', caption: '合同款项与供应商往来', path: financePath },
-      { label: '费用付款', caption: '杂费与伙伴费用付款', path: financePath },
-      { label: '核销退税', caption: '单证核销与退税登记', path: financePath },
-      { label: '结算核算', caption: '利润核算与成本分摊', path: financePath },
+      { label: '银行水单', caption: '认领与分配收款', path: financeReceiptsPath },
+      { label: '应收应付', caption: '合同款项与供应商往来', path: financePaymentsPath },
+      { label: '费用付款', caption: '杂费与伙伴费用付款', path: financeFeesPath },
+      { label: '核销退税', caption: '单证核销与退税登记', path: financeTaxPath },
+      { label: '结算核算', caption: '利润核算与成本分摊', path: financeSettlementPath },
       { label: '经理报表', caption: '审批与经营统计', path: reportingPath },
     ],
   },
@@ -1876,7 +1901,7 @@ function App() {
         setAppSettings((current) => normalizeAppSettings(current, nextI18nConfig))
       } catch (caught) {
         if (!cancelled) {
-          setError(caught instanceof Error ? caught.message : '系统配置加载失败')
+          showError(caught, '系统配置加载失败')
         }
       }
 
@@ -1945,6 +1970,9 @@ function App() {
     if (dashboardSectionPaths.has(activePath)) {
       return session.menus.find((item) => item.path === dashboardPath) ?? null
     }
+    if (isFinancePath(activePath)) {
+      return session.menus.find((item) => item.path === financePath) ?? null
+    }
     return session.menus.find((item) => item.path === activePath) ?? null
   }, [activePath, session])
 
@@ -1954,7 +1982,7 @@ function App() {
     try {
       setDashboard(await getDashboard())
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : `${t('dashboard.mySchedule')} ${t('dashboard.operationFailed')}`)
+      showError(caught, `${t('dashboard.mySchedule')} ${t('dashboard.operationFailed')}`)
     } finally {
       setLoadingDashboard(false)
     }
@@ -1976,7 +2004,7 @@ function App() {
         menus: current.menus,
       })
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '头像保存失败')
+      showError(caught, '头像保存失败')
     } finally {
       setSavingSettingsAvatar(false)
     }
@@ -2070,7 +2098,7 @@ function App() {
             <div className="nav-groups" aria-label={t('page.businessModule')}>
               {sidebarMenuGroups.map((group) => {
                 const GroupIcon = group.icon
-                const isGroupActive = group.items.some((item) => item.path === activePath)
+                const isGroupActive = group.items.some((item) => isMenuPathActive(item.path, activePath))
 
                 return (
                   <details className="nav-group" key={group.id} open={isGroupActive || undefined}>
@@ -2086,8 +2114,8 @@ function App() {
                         return (
                           <a
                             key={item.id}
-                            aria-current={item.path === activePath ? 'page' : undefined}
-                            className={item.path === activePath ? 'nav-link active' : 'nav-link'}
+                            aria-current={isMenuPathActive(item.path, activePath) ? 'page' : undefined}
+                            className={isMenuPathActive(item.path, activePath) ? 'nav-link active' : 'nav-link'}
                             href={item.path}
                             onClick={(event) => {
                               event.preventDefault()
@@ -2200,8 +2228,8 @@ function App() {
               <OutboundOrdersPage onNavigate={navigate} />
             ) : activePath === reportingPath ? (
               <ReportingPage onNavigate={navigate} />
-            ) : activePath === financePath ? (
-              <FinancePage onNavigate={navigate} />
+            ) : isFinancePath(activePath) ? (
+              <FinancePage view={parseFinanceView(activePath)} onNavigate={navigate} />
             ) : (
               <ModulePage menu={activeMenu} />
             )}
@@ -2703,7 +2731,7 @@ function DashboardPage({
       })
       .catch((caught) => {
         if (!isRequestCancelled) {
-          setActionError(caught instanceof Error ? caught.message : t('dashboard.operationFailed'))
+          showError(caught, t('dashboard.operationFailed'))
         }
       })
 
@@ -2783,7 +2811,7 @@ function DashboardPage({
       setActionMessage(success)
       await onRefresh()
     } catch (caught) {
-      setActionError(caught instanceof Error ? caught.message : t('dashboard.operationFailed'))
+      showError(caught, t('dashboard.operationFailed'))
     } finally {
       setBusyAction(null)
     }
@@ -3458,7 +3486,7 @@ function DashboardSchedulesPage({
           setActionMessage(t('dashboard.scheduleDeleted'))
           await onRefresh()
         } catch (caught) {
-          setActionError(caught instanceof Error ? caught.message : t('dashboard.operationFailed'))
+          showError(caught, t('dashboard.operationFailed'))
         } finally {
           setBusyAction(null)
         }
@@ -3569,7 +3597,7 @@ function DashboardNotificationsPage({
       setActionMessage(t('dashboard.notificationHandled'))
       await onRefresh()
     } catch (caught) {
-      setActionError(caught instanceof Error ? caught.message : t('dashboard.operationFailed'))
+      showError(caught, t('dashboard.operationFailed'))
     } finally {
       setBusyAction(null)
     }
@@ -3711,7 +3739,7 @@ function CustomersPage() {
         null
       setSelectedCustomerId(nextSelectedId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '客户资料加载失败')
+      showError(caught, '客户资料加载失败')
     } finally {
       setLoading(false)
     }
@@ -3722,7 +3750,7 @@ function CustomersPage() {
       const result = await listCustomerTransactions(customerId)
       setTransactions(result.items)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '客户交易记录加载失败')
+      showError(caught, '客户交易记录加载失败')
     }
   }
 
@@ -3737,7 +3765,7 @@ function CustomersPage() {
       setForm(initialCustomerForm())
       await loadCustomers(created.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '客户新增失败')
+      showError(caught, '客户新增失败')
     } finally {
       setSubmitting(false)
     }
@@ -3757,7 +3785,7 @@ function CustomersPage() {
       setMessage(`已更新客户 ${updated.code}`)
       await loadCustomers(updated.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '客户更新失败')
+      showError(caught, '客户更新失败')
     } finally {
       setSubmitting(false)
     }
@@ -3784,7 +3812,7 @@ function CustomersPage() {
       setMessage(`已追加联系人 ${contact.name}`)
       setContactForm(initialCustomerContact())
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '联系人追加失败')
+      showError(caught, '联系人追加失败')
     } finally {
       setSubmitting(false)
     }
@@ -4198,7 +4226,7 @@ function SuppliersPage() {
         null
       setSelectedSupplierId(nextSelectedId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '供应商资料加载失败')
+      showError(caught, '供应商资料加载失败')
     } finally {
       setLoading(false)
     }
@@ -4209,7 +4237,7 @@ function SuppliersPage() {
       const result = await listSupplierTransactions(supplierId)
       setTransactions(result.items)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '供应商交易记录加载失败')
+      showError(caught, '供应商交易记录加载失败')
     }
   }
 
@@ -4224,7 +4252,7 @@ function SuppliersPage() {
       setForm(initialSupplierForm())
       await loadSuppliers(created.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '供应商新增失败')
+      showError(caught, '供应商新增失败')
     } finally {
       setSubmitting(false)
     }
@@ -4244,7 +4272,7 @@ function SuppliersPage() {
       setMessage(`已更新供应商 ${updated.code}`)
       await loadSuppliers(updated.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '供应商更新失败')
+      showError(caught, '供应商更新失败')
     } finally {
       setSubmitting(false)
     }
@@ -4271,7 +4299,7 @@ function SuppliersPage() {
       setMessage(`已追加供应商联系人 ${contact.name}`)
       setContactForm(initialSupplierContact())
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '供应商联系人追加失败')
+      showError(caught, '供应商联系人追加失败')
     } finally {
       setSubmitting(false)
     }
@@ -4646,6 +4674,9 @@ function PartnersPage() {
   const [form, setForm] = useState<PartnerFormState>(() => initialPartnerForm())
   const [editForm, setEditForm] = useState<PartnerEditState>(() => initialPartnerEdit())
   const [contactForm, setContactForm] = useState<PartnerContactState>(() => initialPartnerContact())
+  const [createModalOpen, setCreateModalOpen] = useState(false)
+  const [editModalOpen, setEditModalOpen] = useState(false)
+  const [contactModalOpen, setContactModalOpen] = useState(false)
 
   const selectedPartner = useMemo(
     () => partners.find((item) => item.id === selectedPartnerId) ?? partners[0] ?? null,
@@ -4681,7 +4712,7 @@ function PartnersPage() {
         null
       setSelectedPartnerId(nextSelectedId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '合作伙伴加载失败')
+      showError(caught, '合作伙伴加载失败')
     } finally {
       setLoading(false)
     }
@@ -4692,7 +4723,7 @@ function PartnersPage() {
       const result = await listPartnerFeeRecords(partnerId)
       setFeeRecords(result.items)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '费用记录加载失败')
+      showError(caught, '费用记录加载失败')
     }
   }
 
@@ -4705,9 +4736,10 @@ function PartnersPage() {
       const created = await createPartner(partnerPayload(form))
       setMessage(`已新增合作伙伴 ${created.code}`)
       setForm(initialPartnerForm())
+      setCreateModalOpen(false)
       await loadPartners(created.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '合作伙伴新增失败')
+      showError(caught, '合作伙伴新增失败')
     } finally {
       setSubmitting(false)
     }
@@ -4724,10 +4756,11 @@ function PartnersPage() {
       setPartners((current) => current.map((item) => (item.id === updated.id ? updated : item)))
       setSelectedPartnerId(updated.id)
       setEditForm(partnerToEditForm(updated))
+      setEditModalOpen(false)
       setMessage(`已更新合作伙伴 ${updated.code}`)
       await loadPartners(updated.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '合作伙伴更新失败')
+      showError(caught, '合作伙伴更新失败')
     } finally {
       setSubmitting(false)
     }
@@ -4743,16 +4776,29 @@ function PartnersPage() {
       await addPartnerContact(selectedPartner.id, partnerContactPayload(contactForm))
       setMessage(`已追加联系人 ${contactForm.name}`)
       setContactForm(initialPartnerContact())
+      setContactModalOpen(false)
       await loadPartners(selectedPartner.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '联系人追加失败')
+      showError(caught, '联系人追加失败')
     } finally {
       setSubmitting(false)
     }
   }
 
+  function openEditPartner() {
+    if (!selectedPartner) return
+    setEditForm(partnerToEditForm(selectedPartner))
+    setEditModalOpen(true)
+  }
+
+  function openContactModal() {
+    if (!selectedPartner) return
+    setContactForm(initialPartnerContact())
+    setContactModalOpen(true)
+  }
+
   return (
-    <section className="partner-page">
+    <section className="masterdata-page partner-page">
       <div className="summary-strip" aria-label="合作伙伴概览">
         <Metric label="合作伙伴" value={partners.length} />
         <Metric
@@ -4766,7 +4812,7 @@ function PartnersPage() {
       {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
-      <section className="business-grid">
+      <section className="business-grid product-business-grid">
         <section className="workspace-panel list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="合作伙伴列表" />
@@ -4777,16 +4823,16 @@ function PartnersPage() {
                 void loadPartners()
               }}
             >
-              <label>
-                合作伙伴搜索
+              <label className="inline-filter-search">
+                搜索
                 <Input
                   value={search}
                   placeholder="编号 / 名称 / 国家 / 联系人"
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </label>
-              <label>
-                类型筛选
+              <label className="inline-filter-compact">
+                类型
                 <Select
                   options={[{ value: '', label: '全部类型' }, ...partnerTypeOptions]}
                   value={typeFilter}
@@ -4795,6 +4841,16 @@ function PartnersPage() {
               </label>
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
+              </Button>
+              <Button
+                htmlType="button"
+                icon={<Plus size={16} />}
+                onClick={() => {
+                  setForm(initialPartnerForm())
+                  setCreateModalOpen(true)
+                }}
+              >
+                新增合作伙伴
               </Button>
             </form>
           </div>
@@ -4827,9 +4883,90 @@ function PartnersPage() {
           />
         </section>
 
-        <section className="workspace-panel form-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="新增合作伙伴" />
-          <form className="record-form" onSubmit={submitPartner}>
+        <section className="workspace-panel detail-panel">
+          <div className="panel-heading toolbar-heading">
+            <PanelTitle icon={<LayoutDashboard size={18} />} title="合作伙伴明细" />
+            {selectedPartner ? (
+              <div className="section-actions">
+                <Button icon={<Plus size={16} />} onClick={openContactModal}>
+                  新增联系人
+                </Button>
+                <Button icon={<FilePenLine size={16} />} onClick={openEditPartner}>
+                  编辑资料
+                </Button>
+              </div>
+            ) : null}
+          </div>
+          {selectedPartner ? (
+            <>
+              <dl className="detail-list">
+                <div>
+                  <dt>中文名称</dt>
+                  <dd>{selectedPartner.cn_name}</dd>
+                </div>
+                <div>
+                  <dt>英文名称</dt>
+                  <dd>{selectedPartner.en_name}</dd>
+                </div>
+                <div>
+                  <dt>类型</dt>
+                  <dd>{partnerTypeLabel(selectedPartner.partner_type)}</dd>
+                </div>
+                <div>
+                  <dt>国家/状态</dt>
+                  <dd>{selectedPartner.country} / {partnerStatusLabel(selectedPartner.status)}</dd>
+                </div>
+                <div>
+                  <dt>主联系人</dt>
+                  <dd>{selectedPartner.primary_contact?.name ?? '未设置'}</dd>
+                </div>
+              </dl>
+
+              <Table
+                className="compact-section"
+                columns={[
+                  { title: '姓名', dataIndex: 'name' },
+                  { title: '职务', dataIndex: 'title' },
+                  { title: '邮箱', dataIndex: 'email' },
+                  { title: '电话', dataIndex: 'phone' },
+                  {
+                    title: '主联系人',
+                    dataIndex: 'is_primary',
+                    render: (value: boolean) => (value ? '是' : '否'),
+                  },
+                ]}
+                dataSource={selectedPartner.contacts}
+                pagination={false}
+                rowKey="id"
+                size="small"
+              />
+
+              <section className="fee-records compact-section">
+                <strong>费用记录</strong>
+                <p>费用申请、单证和付费管理模块接入后将在此汇总。</p>
+                <span>{feeRecords.length} 条</span>
+              </section>
+            </>
+          ) : (
+            <div className="module-state panel-empty-state">
+              <LayoutDashboard size={28} />
+              <strong>暂无合作伙伴</strong>
+              <span>请选择上方列表中的合作伙伴查看详情</span>
+            </div>
+          )}
+        </section>
+      </section>
+
+      <Modal
+        centered
+        footer={null}
+        open={createModalOpen}
+        title="新增合作伙伴"
+        width={1040}
+        onCancel={() => setCreateModalOpen(false)}
+      >
+        <form className="record-form entity-modal-form" onSubmit={submitPartner}>
+          <div className="entity-modal-grid">
             <label>
               合作伙伴编号
               <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
@@ -4898,148 +5035,126 @@ function PartnersPage() {
                 onChange={(event) => setForm({ ...form, primary_contact_phone: event.target.value })}
               />
             </label>
-            <Button htmlType="submit" loading={submitting} type="primary">
+          </div>
+          <div className="modal-actions">
+            <button className="secondary-inline" type="button" onClick={() => setCreateModalOpen(false)}>
+              取消
+            </button>
+            <button className="inline-submit" disabled={submitting} type="submit">
               新增合作伙伴
-            </Button>
-          </form>
-        </section>
+            </button>
+          </div>
+        </form>
+      </Modal>
 
-        <section className="workspace-panel detail-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="合作伙伴明细" />
-          {selectedPartner ? (
-            <>
-              <dl className="detail-list">
-                <div>
-                  <dt>中文名称</dt>
-                  <dd>{selectedPartner.cn_name}</dd>
-                </div>
-                <div>
-                  <dt>英文名称</dt>
-                  <dd>{selectedPartner.en_name}</dd>
-                </div>
-                <div>
-                  <dt>类型</dt>
-                  <dd>{partnerTypeLabel(selectedPartner.partner_type)}</dd>
-                </div>
-                <div>
-                  <dt>国家/状态</dt>
-                  <dd>{selectedPartner.country} / {partnerStatusLabel(selectedPartner.status)}</dd>
-                </div>
-                <div>
-                  <dt>主联系人</dt>
-                  <dd>{selectedPartner.primary_contact?.name ?? '未设置'}</dd>
-                </div>
-              </dl>
-
-              <Table
-                className="compact-section"
-                columns={[
-                  { title: '姓名', dataIndex: 'name' },
-                  { title: '职务', dataIndex: 'title' },
-                  { title: '邮箱', dataIndex: 'email' },
-                  { title: '电话', dataIndex: 'phone' },
-                  {
-                    title: '主联系人',
-                    dataIndex: 'is_primary',
-                    render: (value: boolean) => (value ? '是' : '否'),
-                  },
-                ]}
-                dataSource={selectedPartner.contacts}
-                pagination={false}
-                rowKey="id"
-                size="small"
+      <Modal
+        centered
+        footer={null}
+        open={editModalOpen}
+        title="编辑合作伙伴"
+        width={760}
+        onCancel={() => setEditModalOpen(false)}
+      >
+        <form className="record-form entity-modal-form" onSubmit={submitPartnerUpdate}>
+          <div className="entity-modal-grid">
+            <label>
+              中文名称
+              <Input
+                value={editForm.cn_name}
+                onChange={(event) => setEditForm({ ...editForm, cn_name: event.target.value })}
               />
+            </label>
+            <label>
+              英文名称
+              <Input
+                value={editForm.en_name}
+                onChange={(event) => setEditForm({ ...editForm, en_name: event.target.value })}
+              />
+            </label>
+            <label>
+              类型
+              <Select
+                options={partnerTypeOptions}
+                value={editForm.partner_type}
+                onChange={(value) => setEditForm({ ...editForm, partner_type: value })}
+              />
+            </label>
+            <label>
+              国家
+              <Input
+                value={editForm.country}
+                onChange={(event) => setEditForm({ ...editForm, country: event.target.value })}
+              />
+            </label>
+            <label>
+              状态
+              <Select
+                options={partnerStatusOptions}
+                value={editForm.status}
+                onChange={(value) => setEditForm({ ...editForm, status: value })}
+              />
+            </label>
+          </div>
+          <div className="modal-actions">
+            <button className="secondary-inline" type="button" onClick={() => setEditModalOpen(false)}>
+              取消
+            </button>
+            <button className="inline-submit" disabled={submitting} type="submit">
+              保存修改
+            </button>
+          </div>
+        </form>
+      </Modal>
 
-              <form className="record-form compact-section" onSubmit={submitPartnerUpdate}>
-                <div className="form-divider">编辑合作伙伴</div>
-                <label>
-                  编辑合作伙伴中文名称
-                  <Input
-                    value={editForm.cn_name}
-                    onChange={(event) => setEditForm({ ...editForm, cn_name: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑合作伙伴英文名称
-                  <Input
-                    value={editForm.en_name}
-                    onChange={(event) => setEditForm({ ...editForm, en_name: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑合作伙伴类型
-                  <Select
-                    options={partnerTypeOptions}
-                    value={editForm.partner_type}
-                    onChange={(value) => setEditForm({ ...editForm, partner_type: value })}
-                  />
-                </label>
-                <label>
-                  编辑合作伙伴国家
-                  <Input
-                    value={editForm.country}
-                    onChange={(event) => setEditForm({ ...editForm, country: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑合作伙伴状态
-                  <Select
-                    options={partnerStatusOptions}
-                    value={editForm.status}
-                    onChange={(value) => setEditForm({ ...editForm, status: value })}
-                  />
-                </label>
-                <Button htmlType="submit" loading={submitting} type="primary">
-                  更新合作伙伴
-                </Button>
-              </form>
-
-              <form className="record-form compact-section" onSubmit={submitPartnerContact}>
-                <div className="form-divider">追加联系人</div>
-                <label>
-                  追加合作伙伴联系人姓名
-                  <Input
-                    value={contactForm.name}
-                    onChange={(event) => setContactForm({ ...contactForm, name: event.target.value })}
-                  />
-                </label>
-                <label>
-                  追加合作伙伴联系人职务
-                  <Input
-                    value={contactForm.title}
-                    onChange={(event) => setContactForm({ ...contactForm, title: event.target.value })}
-                  />
-                </label>
-                <label>
-                  追加合作伙伴联系人邮箱
-                  <Input
-                    value={contactForm.email}
-                    onChange={(event) => setContactForm({ ...contactForm, email: event.target.value })}
-                  />
-                </label>
-                <label>
-                  追加合作伙伴联系人电话
-                  <Input
-                    value={contactForm.phone}
-                    onChange={(event) => setContactForm({ ...contactForm, phone: event.target.value })}
-                  />
-                </label>
-                <Button htmlType="submit" loading={submitting}>
-                  追加合作伙伴联系人
-                </Button>
-              </form>
-
-              <section className="fee-records compact-section">
-                <strong>费用记录</strong>
-                <p>费用申请、单证和付费管理模块接入后将在此汇总。</p>
-                <span>{feeRecords.length} 条</span>
-              </section>
-            </>
-          ) : (
-            <div className="module-state">暂无合作伙伴</div>
-          )}
-        </section>
-      </section>
+      <Modal
+        centered
+        footer={null}
+        open={contactModalOpen}
+        title="新增合作伙伴联系人"
+        width={760}
+        onCancel={() => setContactModalOpen(false)}
+      >
+        <form className="record-form entity-modal-form" onSubmit={submitPartnerContact}>
+          <div className="entity-modal-grid two">
+            <label>
+              姓名
+              <Input
+                value={contactForm.name}
+                onChange={(event) => setContactForm({ ...contactForm, name: event.target.value })}
+              />
+            </label>
+            <label>
+              职务
+              <Input
+                value={contactForm.title}
+                onChange={(event) => setContactForm({ ...contactForm, title: event.target.value })}
+              />
+            </label>
+            <label>
+              邮箱
+              <Input
+                value={contactForm.email}
+                onChange={(event) => setContactForm({ ...contactForm, email: event.target.value })}
+              />
+            </label>
+            <label>
+              电话
+              <Input
+                value={contactForm.phone}
+                onChange={(event) => setContactForm({ ...contactForm, phone: event.target.value })}
+              />
+            </label>
+          </div>
+          <div className="modal-actions">
+            <button className="secondary-inline" type="button" onClick={() => setContactModalOpen(false)}>
+              取消
+            </button>
+            <button className="inline-submit" disabled={submitting} type="submit">
+              新增联系人
+            </button>
+          </div>
+        </form>
+      </Modal>
     </section>
   )
 }
@@ -5093,7 +5208,7 @@ function DocumentPartiesPage() {
         null
       setSelectedPartyId(nextSelectedId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '单证资料加载失败')
+      showError(caught, '单证资料加载失败')
     } finally {
       setLoading(false)
     }
@@ -5107,7 +5222,7 @@ function DocumentPartiesPage() {
       })
       setLookupParties(result.items)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '快速引用加载失败')
+      showError(caught, '快速引用加载失败')
     }
   }
 
@@ -5122,7 +5237,7 @@ function DocumentPartiesPage() {
       setForm(initialDocumentPartyForm())
       await loadParties(created.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '单证资料新增失败')
+      showError(caught, '单证资料新增失败')
     } finally {
       setSubmitting(false)
     }
@@ -5142,7 +5257,7 @@ function DocumentPartiesPage() {
       setMessage(`已更新单证资料 ${updated.code}`)
       await loadParties(updated.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '单证资料更新失败')
+      showError(caught, '单证资料更新失败')
     } finally {
       setSubmitting(false)
     }
@@ -5558,7 +5673,7 @@ function SampleRequestsPage() {
         null
       setSelectedRequestId(nextSelectedId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '打样单加载失败')
+      showError(caught, '打样单加载失败')
     } finally {
       setLoading(false)
     }
@@ -5575,7 +5690,7 @@ function SampleRequestsPage() {
       setForm(initialSampleRequestForm())
       await loadRequests(created.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '打样单新增失败')
+      showError(caught, '打样单新增失败')
     } finally {
       setSubmitting(false)
     }
@@ -5603,7 +5718,7 @@ function SampleRequestsPage() {
       setMessage(`已更新打样进度 ${sampleProgressStageLabel(progress.stage)}`)
       setProgressForm(initialSampleProgressForm())
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '打样进度更新失败')
+      showError(caught, '打样进度更新失败')
     } finally {
       setSubmitting(false)
     }
@@ -5625,7 +5740,7 @@ function SampleRequestsPage() {
       setMessage(`已登记打样费用 ${fee.currency} ${fee.amount}`)
       setFeeForm(initialSampleFeeForm())
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '打样费用登记失败')
+      showError(caught, '打样费用登记失败')
     } finally {
       setSubmitting(false)
     }
@@ -5652,7 +5767,7 @@ function SampleRequestsPage() {
       )
       setMessage('已发起打样费用付款申请')
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '打样费用付款发起失败')
+      showError(caught, '打样费用付款发起失败')
     } finally {
       setSubmitting(false)
     }
@@ -6168,7 +6283,7 @@ function SampleRecordsPage() {
         null
       setSelectedRecordId(nextSelectedId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '样品台账加载失败')
+      showError(caught, '样品台账加载失败')
     } finally {
       setLoading(false)
     }
@@ -6189,7 +6304,7 @@ function SampleRecordsPage() {
       )
       setSelectedRecordId(created.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '样品新增失败')
+      showError(caught, '样品新增失败')
     } finally {
       setSubmitting(false)
     }
@@ -6211,7 +6326,7 @@ function SampleRecordsPage() {
       setMessage(`已追加样品图片 ${image.filename}`)
       setImageForm(initialSampleRecordImageForm())
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '样品图片追加失败')
+      showError(caught, '样品图片追加失败')
     } finally {
       setSubmitting(false)
     }
@@ -6236,7 +6351,7 @@ function SampleRecordsPage() {
       setMessage(`已登记样品数量 ${stockEvent.quantity} ${stockEvent.unit}`)
       setStockForm(initialSampleRecordStockForm())
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '样品数量登记失败')
+      showError(caught, '样品数量登记失败')
     } finally {
       setSubmitting(false)
     }
@@ -6792,7 +6907,7 @@ function SampleDeliveriesPage() {
         null
       setSelectedDeliveryId(nextSelectedId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '寄样管理加载失败')
+      showError(caught, '寄样管理加载失败')
     } finally {
       setLoading(false)
     }
@@ -6816,7 +6931,7 @@ function SampleDeliveriesPage() {
       setSampleHistory(sampleResult.items)
       setQuoteHistory(quoteResult.items)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '寄样历史加载失败')
+      showError(caught, '寄样历史加载失败')
     }
   }
 
@@ -6858,7 +6973,7 @@ function SampleDeliveriesPage() {
       )
       setSelectedDeliveryId(created.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '寄样单新增失败')
+      showError(caught, '寄样单新增失败')
     } finally {
       setSubmitting(false)
     }
@@ -6875,7 +6990,7 @@ function SampleDeliveriesPage() {
       upsertDelivery(updated)
       await loadDeliveries(updated.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '寄样单草稿保存失败')
+      showError(caught, '寄样单草稿保存失败')
     } finally {
       setSubmitting(false)
     }
@@ -6892,7 +7007,7 @@ function SampleDeliveriesPage() {
       upsertDelivery(submitted)
       await loadDeliveries(submitted.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '寄样单提交失败')
+      showError(caught, '寄样单提交失败')
     } finally {
       setSubmitting(false)
     }
@@ -6912,7 +7027,7 @@ function SampleDeliveriesPage() {
       upsertDelivery(approved)
       await loadDeliveries(approved.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '寄样单审核失败')
+      showError(caught, '寄样单审核失败')
     } finally {
       setSubmitting(false)
     }
@@ -6933,7 +7048,7 @@ function SampleDeliveriesPage() {
       upsertDelivery(tracked)
       await loadDeliveries(tracked.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '物流跟踪更新失败')
+      showError(caught, '物流跟踪更新失败')
     } finally {
       setSubmitting(false)
     }
@@ -7556,7 +7671,7 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
         null
       setSelectedQuotationId(nextSelectedId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出口报价加载失败')
+      showError(caught, '出口报价加载失败')
     } finally {
       setLoading(false)
     }
@@ -7585,7 +7700,7 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
       setPurchaseReferences(referenceResult.items)
       setSampleDeliveries(deliveryResult.items)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '报价参考资料加载失败')
+      showError(caught, '报价参考资料加载失败')
     }
   }
 
@@ -7627,7 +7742,7 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
       )
       setSelectedQuotationId(created.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出口报价新增失败')
+      showError(caught, '出口报价新增失败')
     } finally {
       setSubmitting(false)
     }
@@ -7644,7 +7759,7 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
       upsertQuotation(updated)
       await loadQuotations(updated.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出口报价草稿保存失败')
+      showError(caught, '出口报价草稿保存失败')
     } finally {
       setSubmitting(false)
     }
@@ -7661,7 +7776,7 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
       upsertQuotation(submitted)
       await loadQuotations(submitted.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出口报价提交失败')
+      showError(caught, '出口报价提交失败')
     } finally {
       setSubmitting(false)
     }
@@ -7681,7 +7796,7 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
       upsertQuotation(approved)
       await loadQuotations(approved.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出口报价审批失败')
+      showError(caught, '出口报价审批失败')
     } finally {
       setSubmitting(false)
     }
@@ -7697,7 +7812,7 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
       setExportPreview(result.content.split('\n').slice(0, 10).join('\n'))
       setMessage(`已生成导出预览 ${result.filename}`)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出口报价导出失败')
+      showError(caught, '出口报价导出失败')
     } finally {
       setSubmitting(false)
     }
@@ -7718,7 +7833,7 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
       setMessage(`已生成出口合同 ${contract.contract_no}`)
       await loadQuotations(selectedQuotation.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出口合同生成失败')
+      showError(caught, '出口合同生成失败')
     } finally {
       setSubmitting(false)
     }
@@ -8295,7 +8410,7 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
         null
       setSelectedContractId(nextSelectedId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出口合同加载失败')
+      showError(caught, '出口合同加载失败')
     } finally {
       setLoading(false)
     }
@@ -8314,7 +8429,7 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
       })
       setHistory(result.items)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '历史询报价参考加载失败')
+      showError(caught, '历史询报价参考加载失败')
     }
   }
 
@@ -8363,7 +8478,7 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
       upsertContract(created)
       await loadContracts(created.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出口合同新增失败')
+      showError(caught, '出口合同新增失败')
     } finally {
       setSubmitting(false)
     }
@@ -8380,7 +8495,7 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
       upsertContract(updated)
       await loadContracts(updated.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出口合同草稿保存失败')
+      showError(caught, '出口合同草稿保存失败')
     } finally {
       setSubmitting(false)
     }
@@ -8397,7 +8512,7 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
       upsertContract(submitted)
       await loadContracts(submitted.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出口合同提交失败')
+      showError(caught, '出口合同提交失败')
     } finally {
       setSubmitting(false)
     }
@@ -8417,7 +8532,7 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
       upsertContract(approved)
       await loadContracts(approved.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出口合同审批失败')
+      showError(caught, '出口合同审批失败')
     } finally {
       setSubmitting(false)
     }
@@ -8438,7 +8553,7 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
       upsertContract(signed)
       await loadContracts(signed.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '合同回签登记失败')
+      showError(caught, '合同回签登记失败')
     } finally {
       setSubmitting(false)
     }
@@ -8473,7 +8588,7 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
       })
       await loadContracts(selectedContract.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '预收款关联失败')
+      showError(caught, '预收款关联失败')
     } finally {
       setSubmitting(false)
     }
@@ -8489,7 +8604,7 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
       setExportPreview(result.content.split('\n').slice(0, 14).join('\n'))
       setMessage(`已生成合同导出预览 ${result.filename}`)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出口合同导出失败')
+      showError(caught, '出口合同导出失败')
     } finally {
       setSubmitting(false)
     }
@@ -9220,7 +9335,7 @@ function ShipmentsPage({ onNavigate }: ModuleNavigationProps) {
         null
       setSelectedShipmentId(nextSelectedId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出货明细加载失败')
+      showError(caught, '出货明细加载失败')
     } finally {
       setLoading(false)
     }
@@ -9231,7 +9346,7 @@ function ShipmentsPage({ onNavigate }: ModuleNavigationProps) {
       const result = await listShipmentReminders()
       setReminders(result.items)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出货提醒加载失败')
+      showError(caught, '出货提醒加载失败')
     }
   }
 
@@ -9257,7 +9372,7 @@ function ShipmentsPage({ onNavigate }: ModuleNavigationProps) {
       upsertShipment(created)
       await Promise.all([loadShipments(created.id), loadReminders()])
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出货明细生成失败')
+      showError(caught, '出货明细生成失败')
     } finally {
       setSubmitting(false)
     }
@@ -9274,7 +9389,7 @@ function ShipmentsPage({ onNavigate }: ModuleNavigationProps) {
       upsertShipment(submitted)
       await Promise.all([loadShipments(submitted.id), loadReminders()])
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出货明细提交失败')
+      showError(caught, '出货明细提交失败')
     } finally {
       setSubmitting(false)
     }
@@ -9295,7 +9410,7 @@ function ShipmentsPage({ onNavigate }: ModuleNavigationProps) {
       upsertShipment(approved)
       await Promise.all([loadShipments(approved.id), loadReminders()])
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出货明细审批失败')
+      showError(caught, '出货明细审批失败')
     } finally {
       setSubmitting(false)
     }
@@ -9863,7 +9978,7 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
         null
       setSelectedInquiryId(nextSelectedId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '采购询价加载失败')
+      showError(caught, '采购询价加载失败')
     } finally {
       setLoading(false)
     }
@@ -9890,7 +10005,7 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
       setReferences(referenceResult.items)
       setSupplierSamples(sampleResult.items)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '采购询价参考资料加载失败')
+      showError(caught, '采购询价参考资料加载失败')
     }
   }
 
@@ -9933,7 +10048,7 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
       upsertInquiry(saved)
       await loadInquiries(saved.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '采购询价保存失败')
+      showError(caught, '采购询价保存失败')
     } finally {
       setSubmitting(false)
     }
@@ -9954,7 +10069,7 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
       setMessage(`已生成询价模板 ${template.filename}`)
       await loadInquiries(selectedInquiry.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '询价模板发送失败')
+      showError(caught, '询价模板发送失败')
     } finally {
       setSubmitting(false)
     }
@@ -9975,7 +10090,7 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
       upsertInquiry(updated)
       await Promise.all([loadInquiries(updated.id), loadPurchaseInquiryAuxiliary(updated)])
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '供应商报价登记失败')
+      showError(caught, '供应商报价登记失败')
     } finally {
       setSubmitting(false)
     }
@@ -10594,7 +10709,7 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
         null
       setSelectedContractId(nextSelectedId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '采购合同加载失败')
+      showError(caught, '采购合同加载失败')
     } finally {
       setLoading(false)
     }
@@ -10605,7 +10720,7 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
       const result = await listPurchaseContractReminders()
       setReminders(result.items)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '采购提醒加载失败')
+      showError(caught, '采购提醒加载失败')
     }
   }
 
@@ -10636,7 +10751,7 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
       await Promise.all([loadContracts(saved.id, saved), loadContractReminders()])
       upsertContract(saved)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '采购合同保存失败')
+      showError(caught, '采购合同保存失败')
     } finally {
       setSubmitting(false)
     }
@@ -10656,7 +10771,7 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
       upsertContract(generated)
       await Promise.all([loadContracts(generated.id, generated), loadContractReminders()])
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '采购合同生成失败')
+      showError(caught, '采购合同生成失败')
     } finally {
       setSubmitting(false)
     }
@@ -10673,7 +10788,7 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
       upsertContract(submitted)
       await Promise.all([loadContracts(submitted.id, submitted), loadContractReminders()])
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '采购合同提交失败')
+      showError(caught, '采购合同提交失败')
     } finally {
       setSubmitting(false)
     }
@@ -10694,7 +10809,7 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
       upsertContract(approved)
       await Promise.all([loadContracts(approved.id, approved), loadContractReminders()])
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '采购合同审批失败')
+      showError(caught, '采购合同审批失败')
     } finally {
       setSubmitting(false)
     }
@@ -11439,7 +11554,7 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
         null
       setSelectedNoticeId(nextSelectedId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '开票通知加载失败')
+      showError(caught, '开票通知加载失败')
     } finally {
       setLoading(false)
     }
@@ -11475,7 +11590,7 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
       if (firstNotice) upsertNotice(firstNotice)
       await loadNotices(firstNotice?.id, customsId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '开票通知生成失败')
+      showError(caught, '开票通知生成失败')
     } finally {
       setSubmitting(false)
     }
@@ -11496,7 +11611,7 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
       upsertNotice(sent)
       await loadNotices(sent.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '开票通知发送失败')
+      showError(caught, '开票通知发送失败')
     } finally {
       setSubmitting(false)
     }
@@ -11517,7 +11632,7 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
       upsertNotice(received)
       await loadNotices(received.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '税票登记失败')
+      showError(caught, '税票登记失败')
     } finally {
       setSubmitting(false)
     }
@@ -12170,7 +12285,7 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
       setSelectedTemplateId(nextTemplateId)
       setSelectedPlanId(nextPlanId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '采购跟单加载失败')
+      showError(caught, '采购跟单加载失败')
     } finally {
       setLoading(false)
     }
@@ -12189,7 +12304,7 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
       setMessage(`已保存跟单模板 ${template.name}`)
       await loadFollowupWorkspace(selectedPlan?.id, template.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '跟单模板保存失败')
+      showError(caught, '跟单模板保存失败')
     } finally {
       setSubmitting(false)
     }
@@ -12207,7 +12322,7 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
       await loadFollowupWorkspace(plan.id)
       setMessage(`已生成跟单计划 ${plan.purchase_contract_no}`)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '跟单计划生成失败')
+      showError(caught, '跟单计划生成失败')
     } finally {
       setSubmitting(false)
     }
@@ -12226,7 +12341,7 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
       await loadFollowupWorkspace(synced.id)
       setMessage(`已同步样品跟单事件 ${synced.purchase_contract_no}`)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '样品事件同步失败')
+      showError(caught, '样品事件同步失败')
     } finally {
       setSubmitting(false)
     }
@@ -12243,7 +12358,7 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
       await loadFollowupWorkspace(plan.id)
       setMessage(`已回写节点 ${nodeLabel}`)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '来源事件回写失败')
+      showError(caught, '来源事件回写失败')
     } finally {
       setSubmitting(false)
     }
@@ -12259,7 +12374,7 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
       setOverdueNodes(overdue.items)
       setMessage(`已扫描 ${overdue.total} 个逾期节点`)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '逾期节点扫描失败')
+      showError(caught, '逾期节点扫描失败')
     } finally {
       setSubmitting(false)
     }
@@ -12753,7 +12868,7 @@ function QualityInspectionsPage({ onNavigate }: ModuleNavigationProps) {
         null
       setSelectedInspectionId(nextId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : 'QC 查验加载失败')
+      showError(caught, 'QC 查验加载失败')
     } finally {
       setLoading(false)
     }
@@ -12769,7 +12884,7 @@ function QualityInspectionsPage({ onNavigate }: ModuleNavigationProps) {
       setEligibility(result)
     } catch (caught) {
       setEligibility(null)
-      setError(caught instanceof Error ? caught.message : '入库判定加载失败')
+      showError(caught, '入库判定加载失败')
     }
   }
 
@@ -12803,7 +12918,7 @@ function QualityInspectionsPage({ onNavigate }: ModuleNavigationProps) {
       await loadQualityInspections(inspection.id)
       await refreshQualityInboundEligibility(inspection.purchase_contract_id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : 'QC 查验保存失败')
+      showError(caught, 'QC 查验保存失败')
     } finally {
       setSubmitting(false)
     }
@@ -13357,7 +13472,7 @@ function InboundPlansPage({ onNavigate }: ModuleNavigationProps) {
         null
       setSelectedPlanId(nextId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '入库计划加载失败')
+      showError(caught, '入库计划加载失败')
     } finally {
       setLoading(false)
     }
@@ -13376,7 +13491,7 @@ function InboundPlansPage({ onNavigate }: ModuleNavigationProps) {
       await loadInboundPlans(plan.id)
       setMessage(`已生成入库计划 ${plan.code}`)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '入库计划生成失败')
+      showError(caught, '入库计划生成失败')
     } finally {
       setSubmitting(false)
     }
@@ -13394,7 +13509,7 @@ function InboundPlansPage({ onNavigate }: ModuleNavigationProps) {
       await loadInboundPlans(plan.id)
       setMessage(`已安排 ${plan.warehouse_name ?? ''} / ${plan.location_name ?? ''}`)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '库位安排保存失败')
+      showError(caught, '库位安排保存失败')
     } finally {
       setSubmitting(false)
     }
@@ -13812,7 +13927,7 @@ function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
       }
       await loadInventorySnapshotForOrder(nextOrder, inventoryQuery)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '货物入库加载失败')
+      showError(caught, '货物入库加载失败')
     } finally {
       setLoading(false)
     }
@@ -13859,7 +13974,7 @@ function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
     try {
       await loadInventorySnapshotForOrder(selectedOrder)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '库存快照加载失败')
+      showError(caught, '库存快照加载失败')
     }
   }
 
@@ -13892,7 +14007,7 @@ function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
       await loadInboundOrders(order.id, order, inventoryQuery)
       setMessage(`已生成入库单 ${order.code}`)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '入库单生成失败')
+      showError(caught, '入库单生成失败')
     } finally {
       setSubmitting(false)
     }
@@ -13910,7 +14025,7 @@ function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
       await loadInboundOrders(order.id, order, inventoryQuery)
       setMessage(`${order.code} 已提交审批`)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '入库单提交失败')
+      showError(caught, '入库单提交失败')
     } finally {
       setSubmitting(false)
     }
@@ -13936,7 +14051,7 @@ function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
           : `${order.code} 已登记待检库存`,
       )
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '入库审批失败')
+      showError(caught, '入库审批失败')
     } finally {
       setSubmitting(false)
     }
@@ -14465,7 +14580,7 @@ function OutboundPlansPage({ onNavigate }: ModuleNavigationProps) {
         setGenerateForm((current) => outboundPlanGenerateFormForShipment(shipmentOptions[0], current))
       }
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出库计划加载失败')
+      showError(caught, '出库计划加载失败')
     } finally {
       setLoading(false)
     }
@@ -14515,7 +14630,7 @@ function OutboundPlansPage({ onNavigate }: ModuleNavigationProps) {
       await loadOutboundPlans(plan.id, plan)
       setMessage(`已生成出库计划 ${plan.code}`)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出库计划生成失败')
+      showError(caught, '出库计划生成失败')
     } finally {
       setSubmitting(false)
     }
@@ -14533,7 +14648,7 @@ function OutboundPlansPage({ onNavigate }: ModuleNavigationProps) {
       await loadOutboundPlans(plan.id, plan)
       setMessage(`已安排 ${plan.warehouse_name ?? ''} / ${plan.location_name ?? ''}`)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '库位安排保存失败')
+      showError(caught, '库位安排保存失败')
     } finally {
       setSubmitting(false)
     }
@@ -14979,7 +15094,7 @@ function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
       }
       await loadOutboundInventorySnapshot(nextOrder, inventoryQuery)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '货物出库加载失败')
+      showError(caught, '货物出库加载失败')
     } finally {
       setLoading(false)
     }
@@ -15026,7 +15141,7 @@ function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
     try {
       await loadOutboundInventorySnapshot(selectedOrder)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '库存快照加载失败')
+      showError(caught, '库存快照加载失败')
     }
   }
 
@@ -15061,7 +15176,7 @@ function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
       await loadOutboundOrders(order.id, order, inventoryQuery)
       setMessage(`已生成出库单 ${order.code}`)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出库单生成失败')
+      showError(caught, '出库单生成失败')
     } finally {
       setSubmitting(false)
     }
@@ -15079,7 +15194,7 @@ function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
       await loadOutboundOrders(order.id, order, inventoryQuery)
       setMessage(`${order.code} 已提交审批`)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出库单提交失败')
+      showError(caught, '出库单提交失败')
     } finally {
       setSubmitting(false)
     }
@@ -15105,7 +15220,7 @@ function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
           : `${order.code} 已记录异常出库`,
       )
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出库审批失败')
+      showError(caught, '出库审批失败')
     } finally {
       setSubmitting(false)
     }
@@ -15695,7 +15810,7 @@ function ReportingPage({ onNavigate }: ModuleNavigationProps) {
       })
       setApprovals(result)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '经理查询加载失败')
+      showError(caught, '经理查询加载失败')
     } finally {
       setLoading(false)
     }
@@ -15715,7 +15830,7 @@ function ReportingPage({ onNavigate }: ModuleNavigationProps) {
       })
       setStatistics(result)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '统计分析加载失败')
+      showError(caught, '统计分析加载失败')
     } finally {
       setLoadingStatistics(false)
     }
@@ -15730,7 +15845,7 @@ function ReportingPage({ onNavigate }: ModuleNavigationProps) {
     void listApprovalDocuments({ status: 'submitted' })
       .then(setApprovals)
       .catch((caught: unknown) => {
-        setError(caught instanceof Error ? caught.message : '经理查询加载失败')
+        showError(caught, '经理查询加载失败')
       })
   }
 
@@ -15744,7 +15859,7 @@ function ReportingPage({ onNavigate }: ModuleNavigationProps) {
     void listReportingStatistics()
       .then(setStatistics)
       .catch((caught: unknown) => {
-        setError(caught instanceof Error ? caught.message : '统计分析加载失败')
+        showError(caught, '统计分析加载失败')
       })
   }
 
@@ -15772,9 +15887,6 @@ function ReportingPage({ onNavigate }: ModuleNavigationProps) {
         <section className="workspace-panel reporting-approval-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<BarChart3 size={18} />} title="审批单据查询" />
-            <Button icon={<RefreshCw size={16} />} loading={loading} onClick={() => void loadApprovals()}>
-              刷新
-            </Button>
           </div>
           <form
             className="inline-filters"
@@ -15890,13 +16002,6 @@ function ReportingPage({ onNavigate }: ModuleNavigationProps) {
         <section className="workspace-panel reporting-statistics-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<BarChart3 size={18} />} title="统计分析报表" />
-            <Button
-              icon={<RefreshCw size={16} />}
-              loading={loadingStatistics}
-              onClick={() => void loadStatistics()}
-            >
-              刷新
-            </Button>
           </div>
           <form
             className="inline-filters"
@@ -16140,7 +16245,16 @@ function ReportingPage({ onNavigate }: ModuleNavigationProps) {
   )
 }
 
-function FinancePage({ onNavigate }: ModuleNavigationProps) {
+type FinancePageProps = ModuleNavigationProps & {
+  view: FinanceView
+}
+
+function FinancePage({ view, onNavigate }: FinancePageProps) {
+  const activeModule = view.module
+  const detailId = view.id
+  const goModule = (module: FinanceModule) => onNavigate(financeModulePathByModule[module])
+  const goDetail = (module: FinanceModule, id: string) => onNavigate(financeDetailPath(module, id))
+  const goFinanceHome = () => onNavigate(financePath)
   const [overview, setOverview] = useState<FinanceOverview | null>(null)
   const [receipts, setReceipts] = useState<BankReceipt[]>([])
   const [receivables, setReceivables] = useState<ReceivableItem[]>([])
@@ -16314,6 +16428,35 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
     void loadProfitCalculations()
   }, [])
 
+  // Keep the per-module selection in sync with the detail id in the URL so that
+  // opening a detail page directly (or via the browser back/forward) selects the
+  // matching record.
+  useEffect(() => {
+    if (!detailId) return
+    switch (activeModule) {
+      case 'receipts':
+        setSelectedReceiptId(detailId)
+        break
+      case 'payments':
+        setSelectedSupplierInvoiceId(detailId)
+        break
+      case 'fees':
+        setSelectedPartnerFeeInvoiceId(detailId)
+        break
+      case 'tax':
+        setSelectedVerificationDocumentId(detailId)
+        break
+      case 'misc':
+        setSelectedMiscFeeItemId(detailId)
+        break
+      case 'settlement':
+        setSelectedFinancialSettlementId(detailId)
+        break
+      default:
+        break
+    }
+  }, [activeModule, detailId])
+
   const selectedReceipt = useMemo(
     () => receipts.find((item) => item.id === selectedReceiptId) ?? receipts[0] ?? null,
     [receipts, selectedReceiptId],
@@ -16435,7 +16578,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
     try {
       setOverview(await getFinanceOverview())
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '财务总览加载失败')
+      showError(caught, '财务总览加载失败')
     } finally {
       setLoading(false)
     }
@@ -16458,7 +16601,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
         null
       setSelectedReceiptId(nextReceiptId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '银行水单加载失败')
+      showError(caught, '银行水单加载失败')
     } finally {
       setLoadingReceipts(false)
     }
@@ -16475,7 +16618,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       })
       setReceivables(result.items)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '应收账款加载失败')
+      showError(caught, '应收账款加载失败')
     } finally {
       setLoadingReceivables(false)
     }
@@ -16499,7 +16642,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
         null
       setSelectedSupplierInvoiceId(nextInvoiceId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '供应商发票加载失败')
+      showError(caught, '供应商发票加载失败')
     } finally {
       setLoadingSupplierInvoices(false)
     }
@@ -16523,7 +16666,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
         null
       setSelectedPaymentRequestId(nextRequestId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '付款申请加载失败')
+      showError(caught, '付款申请加载失败')
     } finally {
       setLoadingPaymentRequests(false)
     }
@@ -16541,7 +16684,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       })
       setPayables(result.items)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '应付账款加载失败')
+      showError(caught, '应付账款加载失败')
     } finally {
       setLoadingPayables(false)
     }
@@ -16568,7 +16711,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
         null
       setSelectedPartnerFeeInvoiceId(nextInvoiceId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '合作伙伴费用发票加载失败')
+      showError(caught, '合作伙伴费用发票加载失败')
     } finally {
       setLoadingPartnerFeeInvoices(false)
     }
@@ -16595,7 +16738,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
         null
       setSelectedFeePaymentRequestId(nextRequestId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '付费申请加载失败')
+      showError(caught, '付费申请加载失败')
     } finally {
       setLoadingFeePaymentRequests(false)
     }
@@ -16614,7 +16757,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       })
       setFeePayables(result.items)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '应付费用加载失败')
+      showError(caught, '应付费用加载失败')
     } finally {
       setLoadingFeePayables(false)
     }
@@ -16641,7 +16784,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
         null
       setSelectedVerificationDocumentId(nextDocumentId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '核销单加载失败')
+      showError(caught, '核销单加载失败')
     } finally {
       setLoadingVerificationDocuments(false)
     }
@@ -16659,7 +16802,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       })
       setVerificationUsage(result.items)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '核销单使用情况加载失败')
+      showError(caught, '核销单使用情况加载失败')
     } finally {
       setLoadingVerificationUsage(false)
     }
@@ -16682,7 +16825,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
         null
       setSelectedMiscFeeItemId(nextItemId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '杂费项目加载失败')
+      showError(caught, '杂费项目加载失败')
     } finally {
       setLoadingMiscFeeItems(false)
     }
@@ -16700,7 +16843,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       })
       setMiscFeeAllocations(result.items)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '杂费分摊加载失败')
+      showError(caught, '杂费分摊加载失败')
     } finally {
       setLoadingMiscFeeAllocations(false)
     }
@@ -16716,7 +16859,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       })
       setMiscFeeAllocationSummary(result.items)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '杂费分摊汇总加载失败')
+      showError(caught, '杂费分摊汇总加载失败')
     } finally {
       setLoadingMiscFeeSummary(false)
     }
@@ -16741,7 +16884,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
         null
       setSelectedFinancialSettlementId(nextSettlementId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '财务结算加载失败')
+      showError(caught, '财务结算加载失败')
     } finally {
       setLoadingFinancialSettlements(false)
     }
@@ -16757,7 +16900,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       })
       setProfitCalculations(result.items)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '利润核算加载失败')
+      showError(caught, '利润核算加载失败')
     } finally {
       setLoadingProfitCalculations(false)
     }
@@ -16774,7 +16917,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       setReceiptForm(initialBankReceiptForm())
       await loadReceipts(created.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '银行水单录入失败')
+      showError(caught, '银行水单录入失败')
     } finally {
       setSubmittingReceipt(false)
     }
@@ -16794,7 +16937,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       setSelectedReceiptId(claimed.id)
       await loadReceipts(claimed.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '银行水单认领失败')
+      showError(caught, '银行水单认领失败')
     } finally {
       setSubmittingClaim(false)
     }
@@ -16818,7 +16961,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       await loadReceipts(allocated.id)
       await loadReceivables()
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '收款分摊失败')
+      showError(caught, '收款分摊失败')
     } finally {
       setSubmittingAllocation(false)
     }
@@ -16836,7 +16979,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       await loadSupplierInvoices(created.id)
       await loadPayables()
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '供应商发票登记失败')
+      showError(caught, '供应商发票登记失败')
     } finally {
       setSubmittingSupplierInvoice(false)
     }
@@ -16853,7 +16996,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       setPaymentRequestForm(initialPaymentRequestForm(selectedSupplierInvoice ?? undefined))
       await loadPaymentRequests(created.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '付款申请新增失败')
+      showError(caught, '付款申请新增失败')
     } finally {
       setSubmittingPaymentRequest(false)
     }
@@ -16876,7 +17019,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       await loadSupplierInvoices(selectedSupplierInvoice?.id)
       await loadPayables()
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '付款审批失败')
+      showError(caught, '付款审批失败')
     } finally {
       setSubmittingPaymentApproval(false)
     }
@@ -16894,7 +17037,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       await loadPartnerFeeInvoices(created.id)
       await loadFeePayables()
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '合作伙伴费用发票登记失败')
+      showError(caught, '合作伙伴费用发票登记失败')
     } finally {
       setSubmittingPartnerFeeInvoice(false)
     }
@@ -16911,7 +17054,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       setFeePaymentRequestForm(initialFeePaymentRequestForm(selectedPartnerFeeInvoice ?? undefined))
       await loadFeePaymentRequests(created.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '付费申请新增失败')
+      showError(caught, '付费申请新增失败')
     } finally {
       setSubmittingFeePaymentRequest(false)
     }
@@ -16934,7 +17077,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       await loadPartnerFeeInvoices(selectedPartnerFeeInvoice?.id)
       await loadFeePayables()
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '付费审批失败')
+      showError(caught, '付费审批失败')
     } finally {
       setSubmittingFeePaymentApproval(false)
     }
@@ -16954,7 +17097,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       await loadVerificationDocuments(created.id)
       await loadVerificationUsage()
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '核销单领用失败')
+      showError(caught, '核销单领用失败')
     } finally {
       setSubmittingVerificationDocument(false)
     }
@@ -16976,7 +17119,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       await loadVerificationDocuments(updated.id)
       await loadVerificationUsage()
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '报关回单登记失败')
+      showError(caught, '报关回单登记失败')
     } finally {
       setSubmittingCustomsReceipt(false)
     }
@@ -16998,7 +17141,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       await loadVerificationDocuments(updated.id)
       await loadVerificationUsage()
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '核销登记失败')
+      showError(caught, '核销登记失败')
     } finally {
       setSubmittingVerificationRegister(false)
     }
@@ -17021,7 +17164,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       await loadVerificationUsage()
       await loadOverview()
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '退税登记失败')
+      showError(caught, '退税登记失败')
     } finally {
       setSubmittingTaxRefund(false)
     }
@@ -17038,7 +17181,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       setMiscFeeItemForm(initialMiscFeeItemForm())
       await loadMiscFeeItems(created.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '杂费项目配置失败')
+      showError(caught, '杂费项目配置失败')
     } finally {
       setSubmittingMiscFeeItem(false)
     }
@@ -17059,7 +17202,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       await loadMiscFeeAllocationSummary()
       await loadOverview()
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '杂费分摊失败')
+      showError(caught, '杂费分摊失败')
     } finally {
       setSubmittingMiscFeeAllocation(false)
     }
@@ -17078,7 +17221,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       await loadProfitCalculations()
       await loadOverview()
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '财务结算锁定失败')
+      showError(caught, '财务结算锁定失败')
     } finally {
       setSubmittingSettlement(false)
     }
@@ -17102,7 +17245,7 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
       await loadFinancialSettlements(updated.id)
       await loadProfitCalculations()
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '手工成本关联失败')
+      showError(caught, '手工成本关联失败')
     } finally {
       setSubmittingManualProfitCost(false)
     }
@@ -17146,38 +17289,169 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
     0,
   )
 
-  return (
-    <section className="finance-page">
-      <OperationFlowRail activeLabel="银行水单" activePath={financePath} kind="finance" onNavigate={onNavigate} />
+  const summaryStrip = (
+    <div className="summary-strip" aria-label="财务管理概览">
+      <Metric label="出货单" value={summary?.shipment_count ?? 0} />
+      <Metric label="应收金额" value={formatFinanceAmount(summary?.receivable_amount, currencyLabel)} />
+      <Metric label="应付成本" value={formatFinanceAmount(summary?.payable_amount, currencyLabel)} />
+      <Metric
+        label="预计利润"
+        value={formatFinanceAmount(summary?.profit_amount, currencyLabel)}
+        intent={profitAmount < 0 ? 'danger' : 'normal'}
+      />
+      <Metric label="开票通知" value={summary?.invoice_notice_count ?? 0} />
+      <Metric label="样品费用" value={formatFinanceAmount(summary?.sample_fee_amount, '多币种')} />
+    </div>
+  )
 
-      <div className="summary-strip" aria-label="财务管理概览">
-        <Metric label="出货单" value={summary?.shipment_count ?? 0} />
-        <Metric label="应收金额" value={formatFinanceAmount(summary?.receivable_amount, currencyLabel)} />
-        <Metric label="应付成本" value={formatFinanceAmount(summary?.payable_amount, currencyLabel)} />
-        <Metric
-          label="预计利润"
-          value={formatFinanceAmount(summary?.profit_amount, currencyLabel)}
-          intent={profitAmount < 0 ? 'danger' : 'normal'}
-        />
-        <Metric label="开票通知" value={summary?.invoice_notice_count ?? 0} />
-        <Metric label="样品费用" value={formatFinanceAmount(summary?.sample_fee_amount, '多币种')} />
-      </div>
-
+  const moduleAlerts = (
+    <>
       {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
+    </>
+  )
 
-      {loading && !overview ? (
-        <section className="workspace-panel">
-          <Skeleton active paragraph={{ rows: 8 }} />
+  const financeModuleCards: {
+    module: FinanceModule
+    icon: ReactNode
+    title: string
+    caption: string
+    metric: string
+    metricLabel: string
+  }[] = [
+    {
+      module: 'overview',
+      icon: <BarChart3 size={20} />,
+      title: '经营总览',
+      caption: '出运利润 / 分币种 / 状态汇总',
+      metric: formatFinanceAmount(summary?.profit_amount, currencyLabel),
+      metricLabel: '预计利润',
+    },
+    {
+      module: 'receipts',
+      icon: <Wallet size={20} />,
+      title: '收款管理',
+      caption: '银行水单认领、分摊与应收账款',
+      metric: formatFinanceAmount(summary?.receivable_amount, currencyLabel),
+      metricLabel: '应收金额',
+    },
+    {
+      module: 'payments',
+      icon: <Coins size={20} />,
+      title: '付款管理',
+      caption: '供应商发票、付款申请与应付账款',
+      metric: formatFinanceAmount(summary?.payable_amount, currencyLabel),
+      metricLabel: '应付成本',
+    },
+    {
+      module: 'fees',
+      icon: <Handshake size={20} />,
+      title: '付费管理',
+      caption: '合作伙伴费用发票、付费申请与审批',
+      metric: String(summary?.active_partner_count ?? 0),
+      metricLabel: '启用伙伴',
+    },
+    {
+      module: 'tax',
+      icon: <ShieldCheck size={20} />,
+      title: '核销退税',
+      caption: '核销单领用、回单核销与退税登记',
+      metric: String(verificationDocuments.length),
+      metricLabel: '核销单',
+    },
+    {
+      module: 'misc',
+      icon: <FileStack size={20} />,
+      title: '杂费管理',
+      caption: '杂费项目配置与单票分摊查询',
+      metric: String(miscFeeItems.length),
+      metricLabel: '杂费项目',
+    },
+    {
+      module: 'settlement',
+      icon: <PackagePlus size={20} />,
+      title: '结算核算',
+      caption: '单票结算锁定、手工成本与利润核算',
+      metric: String(financialSettlements.length),
+      metricLabel: '锁定结算',
+    },
+  ]
+
+  if (activeModule === 'home') {
+    return (
+      <section className="finance-page finance-home">
+        <OperationFlowRail
+          activeLabel="银行水单"
+          activePath={financeReceiptsPath}
+          kind="finance"
+          onNavigate={onNavigate}
+        />
+
+        {summaryStrip}
+        {moduleAlerts}
+
+        <section className="finance-module-cards" aria-label="财务模块入口">
+          {financeModuleCards.map((card) => (
+            <button
+              key={card.module}
+              className="finance-module-card"
+              type="button"
+              onClick={() => goModule(card.module)}
+            >
+              <span className="finance-module-card-icon">{card.icon}</span>
+              <span className="finance-module-card-body">
+                <strong>{card.title}</strong>
+                <small>{card.caption}</small>
+              </span>
+              <span className="finance-module-card-metric">
+                <em>{card.metric}</em>
+                <span>{card.metricLabel}</span>
+              </span>
+              <ChevronRight className="finance-module-card-arrow" size={18} />
+            </button>
+          ))}
         </section>
-      ) : (
-        <section className="finance-grid">
+      </section>
+    )
+  }
+
+  const moduleHeader = (
+    <div className="finance-subnav">
+      <button className="finance-back-button" type="button" onClick={goFinanceHome}>
+        <ArrowLeft size={16} />
+        财务首页
+      </button>
+      <nav className="finance-tab-rail" aria-label="财务模块切换">
+        {financeModuleCards.map((card) => (
+          <button
+            key={card.module}
+            aria-current={card.module === activeModule ? 'page' : undefined}
+            className={card.module === activeModule ? 'finance-tab active' : 'finance-tab'}
+            type="button"
+            onClick={() => goModule(card.module)}
+          >
+            {card.title}
+          </button>
+        ))}
+      </nav>
+    </div>
+  )
+
+  if (activeModule === 'overview') {
+    return (
+      <section className="finance-page">
+        {moduleHeader}
+        {summaryStrip}
+        {moduleAlerts}
+        {loading && !overview ? (
+          <section className="workspace-panel">
+            <Skeleton active paragraph={{ rows: 8 }} />
+          </section>
+        ) : (
+          <section className="finance-grid">
           <section className="workspace-panel finance-profit-panel">
             <div className="panel-heading toolbar-heading">
               <PanelTitle icon={<Wallet size={18} />} title="出运利润明细" />
-              <Button icon={<RefreshCw size={16} />} loading={loading} onClick={() => void loadOverview()}>
-                刷新
-              </Button>
             </div>
             <Table<FinanceShipmentProfit>
               columns={[
@@ -17306,9 +17580,30 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             />
           </section>
         </section>
-      )}
+        )}
+      </section>
+    )
+  }
 
-      <section className="finance-receipt-grid" aria-label="收款管理">
+  if (activeModule === 'receipts') {
+    return (
+      <section className={detailId ? 'finance-page finance-detail-page' : 'finance-page'}>
+        {detailId ? (
+          <div className="finance-subnav">
+            <button className="finance-back-button" type="button" onClick={() => goModule('receipts')}>
+              <ArrowLeft size={16} />
+              收款管理
+            </button>
+          </div>
+        ) : (
+          moduleHeader
+        )}
+        {moduleAlerts}
+        <section
+          className={detailId ? 'finance-detail-grid' : 'finance-receipt-grid'}
+          aria-label="收款管理"
+        >
+        {!detailId ? (
         <section className="workspace-panel finance-receipt-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="银行水单列表" />
@@ -17398,11 +17693,14 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
               onClick: () => {
                 setSelectedReceiptId(record.id)
                 setAllocationForm(initialReceiptAllocationForm(record.currency))
+                goDetail('receipts', record.id)
               },
             })}
           />
         </section>
+        ) : null}
 
+        {!detailId ? (
         <section className="workspace-panel finance-receipt-form-panel">
           <PanelTitle icon={<Wallet size={18} />} title="水单录入" />
           <form className="record-form" onSubmit={submitReceipt}>
@@ -17502,7 +17800,9 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             </Button>
           </form>
         </section>
+        ) : null}
 
+        {detailId ? (
         <section className="workspace-panel finance-receipt-detail-panel">
           <PanelTitle icon={<CheckCircle2 size={18} />} title="认领和分摊" />
           {selectedReceipt ? (
@@ -17687,7 +17987,9 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             <div className="module-state">暂无银行水单</div>
           )}
         </section>
+        ) : null}
 
+        {!detailId ? (
         <section className="workspace-panel finance-receivable-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<ShieldCheck size={18} />} title="应收账款查询" />
@@ -17754,9 +18056,31 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             size="small"
           />
         </section>
+        ) : null}
+        </section>
       </section>
+    )
+  }
 
-      <section className="finance-payment-grid" aria-label="付款管理">
+  if (activeModule === 'payments') {
+    return (
+      <section className={detailId ? 'finance-page finance-detail-page' : 'finance-page'}>
+        {detailId ? (
+          <div className="finance-subnav">
+            <button className="finance-back-button" type="button" onClick={() => goModule('payments')}>
+              <ArrowLeft size={16} />
+              付款管理
+            </button>
+          </div>
+        ) : (
+          moduleHeader
+        )}
+        {moduleAlerts}
+        <section
+          className={detailId ? 'finance-detail-grid' : 'finance-payment-grid'}
+          aria-label="付款管理"
+        >
+        {!detailId ? (
         <section className="workspace-panel finance-payment-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="供应商发票列表" />
@@ -17840,11 +18164,14 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
                 setSelectedSupplierInvoiceId(record.id)
                 setPaymentRequestForm(initialPaymentRequestForm(record))
                 setPaymentApprovalForm(initialPaymentApprovalForm(record.unpaid_amount))
+                goDetail('payments', record.id)
               },
             })}
           />
         </section>
+        ) : null}
 
+        {!detailId ? (
         <section className="workspace-panel finance-payment-form-panel">
           <PanelTitle icon={<Wallet size={18} />} title="供应商发票登记" />
           <form className="record-form" onSubmit={submitSupplierInvoice}>
@@ -17979,7 +18306,9 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             </Button>
           </form>
         </section>
+        ) : null}
 
+        {detailId ? (
         <section className="workspace-panel finance-payment-request-panel">
           <PanelTitle icon={<CheckCircle2 size={18} />} title="付款申请和审批" />
           {selectedSupplierInvoice ? (
@@ -18200,7 +18529,9 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             />
           </section>
         </section>
+        ) : null}
 
+        {!detailId ? (
         <section className="workspace-panel finance-payable-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<ShieldCheck size={18} />} title="应付账款查询" />
@@ -18277,9 +18608,31 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             size="small"
           />
         </section>
+        ) : null}
+        </section>
       </section>
+    )
+  }
 
-      <section className="finance-fee-grid" aria-label="付费管理">
+  if (activeModule === 'fees') {
+    return (
+      <section className={detailId ? 'finance-page finance-detail-page' : 'finance-page'}>
+        {detailId ? (
+          <div className="finance-subnav">
+            <button className="finance-back-button" type="button" onClick={() => goModule('fees')}>
+              <ArrowLeft size={16} />
+              付费管理
+            </button>
+          </div>
+        ) : (
+          moduleHeader
+        )}
+        {moduleAlerts}
+        <section
+          className={detailId ? 'finance-detail-grid' : 'finance-fee-grid'}
+          aria-label="付费管理"
+        >
+        {!detailId ? (
         <section className="workspace-panel finance-fee-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Wallet size={18} />} title="合作伙伴费用发票" />
@@ -18375,11 +18728,14 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
                 setSelectedPartnerFeeInvoiceId(record.id)
                 setFeePaymentRequestForm(initialFeePaymentRequestForm(record))
                 setFeePaymentApprovalForm(initialFeePaymentApprovalForm(record.unpaid_amount))
+                goDetail('fees', record.id)
               },
             })}
           />
         </section>
+        ) : null}
 
+        {!detailId ? (
         <section className="workspace-panel finance-fee-form-panel">
           <PanelTitle icon={<Wallet size={18} />} title="费用发票登记" />
           <form className="record-form" onSubmit={submitPartnerFeeInvoice}>
@@ -18541,7 +18897,9 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             </Button>
           </form>
         </section>
+        ) : null}
 
+        {detailId ? (
         <section className="workspace-panel finance-fee-request-panel">
           <PanelTitle icon={<CheckCircle2 size={18} />} title="付费申请和审批" />
           {selectedPartnerFeeInvoice ? (
@@ -18748,7 +19106,9 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             />
           </section>
         </section>
+        ) : null}
 
+        {!detailId ? (
         <section className="workspace-panel finance-fee-payable-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<ShieldCheck size={18} />} title="应付费用查询" />
@@ -18837,8 +19197,31 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             size="small"
           />
         </section>
+        ) : null}
+        </section>
       </section>
-      <section className="finance-tax-grid" aria-label="核销退税">
+    )
+  }
+
+  if (activeModule === 'tax') {
+    return (
+      <section className={detailId ? 'finance-page finance-detail-page' : 'finance-page'}>
+        {detailId ? (
+          <div className="finance-subnav">
+            <button className="finance-back-button" type="button" onClick={() => goModule('tax')}>
+              <ArrowLeft size={16} />
+              核销退税
+            </button>
+          </div>
+        ) : (
+          moduleHeader
+        )}
+        {moduleAlerts}
+        <section
+          className={detailId ? 'finance-detail-grid' : 'finance-tax-grid'}
+          aria-label="核销退税"
+        >
+        {!detailId ? (
         <section className="workspace-panel finance-tax-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<ShieldCheck size={18} />} title="核销单列表" />
@@ -18936,11 +19319,14 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
               onClick: () => {
                 setSelectedVerificationDocumentId(record.id)
                 setTaxRefundForm(initialTaxRefundForm(record.currency, record.unrefunded_amount))
+                goDetail('tax', record.id)
               },
             })}
           />
         </section>
+        ) : null}
 
+        {!detailId ? (
         <section className="workspace-panel finance-tax-form-panel">
           <PanelTitle icon={<Save size={18} />} title="核销单领用" />
           <form className="record-form" onSubmit={submitVerificationDocument}>
@@ -19093,7 +19479,9 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             </Button>
           </form>
         </section>
+        ) : null}
 
+        {detailId ? (
         <section className="workspace-panel finance-tax-process-panel">
           <PanelTitle icon={<CheckCircle2 size={18} />} title="回单、核销和退税登记" />
           {selectedVerificationDocument ? (
@@ -19306,7 +19694,9 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             </form>
           </div>
         </section>
+        ) : null}
 
+        {!detailId ? (
         <section className="workspace-panel finance-tax-usage-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<LayoutDashboard size={18} />} title="核销单使用情况查询" />
@@ -19391,8 +19781,31 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             size="small"
           />
         </section>
+        ) : null}
+        </section>
       </section>
-      <section className="finance-misc-grid" aria-label="杂费管理">
+    )
+  }
+
+  if (activeModule === 'misc') {
+    return (
+      <section className={detailId ? 'finance-page finance-detail-page' : 'finance-page'}>
+        {detailId ? (
+          <div className="finance-subnav">
+            <button className="finance-back-button" type="button" onClick={() => goModule('misc')}>
+              <ArrowLeft size={16} />
+              杂费管理
+            </button>
+          </div>
+        ) : (
+          moduleHeader
+        )}
+        {moduleAlerts}
+        <section
+          className={detailId ? 'finance-detail-grid' : 'finance-misc-grid'}
+          aria-label="杂费管理"
+        >
+        {!detailId ? (
         <section className="workspace-panel finance-misc-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<ShieldCheck size={18} />} title="杂费项目配置" />
@@ -19470,11 +19883,14 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
               onClick: () => {
                 setSelectedMiscFeeItemId(record.id)
                 setMiscFeeAllocationForm(initialMiscFeeAllocationForm(record))
+                goDetail('misc', record.id)
               },
             })}
           />
         </section>
+        ) : null}
 
+        {!detailId ? (
         <section className="workspace-panel finance-misc-form-panel">
           <PanelTitle icon={<Save size={18} />} title="新增杂费项目" />
           <form className="record-form" onSubmit={submitMiscFeeItem}>
@@ -19551,7 +19967,9 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             </Button>
           </form>
         </section>
+        ) : null}
 
+        {detailId ? (
         <section className="workspace-panel finance-misc-allocation-panel">
           <PanelTitle icon={<Wallet size={18} />} title="单票杂费分摊" />
           {selectedMiscFeeItem ? (
@@ -19728,7 +20146,9 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             </Button>
           </form>
         </section>
+        ) : null}
 
+        {!detailId ? (
         <section className="workspace-panel finance-misc-summary-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<LayoutDashboard size={18} />} title="杂费分摊查询" />
@@ -19818,19 +20238,34 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             size="small"
           />
         </section>
+        ) : null}
+        </section>
       </section>
+    )
+  }
 
-      <section className="finance-settlement-grid" aria-label="财务结算和利润核算">
+  if (activeModule === 'settlement') {
+    return (
+      <section className={detailId ? 'finance-page finance-detail-page' : 'finance-page'}>
+        {detailId ? (
+          <div className="finance-subnav">
+            <button className="finance-back-button" type="button" onClick={() => goModule('settlement')}>
+              <ArrowLeft size={16} />
+              结算核算
+            </button>
+          </div>
+        ) : (
+          moduleHeader
+        )}
+        {moduleAlerts}
+        <section
+          className={detailId ? 'finance-detail-grid' : 'finance-settlement-grid'}
+          aria-label="财务结算和利润核算"
+        >
+        {!detailId ? (
         <section className="workspace-panel finance-settlement-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Wallet size={18} />} title="财务结算列表" />
-            <Button
-              icon={<RefreshCw size={16} />}
-              loading={loadingFinancialSettlements}
-              onClick={() => void loadFinancialSettlements()}
-            >
-              刷新
-            </Button>
           </div>
           <form
             className="inline-filters"
@@ -19916,11 +20351,14 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
               onClick: () => {
                 setSelectedFinancialSettlementId(record.id)
                 setManualProfitCostForm(initialManualProfitCostForm(record.currency, record.settlement_date))
+                goDetail('settlement', record.id)
               },
             })}
           />
         </section>
+        ) : null}
 
+        {!detailId ? (
         <section className="workspace-panel finance-settlement-form-panel">
           <PanelTitle icon={<Save size={18} />} title="单票结算锁定" />
           <form className="record-form" onSubmit={submitFinancialSettlement}>
@@ -19969,7 +20407,9 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             </Button>
           </form>
         </section>
+        ) : null}
 
+        {detailId ? (
         <section className="workspace-panel finance-manual-cost-panel">
           <PanelTitle icon={<PackagePlus size={18} />} title="手工成本关联" />
           {selectedFinancialSettlement ? (
@@ -20097,17 +20537,12 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             </Button>
           </form>
         </section>
+        ) : null}
 
+        {!detailId ? (
         <section className="workspace-panel finance-profit-calculation-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<CheckCircle2 size={18} />} title="利润核算表" />
-            <Button
-              icon={<RefreshCw size={16} />}
-              loading={loadingProfitCalculations}
-              onClick={() => void loadProfitCalculations()}
-            >
-              刷新
-            </Button>
           </div>
           <form
             className="inline-filters"
@@ -20208,9 +20643,13 @@ function FinancePage({ onNavigate }: ModuleNavigationProps) {
             size="small"
           />
         </section>
+        ) : null}
+        </section>
       </section>
-    </section>
-  )
+    )
+  }
+
+  return null
 }
 
 function initialBankReceiptForm(): BankReceiptFormState {
@@ -23239,7 +23678,23 @@ function partnerStatusLabel(value: string): string {
   return partnerStatusOptions.find((item) => item.value === value)?.label ?? value
 }
 
+const financeModuleTitles: Record<FinanceModule, string> = {
+  home: '财务管理',
+  overview: '经营总览',
+  receipts: '收款管理',
+  payments: '付款管理',
+  fees: '付费管理',
+  tax: '核销退税',
+  misc: '杂费管理',
+  settlement: '结算核算',
+}
+
 function pageTitle(path: string, menu: MenuItem | null): string {
+  if (isFinancePath(path)) {
+    const { module } = parseFinanceView(path)
+    if (module !== 'home') return financeModuleTitles[module]
+    return runtimeI18nConfig.page_titles[financePath]?.[runtimeSettings.language] ?? '财务管理'
+  }
   return runtimeI18nConfig.page_titles[path]?.[runtimeSettings.language] ?? menu?.label ?? t('page.businessModule')
 }
 

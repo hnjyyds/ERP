@@ -4,7 +4,6 @@ import {
   FilePenLine,
   History,
   Plus,
-  RefreshCw,
   Search,
   Trash2,
   UserRound,
@@ -14,6 +13,7 @@ import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import type { FormEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 
+import { showError, showWarningDialog } from '../../../shared/errors'
 import { Metric, PanelTitle } from '../../../shared/ui'
 import {
   contactPayload,
@@ -139,7 +139,7 @@ export function TradingPartnerPage({
         return result.items[0]?.id ?? null
       })
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : `${entityLabel}列表加载失败`)
+      showError(caught, `${entityLabel}列表加载失败`)
     } finally {
       setLoading(false)
     }
@@ -168,7 +168,7 @@ export function TradingPartnerPage({
     setError('')
     const validationMessage = validatePartnerForm(form, entityModalMode === 'create')
     if (validationMessage) {
-      setError(validationMessage)
+      showWarningDialog(validationMessage)
       return
     }
     setSubmitting(true)
@@ -185,7 +185,7 @@ export function TradingPartnerPage({
       }
       setEntityModalMode(null)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : `${entityLabel}保存失败`)
+      showError(caught, `${entityLabel}保存失败`)
     } finally {
       setSubmitting(false)
     }
@@ -197,7 +197,7 @@ export function TradingPartnerPage({
     setMessage('')
     setError('')
     if (!contactForm.name.trim()) {
-      setError('请填写联系人姓名')
+      showWarningDialog('请填写联系人姓名')
       return
     }
     setSubmitting(true)
@@ -207,7 +207,7 @@ export function TradingPartnerPage({
       setMessage('联系人已新增')
       await loadRows()
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '联系人保存失败')
+      showError(caught, '联系人保存失败')
     } finally {
       setSubmitting(false)
     }
@@ -227,14 +227,14 @@ export function TradingPartnerPage({
           setRows((current) => current.map((item) => (item.id === updated.id ? updated : item)))
           setMessage(`${entityLabel}已停用`)
         } catch (caught) {
-          setError(caught instanceof Error ? caught.message : `${entityLabel}停用失败`)
+          showError(caught, `${entityLabel}停用失败`)
         }
       },
     })
   }
 
   return (
-    <section className={`masterdata-entity-page ${className}`}>
+    <section className={`masterdata-page masterdata-entity-page ${className}`}>
       <div className="summary-strip" aria-label={`${entityLabel}概览`}>
         <Metric label={entityLabel} value={rows.length} />
         <Metric label="启用" value={rows.filter((item) => item.status === 'active').length} />
@@ -286,9 +286,6 @@ export function TradingPartnerPage({
                 <Button htmlType="submit" icon={<Search size={16} />}>
                   查询
                 </Button>
-                <Button htmlType="button" icon={<RefreshCw size={16} />} onClick={() => void loadRows()}>
-                  刷新
-                </Button>
                 <Button
                   className="toolbar-create-button"
                   htmlType="button"
@@ -333,7 +330,7 @@ export function TradingPartnerPage({
             pagination={false}
             rowClassName={(record) => (record.id === selected?.id ? 'selected-row' : '')}
             rowKey="id"
-            size="middle"
+            size="small"
             onRow={(record) => ({
               onClick: () => setSelectedId(record.id),
             })}
@@ -446,7 +443,13 @@ export function TradingPartnerPage({
                 />
               </section>
             </>
-          ) : null}
+          ) : (
+            <div className="module-state panel-empty-state">
+              <UsersRound size={28} />
+              <strong>暂无{entityLabel}资料</strong>
+              <span>请选择上方列表中的{entityLabel}查看详情</span>
+            </div>
+          )}
         </section>
       </section>
 

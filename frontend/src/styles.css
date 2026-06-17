@@ -12,6 +12,7 @@
   --erp-primary: #1f5d48;
   --erp-primary-strong: #24483a;
   --erp-accent: #9a5b16;
+  --erp-accent-strong: #7e4a12;
   --erp-danger: #ad3434;
   color: #18211d;
   background: #f7f5ef;
@@ -328,6 +329,165 @@ body {
   min-width: 0;
 }
 
+/* Finance home — compact one-screen landing with module entry cards */
+.finance-home {
+  display: flex;
+  flex-direction: column;
+}
+
+.finance-home .summary-strip {
+  margin-bottom: 16px;
+}
+
+.finance-module-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.finance-module-card {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto 18px;
+  align-items: center;
+  gap: 14px;
+  min-height: 84px;
+  padding: 16px 18px;
+  border: 1px solid var(--erp-border);
+  border-radius: 10px;
+  background: var(--erp-surface);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.finance-module-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(31, 93, 72, 0.4);
+  box-shadow: 0 14px 30px rgba(42, 36, 25, 0.1);
+}
+
+.finance-module-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(31, 93, 72, 0.1);
+  color: var(--erp-primary);
+}
+
+.finance-module-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.finance-module-card-body strong {
+  color: var(--erp-text);
+  font-size: 15px;
+}
+
+.finance-module-card-body small {
+  color: var(--erp-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.finance-module-card-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.finance-module-card-metric em {
+  color: var(--erp-primary-strong);
+  font-style: normal;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.finance-module-card-metric span {
+  color: var(--erp-faint);
+  font-size: 11px;
+}
+
+.finance-module-card-arrow {
+  color: var(--erp-muted);
+}
+
+/* Finance module sub-navigation (back + tab rail) */
+.finance-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.finance-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1px solid var(--erp-border);
+  border-radius: 8px;
+  background: var(--erp-surface);
+  color: var(--erp-text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.finance-back-button:hover {
+  border-color: rgba(31, 93, 72, 0.45);
+  background: var(--erp-surface-soft);
+}
+
+.finance-tab-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px;
+  border: 1px solid var(--erp-border-soft);
+  border-radius: 10px;
+  background: var(--erp-surface-soft);
+}
+
+.finance-tab {
+  padding: 6px 14px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--erp-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+.finance-tab:hover {
+  color: var(--erp-text);
+  background: rgba(255, 254, 251, 0.7);
+}
+
+.finance-tab.active {
+  border-color: rgba(31, 93, 72, 0.5);
+  background: var(--erp-surface);
+  color: var(--erp-primary-strong);
+}
+
+/* Finance detail page — single record opened on its own screen */
+.finance-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
 .product-page {
   min-width: 0;
 }
@@ -338,20 +498,120 @@ body {
   min-width: 0;
 }
 
-.product-page .summary-strip {
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
+/* ===== 基础资料五页统一基座（商品 / 客户 / 供应商 / 合作伙伴 / 单证） =====
+   五页根节点均带 .masterdata-page，此处统一字体 / 间距 / 列数 / 布局 /
+   面板高度 / 筛选区，取代过去按页面打补丁的零散 override。
+   只挂在 .masterdata-page 下，不影响销售 / 采购 / 财务等共用通用类的页面。 */
+
+/* 根容器统一用栅格垂直排版，让 统计卡 / 提示 / 列表 / 明细 之间
+   的上下间距完全一致（取代 product-page 块级、entity-page gap:20
+   与 summary-strip margin 叠加导致的不一致）。 */
+.masterdata-page {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  min-width: 0;
 }
 
-.customer-page .summary-strip {
+.masterdata-page .summary-strip {
   grid-template-columns: repeat(4, minmax(120px, 1fr));
+  margin-bottom: 0;
 }
 
-.supplier-page .summary-strip {
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
+/* 提示条由根栅格 gap 统一控制间距，去掉自身下边距避免叠加 */
+.masterdata-page .workspace-alert {
+  margin-bottom: 0;
 }
 
-.document-party-page .summary-strip {
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
+/* 列表在上、明细在下的单列上下分层 */
+.masterdata-page .business-grid {
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+/* 面板内边距与自适应高度（空状态不强撑，整页尽量收进一屏） */
+.masterdata-page .workspace-panel {
+  padding: 16px 18px;
+  min-height: 0;
+}
+
+/* 面板标题统一字号（含商品页，避免标题偏大头重脚轻） */
+.masterdata-page .panel-title .ant-typography {
+  font-size: 18px;
+  font-weight: 760;
+  line-height: 1.4;
+}
+
+/* 列表数据多时表格内部滚动，避免把明细挤出屏幕 */
+.masterdata-page .list-panel .ant-table-container {
+  max-height: min(38vh, 420px);
+}
+
+/* 空数据占位区统一白底 + 统一高度，五页列表空状态视觉一致 */
+.masterdata-page .list-panel .ant-table-placeholder,
+.masterdata-page .list-panel .ant-table-placeholder > td,
+.masterdata-page .list-panel .ant-table-placeholder:hover > td {
+  background: var(--erp-surface) !important;
+}
+
+.masterdata-page .list-panel .ant-table-placeholder > td {
+  height: 200px;
+}
+
+/* 筛选区单行 —— 平铺型（商品 / 单证 / 合作伙伴） */
+.masterdata-page .inline-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+/* 筛选区单行 —— 嵌套型（客户 / 供应商：fields + actions） */
+.masterdata-page .partner-inline-filters {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  width: 100%;
+  gap: 12px;
+  padding-bottom: 0 !important;
+}
+
+.masterdata-page .partner-inline-filters .inline-filter-fields {
+  flex: 1 1 auto;
+  width: auto;
+  grid-template-columns: minmax(0, 1fr) 160px 160px 160px;
+}
+
+.masterdata-page .partner-inline-filters .inline-filter-actions {
+  flex: 0 0 auto;
+  justify-content: flex-start;
+  border-top: 0;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* 列表面板头部：标题在上、筛选区满宽在下（五页一致） */
+.masterdata-page .list-panel > .panel-heading.toolbar-heading {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  align-items: stretch;
+}
+
+/* 筛选区到表头的间距统一（覆盖五页，含裸 list-panel 的商品 / 合作伙伴） */
+.masterdata-page .list-panel .panel-heading + .ant-table-wrapper {
+  margin-top: 12px;
+}
+
+/* 去掉头部区底部那条分隔线（标题+筛选下方），视觉更干净；
+   并去掉左右内缩与最小高度，让标题 / 筛选 / 表格对齐到同一左边缘 */
+.masterdata-page .panel-heading {
+  border-bottom: 0;
+  padding-left: 0;
+  padding-right: 0;
+  min-height: 0;
 }
 
 .sample-request-page .summary-strip {
@@ -418,10 +678,6 @@ body {
   grid-template-columns: repeat(6, minmax(120px, 1fr));
 }
 
-.partner-page .summary-strip {
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
-}
-
 .business-grid {
   display: grid;
   grid-template-columns: minmax(440px, 1.08fr) minmax(360px, 0.72fr);
@@ -442,30 +698,14 @@ body {
   min-height: 0;
 }
 
-.masterdata-list-panel .panel-title,
-.masterdata-detail-panel .panel-title {
+.masterdata-page .panel-title {
   margin-bottom: 0;
 }
 
-.masterdata-entity-grid .workspace-panel {
-  padding: 22px;
-}
-
-.masterdata-list-panel {
-  min-height: 460px;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.masterdata-list-panel > .panel-heading.toolbar-heading {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 18px;
-  align-items: stretch;
-}
-
-.masterdata-detail-panel {
-  min-height: 540px;
+/* 列表 / 明细面板溢出控制统一（五页，含裸 list-panel / detail-panel 的商品 / 合作伙伴） */
+.masterdata-page .list-panel,
+.masterdata-page .detail-panel,
+.masterdata-page .masterdata-detail-panel {
   min-width: 0;
   overflow: hidden;
 }
@@ -522,13 +762,6 @@ body {
   min-width: 260px;
 }
 
-.masterdata-list-panel .inline-filters {
-  display: grid;
-  gap: 16px;
-  width: 100%;
-  padding: 4px 0 2px;
-}
-
 .partner-inline-filters {
   width: 100%;
   max-width: 100%;
@@ -568,28 +801,33 @@ body {
   padding-top: 14px;
 }
 
-.masterdata-list-panel .inline-filters label {
+/* 筛选区尺寸统一（五页，含裸 list-panel 的商品 / 合作伙伴） */
+.masterdata-page .inline-filters label {
   min-width: 0;
 }
 
-.masterdata-list-panel .inline-filters .inline-filter-search {
+/* 平铺型筛选区（商品 / 单证 / 合作伙伴）：搜索框弹性占满，其余筛选框固定窄宽，
+   保证五页搜索框宽度与标题一致。 */
+.masterdata-page .inline-filters .inline-filter-search {
+  flex: 1 1 320px;
   min-width: 0;
 }
 
-.masterdata-list-panel .inline-filters .ant-btn {
+.masterdata-page .inline-filters .inline-filter-compact {
+  flex: 0 0 160px;
+}
+
+.masterdata-page .inline-filters .ant-btn {
   flex: 0 0 auto;
   min-height: 38px;
   padding-inline: 16px;
 }
 
-.masterdata-list-panel .inline-filters .ant-input,
-.masterdata-list-panel .inline-filters .ant-select-selector {
+.masterdata-page .inline-filters .ant-input,
+.masterdata-page .inline-filters .ant-select-selector {
   min-height: 38px;
 }
 
-.masterdata-list-panel .panel-heading + .ant-table-wrapper {
-  margin-top: 10px;
-}
 
 .toolbar-create-button {
   border-color: #ded8cb !important;
@@ -2201,9 +2439,9 @@ body {
 .inline-submit {
   justify-self: start;
   min-height: 36px;
-  border: 1px solid #283f34;
+  border: 1px solid var(--erp-accent-strong);
   border-radius: 6px;
-  background: #2f3633;
+  background: var(--erp-accent);
   color: #fffefb;
   cursor: pointer;
   font: inherit;
@@ -2415,6 +2653,17 @@ body {
   color: var(--erp-faint);
 }
 
+.panel-empty-state {
+  justify-items: center;
+  text-align: center;
+  min-height: 220px;
+  color: var(--erp-muted);
+}
+
+.panel-empty-state svg {
+  color: #c7bfa8;
+}
+
 .access-denied-panel {
   display: grid;
   place-items: center;
@@ -2438,10 +2687,21 @@ body {
 }
 
 .organization-page {
-  display: grid;
-  gap: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   max-width: 1480px;
+  height: calc(100vh - 132px);
+  min-height: 0;
+  overflow: hidden;
   color: var(--erp-text);
+}
+
+.organization-page > .organization-summary,
+.organization-page > .organization-toolbar,
+.organization-page > .organization-structure,
+.organization-page > .dashboard-feedback {
+  flex: 0 0 auto;
 }
 
 .organization-summary {
@@ -2449,7 +2709,7 @@ body {
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0;
   border-bottom: 1px solid color-mix(in srgb, var(--erp-border) 70%, transparent);
-  padding-bottom: 16px;
+  padding-bottom: 12px;
 }
 
 .organization-summary .metric-cell {
@@ -2505,14 +2765,74 @@ body {
   gap: 7px;
 }
 
-.organization-departments {
+.organization-structure {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-items: stretch;
+}
+
+.organization-company {
   display: grid;
   gap: 14px;
+  align-content: start;
   border: 1px solid color-mix(in srgb, var(--erp-border) 72%, transparent);
   border-radius: 8px;
   background: rgba(255, 254, 251, 0.62);
   box-shadow: 0 18px 44px rgba(53, 53, 53, 0.04);
-  padding: 18px;
+  padding: 16px;
+}
+
+.organization-company-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.organization-company-field {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.organization-company-field.full {
+  grid-column: 1 / -1;
+}
+
+.organization-company-field span {
+  color: #6d6658;
+  font-size: 0.86rem;
+  font-weight: 680;
+}
+
+.organization-company-field input {
+  border: 1px solid color-mix(in srgb, var(--erp-border) 78%, transparent);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.86);
+  padding: 8px 10px;
+  color: #26352f;
+  font: inherit;
+}
+
+.organization-company-field input:focus {
+  outline: none;
+  border-color: #968547;
+}
+
+.organization-company-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.organization-departments {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  border: 1px solid color-mix(in srgb, var(--erp-border) 72%, transparent);
+  border-radius: 8px;
+  background: rgba(255, 254, 251, 0.62);
+  box-shadow: 0 18px 44px rgba(53, 53, 53, 0.04);
+  padding: 16px;
 }
 
 .organization-departments-head {
@@ -2618,10 +2938,11 @@ body {
 
 .organization-layout {
   display: grid;
-  grid-template-columns: minmax(360px, 0.84fr) minmax(420px, 1.16fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
   align-items: stretch;
-  min-height: 520px;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .organization-list,
@@ -2630,6 +2951,8 @@ body {
   border-radius: 8px;
   background: rgba(255, 254, 251, 0.66);
   box-shadow: 0 18px 44px rgba(53, 53, 53, 0.045);
+  min-height: 0;
+  overflow: auto;
 }
 
 .organization-list {
@@ -3105,6 +3428,20 @@ body {
   padding: 22px;
 }
 
+.organization-permissions.in-modal {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+.organization-permissions.in-modal .organization-permission-groups {
+  max-height: min(60vh, 560px);
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
 .organization-permissions-head {
   display: flex;
   align-items: flex-start;
@@ -3316,12 +3653,43 @@ body {
 }
 
 .organization-permission-checks span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
   overflow: hidden;
   color: #3b403d;
   font-size: 0.92rem;
   font-weight: 780;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.organization-permission-tag {
+  flex: none;
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 0.68rem;
+  font-style: normal;
+  font-weight: 720;
+  line-height: 1.5;
+  background: rgba(120, 120, 120, 0.12);
+  color: #6d6658;
+}
+
+.organization-permission-tag.tag-data {
+  background: rgba(47, 109, 159, 0.14);
+  color: #2f6d9f;
+}
+
+.organization-permission-tag.tag-field {
+  background: rgba(150, 110, 47, 0.16);
+  color: #8a6420;
+}
+
+.organization-permission-tag.tag-process {
+  background: rgba(120, 71, 138, 0.14);
+  color: #79478a;
 }
 
 .organization-permission-checks small {
@@ -4371,6 +4739,7 @@ textarea {
   }
 
   .organization-summary,
+  .organization-structure,
   .organization-layout,
   .organization-permission-layout,
   .organization-permission-sections {
@@ -5947,4 +6316,246 @@ h2 {
   .detail-list {
     grid-template-columns: 1fr;
   }
+}
+
+/* ===== 基础资料新增/编辑弹窗美化 =====
+   用 :has(.entity-modal-form) 锚定这些实体表单弹窗，统一外壳、标题、
+   输入框、分区与按钮风格，零 JSX 改动，不影响其它弹窗。 */
+.ant-modal:has(.entity-modal-form) .ant-modal-content {
+  border: 1px solid rgba(222, 216, 203, 0.7);
+  border-radius: 14px;
+  background: #fffefb;
+  box-shadow:
+    0 24px 60px rgba(40, 48, 44, 0.16),
+    0 2px 8px rgba(40, 48, 44, 0.06);
+  padding: 0;
+  overflow: hidden;
+}
+
+/* 标题栏：浅金渐变底 + 左侧主色竖条，层次更清晰 */
+.ant-modal:has(.entity-modal-form) .ant-modal-header {
+  margin: 0;
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(222, 216, 203, 0.66);
+  background: linear-gradient(180deg, #f7f4ec, #fffefb);
+}
+
+.ant-modal:has(.entity-modal-form) .ant-modal-title {
+  position: relative;
+  padding-left: 14px;
+  color: #1f2a25;
+  font-size: 1.05rem;
+  font-weight: 840;
+  letter-spacing: 0.01em;
+}
+
+.ant-modal:has(.entity-modal-form) .ant-modal-title::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 4px;
+  height: 17px;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: var(--erp-primary);
+}
+
+/* 正文与表单内边距 */
+.ant-modal:has(.entity-modal-form) .ant-modal-body {
+  padding: 18px 24px 20px;
+}
+
+.entity-modal-form {
+  padding: 0;
+}
+
+/* 关闭按钮 */
+.ant-modal:has(.entity-modal-form) .ant-modal-close {
+  top: 16px;
+  inset-inline-end: 18px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: #8a8275;
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.ant-modal:has(.entity-modal-form) .ant-modal-close:hover {
+  background: rgba(150, 133, 71, 0.12);
+  color: #2f3633;
+}
+
+/* 字段标签 */
+.entity-modal-form label {
+  color: #5b574d;
+  font-size: 12.5px;
+  font-weight: 760;
+}
+
+/* 输入框 / 下拉：更柔和的描边 + 主色聚焦光圈 */
+.entity-modal-form .ant-input,
+.entity-modal-form .ant-input-affix-wrapper,
+.entity-modal-form .ant-select-selector,
+.entity-modal-form .ant-input-number,
+.entity-modal-form textarea {
+  border-radius: 8px !important;
+  border-color: rgba(206, 198, 180, 0.9) !important;
+  background: #fffdf8 !important;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.entity-modal-form .ant-input:hover,
+.entity-modal-form .ant-input-affix-wrapper:hover,
+.entity-modal-form .ant-select:hover .ant-select-selector,
+.entity-modal-form textarea:hover {
+  border-color: var(--erp-primary) !important;
+}
+
+.entity-modal-form .ant-input:focus,
+.entity-modal-form .ant-input-affix-wrapper-focused,
+.entity-modal-form .ant-select-focused .ant-select-selector,
+.entity-modal-form textarea:focus {
+  border-color: var(--erp-primary) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--erp-primary) 16%, transparent) !important;
+}
+
+/* 分区标题：去掉生硬横线，改为主色小标签感 */
+.entity-modal-form .form-divider {
+  margin-top: 2px;
+  border-top: 0;
+  padding-top: 0;
+  color: var(--erp-primary);
+  font-size: 12.5px;
+  font-weight: 820;
+  letter-spacing: 0.02em;
+}
+
+.entity-modal-form .entity-modal-section {
+  margin-top: 16px;
+  border-top: 1px dashed rgba(222, 216, 203, 0.9);
+  padding-top: 16px;
+}
+
+/* 底部操作区 */
+.entity-modal-form .modal-actions {
+  gap: 10px;
+  margin-top: 20px;
+  padding: 14px 0 2px;
+  background: #fffefb;
+  border-top: 1px solid rgba(222, 216, 203, 0.66);
+}
+
+/* 主按钮：主色实心 + 轻微浮起；取消：柔和描边 */
+.entity-modal-form .modal-actions .inline-submit {
+  min-height: 38px;
+  border-radius: 8px;
+  border-color: var(--erp-accent-strong);
+  background: var(--erp-accent);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--erp-accent) 24%, transparent);
+  transition:
+    background-color 0.16s ease,
+    box-shadow 0.16s ease,
+    transform 0.12s ease;
+}
+
+.entity-modal-form .modal-actions .inline-submit:hover:not(:disabled) {
+  background: var(--erp-accent-strong);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--erp-accent) 30%, transparent);
+  transform: translateY(-1px);
+}
+
+.entity-modal-form .modal-actions .secondary-inline {
+  min-height: 38px;
+  border-radius: 8px;
+}
+
+.entity-modal-form .modal-actions .secondary-inline:hover {
+  border-color: var(--erp-accent);
+  color: #2f3633;
+}
+
+/* 商品图片上传 */
+.product-image-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.product-image-field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--erp-muted);
+}
+
+.product-image-uploader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.product-image-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.product-image-preview img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--erp-border);
+  background: #fffdf8;
+}
+
+.product-image-remove {
+  border: 1px solid var(--erp-border);
+  border-radius: 8px;
+  background: var(--erp-surface);
+  color: var(--erp-muted);
+  font: inherit;
+  cursor: pointer;
+  padding: 6px 12px;
+}
+
+.product-image-remove:hover {
+  border-color: var(--erp-danger);
+  color: var(--erp-danger);
+}
+
+.product-image-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px dashed var(--erp-accent);
+  background: color-mix(in srgb, var(--erp-accent) 8%, #fffdf8);
+  color: var(--erp-accent-strong);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.product-image-upload:hover {
+  border-color: var(--erp-accent-strong);
+  background: color-mix(in srgb, var(--erp-accent) 14%, #fffdf8);
+}
+
+.product-image-upload input[type='file'] {
+  display: none;
+}
+
+.product-image-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--erp-faint);
 }

@@ -1,6 +1,6 @@
 import { Alert, Button, Input, Modal, Select, Table, Tag } from 'antd'
-import { FilePenLine, LayoutDashboard, Plus, RefreshCw, Search, Trash2 } from 'lucide-react'
-import type { FormEvent } from 'react'
+import { FilePenLine, ImagePlus, LayoutDashboard, Plus, RefreshCw, Search, Trash2 } from 'lucide-react'
+import type { ChangeEvent, FormEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 
 import {
@@ -18,12 +18,15 @@ import {
   type ProductExport,
   type ProductUpdatePayload,
 } from '../../../api'
+import { showError, showWarningDialog } from '../../../shared/errors'
 import { Metric, PanelTitle } from '../../../shared/ui'
 
 const productStatusOptions = [
   { value: 'active', label: '启用' },
   { value: 'inactive', label: '停用' },
 ]
+
+const maxProductImageBytes = 2_000_000
 
 const accessoryRuleOptions = [
   { value: 'by_supplier', label: '按供应商分单' },
@@ -97,7 +100,7 @@ export function ProductsPage() {
         null
       setSelectedProductId(nextSelectedId)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '商品资料加载失败')
+      showError(caught, '商品资料加载失败')
     } finally {
       setLoading(false)
     }
@@ -118,6 +121,11 @@ export function ProductsPage() {
 
   async function submitProduct(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    const missing = validateProductForm(form)
+    if (missing) {
+      showWarningDialog(missing)
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
@@ -136,10 +144,34 @@ export function ProductsPage() {
       setProductModalMode(null)
       await loadProducts(created.id)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '商品保存失败')
+      showError(caught, '商品保存失败')
     } finally {
       setSubmitting(false)
     }
+  }
+
+  function handleImageFileChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      showWarningDialog('请选择图片文件')
+      return
+    }
+    if (file.size > maxProductImageBytes) {
+      showWarningDialog('图片需小于 2MB')
+      return
+    }
+    const reader = new FileReader()
+    reader.onload = () => {
+      if (typeof reader.result !== 'string') {
+        showWarningDialog('图片读取失败，请重试')
+        return
+      }
+      setForm((current) => ({ ...current, image_url: reader.result as string }))
+    }
+    reader.onerror = () => showWarningDialog('图片读取失败，请重试')
+    reader.readAsDataURL(file)
   }
 
   function openCreateAccessory() {
@@ -193,7 +225,7 @@ export function ProductsPage() {
       setAccessoryModalMode(null)
       setEditingAccessoryId(null)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '配件保存失败')
+      showError(caught, '配件保存失败')
     } finally {
       setSubmitting(false)
     }
@@ -213,7 +245,7 @@ export function ProductsPage() {
           setMessage(`已停用商品 ${deactivated.code}`)
           await loadProducts()
         } catch (caught) {
-          setError(caught instanceof Error ? caught.message : '商品停用失败')
+          showError(caught, '商品停用失败')
         }
       },
     })
@@ -242,7 +274,7 @@ export function ProductsPage() {
           )
           setMessage(`已删除配件 ${accessory.accessory_name}`)
         } catch (caught) {
-          setError(caught instanceof Error ? caught.message : '配件删除失败')
+          showError(caught, '配件删除失败')
         }
       },
     })
@@ -256,12 +288,12 @@ export function ProductsPage() {
       setExportResult(result)
       setMessage(`CSV 已生成：${result.filename}`)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '商品导出失败')
+      showError(caught, '商品导出失败')
     }
   }
 
   return (
-    <section className="product-page">
+    <section className="masterdata-page product-page">
       <div className="summary-strip" aria-label="商品资料概览">
         <Metric label="商品" value={products.length} />
         <Metric label="配件明细" value={products.reduce((sum, item) => sum + item.accessories.length, 0)} />
@@ -284,10 +316,10 @@ export function ProductsPage() {
               }}
             >
               <label className="inline-filter-search">
-                <span className="visually-hidden">商品搜索</span>
+                搜索
                 <Input
                   value={search}
-                  placeholder="搜索 编号 / 中文 / 英文 / 海关编码"
+                  placeholder="编号 / 中文 / 英文 / 海关编码"
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </label>
@@ -446,7 +478,11 @@ export function ProductsPage() {
               ) : null}
             </>
           ) : (
-            <div className="module-state">暂无商品资料</div>
+            <div className="module-state panel-empty-state">
+              <LayoutDashboard size={28} />
+              <strong>暂无商品资料</strong>
+              <span>请选择上方列表中的商品查看详情</span>
+            </div>
           )}
         </section>
       </section>
@@ -525,13 +561,29 @@ export function ProductsPage() {
                 onChange={(event) => setForm({ ...form, rebate_rate: event.target.value })}
               />
             </label>
-            <label className="entity-modal-span">
-              图片地址
-              <Input
-                value={form.image_url}
-                onChange={(event) => setForm({ ...form, image_url: event.target.value })}
-              />
-            </label>
+            <div className="entity-modal-span product-image-field">
+              <span className="product-image-field-label">商品图片</span>
+              <div className="product-image-uploader">
+                {form.image_url ? (
+                  <div className="product-image-preview">
+                    <img src={form.image_url} alt="商品图片预览" />
+                    <button
+                      className="product-image-remove"
+                      type="button"
+                      onClick={() => setForm({ ...form, image_url: '' })}
+                    >
+                      移除图片
+                    </button>
+                  </div>
+                ) : null}
+                <label className="product-image-upload">
+                  <input accept="image/*" type="file" onChange={handleImageFileChange} />
+                  <ImagePlus size={18} />
+                  <span>{form.image_url ? '更换图片' : '上传图片'}</span>
+                </label>
+                <p className="product-image-hint">支持 PNG、JPG，图片需小于 2MB。</p>
+              </div>
+            </div>
             <label className="entity-modal-span">
               包装资料
               <Input.TextArea
@@ -670,6 +722,14 @@ export function ProductsPage() {
   )
 }
 
+
+function validateProductForm(form: ProductFormState): string | null {
+  if (!form.code.trim()) return '请填写商品编号'
+  if (!form.cn_name.trim()) return '请填写商品中文名称'
+  if (!form.customs_code.trim()) return '请填写海关编码'
+  if (!form.unit.trim()) return '请填写商品单位'
+  return null
+}
 
 function initialProductForm(): ProductFormState {
   return {

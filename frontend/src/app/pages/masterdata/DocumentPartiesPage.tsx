@@ -4,7 +4,6 @@ import {
   FilePenLine,
   Landmark,
   Plus,
-  RefreshCw,
   Search,
   Star,
   Trash2,
@@ -22,6 +21,7 @@ import {
   type DocumentPartyCreatePayload,
   type DocumentPartyUpdatePayload,
 } from '../../../api'
+import { showError, showWarningDialog } from '../../../shared/errors'
 import { Metric, PanelTitle } from '../../../shared/ui'
 
 type DocumentPartyFormState = {
@@ -104,7 +104,7 @@ export function DocumentPartiesPage() {
         return result.items[0]?.id ?? null
       })
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '单证资料加载失败')
+      showError(caught, '单证资料加载失败')
     } finally {
       setLoading(false)
     }
@@ -127,7 +127,7 @@ export function DocumentPartiesPage() {
     setError('')
     const validationMessage = validateDocumentPartyForm(form, modalMode === 'create')
     if (validationMessage) {
-      setError(validationMessage)
+      showWarningDialog(validationMessage)
       return
     }
     setSubmitting(true)
@@ -144,7 +144,7 @@ export function DocumentPartiesPage() {
       }
       setModalMode(null)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '单证资料保存失败')
+      showError(caught, '单证资料保存失败')
     } finally {
       setSubmitting(false)
     }
@@ -164,14 +164,14 @@ export function DocumentPartiesPage() {
           setParties((current) => current.map((item) => (item.id === updated.id ? updated : item)))
           setMessage('单证资料已停用')
         } catch (caught) {
-          setError(caught instanceof Error ? caught.message : '单证资料停用失败')
+          showError(caught, '单证资料停用失败')
         }
       },
     })
   }
 
   return (
-    <section className="document-party-page masterdata-entity-page">
+    <section className="masterdata-page document-party-page masterdata-entity-page">
       <div className="summary-strip" aria-label="单证资料概览">
         <Metric label="单证资料" value={parties.length} />
         <Metric label="默认资料" value={parties.filter((item) => item.is_default).length} />
@@ -193,7 +193,7 @@ export function DocumentPartiesPage() {
                 void loadParties()
               }}
             >
-              <label>
+              <label className="inline-filter-search">
                 搜索
                 <Input
                   value={search}
@@ -201,19 +201,16 @@ export function DocumentPartiesPage() {
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </label>
-              <label>
+              <label className="inline-filter-compact">
                 类型
                 <Select options={documentPartyTypeOptions} value={typeFilter} onChange={setTypeFilter} />
               </label>
-              <label>
+              <label className="inline-filter-compact">
                 状态
                 <Select options={statusOptions} value={statusFilter} onChange={setStatusFilter} />
               </label>
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
-              </Button>
-              <Button icon={<RefreshCw size={16} />} onClick={() => void loadParties()}>
-                刷新
               </Button>
               <Button icon={<Plus size={16} />} onClick={openCreate}>
                 新增单证资料
@@ -345,7 +342,11 @@ export function DocumentPartiesPage() {
               </section>
             </>
           ) : (
-            <div className="module-state">暂无单证资料</div>
+            <div className="module-state panel-empty-state">
+              <Building2 size={28} />
+              <strong>暂无单证资料</strong>
+              <span>请选择上方列表中的单证资料查看详情</span>
+            </div>
           )}
         </section>
       </section>
