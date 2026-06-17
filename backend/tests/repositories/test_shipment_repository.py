@@ -75,10 +75,10 @@ async def test_shipment_repository_lists_multi_contract_plan_finance_and_reminde
             approval_status="approved",
             customer_id="customer-a",
             contract_id="contract-a",
-            owner_user_id=None,
+            owner_user_ids=None,
         )
         lines = await repository.list_lines(plan.id)
-        reminders = await repository.list_reminders(owner_user_id=None)
+        reminders = await repository.list_reminders(owner_user_ids=None)
 
     assert refreshed is not None
     assert refreshed.receivable_amount == "840.00"

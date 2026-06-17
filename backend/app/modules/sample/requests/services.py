@@ -21,7 +21,10 @@ from app.modules.sample.requests.schemas import (
     SampleRequestListResponse,
     SampleRequestResponse,
 )
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+SAMPLE_REQUEST_VIEW_ALL_PERMISSION = "sample:request:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -37,8 +40,14 @@ class SampleFeeNotFoundError(Exception):
 
 
 class SampleRequestService:
-    def __init__(self, repository: SampleRequestRepository) -> None:
+    def __init__(
+        self,
+        repository: SampleRequestRepository,
+        *,
+        data_scope_resolver: DataScopeResolver,
+    ) -> None:
         self._repository = repository
+        self._data_scope_resolver = data_scope_resolver
 
     async def create_request(
         self,
@@ -104,11 +113,15 @@ class SampleRequestService:
         self._require(current_user, "sample:request:view")
         if status is not None:
             self._validate_status(status)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=SAMPLE_REQUEST_VIEW_ALL_PERMISSION,
+        )
         requests, total = await self._repository.list_requests(
             q=q,
             status=status,
             customer_id=customer_id,
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return SampleRequestListResponse(
             items=[await self._request_response(item) for item in requests],
@@ -189,17 +202,13 @@ class SampleRequestService:
         sample_request = await self._repository.get_request(request_id)
         if sample_request is None:
             raise SampleRequestNotFoundError
-        if (
-            "sample:request:view_all" not in current_user.permissions
-            and sample_request.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=SAMPLE_REQUEST_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and sample_request.owner_user_id not in allowed_user_ids:
             raise SampleRequestNotFoundError
         return sample_request
-
-    def _owner_filter(self, current_user: CurrentUserResponse) -> str | None:
-        if "sample:request:view_all" in current_user.permissions:
-            return None
-        return current_user.id
 
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:

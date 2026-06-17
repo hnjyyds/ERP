@@ -7,6 +7,8 @@ from app.api.deps import get_session
 from app.modules.sample.deliveries.repositories import SampleDeliveryRepository
 from app.modules.sample.deliveries.services import SampleDeliveryService
 from app.modules.sample.records.repositories import SampleRecordRepository
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 
 
 async def get_sample_delivery_service(
@@ -15,4 +17,5 @@ async def get_sample_delivery_service(
     return SampleDeliveryService(
         SampleDeliveryRepository(session),
         SampleRecordRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
     )

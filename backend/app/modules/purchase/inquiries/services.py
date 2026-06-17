@@ -27,7 +27,10 @@ from app.modules.purchase.inquiries.schemas import (
     SupplierSampleEvidenceListResponse,
     SupplierSampleEvidenceResponse,
 )
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+PURCHASE_INQUIRY_VIEW_ALL_PERMISSION = "purchase:inquiry:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -39,8 +42,14 @@ class PurchaseInquiryNotFoundError(Exception):
 
 
 class PurchaseInquiryService:
-    def __init__(self, repository: PurchaseInquiryRepository) -> None:
+    def __init__(
+        self,
+        repository: PurchaseInquiryRepository,
+        *,
+        data_scope_resolver: DataScopeResolver,
+    ) -> None:
         self._repository = repository
+        self._data_scope_resolver = data_scope_resolver
 
     async def create_inquiry(
         self,
@@ -117,12 +126,16 @@ class PurchaseInquiryService:
         self._require(current_user, "purchase:inquiry:view")
         if status is not None:
             self._validate_status(status)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=PURCHASE_INQUIRY_VIEW_ALL_PERMISSION,
+        )
         inquiries, total = await self._repository.list_inquiries(
             q=q,
             status=status,
             product_id=product_id,
             supplier_id=supplier_id,
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return PurchaseInquiryListResponse(
             items=[await self._inquiry_response(item) for item in inquiries],
@@ -242,10 +255,11 @@ class PurchaseInquiryService:
         inquiry = await self._repository.get_inquiry(inquiry_id)
         if inquiry is None:
             raise PurchaseInquiryNotFoundError
-        if (
-            "purchase:inquiry:view_all" not in current_user.permissions
-            and inquiry.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=PURCHASE_INQUIRY_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and inquiry.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
         return inquiry
 
@@ -377,11 +391,6 @@ class PurchaseInquiryService:
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:
             raise PermissionDeniedError
-
-    def _owner_filter(self, current_user: CurrentUserResponse) -> str | None:
-        if "purchase:inquiry:view_all" in current_user.permissions:
-            return None
-        return current_user.id
 
     def _validate_status(self, value: str) -> None:
         if value not in VALID_PURCHASE_INQUIRY_STATUSES:

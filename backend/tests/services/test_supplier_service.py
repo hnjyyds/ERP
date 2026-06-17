@@ -4,7 +4,16 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from app.modules.masterdata.suppliers.repositories import SupplierRepository
 from app.modules.masterdata.suppliers.schemas import SupplierCreate, SupplierUpdate
 from app.modules.masterdata.suppliers.services import PermissionDeniedError, SupplierService
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+
+def _make_service(session: AsyncSession) -> SupplierService:
+    return SupplierService(
+        SupplierRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+    )
 
 
 def _user_with_permissions(
@@ -25,7 +34,7 @@ async def test_supplier_service_creates_supplier_with_primary_contact_and_credit
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = SupplierService(SupplierRepository(session))
+        service = _make_service(session)
         supplier = await service.create_supplier(
             current_user=_user_with_permissions(
                 [
@@ -79,7 +88,7 @@ async def test_supplier_service_hides_credit_limit_without_field_permission(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = SupplierService(SupplierRepository(session))
+        service = _make_service(session)
         supplier = await service.create_supplier(
             current_user=_user_with_permissions(
                 [
@@ -117,7 +126,7 @@ async def test_supplier_service_filters_private_supplier_without_view_all(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = SupplierService(SupplierRepository(session))
+        service = _make_service(session)
         await service.create_supplier(
             current_user=_user_with_permissions(["masterdata:supplier:edit"], user_id="u-owner"),
             payload=SupplierCreate(
@@ -141,7 +150,7 @@ async def test_supplier_service_rejects_credit_update_without_credit_edit_permis
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = SupplierService(SupplierRepository(session))
+        service = _make_service(session)
         supplier = await service.create_supplier(
             current_user=_user_with_permissions(["masterdata:supplier:edit"], user_id="u-001"),
             payload=SupplierCreate(

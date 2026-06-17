@@ -10,7 +10,10 @@ from app.modules.masterdata.document_parties.schemas import (
     DocumentPartyResponse,
     DocumentPartyUpdate,
 )
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+DOCUMENT_PARTY_VIEW_ALL_PERMISSION = "masterdata:document_party:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -22,8 +25,14 @@ class DocumentPartyNotFoundError(Exception):
 
 
 class DocumentPartyService:
-    def __init__(self, repository: DocumentPartyRepository) -> None:
+    def __init__(
+        self,
+        repository: DocumentPartyRepository,
+        *,
+        data_scope_resolver: DataScopeResolver,
+    ) -> None:
         self._repository = repository
+        self._data_scope_resolver = data_scope_resolver
 
     async def create_party(
         self,
@@ -114,12 +123,15 @@ class DocumentPartyService:
         self._require(current_user, "masterdata:document_party:view")
         if party_type is not None:
             self._validate_party_type(party_type)
-        owner_user_id = self._owner_filter(current_user)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=DOCUMENT_PARTY_VIEW_ALL_PERMISSION,
+        )
         parties, total = await self._repository.list_parties(
             q=q,
             party_type=party_type,
             customer_id=customer_id,
-            owner_user_id=owner_user_id,
+            owner_user_ids=owner_user_ids,
         )
         return DocumentPartyListResponse(
             items=[self._party_response(party) for party in parties],
@@ -135,11 +147,14 @@ class DocumentPartyService:
     ) -> DocumentPartyListResponse:
         self._require(current_user, "masterdata:document_party:view")
         self._validate_party_type(party_type)
-        owner_user_id = self._owner_filter(current_user)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=DOCUMENT_PARTY_VIEW_ALL_PERMISSION,
+        )
         parties, total = await self._repository.list_parties(
             party_type=party_type,
             customer_id=customer_id,
-            owner_user_id=owner_user_id,
+            owner_user_ids=owner_user_ids,
             active_only=True,
         )
         return DocumentPartyListResponse(
@@ -174,17 +189,13 @@ class DocumentPartyService:
         party = await self._repository.get_party(party_id)
         if party is None:
             raise DocumentPartyNotFoundError
-        if (
-            "masterdata:document_party:view_all" not in current_user.permissions
-            and party.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=DOCUMENT_PARTY_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and party.owner_user_id not in allowed_user_ids:
             raise DocumentPartyNotFoundError
         return party
-
-    def _owner_filter(self, current_user: CurrentUserResponse) -> str | None:
-        if "masterdata:document_party:view_all" in current_user.permissions:
-            return None
-        return current_user.id
 
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:

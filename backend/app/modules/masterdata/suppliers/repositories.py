@@ -199,7 +199,7 @@ class SupplierRepository:
         q: str | None = None,
         country: str | None = None,
         credit_grade: str | None = None,
-        owner_user_id: str | None = None,
+        owner_user_ids: list[str] | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[SupplierRow], int]:
@@ -239,8 +239,8 @@ class SupplierRepository:
                 .exists()
             )
             conditions.append(credit_exists)
-        if owner_user_id:
-            conditions.append(Supplier.owner_user_id == owner_user_id)
+        if owner_user_ids is not None:
+            conditions.append(Supplier.owner_user_id.in_(owner_user_ids))
         for condition in conditions:
             statement = statement.where(condition)
             count_statement = count_statement.where(condition)

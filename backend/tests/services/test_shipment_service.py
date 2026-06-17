@@ -12,7 +12,20 @@ from app.modules.sales.shipments.schemas import (
     ShipmentPlanGenerate,
 )
 from app.modules.sales.shipments.services import ShipmentPlanService
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+
+def _make_service(
+    shipment_repository: ShipmentPlanRepository,
+    contract_repository: ExportContractRepository,
+) -> ShipmentPlanService:
+    return ShipmentPlanService(
+        shipment_repository,
+        contract_repository,
+        data_scope_resolver=DataScopeResolver(AuthRepository(shipment_repository.session)),
+    )
 
 
 def _user_with_permissions(
@@ -127,7 +140,7 @@ async def test_shipment_service_generates_combined_plan_and_updates_contract_shi
             quantity="500",
             unit_price="2.10",
         )
-        service = ShipmentPlanService(shipment_repository, contract_repository)
+        service = _make_service(shipment_repository, contract_repository)
         current_user = _user_with_permissions(
             [
                 "sales:shipment:approve",
@@ -191,7 +204,7 @@ async def test_shipment_service_rejects_unapproved_contract(
             unit_price="1.40",
             approval_status="draft",
         )
-        service = ShipmentPlanService(shipment_repository, contract_repository)
+        service = _make_service(shipment_repository, contract_repository)
 
         with pytest.raises(ValueError):
             await service.generate_from_contracts(
@@ -216,7 +229,7 @@ async def test_shipment_service_rejects_over_unshipped_quantity(
             unit_price="1.40",
             shipped_quantity="900",
         )
-        service = ShipmentPlanService(shipment_repository, contract_repository)
+        service = _make_service(shipment_repository, contract_repository)
 
         with pytest.raises(ValueError):
             await service.generate_from_contracts(

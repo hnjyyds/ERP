@@ -3,11 +3,7 @@ from datetime import UTC, datetime
 
 from app.db.uow import UnitOfWork
 from app.modules.system.auth.passwords import hash_password
-from app.modules.system.auth.permissions import (
-    ORGANIZATION_USER_MANAGE_PERMISSION,
-    SUPER_ADMIN_PERMISSION,
-)
-from app.modules.system.auth.seed_permissions import system_permissions
+from app.modules.system.auth.permissions import SUPER_ADMIN_PERMISSION
 from app.modules.system.auth.repositories import (
     AuthRepository,
     DepartmentRow,
@@ -27,16 +23,17 @@ from app.modules.system.auth.schemas import (
     OrganizationOptionsResponse,
     OrganizationPasswordResetResponse,
     OrganizationPermissionResponse,
+    OrganizationRoleCreate,
     OrganizationRolePermissionUpdate,
     OrganizationRoleResponse,
+    OrganizationRoleUpdate,
     OrganizationUserCreate,
     OrganizationUserCreateResponse,
     OrganizationUserListResponse,
     OrganizationUserResponse,
     OrganizationUserUpdate,
 )
-
-MANAGE_USERS_PERMISSION = ORGANIZATION_USER_MANAGE_PERMISSION
+from app.modules.system.auth.seed_permissions import system_permissions
 
 
 class OrganizationPermissionDeniedError(Exception):
@@ -80,6 +77,18 @@ class OrganizationSelfDeactivateError(Exception):
 
 
 class OrganizationSelfDemoteError(Exception):
+    pass
+
+
+class OrganizationRoleNotFoundError(Exception):
+    pass
+
+
+class OrganizationRoleCodeTakenError(Exception):
+    pass
+
+
+class OrganizationRoleInUseError(Exception):
     pass
 
 
@@ -363,6 +372,96 @@ class OrganizationService:
             raise OrganizationReferenceNotFoundError
         return self._role_response(updated)
 
+    async def create_role(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        payload: OrganizationRoleCreate,
+    ) -> OrganizationRoleResponse:
+        self._require_super_admin(current_user)
+        await self._ensure_role_code_available(code=payload.code)
+        if payload.permission_ids:
+            await self._validate_permission_ids(payload.permission_ids)
+
+        async with UnitOfWork(self._repository.session):
+            created = await self._repository.create_role(
+                role_id=f"role-{secrets.token_hex(8)}",
+                name=payload.name.strip(),
+                code=payload.code,
+                data_scope=payload.data_scope,
+            )
+            if payload.permission_ids:
+                updated = await self._repository.set_role_permissions(
+                    role_id=created.id,
+                    permission_ids=payload.permission_ids,
+                )
+                if updated is not None:
+                    created = updated
+
+        return self._role_response(created)
+
+    async def update_role(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        role_id: str,
+        payload: OrganizationRoleUpdate,
+    ) -> OrganizationRoleResponse:
+        self._require_super_admin(current_user)
+        existing = await self._repository.get_role(role_id)
+        if existing is None:
+            raise OrganizationRoleNotFoundError
+
+        next_name = payload.name.strip() if payload.name is not None else existing.name
+        next_code = payload.code if payload.code is not None else existing.code
+        next_data_scope = (
+            payload.data_scope if payload.data_scope is not None else existing.data_scope
+        )
+        if next_code != existing.code:
+            await self._ensure_role_code_available(code=next_code, role_id=role_id)
+
+        async with UnitOfWork(self._repository.session):
+            updated = await self._repository.update_role(
+                role_id=role_id,
+                name=next_name,
+                code=next_code,
+                data_scope=next_data_scope,
+            )
+
+        if updated is None:
+            raise OrganizationRoleNotFoundError
+        return self._role_response(updated)
+
+    async def delete_role(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        role_id: str,
+    ) -> OrganizationRoleResponse:
+        self._require_super_admin(current_user)
+        existing = await self._repository.get_role(role_id)
+        if existing is None:
+            raise OrganizationRoleNotFoundError
+        if await self._repository.count_users_with_role(role_id) > 0:
+            raise OrganizationRoleInUseError
+
+        async with UnitOfWork(self._repository.session):
+            deleted = await self._repository.delete_role(role_id)
+
+        if deleted is None:
+            raise OrganizationRoleNotFoundError
+        return self._role_response(deleted)
+
+    async def _ensure_role_code_available(
+        self,
+        *,
+        code: str,
+        role_id: str | None = None,
+    ) -> None:
+        existing = await self._repository.get_role_by_code(code)
+        if existing is not None and existing.id != role_id:
+            raise OrganizationRoleCodeTakenError
+
     async def _validate_department(self, department_id: str) -> None:
         if await self._repository.get_department(department_id) is None:
             raise OrganizationReferenceNotFoundError
@@ -391,8 +490,21 @@ class OrganizationService:
             return
         if parent_id == department_id:
             raise OrganizationReferenceNotFoundError
-        if await self._repository.get_department(parent_id) is None:
-            raise OrganizationReferenceNotFoundError
+
+        # 向上遍历父链：父级必须存在，且不能形成环路（A→B→…→A）。
+        # 深度上限兜底防止脏数据导致死循环。
+        max_depth = 64
+        cursor: str | None = parent_id
+        for _ in range(max_depth):
+            if cursor is None:
+                return
+            ancestor = await self._repository.get_department(cursor)
+            if ancestor is None:
+                raise OrganizationReferenceNotFoundError
+            if department_id is not None and ancestor.parent_id == department_id:
+                raise OrganizationReferenceNotFoundError
+            cursor = ancestor.parent_id
+        raise OrganizationReferenceNotFoundError
 
     async def _validate_role_ids(self, role_ids: list[str]) -> list[str]:
         roles = await self._repository.list_roles_by_ids(role_ids)
@@ -415,10 +527,6 @@ class OrganizationService:
             self._repository.session.add_all(system_permissions())
 
         return await self._repository.list_permissions()
-
-    def _require_manage_users(self, current_user: CurrentUserResponse) -> None:
-        if MANAGE_USERS_PERMISSION not in current_user.permissions:
-            raise OrganizationPermissionDeniedError
 
     def _require_super_admin(self, current_user: CurrentUserResponse) -> None:
         if SUPER_ADMIN_PERMISSION not in current_user.permissions:
@@ -467,11 +575,17 @@ class OrganizationService:
             id=row.id,
             name=row.name,
             code=row.code,
+            data_scope=row.data_scope,
             permissions=[self._permission_response(permission) for permission in row.permissions],
         )
 
     def _permission_response(self, row: PermissionRow) -> OrganizationPermissionResponse:
-        return OrganizationPermissionResponse(id=row.id, code=row.code, name=row.name)
+        return OrganizationPermissionResponse(
+            id=row.id,
+            code=row.code,
+            name=row.name,
+            category=row.category,
+        )
 
     def _response_avatar_type(self, avatar_type: str) -> AvatarType:
         if avatar_type == "upload":

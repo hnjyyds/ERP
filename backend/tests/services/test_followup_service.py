@@ -8,7 +8,18 @@ from app.modules.followup.schemas import FollowSourceEventSync
 from app.modules.followup.services import FollowupService, PermissionDeniedError
 from app.modules.purchase.contracts.repositories import PurchaseContractRepository
 from app.modules.sample.records.repositories import SampleRecordRepository
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+
+def _make_service(session: AsyncSession) -> FollowupService:
+    return FollowupService(
+        followup_repository=FollowupRepository(session),
+        purchase_contract_repository=PurchaseContractRepository(session),
+        sample_record_repository=SampleRecordRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+    )
 
 
 def _user(
@@ -93,11 +104,7 @@ async def test_followup_service_generates_plan_syncs_sources_and_scans_overdue(
             actual_date=date(2026, 8, 8),
             event_type="sample_completed",
         )
-        service = FollowupService(
-            followup_repository=FollowupRepository(session),
-            purchase_contract_repository=purchase_repository,
-            sample_record_repository=sample_repository,
-        )
+        service = _make_service(session)
         current_user = _user(
             [
                 "followup:template:view",
@@ -150,11 +157,7 @@ async def test_followup_service_enforces_permissions(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = FollowupService(
-            followup_repository=FollowupRepository(session),
-            purchase_contract_repository=PurchaseContractRepository(session),
-            sample_record_repository=SampleRecordRepository(session),
-        )
+        service = _make_service(session)
 
         with pytest.raises(PermissionDeniedError):
             await service.list_templates(

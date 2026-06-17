@@ -18,6 +18,7 @@ from app.modules.system.auth.seed_navigation import (
 from app.modules.system.auth.seed_permissions import system_permissions
 from app.modules.system.auth.seed_users import (
     demo_role_permissions,
+    demo_roles,
     demo_user_roles,
     demo_users,
 )
@@ -37,6 +38,15 @@ async def seed_system_demo_data(session: AsyncSession) -> None:
     session.add_all([item for item in roles if item.id not in existing_role_ids])
     session.add_all([item for item in departments if item.id not in existing_department_ids])
     session.add_all([item for item in menus if item.id not in existing_menu_ids])
+    existing_permissions = {
+        item.id: item for item in (await session.scalars(select(Permission))).all()
+    }
+    for permission in permissions:
+        existing = existing_permissions.get(permission.id)
+        if existing is None:
+            continue
+        existing.name = permission.name
+        existing.category = permission.category
     existing_roles = {item.id: item for item in (await session.scalars(select(Role))).all()}
     for role in roles:
         existing = existing_roles.get(role.id)
@@ -44,6 +54,7 @@ async def seed_system_demo_data(session: AsyncSession) -> None:
             continue
         existing.name = role.name
         existing.code = role.code
+        existing.data_scope = role.data_scope
     existing_menus = {item.id: item for item in (await session.scalars(select(MenuItem))).all()}
     for menu in menus:
         existing = existing_menus.get(menu.id)
@@ -55,6 +66,11 @@ async def seed_system_demo_data(session: AsyncSession) -> None:
         existing.required_permission = menu.required_permission
         existing.sort_order = menu.sort_order
         existing.is_active = menu.is_active
+    await session.flush()
+
+    demo_role_list = demo_roles()
+    existing_demo_role_ids = set((await session.scalars(select(Role.id))).all())
+    session.add_all([item for item in demo_role_list if item.id not in existing_demo_role_ids])
     await session.flush()
 
     users = demo_users()

@@ -6,6 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.deps import get_session
 from app.modules.purchase.invoice_notices.repositories import PurchaseInvoiceNoticeRepository
 from app.modules.purchase.invoice_notices.services import PurchaseInvoiceNoticeService
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 
 
 def get_purchase_invoice_notice_service(
@@ -13,4 +15,5 @@ def get_purchase_invoice_notice_service(
 ) -> PurchaseInvoiceNoticeService:
     return PurchaseInvoiceNoticeService(
         repository=PurchaseInvoiceNoticeRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
     )

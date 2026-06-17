@@ -70,7 +70,7 @@ async def test_quality_inspection_repository_records_lines_issues_and_latest_res
             result=None,
             supplier_id="supplier-pack-a",
             purchase_contract_id=None,
-            owner_user_id=None,
+            owner_user_ids=None,
         )
         lines = await repository.list_lines(failed.id)
         issues = await repository.list_issues(failed.id)

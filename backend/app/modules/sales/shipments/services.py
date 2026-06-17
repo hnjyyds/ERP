@@ -28,7 +28,10 @@ from app.modules.sales.shipments.schemas import (
     ShipmentReminderListResponse,
     ShipmentReminderResponse,
 )
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+SHIPMENT_VIEW_ALL_PERMISSION = "sales:shipment:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -44,9 +47,12 @@ class ShipmentPlanService:
         self,
         repository: ShipmentPlanRepository,
         contract_repository: ExportContractRepository,
+        *,
+        data_scope_resolver: DataScopeResolver,
     ) -> None:
         self._repository = repository
         self._contract_repository = contract_repository
+        self._data_scope_resolver = data_scope_resolver
 
     async def generate_from_contracts(
         self,
@@ -112,12 +118,16 @@ class ShipmentPlanService:
         self._require(current_user, "sales:shipment:view")
         if approval_status is not None:
             self._validate_status(approval_status)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=SHIPMENT_VIEW_ALL_PERMISSION,
+        )
         plans, total = await self._repository.list_plans(
             q=q,
             approval_status=approval_status,
             customer_id=customer_id,
             contract_id=contract_id,
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return ShipmentPlanListResponse(
             items=[await self._shipment_response(plan) for plan in plans],
@@ -197,8 +207,12 @@ class ShipmentPlanService:
         current_user: CurrentUserResponse,
     ) -> ShipmentReminderListResponse:
         self._require(current_user, "sales:shipment:view")
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=SHIPMENT_VIEW_ALL_PERMISSION,
+        )
         reminders = await self._repository.list_reminders(
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return ShipmentReminderListResponse(
             items=[self._reminder_response(reminder) for reminder in reminders],
@@ -242,10 +256,11 @@ class ShipmentPlanService:
         contract = await self._contract_repository.get_contract(contract_id)
         if contract is None:
             raise ShipmentNotFoundError
-        if (
-            "sales:shipment:view_all" not in current_user.permissions
-            and contract.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=SHIPMENT_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and contract.owner_user_id not in allowed_user_ids:
             raise ShipmentNotFoundError
         return contract
 
@@ -293,17 +308,13 @@ class ShipmentPlanService:
         plan = await self._repository.get_plan(shipment_id)
         if plan is None:
             raise ShipmentNotFoundError
-        if (
-            "sales:shipment:view_all" not in current_user.permissions
-            and plan.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=SHIPMENT_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and plan.owner_user_id not in allowed_user_ids:
             raise ShipmentNotFoundError
         return plan
-
-    def _owner_filter(self, current_user: CurrentUserResponse) -> str | None:
-        if "sales:shipment:view_all" in current_user.permissions:
-            return None
-        return current_user.id
 
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:

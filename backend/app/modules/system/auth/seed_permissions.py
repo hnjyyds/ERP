@@ -1,7 +1,46 @@
 from app.modules.system.auth.models import Permission
 
+# 权限四分类：功能、数据、字段、流程。
+# 数据权限：以 :view_all 结尾的「查看全部」范围控制。
+# 字段权限：信用/授信等敏感字段的读写控制。
+# 流程权限：审批、发送、放行等流程动作。
+_FIELD_PERMISSION_CODES = {
+    "masterdata:customer:credit:view",
+    "masterdata:customer:credit:edit",
+    "masterdata:supplier:credit:view",
+    "masterdata:supplier:credit:edit",
+}
+_PROCESS_PERMISSION_CODES = {
+    "sample:delivery:approve",
+    "sales:quotation:approve",
+    "sales:contract:approve",
+    "sales:shipment:approve",
+    "purchase:contract:approve",
+    "purchase:invoice_notice:send",
+    "warehouse:inbound_order:approve",
+    "warehouse:outbound_order:approve",
+    "warehouse:outbound_order:allow_negative",
+}
+
+
+def _permission_category(code: str) -> str:
+    if code in _FIELD_PERMISSION_CODES:
+        return "field"
+    if code in _PROCESS_PERMISSION_CODES:
+        return "process"
+    if code.endswith(":view_all"):
+        return "data"
+    return "functional"
+
 
 def system_permissions() -> list[Permission]:
+    permissions = _base_permissions()
+    for permission in permissions:
+        permission.category = _permission_category(permission.code)
+    return permissions
+
+
+def _base_permissions() -> list[Permission]:
     return [
         Permission(id="perm-dashboard-view", code="dashboard:view", name="查看工作桌面"),
         Permission(id="perm-system-super-admin", code="system:super_admin", name="超级管理员"),

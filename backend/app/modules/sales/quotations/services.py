@@ -41,7 +41,10 @@ from app.modules.sample.deliveries.schemas import (
     SampleDeliveryListResponse,
     SampleDeliveryResponse,
 )
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+QUOTATION_VIEW_ALL_PERMISSION = "sales:quotation:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -59,11 +62,14 @@ class ExportQuotationService:
         sample_delivery_repository: SampleDeliveryRepository,
         export_contract_repository: ExportContractRepository | None = None,
         purchase_inquiry_repository: PurchaseInquiryRepository | None = None,
+        *,
+        data_scope_resolver: DataScopeResolver,
     ) -> None:
         self._repository = repository
         self._sample_delivery_repository = sample_delivery_repository
         self._export_contract_repository = export_contract_repository
         self._purchase_inquiry_repository = purchase_inquiry_repository
+        self._data_scope_resolver = data_scope_resolver
 
     async def create_quotation(
         self,
@@ -146,11 +152,15 @@ class ExportQuotationService:
         self._require(current_user, "sales:quotation:view")
         if approval_status is not None:
             self._validate_status(approval_status)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=QUOTATION_VIEW_ALL_PERMISSION,
+        )
         quotations, total = await self._repository.list_quotations(
             q=q,
             approval_status=approval_status,
             customer_id=customer_id,
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return ExportQuotationListResponse(
             items=[await self._quotation_response(quotation) for quotation in quotations],
@@ -426,17 +436,13 @@ class ExportQuotationService:
         quotation = await self._repository.get_quotation(quotation_id)
         if quotation is None:
             raise ExportQuotationNotFoundError
-        if (
-            "sales:quotation:view_all" not in current_user.permissions
-            and quotation.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=QUOTATION_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and quotation.owner_user_id not in allowed_user_ids:
             raise ExportQuotationNotFoundError
         return quotation
-
-    def _owner_filter(self, current_user: CurrentUserResponse) -> str | None:
-        if "sales:quotation:view_all" in current_user.permissions:
-            return None
-        return current_user.id
 
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:

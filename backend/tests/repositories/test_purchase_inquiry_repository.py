@@ -99,7 +99,7 @@ async def test_purchase_inquiry_repository_records_quotes_and_sample_evidence(
             status="sent",
             product_id="product-bag",
             supplier_id="supplier-pack-a",
-            owner_user_id=None,
+            owner_user_ids=None,
         )
         lines = await repository.list_lines(inquiry.id)
         quotations = await repository.list_supplier_quotations(inquiry.id)

@@ -12,18 +12,32 @@ from app.modules.sales.contracts.schemas import (
     ExportContractSignatureCreate,
 )
 from app.modules.sales.contracts.services import ExportContractService
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+
+def _make_service(session: AsyncSession) -> ExportContractService:
+    return ExportContractService(
+        ExportContractRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+    )
 
 
 def _user_with_permissions(
     permissions: list[str],
     user_id: str = "u-test",
+    *,
+    department_id: str | None = None,
+    data_scope: str = "self",
 ) -> CurrentUserResponse:
     return CurrentUserResponse(
         id=user_id,
         username="tester",
         display_name="测试用户",
+        department_id=department_id,
         department_name="测试部",
+        data_scope=data_scope,
         roles=["测试角色"],
         permissions=permissions,
     )
@@ -68,7 +82,7 @@ async def test_export_contract_service_approval_signature_payment_export_and_eve
 ) -> None:
     async with session_factory() as session:
         repository = ExportContractRepository(session)
-        service = ExportContractService(repository)
+        service = _make_service(session)
         current_user = _user_with_permissions(
             [
                 "sales:contract:approve",
@@ -148,7 +162,7 @@ async def test_export_contract_service_rejects_approval_before_submit(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = ExportContractService(ExportContractRepository(session))
+        service = _make_service(session)
         current_user = _user_with_permissions(
             [
                 "sales:contract:approve",
@@ -177,7 +191,7 @@ async def test_export_contract_service_filters_private_records_without_view_all(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = ExportContractService(ExportContractRepository(session))
+        service = _make_service(session)
         owner = _user_with_permissions(["sales:contract:edit"], user_id="u-owner")
         await service.create_contract(
             current_user=owner,
@@ -191,3 +205,69 @@ async def test_export_contract_service_filters_private_records_without_view_all(
         )
 
     assert result.total == 0
+
+
+async def _seed_department_user(
+    session: AsyncSession, *, user_id: str, department_id: str
+) -> None:
+    from datetime import UTC, datetime
+
+    auth = AuthRepository(session)
+    existing = await auth.get_department(department_id)
+    if existing is None:
+        await auth.create_department(
+            department_id=department_id, name=department_id, parent_id=None, sort_order=0
+        )
+    await auth.create_organization_user(
+        user_id=user_id,
+        username=user_id,
+        display_name=user_id,
+        department_id=department_id,
+        password_hash="x",
+        password_salt="y",
+        is_active=True,
+        avatar_type="preset",
+        avatar_value="amber-orbit",
+        created_at=datetime.now(UTC),
+    )
+    await session.commit()
+
+
+async def test_export_contract_service_department_scope_sees_department_peers(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await _seed_department_user(session, user_id="u-owner", department_id="d-sales")
+        await _seed_department_user(session, user_id="u-peer", department_id="d-sales")
+        await _seed_department_user(session, user_id="u-outsider", department_id="d-other")
+
+        service = _make_service(session)
+        owner = _user_with_permissions(
+            ["sales:contract:edit"], user_id="u-owner", department_id="d-sales"
+        )
+        await service.create_contract(current_user=owner, payload=_contract_payload("EC-DEPT-1"))
+
+        # 同部门、department 范围：能看到本部门同事创建的合同。
+        peer = _user_with_permissions(
+            ["sales:contract:view"],
+            user_id="u-peer",
+            department_id="d-sales",
+            data_scope="department",
+        )
+        peer_result = await service.list_contracts(
+            current_user=peer, q=None, approval_status=None, customer_id=None
+        )
+
+        # 不同部门、department 范围：看不到。
+        outsider = _user_with_permissions(
+            ["sales:contract:view"],
+            user_id="u-outsider",
+            department_id="d-other",
+            data_scope="department",
+        )
+        outsider_result = await service.list_contracts(
+            current_user=outsider, q=None, approval_status=None, customer_id=None
+        )
+
+    assert peer_result.total == 1
+    assert outsider_result.total == 0

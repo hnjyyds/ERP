@@ -4,6 +4,8 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.modules.purchase.contracts.repositories import PurchaseContractRepository
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.warehouse.inbound_plans.repositories import InboundPlanRepository
 from app.modules.warehouse.inbound_plans.schemas import (
@@ -14,6 +16,22 @@ from app.modules.warehouse.inbound_plans.services import (
     InboundPlanService,
     PermissionDeniedError,
 )
+
+
+def _make_service(
+    session: AsyncSession,
+    *,
+    purchase_contract_repository: PurchaseContractRepository | None = None,
+) -> InboundPlanService:
+    return InboundPlanService(
+        inbound_repository=InboundPlanRepository(session),
+        purchase_contract_repository=(
+            purchase_contract_repository
+            if purchase_contract_repository is not None
+            else PurchaseContractRepository(session)
+        ),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+    )
 
 
 def _user(
@@ -87,10 +105,7 @@ async def test_inbound_plan_service_generates_from_approved_contract_and_schedul
     async with session_factory() as session:
         purchase_repository = PurchaseContractRepository(session)
         contract_id = await _create_contract(purchase_repository, approval_status="approved")
-        service = InboundPlanService(
-            inbound_repository=InboundPlanRepository(session),
-            purchase_contract_repository=purchase_repository,
-        )
+        service = _make_service(session, purchase_contract_repository=purchase_repository)
 
         plan = await service.generate_from_purchase_contract(
             current_user=_warehouse_user(),
@@ -136,10 +151,7 @@ async def test_inbound_plan_service_rejects_unapproved_contract(
     async with session_factory() as session:
         purchase_repository = PurchaseContractRepository(session)
         contract_id = await _create_contract(purchase_repository, approval_status="draft")
-        service = InboundPlanService(
-            inbound_repository=InboundPlanRepository(session),
-            purchase_contract_repository=purchase_repository,
-        )
+        service = _make_service(session, purchase_contract_repository=purchase_repository)
 
         with pytest.raises(ValueError):
             await service.generate_from_purchase_contract(
@@ -156,10 +168,7 @@ async def test_inbound_plan_service_requires_permission(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = InboundPlanService(
-            inbound_repository=InboundPlanRepository(session),
-            purchase_contract_repository=PurchaseContractRepository(session),
-        )
+        service = _make_service(session)
 
         with pytest.raises(PermissionDeniedError):
             await service.list_plans(

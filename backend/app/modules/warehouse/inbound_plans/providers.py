@@ -5,6 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_session
 from app.modules.purchase.contracts.repositories import PurchaseContractRepository
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.warehouse.inbound_plans.repositories import InboundPlanRepository
 from app.modules.warehouse.inbound_plans.services import InboundPlanService
 
@@ -15,4 +17,5 @@ def get_inbound_plan_service(
     return InboundPlanService(
         inbound_repository=InboundPlanRepository(session),
         purchase_contract_repository=PurchaseContractRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
     )

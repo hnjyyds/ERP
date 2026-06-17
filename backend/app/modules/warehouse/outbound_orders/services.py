@@ -6,6 +6,7 @@ from app.db.uow import UnitOfWork
 from app.modules.followup.services import FollowupService
 from app.modules.purchase.contracts.repositories import PurchaseContractRepository
 from app.modules.sales.shipments.repositories import ShipmentPlanRepository
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.warehouse.inbound_orders.repositories import InboundOrderRepository
 from app.modules.warehouse.outbound_orders.repositories import (
@@ -28,6 +29,8 @@ from app.modules.warehouse.outbound_plans.repositories import (
     OutboundPlanRepository,
     OutboundPlanRow,
 )
+
+OUTBOUND_ORDER_VIEW_ALL_PERMISSION = "warehouse:outbound_order:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -63,6 +66,7 @@ class OutboundOrderService:
         shipment_repository: ShipmentPlanRepository,
         purchase_contract_repository: PurchaseContractRepository,
         followup_service: FollowupService,
+        data_scope_resolver: DataScopeResolver,
     ) -> None:
         self._repository = outbound_order_repository
         self._outbound_plan_repository = outbound_plan_repository
@@ -70,6 +74,7 @@ class OutboundOrderService:
         self._shipment_repository = shipment_repository
         self._purchase_contract_repository = purchase_contract_repository
         self._followup_service = followup_service
+        self._data_scope_resolver = data_scope_resolver
 
     async def generate_from_plan(
         self,
@@ -202,6 +207,10 @@ class OutboundOrderService:
             self._validate_status(status)
         if outbound_mode is not None:
             self._validate_mode(outbound_mode)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=OUTBOUND_ORDER_VIEW_ALL_PERMISSION,
+        )
         rows, total = await self._repository.list_orders(
             q=q,
             status=status,
@@ -209,7 +218,7 @@ class OutboundOrderService:
             outbound_type=outbound_type,
             customer_id=customer_id,
             source_id=source_id,
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return OutboundOrderListResponse(
             items=[await self._order_response(row) for row in rows],
@@ -234,10 +243,11 @@ class OutboundOrderService:
         plan = await self._outbound_plan_repository.get_plan(plan_id)
         if plan is None:
             raise OutboundOrderPlanNotFoundError
-        if (
-            "warehouse:outbound_order:view_all" not in current_user.permissions
-            and plan.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=OUTBOUND_ORDER_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and plan.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
         return plan
 
@@ -250,10 +260,11 @@ class OutboundOrderService:
         order = await self._repository.get_order(order_id)
         if order is None:
             raise OutboundOrderNotFoundError
-        if (
-            "warehouse:outbound_order:view_all" not in current_user.permissions
-            and order.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=OUTBOUND_ORDER_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and order.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
         return order
 
@@ -445,11 +456,6 @@ class OutboundOrderService:
 
     def _remaining_quantity(self, line: OutboundPlanLineRow) -> Decimal:
         return Decimal(line.planned_quantity) - Decimal(line.outbound_quantity)
-
-    def _owner_filter(self, current_user: CurrentUserResponse) -> str | None:
-        if "warehouse:outbound_order:view_all" in current_user.permissions:
-            return None
-        return current_user.id
 
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:

@@ -16,7 +16,16 @@ from app.modules.purchase.inquiries.services import (
     PurchaseInquiryService,
 )
 from app.modules.sample.records.repositories import SampleRecordRepository
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+
+def _make_service(session: AsyncSession) -> PurchaseInquiryService:
+    return PurchaseInquiryService(
+        PurchaseInquiryRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+    )
 
 
 def _user_with_permissions(
@@ -113,9 +122,8 @@ async def test_purchase_inquiry_service_create_quote_template_and_reference(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        repository = PurchaseInquiryRepository(session)
         sample_repository = SampleRecordRepository(session)
-        service = PurchaseInquiryService(repository)
+        service = _make_service(session)
         current_user = _user_with_permissions(
             [
                 "purchase:inquiry:edit",
@@ -203,7 +211,7 @@ async def test_purchase_inquiry_service_updates_draft_and_blocks_after_quote(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = PurchaseInquiryService(PurchaseInquiryRepository(session))
+        service = _make_service(session)
         current_user = _user_with_permissions(
             [
                 "purchase:inquiry:edit",
@@ -256,7 +264,7 @@ async def test_purchase_inquiry_service_filters_private_records_without_view_all
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = PurchaseInquiryService(PurchaseInquiryRepository(session))
+        service = _make_service(session)
         await service.create_inquiry(
             current_user=_user_with_permissions(["purchase:inquiry:edit"], user_id="u-owner"),
             payload=_inquiry_payload("PI-SVC-PRIVATE"),
@@ -276,7 +284,7 @@ async def test_purchase_inquiry_service_requires_permission(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = PurchaseInquiryService(PurchaseInquiryRepository(session))
+        service = _make_service(session)
 
         with pytest.raises(PermissionDeniedError):
             await service.create_inquiry(

@@ -78,7 +78,7 @@ async def test_purchase_contract_repository_records_lines_sources_and_reminders(
             q="棉绳",
             approval_status="draft",
             supplier_id="supplier-pack-a",
-            owner_user_id=None,
+            owner_user_ids=None,
         )
         lines = await repository.list_lines(contract.id)
         sources = await repository.list_source_links(contract.id)

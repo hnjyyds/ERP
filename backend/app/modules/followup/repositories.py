@@ -352,7 +352,7 @@ class FollowupRepository:
         overall_status: str | None,
         supplier_id: str | None,
         purchase_contract_id: str | None,
-        owner_user_id: str | None,
+        owner_user_ids: list[str] | None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[PurchaseFollowPlanRow], int]:
@@ -373,8 +373,8 @@ class FollowupRepository:
             conditions.append(PurchaseFollowPlan.supplier_id == supplier_id)
         if purchase_contract_id:
             conditions.append(PurchaseFollowPlan.purchase_contract_id == purchase_contract_id)
-        if owner_user_id:
-            conditions.append(PurchaseFollowPlan.owner_user_id == owner_user_id)
+        if owner_user_ids is not None:
+            conditions.append(PurchaseFollowPlan.owner_user_id.in_(owner_user_ids))
         for condition in conditions:
             statement = statement.where(condition)
             count_statement = count_statement.where(condition)
@@ -394,7 +394,7 @@ class FollowupRepository:
         self,
         *,
         as_of: date,
-        owner_user_id: str | None,
+        owner_user_ids: list[str] | None,
     ) -> list[PurchaseFollowOverdueNodeRow]:
         statement = (
             select(PurchaseFollowNode, PurchaseFollowPlan)
@@ -402,8 +402,8 @@ class FollowupRepository:
             .where(PurchaseFollowNode.actual_date.is_(None))
             .where(PurchaseFollowNode.planned_date < as_of)
         )
-        if owner_user_id:
-            statement = statement.where(PurchaseFollowPlan.owner_user_id == owner_user_id)
+        if owner_user_ids is not None:
+            statement = statement.where(PurchaseFollowPlan.owner_user_id.in_(owner_user_ids))
         statement = statement.order_by(
             PurchaseFollowNode.planned_date.asc(),
             PurchaseFollowPlan.purchase_contract_no.asc(),

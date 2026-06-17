@@ -18,7 +18,10 @@ from app.modules.masterdata.customers.schemas import (
     CustomerTransactionListResponse,
     CustomerUpdate,
 )
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+CUSTOMER_VIEW_ALL_PERMISSION = "masterdata:customer:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -30,8 +33,14 @@ class CustomerNotFoundError(Exception):
 
 
 class CustomerService:
-    def __init__(self, repository: CustomerRepository) -> None:
+    def __init__(
+        self,
+        repository: CustomerRepository,
+        *,
+        data_scope_resolver: DataScopeResolver,
+    ) -> None:
         self._repository = repository
+        self._data_scope_resolver = data_scope_resolver
 
     async def create_customer(
         self,
@@ -141,14 +150,15 @@ class CustomerService:
         credit_grade: str | None,
     ) -> CustomerListResponse:
         self._require(current_user, "masterdata:customer:view")
-        owner_user_id = None
-        if "masterdata:customer:view_all" not in current_user.permissions:
-            owner_user_id = current_user.id
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=CUSTOMER_VIEW_ALL_PERMISSION,
+        )
         customers, total = await self._repository.list_customers(
             q=q,
             country=country,
             credit_grade=credit_grade,
-            owner_user_id=owner_user_id,
+            owner_user_ids=owner_user_ids,
         )
         items = [
             await self._customer_response(
@@ -198,10 +208,11 @@ class CustomerService:
         customer = await self._repository.get_customer(customer_id)
         if customer is None:
             raise CustomerNotFoundError
-        if (
-            "masterdata:customer:view_all" not in current_user.permissions
-            and customer.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=CUSTOMER_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and customer.owner_user_id not in allowed_user_ids:
             raise CustomerNotFoundError
         return customer
 

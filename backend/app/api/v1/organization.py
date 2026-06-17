@@ -11,6 +11,9 @@ from app.modules.system.auth.organization_services import (
     OrganizationInvalidAvatarError,
     OrganizationPermissionDeniedError,
     OrganizationReferenceNotFoundError,
+    OrganizationRoleCodeTakenError,
+    OrganizationRoleInUseError,
+    OrganizationRoleNotFoundError,
     OrganizationSelfDeactivateError,
     OrganizationSelfDemoteError,
     OrganizationService,
@@ -25,8 +28,10 @@ from app.modules.system.auth.schemas import (
     OrganizationDepartmentUpdate,
     OrganizationOptionsResponse,
     OrganizationPasswordResetResponse,
+    OrganizationRoleCreate,
     OrganizationRolePermissionUpdate,
     OrganizationRoleResponse,
+    OrganizationRoleUpdate,
     OrganizationUserCreate,
     OrganizationUserCreateResponse,
     OrganizationUserListResponse,
@@ -34,6 +39,9 @@ from app.modules.system.auth.schemas import (
     OrganizationUserUpdate,
 )
 from app.modules.system.auth.services import AuthService, InvalidTokenError
+from app.modules.system.company.providers import get_company_service
+from app.modules.system.company.schemas import CompanyInfoResponse, CompanyInfoUpdate
+from app.modules.system.company.services import CompanyPermissionDeniedError, CompanyService
 from app.schemas.responses import ApiResponse
 
 router = APIRouter(prefix="/organization", tags=["organization"])
@@ -287,6 +295,78 @@ async def reset_organization_user_password(
         _raise_not_found()
 
 
+@router.post(
+    "/roles",
+    status_code=status.HTTP_201_CREATED,
+    response_model=ApiResponse[OrganizationRoleResponse],
+)
+async def create_organization_role(
+    payload: OrganizationRoleCreate,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[OrganizationService, Depends(get_organization_service)],
+) -> ApiResponse[OrganizationRoleResponse]:
+    current_user = await _current_user(token, auth_service)
+    try:
+        role = await service.create_role(current_user=current_user, payload=payload)
+        return ApiResponse(data=role)
+    except OrganizationPermissionDeniedError:
+        _raise_permission_denied()
+    except OrganizationRoleCodeTakenError:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="角色编码已存在") from None
+    except OrganizationReferenceNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="权限不存在",
+        ) from None
+
+
+@router.patch("/roles/{role_id}", response_model=ApiResponse[OrganizationRoleResponse])
+async def update_organization_role(
+    role_id: str,
+    payload: OrganizationRoleUpdate,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[OrganizationService, Depends(get_organization_service)],
+) -> ApiResponse[OrganizationRoleResponse]:
+    current_user = await _current_user(token, auth_service)
+    try:
+        role = await service.update_role(
+            current_user=current_user,
+            role_id=role_id,
+            payload=payload,
+        )
+        return ApiResponse(data=role)
+    except OrganizationPermissionDeniedError:
+        _raise_permission_denied()
+    except OrganizationRoleNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="角色不存在") from None
+    except OrganizationRoleCodeTakenError:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="角色编码已存在") from None
+
+
+@router.delete("/roles/{role_id}", response_model=ApiResponse[OrganizationRoleResponse])
+async def delete_organization_role(
+    role_id: str,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[OrganizationService, Depends(get_organization_service)],
+) -> ApiResponse[OrganizationRoleResponse]:
+    current_user = await _current_user(token, auth_service)
+    try:
+        role = await service.delete_role(current_user=current_user, role_id=role_id)
+        return ApiResponse(data=role)
+    except OrganizationPermissionDeniedError:
+        _raise_permission_denied()
+    except OrganizationRoleNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="角色不存在") from None
+    except OrganizationRoleInUseError:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="角色下已有用户，不能删除",
+        ) from None
+
+
 @router.patch(
     "/roles/{role_id}/permissions",
     response_model=ApiResponse[OrganizationRoleResponse],
@@ -318,3 +398,29 @@ async def update_organization_role_permissions(
             status_code=status.HTTP_409_CONFLICT,
             detail="不能移除当前超级管理员角色的超级管理员权限",
         ) from None
+
+
+@router.get("/company", response_model=ApiResponse[CompanyInfoResponse])
+async def get_company_info(
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[CompanyService, Depends(get_company_service)],
+) -> ApiResponse[CompanyInfoResponse]:
+    current_user = await _current_user(token, auth_service)
+    company = await service.get_company_info(current_user=current_user)
+    return ApiResponse(data=company)
+
+
+@router.patch("/company", response_model=ApiResponse[CompanyInfoResponse])
+async def update_company_info(
+    payload: CompanyInfoUpdate,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[CompanyService, Depends(get_company_service)],
+) -> ApiResponse[CompanyInfoResponse]:
+    current_user = await _current_user(token, auth_service)
+    try:
+        company = await service.update_company_info(current_user=current_user, payload=payload)
+        return ApiResponse(data=company)
+    except CompanyPermissionDeniedError:
+        _raise_permission_denied()

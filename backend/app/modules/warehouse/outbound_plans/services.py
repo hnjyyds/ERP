@@ -4,6 +4,7 @@ from app.modules.sales.shipments.repositories import (
     ShipmentPlanRepository,
     ShipmentPlanRow,
 )
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.warehouse.outbound_plans.repositories import (
     OutboundPlanLineRow,
@@ -20,6 +21,8 @@ from app.modules.warehouse.outbound_plans.schemas import (
     OutboundPlanResponse,
     OutboundPlanSchedule,
 )
+
+OUTBOUND_PLAN_VIEW_ALL_PERMISSION = "warehouse:outbound_plan:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -40,9 +43,11 @@ class OutboundPlanService:
         *,
         outbound_repository: OutboundPlanRepository,
         shipment_repository: ShipmentPlanRepository,
+        data_scope_resolver: DataScopeResolver,
     ) -> None:
         self._repository = outbound_repository
         self._shipment_repository = shipment_repository
+        self._data_scope_resolver = data_scope_resolver
 
     async def generate_from_shipment(
         self,
@@ -103,6 +108,10 @@ class OutboundPlanService:
             self._validate_outbound_type(outbound_type)
         if source_type is not None:
             self._validate_source_type(source_type)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=OUTBOUND_PLAN_VIEW_ALL_PERMISSION,
+        )
         rows, total = await self._repository.list_plans(
             q=q,
             status=status,
@@ -110,7 +119,7 @@ class OutboundPlanService:
             source_type=source_type,
             customer_id=customer_id,
             source_id=source_id,
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return OutboundPlanListResponse(
             items=[await self._plan_response(row) for row in rows],
@@ -179,10 +188,11 @@ class OutboundPlanService:
         shipment = await self._shipment_repository.get_plan(shipment_id)
         if shipment is None:
             raise OutboundPlanShipmentNotFoundError
-        if (
-            "warehouse:outbound_plan:view_all" not in current_user.permissions
-            and shipment.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=OUTBOUND_PLAN_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and shipment.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
         return shipment
 
@@ -196,10 +206,11 @@ class OutboundPlanService:
         plan = await self._repository.get_plan(plan_id)
         if plan is None:
             raise OutboundPlanNotFoundError
-        if (
-            "warehouse:outbound_plan:view_all" not in current_user.permissions
-            and plan.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=OUTBOUND_PLAN_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and plan.owner_user_id not in allowed_user_ids:
             raise OutboundPlanNotFoundError
         return plan
 
@@ -241,11 +252,6 @@ class OutboundPlanService:
             status=line.status,
             remark=line.remark,
         )
-
-    def _owner_filter(self, current_user: CurrentUserResponse) -> str | None:
-        if "warehouse:outbound_plan:view_all" in current_user.permissions:
-            return None
-        return current_user.id
 
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:

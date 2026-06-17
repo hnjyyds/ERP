@@ -11,7 +11,16 @@ from app.modules.sample.requests.schemas import (
     SampleRequestLineCreate,
 )
 from app.modules.sample.requests.services import SampleRequestService
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+
+def _make_service(session: AsyncSession) -> SampleRequestService:
+    return SampleRequestService(
+        SampleRequestRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+    )
 
 
 def _user_with_permissions(
@@ -63,7 +72,7 @@ async def test_sample_request_service_progress_updates_request_status(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = SampleRequestService(SampleRequestRepository(session))
+        service = _make_service(session)
         current_user = _user_with_permissions(
             ["sample:request:edit", "sample:request:view"],
             user_id="u-001",
@@ -97,7 +106,7 @@ async def test_sample_request_service_generates_payment_request_for_fee(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = SampleRequestService(SampleRequestRepository(session))
+        service = _make_service(session)
         current_user = _user_with_permissions(
             ["sample:request:edit", "sample:request:view", "sample:request:fee:edit"],
             user_id="u-001",
@@ -134,7 +143,7 @@ async def test_sample_request_service_filters_private_request_without_view_all(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = SampleRequestService(SampleRequestRepository(session))
+        service = _make_service(session)
         await service.create_request(
             current_user=_user_with_permissions(["sample:request:edit"], user_id="u-owner"),
             payload=_sample_payload("SR-PRIVATE-001"),
@@ -153,7 +162,7 @@ async def test_sample_request_service_rejects_invalid_status(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = SampleRequestService(SampleRequestRepository(session))
+        service = _make_service(session)
         with pytest.raises(ValueError):
             await service.create_request(
                 current_user=_user_with_permissions(["sample:request:edit"], user_id="u-001"),

@@ -249,7 +249,7 @@ class SampleRecordRepository:
         sample_type: str | None = None,
         customer_id: str | None = None,
         purchase_contract_id: str | None = None,
-        owner_user_id: str | None = None,
+        owner_user_ids: list[str] | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[SampleRecordRow], int]:
@@ -277,8 +277,8 @@ class SampleRecordRepository:
             conditions.append(SampleRecord.customer_id == customer_id)
         if purchase_contract_id:
             conditions.append(SampleRecord.purchase_contract_id == purchase_contract_id)
-        if owner_user_id:
-            conditions.append(SampleRecord.owner_user_id == owner_user_id)
+        if owner_user_ids is not None:
+            conditions.append(SampleRecord.owner_user_id.in_(owner_user_ids))
         for condition in conditions:
             statement = statement.where(condition)
             count_statement = count_statement.where(condition)

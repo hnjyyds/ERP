@@ -8,6 +8,8 @@ from app.modules.followup.services import FollowupService
 from app.modules.purchase.contracts.repositories import PurchaseContractRepository
 from app.modules.sales.shipments.repositories import ShipmentPlanRepository
 from app.modules.sample.records.repositories import SampleRecordRepository
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.warehouse.inbound_orders.repositories import InboundOrderRepository
 from app.modules.warehouse.outbound_orders.repositories import OutboundOrderRepository
@@ -93,6 +95,7 @@ async def _prepare_followup_contract(session: AsyncSession) -> str:
         followup_repository=FollowupRepository(session),
         purchase_contract_repository=purchase_repository,
         sample_record_repository=SampleRecordRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
     )
     await followup_service.ensure_plan_for_contract(contract=refreshed)
     return contract.id
@@ -168,6 +171,7 @@ async def _prepare_scheduled_outbound_plan(
     outbound_plan_service = OutboundPlanService(
         outbound_repository=outbound_plan_repository,
         shipment_repository=shipment_repository,
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
     )
     scheduled = await outbound_plan_service.schedule_plan(
         current_user=_warehouse_user(),
@@ -201,6 +205,7 @@ async def _add_available_stock(session: AsyncSession, *, quantity: str) -> None:
 
 def _service(session: AsyncSession) -> OutboundOrderService:
     purchase_repository = PurchaseContractRepository(session)
+    data_scope_resolver = DataScopeResolver(AuthRepository(session))
     return OutboundOrderService(
         outbound_order_repository=OutboundOrderRepository(session),
         outbound_plan_repository=OutboundPlanRepository(session),
@@ -211,7 +216,9 @@ def _service(session: AsyncSession) -> OutboundOrderService:
             followup_repository=FollowupRepository(session),
             purchase_contract_repository=purchase_repository,
             sample_record_repository=SampleRecordRepository(session),
+            data_scope_resolver=data_scope_resolver,
         ),
+        data_scope_resolver=data_scope_resolver,
     )
 
 

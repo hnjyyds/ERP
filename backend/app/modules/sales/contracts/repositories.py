@@ -323,7 +323,7 @@ class ExportContractRepository:
         q: str | None = None,
         approval_status: str | None = None,
         customer_id: str | None = None,
-        owner_user_id: str | None = None,
+        owner_user_ids: list[str] | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[ExportContractRow], int]:
@@ -358,8 +358,8 @@ class ExportContractRepository:
             conditions.append(ExportContract.approval_status == approval_status)
         if customer_id:
             conditions.append(ExportContract.customer_id == customer_id)
-        if owner_user_id:
-            conditions.append(ExportContract.owner_user_id == owner_user_id)
+        if owner_user_ids is not None:
+            conditions.append(ExportContract.owner_user_id.in_(owner_user_ids))
         for condition in conditions:
             statement = statement.where(condition)
             count_statement = count_statement.where(condition)

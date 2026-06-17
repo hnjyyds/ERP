@@ -36,6 +36,8 @@ class Role(Base):
     id: Mapped[str] = mapped_column(String(64), primary_key=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     code: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
+    # 数据范围：self / department / department_tree / all。
+    data_scope: Mapped[str] = mapped_column(String(20), default="self", nullable=False)
 
 
 class UserRole(Base):
@@ -53,6 +55,7 @@ class Permission(Base):
     id: Mapped[str] = mapped_column(String(80), primary_key=True)
     code: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
+    category: Mapped[str] = mapped_column(String(20), default="functional", nullable=False)
 
 
 class RolePermission(Base):

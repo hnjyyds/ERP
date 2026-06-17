@@ -1,7 +1,15 @@
 from datetime import UTC, datetime
 
-from app.modules.system.auth.models import RolePermission, User, UserRole
+from app.modules.system.auth.models import Role, RolePermission, User, UserRole
 from app.modules.system.auth.passwords import hash_password
+
+
+def demo_roles() -> list[Role]:
+    """Demo-only roles. Production系统角色仅保留超级管理员（见 seed_navigation.system_roles）。"""
+    return [
+        Role(id="role-sales-manager", name="业务主管", code="sales_manager", data_scope="all"),
+        Role(id="role-finance", name="财务", code="finance", data_scope="all"),
+    ]
 
 
 def demo_users() -> list[User]:

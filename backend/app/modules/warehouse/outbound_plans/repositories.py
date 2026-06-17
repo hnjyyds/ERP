@@ -157,7 +157,7 @@ class OutboundPlanRepository:
         source_type: str | None,
         customer_id: str | None,
         source_id: str | None,
-        owner_user_id: str | None,
+        owner_user_ids: list[str] | None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[OutboundPlanRow], int]:
@@ -197,8 +197,8 @@ class OutboundPlanRepository:
             conditions.append(OutboundPlan.customer_id == customer_id)
         if source_id:
             conditions.append(OutboundPlan.source_id == source_id)
-        if owner_user_id:
-            conditions.append(OutboundPlan.owner_user_id == owner_user_id)
+        if owner_user_ids is not None:
+            conditions.append(OutboundPlan.owner_user_id.in_(owner_user_ids))
         for condition in conditions:
             statement = statement.where(condition)
             count_statement = count_statement.where(condition)

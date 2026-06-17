@@ -164,7 +164,7 @@ class OutboundOrderRepository:
         outbound_type: str | None,
         customer_id: str | None,
         source_id: str | None,
-        owner_user_id: str | None,
+        owner_user_ids: list[str] | None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[OutboundOrderRow], int]:
@@ -204,8 +204,8 @@ class OutboundOrderRepository:
             conditions.append(OutboundOrder.customer_id == customer_id)
         if source_id:
             conditions.append(OutboundOrder.source_id == source_id)
-        if owner_user_id:
-            conditions.append(OutboundOrder.owner_user_id == owner_user_id)
+        if owner_user_ids is not None:
+            conditions.append(OutboundOrder.owner_user_id.in_(owner_user_ids))
         for condition in conditions:
             statement = statement.where(condition)
             count_statement = count_statement.where(condition)

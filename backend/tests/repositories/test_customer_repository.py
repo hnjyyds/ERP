@@ -50,7 +50,7 @@ async def test_customer_repository_filters_by_contact_country_credit_and_owner(
             q="Greta",
             country="Germany",
             credit_grade="A",
-            owner_user_id="u-001",
+            owner_user_ids=["u-001"],
         )
 
     assert total == 1

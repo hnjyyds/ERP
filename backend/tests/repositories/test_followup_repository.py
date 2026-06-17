@@ -87,7 +87,7 @@ async def test_followup_repository_records_template_plan_nodes_and_overdue(
             overall_status=None,
             supplier_id="supplier-pack-a",
             purchase_contract_id=None,
-            owner_user_id=None,
+            owner_user_ids=None,
         )
         nodes = await repository.list_plan_nodes(plan.id)
 
@@ -139,7 +139,7 @@ async def test_followup_repository_marks_overdue_nodes(
         refreshed = await repository.refresh_plan_status(plan.id)
         overdue = await repository.list_overdue_nodes(
             as_of=date(2026, 8, 18),
-            owner_user_id=None,
+            owner_user_ids=None,
         )
         await session.commit()
 

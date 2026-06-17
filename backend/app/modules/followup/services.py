@@ -28,7 +28,10 @@ from app.modules.purchase.contracts.repositories import (
     PurchaseContractRow,
 )
 from app.modules.sample.records.repositories import SampleRecordRepository
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+FOLLOWUP_PLAN_VIEW_ALL_PERMISSION = "followup:plan:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -116,10 +119,12 @@ class FollowupService:
         followup_repository: FollowupRepository,
         purchase_contract_repository: PurchaseContractRepository,
         sample_record_repository: SampleRecordRepository,
+        data_scope_resolver: DataScopeResolver,
     ) -> None:
         self._repository = followup_repository
         self._purchase_contract_repository = purchase_contract_repository
         self._sample_record_repository = sample_record_repository
+        self._data_scope_resolver = data_scope_resolver
 
     async def list_templates(
         self,
@@ -201,10 +206,11 @@ class FollowupService:
         contract = await self._purchase_contract_repository.get_contract(purchase_contract_id)
         if contract is None:
             raise FollowupPlanNotFoundError
-        if (
-            self._owner_filter(current_user) is not None
-            and contract.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=FOLLOWUP_PLAN_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and contract.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
         plan = await self.ensure_plan_for_contract(contract=contract, as_of=as_of)
         return await self._plan_response(plan)
@@ -267,12 +273,16 @@ class FollowupService:
         self._require(current_user, "followup:plan:view")
         if overall_status is not None:
             self._validate_plan_status(overall_status)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=FOLLOWUP_PLAN_VIEW_ALL_PERMISSION,
+        )
         rows, total = await self._repository.list_plans(
             q=q,
             overall_status=overall_status,
             supplier_id=supplier_id,
             purchase_contract_id=purchase_contract_id,
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return PurchaseFollowPlanListResponse(
             items=[await self._plan_response(row) for row in rows],
@@ -390,9 +400,13 @@ class FollowupService:
         self._require(current_user, "followup:plan:view")
         async with UnitOfWork(self._repository.session):
             await self._repository.mark_overdue_nodes(as_of=as_of)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=FOLLOWUP_PLAN_VIEW_ALL_PERMISSION,
+        )
         rows = await self._repository.list_overdue_nodes(
             as_of=as_of,
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return PurchaseFollowOverdueNodeListResponse(
             items=[self._overdue_response(row) for row in rows],
@@ -436,7 +450,11 @@ class FollowupService:
         plan = await self._repository.get_plan(plan_id)
         if plan is None:
             raise FollowupPlanNotFoundError
-        if self._owner_filter(current_user) is not None and plan.owner_user_id != current_user.id:
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=FOLLOWUP_PLAN_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and plan.owner_user_id not in allowed_user_ids:
             raise FollowupPlanNotFoundError
         return plan
 
@@ -450,7 +468,11 @@ class FollowupService:
         plan = await self._repository.get_plan_by_contract(purchase_contract_id)
         if plan is None:
             raise FollowupPlanNotFoundError
-        if self._owner_filter(current_user) is not None and plan.owner_user_id != current_user.id:
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=FOLLOWUP_PLAN_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and plan.owner_user_id not in allowed_user_ids:
             raise FollowupPlanNotFoundError
         return plan
 
@@ -539,11 +561,6 @@ class FollowupService:
             source_record_type=node.source_record_type,
             source_record_id=node.source_record_id,
         )
-
-    def _owner_filter(self, current_user: CurrentUserResponse) -> str | None:
-        if "followup:plan:view_all" in current_user.permissions:
-            return None
-        return current_user.id
 
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:

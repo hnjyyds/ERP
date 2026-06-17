@@ -8,6 +8,8 @@ from app.modules.followup.services import FollowupService
 from app.modules.purchase.contracts.repositories import PurchaseContractRepository
 from app.modules.quality.inspections.repositories import QualityInspectionRepository
 from app.modules.sample.records.repositories import SampleRecordRepository
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.warehouse.inbound_orders.repositories import InboundOrderRepository
 from app.modules.warehouse.inbound_orders.schemas import (
@@ -20,6 +22,24 @@ from app.modules.warehouse.inbound_orders.services import (
 )
 from app.modules.warehouse.inbound_plans.repositories import InboundPlanRepository
 from app.modules.warehouse.inbound_plans.services import InboundPlanService
+
+
+def _make_service(session: AsyncSession) -> InboundOrderService:
+    purchase_contract_repository = PurchaseContractRepository(session)
+    data_scope_resolver = DataScopeResolver(AuthRepository(session))
+    return InboundOrderService(
+        inbound_repository=InboundOrderRepository(session),
+        inbound_plan_repository=InboundPlanRepository(session),
+        purchase_contract_repository=purchase_contract_repository,
+        quality_repository=QualityInspectionRepository(session),
+        followup_service=FollowupService(
+            followup_repository=FollowupRepository(session),
+            purchase_contract_repository=purchase_contract_repository,
+            sample_record_repository=SampleRecordRepository(session),
+            data_scope_resolver=data_scope_resolver,
+        ),
+        data_scope_resolver=data_scope_resolver,
+    )
 
 
 def _user(
@@ -91,11 +111,13 @@ async def _prepare_plan(
         followup_repository=FollowupRepository(session),
         purchase_contract_repository=purchase_repository,
         sample_record_repository=SampleRecordRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
     )
     await followup_service.ensure_plan_for_contract(contract=updated_contract)
     inbound_plan_service = InboundPlanService(
         inbound_repository=InboundPlanRepository(session),
         purchase_contract_repository=purchase_repository,
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
     )
     plan = await inbound_plan_service.ensure_plan_for_contract(contract=updated_contract)
     return contract.id, line.id, plan.id
@@ -160,17 +182,7 @@ async def test_inbound_order_service_pending_inspection_does_not_increase_availa
 ) -> None:
     async with session_factory() as session:
         _, _, plan_id = await _prepare_plan(session)
-        service = InboundOrderService(
-            inbound_repository=InboundOrderRepository(session),
-            inbound_plan_repository=InboundPlanRepository(session),
-            purchase_contract_repository=PurchaseContractRepository(session),
-            quality_repository=QualityInspectionRepository(session),
-            followup_service=FollowupService(
-                followup_repository=FollowupRepository(session),
-                purchase_contract_repository=PurchaseContractRepository(session),
-                sample_record_repository=SampleRecordRepository(session),
-            ),
-        )
+        service = _make_service(session)
         order = await service.generate_from_plan(
             current_user=_warehouse_user(),
             payload=_payload(plan_id, inbound_mode="pending_inspection"),
@@ -205,17 +217,7 @@ async def test_inbound_order_service_formal_inbound_requires_passed_qc(
             purchase_contract_line_id=line_id,
             result="failed",
         )
-        service = InboundOrderService(
-            inbound_repository=InboundOrderRepository(session),
-            inbound_plan_repository=InboundPlanRepository(session),
-            purchase_contract_repository=PurchaseContractRepository(session),
-            quality_repository=QualityInspectionRepository(session),
-            followup_service=FollowupService(
-                followup_repository=FollowupRepository(session),
-                purchase_contract_repository=PurchaseContractRepository(session),
-                sample_record_repository=SampleRecordRepository(session),
-            ),
-        )
+        service = _make_service(session)
         order = await service.generate_from_plan(
             current_user=_warehouse_user(),
             payload=_payload(plan_id, inbound_mode="formal"),
@@ -247,17 +249,7 @@ async def test_inbound_order_service_formal_inbound_posts_inventory_and_followup
         purchase_repository = PurchaseContractRepository(session)
         inbound_plan_repository = InboundPlanRepository(session)
         followup_repository = FollowupRepository(session)
-        service = InboundOrderService(
-            inbound_repository=InboundOrderRepository(session),
-            inbound_plan_repository=inbound_plan_repository,
-            purchase_contract_repository=purchase_repository,
-            quality_repository=QualityInspectionRepository(session),
-            followup_service=FollowupService(
-                followup_repository=followup_repository,
-                purchase_contract_repository=purchase_repository,
-                sample_record_repository=SampleRecordRepository(session),
-            ),
-        )
+        service = _make_service(session)
         order = await service.generate_from_plan(
             current_user=_warehouse_user(),
             payload=_payload(plan_id, inbound_mode="formal"),
@@ -302,17 +294,7 @@ async def test_inbound_order_service_requires_view_permission(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = InboundOrderService(
-            inbound_repository=InboundOrderRepository(session),
-            inbound_plan_repository=InboundPlanRepository(session),
-            purchase_contract_repository=PurchaseContractRepository(session),
-            quality_repository=QualityInspectionRepository(session),
-            followup_service=FollowupService(
-                followup_repository=FollowupRepository(session),
-                purchase_contract_repository=PurchaseContractRepository(session),
-                sample_record_repository=SampleRecordRepository(session),
-            ),
-        )
+        service = _make_service(session)
 
         with pytest.raises(PermissionDeniedError):
             await service.list_orders(

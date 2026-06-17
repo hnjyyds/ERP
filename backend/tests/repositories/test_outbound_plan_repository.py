@@ -55,7 +55,7 @@ async def test_outbound_plan_repository_records_plan_lines_and_schedule(
             source_type="shipment_plan",
             customer_id="customer-euro-home",
             source_id=None,
-            owner_user_id=None,
+            owner_user_ids=None,
         )
         lines = await repository.list_lines(plan.id)
 

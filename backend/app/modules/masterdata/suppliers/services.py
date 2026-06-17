@@ -18,7 +18,10 @@ from app.modules.masterdata.suppliers.schemas import (
     SupplierTransactionListResponse,
     SupplierUpdate,
 )
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+SUPPLIER_VIEW_ALL_PERMISSION = "masterdata:supplier:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -30,8 +33,14 @@ class SupplierNotFoundError(Exception):
 
 
 class SupplierService:
-    def __init__(self, repository: SupplierRepository) -> None:
+    def __init__(
+        self,
+        repository: SupplierRepository,
+        *,
+        data_scope_resolver: DataScopeResolver,
+    ) -> None:
         self._repository = repository
+        self._data_scope_resolver = data_scope_resolver
 
     async def create_supplier(
         self,
@@ -141,14 +150,15 @@ class SupplierService:
         credit_grade: str | None,
     ) -> SupplierListResponse:
         self._require(current_user, "masterdata:supplier:view")
-        owner_user_id = None
-        if "masterdata:supplier:view_all" not in current_user.permissions:
-            owner_user_id = current_user.id
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=SUPPLIER_VIEW_ALL_PERMISSION,
+        )
         suppliers, total = await self._repository.list_suppliers(
             q=q,
             country=country,
             credit_grade=credit_grade,
-            owner_user_id=owner_user_id,
+            owner_user_ids=owner_user_ids,
         )
         items = [
             await self._supplier_response(
@@ -198,10 +208,11 @@ class SupplierService:
         supplier = await self._repository.get_supplier(supplier_id)
         if supplier is None:
             raise SupplierNotFoundError
-        if (
-            "masterdata:supplier:view_all" not in current_user.permissions
-            and supplier.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=SUPPLIER_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and supplier.owner_user_id not in allowed_user_ids:
             raise SupplierNotFoundError
         return supplier
 

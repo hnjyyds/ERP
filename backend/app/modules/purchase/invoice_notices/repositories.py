@@ -250,14 +250,14 @@ class PurchaseInvoiceNoticeRepository:
         self,
         notice_id: str | None = None,
         *,
-        owner_user_id: str | None = None,
+        owner_user_ids: list[str] | None = None,
     ) -> list[PurchaseInvoiceNoticeReminderRow]:
         statement = select(PurchaseInvoiceNoticeReminder)
         if notice_id is not None:
             statement = statement.where(PurchaseInvoiceNoticeReminder.notice_id == notice_id)
-        if owner_user_id is not None:
+        if owner_user_ids is not None:
             statement = statement.where(
-                PurchaseInvoiceNoticeReminder.owner_user_id == owner_user_id
+                PurchaseInvoiceNoticeReminder.owner_user_id.in_(owner_user_ids)
             )
         statement = statement.order_by(
             PurchaseInvoiceNoticeReminder.due_date.asc(),
@@ -273,7 +273,7 @@ class PurchaseInvoiceNoticeRepository:
         status: str | None = None,
         supplier_id: str | None = None,
         customs_declaration_id: str | None = None,
-        owner_user_id: str | None = None,
+        owner_user_ids: list[str] | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[PurchaseInvoiceNoticeRow], int]:
@@ -312,8 +312,8 @@ class PurchaseInvoiceNoticeRepository:
             conditions.append(
                 PurchaseInvoiceNotice.customs_declaration_id == customs_declaration_id
             )
-        if owner_user_id:
-            conditions.append(PurchaseInvoiceNotice.owner_user_id == owner_user_id)
+        if owner_user_ids is not None:
+            conditions.append(PurchaseInvoiceNotice.owner_user_id.in_(owner_user_ids))
         for condition in conditions:
             statement = statement.where(condition)
             count_statement = count_statement.where(condition)

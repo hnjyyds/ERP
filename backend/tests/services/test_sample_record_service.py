@@ -10,7 +10,16 @@ from app.modules.sample.records.schemas import (
     SampleStockEventCreate,
 )
 from app.modules.sample.records.services import SampleRecordService
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+
+def _make_service(session: AsyncSession) -> SampleRecordService:
+    return SampleRecordService(
+        SampleRecordRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+    )
 
 
 def _user_with_permissions(
@@ -71,7 +80,7 @@ async def test_sample_record_service_calculates_stock_and_followup_event(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = SampleRecordService(SampleRecordRepository(session))
+        service = _make_service(session)
         current_user = _user_with_permissions(
             ["sample:record:edit", "sample:record:view"],
             user_id="u-001",
@@ -109,7 +118,7 @@ async def test_sample_record_service_maps_bulk_sample_to_followup_node(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = SampleRecordService(SampleRecordRepository(session))
+        service = _make_service(session)
         current_user = _user_with_permissions(
             ["sample:record:edit", "sample:record:view"],
             user_id="u-001",
@@ -127,7 +136,7 @@ async def test_sample_record_service_filters_private_record_without_view_all(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = SampleRecordService(SampleRecordRepository(session))
+        service = _make_service(session)
         await service.create_record(
             current_user=_user_with_permissions(["sample:record:edit"], user_id="u-owner"),
             payload=_sample_record_payload("SM-PRIVATE-001"),
@@ -147,7 +156,7 @@ async def test_sample_record_service_rejects_invalid_sample_type(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = SampleRecordService(SampleRecordRepository(session))
+        service = _make_service(session)
         with pytest.raises(ValueError):
             await service.create_record(
                 current_user=_user_with_permissions(["sample:record:edit"], user_id="u-001"),

@@ -4,7 +4,16 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from app.modules.masterdata.document_parties.repositories import DocumentPartyRepository
 from app.modules.masterdata.document_parties.schemas import DocumentPartyCreate
 from app.modules.masterdata.document_parties.services import DocumentPartyService
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+
+def _make_service(session: AsyncSession) -> DocumentPartyService:
+    return DocumentPartyService(
+        DocumentPartyRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+    )
 
 
 def _user_with_permissions(
@@ -42,7 +51,7 @@ async def test_document_party_service_replaces_default_party(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = DocumentPartyService(DocumentPartyRepository(session))
+        service = _make_service(session)
         current_user = _user_with_permissions(
             ["masterdata:document_party:edit", "masterdata:document_party:view"],
             user_id="u-001",
@@ -65,7 +74,7 @@ async def test_document_party_service_filters_private_party_without_view_all(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = DocumentPartyService(DocumentPartyRepository(session))
+        service = _make_service(session)
         await service.create_party(
             current_user=_user_with_permissions(
                 ["masterdata:document_party:edit"],
@@ -90,7 +99,7 @@ async def test_document_party_service_rejects_invalid_party_type(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = DocumentPartyService(DocumentPartyRepository(session))
+        service = _make_service(session)
         with pytest.raises(ValueError):
             await service.create_party(
                 current_user=_user_with_permissions(["masterdata:document_party:edit"]),

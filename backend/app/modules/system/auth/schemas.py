@@ -4,6 +4,8 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 AvatarType = Literal["preset", "upload"]
+DataScope = Literal["self", "department", "department_tree", "all"]
+DEFAULT_DATA_SCOPE: DataScope = "self"
 DEFAULT_AVATAR_TYPE: AvatarType = "preset"
 DEFAULT_AVATAR_VALUE = "amber-orbit"
 ORGANIZATION_AVATAR_PRESETS = frozenset(
@@ -43,7 +45,9 @@ class CurrentUserResponse(BaseModel):
     id: str
     username: str
     display_name: str
+    department_id: str | None = None
     department_name: str
+    data_scope: str = "self"
     avatar_type: AvatarType = DEFAULT_AVATAR_TYPE
     avatar_value: str = DEFAULT_AVATAR_VALUE
     roles: list[str]
@@ -123,6 +127,7 @@ class OrganizationPermissionResponse(BaseModel):
     id: str
     code: str
     name: str
+    category: str = "functional"
 
 
 class OrganizationRoleResponse(BaseModel):
@@ -131,6 +136,7 @@ class OrganizationRoleResponse(BaseModel):
     id: str
     name: str
     code: str
+    data_scope: DataScope = DEFAULT_DATA_SCOPE
     permissions: list[OrganizationPermissionResponse] = Field(default_factory=list)
 
 
@@ -208,6 +214,46 @@ class OrganizationRolePermissionUpdate(BaseModel):
     @classmethod
     def unique_permission_ids(cls, value: list[str]) -> list[str]:
         return list(dict.fromkeys(value))
+
+
+class OrganizationRoleCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: str = Field(min_length=1, max_length=120)
+    code: str = Field(min_length=2, max_length=80, pattern=r"^[a-z][a-z0-9_]*$")
+    data_scope: DataScope = DEFAULT_DATA_SCOPE
+    permission_ids: list[str] = Field(default_factory=list)
+
+    @field_validator("name")
+    @classmethod
+    def clean_name(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("角色名称不能为空")
+        return cleaned
+
+    @field_validator("permission_ids")
+    @classmethod
+    def unique_permission_ids(cls, value: list[str]) -> list[str]:
+        return list(dict.fromkeys(value))
+
+
+class OrganizationRoleUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: str | None = Field(default=None, min_length=1, max_length=120)
+    code: str | None = Field(default=None, min_length=2, max_length=80, pattern=r"^[a-z][a-z0-9_]*$")
+    data_scope: DataScope | None = Field(default=None)
+
+    @field_validator("name")
+    @classmethod
+    def clean_optional_name(cls, value: str | None) -> str | None:
+        if value is None:
+            return value
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("角色名称不能为空")
+        return cleaned
 
 
 class OrganizationUserCreateResponse(BaseModel):

@@ -14,7 +14,24 @@ from app.modules.sample.deliveries.services import SampleDeliveryService
 from app.modules.sample.records.repositories import SampleRecordRepository
 from app.modules.sample.records.schemas import SampleRecordCreate
 from app.modules.sample.records.services import SampleRecordService
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+
+def _make_record_service(session: AsyncSession) -> SampleRecordService:
+    return SampleRecordService(
+        SampleRecordRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+    )
+
+
+def _make_service(session: AsyncSession) -> SampleDeliveryService:
+    return SampleDeliveryService(
+        SampleDeliveryRepository(session),
+        SampleRecordRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+    )
 
 
 def _user_with_permissions(
@@ -106,12 +123,8 @@ async def test_sample_delivery_service_review_updates_sample_stock_and_statistic
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        record_repository = SampleRecordRepository(session)
-        record_service = SampleRecordService(record_repository)
-        delivery_service = SampleDeliveryService(
-            SampleDeliveryRepository(session),
-            record_repository,
-        )
+        record_service = _make_record_service(session)
+        delivery_service = _make_service(session)
         current_user = _user_with_permissions(
             [
                 "sample:delivery:approve",
@@ -163,12 +176,8 @@ async def test_sample_delivery_service_filters_private_delivery_without_view_all
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        record_repository = SampleRecordRepository(session)
-        record_service = SampleRecordService(record_repository)
-        delivery_service = SampleDeliveryService(
-            SampleDeliveryRepository(session),
-            record_repository,
-        )
+        record_service = _make_record_service(session)
+        delivery_service = _make_service(session)
         owner = _user_with_permissions(
             ["sample:delivery:edit", "sample:record:edit"],
             user_id="u-owner",
@@ -193,12 +202,8 @@ async def test_sample_delivery_service_updates_draft_and_rejects_submitted_edit(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        record_repository = SampleRecordRepository(session)
-        record_service = SampleRecordService(record_repository)
-        delivery_service = SampleDeliveryService(
-            SampleDeliveryRepository(session),
-            record_repository,
-        )
+        record_service = _make_record_service(session)
+        delivery_service = _make_service(session)
         current_user = _user_with_permissions(
             [
                 "sample:delivery:edit",
@@ -244,12 +249,8 @@ async def test_sample_delivery_service_rejects_approve_when_stock_is_insufficien
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        record_repository = SampleRecordRepository(session)
-        record_service = SampleRecordService(record_repository)
-        delivery_service = SampleDeliveryService(
-            SampleDeliveryRepository(session),
-            record_repository,
-        )
+        record_service = _make_record_service(session)
+        delivery_service = _make_service(session)
         current_user = _user_with_permissions(
             [
                 "sample:delivery:approve",

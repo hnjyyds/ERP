@@ -31,7 +31,10 @@ from app.modules.sales.contracts.repositories import (
     ExportContractRepository,
     ExportContractRow,
 )
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+PURCHASE_CONTRACT_VIEW_ALL_PERMISSION = "purchase:contract:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -71,10 +74,12 @@ class PurchaseContractService:
         purchase_repository: PurchaseContractRepository,
         export_contract_repository: ExportContractRepository,
         product_repository: ProductRepository,
+        data_scope_resolver: DataScopeResolver,
     ) -> None:
         self._repository = purchase_repository
         self._export_contract_repository = export_contract_repository
         self._product_repository = product_repository
+        self._data_scope_resolver = data_scope_resolver
 
     async def create_contract(
         self,
@@ -202,12 +207,16 @@ class PurchaseContractService:
             self._validate_status(approval_status)
         if source_type is not None:
             self._validate_source_type(source_type)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=PURCHASE_CONTRACT_VIEW_ALL_PERMISSION,
+        )
         rows, total = await self._repository.list_contracts(
             q=q,
             approval_status=approval_status,
             supplier_id=supplier_id,
             source_type=source_type,
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return PurchaseContractListResponse(
             items=[await self._contract_response(row) for row in rows],
@@ -447,21 +456,27 @@ class PurchaseContractService:
         from app.modules.followup.repositories import FollowupRepository
         from app.modules.followup.services import FollowupService
         from app.modules.sample.records.repositories import SampleRecordRepository
+        from app.modules.system.auth.data_scope import DataScopeResolver
+        from app.modules.system.auth.repositories import AuthRepository
 
         followup_service = FollowupService(
             followup_repository=FollowupRepository(self._repository.session),
             purchase_contract_repository=self._repository,
             sample_record_repository=SampleRecordRepository(self._repository.session),
+            data_scope_resolver=DataScopeResolver(AuthRepository(self._repository.session)),
         )
         await followup_service.ensure_plan_for_contract(contract=contract)
 
     async def _ensure_inbound_plan(self, contract: PurchaseContractRow) -> None:
+        from app.modules.system.auth.data_scope import DataScopeResolver
+        from app.modules.system.auth.repositories import AuthRepository
         from app.modules.warehouse.inbound_plans.repositories import InboundPlanRepository
         from app.modules.warehouse.inbound_plans.services import InboundPlanService
 
         inbound_plan_service = InboundPlanService(
             inbound_repository=InboundPlanRepository(self._repository.session),
             purchase_contract_repository=self._repository,
+            data_scope_resolver=DataScopeResolver(AuthRepository(self._repository.session)),
         )
         await inbound_plan_service.ensure_plan_for_contract(contract=contract)
 
@@ -475,17 +490,13 @@ class PurchaseContractService:
         contract = await self._repository.get_contract(contract_id)
         if contract is None:
             raise PurchaseContractNotFoundError
-        if (
-            "purchase:contract:view_all" not in current_user.permissions
-            and contract.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=PURCHASE_CONTRACT_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and contract.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
         return contract
-
-    def _owner_filter(self, current_user: CurrentUserResponse) -> str | None:
-        if "purchase:contract:view_all" in current_user.permissions:
-            return None
-        return current_user.id
 
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:

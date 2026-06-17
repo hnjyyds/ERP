@@ -212,6 +212,115 @@ async def test_non_super_admin_cannot_manage_organization_users_or_role_permissi
     assert update_role_response.json()["code"] == "PERMISSION_DENIED"
 
 
+async def test_super_admin_can_crud_roles(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    admin_token = await _token(api_client, "admin", "admin123")
+    headers = {"Authorization": f"Bearer {admin_token}"}
+
+    options = (await api_client.get("/api/v1/organization/options", headers=headers)).json()["data"]
+    permission_by_code = {item["code"]: item for item in options["permissions"]}
+
+    # 新增角色（带初始权限）
+    create_response = await api_client.post(
+        "/api/v1/organization/roles",
+        headers=headers,
+        json={
+            "name": "单证专员",
+            "code": "doc_specialist",
+            "permission_ids": [permission_by_code["dashboard:view"]["id"]],
+        },
+    )
+    assert create_response.status_code == 201
+    created = create_response.json()["data"]
+    assert created["name"] == "单证专员"
+    assert created["code"] == "doc_specialist"
+    assert {item["code"] for item in created["permissions"]} == {"dashboard:view"}
+    role_id = created["id"]
+
+    # 编码重复 → 409
+    duplicate_response = await api_client.post(
+        "/api/v1/organization/roles",
+        headers=headers,
+        json={"name": "重复编码", "code": "doc_specialist", "permission_ids": []},
+    )
+    assert duplicate_response.status_code == 409
+    assert duplicate_response.json()["message"] == "角色编码已存在"
+
+    # 新增时引用不存在的权限 → 422
+    bad_permission_response = await api_client.post(
+        "/api/v1/organization/roles",
+        headers=headers,
+        json={"name": "坏权限", "code": "bad_perm", "permission_ids": ["perm-does-not-exist"]},
+    )
+    assert bad_permission_response.status_code == 422
+
+    # 修改角色名称与编码
+    update_response = await api_client.patch(
+        f"/api/v1/organization/roles/{role_id}",
+        headers=headers,
+        json={"name": "单证主管", "code": "doc_manager"},
+    )
+    assert update_response.status_code == 200
+    assert update_response.json()["data"]["name"] == "单证主管"
+    assert update_response.json()["data"]["code"] == "doc_manager"
+
+    # 修改不存在的角色 → 404
+    missing_response = await api_client.patch(
+        "/api/v1/organization/roles/role-missing",
+        headers=headers,
+        json={"name": "无"},
+    )
+    assert missing_response.status_code == 404
+    assert missing_response.json()["message"] == "角色不存在"
+
+    # 删除空角色 → 200
+    delete_response = await api_client.delete(
+        f"/api/v1/organization/roles/{role_id}",
+        headers=headers,
+    )
+    assert delete_response.status_code == 200
+    assert delete_response.json()["data"]["id"] == role_id
+
+    # 删除已分配给用户的角色（超级管理员被 admin 占用）→ 409
+    delete_in_use_response = await api_client.delete(
+        "/api/v1/organization/roles/role-admin",
+        headers=headers,
+    )
+    assert delete_in_use_response.status_code == 409
+    assert delete_in_use_response.json()["message"] == "角色下已有用户，不能删除"
+
+
+async def test_non_super_admin_cannot_crud_roles(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    demo_token = await _token(api_client, "demo", "demo123")
+    headers = {"Authorization": f"Bearer {demo_token}"}
+
+    create_response = await api_client.post(
+        "/api/v1/organization/roles",
+        headers=headers,
+        json={"name": "越权角色", "code": "hacker", "permission_ids": []},
+    )
+    assert create_response.status_code == 403
+    assert create_response.json()["code"] == "PERMISSION_DENIED"
+
+    update_response = await api_client.patch(
+        "/api/v1/organization/roles/role-finance",
+        headers=headers,
+        json={"name": "越权改名"},
+    )
+    assert update_response.status_code == 403
+
+    delete_response = await api_client.delete(
+        "/api/v1/organization/roles/role-finance",
+        headers=headers,
+    )
+    assert delete_response.status_code == 403
+
+
 async def test_only_super_admin_menu_contains_organization_management(
     api_client: AsyncClient,
     seeded_system: None,
@@ -236,3 +345,79 @@ async def test_only_super_admin_menu_contains_organization_management(
         item["path"] != "/organization/users"
         for item in demo_response.json()["data"]["menus"]
     )
+
+
+async def test_permission_options_carry_category(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    admin_token = await _token(api_client, "admin", "admin123")
+    headers = {"Authorization": f"Bearer {admin_token}"}
+
+    options = (await api_client.get("/api/v1/organization/options", headers=headers)).json()["data"]
+    by_code = {item["code"]: item for item in options["permissions"]}
+
+    assert by_code["dashboard:view"]["category"] == "functional"
+    assert by_code["sales:contract:view_all"]["category"] == "data"
+    assert by_code["masterdata:customer:credit:edit"]["category"] == "field"
+    assert by_code["sales:contract:approve"]["category"] == "process"
+    assert by_code["warehouse:outbound_order:allow_negative"]["category"] == "process"
+
+    # 四个分类都应至少出现一次。
+    categories = {item["category"] for item in options["permissions"]}
+    assert {"functional", "data", "field", "process"} <= categories
+
+
+async def test_department_parent_cannot_form_cycle(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    admin_token = await _token(api_client, "admin", "admin123")
+    headers = {"Authorization": f"Bearer {admin_token}"}
+
+    root = (
+        await api_client.post(
+            "/api/v1/organization/departments",
+            headers=headers,
+            json={"name": "总部"},
+        )
+    ).json()["data"]
+    child = (
+        await api_client.post(
+            "/api/v1/organization/departments",
+            headers=headers,
+            json={"name": "子部门", "parent_id": root["id"]},
+        )
+    ).json()["data"]
+    grandchild = (
+        await api_client.post(
+            "/api/v1/organization/departments",
+            headers=headers,
+            json={"name": "孙部门", "parent_id": child["id"]},
+        )
+    ).json()["data"]
+
+    # 把根部门的上级设为孙部门会形成环路 (root→child→grandchild→root)，应被拒。
+    cycle_response = await api_client.patch(
+        f"/api/v1/organization/departments/{root['id']}",
+        headers=headers,
+        json={"parent_id": grandchild["id"]},
+    )
+    assert cycle_response.status_code == 422
+
+    # 把部门的上级设为自己也应被拒。
+    self_parent_response = await api_client.patch(
+        f"/api/v1/organization/departments/{child['id']}",
+        headers=headers,
+        json={"parent_id": child["id"]},
+    )
+    assert self_parent_response.status_code == 422
+
+    # 合法的层级调整仍可成功。
+    valid_response = await api_client.patch(
+        f"/api/v1/organization/departments/{grandchild['id']}",
+        headers=headers,
+        json={"parent_id": root["id"]},
+    )
+    assert valid_response.status_code == 200
+    assert valid_response.json()["data"]["parent_id"] == root["id"]

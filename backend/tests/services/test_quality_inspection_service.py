@@ -17,7 +17,24 @@ from app.modules.quality.inspections.services import (
     QualityInspectionService,
 )
 from app.modules.sample.records.repositories import SampleRecordRepository
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+
+def _make_service(session: AsyncSession) -> QualityInspectionService:
+    purchase_contract_repository = PurchaseContractRepository(session)
+    return QualityInspectionService(
+        quality_repository=QualityInspectionRepository(session),
+        purchase_contract_repository=purchase_contract_repository,
+        followup_service=FollowupService(
+            followup_repository=FollowupRepository(session),
+            purchase_contract_repository=purchase_contract_repository,
+            sample_record_repository=SampleRecordRepository(session),
+            data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+        ),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+    )
 
 
 def _user(
@@ -93,16 +110,7 @@ async def test_quality_inspection_service_records_failed_result_and_blocks_forma
     async with session_factory() as session:
         purchase_repository = PurchaseContractRepository(session)
         contract_id, line_id = await _create_approved_contract(purchase_repository)
-        followup_service = FollowupService(
-            followup_repository=FollowupRepository(session),
-            purchase_contract_repository=purchase_repository,
-            sample_record_repository=SampleRecordRepository(session),
-        )
-        service = QualityInspectionService(
-            quality_repository=QualityInspectionRepository(session),
-            purchase_contract_repository=purchase_repository,
-            followup_service=followup_service,
-        )
+        service = _make_service(session)
 
         inspection = await service.create_inspection(
             current_user=_quality_user(),
@@ -158,6 +166,7 @@ async def test_quality_inspection_service_passed_result_writes_back_followup_nod
             followup_repository=FollowupRepository(session),
             purchase_contract_repository=purchase_repository,
             sample_record_repository=SampleRecordRepository(session),
+            data_scope_resolver=DataScopeResolver(AuthRepository(session)),
         )
         followup_user = _user(
             [
@@ -173,11 +182,7 @@ async def test_quality_inspection_service_passed_result_writes_back_followup_nod
             purchase_contract_id=contract_id,
             as_of=date(2026, 8, 5),
         )
-        service = QualityInspectionService(
-            quality_repository=QualityInspectionRepository(session),
-            purchase_contract_repository=purchase_repository,
-            followup_service=followup_service,
-        )
+        service = _make_service(session)
 
         inspection = await service.create_inspection(
             current_user=_quality_user(),
@@ -227,15 +232,7 @@ async def test_quality_inspection_service_requires_edit_permission(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = QualityInspectionService(
-            quality_repository=QualityInspectionRepository(session),
-            purchase_contract_repository=PurchaseContractRepository(session),
-            followup_service=FollowupService(
-                followup_repository=FollowupRepository(session),
-                purchase_contract_repository=PurchaseContractRepository(session),
-                sample_record_repository=SampleRecordRepository(session),
-            ),
-        )
+        service = _make_service(session)
 
         with pytest.raises(PermissionDeniedError):
             await service.list_inspections(

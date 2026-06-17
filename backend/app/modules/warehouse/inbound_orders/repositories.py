@@ -197,7 +197,7 @@ class InboundOrderRepository:
         inbound_mode: str | None,
         supplier_id: str | None,
         purchase_contract_id: str | None,
-        owner_user_id: str | None,
+        owner_user_ids: list[str] | None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[InboundOrderRow], int]:
@@ -235,8 +235,8 @@ class InboundOrderRepository:
             conditions.append(InboundOrder.supplier_id == supplier_id)
         if purchase_contract_id:
             conditions.append(InboundOrder.purchase_contract_id == purchase_contract_id)
-        if owner_user_id:
-            conditions.append(InboundOrder.owner_user_id == owner_user_id)
+        if owner_user_ids is not None:
+            conditions.append(InboundOrder.owner_user_id.in_(owner_user_ids))
         for condition in conditions:
             statement = statement.where(condition)
             count_statement = count_statement.where(condition)

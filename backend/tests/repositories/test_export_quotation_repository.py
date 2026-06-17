@@ -66,7 +66,7 @@ async def test_export_quotation_repository_filters_history_references_and_contra
             q="Eco",
             approval_status="contract_generated",
             customer_id="customer-a",
-            owner_user_id=None,
+            owner_user_ids=None,
         )
         history, history_total = await repository.list_history(
             customer_id="customer-a",

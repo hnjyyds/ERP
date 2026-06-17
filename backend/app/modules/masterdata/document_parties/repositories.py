@@ -184,7 +184,7 @@ class DocumentPartyRepository:
         q: str | None = None,
         party_type: str | None = None,
         customer_id: str | None = None,
-        owner_user_id: str | None = None,
+        owner_user_ids: list[str] | None = None,
         active_only: bool = False,
         limit: int = 50,
         offset: int = 0,
@@ -212,8 +212,8 @@ class DocumentPartyRepository:
             conditions.append(DocumentParty.party_type == party_type)
         if customer_id:
             conditions.append(DocumentParty.customer_id == customer_id)
-        if owner_user_id:
-            conditions.append(DocumentParty.owner_user_id == owner_user_id)
+        if owner_user_ids is not None:
+            conditions.append(DocumentParty.owner_user_id.in_(owner_user_ids))
         if active_only:
             conditions.append(DocumentParty.status == "active")
         for condition in conditions:

@@ -378,7 +378,7 @@ class PurchaseContractRepository:
         approval_status: str | None = None,
         supplier_id: str | None = None,
         source_type: str | None = None,
-        owner_user_id: str | None = None,
+        owner_user_ids: list[str] | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[PurchaseContractRow], int]:
@@ -414,8 +414,8 @@ class PurchaseContractRepository:
             conditions.append(PurchaseContract.supplier_id == supplier_id)
         if source_type:
             conditions.append(PurchaseContract.source_type == source_type)
-        if owner_user_id:
-            conditions.append(PurchaseContract.owner_user_id == owner_user_id)
+        if owner_user_ids is not None:
+            conditions.append(PurchaseContract.owner_user_id.in_(owner_user_ids))
         for condition in conditions:
             statement = statement.where(condition)
             count_statement = count_statement.where(condition)

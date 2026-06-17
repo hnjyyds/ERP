@@ -23,7 +23,10 @@ from app.modules.sample.records.schemas import (
     SampleStockEventResponse,
     SampleStockSummaryResponse,
 )
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+SAMPLE_RECORD_VIEW_ALL_PERMISSION = "sample:record:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -39,8 +42,14 @@ class SampleStockError(Exception):
 
 
 class SampleRecordService:
-    def __init__(self, repository: SampleRecordRepository) -> None:
+    def __init__(
+        self,
+        repository: SampleRecordRepository,
+        *,
+        data_scope_resolver: DataScopeResolver,
+    ) -> None:
         self._repository = repository
+        self._data_scope_resolver = data_scope_resolver
 
     async def create_record(
         self,
@@ -114,12 +123,16 @@ class SampleRecordService:
         self._require(current_user, "sample:record:view")
         if sample_type is not None:
             self._validate_sample_type(sample_type)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=SAMPLE_RECORD_VIEW_ALL_PERMISSION,
+        )
         records, total = await self._repository.list_records(
             q=q,
             sample_type=sample_type,
             customer_id=customer_id,
             purchase_contract_id=purchase_contract_id,
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return SampleRecordListResponse(
             items=[await self._record_response(record) for record in records],
@@ -208,17 +221,13 @@ class SampleRecordService:
         record = await self._repository.get_record(record_id)
         if record is None:
             raise SampleRecordNotFoundError
-        if (
-            "sample:record:view_all" not in current_user.permissions
-            and record.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=SAMPLE_RECORD_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and record.owner_user_id not in allowed_user_ids:
             raise SampleRecordNotFoundError
         return record
-
-    def _owner_filter(self, current_user: CurrentUserResponse) -> str | None:
-        if "sample:record:view_all" in current_user.permissions:
-            return None
-        return current_user.id
 
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:

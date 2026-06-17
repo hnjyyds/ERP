@@ -4,6 +4,8 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.modules.sales.shipments.repositories import ShipmentPlanRepository
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.warehouse.outbound_plans.repositories import OutboundPlanRepository
 from app.modules.warehouse.outbound_plans.schemas import (
@@ -14,6 +16,14 @@ from app.modules.warehouse.outbound_plans.services import (
     OutboundPlanService,
     PermissionDeniedError,
 )
+
+
+def _make_service(session: AsyncSession) -> OutboundPlanService:
+    return OutboundPlanService(
+        outbound_repository=OutboundPlanRepository(session),
+        shipment_repository=ShipmentPlanRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+    )
 
 
 def _user(
@@ -99,10 +109,7 @@ async def test_outbound_plan_service_generates_from_approved_shipment_and_schedu
 ) -> None:
     async with session_factory() as session:
         shipment_id = await _prepare_shipment(session)
-        service = OutboundPlanService(
-            outbound_repository=OutboundPlanRepository(session),
-            shipment_repository=ShipmentPlanRepository(session),
-        )
+        service = _make_service(session)
 
         plan = await service.generate_from_shipment(
             current_user=_warehouse_user(),
@@ -145,10 +152,7 @@ async def test_outbound_plan_service_rejects_unapproved_shipment(
 ) -> None:
     async with session_factory() as session:
         shipment_id = await _prepare_shipment(session, approval_status="draft")
-        service = OutboundPlanService(
-            outbound_repository=OutboundPlanRepository(session),
-            shipment_repository=ShipmentPlanRepository(session),
-        )
+        service = _make_service(session)
 
         with pytest.raises(ValueError):
             await service.generate_from_shipment(
@@ -161,10 +165,7 @@ async def test_outbound_plan_service_requires_view_permission(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = OutboundPlanService(
-            outbound_repository=OutboundPlanRepository(session),
-            shipment_repository=ShipmentPlanRepository(session),
-        )
+        service = _make_service(session)
 
         with pytest.raises(PermissionDeniedError):
             await service.list_plans(

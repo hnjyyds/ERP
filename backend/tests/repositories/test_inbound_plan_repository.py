@@ -53,7 +53,7 @@ async def test_inbound_plan_repository_records_lines_and_schedules_location(
             status="scheduled",
             supplier_id="supplier-pack-a",
             purchase_contract_id=None,
-            owner_user_id=None,
+            owner_user_ids=None,
         )
         lines = await repository.list_lines(plan.id)
         by_contract = await repository.get_plan_by_contract("pc-001")

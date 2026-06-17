@@ -101,7 +101,7 @@ async def test_outbound_order_repository_records_order_deducts_stock_and_ledger(
             outbound_type="finished_goods_outbound",
             customer_id=None,
             source_id=None,
-            owner_user_id=None,
+            owner_user_ids=None,
         )
         lines = await repository.list_lines(order.id)
         ledgers, ledger_total = await inbound_repository.list_ledgers(source_id=order.id)

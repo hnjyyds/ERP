@@ -138,7 +138,7 @@ class PartnerRepository:
         *,
         q: str | None = None,
         partner_type: str | None = None,
-        owner_user_id: str | None = None,
+        owner_user_ids: list[str] | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[PartnerRow], int]:
@@ -170,8 +170,8 @@ class PartnerRepository:
             )
         if partner_type:
             conditions.append(Partner.partner_type == partner_type)
-        if owner_user_id:
-            conditions.append(Partner.owner_user_id == owner_user_id)
+        if owner_user_ids is not None:
+            conditions.append(Partner.owner_user_id.in_(owner_user_ids))
         for condition in conditions:
             statement = statement.where(condition)
             count_statement = count_statement.where(condition)

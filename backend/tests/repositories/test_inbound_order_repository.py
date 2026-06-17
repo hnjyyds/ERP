@@ -85,7 +85,7 @@ async def test_inbound_order_repository_records_inventory_balance_and_ledger(
             inbound_mode="formal",
             supplier_id="supplier-pack-a",
             purchase_contract_id=None,
-            owner_user_id=None,
+            owner_user_ids=None,
         )
         lines = await repository.list_lines(order.id)
         balances, balance_total = await repository.list_balances(q="BAG-40")

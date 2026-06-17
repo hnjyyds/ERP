@@ -22,7 +22,10 @@ from app.modules.sample.deliveries.schemas import (
     SampleDeliveryTrackingUpdate,
 )
 from app.modules.sample.records.repositories import SampleRecordRepository
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+SAMPLE_DELIVERY_VIEW_ALL_PERMISSION = "sample:delivery:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -38,9 +41,12 @@ class SampleDeliveryService:
         self,
         repository: SampleDeliveryRepository,
         sample_record_repository: SampleRecordRepository,
+        *,
+        data_scope_resolver: DataScopeResolver,
     ) -> None:
         self._repository = repository
         self._sample_record_repository = sample_record_repository
+        self._data_scope_resolver = data_scope_resolver
 
     async def create_delivery(
         self,
@@ -138,12 +144,16 @@ class SampleDeliveryService:
         self._require(current_user, "sample:delivery:view")
         if status is not None:
             self._validate_status(status)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=SAMPLE_DELIVERY_VIEW_ALL_PERMISSION,
+        )
         deliveries, total = await self._repository.list_deliveries(
             q=q,
             status=status,
             customer_id=customer_id,
             express_company=express_company,
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return SampleDeliveryListResponse(
             items=[await self._delivery_response(delivery) for delivery in deliveries],
@@ -334,17 +344,13 @@ class SampleDeliveryService:
         delivery = await self._repository.get_delivery(delivery_id)
         if delivery is None:
             raise SampleDeliveryNotFoundError
-        if (
-            "sample:delivery:view_all" not in current_user.permissions
-            and delivery.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=SAMPLE_DELIVERY_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and delivery.owner_user_id not in allowed_user_ids:
             raise SampleDeliveryNotFoundError
         return delivery
-
-    def _owner_filter(self, current_user: CurrentUserResponse) -> str | None:
-        if "sample:delivery:view_all" in current_user.permissions:
-            return None
-        return current_user.id
 
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:

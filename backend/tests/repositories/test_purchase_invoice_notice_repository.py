@@ -66,7 +66,7 @@ async def test_purchase_invoice_notice_repository_records_lines_status_and_remin
             status="received",
             supplier_id="supplier-pack-a",
             customs_declaration_id=None,
-            owner_user_id=None,
+            owner_user_ids=None,
         )
         lines = await repository.list_lines(notice.id)
         reminders = await repository.list_reminders(notice.id)

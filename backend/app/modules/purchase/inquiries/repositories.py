@@ -328,7 +328,7 @@ class PurchaseInquiryRepository:
         status: str | None,
         product_id: str | None,
         supplier_id: str | None,
-        owner_user_id: str | None,
+        owner_user_ids: list[str] | None = None,
         limit: int = 100,
         offset: int = 0,
     ) -> tuple[list[PurchaseInquiryRow], int]:
@@ -371,8 +371,8 @@ class PurchaseInquiryRepository:
             conditions.append(PurchaseInquiryLine.product_id == product_id)
         if supplier_id:
             conditions.append(SupplierQuotation.supplier_id == supplier_id)
-        if owner_user_id:
-            conditions.append(PurchaseInquiry.owner_user_id == owner_user_id)
+        if owner_user_ids is not None:
+            conditions.append(PurchaseInquiry.owner_user_id.in_(owner_user_ids))
         for condition in conditions:
             statement = statement.where(condition)
             count_statement = count_statement.where(condition)

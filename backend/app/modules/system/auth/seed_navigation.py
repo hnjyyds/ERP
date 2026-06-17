@@ -3,9 +3,7 @@ from app.modules.system.auth.models import Department, MenuItem, Role
 
 def system_roles() -> list[Role]:
     return [
-        Role(id="role-admin", name="超级管理员", code="super_admin"),
-        Role(id="role-sales-manager", name="业务主管", code="sales_manager"),
-        Role(id="role-finance", name="财务", code="finance"),
+        Role(id="role-admin", name="超级管理员", code="super_admin", data_scope="all"),
     ]
 
 

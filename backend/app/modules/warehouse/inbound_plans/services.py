@@ -5,6 +5,7 @@ from app.modules.purchase.contracts.repositories import (
     PurchaseContractRepository,
     PurchaseContractRow,
 )
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.warehouse.inbound_plans.repositories import (
     InboundPlanLineRow,
@@ -20,6 +21,8 @@ from app.modules.warehouse.inbound_plans.schemas import (
     InboundPlanResponse,
     InboundPlanSchedule,
 )
+
+INBOUND_PLAN_VIEW_ALL_PERMISSION = "warehouse:inbound_plan:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -40,9 +43,11 @@ class InboundPlanService:
         *,
         inbound_repository: InboundPlanRepository,
         purchase_contract_repository: PurchaseContractRepository,
+        data_scope_resolver: DataScopeResolver,
     ) -> None:
         self._repository = inbound_repository
         self._purchase_contract_repository = purchase_contract_repository
+        self._data_scope_resolver = data_scope_resolver
 
     async def generate_from_purchase_contract(
         self,
@@ -120,13 +125,17 @@ class InboundPlanService:
             self._validate_inbound_type(inbound_type)
         if status is not None:
             self._validate_status(status)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=INBOUND_PLAN_VIEW_ALL_PERMISSION,
+        )
         rows, total = await self._repository.list_plans(
             q=q,
             inbound_type=inbound_type,
             status=status,
             supplier_id=supplier_id,
             purchase_contract_id=purchase_contract_id,
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return InboundPlanListResponse(
             items=[await self._plan_response(row) for row in rows],
@@ -176,10 +185,11 @@ class InboundPlanService:
         contract = await self._purchase_contract_repository.get_contract(purchase_contract_id)
         if contract is None:
             raise InboundPlanPurchaseContractNotFoundError
-        if (
-            "warehouse:inbound_plan:view_all" not in current_user.permissions
-            and contract.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=INBOUND_PLAN_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and contract.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
         return contract
 
@@ -193,17 +203,13 @@ class InboundPlanService:
         plan = await self._repository.get_plan(plan_id)
         if plan is None:
             raise InboundPlanNotFoundError
-        if (
-            "warehouse:inbound_plan:view_all" not in current_user.permissions
-            and plan.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=INBOUND_PLAN_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and plan.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
         return plan
-
-    def _owner_filter(self, current_user: CurrentUserResponse) -> str | None:
-        if "warehouse:inbound_plan:view_all" in current_user.permissions:
-            return None
-        return current_user.id
 
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:

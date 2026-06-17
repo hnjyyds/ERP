@@ -12,7 +12,17 @@ from app.modules.sales.quotations.schemas import (
 )
 from app.modules.sales.quotations.services import ExportQuotationService
 from app.modules.sample.deliveries.repositories import SampleDeliveryRepository
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+
+def _make_service(session: AsyncSession) -> ExportQuotationService:
+    return ExportQuotationService(
+        ExportQuotationRepository(session),
+        SampleDeliveryRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+    )
 
 
 def _user_with_permissions(
@@ -65,10 +75,7 @@ async def test_export_quotation_service_approval_contract_export_and_history(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = ExportQuotationService(
-            ExportQuotationRepository(session),
-            SampleDeliveryRepository(session),
-        )
+        service = _make_service(session)
         current_user = _user_with_permissions(
             [
                 "sales:quotation:approve",
@@ -135,10 +142,7 @@ async def test_export_quotation_service_rejects_confirm_before_approval(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = ExportQuotationService(
-            ExportQuotationRepository(session),
-            SampleDeliveryRepository(session),
-        )
+        service = _make_service(session)
         current_user = _user_with_permissions(
             ["sales:quotation:edit", "sales:quotation:view"],
             user_id="u-001",
@@ -163,10 +167,7 @@ async def test_export_quotation_service_filters_private_records_without_view_all
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = ExportQuotationService(
-            ExportQuotationRepository(session),
-            SampleDeliveryRepository(session),
-        )
+        service = _make_service(session)
         owner = _user_with_permissions(["sales:quotation:edit"], user_id="u-owner")
         await service.create_quotation(
             current_user=owner,

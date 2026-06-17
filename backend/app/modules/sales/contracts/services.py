@@ -28,7 +28,10 @@ from app.modules.sales.contracts.schemas import (
     ExportContractSignatureResponse,
     ExportContractStatisticsResponse,
 )
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+CONTRACT_VIEW_ALL_PERMISSION = "sales:contract:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -40,8 +43,14 @@ class ExportContractNotFoundError(Exception):
 
 
 class ExportContractService:
-    def __init__(self, repository: ExportContractRepository) -> None:
+    def __init__(
+        self,
+        repository: ExportContractRepository,
+        *,
+        data_scope_resolver: DataScopeResolver,
+    ) -> None:
         self._repository = repository
+        self._data_scope_resolver = data_scope_resolver
 
     async def create_contract(
         self,
@@ -122,11 +131,15 @@ class ExportContractService:
         self._require(current_user, "sales:contract:view")
         if approval_status is not None:
             self._validate_status(approval_status)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=CONTRACT_VIEW_ALL_PERMISSION,
+        )
         contracts, total = await self._repository.list_contracts(
             q=q,
             approval_status=approval_status,
             customer_id=customer_id,
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return ExportContractListResponse(
             items=[await self._contract_response(contract) for contract in contracts],
@@ -314,17 +327,13 @@ class ExportContractService:
         contract = await self._repository.get_contract(contract_id)
         if contract is None:
             raise ExportContractNotFoundError
-        if (
-            "sales:contract:view_all" not in current_user.permissions
-            and contract.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=CONTRACT_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and contract.owner_user_id not in allowed_user_ids:
             raise ExportContractNotFoundError
         return contract
-
-    def _owner_filter(self, current_user: CurrentUserResponse) -> str | None:
-        if "sales:contract:view_all" in current_user.permissions:
-            return None
-        return current_user.id
 
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:

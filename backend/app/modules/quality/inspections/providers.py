@@ -10,6 +10,8 @@ from app.modules.purchase.contracts.repositories import PurchaseContractReposito
 from app.modules.quality.inspections.repositories import QualityInspectionRepository
 from app.modules.quality.inspections.services import QualityInspectionService
 from app.modules.sample.records.repositories import SampleRecordRepository
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 
 
 def get_quality_inspection_service(
@@ -23,5 +25,7 @@ def get_quality_inspection_service(
             followup_repository=FollowupRepository(session),
             purchase_contract_repository=purchase_contract_repository,
             sample_record_repository=SampleRecordRepository(session),
+            data_scope_resolver=DataScopeResolver(AuthRepository(session)),
         ),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
     )

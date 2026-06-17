@@ -4,7 +4,16 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from app.modules.masterdata.partners.repositories import PartnerRepository
 from app.modules.masterdata.partners.schemas import PartnerCreate
 from app.modules.masterdata.partners.services import PartnerService
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+
+def _make_service(session: AsyncSession) -> PartnerService:
+    return PartnerService(
+        PartnerRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+    )
 
 
 def _user_with_permissions(
@@ -25,7 +34,7 @@ async def test_partner_service_creates_partner_with_primary_contact(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = PartnerService(PartnerRepository(session))
+        service = _make_service(session)
         partner = await service.create_partner(
             current_user=_user_with_permissions(["masterdata:partner:edit"], user_id="u-001"),
             payload=PartnerCreate(
@@ -64,7 +73,7 @@ async def test_partner_service_filters_private_partner_without_view_all(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = PartnerService(PartnerRepository(session))
+        service = _make_service(session)
         await service.create_partner(
             current_user=_user_with_permissions(["masterdata:partner:edit"], user_id="u-owner"),
             payload=PartnerCreate(
@@ -88,7 +97,7 @@ async def test_partner_service_rejects_invalid_partner_type(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = PartnerService(PartnerRepository(session))
+        service = _make_service(session)
         with pytest.raises(ValueError):
             await service.create_partner(
                 current_user=_user_with_permissions(["masterdata:partner:edit"], user_id="u-001"),

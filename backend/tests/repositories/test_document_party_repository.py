@@ -57,7 +57,7 @@ async def test_document_party_repository_filters_by_customer_type_contact_and_ow
             q="Ivy",
             party_type="consignee",
             customer_id="customer-a",
-            owner_user_id="u-001",
+            owner_user_ids=["u-001"],
         )
 
     assert total == 1

@@ -19,7 +19,10 @@ from app.modules.quality.inspections.schemas import (
     QualityInspectionResponse,
     QualityIssueResponse,
 )
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+QUALITY_INSPECTION_VIEW_ALL_PERMISSION = "quality:inspection:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -41,10 +44,12 @@ class QualityInspectionService:
         quality_repository: QualityInspectionRepository,
         purchase_contract_repository: PurchaseContractRepository,
         followup_service: FollowupService,
+        data_scope_resolver: DataScopeResolver,
     ) -> None:
         self._repository = quality_repository
         self._purchase_contract_repository = purchase_contract_repository
         self._followup_service = followup_service
+        self._data_scope_resolver = data_scope_resolver
 
     async def create_inspection(
         self,
@@ -122,12 +127,16 @@ class QualityInspectionService:
         self._require(current_user, "quality:inspection:view")
         if result is not None:
             self._validate_result(result)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=QUALITY_INSPECTION_VIEW_ALL_PERMISSION,
+        )
         rows, total = await self._repository.list_inspections(
             q=q,
             result=result,
             supplier_id=supplier_id,
             purchase_contract_id=purchase_contract_id,
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return QualityInspectionListResponse(
             items=[await self._inspection_response(row) for row in rows],
@@ -228,10 +237,11 @@ class QualityInspectionService:
         contract = await self._purchase_contract_repository.get_contract(purchase_contract_id)
         if contract is None:
             raise QualityInspectionPurchaseContractNotFoundError
-        if (
-            "quality:inspection:view_all" not in current_user.permissions
-            and contract.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=QUALITY_INSPECTION_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and contract.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
         return contract
 
@@ -245,10 +255,11 @@ class QualityInspectionService:
         inspection = await self._repository.get_inspection(inspection_id)
         if inspection is None:
             raise QualityInspectionNotFoundError
-        if (
-            self._owner_filter(current_user) is not None
-            and inspection.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=QUALITY_INSPECTION_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and inspection.owner_user_id not in allowed_user_ids:
             raise QualityInspectionNotFoundError
         return inspection
 
@@ -307,11 +318,6 @@ class QualityInspectionService:
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:
             raise PermissionDeniedError
-
-    def _owner_filter(self, current_user: CurrentUserResponse) -> str | None:
-        if "quality:inspection:view_all" in current_user.permissions:
-            return None
-        return current_user.id
 
     def _validate_result(self, result: str) -> None:
         if result not in VALID_QUALITY_INSPECTION_RESULTS:

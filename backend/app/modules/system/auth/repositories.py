@@ -4,6 +4,7 @@ from datetime import datetime
 from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.modules.system.auth.data_scope_rules import widest_data_scope
 from app.modules.system.auth.models import (
     Department,
     MenuItem,
@@ -30,7 +31,9 @@ class UserIdentityRow:
     id: str
     username: str
     display_name: str
+    department_id: str | None
     department_name: str
+    data_scope: str
     avatar_type: str
     avatar_value: str
     password_hash: str
@@ -62,6 +65,7 @@ class PermissionRow:
     id: str
     code: str
     name: str
+    category: str
 
 
 @dataclass(frozen=True)
@@ -69,6 +73,7 @@ class RoleRow:
     id: str
     name: str
     code: str
+    data_scope: str
     permissions: list[PermissionRow]
 
 
@@ -235,6 +240,41 @@ class AuthRepository:
         )
         return int(count or 0)
 
+    async def list_department_subtree_ids(self, root_id: str) -> list[str]:
+        """返回某部门及其所有下级部门的 id（含自身）。
+
+        采用应用层 BFS 展开 parent_id 邻接表，避免 SQLite 递归 CTE 方言差异；
+        带访问集合防御脏数据中的环路。
+        """
+        rows = await self.session.execute(select(Department.id, Department.parent_id))
+        children: dict[str, list[str]] = {}
+        for department_id, parent_id in rows:
+            if parent_id is not None:
+                children.setdefault(parent_id, []).append(department_id)
+
+        result: list[str] = []
+        visited: set[str] = set()
+        queue = [root_id]
+        while queue:
+            current = queue.pop(0)
+            if current in visited:
+                continue
+            visited.add(current)
+            result.append(current)
+            queue.extend(children.get(current, []))
+        return result
+
+    async def list_user_ids_in_departments(self, department_ids: list[str]) -> list[str]:
+        if not department_ids:
+            return []
+        rows = await self.session.scalars(
+            select(User.id).where(
+                User.department_id.in_(department_ids),
+                User.is_active.is_(True),
+            )
+        )
+        return list(rows)
+
     async def create_department(
         self,
         *,
@@ -280,6 +320,48 @@ class AuthRepository:
             return None
         row = self._department_row(department)
         await self.session.delete(department)
+        await self.session.flush()
+        return row
+
+    async def get_role_by_code(self, code: str) -> RoleRow | None:
+        role = await self.session.scalar(select(Role).where(Role.code == code))
+        if role is None:
+            return None
+        return await self._role_row(role)
+
+    async def count_users_with_role(self, role_id: str) -> int:
+        count = await self.session.scalar(
+            select(func.count()).select_from(UserRole).where(UserRole.role_id == role_id)
+        )
+        return int(count or 0)
+
+    async def create_role(
+        self, *, role_id: str, name: str, code: str, data_scope: str
+    ) -> RoleRow:
+        role = Role(id=role_id, name=name, code=code, data_scope=data_scope)
+        self.session.add(role)
+        await self.session.flush()
+        return await self._role_row(role)
+
+    async def update_role(
+        self, *, role_id: str, name: str, code: str, data_scope: str
+    ) -> RoleRow | None:
+        role = await self.session.scalar(select(Role).where(Role.id == role_id))
+        if role is None:
+            return None
+        role.name = name
+        role.code = code
+        role.data_scope = data_scope
+        await self.session.flush()
+        return await self._role_row(role)
+
+    async def delete_role(self, role_id: str) -> RoleRow | None:
+        role = await self.session.scalar(select(Role).where(Role.id == role_id))
+        if role is None:
+            return None
+        row = await self._role_row(role)
+        await self.session.execute(delete(RolePermission).where(RolePermission.role_id == role_id))
+        await self.session.delete(role)
         await self.session.flush()
         return row
 
@@ -432,7 +514,7 @@ class AuthRepository:
             select(Department).where(Department.id == user.department_id)
         )
         role_rows = await self.session.execute(
-            select(Role.name, Permission.code)
+            select(Role.name, Role.data_scope, Permission.code)
             .join(UserRole, UserRole.role_id == Role.id)
             .join(RolePermission, RolePermission.role_id == Role.id)
             .join(Permission, Permission.id == RolePermission.permission_id)
@@ -442,9 +524,11 @@ class AuthRepository:
 
         roles: list[str] = []
         permissions: list[str] = []
-        for role_name, permission_code in role_rows:
+        role_scopes: list[str] = []
+        for role_name, role_scope, permission_code in role_rows:
             if role_name not in roles:
                 roles.append(role_name)
+                role_scopes.append(role_scope)
             if permission_code not in permissions:
                 permissions.append(permission_code)
 
@@ -452,7 +536,9 @@ class AuthRepository:
             id=user.id,
             username=user.username,
             display_name=user.display_name,
+            department_id=user.department_id,
             department_name=department.name if department else "",
+            data_scope=widest_data_scope(role_scopes),
             avatar_type=user.avatar_type,
             avatar_value=user.avatar_value,
             password_hash=user.password_hash,
@@ -511,6 +597,7 @@ class AuthRepository:
             id=row.id,
             name=row.name,
             code=row.code,
+            data_scope=row.data_scope,
             permissions=await self._permissions_for_role(row.id),
         )
 
@@ -519,4 +606,5 @@ class AuthRepository:
             id=row.id,
             code=row.code,
             name=row.name,
+            category=row.category,
         )

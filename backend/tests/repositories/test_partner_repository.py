@@ -43,7 +43,7 @@ async def test_partner_repository_filters_by_type_contact_and_owner(
         rows, total = await repository.list_partners(
             q="Ivy",
             partner_type="freight_forwarder",
-            owner_user_id="u-001",
+            owner_user_ids=["u-001"],
         )
 
     assert total == 1

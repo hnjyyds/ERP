@@ -17,7 +17,18 @@ from app.modules.purchase.contracts.services import (
     PurchaseContractService,
 )
 from app.modules.sales.contracts.repositories import ExportContractRepository
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+
+def _make_service(session: AsyncSession) -> PurchaseContractService:
+    return PurchaseContractService(
+        purchase_repository=PurchaseContractRepository(session),
+        export_contract_repository=ExportContractRepository(session),
+        product_repository=ProductRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+    )
 
 
 def _user_with_permissions(
@@ -140,14 +151,9 @@ async def test_purchase_contract_service_generates_from_export_contracts_and_app
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        purchase_repository = PurchaseContractRepository(session)
         export_repository = ExportContractRepository(session)
         product_repository = ProductRepository(session)
-        service = PurchaseContractService(
-            purchase_repository=purchase_repository,
-            export_contract_repository=export_repository,
-            product_repository=product_repository,
-        )
+        service = _make_service(session)
         current_user = _user_with_permissions(
             [
                 "purchase:contract:approve",
@@ -224,11 +230,7 @@ async def test_purchase_contract_service_supports_stock_purchase_and_private_fil
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = PurchaseContractService(
-            purchase_repository=PurchaseContractRepository(session),
-            export_contract_repository=ExportContractRepository(session),
-            product_repository=ProductRepository(session),
-        )
+        service = _make_service(session)
         owner = _user_with_permissions(["purchase:contract:edit"], user_id="u-owner")
         created = await service.create_contract(
             current_user=owner,
@@ -251,11 +253,7 @@ async def test_purchase_contract_service_requires_permission(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = PurchaseContractService(
-            purchase_repository=PurchaseContractRepository(session),
-            export_contract_repository=ExportContractRepository(session),
-            product_repository=ProductRepository(session),
-        )
+        service = _make_service(session)
 
         with pytest.raises(PermissionDeniedError):
             await service.create_contract(

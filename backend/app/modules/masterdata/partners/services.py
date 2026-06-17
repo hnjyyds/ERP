@@ -14,7 +14,10 @@ from app.modules.masterdata.partners.schemas import (
     PartnerResponse,
     PartnerUpdate,
 )
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+PARTNER_VIEW_ALL_PERMISSION = "masterdata:partner:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -26,8 +29,14 @@ class PartnerNotFoundError(Exception):
 
 
 class PartnerService:
-    def __init__(self, repository: PartnerRepository) -> None:
+    def __init__(
+        self,
+        repository: PartnerRepository,
+        *,
+        data_scope_resolver: DataScopeResolver,
+    ) -> None:
         self._repository = repository
+        self._data_scope_resolver = data_scope_resolver
 
     async def create_partner(
         self,
@@ -127,13 +136,14 @@ class PartnerService:
         self._require(current_user, "masterdata:partner:view")
         if partner_type is not None:
             self._validate_partner_type(partner_type)
-        owner_user_id = None
-        if "masterdata:partner:view_all" not in current_user.permissions:
-            owner_user_id = current_user.id
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=PARTNER_VIEW_ALL_PERMISSION,
+        )
         partners, total = await self._repository.list_partners(
             q=q,
             partner_type=partner_type,
-            owner_user_id=owner_user_id,
+            owner_user_ids=owner_user_ids,
         )
         items = [await self._partner_response(partner) for partner in partners]
         return PartnerListResponse(items=items, total=total)
@@ -157,10 +167,11 @@ class PartnerService:
         partner = await self._repository.get_partner(partner_id)
         if partner is None:
             raise PartnerNotFoundError
-        if (
-            "masterdata:partner:view_all" not in current_user.permissions
-            and partner.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=PARTNER_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and partner.owner_user_id not in allowed_user_ids:
             raise PartnerNotFoundError
         return partner
 

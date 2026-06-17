@@ -144,7 +144,7 @@ class InboundPlanRepository:
         status: str | None = None,
         supplier_id: str | None = None,
         purchase_contract_id: str | None = None,
-        owner_user_id: str | None = None,
+        owner_user_ids: list[str] | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[InboundPlanRow], int]:
@@ -182,8 +182,8 @@ class InboundPlanRepository:
             conditions.append(InboundPlan.supplier_id == supplier_id)
         if purchase_contract_id:
             conditions.append(InboundPlan.purchase_contract_id == purchase_contract_id)
-        if owner_user_id:
-            conditions.append(InboundPlan.owner_user_id == owner_user_id)
+        if owner_user_ids is not None:
+            conditions.append(InboundPlan.owner_user_id.in_(owner_user_ids))
         for condition in conditions:
             statement = statement.where(condition)
             count_statement = count_statement.where(condition)

@@ -62,7 +62,7 @@ async def test_sample_request_repository_filters_by_customer_status_q_and_owner(
             q="Eco",
             status="draft",
             customer_id="customer-a",
-            owner_user_id="u-001",
+            owner_user_ids=["u-001"],
         )
 
     assert total == 1

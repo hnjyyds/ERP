@@ -4,7 +4,10 @@ from app.api.v1.finance.fee_payments import router as fee_payments_router
 from app.api.v1.finance.misc_fees import router as misc_fees_router
 from app.api.v1.finance.overview import router as overview_router
 from app.api.v1.finance.payments import router as payments_router
+from app.api.v1.finance.port_data import router as port_data_router
 from app.api.v1.finance.receipts import router as receipts_router
+from app.api.v1.finance.reimbursements import router as reimbursements_router
+from app.api.v1.finance.reports import router as reports_router
 from app.api.v1.finance.settlements import router as settlements_router
 from app.api.v1.finance.tax_refunds import router as tax_refunds_router
 
@@ -16,3 +19,6 @@ router.include_router(fee_payments_router)
 router.include_router(misc_fees_router)
 router.include_router(settlements_router)
 router.include_router(tax_refunds_router)
+router.include_router(reimbursements_router)
+router.include_router(port_data_router)
+router.include_router(reports_router)

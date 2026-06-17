@@ -11,7 +11,9 @@ from app.db.session import SessionLocal, engine
 from app.modules.finance.fee_payments import models as finance_fee_payment_models  # noqa: F401
 from app.modules.finance.misc_fees import models as finance_misc_fee_models  # noqa: F401
 from app.modules.finance.payments import models as finance_payment_models  # noqa: F401
+from app.modules.finance.port_data import models as finance_port_data_models  # noqa: F401
 from app.modules.finance.receipts import models as finance_receipt_models  # noqa: F401
+from app.modules.finance.reimbursements import models as finance_reimbursement_models  # noqa: F401
 from app.modules.finance.settlements import models as finance_settlement_models  # noqa: F401
 from app.modules.finance.tax_refunds import models as finance_tax_refund_models  # noqa: F401
 from app.modules.followup import models as followup_models  # noqa: F401
@@ -36,6 +38,9 @@ from app.modules.sample.requests import models as sample_request_models  # noqa:
 from app.modules.system.auth import models as auth_models  # noqa: F401
 from app.modules.system.auth.migrations import ensure_auth_schema
 from app.modules.system.auth.seed import seed_system_demo_data
+from app.modules.system.company import models as company_models  # noqa: F401
+from app.modules.system.company.migrations import ensure_company_schema
+from app.modules.system.company.seed import seed_company_default
 from app.modules.system.dashboard import models as dashboard_models  # noqa: F401
 from app.modules.system.dashboard.migrations import ensure_dashboard_schema
 from app.modules.system.dashboard.seed import seed_dashboard_demo_data
@@ -53,11 +58,13 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         await connection.run_sync(ensure_auth_schema)
         await connection.run_sync(ensure_dashboard_schema)
         await connection.run_sync(ensure_product_schema)
+        await connection.run_sync(ensure_company_schema)
 
     if settings.seed_demo_data:
         async with SessionLocal() as session:
             await seed_system_demo_data(session)
             await seed_dashboard_demo_data(session, user_id=settings.demo_user_id)
+            await seed_company_default(session)
 
     yield
 

@@ -21,7 +21,10 @@ from app.modules.purchase.invoice_notices.schemas import (
     PurchaseInvoiceNoticeResponse,
     PurchaseInvoiceNoticeSend,
 )
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+PURCHASE_INVOICE_NOTICE_VIEW_ALL_PERMISSION = "purchase:invoice_notice:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -40,8 +43,14 @@ class _SupplierGroup:
 
 
 class PurchaseInvoiceNoticeService:
-    def __init__(self, *, repository: PurchaseInvoiceNoticeRepository) -> None:
+    def __init__(
+        self,
+        *,
+        repository: PurchaseInvoiceNoticeRepository,
+        data_scope_resolver: DataScopeResolver,
+    ) -> None:
         self._repository = repository
+        self._data_scope_resolver = data_scope_resolver
 
     async def generate_from_customs_declaration(
         self,
@@ -104,12 +113,16 @@ class PurchaseInvoiceNoticeService:
         self._require(current_user, "purchase:invoice_notice:view")
         if status is not None:
             self._validate_status(status)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=PURCHASE_INVOICE_NOTICE_VIEW_ALL_PERMISSION,
+        )
         rows, total = await self._repository.list_notices(
             q=q,
             status=status,
             supplier_id=supplier_id,
             customs_declaration_id=customs_declaration_id,
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return PurchaseInvoiceNoticeListResponse(
             items=[await self._notice_response(row) for row in rows],
@@ -190,8 +203,12 @@ class PurchaseInvoiceNoticeService:
         current_user: CurrentUserResponse,
     ) -> PurchaseInvoiceNoticeReminderListResponse:
         self._require(current_user, "purchase:invoice_notice:view")
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=PURCHASE_INVOICE_NOTICE_VIEW_ALL_PERMISSION,
+        )
         reminders = await self._repository.list_reminders(
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return PurchaseInvoiceNoticeReminderListResponse(
             items=[self._reminder_response(row) for row in reminders],
@@ -208,7 +225,11 @@ class PurchaseInvoiceNoticeService:
         notice = await self._repository.get_notice(notice_id)
         if notice is None:
             raise PurchaseInvoiceNoticeNotFoundError
-        if self._owner_filter(current_user) is not None and notice.owner_user_id != current_user.id:
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=PURCHASE_INVOICE_NOTICE_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and notice.owner_user_id not in allowed_user_ids:
             raise PurchaseInvoiceNoticeNotFoundError
         return notice
 
@@ -297,11 +318,6 @@ class PurchaseInvoiceNoticeService:
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:
             raise PermissionDeniedError
-
-    def _owner_filter(self, current_user: CurrentUserResponse) -> str | None:
-        if "purchase:invoice_notice:view_all" in current_user.permissions:
-            return None
-        return current_user.id
 
     def _validate_status(self, status: str) -> None:
         if status not in VALID_PURCHASE_INVOICE_NOTICE_STATUSES:

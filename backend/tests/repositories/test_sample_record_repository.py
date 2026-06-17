@@ -80,7 +80,7 @@ async def test_sample_record_repository_filters_and_maps_rows(
             sample_type="confirm_sample",
             customer_id="customer-a",
             purchase_contract_id="pc-a",
-            owner_user_id=None,
+            owner_user_ids=None,
         )
         images = await repository.list_images(record.id)
         stock_summary = await repository.get_stock_summary(record.id)

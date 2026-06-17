@@ -66,7 +66,7 @@ async def test_sample_delivery_repository_filters_statistics_and_histories(
             status="approved",
             customer_id="customer-a",
             express_company="DHL",
-            owner_user_id=None,
+            owner_user_ids=None,
         )
         statistics = await repository.get_fee_statistics(
             customer_id="customer-a",

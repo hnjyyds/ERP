@@ -299,7 +299,7 @@ class SampleDeliveryRepository:
         status: str | None = None,
         customer_id: str | None = None,
         express_company: str | None = None,
-        owner_user_id: str | None = None,
+        owner_user_ids: list[str] | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[SampleDeliveryRow], int]:
@@ -337,8 +337,8 @@ class SampleDeliveryRepository:
             conditions.append(SampleDelivery.customer_id == customer_id)
         if express_company:
             conditions.append(SampleDelivery.express_company == express_company)
-        if owner_user_id:
-            conditions.append(SampleDelivery.owner_user_id == owner_user_id)
+        if owner_user_ids is not None:
+            conditions.append(SampleDelivery.owner_user_id.in_(owner_user_ids))
         for condition in conditions:
             statement = statement.where(condition)
             count_statement = count_statement.where(condition)

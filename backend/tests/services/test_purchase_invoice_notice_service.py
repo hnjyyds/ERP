@@ -14,7 +14,16 @@ from app.modules.purchase.invoice_notices.services import (
     PermissionDeniedError,
     PurchaseInvoiceNoticeService,
 )
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+
+def _make_service(session: AsyncSession) -> PurchaseInvoiceNoticeService:
+    return PurchaseInvoiceNoticeService(
+        repository=PurchaseInvoiceNoticeRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+    )
 
 
 def _user_with_permissions(
@@ -93,9 +102,7 @@ async def test_purchase_invoice_notice_service_generates_sends_and_receives(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = PurchaseInvoiceNoticeService(
-            repository=PurchaseInvoiceNoticeRepository(session)
-        )
+        service = _make_service(session)
         current_user = _user_with_permissions(
             [
                 "purchase:invoice_notice:edit",
@@ -155,9 +162,7 @@ async def test_purchase_invoice_notice_service_private_filter(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = PurchaseInvoiceNoticeService(
-            repository=PurchaseInvoiceNoticeRepository(session)
-        )
+        service = _make_service(session)
         owner = _user_with_permissions(["purchase:invoice_notice:edit"], user_id="u-owner")
         await service.generate_from_customs_declaration(
             current_user=owner,
@@ -181,9 +186,7 @@ async def test_purchase_invoice_notice_service_requires_permission(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = PurchaseInvoiceNoticeService(
-            repository=PurchaseInvoiceNoticeRepository(session)
-        )
+        service = _make_service(session)
 
         with pytest.raises(PermissionDeniedError):
             await service.generate_from_customs_declaration(

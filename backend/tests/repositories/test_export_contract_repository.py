@@ -84,7 +84,7 @@ async def test_export_contract_repository_filters_signature_payment_and_statisti
             q="Eco",
             approval_status="approved",
             customer_id="customer-a",
-            owner_user_id=None,
+            owner_user_ids=None,
         )
         lines = await repository.list_lines(contract_id)
         signatures = await repository.list_signatures(contract_id)

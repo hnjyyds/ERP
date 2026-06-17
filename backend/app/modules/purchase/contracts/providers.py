@@ -8,6 +8,8 @@ from app.modules.masterdata.products.repositories import ProductRepository
 from app.modules.purchase.contracts.repositories import PurchaseContractRepository
 from app.modules.purchase.contracts.services import PurchaseContractService
 from app.modules.sales.contracts.repositories import ExportContractRepository
+from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 
 
 def get_purchase_contract_service(
@@ -17,4 +19,5 @@ def get_purchase_contract_service(
         purchase_repository=PurchaseContractRepository(session),
         export_contract_repository=ExportContractRepository(session),
         product_repository=ProductRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
     )

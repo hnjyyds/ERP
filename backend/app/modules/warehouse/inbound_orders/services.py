@@ -5,6 +5,7 @@ from app.db.uow import UnitOfWork
 from app.modules.followup.services import FollowupService
 from app.modules.purchase.contracts.repositories import PurchaseContractRepository
 from app.modules.quality.inspections.repositories import QualityInspectionRepository
+from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.warehouse.inbound_orders.repositories import (
     InboundOrderLineRow,
@@ -32,6 +33,8 @@ from app.modules.warehouse.inbound_plans.repositories import (
     InboundPlanRepository,
     InboundPlanRow,
 )
+
+INBOUND_ORDER_VIEW_ALL_PERMISSION = "warehouse:inbound_order:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -66,12 +69,14 @@ class InboundOrderService:
         purchase_contract_repository: PurchaseContractRepository,
         quality_repository: QualityInspectionRepository,
         followup_service: FollowupService,
+        data_scope_resolver: DataScopeResolver,
     ) -> None:
         self._repository = inbound_repository
         self._inbound_plan_repository = inbound_plan_repository
         self._purchase_contract_repository = purchase_contract_repository
         self._quality_repository = quality_repository
         self._followup_service = followup_service
+        self._data_scope_resolver = data_scope_resolver
 
     async def generate_from_plan(
         self,
@@ -202,13 +207,17 @@ class InboundOrderService:
             self._validate_status(status)
         if inbound_mode is not None:
             self._validate_mode(inbound_mode)
+        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=INBOUND_ORDER_VIEW_ALL_PERMISSION,
+        )
         rows, total = await self._repository.list_orders(
             q=q,
             status=status,
             inbound_mode=inbound_mode,
             supplier_id=supplier_id,
             purchase_contract_id=purchase_contract_id,
-            owner_user_id=self._owner_filter(current_user),
+            owner_user_ids=owner_user_ids,
         )
         return InboundOrderListResponse(
             items=[await self._order_response(row) for row in rows],
@@ -273,10 +282,11 @@ class InboundOrderService:
         plan = await self._inbound_plan_repository.get_plan(plan_id)
         if plan is None:
             raise InboundOrderPlanNotFoundError
-        if (
-            "warehouse:inbound_order:view_all" not in current_user.permissions
-            and plan.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=INBOUND_ORDER_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and plan.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
         return plan
 
@@ -289,10 +299,11 @@ class InboundOrderService:
         order = await self._repository.get_order(order_id)
         if order is None:
             raise InboundOrderNotFoundError
-        if (
-            "warehouse:inbound_order:view_all" not in current_user.permissions
-            and order.owner_user_id != current_user.id
-        ):
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+            view_all_permission=INBOUND_ORDER_VIEW_ALL_PERMISSION,
+        )
+        if allowed_user_ids is not None and order.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
         return order
 
@@ -494,11 +505,6 @@ class InboundOrderService:
 
     def _remaining_quantity(self, line: InboundPlanLineRow) -> Decimal:
         return Decimal(line.planned_quantity) - Decimal(line.received_quantity)
-
-    def _owner_filter(self, current_user: CurrentUserResponse) -> str | None:
-        if "warehouse:inbound_order:view_all" in current_user.permissions:
-            return None
-        return current_user.id
 
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:
