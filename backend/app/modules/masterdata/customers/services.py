@@ -10,18 +10,18 @@ from app.modules.masterdata.customers.repositories import (
 from app.modules.masterdata.customers.schemas import (
     CustomerContactCreate,
     CustomerContactResponse,
+    CustomerContactUpdate,
     CustomerCreate,
     CustomerCreditProfileInput,
     CustomerCreditProfileResponse,
     CustomerListResponse,
     CustomerResponse,
     CustomerTransactionListResponse,
+    CustomerTransactionResponse,
     CustomerUpdate,
 )
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
-
-CUSTOMER_VIEW_ALL_PERMISSION = "masterdata:customer:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -29,6 +29,10 @@ class PermissionDeniedError(Exception):
 
 
 class CustomerNotFoundError(Exception):
+    pass
+
+
+class CustomerContactNotFoundError(Exception):
     pass
 
 
@@ -126,6 +130,48 @@ class CustomerService:
             )
         return self._contact_response(contact)
 
+    async def update_contact(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        customer_id: str,
+        contact_id: str,
+        payload: CustomerContactUpdate,
+    ) -> CustomerContactResponse:
+        self._require(current_user, "masterdata:customer:edit")
+        await self._get_accessible_customer(current_user=current_user, customer_id=customer_id)
+        async with UnitOfWork(self._repository.session):
+            contact = await self._repository.update_contact(
+                customer_id=customer_id,
+                contact_id=contact_id,
+                name=payload.name,
+                title=payload.title,
+                email=payload.email,
+                phone=payload.phone,
+                is_primary=payload.is_primary,
+            )
+            if contact is None:
+                raise CustomerContactNotFoundError
+        return self._contact_response(contact)
+
+    async def delete_contact(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        customer_id: str,
+        contact_id: str,
+    ) -> CustomerContactResponse:
+        self._require(current_user, "masterdata:customer:edit")
+        await self._get_accessible_customer(current_user=current_user, customer_id=customer_id)
+        async with UnitOfWork(self._repository.session):
+            contact = await self._repository.delete_contact(
+                customer_id=customer_id,
+                contact_id=contact_id,
+            )
+            if contact is None:
+                raise CustomerContactNotFoundError
+        return self._contact_response(contact)
+
     async def get_customer(
         self,
         *,
@@ -152,7 +198,6 @@ class CustomerService:
         self._require(current_user, "masterdata:customer:view")
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=CUSTOMER_VIEW_ALL_PERMISSION,
         )
         customers, total = await self._repository.list_customers(
             q=q,
@@ -176,7 +221,18 @@ class CustomerService:
         customer_id: str,
     ) -> CustomerTransactionListResponse:
         await self._get_accessible_customer(current_user=current_user, customer_id=customer_id)
-        return CustomerTransactionListResponse(items=[], total=0)
+        rows = await self._repository.list_transactions(customer_id=customer_id)
+        items = [
+            CustomerTransactionResponse(
+                source_type=row.source_type,
+                source_code=row.source_code,
+                occurred_at=row.occurred_at,
+                amount=str(row.amount) if row.amount is not None else None,
+                summary=row.summary,
+            )
+            for row in rows
+        ]
+        return CustomerTransactionListResponse(items=items, total=len(items))
 
     async def deactivate_customer(
         self,
@@ -210,7 +266,6 @@ class CustomerService:
             raise CustomerNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=CUSTOMER_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and customer.owner_user_id not in allowed_user_ids:
             raise CustomerNotFoundError

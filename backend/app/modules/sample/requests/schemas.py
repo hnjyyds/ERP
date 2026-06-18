@@ -3,6 +3,8 @@ from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.modules.sample.records.schemas import SampleImageCreate
+
 VALID_SAMPLE_STATUSES = ("draft", "sent", "in_progress", "completed", "cancelled")
 VALID_SAMPLE_DESTINATIONS = ("in_house", "factory")
 VALID_SAMPLE_FEE_PAYMENT_STATUSES = ("not_requested", "requested", "paid")
@@ -101,6 +103,8 @@ class SampleFeeResponse(BaseModel):
     remark: str | None
     payment_status: str
     payment_request_no: str | None
+    finance_invoice_no: str | None
+    finance_payment_request_id: str | None
 
 
 class SampleRequestResponse(BaseModel):
@@ -133,3 +137,21 @@ class SampleRequestListResponse(BaseModel):
 
     items: list[SampleRequestResponse]
     total: int
+
+
+class SampleRequestToRecordCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    code: str = Field(min_length=1, max_length=80)
+    sample_type: str = Field(default="confirm_sample", min_length=1, max_length=40)
+    status: str = Field(default="registered", min_length=1, max_length=40)
+    received_at: date
+    submitted_at: date | None = None
+    quantity: Decimal = Field(gt=0)
+    unit: str = Field(min_length=1, max_length=40)
+    customer_sku: str | None = Field(default=None, max_length=120)
+    supplier_sku: str | None = Field(default=None, max_length=120)
+    purchase_contract_id: str | None = Field(default=None, max_length=36)
+    purchase_contract_no: str | None = Field(default=None, max_length=80)
+    description: str | None = Field(default=None, max_length=4000)
+    images: list[SampleImageCreate] = Field(default_factory=list)

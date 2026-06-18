@@ -30,8 +30,6 @@ from app.modules.purchase.inquiries.schemas import (
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 
-PURCHASE_INQUIRY_VIEW_ALL_PERMISSION = "purchase:inquiry:view_all"
-
 
 class PermissionDeniedError(Exception):
     pass
@@ -128,7 +126,6 @@ class PurchaseInquiryService:
             self._validate_status(status)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=PURCHASE_INQUIRY_VIEW_ALL_PERMISSION,
         )
         inquiries, total = await self._repository.list_inquiries(
             q=q,
@@ -257,7 +254,6 @@ class PurchaseInquiryService:
             raise PurchaseInquiryNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=PURCHASE_INQUIRY_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and inquiry.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError

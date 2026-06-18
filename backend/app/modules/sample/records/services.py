@@ -1,4 +1,6 @@
+import csv
 from decimal import Decimal
+from io import StringIO
 
 from app.db.uow import UnitOfWork
 from app.modules.sample.records.repositories import (
@@ -17,6 +19,9 @@ from app.modules.sample.records.schemas import (
     SampleImageCreate,
     SampleImageResponse,
     SampleRecordCreate,
+    SampleRecordExportResponse,
+    SampleRecordImportRequest,
+    SampleRecordImportResponse,
     SampleRecordListResponse,
     SampleRecordResponse,
     SampleStockEventCreate,
@@ -25,8 +30,6 @@ from app.modules.sample.records.schemas import (
 )
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
-
-SAMPLE_RECORD_VIEW_ALL_PERMISSION = "sample:record:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -125,7 +128,6 @@ class SampleRecordService:
             self._validate_sample_type(sample_type)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=SAMPLE_RECORD_VIEW_ALL_PERMISSION,
         )
         records, total = await self._repository.list_records(
             q=q,
@@ -177,6 +179,141 @@ class SampleRecordService:
             )
         return self._stock_event_response(event)
 
+    async def response_from_record(self, record: SampleRecordRow) -> SampleRecordResponse:
+        return await self._record_response(record)
+
+    async def import_records(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        payload: SampleRecordImportRequest,
+    ) -> SampleRecordImportResponse:
+        self._require(current_user, "sample:record:edit")
+        created: list[SampleRecordRow] = []
+        async with UnitOfWork(self._repository.session):
+            for record_payload in payload.records:
+                self._validate_sample_type(record_payload.sample_type)
+                self._validate_status(record_payload.status)
+                record = await self._repository.create_record(
+                    code=record_payload.code,
+                    sample_type=record_payload.sample_type,
+                    status=record_payload.status,
+                    product_id=record_payload.product_id,
+                    product_code=record_payload.product_code,
+                    product_name=record_payload.product_name,
+                    customer_id=record_payload.customer_id,
+                    customer_name=record_payload.customer_name,
+                    supplier_id=record_payload.supplier_id,
+                    supplier_name=record_payload.supplier_name,
+                    customer_sku=record_payload.customer_sku,
+                    supplier_sku=record_payload.supplier_sku,
+                    purchase_contract_id=record_payload.purchase_contract_id,
+                    purchase_contract_no=record_payload.purchase_contract_no,
+                    source_type=record_payload.source_type,
+                    source_id=record_payload.source_id,
+                    source_code=record_payload.source_code,
+                    source_note=record_payload.source_note,
+                    received_at=record_payload.received_at,
+                    submitted_at=record_payload.submitted_at,
+                    quantity=record_payload.quantity,
+                    unit=record_payload.unit,
+                    description=record_payload.description,
+                    owner_user_id=current_user.id,
+                )
+                await self._repository.add_stock_event(
+                    sample_record_id=record.id,
+                    event_type="received",
+                    quantity=record_payload.quantity,
+                    unit=record_payload.unit,
+                    occurred_at=record_payload.received_at,
+                    delivery_no=None,
+                    recipient=record_payload.supplier_name,
+                    note="样品批量导入收样",
+                )
+                for image in record_payload.images:
+                    await self._repository.add_image(
+                        sample_record_id=record.id,
+                        file_id=image.file_id,
+                        filename=image.filename,
+                        url=image.url,
+                        caption=image.caption,
+                        is_primary=image.is_primary,
+                    )
+                await self._publish_followup_event(record)
+                created.append(record)
+        return SampleRecordImportResponse(
+            created_count=len(created),
+            records=[await self._record_response(record) for record in created],
+        )
+
+    async def export_records(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        q: str | None,
+        sample_type: str | None,
+        customer_id: str | None,
+        purchase_contract_id: str | None,
+    ) -> SampleRecordExportResponse:
+        result = await self.list_records(
+            current_user=current_user,
+            q=q,
+            sample_type=sample_type,
+            customer_id=customer_id,
+            purchase_contract_id=purchase_contract_id,
+        )
+        output = StringIO()
+        writer = csv.writer(output)
+        writer.writerow(
+            [
+                "样品编号",
+                "分类",
+                "状态",
+                "产品编号",
+                "产品名称",
+                "客户",
+                "供应商",
+                "客户货号",
+                "供应商货号",
+                "采购合同",
+                "收样数",
+                "寄样数",
+                "公司留样",
+                "单位",
+                "收样日期",
+                "提交日期",
+                "来源单号",
+            ]
+        )
+        for item in result.items:
+            writer.writerow(
+                [
+                    item.code,
+                    self._sample_type_label(item.sample_type),
+                    item.status,
+                    item.product_code or "",
+                    item.product_name,
+                    item.customer_name or "",
+                    item.supplier_name or "",
+                    item.customer_sku or "",
+                    item.supplier_sku or "",
+                    item.purchase_contract_no or "",
+                    item.stock_summary.received_quantity,
+                    item.stock_summary.delivered_quantity,
+                    item.stock_summary.retained_quantity,
+                    item.stock_summary.unit,
+                    item.received_at.isoformat(),
+                    item.submitted_at.isoformat() if item.submitted_at else "",
+                    item.source_code or "",
+                ]
+            )
+        return SampleRecordExportResponse(
+            filename=f"sample-records-{current_user.id}.csv",
+            content_type="text/csv",
+            content=output.getvalue(),
+            total=result.total,
+        )
+
     async def _add_image_without_transaction(
         self,
         record_id: str,
@@ -223,7 +360,6 @@ class SampleRecordService:
             raise SampleRecordNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=SAMPLE_RECORD_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and record.owner_user_id not in allowed_user_ids:
             raise SampleRecordNotFoundError
@@ -343,3 +479,12 @@ class SampleRecordService:
 
     def _quantity(self, value: Decimal | int) -> str:
         return f"{Decimal(str(value)):.4f}".rstrip("0").rstrip(".")
+
+    def _sample_type_label(self, value: str) -> str:
+        labels = {
+            "incoming": "来样",
+            "confirm_sample": "确认样",
+            "bulk_sample": "大货样",
+            "retained_sample": "留样",
+        }
+        return labels.get(value, value)

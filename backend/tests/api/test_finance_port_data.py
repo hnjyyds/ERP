@@ -131,3 +131,81 @@ async def test_finance_port_data_rejects_invalid_and_permissions(
 
     unauthorized_response = await api_client.get("/api/v1/finance/customs-declaration-records")
     assert unauthorized_response.status_code == 401
+
+
+async def test_finance_port_data_matches_customs_receipts_to_verification_documents(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    finance_token = await _login_token(api_client, "finance", "finance123")
+    document_response = await api_client.post(
+        "/api/v1/finance/verification-documents",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        json={
+            "document_no": "VD-PORT-MATCH-001",
+            "received_at": "2026-12-01",
+            "owner_user_id": "u-001",
+            "owner_user_name": "演示业务主管",
+            "shipment_plan_id": None,
+            "shipment_no": None,
+            "customer_name": "欧陆家居用品有限公司",
+            "currency": "USD",
+            "refundable_amount": "120.00",
+            "valid_until": "2026-12-31",
+            "remark": "等待口岸回单自动匹配",
+        },
+    )
+    assert document_response.status_code == 201
+    document = document_response.json()["data"]
+
+    import_response = await api_client.post(
+        "/api/v1/finance/port-import-batches",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        json=_batch_payload(batch_no="PORT-MATCH-001", record_count=1)
+        | {
+            "records": [
+                {
+                    "declaration_no": document["document_no"],
+                    "customs_receipt_no": "HD-MATCH-001",
+                    "trade_type": "export",
+                    "customs_date": "2026-12-18",
+                    "product_name": "Eco Shopping Bag",
+                    "amount": "1200.00",
+                    "currency": "USD",
+                    "customer_or_supplier": "欧陆家居用品有限公司",
+                }
+            ]
+        },
+    )
+    assert import_response.status_code == 201
+
+    match_response = await api_client.post(
+        "/api/v1/finance/customs-declaration-records/auto-match",
+        headers={"Authorization": f"Bearer {finance_token}"},
+    )
+    assert match_response.status_code == 200
+    match_result = match_response.json()["data"]
+    assert match_result["matched_count"] == 1
+    assert match_result["unmatched_count"] == 0
+    assert match_result["matched_records"][0]["verification_document_no"] == "VD-PORT-MATCH-001"
+
+    refreshed_response = await api_client.get(
+        "/api/v1/finance/verification-documents",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        params={"q": "VD-PORT-MATCH-001"},
+    )
+    assert refreshed_response.status_code == 200
+    refreshed = refreshed_response.json()["data"]["items"][0]
+    assert refreshed["status"] == "customs_receipt_registered"
+    assert refreshed["customs_declaration_no"] == "VD-PORT-MATCH-001"
+    assert refreshed["customs_receipt_no"] == "HD-MATCH-001"
+
+    records_response = await api_client.get(
+        "/api/v1/finance/customs-declaration-records",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        params={"declaration_no": "VD-PORT-MATCH-001"},
+    )
+    assert records_response.status_code == 200
+    record = records_response.json()["data"]["items"][0]
+    assert record["match_status"] == "matched"
+    assert record["verification_document_no"] == "VD-PORT-MATCH-001"

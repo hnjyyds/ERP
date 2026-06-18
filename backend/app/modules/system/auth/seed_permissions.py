@@ -448,5 +448,10 @@ def _base_permissions() -> list[Permission]:
             name="授权负库存出库",
         ),
         Permission(id="perm-finance-view", code="finance:view", name="查看财务管理"),
+        Permission(
+            id="perm-finance-report-export",
+            code="finance:report:export",
+            name="导出财务报表",
+        ),
         Permission(id="perm-reporting-view", code="reporting:view", name="查看经理查询"),
     ]

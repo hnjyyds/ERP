@@ -7,6 +7,7 @@ from app.modules.masterdata.partners.providers import get_partner_service
 from app.modules.masterdata.partners.schemas import (
     PartnerContactCreate,
     PartnerContactResponse,
+    PartnerContactUpdate,
     PartnerCreate,
     PartnerFeeRecordListResponse,
     PartnerListResponse,
@@ -14,6 +15,7 @@ from app.modules.masterdata.partners.schemas import (
     PartnerUpdate,
 )
 from app.modules.masterdata.partners.services import (
+    PartnerContactNotFoundError,
     PartnerNotFoundError,
     PartnerService,
     PermissionDeniedError,
@@ -150,6 +152,94 @@ async def add_partner_contact(
             payload=payload,
         )
         return ApiResponse(data=contact)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except PartnerNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="合作伙伴不存在",
+        ) from None
+
+
+@router.put(
+    "/{partner_id}/contacts/{contact_id}",
+    response_model=ApiResponse[PartnerContactResponse],
+)
+async def update_partner_contact(
+    partner_id: str,
+    contact_id: str,
+    payload: PartnerContactUpdate,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[PartnerService, Depends(get_partner_service)],
+) -> ApiResponse[PartnerContactResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        contact = await service.update_contact(
+            current_user=user,
+            partner_id=partner_id,
+            contact_id=contact_id,
+            payload=payload,
+        )
+        return ApiResponse(data=contact)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except PartnerNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="合作伙伴不存在",
+        ) from None
+    except PartnerContactNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="联系人不存在",
+        ) from None
+
+
+@router.delete(
+    "/{partner_id}/contacts/{contact_id}",
+    response_model=ApiResponse[PartnerContactResponse],
+)
+async def delete_partner_contact(
+    partner_id: str,
+    contact_id: str,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[PartnerService, Depends(get_partner_service)],
+) -> ApiResponse[PartnerContactResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        contact = await service.delete_contact(
+            current_user=user,
+            partner_id=partner_id,
+            contact_id=contact_id,
+        )
+        return ApiResponse(data=contact)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except PartnerNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="合作伙伴不存在",
+        ) from None
+    except PartnerContactNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="联系人不存在",
+        ) from None
+
+
+@router.delete("/{partner_id}", response_model=ApiResponse[PartnerResponse])
+async def deactivate_partner(
+    partner_id: str,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[PartnerService, Depends(get_partner_service)],
+) -> ApiResponse[PartnerResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        partner = await service.deactivate_partner(current_user=user, partner_id=partner_id)
+        return ApiResponse(data=partner)
     except PermissionDeniedError:
         _raise_permission_denied()
     except PartnerNotFoundError:

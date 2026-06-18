@@ -3,9 +3,9 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from app.modules.system.auth.data_scope_rules import DEFAULT_DATA_SCOPE, DataScope
+
 AvatarType = Literal["preset", "upload"]
-DataScope = Literal["self", "department", "department_tree", "all"]
-DEFAULT_DATA_SCOPE: DataScope = "self"
 DEFAULT_AVATAR_TYPE: AvatarType = "preset"
 DEFAULT_AVATAR_VALUE = "amber-orbit"
 ORGANIZATION_AVATAR_PRESETS = frozenset(
@@ -47,7 +47,7 @@ class CurrentUserResponse(BaseModel):
     display_name: str
     department_id: str | None = None
     department_name: str
-    data_scope: str = "self"
+    data_scope: DataScope = DEFAULT_DATA_SCOPE
     avatar_type: AvatarType = DEFAULT_AVATAR_TYPE
     avatar_value: str = DEFAULT_AVATAR_VALUE
     roles: list[str]

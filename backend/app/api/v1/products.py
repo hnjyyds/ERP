@@ -9,14 +9,19 @@ from app.modules.masterdata.products.schemas import (
     ProductAccessoryResponse,
     ProductAccessoryUpdate,
     ProductCreate,
+    ProductCustomerListResponse,
     ProductExportResponse,
+    ProductImportRequest,
+    ProductImportResponse,
     ProductListResponse,
     ProductResponse,
+    ProductTransactionListResponse,
     ProductUpdate,
 )
 from app.modules.masterdata.products.services import (
     PermissionDeniedError,
     ProductAccessoryNotFoundError,
+    ProductImportInvalidError,
     ProductNotFoundError,
     ProductService,
 )
@@ -83,6 +88,26 @@ async def export_products(
         _raise_permission_denied()
 
 
+@router.post("/import", response_model=ApiResponse[ProductImportResponse])
+async def import_products(
+    payload: ProductImportRequest,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[ProductService, Depends(get_product_service)],
+) -> ApiResponse[ProductImportResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        result = await service.import_products(current_user=user, payload=payload)
+        return ApiResponse(data=result)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except ProductImportInvalidError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        ) from None
+
+
 @router.get("/{product_id}", response_model=ApiResponse[ProductResponse])
 async def get_product(
     product_id: str,
@@ -94,6 +119,52 @@ async def get_product(
     try:
         product = await service.get_product(current_user=user, product_id=product_id)
         return ApiResponse(data=product)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except ProductNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
+
+
+@router.get(
+    "/{product_id}/customers",
+    response_model=ApiResponse[ProductCustomerListResponse],
+)
+async def list_product_customers(
+    product_id: str,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[ProductService, Depends(get_product_service)],
+) -> ApiResponse[ProductCustomerListResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        customers = await service.list_product_customers(
+            current_user=user,
+            product_id=product_id,
+        )
+        return ApiResponse(data=customers)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except ProductNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
+
+
+@router.get(
+    "/{product_id}/transactions",
+    response_model=ApiResponse[ProductTransactionListResponse],
+)
+async def list_product_transactions(
+    product_id: str,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[ProductService, Depends(get_product_service)],
+) -> ApiResponse[ProductTransactionListResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        transactions = await service.list_transactions(
+            current_user=user,
+            product_id=product_id,
+        )
+        return ApiResponse(data=transactions)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ProductNotFoundError:

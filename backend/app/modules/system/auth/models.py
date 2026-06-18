@@ -4,6 +4,7 @@ from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, Uni
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
+from app.modules.system.auth.data_scope_rules import DEFAULT_DATA_SCOPE
 
 
 class Department(Base):
@@ -37,7 +38,9 @@ class Role(Base):
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     code: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
     # 数据范围：self / department / department_tree / all。
-    data_scope: Mapped[str] = mapped_column(String(20), default="self", nullable=False)
+    data_scope: Mapped[str] = mapped_column(
+        String(20), default=DEFAULT_DATA_SCOPE, nullable=False
+    )
 
 
 class UserRole(Base):

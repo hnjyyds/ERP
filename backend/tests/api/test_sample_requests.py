@@ -43,6 +43,30 @@ def _sample_request_payload(code: str = "SR-E2E-001") -> dict[str, object]:
     }
 
 
+def _sample_record_payload_from_request(
+    code: str = "SM-FROM-SR-001",
+) -> dict[str, object]:
+    return {
+        "code": code,
+        "sample_type": "confirm_sample",
+        "status": "registered",
+        "received_at": "2026-06-24",
+        "submitted_at": "2026-06-25",
+        "quantity": "3",
+        "unit": "pcs",
+        "description": "打样完成后转确认样",
+        "images": [
+            {
+                "file_id": "sample-finished-front",
+                "filename": "finished-front.jpg",
+                "url": "https://assets.example.test/finished-front.jpg",
+                "caption": "完成样正面",
+                "is_primary": True,
+            }
+        ],
+    }
+
+
 async def test_sample_request_create_search_progress_fee_and_payment(
     api_client: AsyncClient,
     seeded_system: None,
@@ -134,6 +158,75 @@ async def test_sample_request_create_search_progress_fee_and_payment(
     assert refreshed["status"] == "in_progress"
     assert refreshed["progress_events"][0]["stage"] == "sent_to_factory"
     assert refreshed["fees"][0]["payment_status"] == "requested"
+    assert refreshed["fees"][0]["finance_invoice_no"].startswith("SAMPLE-FEE-INV-")
+    assert refreshed["fees"][0]["payment_request_no"].startswith("SAMPLE-FEE-")
+
+
+async def test_sample_request_filters_by_date_range_and_converts_completed_request_to_record(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+
+    create_response = await api_client.post(
+        "/api/v1/sample/requests",
+        headers=headers,
+        json=_sample_request_payload(code="SR-COMPLETE-001"),
+    )
+    assert create_response.status_code == 201
+    request_id = create_response.json()["data"]["id"]
+
+    await api_client.post(
+        f"/api/v1/sample/requests/{request_id}/progress",
+        headers=headers,
+        json={
+            "stage": "finished",
+            "status": "completed",
+            "occurred_at": "2026-06-24",
+            "note": "打样完成，转确认样。",
+            "handler_name": "Li Wei",
+        },
+    )
+
+    list_response = await api_client.get(
+        "/api/v1/sample/requests",
+        headers=headers,
+        params={"date_from": "2026-06-19", "date_to": "2026-06-21"},
+    )
+    assert list_response.status_code == 200
+    assert [item["code"] for item in list_response.json()["data"]["items"]] == ["SR-COMPLETE-001"]
+
+    excluded_response = await api_client.get(
+        "/api/v1/sample/requests",
+        headers=headers,
+        params={"date_from": "2026-06-21", "date_to": "2026-06-30"},
+    )
+    assert excluded_response.status_code == 200
+    assert excluded_response.json()["data"]["total"] == 0
+
+    convert_response = await api_client.post(
+        f"/api/v1/sample/requests/{request_id}/sample-record",
+        headers=headers,
+        json=_sample_record_payload_from_request(),
+    )
+    assert convert_response.status_code == 201
+    record = convert_response.json()["data"]
+    assert record["code"] == "SM-FROM-SR-001"
+    assert record["source_type"] == "sample_request"
+    assert record["source_id"] == request_id
+    assert record["source_code"] == "SR-COMPLETE-001"
+    assert record["product_code"] == "BAG-40"
+    assert record["customer_name"] == "欧陆家居用品有限公司"
+    assert record["stock_summary"]["received_quantity"] == "3"
+    assert record["images"][0]["filename"] == "finished-front.jpg"
+
+    duplicate_response = await api_client.post(
+        f"/api/v1/sample/requests/{request_id}/sample-record",
+        headers=headers,
+        json=_sample_record_payload_from_request(code="SM-FROM-SR-DUP"),
+    )
+    assert duplicate_response.status_code == 422
 
 
 async def test_sample_request_rejects_unknown_status(

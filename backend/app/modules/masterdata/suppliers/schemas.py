@@ -13,6 +13,10 @@ class SupplierContactCreate(BaseModel):
     is_primary: bool = False
 
 
+class SupplierContactUpdate(SupplierContactCreate):
+    pass
+
+
 class SupplierCreditProfileInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
 

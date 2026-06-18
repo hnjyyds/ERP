@@ -7,6 +7,7 @@ from app.modules.masterdata.customers.providers import get_customer_service
 from app.modules.masterdata.customers.schemas import (
     CustomerContactCreate,
     CustomerContactResponse,
+    CustomerContactUpdate,
     CustomerCreate,
     CustomerListResponse,
     CustomerResponse,
@@ -14,6 +15,7 @@ from app.modules.masterdata.customers.schemas import (
     CustomerUpdate,
 )
 from app.modules.masterdata.customers.services import (
+    CustomerContactNotFoundError,
     CustomerNotFoundError,
     CustomerService,
     PermissionDeniedError,
@@ -157,6 +159,62 @@ async def add_customer_contact(
         _raise_permission_denied()
     except CustomerNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="客户不存在") from None
+
+
+@router.put(
+    "/{customer_id}/contacts/{contact_id}",
+    response_model=ApiResponse[CustomerContactResponse],
+)
+async def update_customer_contact(
+    customer_id: str,
+    contact_id: str,
+    payload: CustomerContactUpdate,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[CustomerService, Depends(get_customer_service)],
+) -> ApiResponse[CustomerContactResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        contact = await service.update_contact(
+            current_user=user,
+            customer_id=customer_id,
+            contact_id=contact_id,
+            payload=payload,
+        )
+        return ApiResponse(data=contact)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except CustomerNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="客户不存在") from None
+    except CustomerContactNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="联系人不存在") from None
+
+
+@router.delete(
+    "/{customer_id}/contacts/{contact_id}",
+    response_model=ApiResponse[CustomerContactResponse],
+)
+async def delete_customer_contact(
+    customer_id: str,
+    contact_id: str,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[CustomerService, Depends(get_customer_service)],
+) -> ApiResponse[CustomerContactResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        contact = await service.delete_contact(
+            current_user=user,
+            customer_id=customer_id,
+            contact_id=contact_id,
+        )
+        return ApiResponse(data=contact)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except CustomerNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="客户不存在") from None
+    except CustomerContactNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="联系人不存在") from None
 
 
 @router.get(

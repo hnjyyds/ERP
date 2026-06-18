@@ -150,3 +150,47 @@ class SampleDeliveryFeeStatisticsResponse(BaseModel):
     items: list[SampleDeliveryFeeStatisticResponse]
     total_amount: str
     currency: str
+
+
+class SampleDeliveryStatusStatisticResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    status: str
+    delivery_count: int
+    total_quantity: str
+
+
+class SampleDeliveryCustomerStatisticResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    customer_id: str | None
+    customer_name: str
+    delivery_count: int
+    total_quantity: str
+
+
+class SampleDeliveryExpressStatisticResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    express_company: str
+    delivery_count: int
+    total_quantity: str
+
+
+class SampleDeliveryStatisticsResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    total_deliveries: int
+    total_quantity: str
+    by_status: list[SampleDeliveryStatusStatisticResponse]
+    by_customer: list[SampleDeliveryCustomerStatisticResponse]
+    by_express: list[SampleDeliveryExpressStatisticResponse]
+
+
+class SampleDeliveryExportResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    filename: str
+    content_type: str
+    content: str
+    total: int

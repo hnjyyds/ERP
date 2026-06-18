@@ -10,6 +10,18 @@ from app.modules.masterdata.customers.models import (
     CustomerContact,
     CustomerCreditProfile,
 )
+from app.modules.sales.contracts.models import ExportContract
+from app.modules.sales.quotations.models import ExportQuotation
+from app.modules.sales.shipments.models import ShipmentPlan
+
+
+@dataclass(frozen=True)
+class CustomerTransactionRow:
+    source_type: str
+    source_code: str
+    occurred_at: str
+    amount: Decimal | None
+    summary: str
 
 
 @dataclass(frozen=True)
@@ -130,6 +142,61 @@ class CustomerRepository:
         self.session.add(contact)
         await self.session.flush()
         return self._map_contact(contact)
+
+    async def update_contact(
+        self,
+        *,
+        customer_id: str,
+        contact_id: str,
+        name: str,
+        title: str | None,
+        email: str | None,
+        phone: str | None,
+        is_primary: bool,
+    ) -> CustomerContactRow | None:
+        contact = await self.session.scalar(
+            select(CustomerContact).where(
+                CustomerContact.id == contact_id,
+                CustomerContact.customer_id == customer_id,
+            )
+        )
+        if contact is None:
+            return None
+        if is_primary:
+            await self.session.execute(
+                update(CustomerContact)
+                .where(
+                    CustomerContact.customer_id == customer_id,
+                    CustomerContact.id != contact_id,
+                )
+                .values(is_primary=False)
+            )
+        contact.name = name
+        contact.title = title
+        contact.email = email
+        contact.phone = phone
+        contact.is_primary = is_primary
+        await self.session.flush()
+        return self._map_contact(contact)
+
+    async def delete_contact(
+        self,
+        *,
+        customer_id: str,
+        contact_id: str,
+    ) -> CustomerContactRow | None:
+        contact = await self.session.scalar(
+            select(CustomerContact).where(
+                CustomerContact.id == contact_id,
+                CustomerContact.customer_id == customer_id,
+            )
+        )
+        if contact is None:
+            return None
+        row = self._map_contact(contact)
+        await self.session.delete(contact)
+        await self.session.flush()
+        return row
 
     async def upsert_credit_profile(
         self,
@@ -253,6 +320,84 @@ class CustomerRepository:
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)
         return [self._map_customer(row) for row in rows], int(total or 0)
+
+    async def list_transactions(
+        self,
+        *,
+        customer_id: str,
+        limit: int = 100,
+    ) -> list[CustomerTransactionRow]:
+        """客户交易记录：聚合出口报价、出口合同与出货明细，按发生日期倒序。"""
+        rows: list[CustomerTransactionRow] = []
+
+        quotations = await self.session.execute(
+            select(
+                ExportQuotation.code,
+                ExportQuotation.quote_date,
+                ExportQuotation.total_amount,
+                ExportQuotation.currency,
+            )
+            .where(ExportQuotation.customer_id == customer_id)
+            .order_by(ExportQuotation.quote_date.desc())
+            .limit(limit)
+        )
+        for code, quote_date, amount, currency in quotations.all():
+            rows.append(
+                CustomerTransactionRow(
+                    source_type="export_quotation",
+                    source_code=code,
+                    occurred_at=quote_date.isoformat() if quote_date else "",
+                    amount=Decimal(str(amount or 0)),
+                    summary=f"出口报价 {code}（{currency}）",
+                )
+            )
+
+        contracts = await self.session.execute(
+            select(
+                ExportContract.code,
+                ExportContract.contract_date,
+                ExportContract.total_amount,
+                ExportContract.currency,
+            )
+            .where(ExportContract.customer_id == customer_id)
+            .order_by(ExportContract.contract_date.desc())
+            .limit(limit)
+        )
+        for code, contract_date, amount, currency in contracts.all():
+            rows.append(
+                CustomerTransactionRow(
+                    source_type="export_contract",
+                    source_code=code,
+                    occurred_at=contract_date.isoformat() if contract_date else "",
+                    amount=Decimal(str(amount or 0)),
+                    summary=f"出口合同 {code}（{currency}）",
+                )
+            )
+
+        shipments = await self.session.execute(
+            select(
+                ShipmentPlan.code,
+                ShipmentPlan.shipment_date,
+                ShipmentPlan.receivable_amount,
+                ShipmentPlan.currency,
+            )
+            .where(ShipmentPlan.customer_id == customer_id)
+            .order_by(ShipmentPlan.shipment_date.desc())
+            .limit(limit)
+        )
+        for code, shipment_date, amount, currency in shipments.all():
+            rows.append(
+                CustomerTransactionRow(
+                    source_type="shipment",
+                    source_code=code,
+                    occurred_at=shipment_date.isoformat() if shipment_date else "",
+                    amount=Decimal(str(amount or 0)),
+                    summary=f"出货明细 {code}（{currency}）",
+                )
+            )
+
+        rows.sort(key=lambda row: row.occurred_at, reverse=True)
+        return rows[:limit]
 
     async def _scalars(self, statement: Select[tuple[Customer]]) -> list[Customer]:
         result = await self.session.scalars(statement)

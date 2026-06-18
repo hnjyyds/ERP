@@ -244,7 +244,7 @@ async def test_announcement_create_requires_admin_permission(
     )
 
     assert response.status_code == 403
-    assert response.json()["detail"] == "无权限发布公告"
+    assert response.json()["message"] == "无权限发布公告"
 
 
 async def test_announcement_create_requires_super_admin_even_with_announcement_permission(
@@ -288,7 +288,7 @@ async def test_announcement_create_requires_super_admin_even_with_announcement_p
     )
 
     assert response.status_code == 403
-    assert response.json()["detail"] == "无权限发布公告"
+    assert response.json()["message"] == "无权限发布公告"
 
 
 async def test_notification_can_be_marked_read(

@@ -3,6 +3,8 @@ from datetime import date
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from app.modules.finance.fee_payments.repositories import FeePaymentRepository
+from app.modules.sample.records.repositories import SampleRecordRepository
 from app.modules.sample.requests.repositories import SampleRequestRepository
 from app.modules.sample.requests.schemas import (
     SampleFeeCreate,
@@ -19,6 +21,8 @@ from app.modules.system.auth.schemas import CurrentUserResponse
 def _make_service(session: AsyncSession) -> SampleRequestService:
     return SampleRequestService(
         SampleRequestRepository(session),
+        sample_record_repository=SampleRecordRepository(session),
+        fee_payment_repository=FeePaymentRepository(session),
         data_scope_resolver=DataScopeResolver(AuthRepository(session)),
     )
 

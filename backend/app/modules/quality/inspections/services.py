@@ -22,8 +22,6 @@ from app.modules.quality.inspections.schemas import (
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 
-QUALITY_INSPECTION_VIEW_ALL_PERMISSION = "quality:inspection:view_all"
-
 
 class PermissionDeniedError(Exception):
     pass
@@ -129,7 +127,6 @@ class QualityInspectionService:
             self._validate_result(result)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=QUALITY_INSPECTION_VIEW_ALL_PERMISSION,
         )
         rows, total = await self._repository.list_inspections(
             q=q,
@@ -239,7 +236,6 @@ class QualityInspectionService:
             raise QualityInspectionPurchaseContractNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=QUALITY_INSPECTION_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and contract.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
@@ -257,7 +253,6 @@ class QualityInspectionService:
             raise QualityInspectionNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=QUALITY_INSPECTION_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and inspection.owner_user_id not in allowed_user_ids:
             raise QualityInspectionNotFoundError

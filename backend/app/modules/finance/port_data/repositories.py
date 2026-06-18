@@ -28,6 +28,9 @@ class CustomsDeclarationRecordRow:
     amount: str
     currency: str
     customer_or_supplier: str | None
+    match_status: str
+    matched_verification_document_id: str | None
+    matched_verification_document_no: str | None
     created_at: datetime
 
 
@@ -188,6 +191,38 @@ class PortDataRepository:
         total = await self.session.scalar(count_statement)
         return [self._map_record(row) for row in rows], int(total or 0)
 
+    async def list_unmatched_export_records(self) -> list[CustomsDeclarationRecordRow]:
+        statement = (
+            select(CustomsDeclarationRecord)
+            .where(
+                CustomsDeclarationRecord.trade_type == "export",
+                CustomsDeclarationRecord.customs_receipt_no.is_not(None),
+                CustomsDeclarationRecord.match_status == "unmatched",
+            )
+            .order_by(
+                CustomsDeclarationRecord.customs_date.asc(),
+                CustomsDeclarationRecord.declaration_no.asc(),
+            )
+        )
+        rows = await self._record_scalars(statement)
+        return [self._map_record(row) for row in rows]
+
+    async def mark_record_matched(
+        self,
+        *,
+        record_id: str,
+        verification_document_id: str,
+        verification_document_no: str,
+    ) -> CustomsDeclarationRecordRow | None:
+        record = await self.session.get(CustomsDeclarationRecord, record_id)
+        if record is None:
+            return None
+        record.match_status = "matched"
+        record.matched_verification_document_id = verification_document_id
+        record.matched_verification_document_no = verification_document_no
+        await self.session.flush()
+        return self._map_record(record)
+
     async def _records_for_batch(self, batch_id: str) -> list[CustomsDeclarationRecordRow]:
         statement = (
             select(CustomsDeclarationRecord)
@@ -246,6 +281,9 @@ class PortDataRepository:
             amount=self._decimal(record.amount),
             currency=record.currency,
             customer_or_supplier=record.customer_or_supplier,
+            match_status=record.match_status,
+            matched_verification_document_id=record.matched_verification_document_id,
+            matched_verification_document_no=record.matched_verification_document_no,
             created_at=record.created_at,
         )
 

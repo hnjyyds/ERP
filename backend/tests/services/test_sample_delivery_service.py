@@ -9,6 +9,7 @@ from app.modules.sample.deliveries.schemas import (
     SampleDeliveryCreate,
     SampleDeliveryFeeCreate,
     SampleDeliveryLineCreate,
+    SampleDeliveryTrackingUpdate,
 )
 from app.modules.sample.deliveries.services import SampleDeliveryService
 from app.modules.sample.records.repositories import SampleRecordRepository
@@ -153,6 +154,15 @@ async def test_sample_delivery_service_review_updates_sample_stock_and_statistic
                 approved_at=date(2026, 6, 25),
             ),
         )
+        shipped = await delivery_service.update_tracking(
+            current_user=current_user,
+            delivery_id=delivery.id,
+            payload=SampleDeliveryTrackingUpdate(
+                express_company="DHL",
+                tracking_no="DHL-SVC-001",
+                status="shipped",
+            ),
+        )
         sample_detail = await record_service.get_record(
             current_user=current_user,
             record_id=sample_record_id,
@@ -167,6 +177,7 @@ async def test_sample_delivery_service_review_updates_sample_stock_and_statistic
 
     assert submitted.status == "submitted"
     assert approved.status == "approved"
+    assert shipped.status == "shipped"
     assert sample_detail.stock_summary.delivered_quantity == "2"
     assert sample_detail.stock_summary.retained_quantity == "3"
     assert statistics.total_amount == "18.50"
@@ -193,6 +204,8 @@ async def test_sample_delivery_service_filters_private_delivery_without_view_all
             status=None,
             customer_id=None,
             express_company=None,
+            date_from=None,
+            date_to=None,
         )
 
     assert result.total == 0

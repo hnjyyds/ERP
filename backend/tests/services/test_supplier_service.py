@@ -2,7 +2,12 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.modules.masterdata.suppliers.repositories import SupplierRepository
-from app.modules.masterdata.suppliers.schemas import SupplierCreate, SupplierUpdate
+from app.modules.masterdata.suppliers.schemas import (
+    SupplierContactCreate,
+    SupplierContactUpdate,
+    SupplierCreate,
+    SupplierUpdate,
+)
 from app.modules.masterdata.suppliers.services import PermissionDeniedError, SupplierService
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
@@ -177,3 +182,77 @@ async def test_supplier_service_rejects_credit_update_without_credit_edit_permis
                     },
                 ),
             )
+
+
+async def test_supplier_service_updates_and_deletes_contacts(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        service = _make_service(session)
+        user = _user_with_permissions(
+            ["masterdata:supplier:view", "masterdata:supplier:edit"],
+            user_id="u-001",
+        )
+        supplier = await service.create_supplier(
+            current_user=user,
+            payload=SupplierCreate(
+                code="S-CONTACT-SVC-001",
+                cn_name="联系人供应商",
+                en_name="Contact Supplier",
+                country="China",
+                contacts=[
+                    {
+                        "name": "Li Wei",
+                        "title": "Sales",
+                        "email": "li@example.com",
+                        "phone": "+86",
+                        "is_primary": True,
+                    }
+                ],
+            ),
+        )
+        first_contact_id = supplier.contacts[0].id
+        second = await service.add_contact(
+            current_user=user,
+            supplier_id=supplier.id,
+            payload=SupplierContactCreate(
+                name="Zhang Min",
+                title="Planner",
+                email="zhang@example.com",
+                phone="+86-1",
+                is_primary=False,
+            ),
+        )
+
+        updated = await service.update_contact(
+            current_user=user,
+            supplier_id=supplier.id,
+            contact_id=second.id,
+            payload=SupplierContactUpdate(
+                name="Zhang Min Updated",
+                title="Production Lead",
+                email="zhang.updated@example.com",
+                phone="+86-9",
+                is_primary=True,
+            ),
+        )
+        visible = await service.get_supplier(
+            current_user=_user_with_permissions(["masterdata:supplier:view"], user_id="u-001"),
+            supplier_id=supplier.id,
+        )
+        deleted = await service.delete_contact(
+            current_user=user,
+            supplier_id=supplier.id,
+            contact_id=second.id,
+        )
+        final = await service.get_supplier(
+            current_user=_user_with_permissions(["masterdata:supplier:view"], user_id="u-001"),
+            supplier_id=supplier.id,
+        )
+
+    assert updated.name == "Zhang Min Updated"
+    assert updated.is_primary is True
+    assert [item.id for item in visible.contacts if item.is_primary] == [second.id]
+    assert deleted.id == second.id
+    assert [item.id for item in final.contacts] == [first_contact_id]
+    assert final.contacts[0].is_primary is False

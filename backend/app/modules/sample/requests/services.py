@@ -1,7 +1,15 @@
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from decimal import Decimal
 
 from app.db.uow import UnitOfWork
+from app.modules.finance.fee_payments.repositories import FeePaymentRepository
+from app.modules.sample.records.repositories import SampleRecordRepository, SampleRecordRow
+from app.modules.sample.records.schemas import (
+    VALID_SAMPLE_RECORD_STATUSES,
+    VALID_SAMPLE_RECORD_TYPES,
+    SampleRecordResponse,
+)
+from app.modules.sample.records.services import SampleRecordService
 from app.modules.sample.requests.repositories import (
     SampleFeeRow,
     SampleProgressRow,
@@ -20,11 +28,10 @@ from app.modules.sample.requests.schemas import (
     SampleRequestLineResponse,
     SampleRequestListResponse,
     SampleRequestResponse,
+    SampleRequestToRecordCreate,
 )
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
-
-SAMPLE_REQUEST_VIEW_ALL_PERMISSION = "sample:request:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -39,14 +46,22 @@ class SampleFeeNotFoundError(Exception):
     pass
 
 
+class SampleRecordAlreadyCreatedError(Exception):
+    pass
+
+
 class SampleRequestService:
     def __init__(
         self,
         repository: SampleRequestRepository,
         *,
+        sample_record_repository: SampleRecordRepository,
+        fee_payment_repository: FeePaymentRepository,
         data_scope_resolver: DataScopeResolver,
     ) -> None:
         self._repository = repository
+        self._sample_record_repository = sample_record_repository
+        self._fee_payment_repository = fee_payment_repository
         self._data_scope_resolver = data_scope_resolver
 
     async def create_request(
@@ -109,18 +124,23 @@ class SampleRequestService:
         q: str | None,
         status: str | None,
         customer_id: str | None,
+        date_from: date | None = None,
+        date_to: date | None = None,
     ) -> SampleRequestListResponse:
         self._require(current_user, "sample:request:view")
         if status is not None:
             self._validate_status(status)
+        if date_from and date_to and date_from > date_to:
+            raise ValueError("打样日期范围无效")
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=SAMPLE_REQUEST_VIEW_ALL_PERMISSION,
         )
         requests, total = await self._repository.list_requests(
             q=q,
             status=status,
             customer_id=customer_id,
+            date_from=date_from,
+            date_to=date_to,
             owner_user_ids=owner_user_ids,
         )
         return SampleRequestListResponse(
@@ -182,15 +202,131 @@ class SampleRequestService:
         fee = await self._repository.get_fee(fee_id)
         if fee is None or fee.sample_request_id != request_id:
             raise SampleFeeNotFoundError
+        sample_request = await self._get_accessible_request(
+            current_user=current_user,
+            request_id=request_id,
+        )
+        invoice_no = self._fee_invoice_no()
         payment_request_no = self._payment_request_no()
         async with UnitOfWork(self._repository.session):
+            invoice = await self._fee_payment_repository.create_partner_fee_invoice(
+                invoice_no=invoice_no,
+                invoice_date=date.today(),
+                partner_id=None,
+                partner_name=fee.payee_name,
+                partner_type=fee.payee_type,
+                shipment_plan_id=None,
+                shipment_no=sample_request.code,
+                sales_user_id=sample_request.sales_user_id,
+                sales_user_name=sample_request.sales_user_name,
+                fee_type=self._finance_fee_type(fee.fee_type),
+                total_amount=fee.amount,
+                currency=fee.currency,
+                due_date=sample_request.due_date,
+                remark=fee.remark or f"打样费用：{sample_request.code}",
+                created_by_user_id=current_user.id,
+                created_by_user_name=current_user.display_name,
+            )
+            payment_request = await self._fee_payment_repository.create_fee_payment_request(
+                request_no=payment_request_no,
+                invoice=invoice,
+                request_date=date.today(),
+                requested_amount=fee.amount,
+                currency=fee.currency,
+                requester_user_id=current_user.id,
+                requester_user_name=current_user.display_name,
+                remark=fee.remark or f"打样费用付款申请：{sample_request.code}",
+            )
             requested_fee = await self._repository.request_fee_payment(
                 fee_id=fee_id,
                 payment_request_no=payment_request_no,
+                finance_invoice_no=invoice.invoice_no,
+                finance_payment_request_id=payment_request.id,
             )
             if requested_fee is None:
                 raise SampleFeeNotFoundError
         return self._fee_response(requested_fee)
+
+    async def create_sample_record_from_request(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        request_id: str,
+        payload: SampleRequestToRecordCreate,
+    ) -> SampleRecordResponse:
+        self._require(current_user, "sample:record:edit")
+        self._validate_record_payload(payload)
+        sample_request = await self._get_accessible_request(
+            current_user=current_user,
+            request_id=request_id,
+        )
+        if sample_request.status != "completed":
+            raise ValueError("打样完成后才能转为样品登记")
+        existing = await self._sample_record_repository.get_record_by_source(
+            source_type="sample_request",
+            source_id=sample_request.id,
+        )
+        if existing is not None:
+            raise SampleRecordAlreadyCreatedError
+        async with UnitOfWork(self._repository.session):
+            record = await self._sample_record_repository.create_record(
+                code=payload.code,
+                sample_type=payload.sample_type,
+                status=payload.status,
+                product_id=sample_request.product_id,
+                product_code=sample_request.product_code,
+                product_name=sample_request.product_name or sample_request.code,
+                customer_id=sample_request.customer_id,
+                customer_name=sample_request.customer_name,
+                supplier_id=sample_request.supplier_id,
+                supplier_name=sample_request.supplier_name,
+                customer_sku=payload.customer_sku,
+                supplier_sku=payload.supplier_sku,
+                purchase_contract_id=payload.purchase_contract_id,
+                purchase_contract_no=payload.purchase_contract_no,
+                source_type="sample_request",
+                source_id=sample_request.id,
+                source_code=sample_request.code,
+                source_note=sample_request.requirements,
+                received_at=payload.received_at,
+                submitted_at=payload.submitted_at,
+                quantity=payload.quantity,
+                unit=payload.unit,
+                description=payload.description,
+                owner_user_id=current_user.id,
+            )
+            await self._sample_record_repository.add_stock_event(
+                sample_record_id=record.id,
+                event_type="received",
+                quantity=payload.quantity,
+                unit=payload.unit,
+                occurred_at=payload.received_at,
+                delivery_no=None,
+                recipient=sample_request.supplier_name,
+                note=f"打样单 {sample_request.code} 转样品登记",
+            )
+            for image in payload.images:
+                await self._sample_record_repository.add_image(
+                    sample_record_id=record.id,
+                    file_id=image.file_id,
+                    filename=image.filename,
+                    url=image.url,
+                    caption=image.caption,
+                    is_primary=image.is_primary,
+                )
+            node = self._followup_node(payload.sample_type)
+            if node is not None and payload.submitted_at is not None:
+                node_code, node_label = node
+                await self._sample_record_repository.add_followup_event(
+                    sample_record_id=record.id,
+                    purchase_contract_id=payload.purchase_contract_id,
+                    purchase_contract_no=payload.purchase_contract_no,
+                    node_code=node_code,
+                    node_label=node_label,
+                    actual_date=payload.submitted_at,
+                    event_type="sample_completed",
+                )
+        return await self._record_response(record)
 
     async def _get_accessible_request(
         self,
@@ -204,7 +340,6 @@ class SampleRequestService:
             raise SampleRequestNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=SAMPLE_REQUEST_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and sample_request.owner_user_id not in allowed_user_ids:
             raise SampleRequestNotFoundError
@@ -224,6 +359,32 @@ class SampleRequestService:
 
     def _payment_request_no(self) -> str:
         return f"SAMPLE-FEE-{datetime.now(UTC).strftime('%Y%m%d%H%M%S%f')}"
+
+    def _fee_invoice_no(self) -> str:
+        return f"SAMPLE-FEE-INV-{datetime.now(UTC).strftime('%Y%m%d%H%M%S%f')}"
+
+    def _finance_fee_type(self, fee_type: str) -> str:
+        return "other" if fee_type == "sample_making" else fee_type
+
+    def _validate_record_payload(self, payload: SampleRequestToRecordCreate) -> None:
+        if payload.sample_type not in VALID_SAMPLE_RECORD_TYPES:
+            raise ValueError("样品分类无效")
+        if payload.status not in VALID_SAMPLE_RECORD_STATUSES:
+            raise ValueError("样品状态无效")
+
+    def _followup_node(self, sample_type: str) -> tuple[str, str] | None:
+        nodes = {
+            "confirm_sample": ("confirm_sample_submitted", "确认样提交"),
+            "bulk_sample": ("bulk_sample_submitted", "大货样提交"),
+        }
+        return nodes.get(sample_type)
+
+    async def _record_response(self, record: SampleRecordRow) -> SampleRecordResponse:
+        record_service = SampleRecordService(
+            self._sample_record_repository,
+            data_scope_resolver=self._data_scope_resolver,
+        )
+        return await record_service.response_from_record(record)
 
     async def _request_response(self, sample_request: SampleRequestRow) -> SampleRequestResponse:
         lines = await self._repository.list_lines(sample_request.id)
@@ -288,6 +449,8 @@ class SampleRequestService:
             remark=fee.remark,
             payment_status=fee.payment_status,
             payment_request_no=fee.payment_request_no,
+            finance_invoice_no=fee.finance_invoice_no,
+            finance_payment_request_id=fee.finance_payment_request_id,
         )
 
     def _money(self, value: Decimal) -> str:

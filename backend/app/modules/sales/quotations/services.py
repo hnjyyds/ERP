@@ -44,8 +44,6 @@ from app.modules.sample.deliveries.schemas import (
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 
-QUOTATION_VIEW_ALL_PERMISSION = "sales:quotation:view_all"
-
 
 class PermissionDeniedError(Exception):
     pass
@@ -154,7 +152,6 @@ class ExportQuotationService:
             self._validate_status(approval_status)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=QUOTATION_VIEW_ALL_PERMISSION,
         )
         quotations, total = await self._repository.list_quotations(
             q=q,
@@ -438,7 +435,6 @@ class ExportQuotationService:
             raise ExportQuotationNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=QUOTATION_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and quotation.owner_user_id not in allowed_user_ids:
             raise ExportQuotationNotFoundError

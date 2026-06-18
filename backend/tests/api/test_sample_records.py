@@ -137,6 +137,112 @@ async def test_sample_record_create_search_image_stock_and_delivery_link(
     assert refreshed["stock_events"][0]["delivery_no"] == "SD-2026-001"
 
 
+async def test_sample_record_import_export_and_followup_sync(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+
+    contract_response = await api_client.post(
+        "/api/v1/purchase/contracts",
+        headers=headers,
+        json={
+            "code": "PC-SAMPLE-SYNC",
+            "contract_date": "2026-06-20",
+            "supplier_id": "supplier-pack",
+            "supplier_name": "华东包装制品厂",
+            "buyer_user_id": "u-001",
+            "buyer_user_name": "演示业务主管",
+            "currency": "USD",
+            "delivery_date": "2026-07-15",
+            "payment_terms": "30% 预付，70% 出货前",
+            "source_type": "stock_purchase",
+            "remarks": "样品跟单同步测试",
+            "lines": [
+                {
+                    "product_id": "product-bag",
+                    "product_code": "BAG-40",
+                    "product_name": "Eco Shopping Bag",
+                    "specification": "40x35cm",
+                    "model": "BAG-40",
+                    "quantity": "100",
+                    "unit": "pcs",
+                    "unit_price": "1.20",
+                    "source_export_contract_id": None,
+                    "source_export_contract_no": None,
+                    "source_export_contract_line_id": None,
+                    "remark": "样品跟单测试",
+                }
+            ],
+        },
+    )
+    assert contract_response.status_code == 201
+    contract_id = contract_response.json()["data"]["id"]
+    await api_client.post(f"/api/v1/purchase/contracts/{contract_id}/submit", headers=headers)
+    approve_response = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/approve",
+        headers=headers,
+        json={"reviewer_name": "演示业务主管", "approved_at": "2026-06-20"},
+    )
+    assert approve_response.status_code == 200
+
+    import_response = await api_client.post(
+        "/api/v1/sample/records/import",
+        headers=headers,
+        json={
+            "records": [
+                _sample_record_payload(code="SM-IMPORT-001")
+                | {
+                    "purchase_contract_id": contract_id,
+                    "purchase_contract_no": "PC-SAMPLE-SYNC",
+                },
+                _sample_record_payload(code="SM-IMPORT-002")
+                | {
+                    "sample_type": "bulk_sample",
+                    "purchase_contract_id": contract_id,
+                    "purchase_contract_no": "PC-SAMPLE-SYNC",
+                    "submitted_at": "2026-06-28",
+                },
+            ]
+        },
+    )
+    assert import_response.status_code == 201
+    imported = import_response.json()["data"]
+    assert imported["created_count"] == 2
+    assert imported["records"][0]["code"] == "SM-IMPORT-001"
+    assert imported["records"][1]["followup_events"][0]["node_code"] == "bulk_sample_submitted"
+
+    export_response = await api_client.get(
+        "/api/v1/sample/records/export",
+        headers=headers,
+        params={"purchase_contract_id": contract_id},
+    )
+    assert export_response.status_code == 200
+    exported = export_response.json()["data"]
+    assert exported["filename"].endswith(".csv")
+    assert exported["content_type"] == "text/csv"
+    assert exported["total"] == 2
+    assert "SM-IMPORT-001" in exported["content"]
+    assert "确认样" in exported["content"]
+
+    followup_response = await api_client.post(
+        "/api/v1/followup/sample-events",
+        headers=headers,
+        json={"purchase_contract_id": contract_id},
+    )
+    assert followup_response.status_code == 200
+    plan = followup_response.json()["data"]
+    confirm_node = next(
+        node for node in plan["nodes"] if node["node_code"] == "confirm_sample_submitted"
+    )
+    bulk_node = next(node for node in plan["nodes"] if node["node_code"] == "bulk_sample_submitted")
+    assert confirm_node["status"] == "completed"
+    assert confirm_node["actual_date"] == "2026-06-23"
+    assert bulk_node["status"] == "completed"
+    assert bulk_node["actual_date"] == "2026-06-28"
+
+
 async def test_sample_record_rejects_unknown_sample_type(
     api_client: AsyncClient,
     seeded_system: None,

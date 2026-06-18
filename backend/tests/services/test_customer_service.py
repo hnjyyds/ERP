@@ -2,7 +2,12 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.modules.masterdata.customers.repositories import CustomerRepository
-from app.modules.masterdata.customers.schemas import CustomerCreate, CustomerUpdate
+from app.modules.masterdata.customers.schemas import (
+    CustomerContactCreate,
+    CustomerContactUpdate,
+    CustomerCreate,
+    CustomerUpdate,
+)
 from app.modules.masterdata.customers.services import CustomerService, PermissionDeniedError
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
@@ -177,3 +182,77 @@ async def test_customer_service_rejects_credit_update_without_credit_edit_permis
                     },
                 ),
             )
+
+
+async def test_customer_service_updates_and_deletes_contacts(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        service = _make_service(session)
+        user = _user_with_permissions(
+            ["masterdata:customer:view", "masterdata:customer:edit"],
+            user_id="u-001",
+        )
+        customer = await service.create_customer(
+            current_user=user,
+            payload=CustomerCreate(
+                code="C-CONTACT-SVC-001",
+                cn_name="联系人客户",
+                en_name="Contact Buyer",
+                country="Germany",
+                contacts=[
+                    {
+                        "name": "Anna Schmidt",
+                        "title": "Buyer",
+                        "email": "anna@example.com",
+                        "phone": "+49",
+                        "is_primary": True,
+                    }
+                ],
+            ),
+        )
+        first_contact_id = customer.contacts[0].id
+        second = await service.add_contact(
+            current_user=user,
+            customer_id=customer.id,
+            payload=CustomerContactCreate(
+                name="Bob Carter",
+                title="Import Director",
+                email="bob@example.com",
+                phone="+1",
+                is_primary=False,
+            ),
+        )
+
+        updated = await service.update_contact(
+            current_user=user,
+            customer_id=customer.id,
+            contact_id=second.id,
+            payload=CustomerContactUpdate(
+                name="Robert Carter",
+                title="Import Lead",
+                email="robert@example.com",
+                phone="+1-999",
+                is_primary=True,
+            ),
+        )
+        visible = await service.get_customer(
+            current_user=_user_with_permissions(["masterdata:customer:view"], user_id="u-001"),
+            customer_id=customer.id,
+        )
+        deleted = await service.delete_contact(
+            current_user=user,
+            customer_id=customer.id,
+            contact_id=second.id,
+        )
+        final = await service.get_customer(
+            current_user=_user_with_permissions(["masterdata:customer:view"], user_id="u-001"),
+            customer_id=customer.id,
+        )
+
+    assert updated.name == "Robert Carter"
+    assert updated.is_primary is True
+    assert [item.id for item in visible.contacts if item.is_primary] == [second.id]
+    assert deleted.id == second.id
+    assert [item.id for item in final.contacts] == [first_contact_id]
+    assert final.contacts[0].is_primary is False

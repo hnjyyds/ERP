@@ -30,13 +30,16 @@ import {
   Coins,
   Factory,
   FilePenLine,
+  FileSpreadsheet,
   FileStack,
   FileText,
   FlaskConical,
   Handshake,
+  Receipt,
   Images,
   KeyRound,
   LayoutDashboard,
+  LockKeyhole,
   LogOut,
   Package,
   PackagePlus,
@@ -47,6 +50,7 @@ import {
   Send,
   Settings,
   ShieldCheck,
+  Ship,
   Trash2,
   UserRound,
   UsersRound,
@@ -54,18 +58,21 @@ import {
   Warehouse,
   type LucideIcon,
 } from 'lucide-react'
-import type { ErrorInfo, FormEvent, ReactNode } from 'react'
+import type { ErrorInfo, FormEvent, MouseEvent, ReactNode } from 'react'
 import { Component, useEffect, useMemo, useState } from 'react'
 
 import {
-  addCustomerContact,
+  downloadBase64File,
+  downloadCsv,
+  openExportContractPrint,
+  openSampleRequestPrint,
+} from '../shared/print'
+import {
   addManualProfitCost,
-  addPartnerContact,
   addSampleRecordImage,
   addSampleRecordStockEvent,
   addSampleFee,
   addSampleProgress,
-  addSupplierContact,
   addExportContractAdvancePayment,
   allocateBankReceipt,
   approveFeePaymentRequest,
@@ -95,25 +102,32 @@ import {
   createSupplierInvoice,
   createVerificationDocument,
   createPurchaseContract,
-  createCustomer,
-  createDocumentParty,
   createExportContract,
   createExportQuotation,
-  createPartner,
   createPurchaseInquiry,
   createSampleDelivery,
+  createSampleRecordFromRequest,
   createSampleRecord,
   createSampleRequest,
   createScheduleEvent,
-  createSupplier,
   deleteScheduleEvent,
   exportExportContract,
   exportExportQuotation,
+  exportBankReceiptSummaryReport,
+  exportCustomsReceiptCollectionReport,
+  exportFeePaymentReport,
+  exportGoodsPaymentReport,
+  exportReceiptUsageReport,
+  exportSampleDeliveries,
+  exportSampleRecords,
+  exportTaxRefundStatisticsReport,
+  importSampleRecords,
   generateFollowupPlanFromPurchaseContract,
   generateInboundOrderFromPlan,
   generateInboundPlanFromPurchaseContract,
   generateOutboundOrderFromPlan,
   generateOutboundPlanFromShipment,
+  generatePurchaseContractTemplate,
   generatePurchaseContractFromExportContracts,
   generatePurchaseInvoiceNoticesFromDeclaration,
   generateShipmentFromContracts,
@@ -126,13 +140,12 @@ import {
   getExportQuotationSampleDeliveries,
   getQualityInboundEligibility,
   getSampleDeliveryFeeStatistics,
+  getSampleDeliveryStatistics,
   getSampleDeliveryQuoteHistory,
   getSampleDeliverySampleHistory,
   hasAuthToken,
   listAssignableUsers,
-  listCustomerTransactions,
   listCustomers,
-  listDocumentParties,
   listFollowupOverdueNodes,
   listFollowupPlans,
   listFollowupTemplates,
@@ -149,16 +162,15 @@ import {
   listMiscFeeItems,
   listOutboundOrders,
   listOutboundPlans,
-  listPartnerFeeRecords,
   listPartnerFeeInvoices,
   listApprovalDocuments,
   listReportingStatistics,
   listProfitCalculations,
   listPayables,
   listPaymentRequests,
-  listPartners,
   listExportContracts,
   listExportQuotations,
+  listProducts,
   listQualityInspections,
   listReceivables,
   listPurchaseInquiries,
@@ -173,12 +185,10 @@ import {
   listSampleDeliveries,
   listSampleRecords,
   listSampleRequests,
-  listSupplierTransactions,
-  listSupplierInvoices,
   listSuppliers,
+  listSupplierInvoices,
   listVerificationDocuments,
   listVerificationUsage,
-  lookupDocumentParties,
   login,
   markNotificationRead,
   setAuthToken,
@@ -205,16 +215,9 @@ import {
   type PaymentRequestApprovePayload,
   type PaymentRequestCreatePayload,
   type Customer,
-  type CustomerContactPayload,
-  type CustomerCreatePayload,
   type CustomerShipmentStatistic,
-  type CustomerTransaction,
-  type CustomerUpdatePayload,
   type CurrentUser,
   type Dashboard,
-  type DocumentParty,
-  type DocumentPartyCreatePayload,
-  type DocumentPartyUpdatePayload,
   type ExportContract,
   type ExportContractAdvancePayment,
   type ExportContractAdvancePaymentPayload,
@@ -265,16 +268,13 @@ import {
   type OutboundPlanGeneratePayload,
   type OutboundPlanSchedulePayload,
   type Partner,
-  type PartnerContactPayload,
-  type PartnerCreatePayload,
-  type PartnerFeeRecord,
   type PartnerFeeInvoice,
   type PartnerFeeInvoiceCreatePayload,
-  type PartnerUpdatePayload,
   type ManualProfitCostCreatePayload,
   type ProfitCostItem,
   type ReportDocumentStatistic,
   type ReportingStatistics,
+  type Product,
   type PurchaseContract,
   type PurchaseContractApprovePayload,
   type PurchaseContractCreatePayload,
@@ -313,7 +313,11 @@ import {
   type SampleDeliveryFee,
   type SampleDeliveryFeeStatistic,
   type SampleDeliveryFeeStatistics,
+  type SampleDeliveryCustomerStatistic,
+  type SampleDeliveryExpressStatistic,
+  type SampleDeliveryStatistics,
   type SampleDeliveryLine,
+  type SampleDeliveryStatusStatistic,
   type SampleDeliveryTrackingPayload,
   type SampleRecord,
   type SampleRecordCreatePayload,
@@ -324,23 +328,20 @@ import {
   type SampleRequest,
   type SampleRequestCreatePayload,
   type SampleRequestLinePayload,
+  type SampleRequestToRecordPayload,
   type ShipmentLine,
   type ShipmentPlan,
   type ShipmentStatisticItem,
   type ShipmentPlanGeneratePayload,
   type ShipmentReminder,
   type ShipmentApprovePayload,
+  type Supplier,
   type SupplierQuotation,
   type SupplierQuotationPayload,
   type SupplierSampleEvidence,
-  type Supplier,
-  type SupplierContactPayload,
-  type SupplierCreatePayload,
   type SupplierInvoice,
   type SupplierInvoiceCreatePayload,
   type SupplierPaymentRequest,
-  type SupplierTransaction,
-  type SupplierUpdatePayload,
   type SalesMonthlyShipmentStatistic,
   type StatusAmountStatistic,
   type TaxRefundRegisterPayload,
@@ -364,27 +365,64 @@ import {
   sendPurchaseInquiryTemplate,
   syncFollowupSampleEvents,
   syncFollowupSourceEvent,
-  updateCustomer,
-  updateDocumentParty,
   updateExportContract,
   updateExportQuotation,
   updateFollowupTemplate,
   updateQualityInspection,
   updatePurchaseContract,
   updatePurchaseInquiry,
-  updatePartner,
   requestSampleFeePayment,
   receivePurchaseInvoiceNoticeTaxInvoice,
   scheduleInboundPlan,
   scheduleOutboundPlan,
   updateSampleDelivery,
   updateSampleDeliveryTracking,
-  updateSupplier,
   sendPurchaseInvoiceNotice,
   authExpiredEventName,
+  listReimbursements,
+  createReimbursement,
+  approveReimbursement,
+  autoMatchCustomsReceipts,
+  payReimbursement,
+  listPortImportBatches,
+  createPortImportBatch,
+  listCustomsDeclarationRecords,
+  getReceiptUsageReport,
+  getBankReceiptSummaryReport,
+  getGoodsPaymentReport,
+  getFeePaymentReport,
+  getCustomsReceiptCollectionReport,
+  getTaxRefundStatisticsReport,
+  drilldownFinanceReport,
+  explainFinanceReport,
+  type Reimbursement,
+  type ReimbursementCreatePayload,
+  type ReimbursementItemCreatePayload,
+  type PortImportBatch,
+  type PortImportBatchCreatePayload,
+  type CustomsDeclarationRecord,
+  type CustomsDeclarationRecordCreatePayload,
+  type FinanceReportDrilldown,
+  type FinanceReportExplanation,
+  type ReceiptUsageDetailRow,
+  type ReceiptUsageDetailReport,
+  type BankReceiptCurrencySummary,
+  type BankReceiptSummaryReport,
+  type GoodsPaymentQueryRow,
+  type GoodsPaymentQueryReport,
+  type FeePaymentQueryRow,
+  type FeePaymentQueryReport,
+  type CustomsReceiptCollectionRow,
+  type CustomsReceiptCollectionReport,
+  type TaxRefundCurrencyTotal,
+  type TaxRefundStatisticsReport,
 } from '../api'
 import {
   loginPath,
+  detailRootPath,
+  isDetailPathFor,
+  moduleDetailId,
+  moduleDetailPath,
   dashboardPath,
   dashboardTodosPath,
   dashboardSchedulesPath,
@@ -419,12 +457,17 @@ import {
   financeTaxPath,
   financeMiscPath,
   financeSettlementPath,
+  financeReimbursementsPath,
+  financePortDataPath,
+  financeReportsPath,
   financeModulePathByModule,
   financeDetailPath,
   isFinancePath,
   parseFinanceView,
   reportingPath,
   dashboardSectionPaths,
+  isProductPath,
+  productDetailId,
   type FinanceModule,
   type FinanceView,
 } from './routes'
@@ -432,6 +475,7 @@ import { erpAntTheme } from './theme'
 import { ProductsPage } from './pages/masterdata/ProductsPage'
 import { CustomersPage as MasterdataCustomersPage } from './pages/masterdata/CustomersPage'
 import { SuppliersPage as MasterdataSuppliersPage } from './pages/masterdata/SuppliersPage'
+import { PartnersPage as MasterdataPartnersPage } from './pages/masterdata/PartnersPage'
 import { DocumentPartiesPage as MasterdataDocumentPartiesPage } from './pages/masterdata/DocumentPartiesPage'
 import { OrganizationUsersPage } from './pages/organization/OrganizationUsersPage'
 import {
@@ -787,6 +831,62 @@ const menuIconMap: Record<string, LucideIcon> = {
   warehouse: Warehouse,
 }
 
+const workflowLabelByPath: Record<string, { 'zh-CN': string; 'en-US': string }> = {
+  [dashboardPath]: { 'zh-CN': '工作台', 'en-US': 'Workbench' },
+  [exportContractPath]: { 'zh-CN': '订单中心', 'en-US': 'Order workflow' },
+  [purchaseContractPath]: { 'zh-CN': '采购合同', 'en-US': 'Purchase contracts' },
+  [qualityInspectionPath]: { 'zh-CN': 'QC 中心', 'en-US': 'QC center' },
+  [followupPath]: { 'zh-CN': '跟单中心', 'en-US': 'Follow-up center' },
+  [productPath]: { 'zh-CN': '产品资料', 'en-US': 'Products' },
+  [supplierPath]: { 'zh-CN': '工厂资料', 'en-US': 'Factories' },
+  [customerPath]: { 'zh-CN': '客户资料', 'en-US': 'Customers' },
+  [warehouseInboundOrderPath]: { 'zh-CN': '入仓', 'en-US': 'Inbound' },
+  [financePath]: { 'zh-CN': '财务摘要', 'en-US': 'Finance summary' },
+  [reportingPath]: { 'zh-CN': '老板看板', 'en-US': 'Executive board' },
+}
+
+const workflowPageTitleByPath: Record<string, { 'zh-CN': string; 'en-US': string }> = {
+  [exportContractPath]: { 'zh-CN': '订单 Workflow', 'en-US': 'Order workflow' },
+  [purchaseContractPath]: { 'zh-CN': '采购合同和工厂履约', 'en-US': 'Purchase contracts and factory fulfillment' },
+  [qualityInspectionPath]: { 'zh-CN': 'QC 任务中心', 'en-US': 'QC task center' },
+  [followupPath]: { 'zh-CN': '跟单任务中心', 'en-US': 'Follow-up task center' },
+  [supplierPath]: { 'zh-CN': '工厂资料和验货地址', 'en-US': 'Factories and inspection addresses' },
+  [productPath]: { 'zh-CN': '产品资料、价格和质量要求', 'en-US': 'Products, prices, and quality requirements' },
+  [customerPath]: { 'zh-CN': '客户资料和订单要求', 'en-US': 'Customers and order requirements' },
+  [warehouseInboundOrderPath]: { 'zh-CN': '入仓和库存确认', 'en-US': 'Inbound and inventory confirmation' },
+  [financePath]: { 'zh-CN': '财务摘要和订单利润', 'en-US': 'Finance summary and order profit' },
+  [reportingPath]: { 'zh-CN': '老板看板和经营分析', 'en-US': 'Executive board and business analysis' },
+}
+
+const workflowIconByPath: Record<string, LucideIcon> = {
+  [exportContractPath]: ClipboardCheck,
+  [purchaseContractPath]: FileText,
+  [qualityInspectionPath]: ShieldCheck,
+  [followupPath]: CheckCircle2,
+  [productPath]: Package,
+  [supplierPath]: Factory,
+  [customerPath]: UsersRound,
+  [warehouseInboundOrderPath]: Warehouse,
+  [financePath]: Coins,
+  [reportingPath]: BarChart3,
+}
+
+const lockedWorkflowPaths = new Set([
+  organizationUsersPath,
+  partnerPath,
+  documentPartyPath,
+  sampleRequestPath,
+  sampleRecordPath,
+  sampleDeliveryPath,
+  exportQuotationPath,
+  shipmentPath,
+  purchaseInquiryPath,
+  purchaseInvoiceNoticePath,
+  warehouseInboundPlanPath,
+  warehouseOutboundPlanPath,
+  warehouseOutboundOrderPath,
+])
+
 const sidebarNavGroups: Array<{
   id: string
   label: string
@@ -794,58 +894,62 @@ const sidebarNavGroups: Array<{
   paths: string[]
 }> = [
   {
-    id: 'system',
-    label: '系统管理',
-    icon: ShieldCheck,
-    paths: [organizationUsersPath],
-  },
-  {
     id: 'masterdata',
     label: '基础资料',
     icon: Package,
-    paths: [productPath, customerPath, supplierPath, partnerPath, documentPartyPath],
+    paths: [productPath, supplierPath, customerPath, partnerPath, documentPartyPath],
   },
   {
-    id: 'sample',
-    label: '样品业务',
-    icon: Images,
-    paths: [sampleRequestPath, sampleRecordPath, sampleDeliveryPath],
-  },
-  {
-    id: 'sales',
-    label: '销售出口',
-    icon: Send,
-    paths: [exportQuotationPath, exportContractPath, shipmentPath],
-  },
-  {
-    id: 'purchase',
-    label: '采购业务',
+    id: 'workflow',
+    label: '订单 Workflow',
     icon: ClipboardCheck,
-    paths: [purchaseInquiryPath, purchaseContractPath, purchaseInvoiceNoticePath, followupPath],
+    paths: [exportContractPath, purchaseContractPath, exportQuotationPath, shipmentPath],
+  },
+  {
+    id: 'taskCenter',
+    label: 'QC / 跟单',
+    icon: ShieldCheck,
+    paths: [qualityInspectionPath, followupPath, sampleRecordPath, sampleRequestPath, sampleDeliveryPath],
   },
   {
     id: 'warehouse',
-    label: '质检仓库',
+    label: '仓库',
     icon: Warehouse,
     paths: [
-      qualityInspectionPath,
-      warehouseInboundPlanPath,
       warehouseInboundOrderPath,
+      warehouseInboundPlanPath,
       warehouseOutboundPlanPath,
       warehouseOutboundOrderPath,
     ],
   },
   {
     id: 'finance',
-    label: '财务报表',
+    label: '财务经营',
     icon: BarChart3,
     paths: [financePath, reportingPath],
+  },
+  {
+    id: 'system',
+    label: '系统设置',
+    icon: Settings,
+    paths: [organizationUsersPath],
+  },
+  {
+    id: 'legacyPurchase',
+    label: '暂缓模块',
+    icon: LockKeyhole,
+    paths: [purchaseInquiryPath, purchaseInvoiceNoticePath],
   },
 ]
 
 function resolveMenuIcon(item: MenuItem) {
   if (item.path === dashboardPath) return LayoutDashboard
+  if (workflowIconByPath[item.path]) return workflowIconByPath[item.path]
   return menuIconMap[item.icon] ?? LayoutDashboard
+}
+
+function workflowLabel(path: string, fallback: string, settings: AppSettings = runtimeSettings) {
+  return workflowLabelByPath[path]?.[settings.language] ?? translatePathLabel(path, fallback, settings)
 }
 
 const superAdminPermission = 'system:super_admin'
@@ -862,12 +966,12 @@ function canAccessPath(path: string, session: AuthSession) {
   if (isFinancePath(normalizedPath)) {
     return session.menus.some((item) => item.path === financePath)
   }
-  return session.menus.some((item) => item.path === normalizedPath)
+  return session.menus.some((item) => item.path === detailRootPath(normalizedPath))
 }
 
 function isMenuPathActive(menuPath: string, activePath: string) {
   if (menuPath === financePath) return isFinancePath(activePath)
-  return menuPath === activePath
+  return menuPath === detailRootPath(activePath)
 }
 
 function firstAccessiblePath(session: AuthSession) {
@@ -915,42 +1019,11 @@ function getSidebarMenuGroups(menus: MenuItem[]) {
 }
 
 function topbarEyebrow(path: string): string {
-  if (dashboardSectionPaths.has(path)) return t('page.personalWorkbench')
-  const group = sidebarNavGroups.find((item) => item.paths.includes(path))
+  const rootPath = detailRootPath(path)
+  if (dashboardSectionPaths.has(rootPath)) return t('page.personalWorkbench')
+  const group = sidebarNavGroups.find((item) => item.paths.includes(rootPath))
   if (group) return groupLabel(group.id, group.label)
   return t('page.businessModule')
-}
-
-type PartnerFormState = {
-  code: string
-  status: string
-  cn_name: string
-  en_name: string
-  partner_type: string
-  country: string
-  address: string
-  website: string
-  primary_contact_name: string
-  primary_contact_title: string
-  primary_contact_email: string
-  primary_contact_phone: string
-}
-
-type PartnerEditState = {
-  cn_name: string
-  en_name: string
-  partner_type: string
-  country: string
-  address: string
-  website: string
-  status: string
-}
-
-type PartnerContactState = {
-  name: string
-  title: string
-  email: string
-  phone: string
 }
 
 type BankReceiptFormState = {
@@ -1130,108 +1203,6 @@ type ManualProfitCostFormState = {
   reason: string
   remark: string
 }
-
-type CustomerFormState = {
-  code: string
-  status: string
-  cn_name: string
-  en_name: string
-  country: string
-  address: string
-  website: string
-  contact_name: string
-  contact_title: string
-  contact_email: string
-  contact_phone: string
-  credit_grade: string
-  credit_limit: string
-  currency: string
-  payment_terms: string
-  risk_note: string
-}
-
-type CustomerEditState = {
-  cn_name: string
-  en_name: string
-  country: string
-  address: string
-  website: string
-  status: string
-  credit_grade: string
-  credit_limit: string
-  currency: string
-  payment_terms: string
-  risk_note: string
-}
-
-type CustomerContactState = {
-  name: string
-  title: string
-  email: string
-  phone: string
-}
-
-type SupplierFormState = {
-  code: string
-  status: string
-  cn_name: string
-  en_name: string
-  country: string
-  address: string
-  website: string
-  contact_name: string
-  contact_title: string
-  contact_email: string
-  contact_phone: string
-  credit_grade: string
-  credit_limit: string
-  currency: string
-  payment_terms: string
-  risk_note: string
-}
-
-type SupplierEditState = {
-  cn_name: string
-  en_name: string
-  country: string
-  address: string
-  website: string
-  status: string
-  credit_grade: string
-  credit_limit: string
-  currency: string
-  payment_terms: string
-  risk_note: string
-}
-
-type SupplierContactState = {
-  name: string
-  title: string
-  email: string
-  phone: string
-}
-
-type DocumentPartyFormState = {
-  code: string
-  party_type: string
-  display_name: string
-  customer_id: string
-  customer_name: string
-  country: string
-  address: string
-  contact_person: string
-  email: string
-  phone: string
-  bank_name: string
-  swift_code: string
-  account_no: string
-  tax_id: string
-  remarks: string
-  is_default: boolean
-  status: string
-}
-
-type DocumentPartyEditState = Omit<DocumentPartyFormState, 'code'>
 
 type SampleRequestFormState = {
   code: string
@@ -1730,6 +1701,10 @@ type ModuleNavigationProps = {
   onNavigate: NavigateToModule
 }
 
+type RoutedDetailPageProps = ModuleNavigationProps & {
+  detailId: string | null
+}
+
 type OperationFlowKind = 'sales' | 'purchase' | 'warehouse' | 'finance'
 
 type OperationFlowStep = {
@@ -1747,45 +1722,42 @@ type OperationFlowProps = {
 
 const operationFlows: Record<OperationFlowKind, { title: string; steps: OperationFlowStep[] }> = {
   sales: {
-    title: '销售主闭环',
+    title: '订单 Workflow',
     steps: [
-      { label: '出口报价', caption: '客户询价与报价审批', path: exportQuotationPath },
-      { label: '出口合同', caption: '合同签订与预收款', path: exportContractPath },
-      { label: '出货明细', caption: '出运计划与利润预估', path: shipmentPath },
-      { label: '采购合同', caption: '转采购与供应履约', path: purchaseContractPath },
-      { label: '财务审核', caption: '收款付款与结算', path: financePath },
+      { label: '订单中心', caption: '下单时间、客户、产品和交期', path: exportContractPath },
+      { label: '采购合同', caption: '工厂、价格、质量要求', path: purchaseContractPath },
+      { label: 'QC 中心', caption: '材料、样品、过程和终检', path: qualityInspectionPath },
+      { label: '跟单中心', caption: '节点推进与逾期处理', path: followupPath },
+      { label: '入仓', caption: 'Final QC 后入仓确认', path: warehouseInboundOrderPath },
+      { label: '财务摘要', caption: '收款、应收应付和利润率', path: financePath },
     ],
   },
   purchase: {
-    title: '采购主闭环',
+    title: '工厂履约',
     steps: [
-      { label: '采购询价', caption: '供应商询价与比价', path: purchaseInquiryPath },
-      { label: '采购合同', caption: '合同生成与审批', path: purchaseContractPath },
-      { label: '开票通知', caption: '发票通知与签收', path: purchaseInvoiceNoticePath },
-      { label: '采购跟单', caption: '节点跟进与逾期提醒', path: followupPath },
-      { label: '入库计划', caption: '验货后排库位', path: warehouseInboundPlanPath },
+      { label: '采购合同', caption: '工厂、验货地址和交期', path: purchaseContractPath },
+      { label: '跟单中心', caption: '今天该推进哪个节点', path: followupPath },
+      { label: 'QC 中心', caption: '按质量要求验货', path: qualityInspectionPath },
+      { label: '入仓', caption: '检验通过后收货入仓', path: warehouseInboundOrderPath },
+      { label: '财务摘要', caption: '应付、已付和订单成本', path: financePath },
     ],
   },
   warehouse: {
-    title: '仓库主闭环',
+    title: 'QC 入仓',
     steps: [
-      { label: 'QC查验', caption: '质量查验与入库资格', path: qualityInspectionPath },
-      { label: '入库计划', caption: '排期与库位', path: warehouseInboundPlanPath },
-      { label: '入库单', caption: '入库确认与库存流水', path: warehouseInboundOrderPath },
-      { label: '出库计划', caption: '按出货计划排库', path: warehouseOutboundPlanPath },
-      { label: '出库单', caption: '出库确认与扣减库存', path: warehouseOutboundOrderPath },
-      { label: '财务审核', caption: '关联费用与利润', path: financePath },
+      { label: 'QC 中心', caption: 'Final QC 和入库资格', path: qualityInspectionPath },
+      { label: '入仓', caption: '收货、库位和库存流水', path: warehouseInboundOrderPath },
+      { label: '财务摘要', caption: '费用和利润归集', path: financePath },
     ],
   },
   finance: {
-    title: '财务主闭环',
+    title: '订单利润',
     steps: [
-      { label: '银行水单', caption: '认领与分配收款', path: financeReceiptsPath },
-      { label: '应收应付', caption: '合同款项与供应商往来', path: financePaymentsPath },
-      { label: '费用付款', caption: '杂费与伙伴费用付款', path: financeFeesPath },
-      { label: '核销退税', caption: '单证核销与退税登记', path: financeTaxPath },
-      { label: '结算核算', caption: '利润核算与成本分摊', path: financeSettlementPath },
-      { label: '经理报表', caption: '审批与经营统计', path: reportingPath },
+      { label: '财务摘要', caption: '应收应付、盈亏、利润率', path: financePath },
+      { label: '收款日期', caption: '银行水单与客户回款', path: financeReceiptsPath },
+      { label: '应收应付', caption: '订单收入和工厂成本', path: financePaymentsPath },
+      { label: '结算核算', caption: '锁定成本与利润计算', path: financeSettlementPath },
+      { label: '老板看板', caption: '订单、客户、工厂和利润', path: reportingPath },
     ],
   },
 }
@@ -1802,20 +1774,29 @@ function OperationFlowRail({ activeLabel, activePath, kind, onNavigate }: Operat
       <ol className="operation-flow-list">
         {flow.steps.map((step, index) => {
           const active = activeLabel ? step.label === activeLabel : step.path === activePath
+          const locked = lockedWorkflowPaths.has(step.path)
 
           return (
             <li key={`${kind}-${step.label}`} className="operation-flow-item">
               <button
                 aria-current={active ? 'step' : undefined}
-                className={active ? 'operation-flow-step active' : 'operation-flow-step'}
+                className={[
+                  'operation-flow-step',
+                  active ? 'active' : '',
+                  locked ? 'operation-flow-step-locked' : '',
+                ].filter(Boolean).join(' ')}
                 type="button"
-                onClick={() => onNavigate(step.path)}
+                disabled={locked}
+                onClick={() => {
+                  if (!locked) onNavigate(step.path)
+                }}
               >
                 <span className="operation-flow-index">{index + 1}</span>
                 <span className="operation-flow-copy">
                   <strong>{step.label}</strong>
                   <small>{step.caption}</small>
                 </span>
+                {locked ? <LockKeyhole className="operation-flow-lock" size={13} strokeWidth={2.2} /> : null}
               </button>
               {index < flow.steps.length - 1 ? <span className="operation-flow-arrow" aria-hidden="true" /> : null}
             </li>
@@ -1973,7 +1954,7 @@ function App() {
     if (isFinancePath(activePath)) {
       return session.menus.find((item) => item.path === financePath) ?? null
     }
-    return session.menus.find((item) => item.path === activePath) ?? null
+    return session.menus.find((item) => item.path === detailRootPath(activePath)) ?? null
   }, [activePath, session])
 
   async function loadDashboard() {
@@ -2091,14 +2072,16 @@ function App() {
                 }}
               >
                 <LayoutDashboard className="nav-link-icon" size={17} strokeWidth={2} />
-                <span>{translatePathLabel(dashboardMenu.path, dashboardMenu.label)}</span>
+                <span>{workflowLabel(dashboardMenu.path, dashboardMenu.label)}</span>
               </a>
             ) : null}
 
             <div className="nav-groups" aria-label={t('page.businessModule')}>
               {sidebarMenuGroups.map((group) => {
                 const GroupIcon = group.icon
-                const isGroupActive = group.items.some((item) => isMenuPathActive(item.path, activePath))
+                const isGroupActive = group.items.some(
+                  (item) => !lockedWorkflowPaths.has(item.path) && isMenuPathActive(item.path, activePath),
+                )
 
                 return (
                   <details className="nav-group" key={group.id} open={isGroupActive || undefined}>
@@ -2110,12 +2093,32 @@ function App() {
                     <div className="nav-group-items">
                       {group.items.map((item) => {
                         const MenuIcon = resolveMenuIcon(item)
+                        const isLocked = lockedWorkflowPaths.has(item.path)
+                        const isActive = !isLocked && isMenuPathActive(item.path, activePath)
+                        const itemLabel = workflowLabel(item.path, item.label)
+
+                        if (isLocked) {
+                          return (
+                            <button
+                              key={item.id}
+                              aria-disabled="true"
+                              className="nav-link nav-link-locked"
+                              title={`${itemLabel} 暂不进入主流程`}
+                              type="button"
+                              disabled
+                            >
+                              <MenuIcon className="nav-link-icon" size={16} strokeWidth={2} />
+                              <span>{itemLabel}</span>
+                              <LockKeyhole className="nav-lock-icon" size={13} strokeWidth={2.2} />
+                            </button>
+                          )
+                        }
 
                         return (
                           <a
                             key={item.id}
-                            aria-current={isMenuPathActive(item.path, activePath) ? 'page' : undefined}
-                            className={isMenuPathActive(item.path, activePath) ? 'nav-link active' : 'nav-link'}
+                            aria-current={isActive ? 'page' : undefined}
+                            className={isActive ? 'nav-link active' : 'nav-link'}
                             href={item.path}
                             onClick={(event) => {
                               event.preventDefault()
@@ -2123,7 +2126,7 @@ function App() {
                             }}
                           >
                             <MenuIcon className="nav-link-icon" size={16} strokeWidth={2} />
-                            <span>{translatePathLabel(item.path, item.label)}</span>
+                            <span>{itemLabel}</span>
                           </a>
                         )
                       })}
@@ -2186,46 +2189,52 @@ function App() {
               <DashboardAnnouncementsPage dashboard={dashboard} loading={loadingDashboard} />
             ) : activePath === organizationUsersPath ? (
               <OrganizationUsersPage currentUser={session.user} translate={t} />
-            ) : activePath === productPath ? (
-              <ProductsPage />
-            ) : activePath === customerPath ? (
-              <MasterdataCustomersPage />
-            ) : activePath === supplierPath ? (
-              <MasterdataSuppliersPage />
-            ) : activePath === partnerPath ? (
-              <PartnersPage />
-            ) : activePath === documentPartyPath ? (
-              <MasterdataDocumentPartiesPage />
-            ) : activePath === sampleRequestPath ? (
-              <SampleRequestsPage />
-            ) : activePath === sampleRecordPath ? (
-              <SampleRecordsPage />
-            ) : activePath === sampleDeliveryPath ? (
-              <SampleDeliveriesPage />
-            ) : activePath === exportQuotationPath ? (
-              <ExportQuotationsPage onNavigate={navigate} />
-            ) : activePath === exportContractPath ? (
-              <ExportContractsPage onNavigate={navigate} />
-            ) : activePath === shipmentPath ? (
-              <ShipmentsPage onNavigate={navigate} />
-            ) : activePath === purchaseInquiryPath ? (
-              <PurchaseInquiriesPage onNavigate={navigate} />
-            ) : activePath === purchaseContractPath ? (
-              <PurchaseContractsPage onNavigate={navigate} />
-            ) : activePath === purchaseInvoiceNoticePath ? (
-              <PurchaseInvoiceNoticesPage onNavigate={navigate} />
-            ) : activePath === followupPath ? (
-              <FollowupPage onNavigate={navigate} />
-            ) : activePath === qualityInspectionPath ? (
-              <QualityInspectionsPage onNavigate={navigate} />
-            ) : activePath === warehouseInboundPlanPath ? (
-              <InboundPlansPage onNavigate={navigate} />
-            ) : activePath === warehouseInboundOrderPath ? (
-              <InboundOrdersPage onNavigate={navigate} />
-            ) : activePath === warehouseOutboundPlanPath ? (
-              <OutboundPlansPage onNavigate={navigate} />
-            ) : activePath === warehouseOutboundOrderPath ? (
-              <OutboundOrdersPage onNavigate={navigate} />
+            ) : isProductPath(activePath) ? (
+              <ProductsPage detailId={productDetailId(activePath)} onNavigate={navigate} />
+            ) : isDetailPathFor(customerPath, activePath) ? (
+              <MasterdataCustomersPage detailId={moduleDetailId(customerPath, activePath)} onNavigate={navigate} />
+            ) : isDetailPathFor(supplierPath, activePath) ? (
+              <MasterdataSuppliersPage detailId={moduleDetailId(supplierPath, activePath)} onNavigate={navigate} />
+            ) : isDetailPathFor(partnerPath, activePath) ? (
+              <MasterdataPartnersPage detailId={moduleDetailId(partnerPath, activePath)} onNavigate={navigate} />
+            ) : isDetailPathFor(documentPartyPath, activePath) ? (
+              <MasterdataDocumentPartiesPage
+                detailId={moduleDetailId(documentPartyPath, activePath)}
+                onNavigate={navigate}
+              />
+            ) : isDetailPathFor(sampleRequestPath, activePath) ? (
+              <SampleRequestsPage detailId={moduleDetailId(sampleRequestPath, activePath)} onNavigate={navigate} />
+            ) : isDetailPathFor(sampleRecordPath, activePath) ? (
+              <SampleRecordsPage detailId={moduleDetailId(sampleRecordPath, activePath)} onNavigate={navigate} />
+            ) : isDetailPathFor(sampleDeliveryPath, activePath) ? (
+              <SampleDeliveriesPage detailId={moduleDetailId(sampleDeliveryPath, activePath)} onNavigate={navigate} />
+            ) : isDetailPathFor(exportQuotationPath, activePath) ? (
+              <ExportQuotationsPage detailId={moduleDetailId(exportQuotationPath, activePath)} onNavigate={navigate} />
+            ) : isDetailPathFor(exportContractPath, activePath) ? (
+              <ExportContractsPage detailId={moduleDetailId(exportContractPath, activePath)} onNavigate={navigate} />
+            ) : isDetailPathFor(shipmentPath, activePath) ? (
+              <ShipmentsPage detailId={moduleDetailId(shipmentPath, activePath)} onNavigate={navigate} />
+            ) : isDetailPathFor(purchaseInquiryPath, activePath) ? (
+              <PurchaseInquiriesPage detailId={moduleDetailId(purchaseInquiryPath, activePath)} onNavigate={navigate} />
+            ) : isDetailPathFor(purchaseContractPath, activePath) ? (
+              <PurchaseContractsPage detailId={moduleDetailId(purchaseContractPath, activePath)} onNavigate={navigate} />
+            ) : isDetailPathFor(purchaseInvoiceNoticePath, activePath) ? (
+              <PurchaseInvoiceNoticesPage
+                detailId={moduleDetailId(purchaseInvoiceNoticePath, activePath)}
+                onNavigate={navigate}
+              />
+            ) : isDetailPathFor(followupPath, activePath) ? (
+              <FollowupPage detailId={moduleDetailId(followupPath, activePath)} onNavigate={navigate} />
+            ) : isDetailPathFor(qualityInspectionPath, activePath) ? (
+              <QualityInspectionsPage detailId={moduleDetailId(qualityInspectionPath, activePath)} onNavigate={navigate} />
+            ) : isDetailPathFor(warehouseInboundPlanPath, activePath) ? (
+              <InboundPlansPage detailId={moduleDetailId(warehouseInboundPlanPath, activePath)} onNavigate={navigate} />
+            ) : isDetailPathFor(warehouseInboundOrderPath, activePath) ? (
+              <InboundOrdersPage detailId={moduleDetailId(warehouseInboundOrderPath, activePath)} onNavigate={navigate} />
+            ) : isDetailPathFor(warehouseOutboundPlanPath, activePath) ? (
+              <OutboundPlansPage detailId={moduleDetailId(warehouseOutboundPlanPath, activePath)} onNavigate={navigate} />
+            ) : isDetailPathFor(warehouseOutboundOrderPath, activePath) ? (
+              <OutboundOrdersPage detailId={moduleDetailId(warehouseOutboundOrderPath, activePath)} onNavigate={navigate} />
             ) : activePath === reportingPath ? (
               <ReportingPage onNavigate={navigate} />
             ) : isFinancePath(activePath) ? (
@@ -3687,1974 +3696,55 @@ function DashboardAnnouncementsPage({
 }
 
 
-function CustomersPage() {
-  const [customers, setCustomers] = useState<Customer[]>([])
-  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null)
-  const [transactions, setTransactions] = useState<CustomerTransaction[]>([])
-  const [search, setSearch] = useState('')
-  const [countryFilter, setCountryFilter] = useState('')
-  const [creditGradeFilter, setCreditGradeFilter] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
-  const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
-  const [form, setForm] = useState<CustomerFormState>(() => initialCustomerForm())
-  const [editForm, setEditForm] = useState<CustomerEditState>(() => initialCustomerEdit())
-  const [contactForm, setContactForm] = useState<CustomerContactState>(() =>
-    initialCustomerContact(),
-  )
-
-  const selectedCustomer = useMemo(
-    () => customers.find((item) => item.id === selectedCustomerId) ?? customers[0] ?? null,
-    [customers, selectedCustomerId],
-  )
-
-  useEffect(() => {
-    void loadCustomers()
-  }, [])
-
-  useEffect(() => {
-    setEditForm(customerToEditForm(selectedCustomer))
-    if (selectedCustomer) {
-      void loadTransactions(selectedCustomer.id)
-    } else {
-      setTransactions([])
-    }
-  }, [selectedCustomer?.id])
-
-  async function loadCustomers(preferredId?: string) {
-    setLoading(true)
-    setError('')
-    try {
-      const result = await listCustomers({
-        q: search.trim() || undefined,
-        country: countryFilter.trim() || undefined,
-        credit_grade: creditGradeFilter.trim() || undefined,
-      })
-      setCustomers(result.items)
-      const nextSelectedId =
-        preferredId ??
-        (result.items.some((item) => item.id === selectedCustomerId) ? selectedCustomerId : null) ??
-        result.items[0]?.id ??
-        null
-      setSelectedCustomerId(nextSelectedId)
-    } catch (caught) {
-      showError(caught, '客户资料加载失败')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  async function loadTransactions(customerId: string) {
-    try {
-      const result = await listCustomerTransactions(customerId)
-      setTransactions(result.items)
-    } catch (caught) {
-      showError(caught, '客户交易记录加载失败')
-    }
-  }
-
-  async function submitCustomer(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setSubmitting(true)
-    setMessage('')
-    setError('')
-    try {
-      const created = await createCustomer(customerPayload(form))
-      setMessage(`已新增客户 ${created.code}`)
-      setForm(initialCustomerForm())
-      await loadCustomers(created.id)
-    } catch (caught) {
-      showError(caught, '客户新增失败')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  async function submitCustomerUpdate(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (!selectedCustomer) return
-    setSubmitting(true)
-    setMessage('')
-    setError('')
-    try {
-      const updated = await updateCustomer(selectedCustomer.id, customerUpdatePayload(editForm))
-      setCustomers((current) => current.map((item) => (item.id === updated.id ? updated : item)))
-      setSelectedCustomerId(updated.id)
-      setEditForm(customerToEditForm(updated))
-      setMessage(`已更新客户 ${updated.code}`)
-      await loadCustomers(updated.id)
-    } catch (caught) {
-      showError(caught, '客户更新失败')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  async function submitCustomerContact(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (!selectedCustomer) return
-    setSubmitting(true)
-    setMessage('')
-    setError('')
-    try {
-      const contact = await addCustomerContact(
-        selectedCustomer.id,
-        customerContactPayload(contactForm),
-      )
-      setCustomers((current) =>
-        current.map((customer) =>
-          customer.id === selectedCustomer.id
-            ? { ...customer, contacts: [...customer.contacts, contact] }
-            : customer,
-        ),
-      )
-      setMessage(`已追加联系人 ${contact.name}`)
-      setContactForm(initialCustomerContact())
-    } catch (caught) {
-      showError(caught, '联系人追加失败')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  return (
-    <section className="customer-page">
-      <div className="summary-strip" aria-label="客户资料概览">
-        <Metric label="客户" value={customers.length} />
-        <Metric
-          label="启用"
-          value={customers.filter((item) => item.status === 'active').length}
-        />
-        <Metric label="联系人" value={customers.reduce((sum, item) => sum + item.contacts.length, 0)} />
-        <Metric label="交易记录" value={transactions.length} />
-      </div>
-
-      {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
-
-      <section className="business-grid">
-        <section className="workspace-panel list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="客户列表" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadCustomers()
-              }}
-            >
-              <label>
-                客户搜索
-                <Input
-                  value={search}
-                  placeholder="编号 / 名称 / 国家 / 联系人"
-                  onChange={(event) => setSearch(event.target.value)}
-                />
-              </label>
-              <label>
-                国家筛选
-                <Input
-                  value={countryFilter}
-                  placeholder="Germany"
-                  onChange={(event) => setCountryFilter(event.target.value)}
-                />
-              </label>
-              <label>
-                信用等级筛选
-                <Input
-                  value={creditGradeFilter}
-                  placeholder="A"
-                  onChange={(event) => setCreditGradeFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-            </form>
-          </div>
-
-          <Table<Customer>
-            columns={[
-              {
-                title: '客户编号',
-                dataIndex: 'code',
-                render: (value: string) => <button className="row-button" type="button">{value}</button>,
-              },
-              { title: '中文名称', dataIndex: 'cn_name' },
-              { title: '英文名称', dataIndex: 'en_name' },
-              { title: '国家', dataIndex: 'country' },
-              {
-                title: '信用',
-                dataIndex: 'credit_profile',
-                render: (_, record) => record.credit_profile?.credit_grade ?? '-',
-              },
-              {
-                title: '主联系人',
-                dataIndex: 'primary_contact',
-                render: (_, record) => record.primary_contact?.name ?? '-',
-              },
-            ]}
-            dataSource={customers}
-            loading={loading}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedCustomer?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => setSelectedCustomerId(record.id),
-            })}
-          />
-        </section>
-
-        <section className="workspace-panel form-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="新增客户" />
-          <form className="record-form" onSubmit={submitCustomer}>
-            <label>
-              客户编号
-              <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
-            </label>
-            <label>
-              客户状态
-              <FormSelect value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value })}>
-                <option value="active">启用</option>
-                <option value="inactive">停用</option>
-              </FormSelect>
-            </label>
-            <label>
-              客户中文名称
-              <Input value={form.cn_name} onChange={(event) => setForm({ ...form, cn_name: event.target.value })} />
-            </label>
-            <label>
-              客户英文名称
-              <Input value={form.en_name} onChange={(event) => setForm({ ...form, en_name: event.target.value })} />
-            </label>
-            <label>
-              客户国家
-              <Input value={form.country} onChange={(event) => setForm({ ...form, country: event.target.value })} />
-            </label>
-            <label>
-              客户地址
-              <Input.TextArea
-                rows={3}
-                value={form.address}
-                onChange={(event) => setForm({ ...form, address: event.target.value })}
-              />
-            </label>
-            <label>
-              客户网址
-              <Input value={form.website} onChange={(event) => setForm({ ...form, website: event.target.value })} />
-            </label>
-            <div className="form-divider">主联系人</div>
-            <label>
-              主联系人姓名
-              <Input
-                value={form.contact_name}
-                onChange={(event) => setForm({ ...form, contact_name: event.target.value })}
-              />
-            </label>
-            <label>
-              主联系人职务
-              <Input
-                value={form.contact_title}
-                onChange={(event) => setForm({ ...form, contact_title: event.target.value })}
-              />
-            </label>
-            <label>
-              主联系人邮箱
-              <Input
-                value={form.contact_email}
-                onChange={(event) => setForm({ ...form, contact_email: event.target.value })}
-              />
-            </label>
-            <label>
-              主联系人电话
-              <Input
-                value={form.contact_phone}
-                onChange={(event) => setForm({ ...form, contact_phone: event.target.value })}
-              />
-            </label>
-            <div className="form-divider">信用信息</div>
-            <label>
-              信用等级
-              <Input
-                value={form.credit_grade}
-                onChange={(event) => setForm({ ...form, credit_grade: event.target.value })}
-              />
-            </label>
-            <label>
-              授信额度
-              <Input
-                type="number"
-                min="0"
-                step="0.01"
-                value={form.credit_limit}
-                onChange={(event) => setForm({ ...form, credit_limit: event.target.value })}
-              />
-            </label>
-            <label>
-              授信币种
-              <Input value={form.currency} onChange={(event) => setForm({ ...form, currency: event.target.value })} />
-            </label>
-            <label>
-              付款条款
-              <Input
-                value={form.payment_terms}
-                onChange={(event) => setForm({ ...form, payment_terms: event.target.value })}
-              />
-            </label>
-            <label>
-              风险备注
-              <Input.TextArea
-                rows={3}
-                value={form.risk_note}
-                onChange={(event) => setForm({ ...form, risk_note: event.target.value })}
-              />
-            </label>
-            <Button htmlType="submit" loading={submitting} type="primary">
-              新增客户
-            </Button>
-          </form>
-        </section>
-
-        <section className="workspace-panel detail-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="客户明细" />
-          {selectedCustomer ? (
-            <>
-              <dl className="detail-list">
-                <div>
-                  <dt>中文名称</dt>
-                  <dd>{selectedCustomer.cn_name}</dd>
-                </div>
-                <div>
-                  <dt>英文名称</dt>
-                  <dd>{selectedCustomer.en_name}</dd>
-                </div>
-                <div>
-                  <dt>国家/状态</dt>
-                  <dd>{selectedCustomer.country} / {customerStatusLabel(selectedCustomer.status)}</dd>
-                </div>
-                <div>
-                  <dt>授信额度</dt>
-                  <dd>{formatMoney(selectedCustomer.credit_profile?.credit_limit, selectedCustomer.credit_profile?.currency)}</dd>
-                </div>
-                <div>
-                  <dt>信用等级</dt>
-                  <dd>{selectedCustomer.credit_profile?.credit_grade ?? '未评'}</dd>
-                </div>
-                <div>
-                  <dt>付款条款</dt>
-                  <dd>{selectedCustomer.credit_profile?.payment_terms ?? '未设置'}</dd>
-                </div>
-                <div>
-                  <dt>主联系人</dt>
-                  <dd>{selectedCustomer.primary_contact?.name ?? '未设置'}</dd>
-                </div>
-              </dl>
-
-              <Table
-                className="compact-section"
-                columns={[
-                  { title: '姓名', dataIndex: 'name' },
-                  { title: '职务', dataIndex: 'title' },
-                  { title: '邮箱', dataIndex: 'email' },
-                  { title: '电话', dataIndex: 'phone' },
-                  {
-                    title: '主联系人',
-                    dataIndex: 'is_primary',
-                    render: (value: boolean) => (value ? '是' : '否'),
-                  },
-                ]}
-                dataSource={selectedCustomer.contacts}
-                pagination={false}
-                rowKey="id"
-                size="small"
-              />
-
-              <form className="record-form compact-section" onSubmit={submitCustomerUpdate}>
-                <div className="form-divider">编辑客户</div>
-                <label>
-                  编辑客户中文名称
-                  <Input
-                    value={editForm.cn_name}
-                    onChange={(event) => setEditForm({ ...editForm, cn_name: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑客户英文名称
-                  <Input
-                    value={editForm.en_name}
-                    onChange={(event) => setEditForm({ ...editForm, en_name: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑客户国家
-                  <Input
-                    value={editForm.country}
-                    onChange={(event) => setEditForm({ ...editForm, country: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑信用等级
-                  <Input
-                    value={editForm.credit_grade}
-                    onChange={(event) => setEditForm({ ...editForm, credit_grade: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑授信额度
-                  <Input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={editForm.credit_limit}
-                    onChange={(event) => setEditForm({ ...editForm, credit_limit: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑付款条款
-                  <Input
-                    value={editForm.payment_terms}
-                    onChange={(event) => setEditForm({ ...editForm, payment_terms: event.target.value })}
-                  />
-                </label>
-                <Button htmlType="submit" loading={submitting} type="primary">
-                  更新客户
-                </Button>
-              </form>
-
-              <form className="record-form compact-section" onSubmit={submitCustomerContact}>
-                <div className="form-divider">追加联系人</div>
-                <label>
-                  追加联系人姓名
-                  <Input
-                    value={contactForm.name}
-                    onChange={(event) => setContactForm({ ...contactForm, name: event.target.value })}
-                  />
-                </label>
-                <label>
-                  追加联系人职务
-                  <Input
-                    value={contactForm.title}
-                    onChange={(event) => setContactForm({ ...contactForm, title: event.target.value })}
-                  />
-                </label>
-                <label>
-                  追加联系人邮箱
-                  <Input
-                    value={contactForm.email}
-                    onChange={(event) => setContactForm({ ...contactForm, email: event.target.value })}
-                  />
-                </label>
-                <label>
-                  追加联系人电话
-                  <Input
-                    value={contactForm.phone}
-                    onChange={(event) => setContactForm({ ...contactForm, phone: event.target.value })}
-                  />
-                </label>
-                <Button htmlType="submit" loading={submitting}>
-                  追加联系人
-                </Button>
-              </form>
-
-              <section className="fee-records compact-section">
-                <strong>交易记录</strong>
-                <p>报价、出口合同、出货和收款模块接入后将在此汇总。</p>
-                <span>{transactions.length} 条</span>
-              </section>
-            </>
-          ) : (
-            null
-          )}
-        </section>
-      </section>
-
-    </section>
-  )
-}
-
-function SuppliersPage() {
-  const [suppliers, setSuppliers] = useState<Supplier[]>([])
-  const [selectedSupplierId, setSelectedSupplierId] = useState<string | null>(null)
-  const [transactions, setTransactions] = useState<SupplierTransaction[]>([])
-  const [search, setSearch] = useState('')
-  const [countryFilter, setCountryFilter] = useState('')
-  const [creditGradeFilter, setCreditGradeFilter] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
-  const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
-  const [form, setForm] = useState<SupplierFormState>(() => initialSupplierForm())
-  const [editForm, setEditForm] = useState<SupplierEditState>(() => initialSupplierEdit())
-  const [contactForm, setContactForm] = useState<SupplierContactState>(() =>
-    initialSupplierContact(),
-  )
-
-  const selectedSupplier = useMemo(
-    () => suppliers.find((item) => item.id === selectedSupplierId) ?? suppliers[0] ?? null,
-    [suppliers, selectedSupplierId],
-  )
-
-  useEffect(() => {
-    void loadSuppliers()
-  }, [])
-
-  useEffect(() => {
-    setEditForm(supplierToEditForm(selectedSupplier))
-    if (selectedSupplier) {
-      void loadTransactions(selectedSupplier.id)
-    } else {
-      setTransactions([])
-    }
-  }, [selectedSupplier?.id])
-
-  async function loadSuppliers(preferredId?: string) {
-    setLoading(true)
-    setError('')
-    try {
-      const result = await listSuppliers({
-        q: search.trim() || undefined,
-        country: countryFilter.trim() || undefined,
-        credit_grade: creditGradeFilter.trim() || undefined,
-      })
-      setSuppliers(result.items)
-      const nextSelectedId =
-        preferredId ??
-        (result.items.some((item) => item.id === selectedSupplierId) ? selectedSupplierId : null) ??
-        result.items[0]?.id ??
-        null
-      setSelectedSupplierId(nextSelectedId)
-    } catch (caught) {
-      showError(caught, '供应商资料加载失败')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  async function loadTransactions(supplierId: string) {
-    try {
-      const result = await listSupplierTransactions(supplierId)
-      setTransactions(result.items)
-    } catch (caught) {
-      showError(caught, '供应商交易记录加载失败')
-    }
-  }
-
-  async function submitSupplier(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setSubmitting(true)
-    setMessage('')
-    setError('')
-    try {
-      const created = await createSupplier(supplierPayload(form))
-      setMessage(`已新增供应商 ${created.code}`)
-      setForm(initialSupplierForm())
-      await loadSuppliers(created.id)
-    } catch (caught) {
-      showError(caught, '供应商新增失败')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  async function submitSupplierUpdate(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (!selectedSupplier) return
-    setSubmitting(true)
-    setMessage('')
-    setError('')
-    try {
-      const updated = await updateSupplier(selectedSupplier.id, supplierUpdatePayload(editForm))
-      setSuppliers((current) => current.map((item) => (item.id === updated.id ? updated : item)))
-      setSelectedSupplierId(updated.id)
-      setEditForm(supplierToEditForm(updated))
-      setMessage(`已更新供应商 ${updated.code}`)
-      await loadSuppliers(updated.id)
-    } catch (caught) {
-      showError(caught, '供应商更新失败')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  async function submitSupplierContact(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (!selectedSupplier) return
-    setSubmitting(true)
-    setMessage('')
-    setError('')
-    try {
-      const contact = await addSupplierContact(
-        selectedSupplier.id,
-        supplierContactPayload(contactForm),
-      )
-      setSuppliers((current) =>
-        current.map((supplier) =>
-          supplier.id === selectedSupplier.id
-            ? { ...supplier, contacts: [...supplier.contacts, contact] }
-            : supplier,
-        ),
-      )
-      setMessage(`已追加供应商联系人 ${contact.name}`)
-      setContactForm(initialSupplierContact())
-    } catch (caught) {
-      showError(caught, '供应商联系人追加失败')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  return (
-    <section className="supplier-page">
-      <div className="summary-strip" aria-label="供应商资料概览">
-        <Metric label="供应商" value={suppliers.length} />
-        <Metric
-          label="启用"
-          value={suppliers.filter((item) => item.status === 'active').length}
-        />
-        <Metric label="联系人" value={suppliers.reduce((sum, item) => sum + item.contacts.length, 0)} />
-        <Metric label="交易记录" value={transactions.length} />
-      </div>
-
-      {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
-
-      <section className="business-grid">
-        <section className="workspace-panel list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="供应商列表" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadSuppliers()
-              }}
-            >
-              <label>
-                供应商搜索
-                <Input
-                  value={search}
-                  placeholder="编号 / 名称 / 国家 / 联系人"
-                  onChange={(event) => setSearch(event.target.value)}
-                />
-              </label>
-              <label>
-                供应商国家筛选
-                <Input
-                  value={countryFilter}
-                  placeholder="China"
-                  onChange={(event) => setCountryFilter(event.target.value)}
-                />
-              </label>
-              <label>
-                供应商信用等级筛选
-                <Input
-                  value={creditGradeFilter}
-                  placeholder="A"
-                  onChange={(event) => setCreditGradeFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-            </form>
-          </div>
-
-          <Table<Supplier>
-            columns={[
-              {
-                title: '供应商编号',
-                dataIndex: 'code',
-                render: (value: string) => <button className="row-button" type="button">{value}</button>,
-              },
-              { title: '中文名称', dataIndex: 'cn_name' },
-              { title: '英文名称', dataIndex: 'en_name' },
-              { title: '国家', dataIndex: 'country' },
-              {
-                title: '信用',
-                dataIndex: 'credit_profile',
-                render: (_, record) => record.credit_profile?.credit_grade ?? '-',
-              },
-              {
-                title: '主联系人',
-                dataIndex: 'primary_contact',
-                render: (_, record) => record.primary_contact?.name ?? '-',
-              },
-            ]}
-            dataSource={suppliers}
-            loading={loading}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedSupplier?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => setSelectedSupplierId(record.id),
-            })}
-          />
-        </section>
-
-        <section className="workspace-panel form-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="新增供应商" />
-          <form className="record-form" onSubmit={submitSupplier}>
-            <label>
-              供应商编号
-              <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
-            </label>
-            <label>
-              供应商状态
-              <FormSelect value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value })}>
-                <option value="active">启用</option>
-                <option value="inactive">停用</option>
-              </FormSelect>
-            </label>
-            <label>
-              供应商中文名称
-              <Input value={form.cn_name} onChange={(event) => setForm({ ...form, cn_name: event.target.value })} />
-            </label>
-            <label>
-              供应商英文名称
-              <Input value={form.en_name} onChange={(event) => setForm({ ...form, en_name: event.target.value })} />
-            </label>
-            <label>
-              供应商国家
-              <Input value={form.country} onChange={(event) => setForm({ ...form, country: event.target.value })} />
-            </label>
-            <label>
-              供应商地址
-              <Input.TextArea
-                rows={3}
-                value={form.address}
-                onChange={(event) => setForm({ ...form, address: event.target.value })}
-              />
-            </label>
-            <label>
-              供应商网址
-              <Input value={form.website} onChange={(event) => setForm({ ...form, website: event.target.value })} />
-            </label>
-            <div className="form-divider">供应商主联系人</div>
-            <label>
-              供应商主联系人姓名
-              <Input
-                value={form.contact_name}
-                onChange={(event) => setForm({ ...form, contact_name: event.target.value })}
-              />
-            </label>
-            <label>
-              供应商主联系人职务
-              <Input
-                value={form.contact_title}
-                onChange={(event) => setForm({ ...form, contact_title: event.target.value })}
-              />
-            </label>
-            <label>
-              供应商主联系人邮箱
-              <Input
-                value={form.contact_email}
-                onChange={(event) => setForm({ ...form, contact_email: event.target.value })}
-              />
-            </label>
-            <label>
-              供应商主联系人电话
-              <Input
-                value={form.contact_phone}
-                onChange={(event) => setForm({ ...form, contact_phone: event.target.value })}
-              />
-            </label>
-            <div className="form-divider">供应商信用信息</div>
-            <label>
-              供应商信用等级
-              <Input
-                value={form.credit_grade}
-                onChange={(event) => setForm({ ...form, credit_grade: event.target.value })}
-              />
-            </label>
-            <label>
-              供应商授信额度
-              <Input
-                type="number"
-                min="0"
-                step="0.01"
-                value={form.credit_limit}
-                onChange={(event) => setForm({ ...form, credit_limit: event.target.value })}
-              />
-            </label>
-            <label>
-              供应商授信币种
-              <Input value={form.currency} onChange={(event) => setForm({ ...form, currency: event.target.value })} />
-            </label>
-            <label>
-              供应商付款条款
-              <Input
-                value={form.payment_terms}
-                onChange={(event) => setForm({ ...form, payment_terms: event.target.value })}
-              />
-            </label>
-            <label>
-              供应商风险备注
-              <Input.TextArea
-                rows={3}
-                value={form.risk_note}
-                onChange={(event) => setForm({ ...form, risk_note: event.target.value })}
-              />
-            </label>
-            <Button htmlType="submit" loading={submitting} type="primary">
-              新增供应商
-            </Button>
-          </form>
-        </section>
-
-        <section className="workspace-panel detail-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="供应商明细" />
-          {selectedSupplier ? (
-            <>
-              <dl className="detail-list">
-                <div>
-                  <dt>中文名称</dt>
-                  <dd>{selectedSupplier.cn_name}</dd>
-                </div>
-                <div>
-                  <dt>英文名称</dt>
-                  <dd>{selectedSupplier.en_name}</dd>
-                </div>
-                <div>
-                  <dt>国家/状态</dt>
-                  <dd>{selectedSupplier.country} / {supplierStatusLabel(selectedSupplier.status)}</dd>
-                </div>
-                <div>
-                  <dt>授信额度</dt>
-                  <dd>{formatMoney(selectedSupplier.credit_profile?.credit_limit, selectedSupplier.credit_profile?.currency)}</dd>
-                </div>
-                <div>
-                  <dt>信用等级</dt>
-                  <dd>{selectedSupplier.credit_profile?.credit_grade ?? '未评'}</dd>
-                </div>
-                <div>
-                  <dt>付款条款</dt>
-                  <dd>{selectedSupplier.credit_profile?.payment_terms ?? '未设置'}</dd>
-                </div>
-                <div>
-                  <dt>主联系人</dt>
-                  <dd>{selectedSupplier.primary_contact?.name ?? '未设置'}</dd>
-                </div>
-              </dl>
-
-              <Table
-                className="compact-section"
-                columns={[
-                  { title: '姓名', dataIndex: 'name' },
-                  { title: '职务', dataIndex: 'title' },
-                  { title: '邮箱', dataIndex: 'email' },
-                  { title: '电话', dataIndex: 'phone' },
-                  {
-                    title: '主联系人',
-                    dataIndex: 'is_primary',
-                    render: (value: boolean) => (value ? '是' : '否'),
-                  },
-                ]}
-                dataSource={selectedSupplier.contacts}
-                pagination={false}
-                rowKey="id"
-                size="small"
-              />
-
-              <form className="record-form compact-section" onSubmit={submitSupplierUpdate}>
-                <div className="form-divider">编辑供应商</div>
-                <label>
-                  编辑供应商中文名称
-                  <Input
-                    value={editForm.cn_name}
-                    onChange={(event) => setEditForm({ ...editForm, cn_name: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑供应商英文名称
-                  <Input
-                    value={editForm.en_name}
-                    onChange={(event) => setEditForm({ ...editForm, en_name: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑供应商国家
-                  <Input
-                    value={editForm.country}
-                    onChange={(event) => setEditForm({ ...editForm, country: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑供应商信用等级
-                  <Input
-                    value={editForm.credit_grade}
-                    onChange={(event) => setEditForm({ ...editForm, credit_grade: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑供应商授信额度
-                  <Input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={editForm.credit_limit}
-                    onChange={(event) => setEditForm({ ...editForm, credit_limit: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑供应商付款条款
-                  <Input
-                    value={editForm.payment_terms}
-                    onChange={(event) => setEditForm({ ...editForm, payment_terms: event.target.value })}
-                  />
-                </label>
-                <Button htmlType="submit" loading={submitting} type="primary">
-                  更新供应商
-                </Button>
-              </form>
-
-              <form className="record-form compact-section" onSubmit={submitSupplierContact}>
-                <div className="form-divider">追加供应商联系人</div>
-                <label>
-                  追加供应商联系人姓名
-                  <Input
-                    value={contactForm.name}
-                    onChange={(event) => setContactForm({ ...contactForm, name: event.target.value })}
-                  />
-                </label>
-                <label>
-                  追加供应商联系人职务
-                  <Input
-                    value={contactForm.title}
-                    onChange={(event) => setContactForm({ ...contactForm, title: event.target.value })}
-                  />
-                </label>
-                <label>
-                  追加供应商联系人邮箱
-                  <Input
-                    value={contactForm.email}
-                    onChange={(event) => setContactForm({ ...contactForm, email: event.target.value })}
-                  />
-                </label>
-                <label>
-                  追加供应商联系人电话
-                  <Input
-                    value={contactForm.phone}
-                    onChange={(event) => setContactForm({ ...contactForm, phone: event.target.value })}
-                  />
-                </label>
-                <Button htmlType="submit" loading={submitting}>
-                  追加供应商联系人
-                </Button>
-              </form>
-
-              <section className="fee-records compact-section">
-                <strong>交易记录</strong>
-                <p>采购询价、采购合同、入库和付款模块接入后将在此汇总。</p>
-                <span>{transactions.length} 条</span>
-              </section>
-            </>
-          ) : (
-            <div className="module-state">暂无供应商资料</div>
-          )}
-        </section>
-      </section>
-
-    </section>
-  )
-}
-
-function PartnersPage() {
-  const [partners, setPartners] = useState<Partner[]>([])
-  const [selectedPartnerId, setSelectedPartnerId] = useState<string | null>(null)
-  const [feeRecords, setFeeRecords] = useState<PartnerFeeRecord[]>([])
-  const [search, setSearch] = useState('')
-  const [typeFilter, setTypeFilter] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
-  const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
-  const [form, setForm] = useState<PartnerFormState>(() => initialPartnerForm())
-  const [editForm, setEditForm] = useState<PartnerEditState>(() => initialPartnerEdit())
-  const [contactForm, setContactForm] = useState<PartnerContactState>(() => initialPartnerContact())
-  const [createModalOpen, setCreateModalOpen] = useState(false)
-  const [editModalOpen, setEditModalOpen] = useState(false)
-  const [contactModalOpen, setContactModalOpen] = useState(false)
-
-  const selectedPartner = useMemo(
-    () => partners.find((item) => item.id === selectedPartnerId) ?? partners[0] ?? null,
-    [partners, selectedPartnerId],
-  )
-
-  useEffect(() => {
-    void loadPartners()
-  }, [])
-
-  useEffect(() => {
-    setEditForm(partnerToEditForm(selectedPartner))
-    if (selectedPartner) {
-      void loadFeeRecords(selectedPartner.id)
-    } else {
-      setFeeRecords([])
-    }
-  }, [selectedPartner?.id])
-
-  async function loadPartners(preferredId?: string) {
-    setLoading(true)
-    setError('')
-    try {
-      const result = await listPartners({
-        q: search.trim() || undefined,
-        partner_type: typeFilter || undefined,
-      })
-      setPartners(result.items)
-      const nextSelectedId =
-        preferredId ??
-        (result.items.some((item) => item.id === selectedPartnerId) ? selectedPartnerId : null) ??
-        result.items[0]?.id ??
-        null
-      setSelectedPartnerId(nextSelectedId)
-    } catch (caught) {
-      showError(caught, '合作伙伴加载失败')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  async function loadFeeRecords(partnerId: string) {
-    try {
-      const result = await listPartnerFeeRecords(partnerId)
-      setFeeRecords(result.items)
-    } catch (caught) {
-      showError(caught, '费用记录加载失败')
-    }
-  }
-
-  async function submitPartner(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setSubmitting(true)
-    setMessage('')
-    setError('')
-    try {
-      const created = await createPartner(partnerPayload(form))
-      setMessage(`已新增合作伙伴 ${created.code}`)
-      setForm(initialPartnerForm())
-      setCreateModalOpen(false)
-      await loadPartners(created.id)
-    } catch (caught) {
-      showError(caught, '合作伙伴新增失败')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  async function submitPartnerUpdate(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (!selectedPartner) return
-    setSubmitting(true)
-    setMessage('')
-    setError('')
-    try {
-      const updated = await updatePartner(selectedPartner.id, partnerUpdatePayload(editForm))
-      setPartners((current) => current.map((item) => (item.id === updated.id ? updated : item)))
-      setSelectedPartnerId(updated.id)
-      setEditForm(partnerToEditForm(updated))
-      setEditModalOpen(false)
-      setMessage(`已更新合作伙伴 ${updated.code}`)
-      await loadPartners(updated.id)
-    } catch (caught) {
-      showError(caught, '合作伙伴更新失败')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  async function submitPartnerContact(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (!selectedPartner) return
-    setSubmitting(true)
-    setMessage('')
-    setError('')
-    try {
-      await addPartnerContact(selectedPartner.id, partnerContactPayload(contactForm))
-      setMessage(`已追加联系人 ${contactForm.name}`)
-      setContactForm(initialPartnerContact())
-      setContactModalOpen(false)
-      await loadPartners(selectedPartner.id)
-    } catch (caught) {
-      showError(caught, '联系人追加失败')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  function openEditPartner() {
-    if (!selectedPartner) return
-    setEditForm(partnerToEditForm(selectedPartner))
-    setEditModalOpen(true)
-  }
-
-  function openContactModal() {
-    if (!selectedPartner) return
-    setContactForm(initialPartnerContact())
-    setContactModalOpen(true)
-  }
-
-  return (
-    <section className="masterdata-page partner-page">
-      <div className="summary-strip" aria-label="合作伙伴概览">
-        <Metric label="合作伙伴" value={partners.length} />
-        <Metric
-          label="启用"
-          value={partners.filter((item) => item.status === 'active').length}
-        />
-        <Metric label="联系人" value={partners.reduce((sum, item) => sum + item.contacts.length, 0)} />
-        <Metric label="费用记录" value={feeRecords.length} />
-      </div>
-
-      {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
-
-      <section className="business-grid product-business-grid">
-        <section className="workspace-panel list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="合作伙伴列表" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadPartners()
-              }}
-            >
-              <label className="inline-filter-search">
-                搜索
-                <Input
-                  value={search}
-                  placeholder="编号 / 名称 / 国家 / 联系人"
-                  onChange={(event) => setSearch(event.target.value)}
-                />
-              </label>
-              <label className="inline-filter-compact">
-                类型
-                <Select
-                  options={[{ value: '', label: '全部类型' }, ...partnerTypeOptions]}
-                  value={typeFilter}
-                  onChange={setTypeFilter}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-              <Button
-                htmlType="button"
-                icon={<Plus size={16} />}
-                onClick={() => {
-                  setForm(initialPartnerForm())
-                  setCreateModalOpen(true)
-                }}
-              >
-                新增合作伙伴
-              </Button>
-            </form>
-          </div>
-
-          <Table<Partner>
-            columns={[
-              {
-                title: '编号',
-                dataIndex: 'code',
-                render: (value: string) => <button className="row-button" type="button">{value}</button>,
-              },
-              { title: '中文名称', dataIndex: 'cn_name' },
-              { title: '类型', dataIndex: 'partner_type', render: partnerTypeLabel },
-              { title: '国家', dataIndex: 'country' },
-              {
-                title: '主联系人',
-                dataIndex: 'primary_contact',
-                render: (_, record) => record.primary_contact?.name ?? '-',
-              },
-            ]}
-            dataSource={partners}
-            loading={loading}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedPartner?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => setSelectedPartnerId(record.id),
-            })}
-          />
-        </section>
-
-        <section className="workspace-panel detail-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="合作伙伴明细" />
-            {selectedPartner ? (
-              <div className="section-actions">
-                <Button icon={<Plus size={16} />} onClick={openContactModal}>
-                  新增联系人
-                </Button>
-                <Button icon={<FilePenLine size={16} />} onClick={openEditPartner}>
-                  编辑资料
-                </Button>
-              </div>
-            ) : null}
-          </div>
-          {selectedPartner ? (
-            <>
-              <dl className="detail-list">
-                <div>
-                  <dt>中文名称</dt>
-                  <dd>{selectedPartner.cn_name}</dd>
-                </div>
-                <div>
-                  <dt>英文名称</dt>
-                  <dd>{selectedPartner.en_name}</dd>
-                </div>
-                <div>
-                  <dt>类型</dt>
-                  <dd>{partnerTypeLabel(selectedPartner.partner_type)}</dd>
-                </div>
-                <div>
-                  <dt>国家/状态</dt>
-                  <dd>{selectedPartner.country} / {partnerStatusLabel(selectedPartner.status)}</dd>
-                </div>
-                <div>
-                  <dt>主联系人</dt>
-                  <dd>{selectedPartner.primary_contact?.name ?? '未设置'}</dd>
-                </div>
-              </dl>
-
-              <Table
-                className="compact-section"
-                columns={[
-                  { title: '姓名', dataIndex: 'name' },
-                  { title: '职务', dataIndex: 'title' },
-                  { title: '邮箱', dataIndex: 'email' },
-                  { title: '电话', dataIndex: 'phone' },
-                  {
-                    title: '主联系人',
-                    dataIndex: 'is_primary',
-                    render: (value: boolean) => (value ? '是' : '否'),
-                  },
-                ]}
-                dataSource={selectedPartner.contacts}
-                pagination={false}
-                rowKey="id"
-                size="small"
-              />
-
-              <section className="fee-records compact-section">
-                <strong>费用记录</strong>
-                <p>费用申请、单证和付费管理模块接入后将在此汇总。</p>
-                <span>{feeRecords.length} 条</span>
-              </section>
-            </>
-          ) : (
-            <div className="module-state panel-empty-state">
-              <LayoutDashboard size={28} />
-              <strong>暂无合作伙伴</strong>
-              <span>请选择上方列表中的合作伙伴查看详情</span>
-            </div>
-          )}
-        </section>
-      </section>
-
-      <Modal
-        centered
-        footer={null}
-        open={createModalOpen}
-        title="新增合作伙伴"
-        width={1040}
-        onCancel={() => setCreateModalOpen(false)}
-      >
-        <form className="record-form entity-modal-form" onSubmit={submitPartner}>
-          <div className="entity-modal-grid">
-            <label>
-              合作伙伴编号
-              <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
-            </label>
-            <label>
-              合作伙伴状态
-              <Select
-                options={partnerStatusOptions}
-                value={form.status}
-                onChange={(value) => setForm({ ...form, status: value })}
-              />
-            </label>
-            <label>
-              合作伙伴中文名称
-              <Input value={form.cn_name} onChange={(event) => setForm({ ...form, cn_name: event.target.value })} />
-            </label>
-            <label>
-              合作伙伴英文名称
-              <Input value={form.en_name} onChange={(event) => setForm({ ...form, en_name: event.target.value })} />
-            </label>
-            <label>
-              合作伙伴类型
-              <Select
-                options={partnerTypeOptions}
-                value={form.partner_type}
-                onChange={(value) => setForm({ ...form, partner_type: value })}
-              />
-            </label>
-            <label>
-              合作伙伴国家
-              <Input value={form.country} onChange={(event) => setForm({ ...form, country: event.target.value })} />
-            </label>
-            <label>
-              合作伙伴地址
-              <Input value={form.address} onChange={(event) => setForm({ ...form, address: event.target.value })} />
-            </label>
-            <label>
-              合作伙伴网址
-              <Input value={form.website} onChange={(event) => setForm({ ...form, website: event.target.value })} />
-            </label>
-            <label>
-              合作伙伴主联系人姓名
-              <Input
-                value={form.primary_contact_name}
-                onChange={(event) => setForm({ ...form, primary_contact_name: event.target.value })}
-              />
-            </label>
-            <label>
-              合作伙伴主联系人职务
-              <Input
-                value={form.primary_contact_title}
-                onChange={(event) => setForm({ ...form, primary_contact_title: event.target.value })}
-              />
-            </label>
-            <label>
-              合作伙伴主联系人邮箱
-              <Input
-                value={form.primary_contact_email}
-                onChange={(event) => setForm({ ...form, primary_contact_email: event.target.value })}
-              />
-            </label>
-            <label>
-              合作伙伴主联系人电话
-              <Input
-                value={form.primary_contact_phone}
-                onChange={(event) => setForm({ ...form, primary_contact_phone: event.target.value })}
-              />
-            </label>
-          </div>
-          <div className="modal-actions">
-            <button className="secondary-inline" type="button" onClick={() => setCreateModalOpen(false)}>
-              取消
-            </button>
-            <button className="inline-submit" disabled={submitting} type="submit">
-              新增合作伙伴
-            </button>
-          </div>
-        </form>
-      </Modal>
-
-      <Modal
-        centered
-        footer={null}
-        open={editModalOpen}
-        title="编辑合作伙伴"
-        width={760}
-        onCancel={() => setEditModalOpen(false)}
-      >
-        <form className="record-form entity-modal-form" onSubmit={submitPartnerUpdate}>
-          <div className="entity-modal-grid">
-            <label>
-              中文名称
-              <Input
-                value={editForm.cn_name}
-                onChange={(event) => setEditForm({ ...editForm, cn_name: event.target.value })}
-              />
-            </label>
-            <label>
-              英文名称
-              <Input
-                value={editForm.en_name}
-                onChange={(event) => setEditForm({ ...editForm, en_name: event.target.value })}
-              />
-            </label>
-            <label>
-              类型
-              <Select
-                options={partnerTypeOptions}
-                value={editForm.partner_type}
-                onChange={(value) => setEditForm({ ...editForm, partner_type: value })}
-              />
-            </label>
-            <label>
-              国家
-              <Input
-                value={editForm.country}
-                onChange={(event) => setEditForm({ ...editForm, country: event.target.value })}
-              />
-            </label>
-            <label>
-              状态
-              <Select
-                options={partnerStatusOptions}
-                value={editForm.status}
-                onChange={(value) => setEditForm({ ...editForm, status: value })}
-              />
-            </label>
-          </div>
-          <div className="modal-actions">
-            <button className="secondary-inline" type="button" onClick={() => setEditModalOpen(false)}>
-              取消
-            </button>
-            <button className="inline-submit" disabled={submitting} type="submit">
-              保存修改
-            </button>
-          </div>
-        </form>
-      </Modal>
-
-      <Modal
-        centered
-        footer={null}
-        open={contactModalOpen}
-        title="新增合作伙伴联系人"
-        width={760}
-        onCancel={() => setContactModalOpen(false)}
-      >
-        <form className="record-form entity-modal-form" onSubmit={submitPartnerContact}>
-          <div className="entity-modal-grid two">
-            <label>
-              姓名
-              <Input
-                value={contactForm.name}
-                onChange={(event) => setContactForm({ ...contactForm, name: event.target.value })}
-              />
-            </label>
-            <label>
-              职务
-              <Input
-                value={contactForm.title}
-                onChange={(event) => setContactForm({ ...contactForm, title: event.target.value })}
-              />
-            </label>
-            <label>
-              邮箱
-              <Input
-                value={contactForm.email}
-                onChange={(event) => setContactForm({ ...contactForm, email: event.target.value })}
-              />
-            </label>
-            <label>
-              电话
-              <Input
-                value={contactForm.phone}
-                onChange={(event) => setContactForm({ ...contactForm, phone: event.target.value })}
-              />
-            </label>
-          </div>
-          <div className="modal-actions">
-            <button className="secondary-inline" type="button" onClick={() => setContactModalOpen(false)}>
-              取消
-            </button>
-            <button className="inline-submit" disabled={submitting} type="submit">
-              新增联系人
-            </button>
-          </div>
-        </form>
-      </Modal>
-    </section>
-  )
-}
-
-function DocumentPartiesPage() {
-  const [parties, setParties] = useState<DocumentParty[]>([])
-  const [lookupParties, setLookupParties] = useState<DocumentParty[]>([])
-  const [selectedPartyId, setSelectedPartyId] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [typeFilter, setTypeFilter] = useState('')
-  const [customerFilter, setCustomerFilter] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
-  const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
-  const [form, setForm] = useState<DocumentPartyFormState>(() => initialDocumentPartyForm())
-  const [editForm, setEditForm] = useState<DocumentPartyEditState>(() => initialDocumentPartyEdit())
-
-  const selectedParty = useMemo(
-    () => parties.find((item) => item.id === selectedPartyId) ?? parties[0] ?? null,
-    [parties, selectedPartyId],
-  )
-
-  useEffect(() => {
-    void loadParties()
-  }, [])
-
-  useEffect(() => {
-    setEditForm(documentPartyToEditForm(selectedParty))
-    if (selectedParty) {
-      void loadLookupParties(selectedParty)
-    } else {
-      setLookupParties([])
-    }
-  }, [selectedParty?.id, selectedParty?.party_type, selectedParty?.customer_id])
-
-  async function loadParties(preferredId?: string) {
-    setLoading(true)
-    setError('')
-    try {
-      const result = await listDocumentParties({
-        q: search.trim() || undefined,
-        party_type: typeFilter || undefined,
-        customer_id: customerFilter.trim() || undefined,
-      })
-      setParties(result.items)
-      const nextSelectedId =
-        preferredId ??
-        (result.items.some((item) => item.id === selectedPartyId) ? selectedPartyId : null) ??
-        result.items[0]?.id ??
-        null
-      setSelectedPartyId(nextSelectedId)
-    } catch (caught) {
-      showError(caught, '单证资料加载失败')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  async function loadLookupParties(party: DocumentParty) {
-    try {
-      const result = await lookupDocumentParties({
-        party_type: party.party_type,
-        customer_id: party.customer_id ?? undefined,
-      })
-      setLookupParties(result.items)
-    } catch (caught) {
-      showError(caught, '快速引用加载失败')
-    }
-  }
-
-  async function submitParty(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setSubmitting(true)
-    setMessage('')
-    setError('')
-    try {
-      const created = await createDocumentParty(documentPartyPayload(form))
-      setMessage(`已新增单证资料 ${created.code}`)
-      setForm(initialDocumentPartyForm())
-      await loadParties(created.id)
-    } catch (caught) {
-      showError(caught, '单证资料新增失败')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  async function submitPartyUpdate(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (!selectedParty) return
-    setSubmitting(true)
-    setMessage('')
-    setError('')
-    try {
-      const updated = await updateDocumentParty(selectedParty.id, documentPartyUpdatePayload(editForm))
-      setParties((current) => current.map((item) => (item.id === updated.id ? updated : item)))
-      setSelectedPartyId(updated.id)
-      setEditForm(documentPartyToEditForm(updated))
-      setMessage(`已更新单证资料 ${updated.code}`)
-      await loadParties(updated.id)
-    } catch (caught) {
-      showError(caught, '单证资料更新失败')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  return (
-    <section className="document-party-page">
-      <div className="summary-strip" aria-label="单证资料概览">
-        <Metric label="单证资料" value={parties.length} />
-        <Metric label="默认项" value={parties.filter((item) => item.is_default).length} />
-        <Metric label="开证行" value={parties.filter((item) => item.party_type === 'issuing_bank').length} />
-        <Metric label="引用项" value={lookupParties.length} />
-      </div>
-
-      {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
-
-      <section className="business-grid">
-        <section className="workspace-panel list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="单证资料列表" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadParties()
-              }}
-            >
-              <label>
-                单证资料搜索
-                <Input
-                  value={search}
-                  placeholder="编号 / 名称 / 客户 / 联系人"
-                  onChange={(event) => setSearch(event.target.value)}
-                />
-              </label>
-              <label>
-                单证类型筛选
-                <FormSelect value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}>
-                  <option value="">全部类型</option>
-                  {documentPartyTypeOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                客户标识筛选
-                <Input
-                  value={customerFilter}
-                  placeholder="customer-id"
-                  onChange={(event) => setCustomerFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-            </form>
-          </div>
-
-          <Table<DocumentParty>
-            columns={[
-              {
-                title: '单证资料编号',
-                dataIndex: 'code',
-                render: (value: string) => <button className="row-button" type="button">{value}</button>,
-              },
-              { title: '类型', dataIndex: 'party_type', render: documentPartyTypeLabel },
-              { title: '名称', dataIndex: 'display_name' },
-              { title: '客户', dataIndex: 'customer_name', render: nullableText },
-              { title: '国家', dataIndex: 'country' },
-              {
-                title: '默认',
-                dataIndex: 'is_default',
-                width: 72,
-                render: (value: boolean) => (value ? '是' : '否'),
-              },
-            ]}
-            dataSource={parties}
-            loading={loading}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedParty?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => setSelectedPartyId(record.id),
-            })}
-          />
-        </section>
-
-        <section className="workspace-panel form-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="新增单证资料" />
-          <form className="record-form" onSubmit={submitParty}>
-            <label>
-              单证资料编号
-              <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
-            </label>
-            <label>
-              单证资料状态
-              <FormSelect value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value })}>
-                <option value="active">启用</option>
-                <option value="inactive">停用</option>
-              </FormSelect>
-            </label>
-            <label>
-              单证资料类型
-              <FormSelect
-                value={form.party_type}
-                onChange={(event) => setForm({ ...form, party_type: event.target.value })}
-              >
-                {documentPartyTypeOptions.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </FormSelect>
-            </label>
-            <label>
-              单证资料国家
-              <Input value={form.country} onChange={(event) => setForm({ ...form, country: event.target.value })} />
-            </label>
-            <label>
-              单证资料名称
-              <Input
-                value={form.display_name}
-                onChange={(event) => setForm({ ...form, display_name: event.target.value })}
-              />
-            </label>
-            <label>
-              关联客户标识
-              <Input
-                value={form.customer_id}
-                onChange={(event) => setForm({ ...form, customer_id: event.target.value })}
-              />
-            </label>
-            <label>
-              关联客户名称
-              <Input
-                value={form.customer_name}
-                onChange={(event) => setForm({ ...form, customer_name: event.target.value })}
-              />
-            </label>
-            <label>
-              单证资料地址
-              <Input.TextArea
-                rows={3}
-                value={form.address}
-                onChange={(event) => setForm({ ...form, address: event.target.value })}
-              />
-            </label>
-            <div className="form-divider">联系和银行资料</div>
-            <label>
-              单证联系人
-              <Input
-                value={form.contact_person}
-                onChange={(event) => setForm({ ...form, contact_person: event.target.value })}
-              />
-            </label>
-            <label>
-              单证联系电话
-              <Input value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} />
-            </label>
-            <label>
-              单证联系邮箱
-              <Input value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
-            </label>
-            <label>
-              开户银行
-              <Input
-                value={form.bank_name}
-                onChange={(event) => setForm({ ...form, bank_name: event.target.value })}
-              />
-            </label>
-            <label>
-              SWIFT
-              <Input
-                value={form.swift_code}
-                onChange={(event) => setForm({ ...form, swift_code: event.target.value })}
-              />
-            </label>
-            <label>
-              银行账号
-              <Input
-                value={form.account_no}
-                onChange={(event) => setForm({ ...form, account_no: event.target.value })}
-              />
-            </label>
-            <label>
-              税号
-              <Input value={form.tax_id} onChange={(event) => setForm({ ...form, tax_id: event.target.value })} />
-            </label>
-            <label>
-              单证备注
-              <Input.TextArea
-                rows={3}
-                value={form.remarks}
-                onChange={(event) => setForm({ ...form, remarks: event.target.value })}
-              />
-            </label>
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={form.is_default}
-                onChange={(event) => setForm({ ...form, is_default: event.target.checked })}
-              />
-              默认单证资料
-            </label>
-            <Button htmlType="submit" loading={submitting} type="primary">
-              新增单证资料
-            </Button>
-          </form>
-        </section>
-
-        <section className="workspace-panel detail-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="单证资料明细" />
-          {selectedParty ? (
-            <>
-              <dl className="detail-list">
-                <div>
-                  <dt>资料名称</dt>
-                  <dd>{selectedParty.display_name}</dd>
-                </div>
-                <div>
-                  <dt>资料类型</dt>
-                  <dd>{documentPartyTypeLabel(selectedParty.party_type)}</dd>
-                </div>
-                <div>
-                  <dt>客户</dt>
-                  <dd>{selectedParty.customer_name ?? selectedParty.customer_id ?? '未关联'}</dd>
-                </div>
-                <div>
-                  <dt>国家/状态</dt>
-                  <dd>{selectedParty.country} / {documentPartyStatusLabel(selectedParty.status)}</dd>
-                </div>
-                <div>
-                  <dt>联系人</dt>
-                  <dd>{selectedParty.contact_person ?? '未设置'}</dd>
-                </div>
-                <div>
-                  <dt>银行/SWIFT</dt>
-                  <dd>{[selectedParty.bank_name, selectedParty.swift_code].filter(Boolean).join(' / ') || '未设置'}</dd>
-                </div>
-                <div>
-                  <dt>默认项</dt>
-                  <dd>{selectedParty.is_default ? '是' : '否'}</dd>
-                </div>
-              </dl>
-
-              <form className="record-form compact-section" onSubmit={submitPartyUpdate}>
-                <div className="form-divider">编辑单证资料</div>
-                <label>
-                  编辑单证资料类型
-                  <FormSelect
-                    value={editForm.party_type}
-                    onChange={(event) => setEditForm({ ...editForm, party_type: event.target.value })}
-                  >
-                    {documentPartyTypeOptions.map((item) => (
-                      <option key={item.value} value={item.value}>
-                        {item.label}
-                      </option>
-                    ))}
-                  </FormSelect>
-                </label>
-                <label>
-                  编辑单证资料名称
-                  <Input
-                    value={editForm.display_name}
-                    onChange={(event) => setEditForm({ ...editForm, display_name: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑单证资料国家
-                  <Input
-                    value={editForm.country}
-                    onChange={(event) => setEditForm({ ...editForm, country: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑单证联系人
-                  <Input
-                    value={editForm.contact_person}
-                    onChange={(event) => setEditForm({ ...editForm, contact_person: event.target.value })}
-                  />
-                </label>
-                <label htmlFor="edit-document-party-address">编辑单证资料地址</label>
-                <textarea
-                  id="edit-document-party-address"
-                  value={editForm.address}
-                  onChange={(event) => setEditForm({ ...editForm, address: event.target.value })}
-                />
-                <label>
-                  编辑关联客户标识
-                  <Input
-                    value={editForm.customer_id}
-                    onChange={(event) => setEditForm({ ...editForm, customer_id: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑关联客户名称
-                  <Input
-                    value={editForm.customer_name}
-                    onChange={(event) => setEditForm({ ...editForm, customer_name: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑单证联系电话
-                  <Input
-                    value={editForm.phone}
-                    onChange={(event) => setEditForm({ ...editForm, phone: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑单证联系邮箱
-                  <Input
-                    value={editForm.email}
-                    onChange={(event) => setEditForm({ ...editForm, email: event.target.value })}
-                  />
-                </label>
-                <label>
-                  编辑税号
-                  <Input
-                    value={editForm.tax_id}
-                    onChange={(event) => setEditForm({ ...editForm, tax_id: event.target.value })}
-                  />
-                </label>
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={editForm.is_default}
-                    onChange={(event) => setEditForm({ ...editForm, is_default: event.target.checked })}
-                  />
-                  编辑默认单证资料
-                </label>
-                <Button htmlType="submit" loading={submitting} type="primary">
-                  更新单证资料
-                </Button>
-              </form>
-
-              <section className="compact-section">
-                <div className="panel-heading">
-                  <PanelTitle icon={<Search size={18} />} title="快速引用" />
-                </div>
-                <Table<DocumentParty>
-                  columns={[
-                    { title: '类型', dataIndex: 'party_type', render: documentPartyTypeLabel },
-                    { title: '名称', dataIndex: 'display_name' },
-                    { title: '国家', dataIndex: 'country' },
-                    { title: '联系人', dataIndex: 'contact_person', render: nullableText },
-                    {
-                      title: '默认',
-                      dataIndex: 'is_default',
-                      width: 72,
-                      render: (value: boolean) => (value ? '是' : '否'),
-                    },
-                  ]}
-                  dataSource={lookupParties}
-                  locale={{ emptyText: '暂无可引用资料' }}
-                  pagination={false}
-                  rowKey="id"
-                  size="small"
-                />
-              </section>
-            </>
-          ) : (
-            <div className="module-state">暂无单证资料</div>
-          )}
-        </section>
-      </section>
-    </section>
-  )
-}
-
-function SampleRequestsPage() {
+function SampleRequestsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [requests, setRequests] = useState<SampleRequest[]>([])
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [customerFilter, setCustomerFilter] = useState('')
+  const [dateFromFilter, setDateFromFilter] = useState('')
+  const [dateToFilter, setDateToFilter] = useState('')
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [form, setForm] = useState<SampleRequestFormState>(() => initialSampleRequestForm())
+  const [requestModalOpen, setRequestModalOpen] = useState(false)
   const [progressForm, setProgressForm] = useState<SampleProgressFormState>(() =>
     initialSampleProgressForm(),
   )
   const [feeForm, setFeeForm] = useState<SampleFeeFormState>(() => initialSampleFeeForm())
+  const [recordForm, setRecordForm] = useState<SampleRecordFormState>(() =>
+    initialSampleRecordForm(),
+  )
 
   const selectedRequest = useMemo(
-    () => requests.find((item) => item.id === selectedRequestId) ?? requests[0] ?? null,
-    [requests, selectedRequestId],
+    () => {
+      if (detailId) return requests.find((item) => item.id === detailId) ?? null
+      return requests.find((item) => item.id === selectedRequestId) ?? requests[0] ?? null
+    },
+    [detailId, requests, selectedRequestId],
   )
 
   useEffect(() => {
     void loadRequests()
   }, [])
+
+  useEffect(() => {
+    if (detailId && requests.length > 0 && !requests.some((item) => item.id === detailId)) {
+      onNavigate(sampleRequestPath)
+    }
+  }, [detailId, onNavigate, requests])
+
+  function openRequestDetail(request: SampleRequest) {
+    setSelectedRequestId(request.id)
+    onNavigate(moduleDetailPath(sampleRequestPath, request.id))
+  }
+
+  function stopAndOpenRequestDetail(event: MouseEvent<HTMLElement>, request: SampleRequest) {
+    event.stopPropagation()
+    openRequestDetail(request)
+  }
 
   async function loadRequests(preferredId?: string) {
     setLoading(true)
@@ -5664,6 +3754,8 @@ function SampleRequestsPage() {
         q: search.trim() || undefined,
         status: statusFilter || undefined,
         customer_id: customerFilter.trim() || undefined,
+        date_from: dateFromFilter || undefined,
+        date_to: dateToFilter || undefined,
       })
       setRequests(result.items)
       const nextSelectedId =
@@ -5679,6 +3771,11 @@ function SampleRequestsPage() {
     }
   }
 
+  function openCreateRequest() {
+    setForm(initialSampleRequestForm())
+    setRequestModalOpen(true)
+  }
+
   async function submitRequest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setSubmitting(true)
@@ -5688,6 +3785,7 @@ function SampleRequestsPage() {
       const created = await createSampleRequest(sampleRequestPayload(form))
       setMessage(`已新增打样单 ${created.code}`)
       setForm(initialSampleRequestForm())
+      setRequestModalOpen(false)
       await loadRequests(created.id)
     } catch (caught) {
       showError(caught, '打样单新增失败')
@@ -5773,6 +3871,31 @@ function SampleRequestsPage() {
     }
   }
 
+  function loadRequestIntoRecordForm(request: SampleRequest) {
+    setRecordForm(sampleRecordFormFromRequest(request, recordForm))
+    setMessage(`已载入 ${request.code}，可转为样品登记`)
+  }
+
+  async function submitRecordFromRequest(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!selectedRequest) return
+    setSubmitting(true)
+    setMessage('')
+    setError('')
+    try {
+      const record = await createSampleRecordFromRequest(
+        selectedRequest.id,
+        sampleRequestToRecordPayload(recordForm),
+      )
+      setMessage(`已转为样品 ${record.code}`)
+      setRecordForm(initialSampleRecordForm())
+    } catch (caught) {
+      showError(caught, '打样转样品失败')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   return (
     <section className="sample-request-page">
       <div className="summary-strip" aria-label="打样管理概览">
@@ -5786,7 +3909,8 @@ function SampleRequestsPage() {
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid sample-request-grid">
-        <section className="workspace-panel list-panel product-list-panel">
+        {!detailId ? (
+          <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="打样单列表" />
             <form
@@ -5796,7 +3920,7 @@ function SampleRequestsPage() {
                 void loadRequests()
               }}
             >
-              <label>
+              <label className="inline-filter-search">
                 打样搜索
                 <Input
                   value={search}
@@ -5804,7 +3928,7 @@ function SampleRequestsPage() {
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </label>
-              <label>
+              <label className="inline-filter-compact">
                 打样状态筛选
                 <FormSelect value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
                   <option value="">全部状态</option>
@@ -5815,7 +3939,7 @@ function SampleRequestsPage() {
                   ))}
                 </FormSelect>
               </label>
-              <label>
+              <label className="inline-filter-compact">
                 打样客户筛选
                 <Input
                   value={customerFilter}
@@ -5823,8 +3947,27 @@ function SampleRequestsPage() {
                   onChange={(event) => setCustomerFilter(event.target.value)}
                 />
               </label>
+              <label className="inline-filter-compact">
+                打样起始日期
+                <Input
+                  type="date"
+                  value={dateFromFilter}
+                  onChange={(event) => setDateFromFilter(event.target.value)}
+                />
+              </label>
+              <label className="inline-filter-compact">
+                打样截止日期
+                <Input
+                  type="date"
+                  value={dateToFilter}
+                  onChange={(event) => setDateToFilter(event.target.value)}
+                />
+              </label>
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
+              </Button>
+              <Button htmlType="button" icon={<Plus size={16} />} onClick={openCreateRequest}>
+                新增打样单
               </Button>
             </form>
           </div>
@@ -5834,7 +3977,15 @@ function SampleRequestsPage() {
               {
                 title: '打样单号',
                 dataIndex: 'code',
-                render: (value: string) => <button className="row-button" type="button">{value}</button>,
+                render: (value: string, record: SampleRequest) => (
+                  <button
+                    className="row-button"
+                    type="button"
+                    onClick={(event) => stopAndOpenRequestDetail(event, record)}
+                  >
+                    {value}
+                  </button>
+                ),
               },
               { title: '客户', dataIndex: 'customer_name' },
               { title: '产品', dataIndex: 'product_name', render: nullableText },
@@ -5849,6 +4000,16 @@ function SampleRequestsPage() {
                 render: sampleStatusLabel,
               },
               { title: '要求完成', dataIndex: 'due_date', render: formatDate },
+              {
+                title: '入口',
+                key: 'detail',
+                width: 110,
+                render: (_: unknown, record: SampleRequest) => (
+                  <Button size="small" onClick={(event) => stopAndOpenRequestDetail(event, record)}>
+                    查看详情
+                  </Button>
+                ),
+              },
             ]}
             dataSource={requests}
             loading={loading}
@@ -5860,27 +4021,36 @@ function SampleRequestsPage() {
               onClick: () => setSelectedRequestId(record.id),
             })}
           />
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel form-panel product-form-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="新增打样单" />
-          <form className="record-form" onSubmit={submitRequest}>
+        <Modal
+          centered
+          footer={null}
+          open={requestModalOpen}
+          title="新增打样单"
+          width={980}
+          onCancel={() => setRequestModalOpen(false)}
+        >
+          <form className="record-form entity-modal-form sample-modal-form" onSubmit={submitRequest}>
             <label>
               打样单号
               <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
             </label>
-            <label htmlFor="sample-request-status">打样状态</label>
-            <FormSelect
-              id="sample-request-status"
-              value={form.status}
-              onChange={(event) => setForm({ ...form, status: event.target.value })}
-            >
-              {sampleStatusOptions.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </FormSelect>
+            <label htmlFor="sample-request-status">
+              打样状态
+              <FormSelect
+                id="sample-request-status"
+                value={form.status}
+                onChange={(event) => setForm({ ...form, status: event.target.value })}
+              >
+                {sampleStatusOptions.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>
+                ))}
+              </FormSelect>
+            </label>
             <label>
               打样日期
               <Input
@@ -5932,18 +4102,20 @@ function SampleRequestsPage() {
                 onChange={(event) => setForm({ ...form, supplier_name: event.target.value })}
               />
             </label>
-            <label htmlFor="sample-request-destination">打样去向</label>
-            <FormSelect
-              id="sample-request-destination"
-              value={form.destination}
-              onChange={(event) => setForm({ ...form, destination: event.target.value })}
-            >
-              {sampleDestinationOptions.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </FormSelect>
+            <label htmlFor="sample-request-destination">
+              打样去向
+              <FormSelect
+                id="sample-request-destination"
+                value={form.destination}
+                onChange={(event) => setForm({ ...form, destination: event.target.value })}
+              >
+                {sampleDestinationOptions.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>
+                ))}
+              </FormSelect>
+            </label>
             <label>
               客户打样要求
               <Input.TextArea
@@ -6001,14 +4173,25 @@ function SampleRequestsPage() {
                 onChange={(event) => setForm({ ...form, line_requirement: event.target.value })}
               />
             </label>
-            <Button htmlType="submit" loading={submitting} type="primary">
-              新增打样单
-            </Button>
+            <div className="modal-actions">
+              <button className="secondary-inline" type="button" onClick={() => setRequestModalOpen(false)}>
+                取消
+              </button>
+              <button className="inline-submit" disabled={submitting} type="submit">
+                新增打样单
+              </button>
+            </div>
           </form>
-        </section>
+        </Modal>
 
-        <section className="workspace-panel detail-panel product-detail-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="打样单明细" />
+        {detailId ? (
+          <section className="workspace-panel detail-panel product-detail-panel">
+          <div className="panel-heading toolbar-heading">
+            <PanelTitle icon={<LayoutDashboard size={18} />} title="打样单明细" />
+            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(sampleRequestPath)}>
+              返回列表
+            </Button>
+          </div>
           {selectedRequest ? (
             <>
               <dl className="detail-list">
@@ -6041,6 +4224,18 @@ function SampleRequestsPage() {
                   <dd>{selectedRequest.requirements}</dd>
                 </div>
               </dl>
+
+              <div className="delivery-action-row">
+                <Button onClick={() => void openSampleRequestPrint(selectedRequest.id)}>
+                  打印内部打样单
+                </Button>
+                <Button
+                  disabled={selectedRequest.status !== 'completed'}
+                  onClick={() => loadRequestIntoRecordForm(selectedRequest)}
+                >
+                  载入为样品
+                </Button>
+              </div>
 
               <section className="compact-section">
                 <PanelTitle icon={<Search size={18} />} title="内部打样单明细" />
@@ -6227,17 +4422,134 @@ function SampleRequestsPage() {
                 rowKey="id"
                 size="small"
               />
+
+              <form className="record-form compact-section" onSubmit={submitRecordFromRequest}>
+                <div className="form-divider">打样完成转样品登记</div>
+                <div className="form-pair three">
+                    <label>
+                    样品编号
+                    <Input
+                      value={recordForm.code}
+                      onChange={(event) => setRecordForm({ ...recordForm, code: event.target.value })}
+                    />
+                  </label>
+                  <label htmlFor="sample-request-record-type">样品分类</label>
+                  <FormSelect
+                    id="sample-request-record-type"
+                    value={recordForm.sample_type}
+                    onChange={(event) => setRecordForm({ ...recordForm, sample_type: event.target.value })}
+                  >
+                    {sampleRecordTypeOptions.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </FormSelect>
+                  <label>
+                    收样数量
+                    <Input
+                      type="number"
+                      min="0.01"
+                      step="0.01"
+                      value={recordForm.quantity}
+                      onChange={(event) => setRecordForm({ ...recordForm, quantity: event.target.value })}
+                    />
+                  </label>
+                </div>
+                <div className="form-pair three">
+                  <label>
+                    收样日期
+                    <Input
+                      type="date"
+                      value={recordForm.received_at}
+                      onChange={(event) => setRecordForm({ ...recordForm, received_at: event.target.value })}
+                    />
+                  </label>
+                  <label>
+                    提交日期
+                    <Input
+                      type="date"
+                      value={recordForm.submitted_at}
+                      onChange={(event) => setRecordForm({ ...recordForm, submitted_at: event.target.value })}
+                    />
+                  </label>
+                  <label>
+                    单位
+                    <Input
+                      value={recordForm.unit}
+                      onChange={(event) => setRecordForm({ ...recordForm, unit: event.target.value })}
+                    />
+                  </label>
+                </div>
+                <div className="form-pair two">
+                  <label>
+                    客户货号
+                    <Input
+                      value={recordForm.customer_sku}
+                      onChange={(event) => setRecordForm({ ...recordForm, customer_sku: event.target.value })}
+                    />
+                  </label>
+                  <label>
+                    供应商货号
+                    <Input
+                      value={recordForm.supplier_sku}
+                      onChange={(event) => setRecordForm({ ...recordForm, supplier_sku: event.target.value })}
+                    />
+                  </label>
+                </div>
+                <div className="form-pair two">
+                  <label>
+                    采购合同标识
+                    <Input
+                      value={recordForm.purchase_contract_id}
+                      onChange={(event) =>
+                        setRecordForm({ ...recordForm, purchase_contract_id: event.target.value })
+                      }
+                    />
+                  </label>
+                  <label>
+                    采购合同号
+                    <Input
+                      value={recordForm.purchase_contract_no}
+                      onChange={(event) =>
+                        setRecordForm({ ...recordForm, purchase_contract_no: event.target.value })
+                      }
+                    />
+                  </label>
+                </div>
+                <label>
+                  样品说明
+                  <Input.TextArea
+                    rows={2}
+                    value={recordForm.description}
+                    onChange={(event) => setRecordForm({ ...recordForm, description: event.target.value })}
+                  />
+                </label>
+                <Button
+                  disabled={selectedRequest.status !== 'completed'}
+                  htmlType="submit"
+                  loading={submitting}
+                  type="primary"
+                >
+                  转为样品登记
+                </Button>
+              </form>
             </>
           ) : (
-            <div className="module-state">暂无打样单</div>
+            <div className="module-state panel-empty-state">
+              <FlaskConical size={28} />
+              <strong>暂无打样单</strong>
+              <span>请返回列表选择打样单查看详情</span>
+            </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
     </section>
   )
 }
 
-function SampleRecordsPage() {
+function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [records, setRecords] = useState<SampleRecord[]>([])
   const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
@@ -6249,6 +4561,7 @@ function SampleRecordsPage() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [form, setForm] = useState<SampleRecordFormState>(() => initialSampleRecordForm())
+  const [recordModalOpen, setRecordModalOpen] = useState(false)
   const [imageForm, setImageForm] = useState<SampleRecordImageFormState>(() =>
     initialSampleRecordImageForm(),
   )
@@ -6257,13 +4570,32 @@ function SampleRecordsPage() {
   )
 
   const selectedRecord = useMemo(
-    () => records.find((item) => item.id === selectedRecordId) ?? records[0] ?? null,
-    [records, selectedRecordId],
+    () => {
+      if (detailId) return records.find((item) => item.id === detailId) ?? null
+      return records.find((item) => item.id === selectedRecordId) ?? records[0] ?? null
+    },
+    [detailId, records, selectedRecordId],
   )
 
   useEffect(() => {
     void loadRecords()
   }, [])
+
+  useEffect(() => {
+    if (detailId && records.length > 0 && !records.some((item) => item.id === detailId)) {
+      onNavigate(sampleRecordPath)
+    }
+  }, [detailId, onNavigate, records])
+
+  function openRecordDetail(record: SampleRecord) {
+    setSelectedRecordId(record.id)
+    onNavigate(moduleDetailPath(sampleRecordPath, record.id))
+  }
+
+  function stopAndOpenRecordDetail(event: MouseEvent<HTMLElement>, record: SampleRecord) {
+    event.stopPropagation()
+    openRecordDetail(record)
+  }
 
   async function loadRecords(preferredId?: string) {
     setLoading(true)
@@ -6289,6 +4621,11 @@ function SampleRecordsPage() {
     }
   }
 
+  function openCreateRecord() {
+    setForm(initialSampleRecordForm())
+    setRecordModalOpen(true)
+  }
+
   async function submitRecord(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setSubmitting(true)
@@ -6298,6 +4635,7 @@ function SampleRecordsPage() {
       const created = await createSampleRecord(sampleRecordPayload(form))
       setMessage(`已新增样品 ${created.code}`)
       setForm(initialSampleRecordForm())
+      setRecordModalOpen(false)
       await loadRecords(created.id)
       setRecords((current) =>
         current.some((record) => record.id === created.id) ? current : [created, ...current],
@@ -6357,6 +4695,43 @@ function SampleRecordsPage() {
     }
   }
 
+  async function submitRecordImport() {
+    setSubmitting(true)
+    setMessage('')
+    setError('')
+    try {
+      const result = await importSampleRecords({ records: [sampleRecordPayload(form)] })
+      setMessage(`已导入 ${result.created_count} 条样品`)
+      setForm(initialSampleRecordForm())
+      setRecordModalOpen(false)
+      await loadRecords(result.records[0]?.id)
+    } catch (caught) {
+      showError(caught, '样品导入失败')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  async function downloadRecordExport() {
+    setSubmitting(true)
+    setMessage('')
+    setError('')
+    try {
+      const exported = await exportSampleRecords({
+        q: search.trim() || undefined,
+        sample_type: typeFilter || undefined,
+        customer_id: customerFilter.trim() || undefined,
+        purchase_contract_id: purchaseContractFilter.trim() || undefined,
+      })
+      downloadCsv(exported.filename, exported.content)
+      setMessage(`已导出 ${exported.total} 条样品台账`)
+    } catch (caught) {
+      showError(caught, '样品导出失败')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   return (
     <section className="sample-record-page">
       <div className="summary-strip" aria-label="样品登记概览">
@@ -6370,7 +4745,8 @@ function SampleRecordsPage() {
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid sample-record-grid">
-        <section className="workspace-panel list-panel product-list-panel">
+        {!detailId ? (
+          <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="样品列表" />
             <form
@@ -6380,7 +4756,7 @@ function SampleRecordsPage() {
                 void loadRecords()
               }}
             >
-              <label>
+              <label className="inline-filter-search">
                 样品搜索
                 <Input
                   value={search}
@@ -6388,7 +4764,7 @@ function SampleRecordsPage() {
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </label>
-              <label>
+              <label className="inline-filter-compact">
                 样品分类筛选
                 <FormSelect value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}>
                   <option value="">全部分类</option>
@@ -6399,7 +4775,7 @@ function SampleRecordsPage() {
                   ))}
                 </FormSelect>
               </label>
-              <label>
+              <label className="inline-filter-compact">
                 样品客户筛选
                 <Input
                   value={customerFilter}
@@ -6407,7 +4783,7 @@ function SampleRecordsPage() {
                   onChange={(event) => setCustomerFilter(event.target.value)}
                 />
               </label>
-              <label>
+              <label className="inline-filter-compact">
                 采购合同筛选
                 <Input
                   value={purchaseContractFilter}
@@ -6418,6 +4794,12 @@ function SampleRecordsPage() {
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
+              <Button loading={submitting} onClick={() => void downloadRecordExport()}>
+                导出台账
+              </Button>
+              <Button htmlType="button" icon={<Plus size={16} />} onClick={openCreateRecord}>
+                新增样品
+              </Button>
             </form>
           </div>
 
@@ -6426,13 +4808,31 @@ function SampleRecordsPage() {
               {
                 title: '样品编号',
                 dataIndex: 'code',
-                render: (value: string) => <button className="row-button" type="button">{value}</button>,
+                render: (value: string, record: SampleRecord) => (
+                  <button
+                    className="row-button"
+                    type="button"
+                    onClick={(event) => stopAndOpenRecordDetail(event, record)}
+                  >
+                    {value}
+                  </button>
+                ),
               },
               { title: '分类', dataIndex: 'sample_type', render: sampleRecordTypeLabel },
               { title: '产品', dataIndex: 'product_name' },
               { title: '客户货号', dataIndex: 'customer_sku', render: nullableText },
               { title: '供应商货号', dataIndex: 'supplier_sku', render: nullableText },
               { title: '数量', dataIndex: 'quantity', width: 80 },
+              {
+                title: '入口',
+                key: 'detail',
+                width: 110,
+                render: (_: unknown, record: SampleRecord) => (
+                  <Button size="small" onClick={(event) => stopAndOpenRecordDetail(event, record)}>
+                    查看详情
+                  </Button>
+                ),
+              },
             ]}
             dataSource={records}
             loading={loading}
@@ -6444,39 +4844,50 @@ function SampleRecordsPage() {
               onClick: () => setSelectedRecordId(record.id),
             })}
           />
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel form-panel product-form-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="新增样品" />
-          <form className="record-form" onSubmit={submitRecord}>
+        <Modal
+          centered
+          footer={null}
+          open={recordModalOpen}
+          title="新增样品"
+          width={1040}
+          onCancel={() => setRecordModalOpen(false)}
+        >
+          <form className="record-form entity-modal-form sample-modal-form" onSubmit={submitRecord}>
             <label>
               样品编号
               <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
             </label>
-            <label htmlFor="sample-record-type">样品分类</label>
-            <FormSelect
-              id="sample-record-type"
-              value={form.sample_type}
-              onChange={(event) => setForm({ ...form, sample_type: event.target.value })}
-            >
-              {sampleRecordTypeOptions.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </FormSelect>
-            <label htmlFor="sample-record-status">样品状态</label>
-            <FormSelect
-              id="sample-record-status"
-              value={form.status}
-              onChange={(event) => setForm({ ...form, status: event.target.value })}
-            >
-              {sampleRecordStatusOptions.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </FormSelect>
+            <label htmlFor="sample-record-type">
+              样品分类
+              <FormSelect
+                id="sample-record-type"
+                value={form.sample_type}
+                onChange={(event) => setForm({ ...form, sample_type: event.target.value })}
+              >
+                {sampleRecordTypeOptions.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>
+                ))}
+              </FormSelect>
+            </label>
+            <label htmlFor="sample-record-status">
+              样品状态
+              <FormSelect
+                id="sample-record-status"
+                value={form.status}
+                onChange={(event) => setForm({ ...form, status: event.target.value })}
+              >
+                {sampleRecordStatusOptions.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>
+                ))}
+              </FormSelect>
+            </label>
             <label>
               收样数量
               <Input
@@ -6562,18 +4973,20 @@ function SampleRecordsPage() {
               单位
               <Input value={form.unit} onChange={(event) => setForm({ ...form, unit: event.target.value })} />
             </label>
-            <label htmlFor="sample-record-source-type">样品来源</label>
-            <FormSelect
-              id="sample-record-source-type"
-              value={form.source_type}
-              onChange={(event) => setForm({ ...form, source_type: event.target.value })}
-            >
-              {sampleSourceTypeOptions.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </FormSelect>
+            <label htmlFor="sample-record-source-type">
+              样品来源
+              <FormSelect
+                id="sample-record-source-type"
+                value={form.source_type}
+                onChange={(event) => setForm({ ...form, source_type: event.target.value })}
+              >
+                {sampleSourceTypeOptions.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>
+                ))}
+              </FormSelect>
+            </label>
             <label>
               来源单号
               <Input
@@ -6618,14 +5031,28 @@ function SampleRecordsPage() {
                 onChange={(event) => setForm({ ...form, image_caption: event.target.value })}
               />
             </label>
-            <Button htmlType="submit" loading={submitting} type="primary">
-              新增样品
-            </Button>
+            <div className="modal-actions">
+              <button className="secondary-inline" type="button" onClick={() => setRecordModalOpen(false)}>
+                取消
+              </button>
+              <button className="secondary-inline" disabled={submitting} type="button" onClick={() => void submitRecordImport()}>
+                按当前表单导入
+              </button>
+              <button className="inline-submit" disabled={submitting} type="submit">
+                新增样品
+              </button>
+            </div>
           </form>
-        </section>
+        </Modal>
 
-        <section className="workspace-panel detail-panel product-detail-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="样品明细" />
+        {detailId ? (
+          <section className="workspace-panel detail-panel product-detail-panel">
+          <div className="panel-heading toolbar-heading">
+            <PanelTitle icon={<LayoutDashboard size={18} />} title="样品明细" />
+            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(sampleRecordPath)}>
+              返回列表
+            </Button>
+          </div>
           {selectedRecord ? (
             <>
               <dl className="detail-list">
@@ -6834,23 +5261,33 @@ function SampleRecordsPage() {
               />
             </>
           ) : (
-            <div className="module-state">暂无样品记录</div>
+            <div className="module-state panel-empty-state">
+              <Images size={28} />
+              <strong>暂无样品记录</strong>
+              <span>请返回列表选择样品查看详情</span>
+            </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
     </section>
   )
 }
 
-function SampleDeliveriesPage() {
+function SampleDeliveriesPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [deliveries, setDeliveries] = useState<SampleDelivery[]>([])
   const [selectedDeliveryId, setSelectedDeliveryId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [customerFilter, setCustomerFilter] = useState('')
   const [expressFilter, setExpressFilter] = useState('')
+  const [dateFromFilter, setDateFromFilter] = useState('')
+  const [dateToFilter, setDateToFilter] = useState('')
   const [feeStatistics, setFeeStatistics] = useState<SampleDeliveryFeeStatistics>(() =>
     initialSampleDeliveryFeeStatistics(),
+  )
+  const [deliveryStatistics, setDeliveryStatistics] = useState<SampleDeliveryStatistics>(() =>
+    initialSampleDeliveryStatistics(),
   )
   const [sampleHistory, setSampleHistory] = useState<SampleDelivery[]>([])
   const [quoteHistory, setQuoteHistory] = useState<SampleDelivery[]>([])
@@ -6859,6 +5296,7 @@ function SampleDeliveriesPage() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [form, setForm] = useState<SampleDeliveryFormState>(() => initialSampleDeliveryForm())
+  const [deliveryModalMode, setDeliveryModalMode] = useState<'create' | 'edit' | null>(null)
   const [approveForm, setApproveForm] = useState<SampleDeliveryApproveFormState>(() =>
     initialSampleDeliveryApproveForm(),
   )
@@ -6867,13 +5305,22 @@ function SampleDeliveriesPage() {
   )
 
   const selectedDelivery = useMemo(
-    () => deliveries.find((item) => item.id === selectedDeliveryId) ?? deliveries[0] ?? null,
-    [deliveries, selectedDeliveryId],
+    () => {
+      if (detailId) return deliveries.find((item) => item.id === detailId) ?? null
+      return deliveries.find((item) => item.id === selectedDeliveryId) ?? deliveries[0] ?? null
+    },
+    [deliveries, detailId, selectedDeliveryId],
   )
 
   useEffect(() => {
     void loadDeliveries()
   }, [])
+
+  useEffect(() => {
+    if (detailId && deliveries.length > 0 && !deliveries.some((item) => item.id === detailId)) {
+      onNavigate(sampleDeliveryPath)
+    }
+  }, [deliveries, detailId, onNavigate])
 
   useEffect(() => {
     syncDeliveryActionForms(selectedDelivery)
@@ -6884,22 +5331,27 @@ function SampleDeliveriesPage() {
     setLoading(true)
     setError('')
     try {
-      const [result, statistics] = await Promise.all([
+      const reportFilters = {
+        customer_id: customerFilter.trim() || undefined,
+        date_from: dateFromFilter || undefined,
+        date_to: dateToFilter || undefined,
+        express_company: expressFilter.trim() || undefined,
+      }
+      const [result, feeStats, deliveryStats] = await Promise.all([
         listSampleDeliveries({
           q: search.trim() || undefined,
           status: statusFilter || undefined,
           customer_id: customerFilter.trim() || undefined,
           express_company: expressFilter.trim() || undefined,
+          date_from: dateFromFilter || undefined,
+          date_to: dateToFilter || undefined,
         }),
-        getSampleDeliveryFeeStatistics({
-          customer_id: customerFilter.trim() || undefined,
-          date_from: '2026-01-01',
-          date_to: '2026-12-31',
-          express_company: expressFilter.trim() || undefined,
-        }),
+        getSampleDeliveryFeeStatistics(reportFilters),
+        getSampleDeliveryStatistics(reportFilters),
       ])
       setDeliveries(result.items)
-      setFeeStatistics(statistics)
+      setFeeStatistics(feeStats)
+      setDeliveryStatistics(deliveryStats)
       const nextSelectedId =
         preferredId ??
         (result.items.some((item) => item.id === selectedDeliveryId) ? selectedDeliveryId : null) ??
@@ -6957,6 +5409,26 @@ function SampleDeliveriesPage() {
     setSelectedDeliveryId(delivery.id)
   }
 
+  function openDeliveryDetail(delivery: SampleDelivery) {
+    setSelectedDeliveryId(delivery.id)
+    onNavigate(moduleDetailPath(sampleDeliveryPath, delivery.id))
+  }
+
+  function stopAndOpenDeliveryDetail(event: MouseEvent<HTMLElement>, delivery: SampleDelivery) {
+    event.stopPropagation()
+    openDeliveryDetail(delivery)
+  }
+
+  function openCreateDelivery() {
+    setForm(initialSampleDeliveryForm())
+    setDeliveryModalMode('create')
+  }
+
+  function openEditDelivery(delivery: SampleDelivery) {
+    setForm(sampleDeliveryToForm(delivery))
+    setDeliveryModalMode('edit')
+  }
+
   async function submitDelivery(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setSubmitting(true)
@@ -6966,6 +5438,7 @@ function SampleDeliveriesPage() {
       const created = await createSampleDelivery(sampleDeliveryPayload(form))
       setMessage(`已新增寄样单 ${created.code}`)
       setForm(initialSampleDeliveryForm())
+      setDeliveryModalMode(null)
       upsertDelivery(created)
       await loadDeliveries(created.id)
       setDeliveries((current) =>
@@ -6987,6 +5460,7 @@ function SampleDeliveriesPage() {
     try {
       const updated = await updateSampleDelivery(selectedDelivery.id, sampleDeliveryPayload(form))
       setMessage(`已保存寄样单 ${updated.code}`)
+      setDeliveryModalMode(null)
       upsertDelivery(updated)
       await loadDeliveries(updated.id)
     } catch (caught) {
@@ -7054,12 +5528,33 @@ function SampleDeliveriesPage() {
     }
   }
 
+  async function downloadDeliveryExport() {
+    setSubmitting(true)
+    setMessage('')
+    setError('')
+    try {
+      const exported = await exportSampleDeliveries({
+        customer_id: customerFilter.trim() || undefined,
+        date_from: dateFromFilter || undefined,
+        date_to: dateToFilter || undefined,
+        express_company: expressFilter.trim() || undefined,
+      })
+      downloadCsv(exported.filename, exported.content)
+      setMessage(`已导出 ${exported.total} 条寄样记录`)
+    } catch (caught) {
+      showError(caught, '寄样导出失败')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   return (
     <section className="sample-delivery-page">
       <div className="summary-strip" aria-label="寄样管理概览">
         <Metric label="寄样单" value={deliveries.length} />
         <Metric label="待审核" value={deliveries.filter((item) => item.status === 'submitted').length} />
-        <Metric label="已审核" value={deliveries.filter((item) => item.status === 'approved').length} />
+        <Metric label="已审核" value={deliveries.filter((item) => ['approved', 'shipped'].includes(item.status)).length} />
+        <Metric label="寄样数量" value={deliveryStatistics.total_quantity} />
         <Metric label="费用" value={formatMoney(feeStatistics.total_amount, feeStatistics.currency)} />
       </div>
 
@@ -7067,7 +5562,8 @@ function SampleDeliveriesPage() {
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid sample-delivery-grid">
-        <section className="workspace-panel list-panel product-list-panel">
+        {!detailId ? (
+          <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="寄样单列表" />
             <form
@@ -7077,7 +5573,7 @@ function SampleDeliveriesPage() {
                 void loadDeliveries()
               }}
             >
-              <label>
+              <label className="inline-filter-search">
                 寄样搜索
                 <Input
                   value={search}
@@ -7085,22 +5581,24 @@ function SampleDeliveriesPage() {
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </label>
-              <label htmlFor="sample-delivery-status-filter">审核状态</label>
-              <FormSelect
-                id="sample-delivery-status-filter"
-                value={statusFilter}
-                onChange={(event) => setStatusFilter(event.target.value)}
-              >
-                <option value="">全部状态</option>
-                {sampleDeliveryStatusOptions
-                  .filter((item) => item.value !== 'rejected')
-                  .map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-              </FormSelect>
-              <label>
+              <label className="inline-filter-compact" htmlFor="sample-delivery-status-filter">
+                审核状态
+                <FormSelect
+                  id="sample-delivery-status-filter"
+                  value={statusFilter}
+                  onChange={(event) => setStatusFilter(event.target.value)}
+                >
+                  <option value="">全部状态</option>
+                  {sampleDeliveryStatusOptions
+                    .filter((item) => item.value !== 'rejected')
+                    .map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                </FormSelect>
+              </label>
+              <label className="inline-filter-compact">
                 客户标识
                 <Input
                   value={customerFilter}
@@ -7108,7 +5606,7 @@ function SampleDeliveriesPage() {
                   onChange={(event) => setCustomerFilter(event.target.value)}
                 />
               </label>
-              <label>
+              <label className="inline-filter-compact">
                 快递公司
                 <Input
                   value={expressFilter}
@@ -7116,8 +5614,30 @@ function SampleDeliveriesPage() {
                   onChange={(event) => setExpressFilter(event.target.value)}
                 />
               </label>
+              <label className="inline-filter-compact">
+                寄样起始日期
+                <Input
+                  type="date"
+                  value={dateFromFilter}
+                  onChange={(event) => setDateFromFilter(event.target.value)}
+                />
+              </label>
+              <label className="inline-filter-compact">
+                寄样截止日期
+                <Input
+                  type="date"
+                  value={dateToFilter}
+                  onChange={(event) => setDateToFilter(event.target.value)}
+                />
+              </label>
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
+              </Button>
+              <Button loading={submitting} onClick={() => void downloadDeliveryExport()}>
+                导出寄样
+              </Button>
+              <Button htmlType="button" icon={<Plus size={16} />} onClick={openCreateDelivery}>
+                新增寄样单
               </Button>
             </form>
           </div>
@@ -7127,7 +5647,15 @@ function SampleDeliveriesPage() {
               {
                 title: '寄样单号',
                 dataIndex: 'code',
-                render: (value: string) => <button className="row-button" type="button">{value}</button>,
+                render: (value: string, record: SampleDelivery) => (
+                  <button
+                    className="row-button"
+                    type="button"
+                    onClick={(event) => stopAndOpenDeliveryDetail(event, record)}
+                  >
+                    {value}
+                  </button>
+                ),
               },
               { title: '状态', dataIndex: 'status', render: sampleDeliveryStatusLabel },
               { title: '客户', dataIndex: 'customer_name' },
@@ -7142,6 +5670,16 @@ function SampleDeliveriesPage() {
                 dataIndex: 'fee_total',
                 render: (_, record) => formatMoney(record.fee_total, record.fees[0]?.currency ?? 'USD'),
               },
+              {
+                title: '入口',
+                key: 'detail',
+                width: 110,
+                render: (_: unknown, record: SampleDelivery) => (
+                  <Button size="small" onClick={(event) => stopAndOpenDeliveryDetail(event, record)}>
+                    查看详情
+                  </Button>
+                ),
+              },
             ]}
             dataSource={deliveries}
             loading={loading}
@@ -7153,11 +5691,28 @@ function SampleDeliveriesPage() {
               onClick: () => setSelectedDeliveryId(record.id),
             })}
           />
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel form-panel product-form-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="新增寄样单" />
-          <form className="record-form" onSubmit={submitDelivery}>
+        <Modal
+          centered
+          footer={null}
+          open={Boolean(deliveryModalMode)}
+          title={deliveryModalMode === 'edit' ? '编辑寄样单草稿' : '新增寄样单'}
+          width={1040}
+          onCancel={() => setDeliveryModalMode(null)}
+        >
+          <form
+            className="record-form entity-modal-form sample-modal-form"
+            onSubmit={
+              deliveryModalMode === 'edit'
+                ? (event) => {
+                    event.preventDefault()
+                    void saveDeliveryDraft()
+                  }
+                : submitDelivery
+            }
+          >
             <div className="form-pair two">
               <label>
                 寄样单号
@@ -7277,18 +5832,20 @@ function SampleDeliveriesPage() {
               </label>
             </div>
             <div className="form-pair two">
-              <label htmlFor="sample-delivery-sample-type">样品分类</label>
-              <FormSelect
-                id="sample-delivery-sample-type"
-                value={form.sample_type}
-                onChange={(event) => setForm({ ...form, sample_type: event.target.value })}
-              >
-                {sampleRecordTypeOptions.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </FormSelect>
+              <label htmlFor="sample-delivery-sample-type">
+                样品分类
+                <FormSelect
+                  id="sample-delivery-sample-type"
+                  value={form.sample_type}
+                  onChange={(event) => setForm({ ...form, sample_type: event.target.value })}
+                >
+                  {sampleRecordTypeOptions.map((item) => (
+                    <option key={item.value} value={item.value}>
+                      {item.label}
+                    </option>
+                  ))}
+                </FormSelect>
+              </label>
               <label>
                 产品编号
                 <Input
@@ -7329,18 +5886,20 @@ function SampleDeliveriesPage() {
             </label>
             <div className="form-divider">费用登记</div>
             <div className="form-pair two">
-              <label htmlFor="sample-delivery-fee-type">费用类型</label>
-              <FormSelect
-                id="sample-delivery-fee-type"
-                value={form.fee_type}
-                onChange={(event) => setForm({ ...form, fee_type: event.target.value })}
-              >
-                {sampleDeliveryFeeTypeOptions.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </FormSelect>
+              <label htmlFor="sample-delivery-fee-type">
+                费用类型
+                <FormSelect
+                  id="sample-delivery-fee-type"
+                  value={form.fee_type}
+                  onChange={(event) => setForm({ ...form, fee_type: event.target.value })}
+                >
+                  {sampleDeliveryFeeTypeOptions.map((item) => (
+                    <option key={item.value} value={item.value}>
+                      {item.label}
+                    </option>
+                  ))}
+                </FormSelect>
+              </label>
               <label>
                 金额
                 <Input
@@ -7360,18 +5919,20 @@ function SampleDeliveriesPage() {
                   onChange={(event) => setForm({ ...form, fee_currency: event.target.value })}
                 />
               </label>
-              <label htmlFor="sample-delivery-fee-payer">承担方</label>
-              <FormSelect
-                id="sample-delivery-fee-payer"
-                value={form.fee_payer_type}
-                onChange={(event) => setForm({ ...form, fee_payer_type: event.target.value })}
-              >
-                {sampleDeliveryPayerTypeOptions.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </FormSelect>
+              <label htmlFor="sample-delivery-fee-payer">
+                承担方
+                <FormSelect
+                  id="sample-delivery-fee-payer"
+                  value={form.fee_payer_type}
+                  onChange={(event) => setForm({ ...form, fee_payer_type: event.target.value })}
+                >
+                  {sampleDeliveryPayerTypeOptions.map((item) => (
+                    <option key={item.value} value={item.value}>
+                      {item.label}
+                    </option>
+                  ))}
+                </FormSelect>
+              </label>
             </div>
             <label>
               费用备注
@@ -7380,28 +5941,40 @@ function SampleDeliveriesPage() {
                 onChange={(event) => setForm({ ...form, fee_remark: event.target.value })}
               />
             </label>
-            <label htmlFor="sample-delivery-remark">寄样备注</label>
-            <Input.TextArea
-              id="sample-delivery-remark"
-              rows={2}
-              value={form.remark}
-              onChange={(event) => setForm({ ...form, remark: event.target.value })}
-            />
-            <Button htmlType="submit" loading={submitting} type="primary">
-              新增寄样单
-            </Button>
-            <Button
-              disabled={!selectedDelivery || selectedDelivery.status !== 'draft'}
-              loading={submitting}
-              onClick={() => void saveDeliveryDraft()}
-            >
-              保存草稿编辑
-            </Button>
+            <label htmlFor="sample-delivery-remark">
+              寄样备注
+              <Input.TextArea
+                id="sample-delivery-remark"
+                rows={2}
+                value={form.remark}
+                onChange={(event) => setForm({ ...form, remark: event.target.value })}
+              />
+            </label>
+            <div className="modal-actions">
+              <button className="secondary-inline" type="button" onClick={() => setDeliveryModalMode(null)}>
+                取消
+              </button>
+              {deliveryModalMode === 'edit' ? (
+                <button className="inline-submit" disabled={submitting} type="button" onClick={() => void saveDeliveryDraft()}>
+                  保存草稿编辑
+                </button>
+              ) : (
+                <button className="inline-submit" disabled={submitting} type="submit">
+                  新增寄样单
+                </button>
+              )}
+            </div>
           </form>
-        </section>
+        </Modal>
 
-        <section className="workspace-panel detail-panel product-detail-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="寄样明细" />
+        {detailId ? (
+          <section className="workspace-panel detail-panel product-detail-panel">
+          <div className="panel-heading toolbar-heading">
+            <PanelTitle icon={<LayoutDashboard size={18} />} title="寄样明细" />
+            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(sampleDeliveryPath)}>
+              返回列表
+            </Button>
+          </div>
           {selectedDelivery ? (
             <>
               <dl className="detail-list">
@@ -7447,9 +6020,9 @@ function SampleDeliveriesPage() {
               <div className="delivery-action-row">
                 <Button
                   disabled={selectedDelivery.status !== 'draft'}
-                  onClick={() => setForm(sampleDeliveryToForm(selectedDelivery))}
+                  onClick={() => openEditDelivery(selectedDelivery)}
                 >
-                  载入编辑
+                  编辑草稿
                 </Button>
                 <Button
                   disabled={selectedDelivery.status !== 'draft'}
@@ -7563,6 +6136,49 @@ function SampleDeliveriesPage() {
               />
 
               <div className="accessory-heading">
+                <strong>寄样统计</strong>
+                <span>{deliveryStatistics.total_deliveries} 单 / {deliveryStatistics.total_quantity} 件</span>
+              </div>
+              <Table<SampleDeliveryStatusStatistic>
+                columns={[
+                  { title: '状态', dataIndex: 'status', render: sampleDeliveryStatusLabel },
+                  { title: '寄样单数', dataIndex: 'delivery_count' },
+                  { title: '寄样数量', dataIndex: 'total_quantity' },
+                ]}
+                dataSource={deliveryStatistics.by_status}
+                locale={{ emptyText: '暂无状态统计' }}
+                pagination={false}
+                rowKey="status"
+                size="small"
+              />
+              <Table<SampleDeliveryCustomerStatistic>
+                className="compact-section"
+                columns={[
+                  { title: '客户', dataIndex: 'customer_name' },
+                  { title: '寄样单数', dataIndex: 'delivery_count' },
+                  { title: '寄样数量', dataIndex: 'total_quantity' },
+                ]}
+                dataSource={deliveryStatistics.by_customer}
+                locale={{ emptyText: '暂无客户统计' }}
+                pagination={false}
+                rowKey={(item) => item.customer_id ?? item.customer_name}
+                size="small"
+              />
+              <Table<SampleDeliveryExpressStatistic>
+                className="compact-section"
+                columns={[
+                  { title: '快递公司', dataIndex: 'express_company' },
+                  { title: '寄样单数', dataIndex: 'delivery_count' },
+                  { title: '寄样数量', dataIndex: 'total_quantity' },
+                ]}
+                dataSource={deliveryStatistics.by_express}
+                locale={{ emptyText: '暂无快递统计' }}
+                pagination={false}
+                rowKey="express_company"
+                size="small"
+              />
+
+              <div className="accessory-heading">
                 <strong>样品寄样历史</strong>
                 <span>{sampleHistory.length} 条</span>
               </div>
@@ -7609,26 +6225,33 @@ function SampleDeliveriesPage() {
               />
             </>
           ) : (
-            <div className="module-state">暂无寄样单</div>
+            <div className="module-state panel-empty-state">
+              <Send size={28} />
+              <strong>暂无寄样单</strong>
+              <span>请返回列表选择寄样单查看详情</span>
+            </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
     </section>
   )
 }
 
-function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
+function ExportQuotationsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [quotations, setQuotations] = useState<ExportQuotation[]>([])
   const [selectedQuotationId, setSelectedQuotationId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [customerFilter, setCustomerFilter] = useState('')
+  const [customers, setCustomers] = useState<Customer[]>([])
   const [history, setHistory] = useState<ExportQuotation[]>([])
   const [purchaseReferences, setPurchaseReferences] = useState<ExportQuotationPurchaseReference[]>([])
   const [sampleDeliveries, setSampleDeliveries] = useState<SampleDelivery[]>([])
   const [exportPreview, setExportPreview] = useState('')
   const [generatedContract, setGeneratedContract] = useState<ExportQuotationContract | null>(null)
   const [loading, setLoading] = useState(false)
+  const [loadingCustomers, setLoadingCustomers] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
@@ -7641,18 +6264,34 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
   )
 
   const selectedQuotation = useMemo(
-    () => quotations.find((item) => item.id === selectedQuotationId) ?? quotations[0] ?? null,
-    [quotations, selectedQuotationId],
+    () => {
+      if (detailId) return quotations.find((item) => item.id === detailId) ?? null
+      return quotations.find((item) => item.id === selectedQuotationId) ?? quotations[0] ?? null
+    },
+    [detailId, quotations, selectedQuotationId],
   )
 
   useEffect(() => {
     void loadQuotations()
+    void loadQuotationCustomerOptions()
   }, [])
 
   useEffect(() => {
+    if (!detailId) {
+      setHistory([])
+      setPurchaseReferences([])
+      setSampleDeliveries([])
+      return
+    }
     syncExportQuotationActionForms(selectedQuotation)
     void loadSelectedQuotationReferences(selectedQuotation)
-  }, [selectedQuotation?.id, selectedQuotation?.approval_status])
+  }, [detailId, selectedQuotation?.id, selectedQuotation?.approval_status])
+
+  useEffect(() => {
+    if (detailId && quotations.length > 0 && !quotations.some((item) => item.id === detailId)) {
+      onNavigate(exportQuotationPath)
+    }
+  }, [detailId, onNavigate, quotations])
 
   async function loadQuotations(preferredId?: string) {
     setLoading(true)
@@ -7675,6 +6314,27 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
     } finally {
       setLoading(false)
     }
+  }
+
+  async function loadQuotationCustomerOptions() {
+    setLoadingCustomers(true)
+    try {
+      const result = await listCustomers()
+      setCustomers(result.items)
+    } catch (caught) {
+      showError(caught, '客户资料加载失败')
+    } finally {
+      setLoadingCustomers(false)
+    }
+  }
+
+  function applyCustomerToQuotationForm(customerId?: string) {
+    const customer = customers.find((item) => item.id === customerId)
+    setForm((current) => ({
+      ...current,
+      customer_id: customer?.id ?? '',
+      customer_name: customer ? customerDisplayName(customer) : '',
+    }))
   }
 
   async function loadSelectedQuotationReferences(quotation: ExportQuotation | null) {
@@ -7723,6 +6383,22 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
         : [quotation, ...current]
     })
     setSelectedQuotationId(quotation.id)
+  }
+
+  function openQuotationDetail(quotation: ExportQuotation) {
+    setSelectedQuotationId(quotation.id)
+    onNavigate(moduleDetailPath(exportQuotationPath, quotation.id))
+  }
+
+  function stopAndOpenQuotationDetail(event: MouseEvent<HTMLElement>, quotation: ExportQuotation) {
+    event.stopPropagation()
+    openQuotationDetail(quotation)
+  }
+
+  function loadQuotationIntoForm(quotation: ExportQuotation) {
+    setSelectedQuotationId(quotation.id)
+    setForm(exportQuotationToForm(quotation))
+    onNavigate(exportQuotationPath)
   }
 
   async function submitQuotation(event: FormEvent<HTMLFormElement>) {
@@ -7860,7 +6536,8 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid export-quotation-grid">
-        <section className="workspace-panel list-panel product-list-panel">
+        {!detailId ? (
+          <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="报价单列表" />
             <form
@@ -7894,12 +6571,19 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
                   ))}
               </FormSelect>
               <label>
-                客户标识
-                <Input
-                  value={customerFilter}
-                  placeholder="customer-id"
-                  onChange={(event) => setCustomerFilter(event.target.value)}
-                />
+                客户筛选
+                <Select
+                  allowClear
+                  showSearch
+                  loading={loadingCustomers}
+                  value={customerFilter || undefined}
+                  placeholder="从客户资料筛选"
+                  optionFilterProp="label"
+                  notFoundContent={loadingCustomers ? '加载客户资料中' : '暂无客户资料'}
+                  onChange={(value) => setCustomerFilter(value ?? '')}
+                >
+                  {renderCustomerOptions(customers)}
+                </Select>
               </label>
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
@@ -7912,7 +6596,15 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
               {
                 title: '报价单号',
                 dataIndex: 'code',
-                render: (value: string) => <button className="row-button" type="button">{value}</button>,
+                render: (value: string, record: ExportQuotation) => (
+                  <button
+                    className="row-button"
+                    type="button"
+                    onClick={(event) => stopAndOpenQuotationDetail(event, record)}
+                  >
+                    {value}
+                  </button>
+                ),
               },
               { title: '状态', dataIndex: 'approval_status', render: exportQuotationStatusLabel },
               { title: '客户', dataIndex: 'customer_name' },
@@ -7923,6 +6615,16 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
                 render: (_, quotation) => formatMoney(quotation.total_amount, quotation.currency),
               },
               { title: '合同', dataIndex: 'generated_contract_no', render: nullableText },
+              {
+                title: '入口',
+                key: 'detail',
+                width: 110,
+                render: (_: unknown, record: ExportQuotation) => (
+                  <Button size="small" onClick={(event) => stopAndOpenQuotationDetail(event, record)}>
+                    查看详情
+                  </Button>
+                ),
+              },
             ]}
             dataSource={quotations}
             loading={loading}
@@ -7934,9 +6636,11 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
               onClick: () => setSelectedQuotationId(record.id),
             })}
           />
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel form-panel product-form-panel">
+        {!detailId ? (
+          <section className="workspace-panel form-panel product-form-panel">
           <PanelTitle icon={<LayoutDashboard size={18} />} title="新增出口报价" />
           <form className="record-form" onSubmit={submitQuotation}>
             <div className="form-pair two">
@@ -7955,20 +6659,29 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
             </div>
             <div className="form-pair two">
               <label>
-                客户标识
-                <Input
-                  value={form.customer_id}
-                  onChange={(event) => setForm({ ...form, customer_id: event.target.value })}
-                />
+                选择客户
+                <Select
+                  allowClear
+                  showSearch
+                  loading={loadingCustomers}
+                  value={form.customer_id || undefined}
+                  placeholder={customers.length > 0 ? '从客户资料选择' : '请先在客户资料录入'}
+                  optionFilterProp="label"
+                  notFoundContent={loadingCustomers ? '加载客户资料中' : '暂无客户资料'}
+                  onChange={applyCustomerToQuotationForm}
+                >
+                  {renderCustomerOptions(customers)}
+                </Select>
               </label>
               <label>
-                客户名称
-                <Input
-                  value={form.customer_name}
-                  onChange={(event) => setForm({ ...form, customer_name: event.target.value })}
-                />
+                客户标识
+                <Input value={form.customer_id} readOnly placeholder="选择客户后自动带出" />
               </label>
             </div>
+            <label>
+              客户名称
+              <Input value={form.customer_name} readOnly placeholder="选择客户后自动带出" />
+            </label>
             <div className="form-pair two">
               <label>
                 业务员
@@ -8135,10 +6848,17 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
               保存草稿编辑
             </Button>
           </form>
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel detail-panel product-detail-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="报价单明细" />
+        {detailId ? (
+          <section className="workspace-panel detail-panel product-detail-panel">
+          <div className="panel-heading toolbar-heading">
+            <PanelTitle icon={<LayoutDashboard size={18} />} title="报价单明细" />
+            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(exportQuotationPath)}>
+              返回列表
+            </Button>
+          </div>
           {selectedQuotation ? (
             <>
               <dl className="detail-list">
@@ -8184,7 +6904,7 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
               <div className="delivery-action-row">
                 <Button
                   disabled={selectedQuotation.approval_status !== 'draft'}
-                  onClick={() => setForm(exportQuotationToForm(selectedQuotation))}
+                  onClick={() => loadQuotationIntoForm(selectedQuotation)}
                 >
                   载入编辑
                 </Button>
@@ -8349,23 +7069,30 @@ function ExportQuotationsPage({ onNavigate }: ModuleNavigationProps) {
               />
             </>
           ) : (
-            <div className="module-state">暂无出口报价</div>
+            <div className="module-state panel-empty-state">
+              <FileText size={28} />
+              <strong>暂无出口报价</strong>
+              <span>请返回列表选择报价单查看详情</span>
+            </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
     </section>
   )
 }
 
-function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
+function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [contracts, setContracts] = useState<ExportContract[]>([])
   const [selectedContractId, setSelectedContractId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [customerFilter, setCustomerFilter] = useState('')
+  const [customers, setCustomers] = useState<Customer[]>([])
   const [history, setHistory] = useState<ExportQuotation[]>([])
   const [exportPreview, setExportPreview] = useState('')
   const [loading, setLoading] = useState(false)
+  const [loadingCustomers, setLoadingCustomers] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
@@ -8380,18 +7107,32 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
     useState<ExportContractAdvancePaymentFormState>(() => initialExportContractAdvancePaymentForm())
 
   const selectedContract = useMemo(
-    () => contracts.find((item) => item.id === selectedContractId) ?? contracts[0] ?? null,
-    [contracts, selectedContractId],
+    () => {
+      if (detailId) return contracts.find((item) => item.id === detailId) ?? null
+      return contracts.find((item) => item.id === selectedContractId) ?? contracts[0] ?? null
+    },
+    [contracts, detailId, selectedContractId],
   )
 
   useEffect(() => {
     void loadContracts()
+    void loadCustomerOptions()
   }, [])
 
   useEffect(() => {
+    if (!detailId) {
+      setHistory([])
+      return
+    }
     syncExportContractActionForms(selectedContract)
     void loadSelectedContractHistory(selectedContract)
-  }, [selectedContract?.id, selectedContract?.approval_status, selectedContract?.signature_status])
+  }, [detailId, selectedContract?.id, selectedContract?.approval_status, selectedContract?.signature_status])
+
+  useEffect(() => {
+    if (detailId && contracts.length > 0 && !contracts.some((item) => item.id === detailId)) {
+      onNavigate(exportContractPath)
+    }
+  }, [contracts, detailId, onNavigate])
 
   async function loadContracts(preferredId?: string) {
     setLoading(true)
@@ -8414,6 +7155,27 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
     } finally {
       setLoading(false)
     }
+  }
+
+  async function loadCustomerOptions() {
+    setLoadingCustomers(true)
+    try {
+      const result = await listCustomers()
+      setCustomers(result.items)
+    } catch (caught) {
+      showError(caught, '客户资料加载失败')
+    } finally {
+      setLoadingCustomers(false)
+    }
+  }
+
+  function applyCustomerToContractForm(customerId?: string) {
+    const customer = customers.find((item) => item.id === customerId)
+    setForm((current) => ({
+      ...current,
+      customer_id: customer?.id ?? '',
+      customer_name: customer ? customerDisplayName(customer) : '',
+    }))
   }
 
   async function loadSelectedContractHistory(contract: ExportContract | null) {
@@ -8463,6 +7225,22 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
         : [contract, ...current]
     })
     setSelectedContractId(contract.id)
+  }
+
+  function openContractDetail(contract: ExportContract) {
+    setSelectedContractId(contract.id)
+    onNavigate(moduleDetailPath(exportContractPath, contract.id))
+  }
+
+  function stopAndOpenContractDetail(event: MouseEvent<HTMLElement>, contract: ExportContract) {
+    event.stopPropagation()
+    openContractDetail(contract)
+  }
+
+  function loadContractIntoForm(contract: ExportContract) {
+    setSelectedContractId(contract.id)
+    setForm(exportContractToForm(contract))
+    onNavigate(exportContractPath)
   }
 
   async function submitContract(event: FormEvent<HTMLFormElement>) {
@@ -8633,7 +7411,8 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid export-contract-grid">
-        <section className="workspace-panel list-panel product-list-panel">
+        {!detailId ? (
+          <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="合同列表" />
             <form
@@ -8665,12 +7444,19 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
                 ))}
               </FormSelect>
               <label>
-                客户标识
-                <Input
-                  value={customerFilter}
-                  placeholder="customer-id"
-                  onChange={(event) => setCustomerFilter(event.target.value)}
-                />
+                客户筛选
+                <Select
+                  allowClear
+                  showSearch
+                  loading={loadingCustomers}
+                  value={customerFilter || undefined}
+                  placeholder="从客户资料筛选"
+                  optionFilterProp="label"
+                  notFoundContent={loadingCustomers ? '加载客户资料中' : '暂无客户资料'}
+                  onChange={(value) => setCustomerFilter(value ?? '')}
+                >
+                  {renderCustomerOptions(customers)}
+                </Select>
               </label>
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
@@ -8683,7 +7469,15 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
               {
                 title: '合同号',
                 dataIndex: 'code',
-                render: (value: string) => <button className="row-button" type="button">{value}</button>,
+                render: (value: string, record: ExportContract) => (
+                  <button
+                    className="row-button"
+                    type="button"
+                    onClick={(event) => stopAndOpenContractDetail(event, record)}
+                  >
+                    {value}
+                  </button>
+                ),
               },
               { title: '状态', dataIndex: 'approval_status', render: exportContractStatusLabel },
               { title: '客户', dataIndex: 'customer_name' },
@@ -8694,6 +7488,16 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
                 render: (_, contract) => formatMoney(contract.statistics.total_amount, contract.currency),
               },
               { title: '回签', dataIndex: 'signature_status', render: signatureStatusLabel },
+              {
+                title: '入口',
+                key: 'detail',
+                width: 110,
+                render: (_: unknown, record: ExportContract) => (
+                  <Button size="small" onClick={(event) => stopAndOpenContractDetail(event, record)}>
+                    查看详情
+                  </Button>
+                ),
+              },
             ]}
             dataSource={contracts}
             loading={loading}
@@ -8705,9 +7509,11 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
               onClick: () => setSelectedContractId(record.id),
             })}
           />
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel form-panel product-form-panel">
+        {!detailId ? (
+          <section className="workspace-panel form-panel product-form-panel">
           <PanelTitle icon={<LayoutDashboard size={18} />} title="新增出口合同" />
           <form className="record-form" onSubmit={submitContract}>
             <div className="form-pair two">
@@ -8726,20 +7532,29 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
             </div>
             <div className="form-pair two">
               <label>
-                客户标识
-                <Input
-                  value={form.customer_id}
-                  onChange={(event) => setForm({ ...form, customer_id: event.target.value })}
-                />
+                选择客户
+                <Select
+                  allowClear
+                  showSearch
+                  loading={loadingCustomers}
+                  value={form.customer_id || undefined}
+                  placeholder={customers.length > 0 ? '从客户资料选择' : '请先在客户资料录入'}
+                  optionFilterProp="label"
+                  notFoundContent={loadingCustomers ? '加载客户资料中' : '暂无客户资料'}
+                  onChange={applyCustomerToContractForm}
+                >
+                  {renderCustomerOptions(customers)}
+                </Select>
               </label>
               <label>
-                客户名称
-                <Input
-                  value={form.customer_name}
-                  onChange={(event) => setForm({ ...form, customer_name: event.target.value })}
-                />
+                客户标识
+                <Input value={form.customer_id} readOnly placeholder="选择客户后自动带出" />
               </label>
             </div>
+            <label>
+              客户名称
+              <Input value={form.customer_name} readOnly placeholder="选择客户后自动带出" />
+            </label>
             <div className="form-pair two">
               <label>
                 业务员
@@ -8913,10 +7728,17 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
               保存草稿编辑
             </Button>
           </form>
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel detail-panel product-detail-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="合同明细" />
+        {detailId ? (
+          <section className="workspace-panel detail-panel product-detail-panel">
+          <div className="panel-heading toolbar-heading">
+            <PanelTitle icon={<LayoutDashboard size={18} />} title="合同明细" />
+            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(exportContractPath)}>
+              返回列表
+            </Button>
+          </div>
           {selectedContract ? (
             <>
               <dl className="detail-list">
@@ -8964,7 +7786,7 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
               <div className="delivery-action-row">
                 <Button
                   disabled={selectedContract.approval_status !== 'draft'}
-                  onClick={() => setForm(exportContractToForm(selectedContract))}
+                  onClick={() => loadContractIntoForm(selectedContract)}
                 >
                   载入编辑
                 </Button>
@@ -8985,6 +7807,9 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
                 </Button>
                 <Button loading={submitting} onClick={() => void exportContract('pdf')}>
                   导出 PDF
+                </Button>
+                <Button onClick={() => void openExportContractPrint(selectedContract.id)}>
+                  打印单据
                 </Button>
               </div>
 
@@ -9275,15 +8100,20 @@ function ExportContractsPage({ onNavigate }: ModuleNavigationProps) {
               />
             </>
           ) : (
-            <div className="module-state">暂无出口合同</div>
+            <div className="module-state panel-empty-state">
+              <FileStack size={28} />
+              <strong>暂无出口合同</strong>
+              <span>请返回列表选择合同查看详情</span>
+            </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
     </section>
   )
 }
 
-function ShipmentsPage({ onNavigate }: ModuleNavigationProps) {
+function ShipmentsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [shipments, setShipments] = useState<ShipmentPlan[]>([])
   const [reminders, setReminders] = useState<ShipmentReminder[]>([])
   const [selectedShipmentId, setSelectedShipmentId] = useState<string | null>(null)
@@ -9301,8 +8131,11 @@ function ShipmentsPage({ onNavigate }: ModuleNavigationProps) {
   )
 
   const selectedShipment = useMemo(
-    () => shipments.find((item) => item.id === selectedShipmentId) ?? shipments[0] ?? null,
-    [shipments, selectedShipmentId],
+    () => {
+      if (detailId) return shipments.find((item) => item.id === detailId) ?? null
+      return shipments.find((item) => item.id === selectedShipmentId) ?? shipments[0] ?? null
+    },
+    [detailId, shipments, selectedShipmentId],
   )
 
   useEffect(() => {
@@ -9316,6 +8149,12 @@ function ShipmentsPage({ onNavigate }: ModuleNavigationProps) {
       approved_at: selectedShipment?.approved_at ?? todayInputValue(),
     })
   }, [selectedShipment?.id, selectedShipment?.approval_status])
+
+  useEffect(() => {
+    if (detailId && shipments.length > 0 && !shipments.some((item) => item.id === detailId)) {
+      onNavigate(shipmentPath)
+    }
+  }, [detailId, onNavigate, shipments])
 
   async function loadShipments(preferredId?: string) {
     setLoading(true)
@@ -9358,6 +8197,16 @@ function ShipmentsPage({ onNavigate }: ModuleNavigationProps) {
         : [shipment, ...current]
     })
     setSelectedShipmentId(shipment.id)
+  }
+
+  function openShipmentDetail(shipment: ShipmentPlan) {
+    setSelectedShipmentId(shipment.id)
+    onNavigate(moduleDetailPath(shipmentPath, shipment.id))
+  }
+
+  function stopAndOpenShipmentDetail(event: MouseEvent<HTMLElement>, shipment: ShipmentPlan) {
+    event.stopPropagation()
+    openShipmentDetail(shipment)
   }
 
   async function submitGeneratedShipment(event: FormEvent<HTMLFormElement>) {
@@ -9456,7 +8305,8 @@ function ShipmentsPage({ onNavigate }: ModuleNavigationProps) {
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid shipment-grid">
-        <section className="workspace-panel list-panel product-list-panel">
+        {!detailId ? (
+          <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="出货计划列表" />
             <form
@@ -9514,7 +8364,15 @@ function ShipmentsPage({ onNavigate }: ModuleNavigationProps) {
               {
                 title: '出货单号',
                 dataIndex: 'code',
-                render: (value: string) => <button className="row-button" type="button">{value}</button>,
+                render: (value: string, record: ShipmentPlan) => (
+                  <button
+                    className="row-button"
+                    type="button"
+                    onClick={(event) => stopAndOpenShipmentDetail(event, record)}
+                  >
+                    {value}
+                  </button>
+                ),
               },
               { title: '状态', dataIndex: 'approval_status', render: shipmentStatusLabel },
               { title: '客户', dataIndex: 'customer_name' },
@@ -9525,6 +8383,16 @@ function ShipmentsPage({ onNavigate }: ModuleNavigationProps) {
                 dataIndex: 'finance_overview',
                 render: (_, shipment) =>
                   formatMoney(shipment.finance_overview.receivable_amount, shipment.finance_overview.currency),
+              },
+              {
+                title: '入口',
+                key: 'detail',
+                width: 110,
+                render: (_: unknown, record: ShipmentPlan) => (
+                  <Button size="small" onClick={(event) => stopAndOpenShipmentDetail(event, record)}>
+                    查看详情
+                  </Button>
+                ),
               },
             ]}
             dataSource={shipments}
@@ -9537,9 +8405,11 @@ function ShipmentsPage({ onNavigate }: ModuleNavigationProps) {
               onClick: () => setSelectedShipmentId(record.id),
             })}
           />
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel form-panel product-form-panel">
+        {!detailId ? (
+          <section className="workspace-panel form-panel product-form-panel">
           <PanelTitle icon={<LayoutDashboard size={18} />} title="从出口合同生成出货明细" />
           <form className="record-form" onSubmit={submitGeneratedShipment}>
             <div className="form-pair two">
@@ -9689,10 +8559,17 @@ function ShipmentsPage({ onNavigate }: ModuleNavigationProps) {
               生成出货明细
             </Button>
           </form>
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel detail-panel product-detail-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="出货明细" />
+        {detailId ? (
+          <section className="workspace-panel detail-panel product-detail-panel">
+          <div className="panel-heading toolbar-heading">
+            <PanelTitle icon={<LayoutDashboard size={18} />} title="出货明细" />
+            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(shipmentPath)}>
+              返回列表
+            </Button>
+          </div>
           {selectedShipment ? (
             <>
               <dl className="detail-list">
@@ -9915,18 +8792,25 @@ function ShipmentsPage({ onNavigate }: ModuleNavigationProps) {
               />
             </>
           ) : (
-            <div className="module-state">暂无出货明细</div>
+            <div className="module-state panel-empty-state">
+              <Ship size={28} />
+              <strong>暂无出货明细</strong>
+              <span>请返回列表选择出货记录查看详情</span>
+            </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
     </section>
   )
 }
 
-function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
+function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [inquiries, setInquiries] = useState<PurchaseInquiry[]>([])
   const [selectedInquiryId, setSelectedInquiryId] = useState<string | null>(null)
   const [editingInquiryId, setEditingInquiryId] = useState<string | null>(null)
+  const [inquiryModalOpen, setInquiryModalOpen] = useState(false)
+  const [inquiryActionModal, setInquiryActionModal] = useState<'template' | 'quotation' | null>(null)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [productFilter, setProductFilter] = useState('')
@@ -9947,8 +8831,11 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
   )
 
   const selectedInquiry = useMemo(
-    () => inquiries.find((item) => item.id === selectedInquiryId) ?? inquiries[0] ?? null,
-    [inquiries, selectedInquiryId],
+    () => {
+      if (detailId) return inquiries.find((item) => item.id === detailId) ?? null
+      return inquiries.find((item) => item.id === selectedInquiryId) ?? inquiries[0] ?? null
+    },
+    [detailId, inquiries, selectedInquiryId],
   )
 
   useEffect(() => {
@@ -9956,9 +8843,20 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
   }, [])
 
   useEffect(() => {
+    if (!detailId) {
+      setSupplierSamples([])
+      setReferences([])
+      return
+    }
     syncPurchaseInquiryActionForms(selectedInquiry)
     void loadPurchaseInquiryAuxiliary(selectedInquiry)
-  }, [selectedInquiry?.id, selectedInquiry?.status, selectedInquiry?.quotations.length])
+  }, [detailId, selectedInquiry?.id, selectedInquiry?.status, selectedInquiry?.quotations.length])
+
+  useEffect(() => {
+    if (detailId && inquiries.length > 0 && !inquiries.some((item) => item.id === detailId)) {
+      onNavigate(purchaseInquiryPath)
+    }
+  }, [detailId, inquiries, onNavigate])
 
   async function loadInquiries(preferredId?: string) {
     setLoading(true)
@@ -10032,6 +8930,16 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
     setSelectedInquiryId(inquiry.id)
   }
 
+  function openInquiryDetail(inquiry: PurchaseInquiry) {
+    setSelectedInquiryId(inquiry.id)
+    onNavigate(moduleDetailPath(purchaseInquiryPath, inquiry.id))
+  }
+
+  function stopAndOpenInquiryDetail(event: MouseEvent<HTMLElement>, inquiry: PurchaseInquiry) {
+    event.stopPropagation()
+    openInquiryDetail(inquiry)
+  }
+
   async function submitInquiry(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setSubmitting(true)
@@ -10045,6 +8953,7 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
       setMessage(editingInquiryId ? `已保存采购询价 ${saved.code}` : `已新增采购询价 ${saved.code}`)
       setEditingInquiryId(null)
       setForm(initialPurchaseInquiryForm())
+      setInquiryModalOpen(false)
       upsertInquiry(saved)
       await loadInquiries(saved.id)
     } catch (caught) {
@@ -10067,6 +8976,7 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
       )
       setTemplatePreview(template.content)
       setMessage(`已生成询价模板 ${template.filename}`)
+      setInquiryActionModal(null)
       await loadInquiries(selectedInquiry.id)
     } catch (caught) {
       showError(caught, '询价模板发送失败')
@@ -10087,6 +8997,7 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
         purchaseQuotationPayload(quotationForm, selectedInquiry.lines[0].id),
       )
       setMessage(`已登记供应商报价 ${quotationForm.supplier_name}`)
+      setInquiryActionModal(null)
       upsertInquiry(updated)
       await Promise.all([loadInquiries(updated.id), loadPurchaseInquiryAuxiliary(updated)])
     } catch (caught) {
@@ -10096,16 +9007,26 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
     }
   }
 
+  function openCreateInquiry() {
+    setEditingInquiryId(null)
+    setForm(initialPurchaseInquiryForm())
+    setMessage('')
+    setError('')
+    setInquiryModalOpen(true)
+  }
+
   function loadSelectedInquiryForEdit() {
     if (!selectedInquiry) return
     setEditingInquiryId(selectedInquiry.id)
     setForm(purchaseInquiryToForm(selectedInquiry))
     setMessage(`正在编辑采购询价 ${selectedInquiry.code}`)
+    setInquiryModalOpen(true)
   }
 
   function cancelInquiryEdit() {
     setEditingInquiryId(null)
     setForm(initialPurchaseInquiryForm())
+    setInquiryModalOpen(false)
   }
 
   const quotedCount = inquiries.filter((item) => item.status === 'quoted').length
@@ -10127,7 +9048,8 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid purchase-inquiry-grid">
-        <section className="workspace-panel list-panel product-list-panel">
+        {!detailId ? (
+          <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="采购询价列表" />
             <form
@@ -10177,6 +9099,9 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
+              <Button htmlType="button" icon={<Plus size={16} />} onClick={openCreateInquiry}>
+                新增采购询价
+              </Button>
             </form>
           </div>
 
@@ -10185,7 +9110,15 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
               {
                 title: '询价单号',
                 dataIndex: 'code',
-                render: (value: string) => <button className="row-button" type="button">{value}</button>,
+                render: (value: string, record: PurchaseInquiry) => (
+                  <button
+                    className="row-button"
+                    type="button"
+                    onClick={(event) => stopAndOpenInquiryDetail(event, record)}
+                  >
+                    {value}
+                  </button>
+                ),
               },
               { title: '状态', dataIndex: 'status', render: purchaseInquiryStatusLabel },
               {
@@ -10204,6 +9137,16 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
                   return lowest ? formatMoney(lowest.unit_price, lowest.currency) : '未报价'
                 },
               },
+              {
+                title: '入口',
+                key: 'detail',
+                width: 110,
+                render: (_: unknown, record: PurchaseInquiry) => (
+                  <Button size="small" onClick={(event) => stopAndOpenInquiryDetail(event, record)}>
+                    查看详情
+                  </Button>
+                ),
+              },
             ]}
             dataSource={inquiries}
             loading={loading}
@@ -10215,10 +9158,18 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
               onClick: () => setSelectedInquiryId(record.id),
             })}
           />
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel form-panel product-form-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title={editingInquiryId ? '编辑采购询价' : '新增采购询价'} />
+        <Modal
+          centered
+          footer={null}
+          open={inquiryModalOpen}
+          title={editingInquiryId ? '编辑采购询价' : '新增采购询价'}
+          width={980}
+          onCancel={cancelInquiryEdit}
+        >
+          <div className="workflow-modal-content entity-modal-form">
           <form className="record-form" onSubmit={submitInquiry}>
             <div className="form-pair two">
               <label>
@@ -10319,10 +9270,17 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
               </Button>
             ) : null}
           </form>
-        </section>
+          </div>
+        </Modal>
 
-        <section className="workspace-panel detail-panel product-detail-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="询价明细" />
+        {detailId ? (
+          <section className="workspace-panel detail-panel product-detail-panel">
+          <div className="panel-heading toolbar-heading">
+            <PanelTitle icon={<LayoutDashboard size={18} />} title="询价明细" />
+            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(purchaseInquiryPath)}>
+              返回列表
+            </Button>
+          </div>
           {selectedInquiry ? (
             <>
               <dl className="detail-list">
@@ -10354,141 +9312,172 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
                   disabled={selectedInquiry.status !== 'draft'}
                   onClick={loadSelectedInquiryForEdit}
                 >
-                  载入编辑
+                  编辑询价
+                </Button>
+                <Button htmlType="button" onClick={() => setInquiryActionModal('template')}>
+                  发送询价模板
+                </Button>
+                <Button
+                  disabled={!selectedInquiry.lines[0]}
+                  htmlType="button"
+                  type="primary"
+                  onClick={() => setInquiryActionModal('quotation')}
+                >
+                  登记供应商报价
                 </Button>
               </div>
 
-              <div className="purchase-inquiry-actions">
-                <form className="record-form accessory-form" onSubmit={sendTemplate}>
-                  <div className="form-divider">询价模板发送</div>
-                  <label>
-                    模板名称
-                    <Input
-                      value={templateForm.template_name}
-                      onChange={(event) =>
-                        setTemplateForm({ ...templateForm, template_name: event.target.value })
-                      }
-                    />
-                  </label>
-                  <label>
-                    收件邮箱
-                    <Input
-                      value={templateForm.recipient_emails}
-                      onChange={(event) =>
-                        setTemplateForm({ ...templateForm, recipient_emails: event.target.value })
-                      }
-                    />
-                  </label>
-                  <Button htmlType="submit" loading={submitting}>
-                    发送询价模板
-                  </Button>
-                </form>
+              <Modal
+                centered
+                footer={null}
+                open={inquiryActionModal === 'template'}
+                title="发送询价模板"
+                width={720}
+                onCancel={() => setInquiryActionModal(null)}
+              >
+                <div className="workflow-modal-content entity-modal-form">
+                  <form className="record-form accessory-form" onSubmit={sendTemplate}>
+                    <div className="form-divider">询价模板发送</div>
+                    <label>
+                      模板名称
+                      <Input
+                        value={templateForm.template_name}
+                        onChange={(event) =>
+                          setTemplateForm({ ...templateForm, template_name: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      收件邮箱
+                      <Input
+                        value={templateForm.recipient_emails}
+                        onChange={(event) =>
+                          setTemplateForm({ ...templateForm, recipient_emails: event.target.value })
+                        }
+                      />
+                    </label>
+                    <Button htmlType="submit" loading={submitting}>
+                      发送询价模板
+                    </Button>
+                  </form>
+                </div>
+              </Modal>
 
-                <form className="record-form accessory-form" onSubmit={addSupplierQuotation}>
-                  <div className="form-divider">供应商报价明细</div>
-                  <div className="form-pair two">
-                    <label>
-                      供应商标识
-                      <Input
-                        value={quotationForm.supplier_id}
+              <Modal
+                centered
+                footer={null}
+                open={inquiryActionModal === 'quotation'}
+                title="登记供应商报价"
+                width={880}
+                onCancel={() => setInquiryActionModal(null)}
+              >
+                <div className="workflow-modal-content entity-modal-form">
+                  <form className="record-form accessory-form" onSubmit={addSupplierQuotation}>
+                    <div className="form-divider">供应商报价明细</div>
+                    <div className="form-pair two">
+                      <label>
+                        供应商标识
+                        <Input
+                          value={quotationForm.supplier_id}
+                          onChange={(event) =>
+                            setQuotationForm({ ...quotationForm, supplier_id: event.target.value })
+                          }
+                        />
+                      </label>
+                      <label>
+                        供应商名称
+                        <Input
+                          value={quotationForm.supplier_name}
+                          onChange={(event) =>
+                            setQuotationForm({ ...quotationForm, supplier_name: event.target.value })
+                          }
+                        />
+                      </label>
+                    </div>
+                    <div className="form-pair three">
+                      <label>
+                        报价日期
+                        <Input
+                          type="date"
+                          value={quotationForm.quoted_at}
+                          onChange={(event) =>
+                            setQuotationForm({ ...quotationForm, quoted_at: event.target.value })
+                          }
+                        />
+                      </label>
+                      <label>
+                        单价
+                        <Input
+                          type="number"
+                          min="0.0001"
+                          step="0.0001"
+                          value={quotationForm.unit_price}
+                          onChange={(event) =>
+                            setQuotationForm({ ...quotationForm, unit_price: event.target.value })
+                          }
+                        />
+                      </label>
+                      <label>
+                        币种
+                        <Input
+                          value={quotationForm.currency}
+                          onChange={(event) =>
+                            setQuotationForm({ ...quotationForm, currency: event.target.value })
+                          }
+                        />
+                      </label>
+                    </div>
+                    <div className="form-pair two">
+                      <label>
+                        交期天数
+                        <Input
+                          type="number"
+                          min="0"
+                          step="1"
+                          value={quotationForm.lead_time_days}
+                          onChange={(event) =>
+                            setQuotationForm({ ...quotationForm, lead_time_days: event.target.value })
+                          }
+                        />
+                      </label>
+                      <label>
+                        最小起订量
+                        <Input
+                          type="number"
+                          min="0"
+                          step="0.0001"
+                          value={quotationForm.min_order_quantity}
+                          onChange={(event) =>
+                            setQuotationForm({ ...quotationForm, min_order_quantity: event.target.value })
+                          }
+                        />
+                      </label>
+                    </div>
+                    <label className="checkbox-label">
+                      <input
+                        checked={quotationForm.sample_available}
+                        type="checkbox"
                         onChange={(event) =>
-                          setQuotationForm({ ...quotationForm, supplier_id: event.target.value })
+                          setQuotationForm({ ...quotationForm, sample_available: event.target.checked })
                         }
                       />
+                      可提供样品
                     </label>
-                    <label>
-                      供应商名称
-                      <Input
-                        value={quotationForm.supplier_name}
-                        onChange={(event) =>
-                          setQuotationForm({ ...quotationForm, supplier_name: event.target.value })
-                        }
-                      />
-                    </label>
-                  </div>
-                  <div className="form-pair three">
-                    <label>
-                      报价日期
-                      <Input
-                        type="date"
-                        value={quotationForm.quoted_at}
-                        onChange={(event) =>
-                          setQuotationForm({ ...quotationForm, quoted_at: event.target.value })
-                        }
-                      />
-                    </label>
-                    <label>
-                      单价
-                      <Input
-                        type="number"
-                        min="0.0001"
-                        step="0.0001"
-                        value={quotationForm.unit_price}
-                        onChange={(event) =>
-                          setQuotationForm({ ...quotationForm, unit_price: event.target.value })
-                        }
-                      />
-                    </label>
-                    <label>
-                      币种
-                      <Input
-                        value={quotationForm.currency}
-                        onChange={(event) =>
-                          setQuotationForm({ ...quotationForm, currency: event.target.value })
-                        }
-                      />
-                    </label>
-                  </div>
-                  <div className="form-pair two">
-                    <label>
-                      交期天数
-                      <Input
-                        type="number"
-                        min="0"
-                        step="1"
-                        value={quotationForm.lead_time_days}
-                        onChange={(event) =>
-                          setQuotationForm({ ...quotationForm, lead_time_days: event.target.value })
-                        }
-                      />
-                    </label>
-                    <label>
-                      最小起订量
-                      <Input
-                        type="number"
-                        min="0"
-                        step="0.0001"
-                        value={quotationForm.min_order_quantity}
-                        onChange={(event) =>
-                          setQuotationForm({ ...quotationForm, min_order_quantity: event.target.value })
-                        }
-                      />
-                    </label>
-                  </div>
-                  <label className="checkbox-label">
-                    <input
-                      checked={quotationForm.sample_available}
-                      type="checkbox"
-                      onChange={(event) =>
-                        setQuotationForm({ ...quotationForm, sample_available: event.target.checked })
-                      }
-                    />
-                    可提供样品
-                  </label>
                   <label>
-                    报价备注
-                    <Input
-                      value={quotationForm.remark}
-                      onChange={(event) =>
-                        setQuotationForm({ ...quotationForm, remark: event.target.value })
-                      }
-                    />
-                  </label>
-                  <Button htmlType="submit" loading={submitting} type="primary">
-                    登记供应商报价
-                  </Button>
-                </form>
-              </div>
+                      报价备注
+                      <Input
+                        value={quotationForm.remark}
+                        onChange={(event) =>
+                          setQuotationForm({ ...quotationForm, remark: event.target.value })
+                        }
+                      />
+                    </label>
+                    <Button htmlType="submit" loading={submitting} type="primary">
+                      登记供应商报价
+                    </Button>
+                  </form>
+                </div>
+              </Modal>
 
               {templatePreview ? (
                 <div className="transaction-box export-preview">
@@ -10625,24 +9614,36 @@ function PurchaseInquiriesPage({ onNavigate }: ModuleNavigationProps) {
               </table>
             </>
           ) : (
-            <div className="module-state">暂无采购询价</div>
+            <div className="module-state panel-empty-state">
+              <FileText size={28} />
+              <strong>暂无采购询价</strong>
+              <span>请返回列表选择询价单查看详情</span>
+            </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
     </section>
   )
 }
 
-function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
+function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [contracts, setContracts] = useState<PurchaseContract[]>([])
   const [reminders, setReminders] = useState<PurchaseContractReminder[]>([])
+  const [products, setProducts] = useState<Product[]>([])
+  const [suppliers, setSuppliers] = useState<Supplier[]>([])
   const [selectedContractId, setSelectedContractId] = useState<string | null>(null)
   const [editingContractId, setEditingContractId] = useState<string | null>(null)
+  const [contractModalOpen, setContractModalOpen] = useState(false)
+  const [contractModalMode, setContractModalMode] = useState<'manual' | 'generate'>('manual')
+  const [contractApprovalModalOpen, setContractApprovalModalOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [supplierFilter, setSupplierFilter] = useState('')
   const [sourceFilter, setSourceFilter] = useState('')
   const [loading, setLoading] = useState(false)
+  const [loadingProducts, setLoadingProducts] = useState(false)
+  const [loadingSuppliers, setLoadingSuppliers] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
@@ -10655,13 +9656,18 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
   )
 
   const selectedContract = useMemo(
-    () => contracts.find((item) => item.id === selectedContractId) ?? contracts[0] ?? null,
-    [contracts, selectedContractId],
+    () => {
+      if (detailId) return contracts.find((item) => item.id === detailId) ?? null
+      return contracts.find((item) => item.id === selectedContractId) ?? contracts[0] ?? null
+    },
+    [contracts, detailId, selectedContractId],
   )
 
   useEffect(() => {
     void loadContracts()
     void loadContractReminders()
+    void loadProductsForContract()
+    void loadSuppliersForContract()
   }, [])
 
   useEffect(() => {
@@ -10684,6 +9690,12 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
       }))
     }
   }, [selectedContract?.id, selectedContract?.approval_status])
+
+  useEffect(() => {
+    if (detailId && contracts.length > 0 && !contracts.some((item) => item.id === detailId)) {
+      onNavigate(purchaseContractPath)
+    }
+  }, [contracts, detailId, onNavigate])
 
   async function loadContracts(preferredId?: string, preferredContract?: PurchaseContract) {
     setLoading(true)
@@ -10724,6 +9736,30 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
     }
   }
 
+  async function loadProductsForContract() {
+    setLoadingProducts(true)
+    try {
+      const result = await listProducts()
+      setProducts(result.items)
+    } catch (caught) {
+      showError(caught, '商品资料加载失败')
+    } finally {
+      setLoadingProducts(false)
+    }
+  }
+
+  async function loadSuppliersForContract() {
+    setLoadingSuppliers(true)
+    try {
+      const result = await listSuppliers()
+      setSuppliers(result.items)
+    } catch (caught) {
+      showError(caught, '工厂资料加载失败')
+    } finally {
+      setLoadingSuppliers(false)
+    }
+  }
+
   function upsertContract(contract: PurchaseContract) {
     setContracts((current) => {
       const exists = current.some((item) => item.id === contract.id)
@@ -10732,6 +9768,57 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
         : [contract, ...current]
     })
     setSelectedContractId(contract.id)
+  }
+
+  function openPurchaseContractDetail(contract: PurchaseContract) {
+    setSelectedContractId(contract.id)
+    onNavigate(moduleDetailPath(purchaseContractPath, contract.id))
+  }
+
+  function stopAndOpenPurchaseContractDetail(event: MouseEvent<HTMLElement>, contract: PurchaseContract) {
+    event.stopPropagation()
+    openPurchaseContractDetail(contract)
+  }
+
+  function applyProductToPurchaseContractForm(productId: string | undefined) {
+    if (!productId) {
+      setForm((current) => ({
+        ...current,
+        product_id: '',
+      }))
+      return
+    }
+    const product = products.find((item) => item.id === productId)
+    if (!product) return
+    setForm((current) => ({
+      ...current,
+      product_id: product.id,
+      product_code: product.code,
+      product_name: product.cn_name,
+      specification: product.specification ?? '',
+      model: product.model ?? '',
+      unit: product.unit,
+      line_remark: product.package_info
+        ? mergePurchaseLineRemark(current.line_remark, `包装: ${product.package_info}`)
+        : current.line_remark,
+    }))
+  }
+
+  function applySupplierToPurchaseContractForm(supplierId: string | undefined) {
+    if (!supplierId) {
+      setForm((current) => ({
+        ...current,
+        supplier_id: '',
+      }))
+      return
+    }
+    const supplier = suppliers.find((item) => item.id === supplierId)
+    if (!supplier) return
+    setForm((current) => ({
+      ...current,
+      supplier_id: supplier.id,
+      supplier_name: supplier.cn_name,
+    }))
   }
 
   async function submitContractForm(event: FormEvent<HTMLFormElement>) {
@@ -10746,7 +9833,9 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
         : await createPurchaseContract(payload)
       setMessage(editingContractId ? `已保存采购合同 ${saved.code}` : `已新增采购合同 ${saved.code}`)
       setEditingContractId(null)
+      setContractModalMode('manual')
       setForm(initialPurchaseContractForm())
+      setContractModalOpen(false)
       upsertContract(saved)
       await Promise.all([loadContracts(saved.id, saved), loadContractReminders()])
       upsertContract(saved)
@@ -10767,7 +9856,9 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
         purchaseContractGeneratePayload(generateForm),
       )
       setMessage(`已从出口合同生成采购合同 ${generated.code}`)
+      setContractModalMode('manual')
       setGenerateForm(initialPurchaseContractGenerateForm())
+      setContractModalOpen(false)
       upsertContract(generated)
       await Promise.all([loadContracts(generated.id, generated), loadContractReminders()])
     } catch (caught) {
@@ -10806,6 +9897,7 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
         purchaseContractApprovePayload(approveForm),
       )
       setMessage(`已审批采购合同 ${approved.code}`)
+      setContractApprovalModalOpen(false)
       upsertContract(approved)
       await Promise.all([loadContracts(approved.id, approved), loadContractReminders()])
     } catch (caught) {
@@ -10815,16 +9907,54 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
     }
   }
 
+  async function generateSelectedContractTemplate() {
+    if (!selectedContract) return
+    setSubmitting(true)
+    setMessage('')
+    setError('')
+    try {
+      const document_ = await generatePurchaseContractTemplate(selectedContract.id)
+      downloadBase64File(document_.filename, document_.content_base64, document_.content_type)
+      setMessage(`已用合同模板生成 ${document_.filename}`)
+    } catch (caught) {
+      showError(caught, '采购合同模板生成失败')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  function openCreateContract() {
+    setEditingContractId(null)
+    setContractModalMode('manual')
+    setForm(initialPurchaseContractForm())
+    setMessage('')
+    setError('')
+    setContractModalOpen(true)
+  }
+
+  function openGenerateContract() {
+    setEditingContractId(null)
+    setContractModalMode('generate')
+    setGenerateForm(initialPurchaseContractGenerateForm())
+    setMessage('')
+    setError('')
+    setContractModalOpen(true)
+  }
+
   function loadSelectedContractForEdit() {
     if (!selectedContract) return
     setEditingContractId(selectedContract.id)
+    setContractModalMode('manual')
     setForm(purchaseContractToForm(selectedContract))
     setMessage(`正在编辑采购合同 ${selectedContract.code}`)
+    setContractModalOpen(true)
   }
 
   function cancelContractEdit() {
     setEditingContractId(null)
+    setContractModalMode('manual')
     setForm(initialPurchaseContractForm())
+    setContractModalOpen(false)
   }
 
   const totalAmount = contracts.reduce((sum, item) => sum + Number(item.statistics.total_amount), 0)
@@ -10847,7 +9977,8 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid purchase-contract-grid">
-        <section className="workspace-panel list-panel product-list-panel">
+        {!detailId ? (
+          <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="采购合同列表" />
             <form
@@ -10902,6 +10033,12 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
+              <Button htmlType="button" icon={<Plus size={16} />} onClick={openCreateContract}>
+                新增采购合同
+              </Button>
+              <Button htmlType="button" icon={<FileStack size={16} />} onClick={openGenerateContract}>
+                从出口合同生成
+              </Button>
             </form>
           </div>
 
@@ -10910,7 +10047,15 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
               {
                 title: '采购合同',
                 dataIndex: 'code',
-                render: (value: string) => <button className="row-button" type="button">{value}</button>,
+                render: (value: string, record: PurchaseContract) => (
+                  <button
+                    className="row-button"
+                    type="button"
+                    onClick={(event) => stopAndOpenPurchaseContractDetail(event, record)}
+                  >
+                    {value}
+                  </button>
+                ),
               },
               { title: '状态', dataIndex: 'approval_status', render: purchaseContractStatusLabel },
               { title: '来源', dataIndex: 'source_type', render: purchaseContractSourceTypeLabel },
@@ -10920,6 +10065,16 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
                 title: '金额',
                 dataIndex: 'statistics',
                 render: (_, contract) => formatMoney(contract.statistics.total_amount, contract.currency),
+              },
+              {
+                title: '入口',
+                key: 'detail',
+                width: 110,
+                render: (_: unknown, record: PurchaseContract) => (
+                  <Button size="small" onClick={(event) => stopAndOpenPurchaseContractDetail(event, record)}>
+                    查看详情
+                  </Button>
+                ),
               },
             ]}
             dataSource={contracts}
@@ -10932,9 +10087,26 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
               onClick: () => setSelectedContractId(record.id),
             })}
           />
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel form-panel product-form-panel">
+        <Modal
+          centered
+          footer={null}
+          open={contractModalOpen}
+          title={
+            editingContractId
+              ? '编辑采购合同'
+              : contractModalMode === 'generate'
+                ? '从出口合同生成采购合同'
+                : '新增采购合同'
+          }
+          width={1040}
+          onCancel={cancelContractEdit}
+        >
+          <div className="workflow-modal-content entity-modal-form">
+          {contractModalMode === 'manual' ? (
+            <>
           <PanelTitle icon={<LayoutDashboard size={18} />} title={editingContractId ? '编辑采购合同' : '库存/手工采购合同'} />
           <form className="record-form" onSubmit={submitContractForm}>
             <div className="form-pair two">
@@ -10951,16 +10123,28 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
                 />
               </label>
             </div>
-            <div className="form-pair two">
+            <div className="form-pair three">
               <label>
-                供应商标识
-                <Input
-                  value={form.supplier_id}
-                  onChange={(event) => setForm({ ...form, supplier_id: event.target.value })}
-                />
+                选择工厂
+                <Select
+                  allowClear
+                  showSearch
+                  loading={loadingSuppliers}
+                  value={form.supplier_id || undefined}
+                  placeholder={suppliers.length > 0 ? '从工厂资料选择' : '请先在工厂资料录入'}
+                  optionFilterProp="label"
+                  notFoundContent={loadingSuppliers ? '加载工厂资料中' : '暂无工厂资料'}
+                  onChange={applySupplierToPurchaseContractForm}
+                >
+                  {renderSupplierOptions(suppliers)}
+                </Select>
               </label>
               <label>
-                供应商
+                工厂标识
+                <Input value={form.supplier_id} readOnly placeholder="选择工厂后自动带出" />
+              </label>
+              <label>
+                工厂名称
                 <Input
                   value={form.supplier_name}
                   onChange={(event) => setForm({ ...form, supplier_name: event.target.value })}
@@ -11028,11 +10212,19 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
             <div className="form-divider">合同商品明细</div>
             <div className="form-pair two">
               <label>
-                商品标识
-                <Input
-                  value={form.product_id}
-                  onChange={(event) => setForm({ ...form, product_id: event.target.value })}
-                />
+                选择商品
+                <Select
+                  allowClear
+                  showSearch
+                  loading={loadingProducts}
+                  value={form.product_id || undefined}
+                  placeholder={products.length > 0 ? '从商品资料选择' : '请先在商品资料录入'}
+                  optionFilterProp="label"
+                  notFoundContent={loadingProducts ? '加载商品资料中' : '暂无商品资料'}
+                  onChange={applyProductToPurchaseContractForm}
+                >
+                  {renderProductOptions(products)}
+                </Select>
               </label>
               <label>
                 商品编号
@@ -11048,6 +10240,10 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
                 value={form.product_name}
                 onChange={(event) => setForm({ ...form, product_name: event.target.value })}
               />
+            </label>
+            <label>
+              商品标识
+              <Input value={form.product_id} readOnly placeholder="选择商品后自动带出" />
             </label>
             <div className="form-pair two">
               <label>
@@ -11140,6 +10336,10 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
               </Button>
             ) : null}
           </form>
+            </>
+          ) : (
+            <>
+          <PanelTitle icon={<FileStack size={18} />} title="从已审批出口合同生成" />
 
           <form className="record-form accessory-form generation-form" onSubmit={generateContractFromSources}>
             <div className="form-divider">从已审批出口合同生成</div>
@@ -11241,10 +10441,19 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
               生成采购合同
             </Button>
           </form>
-        </section>
+            </>
+          )}
+          </div>
+        </Modal>
 
-        <section className="workspace-panel detail-panel product-detail-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="采购合同明细" />
+        {detailId ? (
+          <section className="workspace-panel detail-panel product-detail-panel">
+          <div className="panel-heading toolbar-heading">
+            <PanelTitle icon={<LayoutDashboard size={18} />} title="采购合同明细" />
+            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(purchaseContractPath)}>
+              返回列表
+            </Button>
+          </div>
           {selectedContract ? (
             <>
               <dl className="detail-list">
@@ -11296,7 +10505,7 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
                   disabled={selectedContract.approval_status !== 'draft'}
                   onClick={loadSelectedContractForEdit}
                 >
-                  载入编辑
+                  编辑合同
                 </Button>
                 <Button
                   disabled={selectedContract.approval_status !== 'draft'}
@@ -11305,40 +10514,64 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
                 >
                   提交采购合同
                 </Button>
-              </div>
-
-              <form className="record-form accessory-form approval-form" onSubmit={approveSelectedContract}>
-                <div className="form-divider">采购合同审批</div>
-                <div className="form-pair two">
-                  <label>
-                    审批人
-                    <Input
-                      value={approveForm.reviewer_name}
-                      onChange={(event) =>
-                        setApproveForm({ ...approveForm, reviewer_name: event.target.value })
-                      }
-                    />
-                  </label>
-                  <label>
-                    审批日期
-                    <Input
-                      type="date"
-                      value={approveForm.approved_at}
-                      onChange={(event) =>
-                        setApproveForm({ ...approveForm, approved_at: event.target.value })
-                      }
-                    />
-                  </label>
-                </div>
                 <Button
                   disabled={selectedContract.approval_status !== 'submitted'}
-                  htmlType="submit"
-                  loading={submitting}
-                  type="primary"
+                  onClick={() => setContractApprovalModalOpen(true)}
                 >
                   审批采购合同
                 </Button>
-              </form>
+                <Button
+                  icon={<FileSpreadsheet size={16} />}
+                  loading={submitting}
+                  onClick={() => void generateSelectedContractTemplate()}
+                >
+                  用合同模板生成
+                </Button>
+              </div>
+
+              <Modal
+                centered
+                footer={null}
+                open={contractApprovalModalOpen}
+                title="审批采购合同"
+                width={720}
+                onCancel={() => setContractApprovalModalOpen(false)}
+              >
+                <div className="workflow-modal-content entity-modal-form">
+                  <form className="record-form accessory-form approval-form" onSubmit={approveSelectedContract}>
+                    <div className="form-divider">采购合同审批</div>
+                    <div className="form-pair two">
+                      <label>
+                        审批人
+                        <Input
+                          value={approveForm.reviewer_name}
+                          onChange={(event) =>
+                            setApproveForm({ ...approveForm, reviewer_name: event.target.value })
+                          }
+                        />
+                      </label>
+                      <label>
+                        审批日期
+                        <Input
+                          type="date"
+                          value={approveForm.approved_at}
+                          onChange={(event) =>
+                            setApproveForm({ ...approveForm, approved_at: event.target.value })
+                          }
+                        />
+                      </label>
+                    </div>
+                    <Button
+                      disabled={selectedContract.approval_status !== 'submitted'}
+                      htmlType="submit"
+                      loading={submitting}
+                      type="primary"
+                    >
+                      审批采购合同
+                    </Button>
+                  </form>
+                </div>
+              </Modal>
 
               <div className="accessory-heading">
                 <strong>合同商品明细</strong>
@@ -11482,15 +10715,20 @@ function PurchaseContractsPage({ onNavigate }: ModuleNavigationProps) {
               </table>
             </>
           ) : (
-            <div className="module-state">暂无采购合同</div>
+            <div className="module-state panel-empty-state">
+              <FileStack size={28} />
+              <strong>暂无采购合同</strong>
+              <span>请返回列表选择采购合同查看详情</span>
+            </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
     </section>
   )
 }
 
-function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
+function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [notices, setNotices] = useState<PurchaseInvoiceNotice[]>([])
   const [reminders, setReminders] = useState<PurchaseInvoiceNoticeReminder[]>([])
   const [selectedNoticeId, setSelectedNoticeId] = useState<string | null>(null)
@@ -11502,6 +10740,8 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [invoiceModalOpen, setInvoiceModalOpen] = useState(false)
+  const [invoiceActionModal, setInvoiceActionModal] = useState<'send' | 'receive' | null>(null)
   const [form, setForm] = useState<PurchaseInvoiceNoticeFormState>(() =>
     initialPurchaseInvoiceNoticeForm(),
   )
@@ -11513,8 +10753,11 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
   )
 
   const selectedNotice = useMemo(
-    () => notices.find((item) => item.id === selectedNoticeId) ?? notices[0] ?? null,
-    [notices, selectedNoticeId],
+    () => {
+      if (detailId) return notices.find((item) => item.id === detailId) ?? null
+      return notices.find((item) => item.id === selectedNoticeId) ?? notices[0] ?? null
+    },
+    [detailId, notices, selectedNoticeId],
   )
 
   useEffect(() => {
@@ -11531,6 +10774,12 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
       received_at: selectedNotice?.tax_invoice_received_at ?? selectedNotice?.sent_at ?? current.received_at,
     }))
   }, [selectedNotice?.id, selectedNotice?.status])
+
+  useEffect(() => {
+    if (detailId && notices.length > 0 && !notices.some((item) => item.id === detailId)) {
+      onNavigate(purchaseInvoiceNoticePath)
+    }
+  }, [detailId, notices, onNavigate])
 
   async function loadNotices(preferredId?: string, overrideCustomsFilter?: string) {
     setLoading(true)
@@ -11570,6 +10819,16 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
     setSelectedNoticeId(notice.id)
   }
 
+  function openInvoiceNoticeDetail(notice: PurchaseInvoiceNotice) {
+    setSelectedNoticeId(notice.id)
+    onNavigate(moduleDetailPath(purchaseInvoiceNoticePath, notice.id))
+  }
+
+  function stopAndOpenInvoiceNoticeDetail(event: MouseEvent<HTMLElement>, notice: PurchaseInvoiceNotice) {
+    event.stopPropagation()
+    openInvoiceNoticeDetail(notice)
+  }
+
   async function generateFromCustoms(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setSubmitting(true)
@@ -11587,6 +10846,7 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
       setCustomsFilter(customsId)
       setMessage(`已生成 ${result.total} 条供应商开票通知`)
       setForm(initialPurchaseInvoiceNoticeForm())
+      setInvoiceModalOpen(false)
       if (firstNotice) upsertNotice(firstNotice)
       await loadNotices(firstNotice?.id, customsId)
     } catch (caught) {
@@ -11608,6 +10868,7 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
         purchaseInvoiceNoticeSendPayload(sendForm),
       )
       setMessage(`已发送开票通知 ${sent.code}，系统已生成税票催收提醒`)
+      setInvoiceActionModal(null)
       upsertNotice(sent)
       await loadNotices(sent.id)
     } catch (caught) {
@@ -11629,6 +10890,7 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
         purchaseInvoiceNoticeReceivePayload(receiveForm),
       )
       setMessage(`已登记税票 ${received.tax_invoice_no ?? ''}`)
+      setInvoiceActionModal(null)
       upsertNotice(received)
       await loadNotices(received.id)
     } catch (caught) {
@@ -11660,7 +10922,8 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid purchase-invoice-grid">
-        <section className="workspace-panel list-panel product-list-panel">
+        {!detailId ? (
+          <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="开票通知列表" />
             <form
@@ -11710,6 +10973,16 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
+              <Button
+                htmlType="button"
+                icon={<Plus size={16} />}
+                onClick={() => {
+                  setForm(initialPurchaseInvoiceNoticeForm())
+                  setInvoiceModalOpen(true)
+                }}
+              >
+                生成开票通知
+              </Button>
             </form>
           </div>
 
@@ -11718,7 +10991,15 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
               {
                 title: '开票通知',
                 dataIndex: 'code',
-                render: (value: string) => <button className="row-button" type="button">{value}</button>,
+                render: (value: string, record: PurchaseInvoiceNotice) => (
+                  <button
+                    className="row-button"
+                    type="button"
+                    onClick={(event) => stopAndOpenInvoiceNoticeDetail(event, record)}
+                  >
+                    {value}
+                  </button>
+                ),
               },
               { title: '状态', dataIndex: 'status', render: purchaseInvoiceNoticeStatusLabel },
               { title: '供应商', dataIndex: 'supplier_name' },
@@ -11733,6 +11014,16 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
                 dataIndex: 'reminders',
                 render: (_, notice) => `${notice.reminders.filter((item) => item.status === 'open').length} 个`,
               },
+              {
+                title: '入口',
+                key: 'detail',
+                width: 110,
+                render: (_: unknown, record: PurchaseInvoiceNotice) => (
+                  <Button size="small" onClick={(event) => stopAndOpenInvoiceNoticeDetail(event, record)}>
+                    查看详情
+                  </Button>
+                ),
+              },
             ]}
             dataSource={notices}
             loading={loading}
@@ -11744,9 +11035,18 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
               onClick: () => setSelectedNoticeId(record.id),
             })}
           />
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel form-panel product-form-panel">
+        <Modal
+          centered
+          footer={null}
+          open={invoiceModalOpen}
+          title="从报关单证生成开票通知"
+          width={1040}
+          onCancel={() => setInvoiceModalOpen(false)}
+        >
+          <div className="workflow-modal-content entity-modal-form">
           <PanelTitle icon={<LayoutDashboard size={18} />} title="从报关单证生成" />
           <form className="record-form" onSubmit={generateFromCustoms}>
             <div className="form-pair two">
@@ -11826,10 +11126,17 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
               生成开票通知
             </Button>
           </form>
-        </section>
+          </div>
+        </Modal>
 
-        <section className="workspace-panel detail-panel product-detail-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="开票通知明细" />
+        {detailId ? (
+          <section className="workspace-panel detail-panel product-detail-panel">
+          <div className="panel-heading toolbar-heading">
+            <PanelTitle icon={<LayoutDashboard size={18} />} title="开票通知明细" />
+            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(purchaseInvoiceNoticePath)}>
+              返回列表
+            </Button>
+          </div>
           {selectedNotice ? (
             <>
               <dl className="detail-list">
@@ -11872,74 +11179,112 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
                 <p>{selectedNotice.remarks ?? '未填写'}</p>
               </div>
 
-              <form className="record-form accessory-form generation-form" onSubmit={sendSelectedNotice}>
-                <div className="form-divider">发送开票通知</div>
-                <div className="form-pair two">
-                  <label htmlFor="purchase-invoice-sender">
-                    发送人
-                    <Input
-                      id="purchase-invoice-sender"
-                      required
-                      value={sendForm.sender_name}
-                      onChange={(event) => setSendForm({ ...sendForm, sender_name: event.target.value })}
-                    />
-                  </label>
-                  <label htmlFor="purchase-invoice-sent-at">
-                    发送日期
-                    <Input
-                      id="purchase-invoice-sent-at"
-                      required
-                      type="date"
-                      value={sendForm.sent_at}
-                      onChange={(event) => setSendForm({ ...sendForm, sent_at: event.target.value })}
-                    />
-                  </label>
-                </div>
+              <div className="delivery-action-row">
                 <Button
                   disabled={selectedNotice.status !== 'draft'}
-                  htmlType="submit"
-                  loading={submitting}
                   type="primary"
+                  onClick={() => setInvoiceActionModal('send')}
                 >
                   发送开票通知
                 </Button>
-              </form>
-
-              <form className="record-form accessory-form generation-form" onSubmit={receiveSelectedNotice}>
-                <div className="form-divider">登记供应商税票</div>
-                <div className="form-pair two">
-                  <label htmlFor="purchase-invoice-tax-no">
-                    税票号
-                    <Input
-                      id="purchase-invoice-tax-no"
-                      required
-                      value={receiveForm.tax_invoice_no}
-                      onChange={(event) =>
-                        setReceiveForm({ ...receiveForm, tax_invoice_no: event.target.value })
-                      }
-                    />
-                  </label>
-                  <label htmlFor="purchase-invoice-received-at">
-                    收票日期
-                    <Input
-                      id="purchase-invoice-received-at"
-                      required
-                      type="date"
-                      value={receiveForm.received_at}
-                      onChange={(event) =>
-                        setReceiveForm({ ...receiveForm, received_at: event.target.value })
-                      }
-                    />
-                  </label>
-                </div>
                 <Button
                   disabled={selectedNotice.status === 'received'}
-                  htmlType="submit"
-                  loading={submitting}
+                  onClick={() => setInvoiceActionModal('receive')}
                 >
                   登记税票
                 </Button>
-              </form>
+              </div>
+
+              <Modal
+                centered
+                footer={null}
+                open={invoiceActionModal === 'send'}
+                title="发送开票通知"
+                width={720}
+                onCancel={() => setInvoiceActionModal(null)}
+              >
+                <div className="workflow-modal-content entity-modal-form">
+                  <form className="record-form accessory-form generation-form" onSubmit={sendSelectedNotice}>
+                    <div className="form-divider">发送开票通知</div>
+                    <div className="form-pair two">
+                      <label htmlFor="purchase-invoice-sender">
+                        发送人
+                        <Input
+                          id="purchase-invoice-sender"
+                          required
+                          value={sendForm.sender_name}
+                          onChange={(event) => setSendForm({ ...sendForm, sender_name: event.target.value })}
+                        />
+                      </label>
+                      <label htmlFor="purchase-invoice-sent-at">
+                        发送日期
+                        <Input
+                          id="purchase-invoice-sent-at"
+                          required
+                          type="date"
+                          value={sendForm.sent_at}
+                          onChange={(event) => setSendForm({ ...sendForm, sent_at: event.target.value })}
+                        />
+                      </label>
+                    </div>
+                    <Button
+                      disabled={selectedNotice.status !== 'draft'}
+                      htmlType="submit"
+                      loading={submitting}
+                      type="primary"
+                    >
+                      发送开票通知
+                    </Button>
+                  </form>
+                </div>
+              </Modal>
+
+              <Modal
+                centered
+                footer={null}
+                open={invoiceActionModal === 'receive'}
+                title="登记供应商税票"
+                width={720}
+                onCancel={() => setInvoiceActionModal(null)}
+              >
+                <div className="workflow-modal-content entity-modal-form">
+                  <form className="record-form accessory-form generation-form" onSubmit={receiveSelectedNotice}>
+                    <div className="form-divider">登记供应商税票</div>
+                    <div className="form-pair two">
+                      <label htmlFor="purchase-invoice-tax-no">
+                        税票号
+                        <Input
+                          id="purchase-invoice-tax-no"
+                          required
+                          value={receiveForm.tax_invoice_no}
+                          onChange={(event) =>
+                            setReceiveForm({ ...receiveForm, tax_invoice_no: event.target.value })
+                          }
+                        />
+                      </label>
+                      <label htmlFor="purchase-invoice-received-at">
+                        收票日期
+                        <Input
+                          id="purchase-invoice-received-at"
+                          required
+                          type="date"
+                          value={receiveForm.received_at}
+                          onChange={(event) =>
+                            setReceiveForm({ ...receiveForm, received_at: event.target.value })
+                          }
+                        />
+                      </label>
+                    </div>
+                    <Button
+                      disabled={selectedNotice.status === 'received'}
+                      htmlType="submit"
+                      loading={submitting}
+                    >
+                      登记税票
+                    </Button>
+                  </form>
+                </div>
+              </Modal>
 
               <div className="accessory-heading">
                 <strong>开票品名和数量</strong>
@@ -12025,9 +11370,14 @@ function PurchaseInvoiceNoticesPage({ onNavigate }: ModuleNavigationProps) {
               </table>
             </>
           ) : (
-            <div className="module-state">暂无开票通知</div>
+            <div className="module-state panel-empty-state">
+              <Receipt size={28} />
+              <strong>暂无开票通知</strong>
+              <span>请返回列表选择开票通知查看详情</span>
+            </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
     </section>
   )
@@ -12203,7 +11553,7 @@ function PurchaseInvoiceLineFields({
   )
 }
 
-function FollowupPage({ onNavigate }: ModuleNavigationProps) {
+function FollowupPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [templates, setTemplates] = useState<FollowProcessTemplate[]>([])
   const [plans, setPlans] = useState<PurchaseFollowPlan[]>([])
   const [overdueNodes, setOverdueNodes] = useState<PurchaseFollowOverdueNode[]>([])
@@ -12218,6 +11568,7 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [followupModalOpen, setFollowupModalOpen] = useState(false)
   const [templateForm, setTemplateForm] = useState<FollowupTemplateFormState>(() =>
     initialFollowupTemplateForm(),
   )
@@ -12233,8 +11584,11 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
     [templates, selectedTemplateId],
   )
   const selectedPlan = useMemo(
-    () => plans.find((item) => item.id === selectedPlanId) ?? plans[0] ?? null,
-    [plans, selectedPlanId],
+    () => {
+      if (detailId) return plans.find((item) => item.id === detailId) ?? null
+      return plans.find((item) => item.id === selectedPlanId) ?? plans[0] ?? null
+    },
+    [detailId, plans, selectedPlanId],
   )
 
   useEffect(() => {
@@ -12253,6 +11607,22 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
     })
     setSourceEventForm((current) => followupSourceEventFormForPlan(selectedPlan, current))
   }, [selectedPlan?.id, selectedPlan?.overall_status])
+
+  useEffect(() => {
+    if (detailId && plans.length > 0 && !plans.some((item) => item.id === detailId)) {
+      onNavigate(followupPath)
+    }
+  }, [detailId, onNavigate, plans])
+
+  function openFollowupDetail(plan: PurchaseFollowPlan) {
+    setSelectedPlanId(plan.id)
+    onNavigate(moduleDetailPath(followupPath, plan.id))
+  }
+
+  function stopAndOpenFollowupDetail(event: MouseEvent<HTMLElement>, plan: PurchaseFollowPlan) {
+    event.stopPropagation()
+    openFollowupDetail(plan)
+  }
 
   async function loadFollowupWorkspace(preferredPlanId?: string, preferredTemplateId?: string) {
     setLoading(true)
@@ -12302,6 +11672,7 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
         ? await updateFollowupTemplate(selectedTemplate.id, payload)
         : await createFollowupTemplate(payload)
       setMessage(`已保存跟单模板 ${template.name}`)
+      setFollowupModalOpen(false)
       await loadFollowupWorkspace(selectedPlan?.id, template.id)
     } catch (caught) {
       showError(caught, '跟单模板保存失败')
@@ -12319,6 +11690,7 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
       const plan = await generateFollowupPlanFromPurchaseContract(followupPlanGeneratePayload(planForm))
       setContractFilter(plan.purchase_contract_id)
       setSelectedPlanId(plan.id)
+      setFollowupModalOpen(false)
       await loadFollowupWorkspace(plan.id)
       setMessage(`已生成跟单计划 ${plan.purchase_contract_no}`)
     } catch (caught) {
@@ -12355,6 +11727,7 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
     try {
       const nodeLabel = followupNodeLabel(sourceEventForm.node_code)
       const plan = await syncFollowupSourceEvent(followupSourceEventPayload(sourceEventForm))
+      setFollowupModalOpen(false)
       await loadFollowupWorkspace(plan.id)
       setMessage(`已回写节点 ${nodeLabel}`)
     } catch (caught) {
@@ -12404,7 +11777,8 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid followup-grid">
-        <section className="workspace-panel list-panel product-list-panel">
+        {!detailId ? (
+          <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="采购跟单计划" />
             <form
@@ -12454,6 +11828,9 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
+              <Button htmlType="button" icon={<Settings size={16} />} onClick={() => setFollowupModalOpen(true)}>
+                配置/生成
+              </Button>
             </form>
           </div>
 
@@ -12462,7 +11839,15 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
               {
                 title: '采购合同',
                 dataIndex: 'purchase_contract_no',
-                render: (value: string) => <button className="row-button" type="button">{value}</button>,
+                render: (value: string, record: PurchaseFollowPlan) => (
+                  <button
+                    className="row-button"
+                    type="button"
+                    onClick={(event) => stopAndOpenFollowupDetail(event, record)}
+                  >
+                    {value}
+                  </button>
+                ),
               },
               { title: '状态', dataIndex: 'overall_status', render: followupPlanStatusLabel },
               { title: '供应商', dataIndex: 'supplier_name' },
@@ -12471,6 +11856,16 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
                 title: '节点',
                 dataIndex: 'nodes',
                 render: (_, plan) => `${plan.nodes.filter((node) => node.status === 'completed').length}/${plan.nodes.length}`,
+              },
+              {
+                title: '入口',
+                key: 'detail',
+                width: 110,
+                render: (_: unknown, record: PurchaseFollowPlan) => (
+                  <Button size="small" onClick={(event) => stopAndOpenFollowupDetail(event, record)}>
+                    查看详情
+                  </Button>
+                ),
               },
             ]}
             dataSource={plans}
@@ -12483,9 +11878,18 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
               onClick: () => setSelectedPlanId(record.id),
             })}
           />
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel form-panel product-form-panel">
+        <Modal
+          centered
+          footer={null}
+          open={followupModalOpen}
+          title="跟单模板和计划生成"
+          width={1040}
+          onCancel={() => setFollowupModalOpen(false)}
+        >
+          <div className="workflow-modal-content entity-modal-form">
           <PanelTitle icon={<LayoutDashboard size={18} />} title="跟单流程模板" />
           <form className="record-form" onSubmit={saveFollowupTemplate}>
             <div className="form-pair two">
@@ -12690,10 +12094,17 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
               回写实际日期
             </Button>
           </form>
-        </section>
+          </div>
+        </Modal>
 
-        <section className="workspace-panel detail-panel product-detail-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="节点进度查询" />
+        {detailId ? (
+          <section className="workspace-panel detail-panel product-detail-panel">
+          <div className="panel-heading toolbar-heading">
+            <PanelTitle icon={<LayoutDashboard size={18} />} title="节点进度查询" />
+            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(followupPath)}>
+              返回列表
+            </Button>
+          </div>
           {selectedPlan ? (
             <>
               <dl className="detail-list">
@@ -12807,15 +12218,20 @@ function FollowupPage({ onNavigate }: ModuleNavigationProps) {
               </table>
             </>
           ) : (
-            <div className="module-state">暂无采购跟单计划</div>
+            <div className="module-state panel-empty-state">
+              <ClipboardCheck size={28} />
+              <strong>暂无采购跟单计划</strong>
+              <span>请返回列表选择跟单计划查看详情</span>
+            </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
     </section>
   )
 }
 
-function QualityInspectionsPage({ onNavigate }: ModuleNavigationProps) {
+function QualityInspectionsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [inspections, setInspections] = useState<QualityInspection[]>([])
   const [selectedInspectionId, setSelectedInspectionId] = useState<string | null>(null)
   const [editingInspectionId, setEditingInspectionId] = useState<string | null>(null)
@@ -12825,17 +12241,18 @@ function QualityInspectionsPage({ onNavigate }: ModuleNavigationProps) {
   const [contractFilter, setContractFilter] = useState('')
   const [eligibility, setEligibility] = useState<QualityInspectionInboundEligibility | null>(null)
   const [form, setForm] = useState<QualityInspectionFormState>(() => initialQualityInspectionForm())
+  const [inspectionModalOpen, setInspectionModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
   const selectedInspection = useMemo(
-    () =>
-      inspections.find((item) => item.id === selectedInspectionId) ??
-      inspections[0] ??
-      null,
-    [inspections, selectedInspectionId],
+    () => {
+      if (detailId) return inspections.find((item) => item.id === detailId) ?? null
+      return inspections.find((item) => item.id === selectedInspectionId) ?? inspections[0] ?? null
+    },
+    [detailId, inspections, selectedInspectionId],
   )
 
   useEffect(() => {
@@ -12843,10 +12260,18 @@ function QualityInspectionsPage({ onNavigate }: ModuleNavigationProps) {
   }, [])
 
   useEffect(() => {
-    if (selectedInspection) {
+    if (detailId && selectedInspection) {
       void refreshQualityInboundEligibility(selectedInspection.purchase_contract_id)
+      return
     }
-  }, [selectedInspection?.id])
+    setEligibility(null)
+  }, [detailId, selectedInspection?.id])
+
+  useEffect(() => {
+    if (detailId && inspections.length > 0 && !inspections.some((item) => item.id === detailId)) {
+      onNavigate(qualityInspectionPath)
+    }
+  }, [detailId, inspections, onNavigate])
 
   async function loadQualityInspections(preferredInspectionId?: string) {
     setLoading(true)
@@ -12893,12 +12318,28 @@ function QualityInspectionsPage({ onNavigate }: ModuleNavigationProps) {
     setForm(initialQualityInspectionForm())
     setMessage('')
     setError('')
+    setInspectionModalOpen(true)
   }
 
   function selectInspection(inspection: QualityInspection) {
     setSelectedInspectionId(inspection.id)
-    setEditingInspectionId(inspection.id)
-    setForm(qualityInspectionToForm(inspection))
+  }
+
+  function openInspectionDetail(inspection: QualityInspection) {
+    setSelectedInspectionId(inspection.id)
+    onNavigate(moduleDetailPath(qualityInspectionPath, inspection.id))
+  }
+
+  function stopAndOpenInspectionDetail(event: MouseEvent<HTMLElement>, inspection: QualityInspection) {
+    event.stopPropagation()
+    openInspectionDetail(inspection)
+  }
+
+  function editSelectedInspection() {
+    if (!selectedInspection) return
+    setEditingInspectionId(selectedInspection.id)
+    setForm(qualityInspectionToForm(selectedInspection))
+    setInspectionModalOpen(true)
   }
 
   async function saveQualityInspection(event: FormEvent<HTMLFormElement>) {
@@ -12912,8 +12353,9 @@ function QualityInspectionsPage({ onNavigate }: ModuleNavigationProps) {
         ? await updateQualityInspection(editingInspectionId, payload)
         : await createQualityInspection(payload)
       setSelectedInspectionId(inspection.id)
-      setEditingInspectionId(inspection.id)
+      setEditingInspectionId(null)
       setForm(qualityInspectionToForm(inspection))
+      setInspectionModalOpen(false)
       setMessage(`已登记 ${inspection.code}，QC 节点已回写采购跟单`)
       await loadQualityInspections(inspection.id)
       await refreshQualityInboundEligibility(inspection.purchase_contract_id)
@@ -12947,7 +12389,8 @@ function QualityInspectionsPage({ onNavigate }: ModuleNavigationProps) {
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid quality-inspection-grid">
-        <section className="workspace-panel list-panel product-list-panel">
+        {!detailId ? (
+          <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="QC 查验列表" />
             <form
@@ -12999,6 +12442,9 @@ function QualityInspectionsPage({ onNavigate }: ModuleNavigationProps) {
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
+              <Button htmlType="button" icon={<Plus size={16} />} onClick={startNewInspection}>
+                新增 QC 单
+              </Button>
             </form>
           </div>
 
@@ -13007,8 +12453,12 @@ function QualityInspectionsPage({ onNavigate }: ModuleNavigationProps) {
               {
                 title: 'QC 单号',
                 dataIndex: 'code',
-                render: (value: string) => (
-                  <button className="row-button" type="button">
+                render: (value: string, record: QualityInspection) => (
+                  <button
+                    className="row-button"
+                    type="button"
+                    onClick={(event) => stopAndOpenInspectionDetail(event, record)}
+                  >
                     {value}
                   </button>
                 ),
@@ -13028,6 +12478,16 @@ function QualityInspectionsPage({ onNavigate }: ModuleNavigationProps) {
                 dataIndex: 'issues',
                 render: (_, inspection) => `${inspection.issues.length} 条`,
               },
+              {
+                title: '入口',
+                key: 'detail',
+                width: 110,
+                render: (_: unknown, record: QualityInspection) => (
+                  <Button size="small" onClick={(event) => stopAndOpenInspectionDetail(event, record)}>
+                    查看详情
+                  </Button>
+                ),
+              },
             ]}
             dataSource={inspections}
             loading={loading}
@@ -13039,12 +12499,23 @@ function QualityInspectionsPage({ onNavigate }: ModuleNavigationProps) {
               onClick: () => selectInspection(record),
             })}
           />
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel form-panel product-form-panel">
+        <Modal
+          centered
+          footer={null}
+          open={inspectionModalOpen}
+          title={editingInspectionId ? '编辑 QC 查验' : '新增 QC 查验'}
+          width={1040}
+          onCancel={() => {
+            setEditingInspectionId(null)
+            setInspectionModalOpen(false)
+          }}
+        >
+          <div className="workflow-modal-content entity-modal-form">
           <div className="panel-heading quality-form-heading">
             <PanelTitle icon={<ShieldCheck size={18} />} title="QC 查验登记" />
-            <Button onClick={startNewInspection}>新建 QC 单</Button>
           </div>
 
           <form className="record-form" onSubmit={saveQualityInspection}>
@@ -13281,10 +12752,17 @@ function QualityInspectionsPage({ onNavigate }: ModuleNavigationProps) {
               {editingInspectionId ? '保存 QC 查验' : '新增 QC 查验'}
             </Button>
           </form>
-        </section>
+          </div>
+        </Modal>
 
-        <section className="workspace-panel detail-panel product-detail-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="QC 查验明细和入库判定" />
+        {detailId ? (
+          <section className="workspace-panel detail-panel product-detail-panel">
+          <div className="panel-heading toolbar-heading">
+            <PanelTitle icon={<LayoutDashboard size={18} />} title="QC 查验明细和入库判定" />
+            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(qualityInspectionPath)}>
+              返回列表
+            </Button>
+          </div>
           {selectedInspection ? (
             <>
               <div
@@ -13334,6 +12812,12 @@ function QualityInspectionsPage({ onNavigate }: ModuleNavigationProps) {
                   <dd>{nullableText(selectedInspection.issue_summary)}</dd>
                 </div>
               </dl>
+
+              <div className="delivery-action-row">
+                <Button icon={<FilePenLine size={16} />} onClick={editSelectedInspection}>
+                  编辑 QC 单
+                </Button>
+              </div>
 
               <div className="accessory-heading">
                 <strong>商品查验明细</strong>
@@ -13406,15 +12890,20 @@ function QualityInspectionsPage({ onNavigate }: ModuleNavigationProps) {
               </table>
             </>
           ) : (
-            <div className="module-state">暂无 QC 查验单</div>
+            <div className="module-state panel-empty-state">
+              <ShieldCheck size={28} />
+              <strong>暂无 QC 查验单</strong>
+              <span>请返回列表选择 QC 单查看详情</span>
+            </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
     </section>
   )
 }
 
-function InboundPlansPage({ onNavigate }: ModuleNavigationProps) {
+function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [plans, setPlans] = useState<InboundPlan[]>([])
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
@@ -13428,14 +12917,18 @@ function InboundPlansPage({ onNavigate }: ModuleNavigationProps) {
   const [scheduleForm, setScheduleForm] = useState<InboundPlanScheduleFormState>(() =>
     initialInboundPlanScheduleForm(),
   )
+  const [inboundPlanModalOpen, setInboundPlanModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
   const selectedPlan = useMemo(
-    () => plans.find((item) => item.id === selectedPlanId) ?? plans[0] ?? null,
-    [plans, selectedPlanId],
+    () => {
+      if (detailId) return plans.find((item) => item.id === detailId) ?? null
+      return plans.find((item) => item.id === selectedPlanId) ?? plans[0] ?? null
+    },
+    [detailId, plans, selectedPlanId],
   )
 
   useEffect(() => {
@@ -13452,6 +12945,22 @@ function InboundPlansPage({ onNavigate }: ModuleNavigationProps) {
     }))
     setScheduleForm(inboundPlanToScheduleForm(selectedPlan))
   }, [selectedPlan?.id])
+
+  useEffect(() => {
+    if (detailId && plans.length > 0 && !plans.some((item) => item.id === detailId)) {
+      onNavigate(warehouseInboundPlanPath)
+    }
+  }, [detailId, onNavigate, plans])
+
+  function openInboundPlanDetail(plan: InboundPlan) {
+    setSelectedPlanId(plan.id)
+    onNavigate(moduleDetailPath(warehouseInboundPlanPath, plan.id))
+  }
+
+  function stopAndOpenInboundPlanDetail(event: MouseEvent<HTMLElement>, plan: InboundPlan) {
+    event.stopPropagation()
+    openInboundPlanDetail(plan)
+  }
 
   async function loadInboundPlans(preferredPlanId?: string) {
     setLoading(true)
@@ -13488,6 +12997,7 @@ function InboundPlansPage({ onNavigate }: ModuleNavigationProps) {
       setSearch(plan.purchase_contract_no)
       setContractFilter(plan.purchase_contract_id)
       setSelectedPlanId(plan.id)
+      setInboundPlanModalOpen(false)
       await loadInboundPlans(plan.id)
       setMessage(`已生成入库计划 ${plan.code}`)
     } catch (caught) {
@@ -13506,6 +13016,7 @@ function InboundPlansPage({ onNavigate }: ModuleNavigationProps) {
     try {
       const plan = await scheduleInboundPlan(selectedPlan.id, inboundPlanSchedulePayload(scheduleForm))
       setSelectedPlanId(plan.id)
+      setInboundPlanModalOpen(false)
       await loadInboundPlans(plan.id)
       setMessage(`已安排 ${plan.warehouse_name ?? ''} / ${plan.location_name ?? ''}`)
     } catch (caught) {
@@ -13536,7 +13047,8 @@ function InboundPlansPage({ onNavigate }: ModuleNavigationProps) {
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid inbound-plan-grid">
-        <section className="workspace-panel list-panel product-list-panel">
+        {!detailId ? (
+          <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="待入库计划" />
             <form
@@ -13603,6 +13115,9 @@ function InboundPlansPage({ onNavigate }: ModuleNavigationProps) {
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
+              <Button htmlType="button" icon={<Plus size={16} />} onClick={() => setInboundPlanModalOpen(true)}>
+                生成/排库位
+              </Button>
             </form>
           </div>
 
@@ -13611,8 +13126,12 @@ function InboundPlansPage({ onNavigate }: ModuleNavigationProps) {
               {
                 title: '计划号',
                 dataIndex: 'code',
-                render: (value: string) => (
-                  <button className="row-button" type="button">
+                render: (value: string, record: InboundPlan) => (
+                  <button
+                    className="row-button"
+                    type="button"
+                    onClick={(event) => stopAndOpenInboundPlanDetail(event, record)}
+                  >
                     {value}
                   </button>
                 ),
@@ -13627,6 +13146,16 @@ function InboundPlansPage({ onNavigate }: ModuleNavigationProps) {
                 dataIndex: 'lines',
                 render: (_, plan) => inboundPlanTotalQuantity(plan).toFixed(2),
               },
+              {
+                title: '入口',
+                key: 'detail',
+                width: 110,
+                render: (_: unknown, record: InboundPlan) => (
+                  <Button size="small" onClick={(event) => stopAndOpenInboundPlanDetail(event, record)}>
+                    查看详情
+                  </Button>
+                ),
+              },
             ]}
             dataSource={plans}
             loading={loading}
@@ -13638,9 +13167,18 @@ function InboundPlansPage({ onNavigate }: ModuleNavigationProps) {
               onClick: () => setSelectedPlanId(record.id),
             })}
           />
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel form-panel product-form-panel">
+        <Modal
+          centered
+          footer={null}
+          open={inboundPlanModalOpen}
+          title="入库计划生成和排库位"
+          width={980}
+          onCancel={() => setInboundPlanModalOpen(false)}
+        >
+          <div className="workflow-modal-content entity-modal-form">
           <PanelTitle icon={<Warehouse size={18} />} title="计划生成和排库位" />
           <form className="record-form" onSubmit={generateInboundPlan}>
             <div className="form-divider">从采购合同生成</div>
@@ -13772,12 +13310,16 @@ function InboundPlansPage({ onNavigate }: ModuleNavigationProps) {
               保存库位安排
             </Button>
           </form>
-        </section>
+          </div>
+        </Modal>
 
-        <section className="workspace-panel detail-panel product-detail-panel">
+        {detailId ? (
+          <section className="workspace-panel detail-panel product-detail-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<LayoutDashboard size={18} />} title="计划明细" />
-            <span className="panel-kicker">{selectedPlan?.code ?? '未选择'}</span>
+            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(warehouseInboundPlanPath)}>
+              返回列表
+            </Button>
           </div>
           {selectedPlan ? (
             <>
@@ -13845,15 +13387,20 @@ function InboundPlansPage({ onNavigate }: ModuleNavigationProps) {
               </table>
             </>
           ) : (
-            <div className="module-state">暂无入库计划</div>
+            <div className="module-state panel-empty-state">
+              <PackagePlus size={28} />
+              <strong>暂无入库计划</strong>
+              <span>请返回列表选择入库计划查看详情</span>
+            </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
     </section>
   )
 }
 
-function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
+function InboundOrdersPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [orders, setOrders] = useState<InboundOrder[]>([])
   const [inboundPlans, setInboundPlans] = useState<InboundPlan[]>([])
   const [inventoryBalances, setInventoryBalances] = useState<InventoryBalance[]>([])
@@ -13869,14 +13416,18 @@ function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
   const [approvalForm, setApprovalForm] = useState<InboundOrderApprovalFormState>(() =>
     initialInboundOrderApprovalForm(),
   )
+  const [inboundOrderModalOpen, setInboundOrderModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
   const selectedOrder = useMemo(
-    () => orders.find((item) => item.id === selectedOrderId) ?? orders[0] ?? null,
-    [orders, selectedOrderId],
+    () => {
+      if (detailId) return orders.find((item) => item.id === detailId) ?? null
+      return orders.find((item) => item.id === selectedOrderId) ?? orders[0] ?? null
+    },
+    [detailId, orders, selectedOrderId],
   )
 
   useEffect(() => {
@@ -13891,6 +13442,12 @@ function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
       approved_at: selectedOrder.approved_at ?? selectedOrder.inbound_at,
     })
   }, [selectedOrder?.id, selectedOrder?.status])
+
+  useEffect(() => {
+    if (detailId && orders.length > 0 && !orders.some((item) => item.id === detailId)) {
+      onNavigate(warehouseInboundOrderPath)
+    }
+  }, [detailId, onNavigate, orders])
 
   async function loadInboundOrders(
     preferredOrderId?: string,
@@ -13991,6 +13548,16 @@ function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
     setSelectedOrderId(order.id)
   }
 
+  function openInboundOrderDetail(order: InboundOrder) {
+    setSelectedOrderId(order.id)
+    onNavigate(moduleDetailPath(warehouseInboundOrderPath, order.id))
+  }
+
+  function stopAndOpenInboundOrderDetail(event: MouseEvent<HTMLElement>, order: InboundOrder) {
+    event.stopPropagation()
+    openInboundOrderDetail(order)
+  }
+
   async function generateInboundOrder(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setSubmitting(true)
@@ -14004,6 +13571,7 @@ function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
       setContractFilter(order.purchase_contract_id)
       setInventorySearch(inventoryQuery)
       upsertInboundOrder(order)
+      setInboundOrderModalOpen(false)
       await loadInboundOrders(order.id, order, inventoryQuery)
       setMessage(`已生成入库单 ${order.code}`)
     } catch (caught) {
@@ -14044,6 +13612,7 @@ function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
       setStatusFilter('approved')
       setInventorySearch(inventoryQuery)
       upsertInboundOrder(order)
+      setInboundOrderModalOpen(false)
       await loadInboundOrders(order.id, order, inventoryQuery)
       setMessage(
         order.inbound_mode === 'formal'
@@ -14086,7 +13655,8 @@ function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid inbound-order-grid">
-        <section className="workspace-panel list-panel product-list-panel">
+        {!detailId ? (
+          <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="入库单" />
             <form
@@ -14153,6 +13723,9 @@ function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
+              <Button htmlType="button" icon={<Plus size={16} />} onClick={() => setInboundOrderModalOpen(true)}>
+                生成/审批入库单
+              </Button>
             </form>
           </div>
 
@@ -14161,8 +13734,12 @@ function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
               {
                 title: '入库单',
                 dataIndex: 'code',
-                render: (value: string) => (
-                  <button className="row-button" type="button">
+                render: (value: string, record: InboundOrder) => (
+                  <button
+                    className="row-button"
+                    type="button"
+                    onClick={(event) => stopAndOpenInboundOrderDetail(event, record)}
+                  >
                     {value}
                   </button>
                 ),
@@ -14177,6 +13754,16 @@ function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
                 dataIndex: 'location_name',
                 render: (_, order) => `${order.warehouse_name} / ${order.location_name}`,
               },
+              {
+                title: '入口',
+                key: 'detail',
+                width: 110,
+                render: (_: unknown, record: InboundOrder) => (
+                  <Button size="small" onClick={(event) => stopAndOpenInboundOrderDetail(event, record)}>
+                    查看详情
+                  </Button>
+                ),
+              },
             ]}
             dataSource={orders}
             loading={loading}
@@ -14188,9 +13775,18 @@ function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
               onClick: () => setSelectedOrderId(record.id),
             })}
           />
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel form-panel product-form-panel">
+        <Modal
+          centered
+          footer={null}
+          open={inboundOrderModalOpen}
+          title="入库单生成和审批"
+          width={980}
+          onCancel={() => setInboundOrderModalOpen(false)}
+        >
+          <div className="workflow-modal-content entity-modal-form">
           <PanelTitle icon={<Warehouse size={18} />} title="入库登记" />
           <form className="record-form" onSubmit={generateInboundOrder}>
             <div className="form-divider">从入库计划生成</div>
@@ -14350,12 +13946,16 @@ function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
               审批入库
             </Button>
           </form>
-        </section>
+          </div>
+        </Modal>
 
-        <section className="workspace-panel detail-panel product-detail-panel">
+        {detailId ? (
+          <section className="workspace-panel detail-panel product-detail-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<LayoutDashboard size={18} />} title="明细和库存" />
-            <span className="panel-kicker">{selectedOrder?.code ?? '未选择'}</span>
+            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(warehouseInboundOrderPath)}>
+              返回列表
+            </Button>
           </div>
           {selectedOrder ? (
             <>
@@ -14501,15 +14101,20 @@ function InboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
               </table>
             </>
           ) : (
-            <div className="module-state">暂无入库单</div>
+            <div className="module-state panel-empty-state">
+              <Warehouse size={28} />
+              <strong>暂无入库单</strong>
+              <span>请返回列表选择入库单查看明细和库存</span>
+            </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
     </section>
   )
 }
 
-function OutboundPlansPage({ onNavigate }: ModuleNavigationProps) {
+function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [plans, setPlans] = useState<OutboundPlan[]>([])
   const [shipments, setShipments] = useState<ShipmentPlan[]>([])
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null)
@@ -14525,14 +14130,18 @@ function OutboundPlansPage({ onNavigate }: ModuleNavigationProps) {
   const [scheduleForm, setScheduleForm] = useState<OutboundPlanScheduleFormState>(() =>
     initialOutboundPlanScheduleForm(),
   )
+  const [outboundPlanModalOpen, setOutboundPlanModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
   const selectedPlan = useMemo(
-    () => plans.find((item) => item.id === selectedPlanId) ?? plans[0] ?? null,
-    [plans, selectedPlanId],
+    () => {
+      if (detailId) return plans.find((item) => item.id === detailId) ?? null
+      return plans.find((item) => item.id === selectedPlanId) ?? plans[0] ?? null
+    },
+    [detailId, plans, selectedPlanId],
   )
 
   useEffect(() => {
@@ -14549,6 +14158,12 @@ function OutboundPlansPage({ onNavigate }: ModuleNavigationProps) {
     }))
     setScheduleForm(outboundPlanToScheduleForm(selectedPlan))
   }, [selectedPlan?.id])
+
+  useEffect(() => {
+    if (detailId && plans.length > 0 && !plans.some((item) => item.id === detailId)) {
+      onNavigate(warehouseOutboundPlanPath)
+    }
+  }, [detailId, onNavigate, plans])
 
   async function loadOutboundPlans(preferredPlanId?: string, preferredPlan?: OutboundPlan) {
     setLoading(true)
@@ -14613,6 +14228,16 @@ function OutboundPlansPage({ onNavigate }: ModuleNavigationProps) {
     setSelectedPlanId(plan.id)
   }
 
+  function openOutboundPlanDetail(plan: OutboundPlan) {
+    setSelectedPlanId(plan.id)
+    onNavigate(moduleDetailPath(warehouseOutboundPlanPath, plan.id))
+  }
+
+  function stopAndOpenOutboundPlanDetail(event: MouseEvent<HTMLElement>, plan: OutboundPlan) {
+    event.stopPropagation()
+    openOutboundPlanDetail(plan)
+  }
+
   async function generateOutboundPlan(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setSubmitting(true)
@@ -14627,6 +14252,7 @@ function OutboundPlansPage({ onNavigate }: ModuleNavigationProps) {
       setCustomerFilter(plan.customer_id ?? '')
       setSourceIdFilter(plan.source_id)
       upsertOutboundPlan(plan)
+      setOutboundPlanModalOpen(false)
       await loadOutboundPlans(plan.id, plan)
       setMessage(`已生成出库计划 ${plan.code}`)
     } catch (caught) {
@@ -14645,6 +14271,7 @@ function OutboundPlansPage({ onNavigate }: ModuleNavigationProps) {
     try {
       const plan = await scheduleOutboundPlan(selectedPlan.id, outboundPlanSchedulePayload(scheduleForm))
       upsertOutboundPlan(plan)
+      setOutboundPlanModalOpen(false)
       await loadOutboundPlans(plan.id, plan)
       setMessage(`已安排 ${plan.warehouse_name ?? ''} / ${plan.location_name ?? ''}`)
     } catch (caught) {
@@ -14675,7 +14302,8 @@ function OutboundPlansPage({ onNavigate }: ModuleNavigationProps) {
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid outbound-plan-grid">
-        <section className="workspace-panel list-panel product-list-panel">
+        {!detailId ? (
+          <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="出库计划" />
             <form
@@ -14757,6 +14385,9 @@ function OutboundPlansPage({ onNavigate }: ModuleNavigationProps) {
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
+              <Button htmlType="button" icon={<Plus size={16} />} onClick={() => setOutboundPlanModalOpen(true)}>
+                生成/排库位
+              </Button>
             </form>
           </div>
 
@@ -14765,8 +14396,12 @@ function OutboundPlansPage({ onNavigate }: ModuleNavigationProps) {
               {
                 title: '计划号',
                 dataIndex: 'code',
-                render: (value: string) => (
-                  <button className="row-button" type="button">
+                render: (value: string, record: OutboundPlan) => (
+                  <button
+                    className="row-button"
+                    type="button"
+                    onClick={(event) => stopAndOpenOutboundPlanDetail(event, record)}
+                  >
                     {value}
                   </button>
                 ),
@@ -14781,6 +14416,16 @@ function OutboundPlansPage({ onNavigate }: ModuleNavigationProps) {
                 dataIndex: 'lines',
                 render: (_, plan) => outboundPlanTotalQuantity(plan).toFixed(2),
               },
+              {
+                title: '入口',
+                key: 'detail',
+                width: 110,
+                render: (_: unknown, record: OutboundPlan) => (
+                  <Button size="small" onClick={(event) => stopAndOpenOutboundPlanDetail(event, record)}>
+                    查看详情
+                  </Button>
+                ),
+              },
             ]}
             dataSource={plans}
             loading={loading}
@@ -14792,9 +14437,18 @@ function OutboundPlansPage({ onNavigate }: ModuleNavigationProps) {
               onClick: () => setSelectedPlanId(record.id),
             })}
           />
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel form-panel product-form-panel">
+        <Modal
+          centered
+          footer={null}
+          open={outboundPlanModalOpen}
+          title="出库计划生成和排库位"
+          width={980}
+          onCancel={() => setOutboundPlanModalOpen(false)}
+        >
+          <div className="workflow-modal-content entity-modal-form">
           <PanelTitle icon={<Warehouse size={18} />} title="计划生成和排库位" />
           <form className="record-form" onSubmit={generateOutboundPlan}>
             <div className="form-divider">从发货计划生成</div>
@@ -14936,12 +14590,16 @@ function OutboundPlansPage({ onNavigate }: ModuleNavigationProps) {
               保存库位安排
             </Button>
           </form>
-        </section>
+          </div>
+        </Modal>
 
-        <section className="workspace-panel detail-panel product-detail-panel">
+        {detailId ? (
+          <section className="workspace-panel detail-panel product-detail-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<LayoutDashboard size={18} />} title="待出库清单" />
-            <span className="panel-kicker">{selectedPlan?.code ?? '未选择'}</span>
+            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(warehouseOutboundPlanPath)}>
+              返回列表
+            </Button>
           </div>
           {selectedPlan ? (
             <>
@@ -15009,15 +14667,20 @@ function OutboundPlansPage({ onNavigate }: ModuleNavigationProps) {
               </table>
             </>
           ) : (
-            <div className="module-state">暂无出库计划</div>
+            <div className="module-state panel-empty-state">
+              <Send size={28} />
+              <strong>暂无出库计划</strong>
+              <span>请返回列表选择出库计划查看待出库清单</span>
+            </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
     </section>
   )
 }
 
-function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
+function OutboundOrdersPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [orders, setOrders] = useState<OutboundOrder[]>([])
   const [outboundPlans, setOutboundPlans] = useState<OutboundPlan[]>([])
   const [inventoryBalances, setInventoryBalances] = useState<InventoryBalance[]>([])
@@ -15034,14 +14697,18 @@ function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
   const [approvalForm, setApprovalForm] = useState<OutboundOrderApprovalFormState>(() =>
     initialOutboundOrderApprovalForm(),
   )
+  const [outboundOrderModalOpen, setOutboundOrderModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
   const selectedOrder = useMemo(
-    () => orders.find((item) => item.id === selectedOrderId) ?? orders[0] ?? null,
-    [orders, selectedOrderId],
+    () => {
+      if (detailId) return orders.find((item) => item.id === detailId) ?? null
+      return orders.find((item) => item.id === selectedOrderId) ?? orders[0] ?? null
+    },
+    [detailId, orders, selectedOrderId],
   )
 
   useEffect(() => {
@@ -15057,6 +14724,12 @@ function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
       approved_at: selectedOrder.approved_at ?? selectedOrder.outbound_at,
     }))
   }, [selectedOrder?.id, selectedOrder?.status])
+
+  useEffect(() => {
+    if (detailId && orders.length > 0 && !orders.some((item) => item.id === detailId)) {
+      onNavigate(warehouseOutboundOrderPath)
+    }
+  }, [detailId, onNavigate, orders])
 
   async function loadOutboundOrders(
     preferredOrderId?: string,
@@ -15158,6 +14831,16 @@ function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
     setSelectedOrderId(order.id)
   }
 
+  function openOutboundOrderDetail(order: OutboundOrder) {
+    setSelectedOrderId(order.id)
+    onNavigate(moduleDetailPath(warehouseOutboundOrderPath, order.id))
+  }
+
+  function stopAndOpenOutboundOrderDetail(event: MouseEvent<HTMLElement>, order: OutboundOrder) {
+    event.stopPropagation()
+    openOutboundOrderDetail(order)
+  }
+
   async function generateOutboundOrder(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setSubmitting(true)
@@ -15173,6 +14856,7 @@ function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
       setSourceIdFilter(order.source_id)
       setInventorySearch(inventoryQuery)
       upsertOutboundOrder(order)
+      setOutboundOrderModalOpen(false)
       await loadOutboundOrders(order.id, order, inventoryQuery)
       setMessage(`已生成出库单 ${order.code}`)
     } catch (caught) {
@@ -15213,6 +14897,7 @@ function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
       setStatusFilter('approved')
       setInventorySearch(inventoryQuery)
       upsertOutboundOrder(order)
+      setOutboundOrderModalOpen(false)
       await loadOutboundOrders(order.id, order, inventoryQuery)
       setMessage(
         order.outbound_mode === 'formal'
@@ -15252,7 +14937,8 @@ function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid outbound-order-grid">
-        <section className="workspace-panel list-panel product-list-panel">
+        {!detailId ? (
+          <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="出库单" />
             <form
@@ -15334,6 +15020,9 @@ function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
+              <Button htmlType="button" icon={<Plus size={16} />} onClick={() => setOutboundOrderModalOpen(true)}>
+                生成/审批出库单
+              </Button>
             </form>
           </div>
 
@@ -15342,8 +15031,12 @@ function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
               {
                 title: '出库单',
                 dataIndex: 'code',
-                render: (value: string) => (
-                  <button className="row-button" type="button">
+                render: (value: string, record: OutboundOrder) => (
+                  <button
+                    className="row-button"
+                    type="button"
+                    onClick={(event) => stopAndOpenOutboundOrderDetail(event, record)}
+                  >
                     {value}
                   </button>
                 ),
@@ -15359,6 +15052,16 @@ function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
                 dataIndex: 'lines',
                 render: (_, order) => outboundOrderTotalQuantity(order).toFixed(2),
               },
+              {
+                title: '入口',
+                key: 'detail',
+                width: 110,
+                render: (_: unknown, record: OutboundOrder) => (
+                  <Button size="small" onClick={(event) => stopAndOpenOutboundOrderDetail(event, record)}>
+                    查看详情
+                  </Button>
+                ),
+              },
             ]}
             dataSource={orders}
             loading={loading}
@@ -15370,9 +15073,18 @@ function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
               onClick: () => setSelectedOrderId(record.id),
             })}
           />
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel form-panel product-form-panel">
+        <Modal
+          centered
+          footer={null}
+          open={outboundOrderModalOpen}
+          title="出库单生成和审批"
+          width={980}
+          onCancel={() => setOutboundOrderModalOpen(false)}
+        >
+          <div className="workflow-modal-content entity-modal-form">
           <PanelTitle icon={<Warehouse size={18} />} title="出库登记" />
           <form className="record-form" onSubmit={generateOutboundOrder}>
             <div className="form-divider">从出库计划生成</div>
@@ -15552,12 +15264,16 @@ function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
               审批出库
             </Button>
           </form>
-        </section>
+          </div>
+        </Modal>
 
-        <section className="workspace-panel detail-panel product-detail-panel">
+        {detailId ? (
+          <section className="workspace-panel detail-panel product-detail-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<LayoutDashboard size={18} />} title="出库明细和库存流水" />
-            <span className="panel-kicker">{selectedOrder?.code ?? '未选择'}</span>
+            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(warehouseOutboundOrderPath)}>
+              返回列表
+            </Button>
           </div>
           {selectedOrder ? (
             <>
@@ -15703,9 +15419,14 @@ function OutboundOrdersPage({ onNavigate }: ModuleNavigationProps) {
               </table>
             </>
           ) : (
-            <div className="module-state">暂无出库单</div>
+            <div className="module-state panel-empty-state">
+              <Package size={28} />
+              <strong>暂无出库单</strong>
+              <span>请返回列表选择出库单查看明细和库存流水</span>
+            </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
     </section>
   )
@@ -16271,6 +15992,86 @@ function FinancePage({ view, onNavigate }: FinancePageProps) {
   const [miscFeeAllocationSummary, setMiscFeeAllocationSummary] = useState<MiscFeeAllocation[]>([])
   const [financialSettlements, setFinancialSettlements] = useState<FinancialSettlement[]>([])
   const [profitCalculations, setProfitCalculations] = useState<FinancialSettlement[]>([])
+  // ---- 报销管理 / 口岸数据 / 财务报表 ----
+  const [reimbursements, setReimbursements] = useState<Reimbursement[]>([])
+  const [portImportBatches, setPortImportBatches] = useState<PortImportBatch[]>([])
+  const [customsRecords, setCustomsRecords] = useState<CustomsDeclarationRecord[]>([])
+  const [reimbursementsTotalAmount, setReimbursementsTotalAmount] = useState('0.00')
+  const [selectedReimbursementId, setSelectedReimbursementId] = useState<string | null>(null)
+  const [reimbursementSearch, setReimbursementSearch] = useState('')
+  const [reimbursementStatusFilter, setReimbursementStatusFilter] = useState('')
+  const [reimbursementCategoryFilter, setReimbursementCategoryFilter] = useState('')
+  const [loadingReimbursements, setLoadingReimbursements] = useState(false)
+  const [submittingReimbursement, setSubmittingReimbursement] = useState(false)
+  const [submittingReimbursementAction, setSubmittingReimbursementAction] = useState(false)
+  const [reimbursementForm, setReimbursementForm] = useState({
+    reimbursement_no: '',
+    applicant_user_id: '',
+    applicant_user_name: '',
+    department: '',
+    category: 'travel',
+    currency: 'CNY',
+    amount: '',
+    reason: '',
+    remark: '',
+  })
+  const [reimbursementPayMethod, setReimbursementPayMethod] = useState('bank_transfer')
+  const [loadingPortBatches, setLoadingPortBatches] = useState(false)
+  const [loadingCustomsRecords, setLoadingCustomsRecords] = useState(false)
+  const [submittingPortBatch, setSubmittingPortBatch] = useState(false)
+  const [portBatchSourceFilter, setPortBatchSourceFilter] = useState('')
+  const [customsDeclarationFilter, setCustomsDeclarationFilter] = useState('')
+  const [customsReceiptFilter, setCustomsReceiptFilter] = useState('')
+  const [customsTradeTypeFilter, setCustomsTradeTypeFilter] = useState('')
+  const [portBatchForm, setPortBatchForm] = useState({
+    batch_no: '',
+    source: '',
+    imported_at: '',
+    remark: '',
+  })
+  const [portRecordForm, setPortRecordForm] = useState({
+    declaration_no: '',
+    customs_receipt_no: '',
+    trade_type: 'export',
+    export_contract_no: '',
+    customs_date: '',
+    product_name: '',
+    hs_code: '',
+    quantity: '',
+    unit: '',
+    amount: '',
+    currency: 'USD',
+    customer_or_supplier: '',
+  })
+  const [reportDateFrom, setReportDateFrom] = useState('')
+  const [reportDateTo, setReportDateTo] = useState('')
+  const [reportCurrency, setReportCurrency] = useState('')
+  const [reportReceiptNo, setReportReceiptNo] = useState('')
+  const [reportReceiptType, setReportReceiptType] = useState('')
+  const [reportSupplierName, setReportSupplierName] = useState('')
+  const [reportPartnerName, setReportPartnerName] = useState('')
+  const [reportFeeType, setReportFeeType] = useState('')
+  const [reportSalesUserId, setReportSalesUserId] = useState('')
+  const [reportOwnerUserId, setReportOwnerUserId] = useState('')
+  const [reportReminderStatus, setReportReminderStatus] = useState('')
+  const [reportStatus, setReportStatus] = useState('')
+  const [reportIncludeRegistered, setReportIncludeRegistered] = useState(false)
+  const [activeReport, setActiveReport] = useState('receipt-usage')
+  const [loadingReport, setLoadingReport] = useState(false)
+  const [exportingReport, setExportingReport] = useState(false)
+  const [loadingReportExplanation, setLoadingReportExplanation] = useState(false)
+  const [reportExplanation, setReportExplanation] = useState<FinanceReportExplanation | null>(null)
+  const [reportDrilldown, setReportDrilldown] = useState<FinanceReportDrilldown | null>(null)
+  const [matchingCustomsReceipts, setMatchingCustomsReceipts] = useState(false)
+  const [receiptUsageReport, setReceiptUsageReport] = useState<ReceiptUsageDetailReport | null>(null)
+  const [bankReceiptSummaryReport, setBankReceiptSummaryReport] =
+    useState<BankReceiptSummaryReport | null>(null)
+  const [goodsPaymentReport, setGoodsPaymentReport] = useState<GoodsPaymentQueryReport | null>(null)
+  const [feePaymentReport, setFeePaymentReport] = useState<FeePaymentQueryReport | null>(null)
+  const [customsCollectionReport, setCustomsCollectionReport] =
+    useState<CustomsReceiptCollectionReport | null>(null)
+  const [taxRefundStatisticsReport, setTaxRefundStatisticsReport] =
+    useState<TaxRefundStatisticsReport | null>(null)
   const [selectedReceiptId, setSelectedReceiptId] = useState<string | null>(null)
   const [selectedSupplierInvoiceId, setSelectedSupplierInvoiceId] = useState<string | null>(null)
   const [selectedPaymentRequestId, setSelectedPaymentRequestId] = useState<string | null>(null)
@@ -16426,7 +16227,18 @@ function FinancePage({ view, onNavigate }: FinancePageProps) {
     void loadMiscFeeAllocationSummary()
     void loadFinancialSettlements()
     void loadProfitCalculations()
+    void loadReimbursements()
+    void loadPortImportBatches()
+    void loadCustomsRecords()
   }, [])
+
+  useEffect(() => {
+    if (activeModule === 'reports') {
+      void loadFinanceReport(activeReport)
+      void loadReportExplanation(activeReport)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeModule, activeReport])
 
   // Keep the per-module selection in sync with the detail id in the URL so that
   // opening a detail page directly (or via the browser back/forward) selects the
@@ -16451,6 +16263,9 @@ function FinancePage({ view, onNavigate }: FinancePageProps) {
         break
       case 'settlement':
         setSelectedFinancialSettlementId(detailId)
+        break
+      case 'reimbursements':
+        setSelectedReimbursementId(detailId)
         break
       default:
         break
@@ -16903,6 +16718,320 @@ function FinancePage({ view, onNavigate }: FinancePageProps) {
       showError(caught, '利润核算加载失败')
     } finally {
       setLoadingProfitCalculations(false)
+    }
+  }
+
+  async function loadReimbursements(preferredId?: string) {
+    setLoadingReimbursements(true)
+    setError('')
+    try {
+      const result = await listReimbursements({
+        q: reimbursementSearch.trim() || undefined,
+        status: reimbursementStatusFilter || undefined,
+        category: reimbursementCategoryFilter || undefined,
+      })
+      setReimbursements(result.items)
+      setReimbursementsTotalAmount(result.total_amount)
+      const nextId =
+        preferredId ??
+        (result.items.some((item) => item.id === selectedReimbursementId)
+          ? selectedReimbursementId
+          : null) ??
+        result.items[0]?.id ??
+        null
+      setSelectedReimbursementId(nextId)
+    } catch (caught) {
+      showError(caught, '报销单加载失败')
+    } finally {
+      setLoadingReimbursements(false)
+    }
+  }
+
+  async function submitReimbursement(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setSubmittingReimbursement(true)
+    setMessage('')
+    setError('')
+    try {
+      const payload: ReimbursementCreatePayload = {
+        reimbursement_no: reimbursementForm.reimbursement_no.trim(),
+        applicant_user_id: reimbursementForm.applicant_user_id.trim(),
+        applicant_user_name: reimbursementForm.applicant_user_name.trim(),
+        department: reimbursementForm.department.trim(),
+        category: reimbursementForm.category,
+        currency: reimbursementForm.currency.trim(),
+        amount: reimbursementForm.amount.trim(),
+        reason: reimbursementForm.reason.trim() || undefined,
+        remark: reimbursementForm.remark.trim() || undefined,
+      }
+      const created = await createReimbursement(payload)
+      setMessage(`已登记报销单 ${created.reimbursement_no}`)
+      setReimbursementForm({
+        reimbursement_no: '',
+        applicant_user_id: '',
+        applicant_user_name: '',
+        department: '',
+        category: 'travel',
+        currency: 'CNY',
+        amount: '',
+        reason: '',
+        remark: '',
+      })
+      await loadReimbursements(created.id)
+    } catch (caught) {
+      showError(caught, '报销单登记失败')
+    } finally {
+      setSubmittingReimbursement(false)
+    }
+  }
+
+  async function handleReimbursementApprove(approved: boolean) {
+    if (!selectedReimbursementId) return
+    setSubmittingReimbursementAction(true)
+    setMessage('')
+    setError('')
+    try {
+      const updated = await approveReimbursement(selectedReimbursementId, { approved })
+      setMessage(`报销单 ${updated.reimbursement_no} 已${approved ? '审批通过' : '驳回'}`)
+      await loadReimbursements(updated.id)
+    } catch (caught) {
+      showError(caught, '报销单审批失败')
+    } finally {
+      setSubmittingReimbursementAction(false)
+    }
+  }
+
+  async function handleReimbursementPay() {
+    if (!selectedReimbursementId) return
+    setSubmittingReimbursementAction(true)
+    setMessage('')
+    setError('')
+    try {
+      const updated = await payReimbursement(selectedReimbursementId, {
+        payment_method: reimbursementPayMethod,
+      })
+      setMessage(`报销单 ${updated.reimbursement_no} 已付款`)
+      await loadReimbursements(updated.id)
+    } catch (caught) {
+      showError(caught, '报销单付款失败')
+    } finally {
+      setSubmittingReimbursementAction(false)
+    }
+  }
+
+  async function loadPortImportBatches() {
+    setLoadingPortBatches(true)
+    setError('')
+    try {
+      const result = await listPortImportBatches({
+        source: portBatchSourceFilter.trim() || undefined,
+      })
+      setPortImportBatches(result.items)
+    } catch (caught) {
+      showError(caught, '口岸导入批次加载失败')
+    } finally {
+      setLoadingPortBatches(false)
+    }
+  }
+
+  async function loadCustomsRecords() {
+    setLoadingCustomsRecords(true)
+    setError('')
+    try {
+      const result = await listCustomsDeclarationRecords({
+        declaration_no: customsDeclarationFilter.trim() || undefined,
+        customs_receipt_no: customsReceiptFilter.trim() || undefined,
+        trade_type: customsTradeTypeFilter || undefined,
+      })
+      setCustomsRecords(result.items)
+    } catch (caught) {
+      showError(caught, '进出口报关数据加载失败')
+    } finally {
+      setLoadingCustomsRecords(false)
+    }
+  }
+
+  async function submitPortBatch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setSubmittingPortBatch(true)
+    setMessage('')
+    setError('')
+    try {
+      const record: CustomsDeclarationRecordCreatePayload = {
+        declaration_no: portRecordForm.declaration_no.trim(),
+        customs_receipt_no: portRecordForm.customs_receipt_no.trim() || undefined,
+        trade_type: portRecordForm.trade_type,
+        export_contract_no: portRecordForm.export_contract_no.trim() || undefined,
+        customs_date: portRecordForm.customs_date || undefined,
+        product_name: portRecordForm.product_name.trim(),
+        hs_code: portRecordForm.hs_code.trim() || undefined,
+        quantity: portRecordForm.quantity.trim() || undefined,
+        unit: portRecordForm.unit.trim() || undefined,
+        amount: portRecordForm.amount.trim(),
+        currency: portRecordForm.currency.trim(),
+        customer_or_supplier: portRecordForm.customer_or_supplier.trim() || undefined,
+      }
+      const payload: PortImportBatchCreatePayload = {
+        batch_no: portBatchForm.batch_no.trim(),
+        source: portBatchForm.source.trim(),
+        imported_at: portBatchForm.imported_at,
+        record_count: 1,
+        remark: portBatchForm.remark.trim() || undefined,
+        records: [record],
+      }
+      const created = await createPortImportBatch(payload)
+      setMessage(`已导入口岸数据批次 ${created.batch_no}`)
+      setPortBatchForm({ batch_no: '', source: '', imported_at: '', remark: '' })
+      setPortRecordForm({
+        declaration_no: '',
+        customs_receipt_no: '',
+        trade_type: 'export',
+        export_contract_no: '',
+        customs_date: '',
+        product_name: '',
+        hs_code: '',
+        quantity: '',
+        unit: '',
+        amount: '',
+        currency: 'USD',
+        customer_or_supplier: '',
+      })
+      await loadPortImportBatches()
+      await loadCustomsRecords()
+    } catch (caught) {
+      showError(caught, '口岸数据导入失败')
+    } finally {
+      setSubmittingPortBatch(false)
+    }
+  }
+
+  function financeReportFilters(report: string) {
+    const base = {
+      date_from: reportDateFrom || undefined,
+      date_to: reportDateTo || undefined,
+      currency: reportCurrency.trim() || undefined,
+    }
+    if (report === 'receipt-usage') {
+      return { ...base, receipt_no: reportReceiptNo.trim() || undefined }
+    }
+    if (report === 'bank-receipt-summary') {
+      return { ...base, receipt_type: reportReceiptType.trim() || undefined }
+    }
+    if (report === 'goods-payment') {
+      return {
+        ...base,
+        supplier_name: reportSupplierName.trim() || undefined,
+        status: reportStatus.trim() || undefined,
+      }
+    }
+    if (report === 'fee-payment') {
+      return {
+        ...base,
+        partner_name: reportPartnerName.trim() || undefined,
+        fee_type: reportFeeType.trim() || undefined,
+        sales_user_id: reportSalesUserId.trim() || undefined,
+        status: reportStatus.trim() || undefined,
+      }
+    }
+    if (report === 'customs-receipt-collection') {
+      return {
+        date_from: reportDateFrom || undefined,
+        date_to: reportDateTo || undefined,
+        owner_user_id: reportOwnerUserId.trim() || undefined,
+        reminder_status: reportReminderStatus.trim() || undefined,
+        include_registered: reportIncludeRegistered,
+      }
+    }
+    return { ...base, status: reportStatus.trim() || undefined }
+  }
+
+  async function loadFinanceReport(report: string) {
+    setLoadingReport(true)
+    setError('')
+    setReportDrilldown(null)
+    const filters = financeReportFilters(report)
+    try {
+      if (report === 'receipt-usage') {
+        setReceiptUsageReport(await getReceiptUsageReport(filters))
+      } else if (report === 'bank-receipt-summary') {
+        setBankReceiptSummaryReport(await getBankReceiptSummaryReport(filters))
+      } else if (report === 'goods-payment') {
+        setGoodsPaymentReport(await getGoodsPaymentReport(filters))
+      } else if (report === 'fee-payment') {
+        setFeePaymentReport(await getFeePaymentReport(filters))
+      } else if (report === 'customs-receipt-collection') {
+        setCustomsCollectionReport(await getCustomsReceiptCollectionReport(filters))
+      } else if (report === 'tax-refund-statistics') {
+        setTaxRefundStatisticsReport(await getTaxRefundStatisticsReport(filters))
+      }
+    } catch (caught) {
+      showError(caught, '财务报表加载失败')
+    } finally {
+      setLoadingReport(false)
+    }
+  }
+
+  async function exportFinanceReport(report: string) {
+    setExportingReport(true)
+    setMessage('')
+    setError('')
+    const filters = financeReportFilters(report)
+    try {
+      const exported =
+        report === 'receipt-usage'
+          ? await exportReceiptUsageReport(filters)
+          : report === 'bank-receipt-summary'
+            ? await exportBankReceiptSummaryReport(filters)
+            : report === 'goods-payment'
+              ? await exportGoodsPaymentReport(filters)
+              : report === 'fee-payment'
+                ? await exportFeePaymentReport(filters)
+                : report === 'customs-receipt-collection'
+                  ? await exportCustomsReceiptCollectionReport(filters)
+                  : await exportTaxRefundStatisticsReport(filters)
+      downloadCsv(exported.filename, exported.content)
+      setMessage(`已导出 ${exported.total} 行财务报表`)
+    } catch (caught) {
+      showError(caught, '财务报表导出失败')
+    } finally {
+      setExportingReport(false)
+    }
+  }
+
+  async function loadReportExplanation(report: string) {
+    setLoadingReportExplanation(true)
+    setError('')
+    try {
+      setReportExplanation(await explainFinanceReport(report))
+    } catch (caught) {
+      showError(caught, '报表口径加载失败')
+    } finally {
+      setLoadingReportExplanation(false)
+    }
+  }
+
+  async function openFinanceReportDrilldown(report: string, sourceNo: string) {
+    setError('')
+    try {
+      setReportDrilldown(await drilldownFinanceReport(report, sourceNo))
+    } catch (caught) {
+      showError(caught, '报表下钻失败')
+    }
+  }
+
+  async function autoMatchPortCustomsReceipts() {
+    setMatchingCustomsReceipts(true)
+    setMessage('')
+    setError('')
+    try {
+      const result = await autoMatchCustomsReceipts()
+      setMessage(`已自动匹配 ${result.matched_count} 条报关回单`)
+      await loadCustomsRecords()
+      await loadFinanceReport('customs-receipt-collection')
+    } catch (caught) {
+      showError(caught, '报关回单自动匹配失败')
+    } finally {
+      setMatchingCustomsReceipts(false)
     }
   }
 
@@ -17374,6 +17503,30 @@ function FinancePage({ view, onNavigate }: FinancePageProps) {
       caption: '单票结算锁定、手工成本与利润核算',
       metric: String(financialSettlements.length),
       metricLabel: '锁定结算',
+    },
+    {
+      module: 'reimbursements',
+      icon: <Receipt size={20} />,
+      title: '报销管理',
+      caption: '员工报销单登记、审批与付款',
+      metric: String(reimbursements.length),
+      metricLabel: '报销单',
+    },
+    {
+      module: 'portData',
+      icon: <Ship size={20} />,
+      title: '口岸数据导入',
+      caption: '进出口报关数据导入与查询',
+      metric: String(portImportBatches.length),
+      metricLabel: '导入批次',
+    },
+    {
+      module: 'reports',
+      icon: <FileSpreadsheet size={20} />,
+      title: '财务报表',
+      caption: '水单、收付与退税统计报表',
+      metric: '6',
+      metricLabel: '报表',
     },
   ]
 
@@ -20649,6 +20802,885 @@ function FinancePage({ view, onNavigate }: FinancePageProps) {
     )
   }
 
+  if (activeModule === 'reimbursements') {
+    const selectedReimbursement =
+      reimbursements.find((item) => item.id === selectedReimbursementId) ?? reimbursements[0] ?? null
+    return (
+      <section className="finance-page">
+        {moduleHeader}
+        {moduleAlerts}
+        <section className="finance-settlement-grid" aria-label="报销管理">
+          <section className="workspace-panel">
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<Receipt size={18} />} title="报销单列表" />
+              <form
+                className="inline-filters"
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  void loadReimbursements()
+                }}
+              >
+                <label>
+                  搜索
+                  <Input
+                    value={reimbursementSearch}
+                    placeholder="单号 / 申请人 / 部门"
+                    onChange={(event) => setReimbursementSearch(event.target.value)}
+                  />
+                </label>
+                <label>
+                  状态
+                  <FormSelect
+                    value={reimbursementStatusFilter}
+                    onChange={(event) => setReimbursementStatusFilter(event.target.value)}
+                  >
+                    <option value="">全部状态</option>
+                    <option value="submitted">待审批</option>
+                    <option value="approved">已审批</option>
+                    <option value="rejected">已驳回</option>
+                    <option value="paid">已付款</option>
+                  </FormSelect>
+                </label>
+                <label>
+                  分类
+                  <FormSelect
+                    value={reimbursementCategoryFilter}
+                    onChange={(event) => setReimbursementCategoryFilter(event.target.value)}
+                  >
+                    <option value="">全部分类</option>
+                    <option value="travel">差旅</option>
+                    <option value="office">办公</option>
+                    <option value="entertainment">招待</option>
+                    <option value="other">其他</option>
+                  </FormSelect>
+                </label>
+                <Button htmlType="submit" icon={<Search size={16} />}>
+                  查询
+                </Button>
+              </form>
+            </div>
+            <Table<Reimbursement>
+              columns={[
+                { title: '报销单号', dataIndex: 'reimbursement_no' },
+                { title: '申请人', dataIndex: 'applicant_user_name' },
+                { title: '部门', dataIndex: 'department' },
+                { title: '分类', dataIndex: 'category', render: reimbursementCategoryLabel },
+                {
+                  title: '金额',
+                  dataIndex: 'amount',
+                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+                { title: '状态', dataIndex: 'status', render: reimbursementStatusTag },
+              ]}
+              dataSource={reimbursements}
+              loading={loadingReimbursements}
+              pagination={false}
+              rowClassName={(record) =>
+                record.id === selectedReimbursement?.id ? 'selected-row' : ''
+              }
+              rowKey="id"
+              size="small"
+              onRow={(record) => ({
+                onClick: () => setSelectedReimbursementId(record.id),
+              })}
+            />
+            <div className="finance-receipt-strip">
+              <span>报销单 {reimbursements.length} 条</span>
+              <strong>{formatFinanceAmount(reimbursementsTotalAmount, 'CNY')}</strong>
+            </div>
+          </section>
+
+          <section className="workspace-panel">
+            <div className="panel-heading">
+              <PanelTitle icon={<Plus size={18} />} title="新增报销单" />
+            </div>
+            <form className="record-form" onSubmit={submitReimbursement}>
+              <label>
+                报销单号
+                <Input
+                  value={reimbursementForm.reimbursement_no}
+                  onChange={(event) =>
+                    setReimbursementForm((prev) => ({ ...prev, reimbursement_no: event.target.value }))
+                  }
+                  required
+                />
+              </label>
+              <label>
+                申请人工号
+                <Input
+                  value={reimbursementForm.applicant_user_id}
+                  onChange={(event) =>
+                    setReimbursementForm((prev) => ({ ...prev, applicant_user_id: event.target.value }))
+                  }
+                  required
+                />
+              </label>
+              <label>
+                申请人姓名
+                <Input
+                  value={reimbursementForm.applicant_user_name}
+                  onChange={(event) =>
+                    setReimbursementForm((prev) => ({
+                      ...prev,
+                      applicant_user_name: event.target.value,
+                    }))
+                  }
+                  required
+                />
+              </label>
+              <label>
+                部门
+                <Input
+                  value={reimbursementForm.department}
+                  onChange={(event) =>
+                    setReimbursementForm((prev) => ({ ...prev, department: event.target.value }))
+                  }
+                  required
+                />
+              </label>
+              <label>
+                分类
+                <FormSelect
+                  value={reimbursementForm.category}
+                  onChange={(event) =>
+                    setReimbursementForm((prev) => ({ ...prev, category: event.target.value }))
+                  }
+                >
+                  <option value="travel">差旅</option>
+                  <option value="office">办公</option>
+                  <option value="entertainment">招待</option>
+                  <option value="other">其他</option>
+                </FormSelect>
+              </label>
+              <label>
+                币种
+                <Input
+                  value={reimbursementForm.currency}
+                  onChange={(event) =>
+                    setReimbursementForm((prev) => ({ ...prev, currency: event.target.value }))
+                  }
+                  required
+                />
+              </label>
+              <label>
+                金额
+                <Input
+                  value={reimbursementForm.amount}
+                  onChange={(event) =>
+                    setReimbursementForm((prev) => ({ ...prev, amount: event.target.value }))
+                  }
+                  required
+                />
+              </label>
+              <label>
+                事由
+                <Input
+                  value={reimbursementForm.reason}
+                  onChange={(event) =>
+                    setReimbursementForm((prev) => ({ ...prev, reason: event.target.value }))
+                  }
+                />
+              </label>
+              <Button htmlType="submit" type="primary" loading={submittingReimbursement} icon={<Save size={16} />}>
+                登记报销单
+              </Button>
+            </form>
+
+            {selectedReimbursement ? (
+              <div className="finance-action-block">
+                <PanelTitle icon={<ClipboardCheck size={18} />} title="审批与付款" />
+                <Descriptions column={1} size="small">
+                  <Descriptions.Item label="报销单号">
+                    {selectedReimbursement.reimbursement_no}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="当前状态">
+                    {reimbursementStatusTag(selectedReimbursement.status)}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="金额">
+                    {formatFinanceAmount(selectedReimbursement.amount, selectedReimbursement.currency)}
+                  </Descriptions.Item>
+                </Descriptions>
+                <div className="finance-action-row">
+                  <Button
+                    disabled={selectedReimbursement.status !== 'submitted'}
+                    loading={submittingReimbursementAction}
+                    type="primary"
+                    onClick={() => void handleReimbursementApprove(true)}
+                  >
+                    审批通过
+                  </Button>
+                  <Button
+                    disabled={selectedReimbursement.status !== 'submitted'}
+                    loading={submittingReimbursementAction}
+                    danger
+                    onClick={() => void handleReimbursementApprove(false)}
+                  >
+                    驳回
+                  </Button>
+                </div>
+                <div className="finance-action-row">
+                  <FormSelect
+                    value={reimbursementPayMethod}
+                    onChange={(event) => setReimbursementPayMethod(event.target.value)}
+                  >
+                    <option value="bank_transfer">银行转账</option>
+                    <option value="cash">现金</option>
+                    <option value="cheque">支票</option>
+                    <option value="other">其他</option>
+                  </FormSelect>
+                  <Button
+                    disabled={selectedReimbursement.status !== 'approved'}
+                    loading={submittingReimbursementAction}
+                    type="primary"
+                    onClick={() => void handleReimbursementPay()}
+                  >
+                    确认付款
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+          </section>
+        </section>
+      </section>
+    )
+  }
+
+  if (activeModule === 'portData') {
+    return (
+      <section className="finance-page">
+        {moduleHeader}
+        {moduleAlerts}
+        <section className="finance-settlement-grid" aria-label="口岸数据导入">
+          <section className="workspace-panel">
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<Ship size={18} />} title="进出口报关数据查询" />
+              <form
+                className="inline-filters"
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  void loadCustomsRecords()
+                }}
+              >
+                <label>
+                  报关单号
+                  <Input
+                    value={customsDeclarationFilter}
+                    onChange={(event) => setCustomsDeclarationFilter(event.target.value)}
+                  />
+                </label>
+                <label>
+                  报关回单号
+                  <Input
+                    value={customsReceiptFilter}
+                    onChange={(event) => setCustomsReceiptFilter(event.target.value)}
+                  />
+                </label>
+                <label>
+                  进出口
+                  <FormSelect
+                    value={customsTradeTypeFilter}
+                    onChange={(event) => setCustomsTradeTypeFilter(event.target.value)}
+                  >
+                    <option value="">全部</option>
+                    <option value="export">出口</option>
+                    <option value="import">进口</option>
+                  </FormSelect>
+                </label>
+                <Button htmlType="submit" icon={<Search size={16} />}>
+                  查询
+                </Button>
+                <Button
+                  htmlType="button"
+                  icon={<RefreshCw size={16} />}
+                  loading={matchingCustomsReceipts}
+                  onClick={() => void autoMatchPortCustomsReceipts()}
+                >
+                  自动匹配回单
+                </Button>
+              </form>
+            </div>
+            <Table<CustomsDeclarationRecord>
+              columns={[
+                { title: '报关单号', dataIndex: 'declaration_no' },
+                { title: '回单号', dataIndex: 'customs_receipt_no', render: nullableText },
+                {
+                  title: '进出口',
+                  dataIndex: 'trade_type',
+                  render: (value: string) => (value === 'import' ? '进口' : '出口'),
+                },
+                { title: '商品', dataIndex: 'product_name' },
+                {
+                  title: '匹配',
+                  dataIndex: 'match_status',
+                  render: (value: string) =>
+                    value === 'matched' ? <Tag color="green">已匹配</Tag> : <Tag>未匹配</Tag>,
+                },
+                { title: '核销单', dataIndex: 'verification_document_no', render: nullableText },
+                { title: '报关日期', dataIndex: 'customs_date', render: nullableText },
+                {
+                  title: '金额',
+                  dataIndex: 'amount',
+                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+              ]}
+              dataSource={customsRecords}
+              loading={loadingCustomsRecords}
+              pagination={false}
+              rowKey="id"
+              size="small"
+            />
+            <div className="finance-receipt-strip">
+              <span>报关数据 {customsRecords.length} 条</span>
+            </div>
+
+            <div className="panel-heading">
+              <PanelTitle icon={<FileText size={18} />} title="导入批次记录" />
+            </div>
+            <Table<PortImportBatch>
+              columns={[
+                { title: '批次号', dataIndex: 'batch_no' },
+                { title: '来源', dataIndex: 'source' },
+                { title: '导入日期', dataIndex: 'imported_at' },
+                { title: '记录数', dataIndex: 'record_count' },
+                { title: '状态', dataIndex: 'status' },
+              ]}
+              dataSource={portImportBatches}
+              loading={loadingPortBatches}
+              pagination={false}
+              rowKey="id"
+              size="small"
+            />
+          </section>
+
+          <section className="workspace-panel">
+            <div className="panel-heading">
+              <PanelTitle icon={<Plus size={18} />} title="导入口岸数据" />
+            </div>
+            <form className="record-form" onSubmit={submitPortBatch}>
+              <label>
+                批次号
+                <Input
+                  value={portBatchForm.batch_no}
+                  onChange={(event) =>
+                    setPortBatchForm((prev) => ({ ...prev, batch_no: event.target.value }))
+                  }
+                  required
+                />
+              </label>
+              <label>
+                数据来源
+                <Input
+                  value={portBatchForm.source}
+                  placeholder="如：电子口岸 / 海关"
+                  onChange={(event) =>
+                    setPortBatchForm((prev) => ({ ...prev, source: event.target.value }))
+                  }
+                  required
+                />
+              </label>
+              <label>
+                导入日期
+                <Input
+                  type="date"
+                  value={portBatchForm.imported_at}
+                  onChange={(event) =>
+                    setPortBatchForm((prev) => ({ ...prev, imported_at: event.target.value }))
+                  }
+                  required
+                />
+              </label>
+              <div className="form-divider">报关数据明细</div>
+              <label>
+                报关单号
+                <Input
+                  value={portRecordForm.declaration_no}
+                  onChange={(event) =>
+                    setPortRecordForm((prev) => ({ ...prev, declaration_no: event.target.value }))
+                  }
+                  required
+                />
+              </label>
+              <label>
+                报关回单号
+                <Input
+                  value={portRecordForm.customs_receipt_no}
+                  onChange={(event) =>
+                    setPortRecordForm((prev) => ({ ...prev, customs_receipt_no: event.target.value }))
+                  }
+                />
+              </label>
+              <label>
+                进出口类型
+                <FormSelect
+                  value={portRecordForm.trade_type}
+                  onChange={(event) =>
+                    setPortRecordForm((prev) => ({ ...prev, trade_type: event.target.value }))
+                  }
+                >
+                  <option value="export">出口</option>
+                  <option value="import">进口</option>
+                </FormSelect>
+              </label>
+              <label>
+                商品名称
+                <Input
+                  value={portRecordForm.product_name}
+                  onChange={(event) =>
+                    setPortRecordForm((prev) => ({ ...prev, product_name: event.target.value }))
+                  }
+                  required
+                />
+              </label>
+              <label>
+                报关金额
+                <Input
+                  value={portRecordForm.amount}
+                  onChange={(event) =>
+                    setPortRecordForm((prev) => ({ ...prev, amount: event.target.value }))
+                  }
+                  required
+                />
+              </label>
+              <label>
+                币种
+                <Input
+                  value={portRecordForm.currency}
+                  onChange={(event) =>
+                    setPortRecordForm((prev) => ({ ...prev, currency: event.target.value }))
+                  }
+                  required
+                />
+              </label>
+              <Button htmlType="submit" type="primary" loading={submittingPortBatch} icon={<Save size={16} />}>
+                导入数据
+              </Button>
+            </form>
+          </section>
+        </section>
+      </section>
+    )
+  }
+
+  if (activeModule === 'reports') {
+    const reportTabs: { key: string; label: string }[] = [
+      { key: 'receipt-usage', label: '水单使用明细' },
+      { key: 'bank-receipt-summary', label: '银行水单汇总' },
+      { key: 'goods-payment', label: '货款支付情况' },
+      { key: 'fee-payment', label: '费用支付情况' },
+      { key: 'customs-receipt-collection', label: '报关回单催收' },
+      { key: 'tax-refund-statistics', label: '申报退税统计' },
+    ]
+    return (
+      <section className="finance-page">
+        {moduleHeader}
+        {moduleAlerts}
+        <section className="workspace-panel" aria-label="财务统计报表">
+          <div className="panel-heading toolbar-heading">
+            <PanelTitle icon={<FileSpreadsheet size={18} />} title="财务统计报表" />
+            <form
+              className="inline-filters"
+              onSubmit={(event) => {
+                event.preventDefault()
+                void loadFinanceReport(activeReport)
+              }}
+            >
+              <label>
+                起始日期
+                <Input
+                  type="date"
+                  value={reportDateFrom}
+                  onChange={(event) => setReportDateFrom(event.target.value)}
+                />
+              </label>
+              <label>
+                结束日期
+                <Input
+                  type="date"
+                  value={reportDateTo}
+                  onChange={(event) => setReportDateTo(event.target.value)}
+                />
+              </label>
+              <label>
+                币种
+                <Input
+                  value={reportCurrency}
+                  placeholder="如 USD"
+                  onChange={(event) => setReportCurrency(event.target.value)}
+                />
+              </label>
+              {activeReport === 'receipt-usage' ? (
+                <label>
+                  水单号
+                  <Input
+                    value={reportReceiptNo}
+                    onChange={(event) => setReportReceiptNo(event.target.value)}
+                  />
+                </label>
+              ) : null}
+              {activeReport === 'bank-receipt-summary' ? (
+                <label>
+                  收款性质
+                  <FormSelect
+                    value={reportReceiptType}
+                    onChange={(event) => setReportReceiptType(event.target.value)}
+                  >
+                    <option value="">全部</option>
+                    <option value="advance">预收</option>
+                    <option value="normal">普通</option>
+                    <option value="tax_refund">退税</option>
+                  </FormSelect>
+                </label>
+              ) : null}
+              {activeReport === 'goods-payment' ? (
+                <label>
+                  供应商
+                  <Input
+                    value={reportSupplierName}
+                    onChange={(event) => setReportSupplierName(event.target.value)}
+                  />
+                </label>
+              ) : null}
+              {activeReport === 'fee-payment' ? (
+                <>
+                  <label>
+                    合作伙伴
+                    <Input
+                      value={reportPartnerName}
+                      onChange={(event) => setReportPartnerName(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    费用类型
+                    <Input
+                      value={reportFeeType}
+                      onChange={(event) => setReportFeeType(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    业务员
+                    <Input
+                      value={reportSalesUserId}
+                      onChange={(event) => setReportSalesUserId(event.target.value)}
+                    />
+                  </label>
+                </>
+              ) : null}
+              {activeReport === 'customs-receipt-collection' ? (
+                <>
+                  <label>
+                    业务员
+                    <Input
+                      value={reportOwnerUserId}
+                      onChange={(event) => setReportOwnerUserId(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    催收状态
+                    <FormSelect
+                      value={reportReminderStatus}
+                      onChange={(event) => setReportReminderStatus(event.target.value)}
+                    >
+                      <option value="">全部</option>
+                      <option value="pending">待处理</option>
+                      <option value="done">已完成</option>
+                      <option value="overdue">已逾期</option>
+                    </FormSelect>
+                  </label>
+                  <label>
+                    包含已登记
+                    <input
+                      checked={reportIncludeRegistered}
+                      type="checkbox"
+                      onChange={(event) => setReportIncludeRegistered(event.target.checked)}
+                    />
+                  </label>
+                </>
+              ) : null}
+              {['goods-payment', 'fee-payment', 'tax-refund-statistics'].includes(activeReport) ? (
+                <label>
+                  状态
+                  <Input
+                    value={reportStatus}
+                    onChange={(event) => setReportStatus(event.target.value)}
+                  />
+                </label>
+              ) : null}
+              <Button htmlType="submit" icon={<Search size={16} />} loading={loadingReport}>
+                查询
+              </Button>
+              <Button
+                htmlType="button"
+                icon={<FileSpreadsheet size={16} />}
+                loading={exportingReport}
+                onClick={() => void exportFinanceReport(activeReport)}
+              >
+                导出 CSV
+              </Button>
+            </form>
+          </div>
+
+          <nav className="finance-tab-rail" aria-label="报表切换">
+            {reportTabs.map((tab) => (
+              <button
+                key={tab.key}
+                aria-current={tab.key === activeReport ? 'page' : undefined}
+                className={tab.key === activeReport ? 'finance-tab active' : 'finance-tab'}
+                type="button"
+                onClick={() => setActiveReport(tab.key)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </nav>
+
+          {activeReport === 'receipt-usage' ? (
+            <Table<ReceiptUsageDetailRow>
+              columns={[
+                { title: '水单号', dataIndex: 'receipt_no' },
+                { title: '收款日期', dataIndex: 'received_at' },
+                { title: '付款方', dataIndex: 'payer_name' },
+                { title: '分摊类型', dataIndex: 'allocation_type' },
+                { title: '合同号', dataIndex: 'contract_no', render: nullableText },
+                { title: '发票号', dataIndex: 'invoice_no', render: nullableText },
+                {
+                  title: '分摊金额',
+                  dataIndex: 'amount',
+                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+                {
+                  title: '下钻',
+                  render: (_, record) => (
+                    <Button
+                      size="small"
+                      onClick={() => void openFinanceReportDrilldown(activeReport, record.receipt_no)}
+                    >
+                      来源
+                    </Button>
+                  ),
+                },
+              ]}
+              dataSource={receiptUsageReport?.rows ?? []}
+              loading={loadingReport}
+              pagination={false}
+              rowKey={(record) => `${record.receipt_no}-${record.invoice_no ?? record.contract_no ?? ''}-${record.allocated_at}`}
+              size="small"
+            />
+          ) : null}
+
+          {activeReport === 'bank-receipt-summary' ? (
+            <Table<BankReceiptCurrencySummary>
+              columns={[
+                { title: '币种', dataIndex: 'currency' },
+                { title: '水单数', dataIndex: 'receipt_count' },
+                {
+                  title: '合计金额',
+                  dataIndex: 'total_amount',
+                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+                {
+                  title: '已分摊',
+                  dataIndex: 'allocated_amount',
+                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+                {
+                  title: '未分摊',
+                  dataIndex: 'unallocated_amount',
+                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+              ]}
+              dataSource={bankReceiptSummaryReport?.currency_summaries ?? []}
+              loading={loadingReport}
+              pagination={false}
+              rowKey="currency"
+              size="small"
+            />
+          ) : null}
+
+          {activeReport === 'goods-payment' ? (
+            <Table<GoodsPaymentQueryRow>
+              columns={[
+                { title: '付款单号', dataIndex: 'request_no' },
+                { title: '日期', dataIndex: 'request_date' },
+                { title: '供应商', dataIndex: 'supplier_name' },
+                { title: '发票号', dataIndex: 'supplier_invoice_no' },
+                {
+                  title: '申请金额',
+                  dataIndex: 'requested_amount',
+                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+                {
+                  title: '已付',
+                  dataIndex: 'paid_amount',
+                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+                {
+                  title: '未付',
+                  dataIndex: 'outstanding_amount',
+                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+                { title: '状态', dataIndex: 'status' },
+                {
+                  title: '下钻',
+                  render: (_, record) => (
+                    <Button
+                      size="small"
+                      onClick={() => void openFinanceReportDrilldown(activeReport, record.request_no)}
+                    >
+                      来源
+                    </Button>
+                  ),
+                },
+              ]}
+              dataSource={goodsPaymentReport?.rows ?? []}
+              loading={loadingReport}
+              pagination={false}
+              rowKey="request_no"
+              size="small"
+            />
+          ) : null}
+
+          {activeReport === 'fee-payment' ? (
+            <Table<FeePaymentQueryRow>
+              columns={[
+                { title: '付费单号', dataIndex: 'request_no' },
+                { title: '日期', dataIndex: 'request_date' },
+                { title: '合作伙伴', dataIndex: 'partner_name' },
+                { title: '费用类型', dataIndex: 'fee_type' },
+                { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
+                {
+                  title: '申请金额',
+                  dataIndex: 'requested_amount',
+                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+                {
+                  title: '未付',
+                  dataIndex: 'outstanding_amount',
+                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+                { title: '状态', dataIndex: 'status' },
+                {
+                  title: '下钻',
+                  render: (_, record) => (
+                    <Button
+                      size="small"
+                      onClick={() => void openFinanceReportDrilldown(activeReport, record.request_no)}
+                    >
+                      来源
+                    </Button>
+                  ),
+                },
+              ]}
+              dataSource={feePaymentReport?.rows ?? []}
+              loading={loadingReport}
+              pagination={false}
+              rowKey="request_no"
+              size="small"
+            />
+          ) : null}
+
+          {activeReport === 'customs-receipt-collection' ? (
+            <Table<CustomsReceiptCollectionRow>
+              columns={[
+                { title: '核销单号', dataIndex: 'document_no' },
+                { title: '领用日期', dataIndex: 'received_at' },
+                { title: '业务员', dataIndex: 'owner_user_name', render: nullableText },
+                { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
+                { title: '报关单号', dataIndex: 'customs_declaration_no', render: nullableText },
+                { title: '提醒日期', dataIndex: 'reminder_date' },
+                { title: '催收状态', dataIndex: 'reminder_status' },
+                {
+                  title: '可退税额',
+                  dataIndex: 'refundable_amount',
+                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+                {
+                  title: '下钻',
+                  render: (_, record) => (
+                    <Button
+                      size="small"
+                      onClick={() => void openFinanceReportDrilldown(activeReport, record.document_no)}
+                    >
+                      来源
+                    </Button>
+                  ),
+                },
+              ]}
+              dataSource={customsCollectionReport?.rows ?? []}
+              loading={loadingReport}
+              pagination={false}
+              rowKey="document_no"
+              size="small"
+            />
+          ) : null}
+
+          {activeReport === 'tax-refund-statistics' ? (
+            <Table<TaxRefundCurrencyTotal>
+              columns={[
+                { title: '币种', dataIndex: 'currency' },
+                { title: '核销单数', dataIndex: 'document_count' },
+                {
+                  title: '可退税额',
+                  dataIndex: 'refundable_amount',
+                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+                {
+                  title: '已退税额',
+                  dataIndex: 'refunded_amount',
+                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+                {
+                  title: '待退税额',
+                  dataIndex: 'outstanding_amount',
+                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+              ]}
+              dataSource={taxRefundStatisticsReport?.currency_totals ?? []}
+              loading={loadingReport}
+              pagination={false}
+              rowKey="currency"
+              size="small"
+            />
+          ) : null}
+
+          {reportExplanation ? (
+            <section className="finance-action-block" aria-label="报表口径说明">
+              <PanelTitle icon={<FileText size={18} />} title="统计口径" />
+              <Descriptions column={1} size="small">
+                <Descriptions.Item label="数据来源">
+                  {reportExplanation.source_tables.join('、')}
+                </Descriptions.Item>
+                <Descriptions.Item label="计算规则">
+                  {reportExplanation.metric_rules.join('；')}
+                </Descriptions.Item>
+                <Descriptions.Item label="字段">
+                  {reportExplanation.fields.map((field) => `${field.label}: ${field.formula}`).join('；')}
+                </Descriptions.Item>
+              </Descriptions>
+              {loadingReportExplanation ? <Skeleton active paragraph={false} /> : null}
+            </section>
+          ) : null}
+
+          {reportDrilldown ? (
+            <section className="finance-action-block" aria-label="报表下钻">
+              <PanelTitle icon={<ChevronRight size={18} />} title="来源下钻" />
+              <Descriptions column={1} size="small">
+                <Descriptions.Item label="来源编号">{reportDrilldown.source_no}</Descriptions.Item>
+                <Descriptions.Item label="来源类型">{reportDrilldown.source_type}</Descriptions.Item>
+                <Descriptions.Item label="入口">
+                  {reportDrilldown.items.length > 0
+                    ? reportDrilldown.items
+                        .map((item) => `${item.label}: ${item.value ?? ''} ${item.target_path ?? ''}`)
+                        .join('；')
+                    : '未找到可下钻来源'}
+                </Descriptions.Item>
+              </Descriptions>
+            </section>
+          ) : null}
+        </section>
+      </section>
+    )
+  }
+
   return null
 }
 
@@ -21157,6 +22189,27 @@ function miscFeeItemStatusTag(value: string): ReactNode {
   return <Tag color={color}>{miscFeeItemStatusLabel(value)}</Tag>
 }
 
+function reimbursementCategoryLabel(value: string): string {
+  const labels: Record<string, string> = {
+    travel: '差旅',
+    office: '办公',
+    entertainment: '招待',
+    other: '其他',
+  }
+  return labels[value] ?? value
+}
+
+function reimbursementStatusTag(value: string): ReactNode {
+  const config: Record<string, { color: string; label: string }> = {
+    submitted: { color: 'processing', label: '待审批' },
+    approved: { color: 'success', label: '已审批' },
+    rejected: { color: 'error', label: '已驳回' },
+    paid: { color: 'default', label: '已付款' },
+  }
+  const item = config[value] ?? { color: 'default', label: value }
+  return <Tag color={item.color}>{item.label}</Tag>
+}
+
 function initialFinancialSettlementForm(): FinancialSettlementFormState {
   return {
     settlement_no: `FS-${Date.now().toString().slice(-6)}`,
@@ -21257,122 +22310,6 @@ function emptyToNull(value: string): string | null {
 
 function nullableText(value: string | null): string {
   return value ?? '-'
-}
-
-function initialDocumentPartyForm(): DocumentPartyFormState {
-  return {
-    code: `DP-${Date.now().toString().slice(-6)}`,
-    party_type: 'consignee',
-    display_name: '',
-    customer_id: '',
-    customer_name: '',
-    country: '',
-    address: '',
-    contact_person: '',
-    email: '',
-    phone: '',
-    bank_name: '',
-    swift_code: '',
-    account_no: '',
-    tax_id: '',
-    remarks: '',
-    is_default: true,
-    status: 'active',
-  }
-}
-
-function initialDocumentPartyEdit(): DocumentPartyEditState {
-  return {
-    party_type: 'consignee',
-    display_name: '',
-    customer_id: '',
-    customer_name: '',
-    country: '',
-    address: '',
-    contact_person: '',
-    email: '',
-    phone: '',
-    bank_name: '',
-    swift_code: '',
-    account_no: '',
-    tax_id: '',
-    remarks: '',
-    is_default: true,
-    status: 'active',
-  }
-}
-
-function documentPartyToEditForm(party: DocumentParty | null): DocumentPartyEditState {
-  if (!party) return initialDocumentPartyEdit()
-  return {
-    party_type: party.party_type,
-    display_name: party.display_name,
-    customer_id: party.customer_id ?? '',
-    customer_name: party.customer_name ?? '',
-    country: party.country,
-    address: party.address ?? '',
-    contact_person: party.contact_person ?? '',
-    email: party.email ?? '',
-    phone: party.phone ?? '',
-    bank_name: party.bank_name ?? '',
-    swift_code: party.swift_code ?? '',
-    account_no: party.account_no ?? '',
-    tax_id: party.tax_id ?? '',
-    remarks: party.remarks ?? '',
-    is_default: party.is_default,
-    status: party.status,
-  }
-}
-
-function documentPartyPayload(form: DocumentPartyFormState): DocumentPartyCreatePayload {
-  return {
-    code: form.code.trim(),
-    party_type: form.party_type,
-    display_name: form.display_name.trim(),
-    customer_id: emptyToNull(form.customer_id),
-    customer_name: emptyToNull(form.customer_name),
-    country: form.country.trim(),
-    address: emptyToNull(form.address),
-    contact_person: emptyToNull(form.contact_person),
-    email: emptyToNull(form.email),
-    phone: emptyToNull(form.phone),
-    bank_name: emptyToNull(form.bank_name),
-    swift_code: emptyToNull(form.swift_code),
-    account_no: emptyToNull(form.account_no),
-    tax_id: emptyToNull(form.tax_id),
-    remarks: emptyToNull(form.remarks),
-    is_default: form.is_default,
-    status: form.status,
-  }
-}
-
-function documentPartyUpdatePayload(form: DocumentPartyEditState): DocumentPartyUpdatePayload {
-  return {
-    party_type: form.party_type,
-    display_name: form.display_name.trim(),
-    customer_id: emptyToNull(form.customer_id),
-    customer_name: emptyToNull(form.customer_name),
-    country: form.country.trim(),
-    address: emptyToNull(form.address),
-    contact_person: emptyToNull(form.contact_person),
-    email: emptyToNull(form.email),
-    phone: emptyToNull(form.phone),
-    bank_name: emptyToNull(form.bank_name),
-    swift_code: emptyToNull(form.swift_code),
-    account_no: emptyToNull(form.account_no),
-    tax_id: emptyToNull(form.tax_id),
-    remarks: emptyToNull(form.remarks),
-    is_default: form.is_default,
-    status: form.status,
-  }
-}
-
-function documentPartyTypeLabel(value: string): string {
-  return documentPartyTypeOptions.find((item) => item.value === value)?.label ?? value
-}
-
-function documentPartyStatusLabel(value: string): string {
-  return value === 'inactive' ? '停用' : '启用'
 }
 
 function todayInputValue(): string {
@@ -21536,6 +22473,35 @@ function initialSampleRecordForm(): SampleRecordFormState {
   }
 }
 
+function sampleRecordFormFromRequest(
+  request: SampleRequest,
+  current: SampleRecordFormState,
+): SampleRecordFormState {
+  const line = request.lines[0]
+  return {
+    ...current,
+    code: `SM-${request.code}`,
+    sample_type: 'confirm_sample',
+    status: 'registered',
+    quantity: line?.quantity ?? current.quantity,
+    received_at: todayInputValue(),
+    submitted_at: todayInputValue(),
+    product_id: line?.product_id ?? request.product_id ?? current.product_id,
+    product_code: line?.product_code ?? request.product_code ?? current.product_code,
+    product_name: line?.product_name ?? request.product_name ?? current.product_name,
+    customer_id: request.customer_id ?? current.customer_id,
+    customer_name: request.customer_name,
+    supplier_id: request.supplier_id ?? current.supplier_id,
+    supplier_name: request.supplier_name ?? current.supplier_name,
+    unit: line?.unit ?? current.unit,
+    source_type: 'sample_request',
+    source_id: request.id,
+    source_code: request.code,
+    source_note: request.requirements,
+    description: line?.requirement ?? request.requirements,
+  }
+}
+
 function initialSampleRecordImageForm(): SampleRecordImageFormState {
   return {
     file_id: '',
@@ -21554,6 +22520,35 @@ function initialSampleRecordStockForm(): SampleRecordStockFormState {
     delivery_no: '',
     recipient: '',
     note: '',
+  }
+}
+
+function sampleRequestToRecordPayload(form: SampleRecordFormState): SampleRequestToRecordPayload {
+  const images: SampleRecordImagePayload[] = []
+  if (form.image_file_id.trim() && form.image_filename.trim() && form.image_url.trim()) {
+    images.push({
+      file_id: form.image_file_id.trim(),
+      filename: form.image_filename.trim(),
+      url: form.image_url.trim(),
+      caption: emptyToNull(form.image_caption),
+      is_primary: true,
+    })
+  }
+
+  return {
+    code: form.code.trim(),
+    sample_type: form.sample_type,
+    status: form.status,
+    received_at: form.received_at,
+    submitted_at: emptyToNull(form.submitted_at),
+    quantity: form.quantity,
+    unit: form.unit.trim(),
+    customer_sku: emptyToNull(form.customer_sku),
+    supplier_sku: emptyToNull(form.supplier_sku),
+    purchase_contract_id: emptyToNull(form.purchase_contract_id),
+    purchase_contract_no: emptyToNull(form.purchase_contract_no),
+    description: emptyToNull(form.description),
+    images,
   }
 }
 
@@ -21661,6 +22656,16 @@ function initialSampleDeliveryFeeStatistics(): SampleDeliveryFeeStatistics {
     items: [],
     total_amount: '0.00',
     currency: 'USD',
+  }
+}
+
+function initialSampleDeliveryStatistics(): SampleDeliveryStatistics {
+  return {
+    total_deliveries: 0,
+    total_quantity: '0.00',
+    by_status: [],
+    by_customer: [],
+    by_express: [],
   }
 }
 
@@ -21952,6 +22957,61 @@ function exportQuotationStatusLabel(value: string): string {
 
 function freightMethodLabel(value: string): string {
   return freightMethodOptions.find((item) => item.value === value)?.label ?? value
+}
+
+function customerDisplayName(customer: Customer): string {
+  return customer.cn_name || customer.en_name || customer.code
+}
+
+function customerOptionLabel(customer: Customer): string {
+  return [customer.code, customerDisplayName(customer), customer.country].filter(Boolean).join(' / ')
+}
+
+function renderCustomerOptions(customers: Customer[]): ReactNode {
+  return customers.map((customer) => {
+    const label = customerOptionLabel(customer)
+    return (
+      <Select.Option key={customer.id} value={customer.id} label={label}>
+        {label}
+      </Select.Option>
+    )
+  })
+}
+
+function productOptionLabel(product: Product): string {
+  return [product.code, product.cn_name, product.en_name].filter(Boolean).join(' / ')
+}
+
+function renderProductOptions(products: Product[]): ReactNode {
+  return products.map((product) => {
+    const label = productOptionLabel(product)
+    return (
+      <Select.Option key={product.id} value={product.id} label={label}>
+        {label}
+      </Select.Option>
+    )
+  })
+}
+
+function supplierOptionLabel(supplier: Supplier): string {
+  return [supplier.code, supplier.cn_name, supplier.en_name].filter(Boolean).join(' / ')
+}
+
+function renderSupplierOptions(suppliers: Supplier[]): ReactNode {
+  return suppliers.map((supplier) => {
+    const label = supplierOptionLabel(supplier)
+    return (
+      <Select.Option key={supplier.id} value={supplier.id} label={label}>
+        {label}
+      </Select.Option>
+    )
+  })
+}
+
+function mergePurchaseLineRemark(current: string, addition: string): string {
+  if (!current.trim()) return addition
+  if (current.includes(addition)) return current
+  return `${current}; ${addition}`
 }
 
 function initialExportContractForm(): ExportContractFormState {
@@ -22336,27 +23396,27 @@ function initialPurchaseContractForm(): PurchaseContractFormState {
   return {
     code: `PC-${Date.now().toString().slice(-6)}`,
     contract_date: todayInputValue(),
-    supplier_id: 'supplier-accessory-a',
-    supplier_name: '远景辅料供应商',
-    buyer_user_id: 'u-001',
-    buyer_user_name: '演示业务主管',
-    currency: 'USD',
+    supplier_id: '',
+    supplier_name: '',
+    buyer_user_id: '',
+    buyer_user_name: '',
+    currency: 'RMB',
     delivery_date: todayInputValue(),
-    payment_terms: '30% advance, 70% before delivery',
-    source_type: 'stock_purchase',
-    remarks: '库存补货采购，可不关联出口合同。',
+    payment_terms: '',
+    source_type: 'manual',
+    remarks: '',
     product_id: '',
-    product_code: 'ACC-COTTON-ROPE',
-    product_name: '棉绳',
-    specification: '5mm',
-    model: 'ROPE-5',
-    quantity: '500',
-    unit: 'm',
-    unit_price: '0.12',
+    product_code: '',
+    product_name: '',
+    specification: '',
+    model: '',
+    quantity: '1',
+    unit: 'pcs',
+    unit_price: '0',
     source_export_contract_id: '',
     source_export_contract_no: '',
     source_export_contract_line_id: '',
-    line_remark: '库存安全量补货',
+    line_remark: '',
   }
 }
 
@@ -23294,132 +24354,6 @@ function outboundOrderTotalQuantity(order: OutboundOrder): number {
   return order.lines.reduce((sum, line) => sum + Number(line.quantity || 0), 0)
 }
 
-function initialCustomerForm(): CustomerFormState {
-  return {
-    code: `C-${Date.now().toString().slice(-6)}`,
-    status: 'active',
-    cn_name: '',
-    en_name: '',
-    country: '',
-    address: '',
-    website: '',
-    contact_name: '',
-    contact_title: '',
-    contact_email: '',
-    contact_phone: '',
-    credit_grade: 'B',
-    credit_limit: '0',
-    currency: 'USD',
-    payment_terms: 'T/T before shipment',
-    risk_note: '',
-  }
-}
-
-function initialCustomerEdit(): CustomerEditState {
-  return {
-    cn_name: '',
-    en_name: '',
-    country: '',
-    address: '',
-    website: '',
-    status: 'active',
-    credit_grade: '',
-    credit_limit: '0',
-    currency: 'USD',
-    payment_terms: '',
-    risk_note: '',
-  }
-}
-
-function initialCustomerContact(): CustomerContactState {
-  return {
-    name: '',
-    title: '',
-    email: '',
-    phone: '',
-  }
-}
-
-function customerToEditForm(customer: Customer | null): CustomerEditState {
-  if (!customer) return initialCustomerEdit()
-  return {
-    cn_name: customer.cn_name,
-    en_name: customer.en_name,
-    country: customer.country,
-    address: customer.address ?? '',
-    website: customer.website ?? '',
-    status: customer.status,
-    credit_grade: customer.credit_profile?.credit_grade ?? '',
-    credit_limit: customer.credit_profile?.credit_limit ?? '0',
-    currency: customer.credit_profile?.currency ?? 'USD',
-    payment_terms: customer.credit_profile?.payment_terms ?? '',
-    risk_note: customer.credit_profile?.risk_note ?? '',
-  }
-}
-
-function customerPayload(form: CustomerFormState): CustomerCreatePayload {
-  const contacts: CustomerContactPayload[] = []
-  if (form.contact_name.trim()) {
-    contacts.push({
-      name: form.contact_name.trim(),
-      title: emptyToNull(form.contact_title),
-      email: emptyToNull(form.contact_email),
-      phone: emptyToNull(form.contact_phone),
-      is_primary: true,
-    })
-  }
-
-  return {
-    code: form.code.trim(),
-    cn_name: form.cn_name.trim(),
-    en_name: form.en_name.trim(),
-    country: form.country.trim(),
-    address: emptyToNull(form.address),
-    website: emptyToNull(form.website),
-    status: form.status,
-    contacts,
-    credit_profile: {
-      credit_grade: form.credit_grade.trim(),
-      credit_limit: form.credit_limit,
-      currency: form.currency.trim(),
-      payment_terms: form.payment_terms.trim(),
-      risk_note: emptyToNull(form.risk_note),
-    },
-  }
-}
-
-function customerUpdatePayload(form: CustomerEditState): CustomerUpdatePayload {
-  return {
-    cn_name: form.cn_name.trim(),
-    en_name: form.en_name.trim(),
-    country: form.country.trim(),
-    address: emptyToNull(form.address),
-    website: emptyToNull(form.website),
-    status: form.status,
-    credit_profile: {
-      credit_grade: form.credit_grade.trim(),
-      credit_limit: form.credit_limit,
-      currency: form.currency.trim(),
-      payment_terms: form.payment_terms.trim(),
-      risk_note: emptyToNull(form.risk_note),
-    },
-  }
-}
-
-function customerContactPayload(form: CustomerContactState): CustomerContactPayload {
-  return {
-    name: form.name.trim(),
-    title: emptyToNull(form.title),
-    email: emptyToNull(form.email),
-    phone: emptyToNull(form.phone),
-    is_primary: false,
-  }
-}
-
-function customerStatusLabel(value: string): string {
-  return value === 'inactive' ? '停用' : '启用'
-}
-
 function formatMoney(value?: string | null, currency?: string | null): string {
   if (!value) return '未设置'
   const numeric = Number(value)
@@ -23445,237 +24379,8 @@ function formatFinanceAmount(value?: string | null, currency?: string | null): s
   return `${currency} ${amount}`
 }
 
-function initialSupplierForm(): SupplierFormState {
-  return {
-    code: `S-${Date.now().toString().slice(-6)}`,
-    status: 'active',
-    cn_name: '',
-    en_name: '',
-    country: '',
-    address: '',
-    website: '',
-    contact_name: '',
-    contact_title: '',
-    contact_email: '',
-    contact_phone: '',
-    credit_grade: 'B',
-    credit_limit: '0',
-    currency: 'CNY',
-    payment_terms: '30% deposit, 70% before shipment',
-    risk_note: '',
-  }
-}
-
-function initialSupplierEdit(): SupplierEditState {
-  return {
-    cn_name: '',
-    en_name: '',
-    country: '',
-    address: '',
-    website: '',
-    status: 'active',
-    credit_grade: '',
-    credit_limit: '0',
-    currency: 'CNY',
-    payment_terms: '',
-    risk_note: '',
-  }
-}
-
-function initialSupplierContact(): SupplierContactState {
-  return {
-    name: '',
-    title: '',
-    email: '',
-    phone: '',
-  }
-}
-
-function supplierToEditForm(supplier: Supplier | null): SupplierEditState {
-  if (!supplier) return initialSupplierEdit()
-  return {
-    cn_name: supplier.cn_name,
-    en_name: supplier.en_name,
-    country: supplier.country,
-    address: supplier.address ?? '',
-    website: supplier.website ?? '',
-    status: supplier.status,
-    credit_grade: supplier.credit_profile?.credit_grade ?? '',
-    credit_limit: supplier.credit_profile?.credit_limit ?? '0',
-    currency: supplier.credit_profile?.currency ?? 'CNY',
-    payment_terms: supplier.credit_profile?.payment_terms ?? '',
-    risk_note: supplier.credit_profile?.risk_note ?? '',
-  }
-}
-
-function supplierPayload(form: SupplierFormState): SupplierCreatePayload {
-  const contacts: SupplierContactPayload[] = []
-  if (form.contact_name.trim()) {
-    contacts.push({
-      name: form.contact_name.trim(),
-      title: emptyToNull(form.contact_title),
-      email: emptyToNull(form.contact_email),
-      phone: emptyToNull(form.contact_phone),
-      is_primary: true,
-    })
-  }
-
-  return {
-    code: form.code.trim(),
-    cn_name: form.cn_name.trim(),
-    en_name: form.en_name.trim(),
-    country: form.country.trim(),
-    address: emptyToNull(form.address),
-    website: emptyToNull(form.website),
-    status: form.status,
-    contacts,
-    credit_profile: {
-      credit_grade: form.credit_grade.trim(),
-      credit_limit: form.credit_limit,
-      currency: form.currency.trim(),
-      payment_terms: form.payment_terms.trim(),
-      risk_note: emptyToNull(form.risk_note),
-    },
-  }
-}
-
-function supplierUpdatePayload(form: SupplierEditState): SupplierUpdatePayload {
-  return {
-    cn_name: form.cn_name.trim(),
-    en_name: form.en_name.trim(),
-    country: form.country.trim(),
-    address: emptyToNull(form.address),
-    website: emptyToNull(form.website),
-    status: form.status,
-    credit_profile: {
-      credit_grade: form.credit_grade.trim(),
-      credit_limit: form.credit_limit,
-      currency: form.currency.trim(),
-      payment_terms: form.payment_terms.trim(),
-      risk_note: emptyToNull(form.risk_note),
-    },
-  }
-}
-
-function supplierContactPayload(form: SupplierContactState): SupplierContactPayload {
-  return {
-    name: form.name.trim(),
-    title: emptyToNull(form.title),
-    email: emptyToNull(form.email),
-    phone: emptyToNull(form.phone),
-    is_primary: false,
-  }
-}
-
-function supplierStatusLabel(value: string): string {
-  return value === 'inactive' ? '停用' : '启用'
-}
-
-
-
-function initialPartnerForm(): PartnerFormState {
-  return {
-    code: `P-${Date.now().toString().slice(-6)}`,
-    status: 'active',
-    cn_name: '',
-    en_name: '',
-    partner_type: 'freight_forwarder',
-    country: '',
-    address: '',
-    website: '',
-    primary_contact_name: '',
-    primary_contact_title: '',
-    primary_contact_email: '',
-    primary_contact_phone: '',
-  }
-}
-
-function initialPartnerEdit(): PartnerEditState {
-  return {
-    cn_name: '',
-    en_name: '',
-    partner_type: 'freight_forwarder',
-    country: '',
-    address: '',
-    website: '',
-    status: 'active',
-  }
-}
-
-function initialPartnerContact(): PartnerContactState {
-  return {
-    name: '',
-    title: '',
-    email: '',
-    phone: '',
-  }
-}
-
-function partnerToEditForm(partner: Partner | null): PartnerEditState {
-  if (!partner) return initialPartnerEdit()
-  return {
-    cn_name: partner.cn_name,
-    en_name: partner.en_name,
-    partner_type: partner.partner_type,
-    country: partner.country,
-    address: partner.address ?? '',
-    website: partner.website ?? '',
-    status: partner.status,
-  }
-}
-
-function partnerPayload(form: PartnerFormState): PartnerCreatePayload {
-  const contacts: PartnerContactPayload[] = []
-  if (form.primary_contact_name.trim()) {
-    contacts.push({
-      name: form.primary_contact_name.trim(),
-      title: form.primary_contact_title.trim() || null,
-      email: form.primary_contact_email.trim() || null,
-      phone: form.primary_contact_phone.trim() || null,
-      is_primary: true,
-    })
-  }
-  return {
-    code: form.code.trim(),
-    cn_name: form.cn_name.trim(),
-    en_name: form.en_name.trim(),
-    partner_type: form.partner_type,
-    country: form.country.trim(),
-    address: form.address.trim() || null,
-    website: form.website.trim() || null,
-    status: form.status,
-    contacts,
-  }
-}
-
-function partnerUpdatePayload(form: PartnerEditState): PartnerUpdatePayload {
-  return {
-    cn_name: form.cn_name.trim(),
-    en_name: form.en_name.trim(),
-    partner_type: form.partner_type,
-    country: form.country.trim(),
-    address: form.address.trim() || null,
-    website: form.website.trim() || null,
-    status: form.status,
-  }
-}
-
-function partnerContactPayload(form: PartnerContactState): PartnerContactPayload {
-  return {
-    name: form.name.trim(),
-    title: form.title.trim() || null,
-    email: form.email.trim() || null,
-    phone: form.phone.trim() || null,
-    is_primary: false,
-  }
-}
-
 function partnerTypeLabel(value: string): string {
   return partnerTypeOptions.find((item) => item.value === value)?.label ?? value
-}
-
-function partnerStatusLabel(value: string): string {
-  return partnerStatusOptions.find((item) => item.value === value)?.label ?? value
 }
 
 const financeModuleTitles: Record<FinanceModule, string> = {
@@ -23687,15 +24392,25 @@ const financeModuleTitles: Record<FinanceModule, string> = {
   tax: '核销退税',
   misc: '杂费管理',
   settlement: '结算核算',
+  reimbursements: '报销管理',
+  portData: '口岸数据',
+  reports: '财务报表',
 }
 
 function pageTitle(path: string, menu: MenuItem | null): string {
   if (isFinancePath(path)) {
     const { module } = parseFinanceView(path)
     if (module !== 'home') return financeModuleTitles[module]
-    return runtimeI18nConfig.page_titles[financePath]?.[runtimeSettings.language] ?? '财务管理'
+    return workflowPageTitleByPath[financePath]?.[runtimeSettings.language] ?? '财务管理'
   }
-  return runtimeI18nConfig.page_titles[path]?.[runtimeSettings.language] ?? menu?.label ?? t('page.businessModule')
+  if (path === reportingPath) {
+    return workflowPageTitleByPath[reportingPath]?.[runtimeSettings.language] ?? '老板看板'
+  }
+  const rootPath = detailRootPath(path)
+  if (workflowPageTitleByPath[rootPath]) {
+    return workflowPageTitleByPath[rootPath][runtimeSettings.language]
+  }
+  return runtimeI18nConfig.page_titles[rootPath]?.[runtimeSettings.language] ?? menu?.label ?? t('page.businessModule')
 }
 
 function statusTag(value: string) {

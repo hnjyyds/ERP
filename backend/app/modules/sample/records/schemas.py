@@ -147,3 +147,25 @@ class SampleRecordListResponse(BaseModel):
 
     items: list[SampleRecordResponse]
     total: int
+
+
+class SampleRecordImportRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    records: list[SampleRecordCreate] = Field(min_length=1)
+
+
+class SampleRecordImportResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    created_count: int
+    records: list[SampleRecordResponse]
+
+
+class SampleRecordExportResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    filename: str
+    content_type: str
+    content: str
+    total: int

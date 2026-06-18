@@ -4,7 +4,6 @@ This repository never creates or mutates tables. It only reads from existing
 finance module tables to produce report rows and grouped summaries.
 """
 
-from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal
 
@@ -14,118 +13,22 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.finance.fee_payments.models import FeePaymentRequest
 from app.modules.finance.payments.models import PaymentRequest
 from app.modules.finance.receipts.models import BankReceipt, ReceiptAllocation
+from app.modules.finance.reports.row_data import (
+    BankReceiptCurrencySummaryData,
+    BankReceiptOperatorSummaryData,
+    CustomsReceiptCollectionRowData,
+    CustomsReceiptStatusSummaryData,
+    PaymentCurrencySummaryData,
+    PaymentQueryRowData,
+    ReceiptUsageCurrencySummaryData,
+    ReceiptUsageDetailRowData,
+    TaxRefundCurrencyTotalData,
+    TaxRefundStatusSummaryData,
+)
 from app.modules.finance.tax_refunds.models import (
     VerificationDocument,
     VerificationTaxRefund,
 )
-
-
-@dataclass(frozen=True)
-class ReceiptUsageDetailRowData:
-    receipt_no: str
-    received_at: date
-    payer_name: str
-    customer_name: str | None
-    allocation_type: str
-    contract_no: str | None
-    invoice_no: str | None
-    allocated_at: date
-    currency: str
-    amount: str
-
-
-@dataclass(frozen=True)
-class ReceiptUsageCurrencySummaryData:
-    currency: str
-    allocation_count: int
-    allocated_amount: str
-
-
-@dataclass(frozen=True)
-class BankReceiptCurrencySummaryData:
-    currency: str
-    receipt_count: int
-    total_amount: str
-    allocated_amount: str
-    unallocated_amount: str
-
-
-@dataclass(frozen=True)
-class BankReceiptOperatorSummaryData:
-    operator_name: str
-    currency: str
-    receipt_count: int
-    total_amount: str
-
-
-@dataclass(frozen=True)
-class PaymentQueryRowData:
-    request_no: str
-    request_date: date
-    reference_no: str
-    party_name: str
-    secondary_ref: str | None
-    type_label: str
-    currency: str
-    requested_amount: str
-    approved_amount: str
-    paid_amount: str
-    outstanding_amount: str
-    status: str
-    partner_type: str | None = None
-    shipment_no: str | None = None
-    sales_user_name: str | None = None
-
-
-@dataclass(frozen=True)
-class PaymentCurrencySummaryData:
-    currency: str
-    request_count: int
-    requested_amount: str
-    approved_amount: str
-    paid_amount: str
-    outstanding_amount: str
-
-
-@dataclass(frozen=True)
-class CustomsReceiptCollectionRowData:
-    document_no: str
-    received_at: date
-    owner_user_name: str | None
-    shipment_no: str | None
-    customer_name: str | None
-    customs_declaration_no: str | None
-    customs_receipt_no: str | None
-    reminder_date: date
-    reminder_status: str
-    valid_until: date
-    currency: str
-    refundable_amount: str
-
-
-@dataclass(frozen=True)
-class CustomsReceiptStatusSummaryData:
-    reminder_status: str
-    count: int
-
-
-@dataclass(frozen=True)
-class TaxRefundStatusSummaryData:
-    status: str
-    currency: str
-    document_count: int
-    refundable_amount: str
-    refunded_amount: str
-    outstanding_amount: str
-
-
-@dataclass(frozen=True)
-class TaxRefundCurrencyTotalData:
-    currency: str
-    document_count: int
-    refundable_amount: str
-    refunded_amount: str
-    outstanding_amount: str
 
 
 class ReportsRepository:
@@ -741,6 +644,32 @@ class ReportsRepository:
         if currency:
             stmt = stmt.where(VerificationTaxRefund.currency == currency)
         return int(await self.session.scalar(stmt) or 0)
+
+    async def exists_bank_receipt(self, receipt_no: str) -> bool:
+        value = await self.session.scalar(
+            select(BankReceipt.id).where(BankReceipt.receipt_no == receipt_no)
+        )
+        return value is not None
+
+    async def exists_goods_payment(self, request_no: str) -> bool:
+        value = await self.session.scalar(
+            select(PaymentRequest.id).where(PaymentRequest.request_no == request_no)
+        )
+        return value is not None
+
+    async def exists_fee_payment(self, request_no: str) -> bool:
+        value = await self.session.scalar(
+            select(FeePaymentRequest.id).where(FeePaymentRequest.request_no == request_no)
+        )
+        return value is not None
+
+    async def exists_verification_document(self, document_no: str) -> bool:
+        value = await self.session.scalar(
+            select(VerificationDocument.id).where(
+                VerificationDocument.document_no == document_no
+            )
+        )
+        return value is not None
 
     def _apply_tax_refund_filters(
         self,

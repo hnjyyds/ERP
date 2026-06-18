@@ -73,6 +73,8 @@ class SampleFeeRow:
     remark: str | None
     payment_status: str
     payment_request_no: str | None
+    finance_invoice_no: str | None
+    finance_payment_request_id: str | None
     created_at: datetime
 
 
@@ -202,12 +204,16 @@ class SampleRequestRepository:
         *,
         fee_id: str,
         payment_request_no: str,
+        finance_invoice_no: str | None,
+        finance_payment_request_id: str | None,
     ) -> SampleFeeRow | None:
         fee = await self.session.scalar(select(SampleFee).where(SampleFee.id == fee_id))
         if fee is None:
             return None
         fee.payment_status = "requested"
         fee.payment_request_no = payment_request_no
+        fee.finance_invoice_no = finance_invoice_no
+        fee.finance_payment_request_id = finance_payment_request_id
         await self.session.flush()
         return self._map_fee(fee)
 
@@ -265,6 +271,8 @@ class SampleRequestRepository:
         q: str | None = None,
         status: str | None = None,
         customer_id: str | None = None,
+        date_from: date | None = None,
+        date_to: date | None = None,
         owner_user_ids: list[str] | None = None,
         limit: int = 50,
         offset: int = 0,
@@ -301,6 +309,10 @@ class SampleRequestRepository:
             conditions.append(SampleRequest.status == status)
         if customer_id:
             conditions.append(SampleRequest.customer_id == customer_id)
+        if date_from:
+            conditions.append(SampleRequest.request_date >= date_from)
+        if date_to:
+            conditions.append(SampleRequest.request_date <= date_to)
         if owner_user_ids is not None:
             conditions.append(SampleRequest.owner_user_id.in_(owner_user_ids))
         for condition in conditions:
@@ -380,5 +392,7 @@ class SampleRequestRepository:
             remark=fee.remark,
             payment_status=fee.payment_status,
             payment_request_no=fee.payment_request_no,
+            finance_invoice_no=fee.finance_invoice_no,
+            finance_payment_request_id=fee.finance_payment_request_id,
             created_at=fee.created_at,
         )

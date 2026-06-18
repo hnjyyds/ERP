@@ -22,8 +22,6 @@ from app.modules.warehouse.inbound_plans.schemas import (
     InboundPlanSchedule,
 )
 
-INBOUND_PLAN_VIEW_ALL_PERMISSION = "warehouse:inbound_plan:view_all"
-
 
 class PermissionDeniedError(Exception):
     pass
@@ -127,7 +125,6 @@ class InboundPlanService:
             self._validate_status(status)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=INBOUND_PLAN_VIEW_ALL_PERMISSION,
         )
         rows, total = await self._repository.list_plans(
             q=q,
@@ -187,7 +184,6 @@ class InboundPlanService:
             raise InboundPlanPurchaseContractNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=INBOUND_PLAN_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and contract.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
@@ -205,7 +201,6 @@ class InboundPlanService:
             raise InboundPlanNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=INBOUND_PLAN_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and plan.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError

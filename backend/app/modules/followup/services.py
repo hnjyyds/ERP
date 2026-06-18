@@ -31,8 +31,6 @@ from app.modules.sample.records.repositories import SampleRecordRepository
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 
-FOLLOWUP_PLAN_VIEW_ALL_PERMISSION = "followup:plan:view_all"
-
 
 class PermissionDeniedError(Exception):
     pass
@@ -208,7 +206,6 @@ class FollowupService:
             raise FollowupPlanNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=FOLLOWUP_PLAN_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and contract.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
@@ -275,7 +272,6 @@ class FollowupService:
             self._validate_plan_status(overall_status)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=FOLLOWUP_PLAN_VIEW_ALL_PERMISSION,
         )
         rows, total = await self._repository.list_plans(
             q=q,
@@ -402,7 +398,6 @@ class FollowupService:
             await self._repository.mark_overdue_nodes(as_of=as_of)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=FOLLOWUP_PLAN_VIEW_ALL_PERMISSION,
         )
         rows = await self._repository.list_overdue_nodes(
             as_of=as_of,
@@ -452,7 +447,6 @@ class FollowupService:
             raise FollowupPlanNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=FOLLOWUP_PLAN_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and plan.owner_user_id not in allowed_user_ids:
             raise FollowupPlanNotFoundError
@@ -470,7 +464,6 @@ class FollowupService:
             raise FollowupPlanNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=FOLLOWUP_PLAN_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and plan.owner_user_id not in allowed_user_ids:
             raise FollowupPlanNotFoundError

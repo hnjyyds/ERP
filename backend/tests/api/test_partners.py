@@ -130,6 +130,80 @@ async def test_partner_primary_contact_can_be_replaced(
     assert [item["name"] for item in primary_contacts] == ["Mia Chen"]
 
 
+async def test_partner_contact_update_delete_and_deactivate(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    create_response = await api_client.post(
+        "/api/v1/masterdata/partners",
+        headers={"Authorization": f"Bearer {token}"},
+        json=_partner_payload(code="P-CONTACT-003"),
+    )
+    partner = create_response.json()["data"]
+    partner_id = partner["id"]
+    original_contact_id = partner["contacts"][0]["id"]
+
+    contact_response = await api_client.post(
+        f"/api/v1/masterdata/partners/{partner_id}/contacts",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "name": "Mia Chen",
+            "title": "Account Executive",
+            "email": "mia@example.com",
+            "phone": "+86-21-1111",
+            "is_primary": False,
+        },
+    )
+    contact_id = contact_response.json()["data"]["id"]
+
+    update_response = await api_client.put(
+        f"/api/v1/masterdata/partners/{partner_id}/contacts/{contact_id}",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "name": "Mia Chen Updated",
+            "title": "Account Lead",
+            "email": "mia.updated@example.com",
+            "phone": "+86-21-9999",
+            "is_primary": True,
+        },
+    )
+    assert update_response.status_code == 200
+    updated = update_response.json()["data"]
+    assert updated["name"] == "Mia Chen Updated"
+    assert updated["is_primary"] is True
+
+    detail_response = await api_client.get(
+        f"/api/v1/masterdata/partners/{partner_id}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    contacts = detail_response.json()["data"]["contacts"]
+    primary_contacts = [item for item in contacts if item["is_primary"]]
+    assert [item["id"] for item in primary_contacts] == [contact_id]
+
+    delete_contact_response = await api_client.delete(
+        f"/api/v1/masterdata/partners/{partner_id}/contacts/{contact_id}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert delete_contact_response.status_code == 200
+    assert delete_contact_response.json()["data"]["id"] == contact_id
+
+    final_detail_response = await api_client.get(
+        f"/api/v1/masterdata/partners/{partner_id}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    final_contacts = final_detail_response.json()["data"]["contacts"]
+    assert [item["id"] for item in final_contacts] == [original_contact_id]
+    assert final_contacts[0]["is_primary"] is False
+
+    deactivate_response = await api_client.delete(
+        f"/api/v1/masterdata/partners/{partner_id}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert deactivate_response.status_code == 200
+    assert deactivate_response.json()["data"]["status"] == "inactive"
+
+
 async def test_partner_rejects_unknown_type(
     api_client: AsyncClient,
     seeded_system: None,

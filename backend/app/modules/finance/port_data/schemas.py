@@ -52,6 +52,9 @@ class CustomsDeclarationRecordResponse(BaseModel):
     amount: str
     currency: str
     customer_or_supplier: str | None
+    match_status: str
+    verification_document_id: str | None
+    verification_document_no: str | None
 
 
 class CustomsDeclarationRecordListResponse(BaseModel):
@@ -81,3 +84,20 @@ class PortImportBatchListResponse(BaseModel):
 
     items: list[PortImportBatchResponse]
     total: int
+
+
+class CustomsReceiptMatchRecord(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    declaration_no: str
+    customs_receipt_no: str
+    verification_document_id: str
+    verification_document_no: str
+
+
+class CustomsReceiptAutoMatchResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    matched_count: int
+    unmatched_count: int
+    matched_records: list[CustomsReceiptMatchRecord]

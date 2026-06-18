@@ -1,6 +1,7 @@
 import { Alert, Button, Checkbox, Input, Modal, Select, Table, Tag } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
 import {
-  CreditCard,
+  ArrowLeft,
   FilePenLine,
   History,
   Plus,
@@ -10,11 +11,11 @@ import {
   UsersRound,
 } from 'lucide-react'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
-import type { FormEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import type { FormEvent, MouseEvent } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { showError, showWarningDialog } from '../../../shared/errors'
-import { Metric, PanelTitle } from '../../../shared/ui'
+import { Metric, PanelTitle, useColumnView, type ColumnOption } from '../../../shared/ui'
 import {
   contactPayload,
   creditGradeOptions,
@@ -24,6 +25,8 @@ import {
   initialContactForm,
   initialPartnerForm,
   partnerCreatePayload,
+  partnerTypeLabel,
+  partnerTypeOptions,
   partnerUpdatePayload,
   statusOptions,
   validatePartnerForm,
@@ -36,8 +39,19 @@ import {
   type PartnerListResult,
   type PartnerTransaction,
   type PartnerUpdatePayload,
+  type TradingPartnerKind,
   type TransactionListResult,
 } from './tradingPartnerModel'
+
+const defaultColumnOptions: ColumnOption[] = [
+  { key: 'code', title: '编号', required: true },
+  { key: 'cn_name', title: '中文名称' },
+  { key: 'en_name', title: '英文名称' },
+  { key: 'partner_type', title: '类型' },
+  { key: 'country', title: '国家/地区' },
+  { key: 'contact', title: '联系人' },
+  { key: 'status', title: '状态' },
+]
 
 type TradingPartnerPageProps = {
   className: string
@@ -45,15 +59,27 @@ type TradingPartnerPageProps = {
   pageTitle: string
   searchPlaceholder: string
   createPrefix: string
+  kind: TradingPartnerKind
+  detailId: string | null
+  listPath: string
+  detailPath: (id: string) => string
+  onNavigate: (path: string) => void
   listEntity: (filters?: {
     q?: string
     country?: string
     credit_grade?: string
+    partner_type?: string
   }) => Promise<PartnerListResult>
   createEntity: (payload: PartnerCreatePayload) => Promise<PartnerEntity>
   updateEntity: (id: string, payload: PartnerUpdatePayload) => Promise<PartnerEntity>
   deactivateEntity: (id: string) => Promise<PartnerEntity>
   addContact: (id: string, payload: PartnerContactPayload) => Promise<PartnerContact>
+  updateContact: (
+    id: string,
+    contactId: string,
+    payload: PartnerContactPayload,
+  ) => Promise<PartnerContact>
+  deleteContact: (id: string, contactId: string) => Promise<PartnerContact>
   listTransactions: (id: string) => Promise<TransactionListResult>
 }
 
@@ -63,11 +89,18 @@ export function TradingPartnerPage({
   pageTitle,
   searchPlaceholder,
   createPrefix,
+  kind,
+  detailId,
+  listPath,
+  detailPath,
+  onNavigate,
   listEntity,
   createEntity,
   updateEntity,
   deactivateEntity,
   addContact,
+  updateContact,
+  deleteContact,
   listTransactions,
 }: TradingPartnerPageProps) {
   const [rows, setRows] = useState<PartnerEntity[]>([])
@@ -76,6 +109,7 @@ export function TradingPartnerPage({
   const [search, setSearch] = useState('')
   const [country, setCountry] = useState('')
   const [creditGrade, setCreditGrade] = useState('')
+  const [partnerType, setPartnerType] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [loading, setLoading] = useState(false)
   const [transactionLoading, setTransactionLoading] = useState(false)
@@ -84,8 +118,106 @@ export function TradingPartnerPage({
   const [error, setError] = useState('')
   const [entityModalMode, setEntityModalMode] = useState<'create' | 'edit' | null>(null)
   const [contactModalOpen, setContactModalOpen] = useState(false)
+  const [editingContactId, setEditingContactId] = useState<string | null>(null)
   const [form, setForm] = useState<PartnerFormState>(() => initialPartnerForm(createPrefix))
   const [contactForm, setContactForm] = useState<ContactFormState>(() => initialContactForm())
+  const columnOptions = useMemo(
+    () =>
+      kind === 'partner'
+        ? defaultColumnOptions
+        : defaultColumnOptions.filter((option) => option.key !== 'partner_type'),
+    [kind],
+  )
+  const { isVisible: isColumnVisible, control: columnViewControl } = useColumnView(
+    `masterdata-${kind}-columns`,
+    columnOptions,
+  )
+  const showCreditFields = kind !== 'partner'
+
+  const openDetail = useCallback(
+    (record: PartnerEntity) => {
+      setSelectedId(record.id)
+      onNavigate(detailPath(record.id))
+    },
+    [detailPath, onNavigate],
+  )
+
+  const stopAndOpenDetail = useCallback(
+    (event: MouseEvent<HTMLElement>, record: PartnerEntity) => {
+      event.stopPropagation()
+      openDetail(record)
+    },
+    [openDetail],
+  )
+
+  const columns = useMemo<ColumnsType<PartnerEntity>>(
+    () => [
+      ...(isColumnVisible('code')
+        ? [
+            {
+              title: '编号',
+              dataIndex: 'code',
+              width: 130,
+              render: (value: string, record: PartnerEntity) => (
+                <button
+                  className="row-button"
+                  type="button"
+                  onClick={(event) => stopAndOpenDetail(event, record)}
+                >
+                  {value}
+                </button>
+              ),
+            },
+          ]
+        : []),
+      ...(isColumnVisible('cn_name') ? [{ title: '中文名称', dataIndex: 'cn_name' }] : []),
+      ...(isColumnVisible('en_name') ? [{ title: '英文名称', dataIndex: 'en_name' }] : []),
+      ...(kind === 'partner' && isColumnVisible('partner_type')
+        ? [
+            {
+              title: '类型',
+              dataIndex: 'partner_type',
+              width: 120,
+              render: (value: string) => partnerTypeLabel(value),
+            },
+          ]
+        : []),
+      ...(isColumnVisible('country')
+        ? [{ title: '国家/地区', dataIndex: 'country', width: 120 }]
+        : []),
+      ...(isColumnVisible('contact')
+        ? [
+            {
+              title: '联系人',
+              width: 140,
+              render: (_: unknown, record: PartnerEntity) =>
+                record.primary_contact?.name ?? record.contacts[0]?.name ?? '未维护',
+            },
+          ]
+        : []),
+      ...(isColumnVisible('status')
+        ? [
+            {
+              title: '状态',
+              dataIndex: 'status',
+              width: 90,
+              render: (value: string) => <StatusTag value={value} />,
+            },
+          ]
+        : []),
+      {
+        title: '入口',
+        key: 'detail',
+        width: 110,
+        render: (_: unknown, record: PartnerEntity) => (
+          <Button size="small" onClick={(event) => stopAndOpenDetail(event, record)}>
+            查看详情
+          </Button>
+        ),
+      },
+    ],
+    [isColumnVisible, kind, stopAndOpenDetail],
+  )
 
   const filteredRows = useMemo(
     () => rows.filter((row) => !statusFilter || row.status === statusFilter),
@@ -93,8 +225,13 @@ export function TradingPartnerPage({
   )
 
   const selected = useMemo(
-    () => filteredRows.find((item) => item.id === selectedId) ?? filteredRows[0] ?? null,
-    [filteredRows, selectedId],
+    () => {
+      if (detailId) {
+        return rows.find((item) => item.id === detailId) ?? null
+      }
+      return filteredRows.find((item) => item.id === selectedId) ?? filteredRows[0] ?? null
+    },
+    [detailId, filteredRows, rows, selectedId],
   )
 
   useEffect(() => {
@@ -103,7 +240,7 @@ export function TradingPartnerPage({
   }, [])
 
   useEffect(() => {
-    if (!selected) {
+    if (!detailId || !selected) {
       setTransactions([])
       return
     }
@@ -122,7 +259,13 @@ export function TradingPartnerPage({
     return () => {
       cancelled = true
     }
-  }, [selected?.id, listTransactions, selected])
+  }, [detailId, listTransactions, selected])
+
+  useEffect(() => {
+    if (detailId && rows.length > 0 && !rows.some((item) => item.id === detailId)) {
+      onNavigate(listPath)
+    }
+  }, [detailId, listPath, onNavigate, rows])
 
   async function loadRows() {
     setLoading(true)
@@ -131,7 +274,8 @@ export function TradingPartnerPage({
       const result = await listEntity({
         q: search.trim() || undefined,
         country: country.trim() || undefined,
-        credit_grade: creditGrade || undefined,
+        credit_grade: showCreditFields ? creditGrade || undefined : undefined,
+        partner_type: kind === 'partner' ? partnerType || undefined : undefined,
       })
       setRows(result.items)
       setSelectedId((current) => {
@@ -159,6 +303,13 @@ export function TradingPartnerPage({
   function openContactModal() {
     if (!selected) return
     setContactForm(initialContactForm())
+    setEditingContactId(null)
+    setContactModalOpen(true)
+  }
+
+  function openEditContact(contact: PartnerContact) {
+    setContactForm(initialContactForm(contact))
+    setEditingContactId(contact.id)
     setContactModalOpen(true)
   }
 
@@ -166,7 +317,7 @@ export function TradingPartnerPage({
     event.preventDefault()
     setMessage('')
     setError('')
-    const validationMessage = validatePartnerForm(form, entityModalMode === 'create')
+    const validationMessage = validatePartnerForm(form, entityModalMode === 'create', kind)
     if (validationMessage) {
       showWarningDialog(validationMessage)
       return
@@ -174,11 +325,11 @@ export function TradingPartnerPage({
     setSubmitting(true)
     try {
       if (entityModalMode === 'edit' && selected) {
-        const updated = await updateEntity(selected.id, partnerUpdatePayload(form))
+        const updated = await updateEntity(selected.id, partnerUpdatePayload(form, kind))
         setRows((current) => current.map((item) => (item.id === updated.id ? updated : item)))
         setMessage(`${entityLabel}已保存`)
       } else {
-        const created = await createEntity(partnerCreatePayload(form))
+        const created = await createEntity(partnerCreatePayload(form, kind))
         setRows((current) => [created, ...current])
         setSelectedId(created.id)
         setMessage(`${entityLabel}已新增`)
@@ -202,15 +353,40 @@ export function TradingPartnerPage({
     }
     setSubmitting(true)
     try {
-      await addContact(selected.id, contactPayload(contactForm))
+      if (editingContactId) {
+        await updateContact(selected.id, editingContactId, contactPayload(contactForm))
+      } else {
+        await addContact(selected.id, contactPayload(contactForm))
+      }
       setContactModalOpen(false)
-      setMessage('联系人已新增')
+      setEditingContactId(null)
+      setMessage(editingContactId ? '联系人已保存' : '联系人已新增')
       await loadRows()
     } catch (caught) {
       showError(caught, '联系人保存失败')
     } finally {
       setSubmitting(false)
     }
+  }
+
+  function confirmDeleteContact(contact: PartnerContact) {
+    if (!selected) return
+    Modal.confirm({
+      title: `删除联系人 ${contact.name}`,
+      content: '删除后该联系人不会再作为后续单据的默认联系人，历史记录仍然保留业务引用信息。',
+      okText: '删除',
+      cancelText: '取消',
+      okButtonProps: { danger: true },
+      onOk: async () => {
+        try {
+          await deleteContact(selected.id, contact.id)
+          setMessage('联系人已删除')
+          await loadRows()
+        } catch (caught) {
+          showError(caught, '联系人删除失败')
+        }
+      },
+    })
   }
 
   function confirmDeactivate() {
@@ -239,14 +415,28 @@ export function TradingPartnerPage({
         <Metric label={entityLabel} value={rows.length} />
         <Metric label="启用" value={rows.filter((item) => item.status === 'active').length} />
         <Metric label="联系人" value={rows.reduce((sum, item) => sum + item.contacts.length, 0)} />
-        <Metric label="有信用资料" value={rows.filter((item) => Boolean(item.credit_profile)).length} />
+        <Metric
+          label={showCreditFields ? '有信用资料' : '类型数'}
+          value={
+            showCreditFields
+              ? rows.filter((item) => 'credit_profile' in item && Boolean(item.credit_profile)).length
+              : new Set(rows.map((item) => ('partner_type' in item ? item.partner_type : ''))).size
+          }
+        />
       </div>
 
       {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
-      <section className="business-grid masterdata-entity-grid">
-        <section className="workspace-panel list-panel masterdata-list-panel">
+      <section
+        className={
+          detailId
+            ? 'business-grid masterdata-entity-grid masterdata-detail-page-grid'
+            : 'business-grid masterdata-entity-grid'
+        }
+      >
+        {!detailId ? (
+          <section className="workspace-panel list-panel masterdata-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title={`${entityLabel}列表`} />
             <form
@@ -273,10 +463,21 @@ export function TradingPartnerPage({
                     onChange={(event) => setCountry(event.target.value)}
                   />
                 </label>
-                <label>
-                  信用
-                  <Select options={creditGradeOptions} value={creditGrade} onChange={setCreditGrade} />
-                </label>
+                {kind === 'partner' ? (
+                  <label>
+                    类型
+                    <Select
+                      options={[{ value: '', label: '全部类型' }, ...partnerTypeOptions]}
+                      value={partnerType}
+                      onChange={setPartnerType}
+                    />
+                  </label>
+                ) : (
+                  <label>
+                    信用
+                    <Select options={creditGradeOptions} value={creditGrade} onChange={setCreditGrade} />
+                  </label>
+                )}
                 <label>
                   状态
                   <Select options={statusOptions} value={statusFilter} onChange={setStatusFilter} />
@@ -294,37 +495,13 @@ export function TradingPartnerPage({
                 >
                   新增{entityLabel}
                 </Button>
+                {columnViewControl}
               </div>
             </form>
           </div>
 
           <Table<PartnerEntity>
-            columns={[
-              {
-                title: '编号',
-                dataIndex: 'code',
-                width: 130,
-                render: (value: string) => (
-                  <button className="row-button" type="button">
-                    {value}
-                  </button>
-                ),
-              },
-              { title: '中文名称', dataIndex: 'cn_name' },
-              { title: '英文名称', dataIndex: 'en_name' },
-              { title: '国家/地区', dataIndex: 'country', width: 120 },
-              {
-                title: '联系人',
-                width: 140,
-                render: (_, record) => record.primary_contact?.name ?? record.contacts[0]?.name ?? '未维护',
-              },
-              {
-                title: '状态',
-                dataIndex: 'status',
-                width: 90,
-                render: (value: string) => <StatusTag value={value} />,
-              },
-            ]}
+            columns={columns}
             dataSource={filteredRows}
             loading={loading}
             pagination={false}
@@ -335,13 +512,18 @@ export function TradingPartnerPage({
               onClick: () => setSelectedId(record.id),
             })}
           />
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel masterdata-detail-panel">
+        {detailId ? (
+          <section className="workspace-panel masterdata-detail-panel masterdata-standalone-detail">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<UsersRound size={18} />} title={pageTitle} />
             {selected ? (
               <div className="section-actions">
+                <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(listPath)}>
+                  返回列表
+                </Button>
                 <Button icon={<Plus size={16} />} onClick={openContactModal}>
                   新增联系人
                 </Button>
@@ -381,25 +563,35 @@ export function TradingPartnerPage({
                   <dd>{selected.website ?? '未维护'}</dd>
                 </div>
                 <div>
-                  <dt>信用等级</dt>
-                  <dd>{selected.credit_profile?.credit_grade ?? '未维护'}</dd>
-                </div>
-                <div>
-                  <dt>授信额度</dt>
+                  <dt>{kind === 'partner' ? '伙伴类型' : '信用等级'}</dt>
                   <dd>
-                    {selected.credit_profile?.credit_limit
-                      ? `${selected.credit_profile.credit_limit} ${selected.credit_profile.currency}`
-                      : '无权限或未维护'}
+                    {kind === 'partner' && 'partner_type' in selected
+                      ? partnerTypeLabel(selected.partner_type)
+                      : 'credit_profile' in selected
+                        ? selected.credit_profile?.credit_grade ?? '未维护'
+                        : '未维护'}
                   </dd>
                 </div>
-                <div>
-                  <dt>账期</dt>
-                  <dd>{selected.credit_profile?.payment_terms ?? '未维护'}</dd>
-                </div>
-                <div>
-                  <dt>风险备注</dt>
-                  <dd>{selected.credit_profile?.risk_note ?? '无'}</dd>
-                </div>
+                {showCreditFields && 'credit_profile' in selected ? (
+                  <>
+                    <div>
+                      <dt>授信额度</dt>
+                      <dd>
+                        {selected.credit_profile?.credit_limit
+                          ? `${selected.credit_profile.credit_limit} ${selected.credit_profile.currency}`
+                          : '无权限或未维护'}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>账期</dt>
+                      <dd>{selected.credit_profile?.payment_terms ?? '未维护'}</dd>
+                    </div>
+                    <div>
+                      <dt>风险备注</dt>
+                      <dd>{selected.credit_profile?.risk_note ?? '无'}</dd>
+                    </div>
+                  </>
+                ) : null}
                 <div>
                   <dt>负责人</dt>
                   <dd>{selected.owner_user_id}</dd>
@@ -416,7 +608,17 @@ export function TradingPartnerPage({
                         <span>{contact.title ?? '未填写职务'}</span>
                         <p>{contact.email ?? '未填写邮箱'}</p>
                         <p>{contact.phone ?? '未填写电话'}</p>
-                        {contact.is_primary ? <Tag color="gold">主要联系人</Tag> : null}
+                        <div className="contact-card-footer">
+                          {contact.is_primary ? <Tag color="gold">主要联系人</Tag> : <span />}
+                          <div className="table-actions">
+                            <Button size="small" onClick={() => openEditContact(contact)}>
+                              编辑
+                            </Button>
+                            <Button danger size="small" onClick={() => confirmDeleteContact(contact)}>
+                              删除
+                            </Button>
+                          </div>
+                        </div>
                       </article>
                     ))
                   ) : (
@@ -426,7 +628,7 @@ export function TradingPartnerPage({
               </section>
 
               <section className="compact-section">
-                <PanelTitle icon={<History size={18} />} title="业务记录" />
+                <PanelTitle icon={<History size={18} />} title={kind === 'partner' ? '费用记录' : '业务记录'} />
                 <Table<PartnerTransaction>
                   columns={[
                     { title: '来源', dataIndex: 'source_type', width: 120 },
@@ -447,10 +649,11 @@ export function TradingPartnerPage({
             <div className="module-state panel-empty-state">
               <UsersRound size={28} />
               <strong>暂无{entityLabel}资料</strong>
-              <span>请选择上方列表中的{entityLabel}查看详情</span>
+              <span>请返回列表选择{entityLabel}查看详情</span>
             </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
 
       <Modal
@@ -479,6 +682,16 @@ export function TradingPartnerPage({
               英文名称
               <Input value={form.en_name} onChange={(event) => setForm({ ...form, en_name: event.target.value })} />
             </label>
+            {kind === 'partner' ? (
+              <label>
+                合作伙伴类型
+                <Select
+                  options={partnerTypeOptions}
+                  value={form.partner_type}
+                  onChange={(value) => setForm({ ...form, partner_type: value })}
+                />
+              </label>
+            ) : null}
             <label>
               国家/地区
               <Input value={form.country} onChange={(event) => setForm({ ...form, country: event.target.value })} />
@@ -501,48 +714,53 @@ export function TradingPartnerPage({
             </label>
           </div>
 
-          <div className="entity-modal-section">
-            <div className="form-divider">信用资料</div>
-            <div className="entity-modal-grid">
-              <label>
-                信用等级
-                <Select
-                  options={formCreditGradeOptions}
-                  value={form.credit_grade}
-                  onChange={(value) => setForm({ ...form, credit_grade: value })}
-                />
-              </label>
-              <label>
-                授信额度
-                <Input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={form.credit_limit}
-                  onChange={(event) => setForm({ ...form, credit_limit: event.target.value })}
-                />
-              </label>
-              <label>
-                币种
-                <Input value={form.currency} onChange={(event) => setForm({ ...form, currency: event.target.value })} />
-              </label>
-              <label className="entity-modal-span">
-                账期
-                <Input
-                  value={form.payment_terms}
-                  onChange={(event) => setForm({ ...form, payment_terms: event.target.value })}
-                />
-              </label>
-              <label className="entity-modal-span">
-                风险备注
-                <Input.TextArea
-                  rows={3}
-                  value={form.risk_note}
-                  onChange={(event) => setForm({ ...form, risk_note: event.target.value })}
-                />
-              </label>
+          {showCreditFields ? (
+            <div className="entity-modal-section">
+              <div className="form-divider">信用资料</div>
+              <div className="entity-modal-grid">
+                <label>
+                  信用等级
+                  <Select
+                    options={formCreditGradeOptions}
+                    value={form.credit_grade}
+                    onChange={(value) => setForm({ ...form, credit_grade: value })}
+                  />
+                </label>
+                <label>
+                  授信额度
+                  <Input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={form.credit_limit}
+                    onChange={(event) => setForm({ ...form, credit_limit: event.target.value })}
+                  />
+                </label>
+                <label>
+                  币种
+                  <Input
+                    value={form.currency}
+                    onChange={(event) => setForm({ ...form, currency: event.target.value })}
+                  />
+                </label>
+                <label className="entity-modal-span">
+                  账期
+                  <Input
+                    value={form.payment_terms}
+                    onChange={(event) => setForm({ ...form, payment_terms: event.target.value })}
+                  />
+                </label>
+                <label className="entity-modal-span">
+                  风险备注
+                  <Input.TextArea
+                    rows={3}
+                    value={form.risk_note}
+                    onChange={(event) => setForm({ ...form, risk_note: event.target.value })}
+                  />
+                </label>
+              </div>
             </div>
-          </div>
+          ) : null}
 
           {entityModalMode === 'create' ? (
             <div className="entity-modal-section">
@@ -604,9 +822,12 @@ export function TradingPartnerPage({
         centered
         footer={null}
         open={contactModalOpen}
-        title={`新增${entityLabel}联系人`}
+        title={editingContactId ? `编辑${entityLabel}联系人` : `新增${entityLabel}联系人`}
         width={760}
-        onCancel={() => setContactModalOpen(false)}
+        onCancel={() => {
+          setContactModalOpen(false)
+          setEditingContactId(null)
+        }}
       >
         <form className="record-form entity-modal-form" onSubmit={submitContact}>
           <div className="entity-modal-grid two">
@@ -649,11 +870,18 @@ export function TradingPartnerPage({
             </label>
           </div>
           <div className="modal-actions">
-            <button className="secondary-inline" type="button" onClick={() => setContactModalOpen(false)}>
+            <button
+              className="secondary-inline"
+              type="button"
+              onClick={() => {
+                setContactModalOpen(false)
+                setEditingContactId(null)
+              }}
+            >
               取消
             </button>
             <button className="inline-submit" disabled={submitting} type="submit">
-              新增联系人
+              {editingContactId ? '保存联系人' : '新增联系人'}
             </button>
           </div>
         </form>

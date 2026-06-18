@@ -34,8 +34,6 @@ from app.modules.sales.contracts.repositories import (
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 
-PURCHASE_CONTRACT_VIEW_ALL_PERMISSION = "purchase:contract:view_all"
-
 
 class PermissionDeniedError(Exception):
     pass
@@ -209,7 +207,6 @@ class PurchaseContractService:
             self._validate_source_type(source_type)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=PURCHASE_CONTRACT_VIEW_ALL_PERMISSION,
         )
         rows, total = await self._repository.list_contracts(
             q=q,
@@ -492,7 +489,6 @@ class PurchaseContractService:
             raise PurchaseContractNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=PURCHASE_CONTRACT_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and contract.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError

@@ -128,6 +128,14 @@ class TaxRefundRepository:
             return None
         return self._map_document(document)
 
+    async def get_document_by_no(self, document_no: str) -> VerificationDocumentRow | None:
+        document = await self.session.scalar(
+            select(VerificationDocument).where(VerificationDocument.document_no == document_no)
+        )
+        if document is None:
+            return None
+        return self._map_document(document)
+
     async def list_documents(
         self,
         *,

@@ -516,4 +516,9 @@ def demo_role_permissions() -> list[RolePermission]:
             role_id="role-finance",
             permission_id="perm-finance-view",
         ),
+        RolePermission(
+            id="rp-finance-report-export",
+            role_id="role-finance",
+            permission_id="perm-finance-report-export",
+        ),
     ]

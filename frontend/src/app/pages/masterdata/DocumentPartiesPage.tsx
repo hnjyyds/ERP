@@ -1,5 +1,6 @@
 import { Alert, Button, Checkbox, Input, Modal, Select, Table, Tag } from 'antd'
 import {
+  ArrowLeft,
   Building2,
   FilePenLine,
   Landmark,
@@ -9,7 +10,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
-import type { FormEvent } from 'react'
+import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 
 import {
@@ -23,6 +24,7 @@ import {
 } from '../../../api'
 import { showError, showWarningDialog } from '../../../shared/errors'
 import { Metric, PanelTitle } from '../../../shared/ui'
+import { documentPartyPath, moduleDetailPath } from '../../routes'
 
 type DocumentPartyFormState = {
   code: string
@@ -62,7 +64,12 @@ const statusOptions = [
 
 const formStatusOptions = statusOptions.filter((option) => option.value)
 
-export function DocumentPartiesPage() {
+type DocumentPartiesPageProps = {
+  detailId: string | null
+  onNavigate: (path: string) => void
+}
+
+export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPageProps) {
   const [parties, setParties] = useState<DocumentParty[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
@@ -81,14 +88,35 @@ export function DocumentPartiesPage() {
   )
 
   const selectedParty = useMemo(
-    () => filteredParties.find((item) => item.id === selectedId) ?? filteredParties[0] ?? null,
-    [filteredParties, selectedId],
+    () => {
+      if (detailId) {
+        return parties.find((item) => item.id === detailId) ?? null
+      }
+      return filteredParties.find((item) => item.id === selectedId) ?? filteredParties[0] ?? null
+    },
+    [detailId, filteredParties, parties, selectedId],
   )
 
   useEffect(() => {
     void loadParties()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (detailId && parties.length > 0 && !parties.some((item) => item.id === detailId)) {
+      onNavigate(documentPartyPath)
+    }
+  }, [detailId, onNavigate, parties])
+
+  function openDetail(party: DocumentParty) {
+    setSelectedId(party.id)
+    onNavigate(moduleDetailPath(documentPartyPath, party.id))
+  }
+
+  function stopAndOpenDetail(event: MouseEvent<HTMLElement>, party: DocumentParty) {
+    event.stopPropagation()
+    openDetail(party)
+  }
 
   async function loadParties() {
     setLoading(true)
@@ -182,8 +210,15 @@ export function DocumentPartiesPage() {
       {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
-      <section className="business-grid masterdata-entity-grid">
-        <section className="workspace-panel list-panel masterdata-list-panel">
+      <section
+        className={
+          detailId
+            ? 'business-grid masterdata-entity-grid masterdata-detail-page-grid'
+            : 'business-grid masterdata-entity-grid'
+        }
+      >
+        {!detailId ? (
+          <section className="workspace-panel list-panel masterdata-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="单证资料列表" />
             <form
@@ -224,8 +259,12 @@ export function DocumentPartiesPage() {
                 title: '编号',
                 dataIndex: 'code',
                 width: 130,
-                render: (value: string) => (
-                  <button className="row-button" type="button">
+                render: (value: string, record: DocumentParty) => (
+                  <button
+                    className="row-button"
+                    type="button"
+                    onClick={(event) => stopAndOpenDetail(event, record)}
+                  >
                     {value}
                   </button>
                 ),
@@ -245,6 +284,16 @@ export function DocumentPartiesPage() {
                 width: 90,
                 render: (value: string) => <StatusTag value={value} />,
               },
+              {
+                title: '入口',
+                key: 'detail',
+                width: 110,
+                render: (_value: unknown, record: DocumentParty) => (
+                  <Button size="small" onClick={(event) => stopAndOpenDetail(event, record)}>
+                    查看详情
+                  </Button>
+                ),
+              },
             ]}
             dataSource={filteredParties}
             loading={loading}
@@ -256,13 +305,18 @@ export function DocumentPartiesPage() {
               onClick: () => setSelectedId(record.id),
             })}
           />
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-panel masterdata-detail-panel">
+        {detailId ? (
+          <section className="workspace-panel masterdata-detail-panel masterdata-standalone-detail">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Building2 size={18} />} title="单证资料明细" />
             {selectedParty ? (
               <div className="section-actions">
+                <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(documentPartyPath)}>
+                  返回列表
+                </Button>
                 <Button icon={<FilePenLine size={16} />} onClick={openEdit}>
                   编辑资料
                 </Button>
@@ -345,10 +399,11 @@ export function DocumentPartiesPage() {
             <div className="module-state panel-empty-state">
               <Building2 size={28} />
               <strong>暂无单证资料</strong>
-              <span>请选择上方列表中的单证资料查看详情</span>
+              <span>请返回列表选择单证资料查看详情</span>
             </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
 
       <Modal

@@ -13,8 +13,6 @@ from app.modules.masterdata.document_parties.schemas import (
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 
-DOCUMENT_PARTY_VIEW_ALL_PERMISSION = "masterdata:document_party:view_all"
-
 
 class PermissionDeniedError(Exception):
     pass
@@ -125,7 +123,6 @@ class DocumentPartyService:
             self._validate_party_type(party_type)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=DOCUMENT_PARTY_VIEW_ALL_PERMISSION,
         )
         parties, total = await self._repository.list_parties(
             q=q,
@@ -149,7 +146,6 @@ class DocumentPartyService:
         self._validate_party_type(party_type)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=DOCUMENT_PARTY_VIEW_ALL_PERMISSION,
         )
         parties, total = await self._repository.list_parties(
             party_type=party_type,
@@ -191,7 +187,6 @@ class DocumentPartyService:
             raise DocumentPartyNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=DOCUMENT_PARTY_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and party.owner_user_id not in allowed_user_ids:
             raise DocumentPartyNotFoundError

@@ -1,6 +1,17 @@
-import { Alert, Button, Input, Modal, Select, Table, Tag } from 'antd'
-import { FilePenLine, ImagePlus, LayoutDashboard, Plus, RefreshCw, Search, Trash2 } from 'lucide-react'
-import type { ChangeEvent, FormEvent } from 'react'
+import { Alert, Button, Image, Input, Modal, Select, Table, Tag, Upload } from 'antd'
+import {
+  ArrowLeft,
+  FilePenLine,
+  ImagePlus,
+  LayoutDashboard,
+  Plus,
+  RefreshCw,
+  Search,
+  Trash2,
+  Upload as UploadIcon,
+  Users,
+} from 'lucide-react'
+import type { ChangeEvent, FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 
 import {
@@ -9,17 +20,35 @@ import {
   deactivateProduct,
   deleteProductAccessory,
   exportProducts,
+  importProducts,
+  listProductCustomers,
   listProducts,
+  listProductTransactions,
   updateProduct,
   updateProductAccessory,
+  uploadImage,
   type Product,
   type ProductAccessoryPayload,
   type ProductCreatePayload,
+  type ProductCustomer,
   type ProductExport,
+  type ProductImportResult,
+  type ProductTransaction,
   type ProductUpdatePayload,
 } from '../../../api'
 import { showError, showWarningDialog } from '../../../shared/errors'
-import { Metric, PanelTitle } from '../../../shared/ui'
+import { Metric, PanelTitle, useColumnView, type ColumnOption } from '../../../shared/ui'
+import { productDetailPath, productPath } from '../../routes'
+
+const productColumnOptions: ColumnOption[] = [
+  { key: 'code', title: '编号', required: true },
+  { key: 'cn_name', title: '中文名称' },
+  { key: 'en_name', title: '英文名称' },
+  { key: 'customs_code', title: '海关编码' },
+  { key: 'unit', title: '单位' },
+  { key: 'status', title: '状态' },
+  { key: 'accessories', title: '配件' },
+]
 
 const productStatusOptions = [
   { value: 'active', label: '启用' },
@@ -61,7 +90,12 @@ type ProductAccessoryFormState = {
   rule: string
 }
 
-export function ProductsPage() {
+type ProductsPageProps = {
+  detailId: string | null
+  onNavigate: (path: string) => void
+}
+
+export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
   const [products, setProducts] = useState<Product[]>([])
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
@@ -77,15 +111,65 @@ export function ProductsPage() {
   const [productModalMode, setProductModalMode] = useState<'create' | 'edit' | null>(null)
   const [accessoryModalMode, setAccessoryModalMode] = useState<'create' | 'edit' | null>(null)
   const [editingAccessoryId, setEditingAccessoryId] = useState<string | null>(null)
+  const [importModalOpen, setImportModalOpen] = useState(false)
+  const [importResult, setImportResult] = useState<ProductImportResult | null>(null)
+  const [importing, setImporting] = useState(false)
+  const [relatedCustomers, setRelatedCustomers] = useState<ProductCustomer[]>([])
+  const [transactions, setTransactions] = useState<ProductTransaction[]>([])
+
+  const { isVisible: isColumnVisible, control: columnViewControl } = useColumnView(
+    'masterdata-products',
+    productColumnOptions,
+  )
 
   const selectedProduct = useMemo(
-    () => products.find((item) => item.id === selectedProductId) ?? products[0] ?? null,
-    [products, selectedProductId],
+    () => {
+      if (detailId) {
+        return products.find((item) => item.id === detailId) ?? null
+      }
+      return products.find((item) => item.id === selectedProductId) ?? products[0] ?? null
+    },
+    [detailId, products, selectedProductId],
   )
 
   useEffect(() => {
     void loadProducts()
   }, [])
+
+  useEffect(() => {
+    if (!selectedProduct) {
+      setRelatedCustomers([])
+      setTransactions([])
+      return
+    }
+    let cancelled = false
+    void (async () => {
+      try {
+        const [customerResult, transactionResult] = await Promise.all([
+          listProductCustomers(selectedProduct.id),
+          listProductTransactions(selectedProduct.id),
+        ])
+        if (!cancelled) {
+          setRelatedCustomers(customerResult.items)
+          setTransactions(transactionResult.items)
+        }
+      } catch {
+        if (!cancelled) {
+          setRelatedCustomers([])
+          setTransactions([])
+        }
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [selectedProduct?.id])
+
+  useEffect(() => {
+    if (detailId && products.length > 0 && !products.some((item) => item.id === detailId)) {
+      onNavigate(productPath)
+    }
+  }, [detailId, onNavigate, products])
 
   async function loadProducts(preferredId?: string) {
     setLoading(true)
@@ -162,16 +246,33 @@ export function ProductsPage() {
       showWarningDialog('图片需小于 2MB')
       return
     }
-    const reader = new FileReader()
-    reader.onload = () => {
-      if (typeof reader.result !== 'string') {
-        showWarningDialog('图片读取失败，请重试')
-        return
+    void (async () => {
+      try {
+        const dataUrl = await readFileAsDataUrl(file)
+        // 上传到对象存储，表单保存返回的可访问 URL（而非 base64）。
+        const uploaded = await uploadImage(file.name, dataUrl)
+        setForm((current) => ({ ...current, image_url: uploaded.url }))
+      } catch (caught) {
+        showError(caught, '图片上传失败')
       }
-      setForm((current) => ({ ...current, image_url: reader.result as string }))
+    })()
+  }
+
+  async function submitImport(file: File) {
+    setImporting(true)
+    setMessage('')
+    setError('')
+    try {
+      const dataUrl = await readFileAsDataUrl(file)
+      const result = await importProducts(file.name, dataUrl)
+      setImportResult(result)
+      setMessage(`导入完成：新增 ${result.created}，更新 ${result.updated}，失败 ${result.failed}`)
+      await loadProducts()
+    } catch (caught) {
+      showError(caught, '商品导入失败')
+    } finally {
+      setImporting(false)
     }
-    reader.onerror = () => showWarningDialog('图片读取失败，请重试')
-    reader.readAsDataURL(file)
   }
 
   function openCreateAccessory() {
@@ -292,6 +393,16 @@ export function ProductsPage() {
     }
   }
 
+  function openProductDetail(product: Product) {
+    setSelectedProductId(product.id)
+    onNavigate(productDetailPath(product.id))
+  }
+
+  function stopAndOpenProductDetail(event: MouseEvent<HTMLElement>, product: Product) {
+    event.stopPropagation()
+    openProductDetail(product)
+  }
+
   return (
     <section className="masterdata-page product-page">
       <div className="summary-strip" aria-label="商品资料概览">
@@ -304,97 +415,143 @@ export function ProductsPage() {
       {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
-      <section className="business-grid product-business-grid">
-        <section className="workspace-panel list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="商品列表" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadProducts()
-              }}
-            >
-              <label className="inline-filter-search">
-                搜索
-                <Input
-                  value={search}
-                  placeholder="编号 / 中文 / 英文 / 海关编码"
-                  onChange={(event) => setSearch(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-              <Button icon={<Plus size={16} />} onClick={openCreateProduct}>
-                新增商品
-              </Button>
-              <Button icon={<RefreshCw size={16} />} onClick={exportProductCsv}>
-                导出
-              </Button>
-            </form>
-          </div>
-
-          <Table<Product>
-            columns={[
-              {
-                title: '编号',
-                dataIndex: 'code',
-                render: (value: string) => <button className="row-button" type="button">{value}</button>,
-              },
-              { title: '中文名称', dataIndex: 'cn_name' },
-              { title: '英文名称', dataIndex: 'en_name' },
-              { title: '海关编码', dataIndex: 'customs_code' },
-              { title: '单位', dataIndex: 'unit', width: 80 },
-              {
-                title: '状态',
-                dataIndex: 'status',
-                width: 90,
-                render: (value: string) => (
-                  <Tag color={value === 'active' ? 'success' : 'default'}>
-                    {value === 'active' ? '启用' : '停用'}
-                  </Tag>
-                ),
-              },
-              {
-                title: '配件',
-                dataIndex: 'accessories',
-                width: 80,
-                render: (_, record) => record.accessories.length,
-              },
-            ]}
-            dataSource={products}
-            loading={loading}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedProduct?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => setSelectedProductId(record.id),
-            })}
-          />
-        </section>
-
-        <section className="workspace-panel detail-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="商品明细" />
-            {selectedProduct ? (
-              <div className="section-actions">
-                <Button icon={<FilePenLine size={16} />} onClick={openEditProduct}>
-                  编辑商品
+      <section
+        className={
+          detailId
+            ? 'business-grid product-business-grid product-detail-page-grid'
+            : 'business-grid product-business-grid'
+        }
+      >
+        {!detailId ? (
+          <section className="workspace-panel list-panel">
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<Search size={18} />} title="商品列表" />
+              <form
+                className="inline-filters"
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  void loadProducts()
+                }}
+              >
+                <label className="inline-filter-search">
+                  搜索
+                  <Input
+                    value={search}
+                    placeholder="编号 / 中文 / 英文 / 海关编码"
+                    onChange={(event) => setSearch(event.target.value)}
+                  />
+                </label>
+                <Button htmlType="submit" icon={<Search size={16} />}>
+                  查询
                 </Button>
-                <Button danger icon={<Trash2 size={16} />} onClick={confirmDeactivateProduct}>
-                  停用
+                <Button icon={<Plus size={16} />} onClick={openCreateProduct}>
+                  新增商品
                 </Button>
-              </div>
-            ) : null}
-          </div>
+                <Button
+                  icon={<UploadIcon size={16} />}
+                  onClick={() => {
+                    setImportResult(null)
+                    setImportModalOpen(true)
+                  }}
+                >
+                  导入
+                </Button>
+                <Button icon={<RefreshCw size={16} />} onClick={exportProductCsv}>
+                  导出
+                </Button>
+                {columnViewControl}
+              </form>
+            </div>
+
+            <Table<Product>
+              columns={[
+                {
+                  title: '编号',
+                  dataIndex: 'code',
+                  render: (value: string, record: Product) => (
+                    <button
+                      className="row-button"
+                      type="button"
+                      onClick={(event) => stopAndOpenProductDetail(event, record)}
+                    >
+                      {value}
+                    </button>
+                  ),
+                },
+                { title: '中文名称', dataIndex: 'cn_name' },
+                { title: '英文名称', dataIndex: 'en_name' },
+                { title: '海关编码', dataIndex: 'customs_code' },
+                { title: '单位', dataIndex: 'unit', width: 80 },
+                {
+                  title: '状态',
+                  dataIndex: 'status',
+                  width: 90,
+                  render: (value: string) => (
+                    <Tag color={value === 'active' ? 'success' : 'default'}>
+                      {value === 'active' ? '启用' : '停用'}
+                    </Tag>
+                  ),
+                },
+                {
+                  title: '配件',
+                  dataIndex: 'accessories',
+                  width: 80,
+                  render: (_value: Product['accessories'], record: Product) => record.accessories.length,
+                },
+                {
+                  title: '入口',
+                  dataIndex: 'detail',
+                  width: 110,
+                  render: (_value: unknown, record: Product) => (
+                    <Button size="small" onClick={(event) => stopAndOpenProductDetail(event, record)}>
+                      查看详情
+                    </Button>
+                  ),
+                },
+              ].filter((column) => column.dataIndex === 'detail' || isColumnVisible(column.dataIndex as string))}
+              dataSource={products}
+              loading={loading}
+              pagination={false}
+              rowClassName={(record) => (record.id === selectedProduct?.id ? 'selected-row' : '')}
+              rowKey="id"
+              size="small"
+              onRow={(record) => ({
+                onClick: () => setSelectedProductId(record.id),
+              })}
+            />
+          </section>
+        ) : null}
+
+        {detailId ? (
+          <section className="workspace-panel detail-panel product-standalone-detail">
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<LayoutDashboard size={18} />} title="商品明细" />
+              {selectedProduct ? (
+                <div className="section-actions">
+                  <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(productPath)}>
+                    返回列表
+                  </Button>
+                  <Button icon={<FilePenLine size={16} />} onClick={openEditProduct}>
+                    编辑商品
+                  </Button>
+                  <Button danger icon={<Trash2 size={16} />} onClick={confirmDeactivateProduct}>
+                    停用
+                  </Button>
+                </div>
+              ) : null}
+            </div>
           {selectedProduct ? (
             <>
               <div className="product-detail-layout">
                 <div className="product-photo">
                   {selectedProduct.image_url ? (
-                    <img src={selectedProduct.image_url} alt="" />
+                    <Image
+                      alt={`${selectedProduct.cn_name} 商品图片`}
+                      height="100%"
+                      preview={{ mask: '查看大图' }}
+                      src={selectedProduct.image_url}
+                      width="100%"
+                    />
                   ) : (
                     <span>暂无图片</span>
                   )}
@@ -470,6 +627,54 @@ export function ProductsPage() {
                 size="small"
               />
 
+              <div className="compact-section">
+                <PanelTitle icon={<Users size={16} />} title="相关客户与交易" />
+                <Table<ProductCustomer>
+                  columns={[
+                    { title: '客户', dataIndex: 'customer_name' },
+                    { title: '合同数', dataIndex: 'contract_count', width: 90 },
+                    { title: '累计数量', dataIndex: 'total_quantity', width: 110 },
+                    { title: '累计金额', dataIndex: 'total_amount', width: 120 },
+                    { title: '最近合同', dataIndex: 'last_contract_date', width: 130 },
+                  ]}
+                  dataSource={relatedCustomers}
+                  locale={{ emptyText: '暂无关联客户，出口合同生成后自动汇总' }}
+                  pagination={false}
+                  rowKey={(record) => record.customer_id ?? record.customer_name}
+                  size="small"
+                />
+              </div>
+
+              <div className="compact-section">
+                <PanelTitle icon={<LayoutDashboard size={16} />} title="业务记录" />
+                <Table<ProductTransaction>
+                  columns={[
+                    {
+                      title: '来源',
+                      dataIndex: 'source_type',
+                      width: 110,
+                      render: productTransactionSourceLabel,
+                    },
+                    { title: '单号', dataIndex: 'source_code', width: 160 },
+                    { title: '日期', dataIndex: 'occurred_at', width: 120 },
+                    { title: '往来方', dataIndex: 'counterparty_name', width: 150 },
+                    {
+                      title: '数量',
+                      width: 120,
+                      render: (_, record) =>
+                        record.quantity ? `${record.quantity} ${record.unit ?? ''}` : '-',
+                    },
+                    { title: '金额', dataIndex: 'amount', width: 120 },
+                    { title: '摘要', dataIndex: 'summary' },
+                  ]}
+                  dataSource={transactions}
+                  locale={{ emptyText: '暂无业务记录，报价/合同/出货/采购引用该商品后自动汇总' }}
+                  pagination={false}
+                  rowKey={(record) => `${record.source_type}-${record.source_code}-${record.occurred_at}`}
+                  size="small"
+                />
+              </div>
+
               {exportResult ? (
                 <section className="export-preview compact-section">
                   <strong>{exportResult.filename}</strong>
@@ -481,10 +686,11 @@ export function ProductsPage() {
             <div className="module-state panel-empty-state">
               <LayoutDashboard size={28} />
               <strong>暂无商品资料</strong>
-              <span>请选择上方列表中的商品查看详情</span>
+              <span>请返回列表选择商品查看详情</span>
             </div>
           )}
-        </section>
+          </section>
+        ) : null}
       </section>
 
       <Modal
@@ -718,8 +924,77 @@ export function ProductsPage() {
           </div>
         </form>
       </Modal>
+
+      <Modal
+        centered
+        footer={null}
+        open={importModalOpen}
+        title="导入商品资料"
+        width={680}
+        onCancel={() => setImportModalOpen(false)}
+      >
+        <div className="record-form entity-modal-form">
+          <p className="product-image-hint">
+            支持 CSV 与 Excel(.xlsx)。表头需包含：code、cn_name、en_name、customs_code、
+            tax_rate、rebate_rate、package_info、unit；税率可写 0.13 或 13%。已存在的编号将被更新。
+          </p>
+          <Upload.Dragger
+            accept=".csv,.xlsx"
+            beforeUpload={(file) => {
+              void submitImport(file as unknown as File)
+              return false
+            }}
+            disabled={importing}
+            maxCount={1}
+            showUploadList={false}
+          >
+            <p className="ant-upload-drag-icon">
+              <UploadIcon size={28} />
+            </p>
+            <p className="ant-upload-text">
+              {importing ? '正在导入…' : '点击或拖拽 CSV / Excel 文件到此处'}
+            </p>
+          </Upload.Dragger>
+
+          {importResult ? (
+            <div className="compact-section">
+              <Alert
+                type={importResult.failed > 0 ? 'warning' : 'success'}
+                showIcon
+                message={`新增 ${importResult.created} ｜ 更新 ${importResult.updated} ｜ 失败 ${importResult.failed}`}
+              />
+              {importResult.errors.length > 0 ? (
+                <Table
+                  className="compact-section"
+                  columns={[
+                    { title: '行号', dataIndex: 'row', width: 80 },
+                    { title: '编号', dataIndex: 'code', width: 140 },
+                    { title: '原因', dataIndex: 'message' },
+                  ]}
+                  dataSource={importResult.errors}
+                  pagination={false}
+                  rowKey={(record) => `${record.row}`}
+                  size="small"
+                />
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      </Modal>
     </section>
   )
+}
+
+async function readFileAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      if (typeof reader.result === 'string') resolve(reader.result)
+      else reject(new Error('文件读取失败'))
+    }
+    reader.onerror = () => reject(reader.error ?? new Error('文件读取失败'))
+    reader.readAsDataURL(file)
+  })
 }
 
 
@@ -853,6 +1128,18 @@ function accessoryPayload(form: ProductAccessoryFormState): ProductAccessoryPayl
 
 function accessoryRuleLabel(value: string): string {
   return value === 'by_accessory' ? '按配件分单' : '按供应商分单'
+}
+
+function productTransactionSourceLabel(value: string): string {
+  const labels: Record<string, string> = {
+    export_quotation: '出口报价',
+    export_contract: '出口合同',
+    shipment: '出货明细',
+    purchase_inquiry: '采购询价',
+    purchase_contract: '采购合同',
+    inventory_ledger: '库存流水',
+  }
+  return labels[value] ?? value
 }
 
 function emptyToNull(value: string): string | null {

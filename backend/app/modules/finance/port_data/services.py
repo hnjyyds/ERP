@@ -10,10 +10,13 @@ from app.modules.finance.port_data.schemas import (
     VALID_TRADE_TYPES,
     CustomsDeclarationRecordListResponse,
     CustomsDeclarationRecordResponse,
+    CustomsReceiptAutoMatchResponse,
+    CustomsReceiptMatchRecord,
     PortImportBatchCreate,
     PortImportBatchListResponse,
     PortImportBatchResponse,
 )
+from app.modules.finance.tax_refunds.repositories import TaxRefundRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
 
@@ -26,8 +29,13 @@ class PortDataNotFoundError(Exception):
 
 
 class PortDataService:
-    def __init__(self, repository: PortDataRepository) -> None:
+    def __init__(
+        self,
+        repository: PortDataRepository,
+        tax_refund_repository: TaxRefundRepository,
+    ) -> None:
         self._repository = repository
+        self._tax_refund_repository = tax_refund_repository
 
     async def import_port_data(
         self,
@@ -120,6 +128,53 @@ class PortDataService:
             raise PortDataNotFoundError
         return self._batch_response(batch)
 
+    async def auto_match_customs_receipts(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+    ) -> CustomsReceiptAutoMatchResponse:
+        self._require_finance(current_user)
+        records = await self._repository.list_unmatched_export_records()
+        matched: list[CustomsReceiptMatchRecord] = []
+        async with UnitOfWork(self._repository.session):
+            for record in records:
+                document = await self._tax_refund_repository.get_document_by_no(
+                    record.declaration_no
+                )
+                if document is None:
+                    continue
+                if document.status not in ("issued", "customs_receipt_registered"):
+                    continue
+                if record.customs_receipt_no is None:
+                    continue
+                updated = await self._tax_refund_repository.register_customs_receipt(
+                    document_id=document.id,
+                    customs_declaration_no=record.declaration_no,
+                    customs_receipt_no=record.customs_receipt_no,
+                    received_at=record.customs_date or document.received_at,
+                    remark="由口岸导入数据自动匹配报关回单",
+                )
+                if updated is None:
+                    continue
+                await self._repository.mark_record_matched(
+                    record_id=record.id,
+                    verification_document_id=updated.id,
+                    verification_document_no=updated.document_no,
+                )
+                matched.append(
+                    CustomsReceiptMatchRecord(
+                        declaration_no=record.declaration_no,
+                        customs_receipt_no=record.customs_receipt_no,
+                        verification_document_id=updated.id,
+                        verification_document_no=updated.document_no,
+                    )
+                )
+        return CustomsReceiptAutoMatchResponse(
+            matched_count=len(matched),
+            unmatched_count=len(records) - len(matched),
+            matched_records=matched,
+        )
+
     def _validate_trade_type(self, trade_type: str) -> None:
         if trade_type not in VALID_TRADE_TYPES:
             raise ValueError("进出口报关数据贸易类型无效")
@@ -161,6 +216,9 @@ class PortDataService:
             amount=row.amount,
             currency=row.currency,
             customer_or_supplier=row.customer_or_supplier,
+            match_status=row.match_status,
+            verification_document_id=row.matched_verification_document_id,
+            verification_document_no=row.matched_verification_document_no,
         )
 
     def _require_finance(self, current_user: CurrentUserResponse) -> None:

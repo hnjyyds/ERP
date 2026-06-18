@@ -239,3 +239,47 @@ class TaxRefundStatisticsResponse(BaseModel):
     currency_totals: list[TaxRefundCurrencyTotal]
     document_count: int
     refund_record_count: int
+
+
+class FinanceReportExportResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    filename: str
+    content_type: str
+    content: str
+    total: int
+
+
+class FinanceReportFieldExplanation(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    label: str
+    field: str
+    formula: str
+
+
+class FinanceReportExplanationResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    report_key: str
+    title: str
+    source_tables: list[str]
+    metric_rules: list[str]
+    fields: list[FinanceReportFieldExplanation]
+
+
+class FinanceReportDrilldownItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    label: str
+    value: str | None
+    target_path: str | None
+
+
+class FinanceReportDrilldownResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    report_key: str
+    source_type: str
+    source_no: str
+    items: list[FinanceReportDrilldownItem]

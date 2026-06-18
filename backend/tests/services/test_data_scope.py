@@ -7,8 +7,6 @@ from app.modules.system.auth.data_scope_rules import widest_data_scope
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
-VIEW_ALL = "sales:contract:view_all"
-
 
 def _current_user(
     *,
@@ -98,22 +96,17 @@ async def test_resolver_all_and_view_all_return_none(
         resolver = DataScopeResolver(repository)
 
         all_scope = _current_user(user_id="u-sales", department_id="d-sales", data_scope="all")
-        resolved = await resolver.resolve_user_ids(
-            current_user=all_scope, view_all_permission=VIEW_ALL
-        )
+        resolved = await resolver.resolve_user_ids(current_user=all_scope)
         assert resolved is None
 
-        # 持有 view_all 权限即使 scope=self 也看全部（兼容旧语义）。
-        legacy = _current_user(
+        scoped_user = _current_user(
             user_id="u-sales",
             department_id="d-sales",
             data_scope="self",
-            permissions=[VIEW_ALL],
+            permissions=["sales:contract:view_all"],
         )
-        legacy_resolved = await resolver.resolve_user_ids(
-            current_user=legacy, view_all_permission=VIEW_ALL
-        )
-        assert legacy_resolved is None
+        scoped_resolved = await resolver.resolve_user_ids(current_user=scoped_user)
+        assert scoped_resolved == ["u-sales"]
 
 
 async def test_resolver_self_scope_returns_only_self(
@@ -124,7 +117,7 @@ async def test_resolver_self_scope_returns_only_self(
         resolver = DataScopeResolver(repository)
 
         user = _current_user(user_id="u-sales", department_id="d-sales", data_scope="self")
-        allowed = await resolver.resolve_user_ids(current_user=user, view_all_permission=VIEW_ALL)
+        allowed = await resolver.resolve_user_ids(current_user=user)
         assert allowed == ["u-sales"]
 
 
@@ -136,7 +129,7 @@ async def test_resolver_department_scope(
         resolver = DataScopeResolver(repository)
 
         user = _current_user(user_id="u-sales", department_id="d-sales", data_scope="department")
-        allowed = await resolver.resolve_user_ids(current_user=user, view_all_permission=VIEW_ALL)
+        allowed = await resolver.resolve_user_ids(current_user=user)
         # 仅本部门：销售部下只有 u-sales（u-team 在子部门，不算本部门）。
         assert allowed is not None
         assert set(allowed) == {"u-sales"}
@@ -152,7 +145,7 @@ async def test_resolver_department_tree_scope(
         user = _current_user(
             user_id="u-sales", department_id="d-sales", data_scope="department_tree"
         )
-        allowed = await resolver.resolve_user_ids(current_user=user, view_all_permission=VIEW_ALL)
+        allowed = await resolver.resolve_user_ids(current_user=user)
         assert allowed is not None
         # 本部门及下级：销售部 + 销售一组。
         assert set(allowed) == {"u-sales", "u-team"}
@@ -166,5 +159,5 @@ async def test_resolver_department_scope_without_department_falls_back_to_self(
         resolver = DataScopeResolver(repository)
 
         user = _current_user(user_id="u-floating", department_id=None, data_scope="department_tree")
-        allowed = await resolver.resolve_user_ids(current_user=user, view_all_permission=VIEW_ALL)
+        allowed = await resolver.resolve_user_ids(current_user=user)
         assert allowed == ["u-floating"]

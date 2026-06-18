@@ -31,8 +31,6 @@ from app.modules.sales.shipments.schemas import (
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 
-SHIPMENT_VIEW_ALL_PERMISSION = "sales:shipment:view_all"
-
 
 class PermissionDeniedError(Exception):
     pass
@@ -120,7 +118,6 @@ class ShipmentPlanService:
             self._validate_status(approval_status)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=SHIPMENT_VIEW_ALL_PERMISSION,
         )
         plans, total = await self._repository.list_plans(
             q=q,
@@ -209,7 +206,6 @@ class ShipmentPlanService:
         self._require(current_user, "sales:shipment:view")
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=SHIPMENT_VIEW_ALL_PERMISSION,
         )
         reminders = await self._repository.list_reminders(
             owner_user_ids=owner_user_ids,
@@ -258,7 +254,6 @@ class ShipmentPlanService:
             raise ShipmentNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=SHIPMENT_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and contract.owner_user_id not in allowed_user_ids:
             raise ShipmentNotFoundError
@@ -310,7 +305,6 @@ class ShipmentPlanService:
             raise ShipmentNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=SHIPMENT_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and plan.owner_user_id not in allowed_user_ids:
             raise ShipmentNotFoundError

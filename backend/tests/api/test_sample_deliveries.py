@@ -128,6 +128,18 @@ async def test_sample_delivery_review_stock_fee_statistics_and_histories(
     assert approved["status"] == "approved"
     assert approved["reviewer_name"] == "演示业务主管"
 
+    tracking_response = await api_client.post(
+        f"/api/v1/sample/deliveries/{delivery_id}/tracking",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "express_company": "DHL",
+            "tracking_no": "DHL-2026-001",
+            "status": "shipped",
+        },
+    )
+    assert tracking_response.status_code == 200
+    assert tracking_response.json()["data"]["status"] == "shipped"
+
     sample_response = await api_client.get(
         f"/api/v1/sample/records/{sample_record['id']}",
         headers={"Authorization": f"Bearer {token}"},
@@ -153,6 +165,22 @@ async def test_sample_delivery_review_stock_fee_statistics_and_histories(
     assert stats["items"][0]["customer_name"] == "欧陆家居用品有限公司"
     assert stats["items"][0]["express_company"] == "DHL"
 
+    list_in_range_response = await api_client.get(
+        "/api/v1/sample/deliveries",
+        headers={"Authorization": f"Bearer {token}"},
+        params={"date_from": "2026-06-01", "date_to": "2026-06-30"},
+    )
+    assert list_in_range_response.status_code == 200
+    assert list_in_range_response.json()["data"]["total"] == 1
+
+    list_out_of_range_response = await api_client.get(
+        "/api/v1/sample/deliveries",
+        headers={"Authorization": f"Bearer {token}"},
+        params={"date_from": "2026-07-01", "date_to": "2026-07-31"},
+    )
+    assert list_out_of_range_response.status_code == 200
+    assert list_out_of_range_response.json()["data"]["total"] == 0
+
     sample_history_response = await api_client.get(
         f"/api/v1/sample/deliveries/history/sample/{sample_record['id']}",
         headers={"Authorization": f"Bearer {token}"},
@@ -167,6 +195,30 @@ async def test_sample_delivery_review_stock_fee_statistics_and_histories(
     )
     assert quote_history_response.status_code == 200
     assert quote_history_response.json()["data"]["items"][0]["quote_no"] == "QT-2026-001"
+
+    statistics_response = await api_client.get(
+        "/api/v1/sample/deliveries/statistics",
+        headers={"Authorization": f"Bearer {token}"},
+        params={"date_from": "2026-06-01", "date_to": "2026-06-30"},
+    )
+    assert statistics_response.status_code == 200
+    statistics = statistics_response.json()["data"]
+    assert statistics["total_deliveries"] == 1
+    assert statistics["total_quantity"] == "2"
+    assert statistics["by_status"][0]["status"] == "shipped"
+    assert statistics["by_customer"][0]["customer_name"] == "欧陆家居用品有限公司"
+
+    export_response = await api_client.get(
+        "/api/v1/sample/deliveries/export",
+        headers={"Authorization": f"Bearer {token}"},
+        params={"date_from": "2026-06-01", "date_to": "2026-06-30"},
+    )
+    assert export_response.status_code == 200
+    exported = export_response.json()["data"]
+    assert exported["filename"].endswith(".csv")
+    assert exported["total"] == 1
+    assert "SD-E2E-001" in exported["content"]
+    assert "DHL" in exported["content"]
 
 
 async def test_sample_delivery_can_update_draft_before_submit(

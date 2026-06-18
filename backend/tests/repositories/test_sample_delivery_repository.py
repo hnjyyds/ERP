@@ -59,11 +59,17 @@ async def test_sample_delivery_repository_filters_statistics_and_histories(
             reviewer_name="演示业务主管",
             approved_at=date(2026, 6, 25),
         )
+        await repository.update_tracking(
+            delivery_id=delivery.id,
+            express_company="DHL",
+            tracking_no="DHL-REPO-001",
+            status="shipped",
+        )
         await session.commit()
 
         deliveries, total = await repository.list_deliveries(
             q="Eco",
-            status="approved",
+            status="shipped",
             customer_id="customer-a",
             express_company="DHL",
             owner_user_ids=None,
@@ -73,6 +79,7 @@ async def test_sample_delivery_repository_filters_statistics_and_histories(
             date_from=date(2026, 6, 1),
             date_to=date(2026, 6, 30),
             express_company="DHL",
+            owner_user_ids=None,
         )
         sample_history, sample_history_total = await repository.list_sample_history("sample-a")
         quote_history, quote_history_total = await repository.list_quote_history(

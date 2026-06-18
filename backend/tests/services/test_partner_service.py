@@ -2,7 +2,11 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.modules.masterdata.partners.repositories import PartnerRepository
-from app.modules.masterdata.partners.schemas import PartnerCreate
+from app.modules.masterdata.partners.schemas import (
+    PartnerContactCreate,
+    PartnerContactUpdate,
+    PartnerCreate,
+)
 from app.modules.masterdata.partners.services import PartnerService
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
@@ -112,3 +116,83 @@ async def test_partner_service_rejects_invalid_partner_type(
                     strict=False,
                 ),
             )
+
+
+async def test_partner_service_updates_deletes_contacts_and_deactivates(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        service = _make_service(session)
+        user = _user_with_permissions(
+            ["masterdata:partner:view", "masterdata:partner:edit"],
+            user_id="u-001",
+        )
+        partner = await service.create_partner(
+            current_user=user,
+            payload=PartnerCreate(
+                code="P-CONTACT-SVC-001",
+                cn_name="联系人货代",
+                en_name="Contact Forwarder",
+                partner_type="freight_forwarder",
+                country="China",
+                contacts=[
+                    {
+                        "name": "Grace Lin",
+                        "title": "Ops",
+                        "email": "grace@example.com",
+                        "phone": "+86",
+                        "is_primary": True,
+                    }
+                ],
+            ),
+        )
+        first_contact_id = partner.contacts[0].id
+        second = await service.add_contact(
+            current_user=user,
+            partner_id=partner.id,
+            payload=PartnerContactCreate(
+                name="Mia Chen",
+                title="Account Executive",
+                email="mia@example.com",
+                phone="+86-1",
+                is_primary=False,
+            ),
+        )
+
+        updated = await service.update_contact(
+            current_user=user,
+            partner_id=partner.id,
+            contact_id=second.id,
+            payload=PartnerContactUpdate(
+                name="Mia Chen Updated",
+                title="Account Lead",
+                email="mia.updated@example.com",
+                phone="+86-9",
+                is_primary=True,
+            ),
+        )
+        visible = await service.get_partner(
+            current_user=_user_with_permissions(["masterdata:partner:view"], user_id="u-001"),
+            partner_id=partner.id,
+        )
+        deleted = await service.delete_contact(
+            current_user=user,
+            partner_id=partner.id,
+            contact_id=second.id,
+        )
+        final = await service.get_partner(
+            current_user=_user_with_permissions(["masterdata:partner:view"], user_id="u-001"),
+            partner_id=partner.id,
+        )
+        deactivated = await service.deactivate_partner(
+            current_user=user,
+            partner_id=partner.id,
+        )
+
+    assert updated.name == "Mia Chen Updated"
+    assert updated.is_primary is True
+    assert [item.id for item in visible.contacts if item.is_primary] == [second.id]
+    assert deleted.id == second.id
+    assert [item.id for item in final.contacts] == [first_contact_id]
+    assert final.contacts[0].is_primary is False
+    assert deactivated.status == "inactive"

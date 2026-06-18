@@ -36,15 +36,7 @@ type EmojiAvatarPresetId =
   | 'emoji-rocket'
   | 'emoji-sun'
 
-type LegacyAvatarPresetId =
-  | 'amber-orbit'
-  | 'sage-pulse'
-  | 'copper-wave'
-  | 'blueprint-grid'
-  | 'ink-halo'
-  | 'rose-signal'
-
-export type AvatarPresetId = PersonAvatarPresetId | EmojiAvatarPresetId | LegacyAvatarPresetId
+export type AvatarPresetId = PersonAvatarPresetId | EmojiAvatarPresetId
 
 export type AvatarPresetCategory = 'person' | 'emoji'
 
@@ -92,15 +84,6 @@ export const avatarPresets: AvatarPreset[] = [
   { id: 'emoji-sun', label: '晴朗', category: 'emoji', group: '表情', emoji: '☀️' },
 ]
 
-const legacyAvatarMap: Record<LegacyAvatarPresetId, PersonAvatarPresetId> = {
-  'amber-orbit': 'person-tech-01',
-  'sage-pulse': 'person-business-01',
-  'copper-wave': 'person-business-05',
-  'blueprint-grid': 'person-tech-08',
-  'ink-halo': 'person-tech-10',
-  'rose-signal': 'person-business-04',
-}
-
 type UserAvatarProps = {
   avatarType?: UserAvatarType
   avatarValue?: string
@@ -110,9 +93,7 @@ type UserAvatarProps = {
 }
 
 export function resolveAvatarPreset(presetId?: string): AvatarPreset {
-  const normalized =
-    (presetId && legacyAvatarMap[presetId as LegacyAvatarPresetId]) || presetId || defaultAvatarPreset
-
+  const normalized = presetId || defaultAvatarPreset
   return avatarPresets.find((preset) => preset.id === normalized) ?? avatarPresets[0]
 }
 

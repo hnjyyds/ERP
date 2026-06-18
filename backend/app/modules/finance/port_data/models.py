@@ -52,6 +52,22 @@ class CustomsDeclarationRecord(Base):
     amount: Mapped[Decimal] = mapped_column(Numeric(14, 2), nullable=False)
     currency: Mapped[str] = mapped_column(String(10), index=True, nullable=False)
     customer_or_supplier: Mapped[str | None] = mapped_column(String(240), index=True, nullable=True)
+    match_status: Mapped[str] = mapped_column(
+        String(40),
+        index=True,
+        default="unmatched",
+        nullable=False,
+    )
+    matched_verification_document_id: Mapped[str | None] = mapped_column(
+        String(36),
+        index=True,
+        nullable=True,
+    )
+    matched_verification_document_no: Mapped[str | None] = mapped_column(
+        String(120),
+        index=True,
+        nullable=True,
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC),

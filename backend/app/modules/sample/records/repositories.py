@@ -242,6 +242,21 @@ class SampleRecordRepository:
             return None
         return self._map_record(record)
 
+    async def get_record_by_source(
+        self,
+        *,
+        source_type: str,
+        source_id: str,
+    ) -> SampleRecordRow | None:
+        record = await self.session.scalar(
+            select(SampleRecord)
+            .where(SampleRecord.source_type == source_type)
+            .where(SampleRecord.source_id == source_id)
+        )
+        if record is None:
+            return None
+        return self._map_record(record)
+
     async def list_records(
         self,
         *,

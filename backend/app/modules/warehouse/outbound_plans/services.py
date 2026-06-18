@@ -22,8 +22,6 @@ from app.modules.warehouse.outbound_plans.schemas import (
     OutboundPlanSchedule,
 )
 
-OUTBOUND_PLAN_VIEW_ALL_PERMISSION = "warehouse:outbound_plan:view_all"
-
 
 class PermissionDeniedError(Exception):
     pass
@@ -110,7 +108,6 @@ class OutboundPlanService:
             self._validate_source_type(source_type)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=OUTBOUND_PLAN_VIEW_ALL_PERMISSION,
         )
         rows, total = await self._repository.list_plans(
             q=q,
@@ -190,7 +187,6 @@ class OutboundPlanService:
             raise OutboundPlanShipmentNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=OUTBOUND_PLAN_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and shipment.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
@@ -208,7 +204,6 @@ class OutboundPlanService:
             raise OutboundPlanNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=OUTBOUND_PLAN_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and plan.owner_user_id not in allowed_user_ids:
             raise OutboundPlanNotFoundError

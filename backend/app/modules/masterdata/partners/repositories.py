@@ -1,10 +1,21 @@
 from dataclasses import dataclass
 from datetime import datetime
+from decimal import Decimal
 
 from sqlalchemy import Select, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.modules.finance.fee_payments.models import FeePaymentRequest, PartnerFeeInvoice
 from app.modules.masterdata.partners.models import Partner, PartnerContact
+
+
+@dataclass(frozen=True)
+class PartnerFeeRecordRow:
+    source_type: str
+    source_code: str
+    occurred_at: str
+    amount: Decimal | None
+    summary: str
 
 
 @dataclass(frozen=True)
@@ -91,6 +102,14 @@ class PartnerRepository:
         await self.session.flush()
         return self._map_partner(partner)
 
+    async def set_partner_status(self, *, partner_id: str, status: str) -> PartnerRow | None:
+        partner = await self.session.scalar(select(Partner).where(Partner.id == partner_id))
+        if partner is None:
+            return None
+        partner.status = status
+        await self.session.flush()
+        return self._map_partner(partner)
+
     async def add_contact(
         self,
         *,
@@ -118,6 +137,61 @@ class PartnerRepository:
         self.session.add(contact)
         await self.session.flush()
         return self._map_contact(contact)
+
+    async def update_contact(
+        self,
+        *,
+        partner_id: str,
+        contact_id: str,
+        name: str,
+        title: str | None,
+        email: str | None,
+        phone: str | None,
+        is_primary: bool,
+    ) -> PartnerContactRow | None:
+        contact = await self.session.scalar(
+            select(PartnerContact).where(
+                PartnerContact.id == contact_id,
+                PartnerContact.partner_id == partner_id,
+            )
+        )
+        if contact is None:
+            return None
+        if is_primary:
+            await self.session.execute(
+                update(PartnerContact)
+                .where(
+                    PartnerContact.partner_id == partner_id,
+                    PartnerContact.id != contact_id,
+                )
+                .values(is_primary=False)
+            )
+        contact.name = name
+        contact.title = title
+        contact.email = email
+        contact.phone = phone
+        contact.is_primary = is_primary
+        await self.session.flush()
+        return self._map_contact(contact)
+
+    async def delete_contact(
+        self,
+        *,
+        partner_id: str,
+        contact_id: str,
+    ) -> PartnerContactRow | None:
+        contact = await self.session.scalar(
+            select(PartnerContact).where(
+                PartnerContact.id == contact_id,
+                PartnerContact.partner_id == partner_id,
+            )
+        )
+        if contact is None:
+            return None
+        row = self._map_contact(contact)
+        await self.session.delete(contact)
+        await self.session.flush()
+        return row
 
     async def get_partner(self, partner_id: str) -> PartnerRow | None:
         partner = await self.session.scalar(select(Partner).where(Partner.id == partner_id))
@@ -184,6 +258,64 @@ class PartnerRepository:
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)
         return [self._map_partner(row) for row in rows], int(total or 0)
+
+    async def list_fee_records(
+        self,
+        *,
+        partner_id: str,
+        limit: int = 100,
+    ) -> list[PartnerFeeRecordRow]:
+        """合作伙伴费用记录：聚合费用发票与费用付款申请，按发生日期倒序。"""
+        rows: list[PartnerFeeRecordRow] = []
+
+        invoices = await self.session.execute(
+            select(
+                PartnerFeeInvoice.invoice_no,
+                PartnerFeeInvoice.invoice_date,
+                PartnerFeeInvoice.total_amount,
+                PartnerFeeInvoice.currency,
+                PartnerFeeInvoice.fee_type,
+            )
+            .where(PartnerFeeInvoice.partner_id == partner_id)
+            .order_by(PartnerFeeInvoice.invoice_date.desc())
+            .limit(limit)
+        )
+        for invoice_no, invoice_date, amount, currency, fee_type in invoices.all():
+            rows.append(
+                PartnerFeeRecordRow(
+                    source_type="fee_invoice",
+                    source_code=invoice_no,
+                    occurred_at=invoice_date.isoformat() if invoice_date else "",
+                    amount=Decimal(str(amount or 0)),
+                    summary=f"费用发票 {invoice_no}（{fee_type} / {currency}）",
+                )
+            )
+
+        requests = await self.session.execute(
+            select(
+                FeePaymentRequest.request_no,
+                FeePaymentRequest.request_date,
+                FeePaymentRequest.requested_amount,
+                FeePaymentRequest.currency,
+                FeePaymentRequest.fee_type,
+            )
+            .where(FeePaymentRequest.partner_id == partner_id)
+            .order_by(FeePaymentRequest.request_date.desc())
+            .limit(limit)
+        )
+        for request_no, request_date, amount, currency, fee_type in requests.all():
+            rows.append(
+                PartnerFeeRecordRow(
+                    source_type="fee_payment_request",
+                    source_code=request_no,
+                    occurred_at=request_date.isoformat() if request_date else "",
+                    amount=Decimal(str(amount or 0)),
+                    summary=f"费用付款申请 {request_no}（{fee_type} / {currency}）",
+                )
+            )
+
+        rows.sort(key=lambda row: row.occurred_at, reverse=True)
+        return rows[:limit]
 
     async def _scalars(self, statement: Select[tuple[Partner]]) -> list[Partner]:
         result = await self.session.scalars(statement)

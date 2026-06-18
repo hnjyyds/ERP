@@ -977,6 +977,340 @@ export interface MiscFeeAllocationCreatePayload {
   remark?: string | null
 }
 
+// ---- 报销管理 (reimbursements) ----
+
+export interface ReimbursementItem {
+  id: string
+  expense_item: string
+  amount: string
+  remark: string | null
+}
+
+export interface Reimbursement {
+  id: string
+  reimbursement_no: string
+  applicant_user_id: string
+  applicant_user_name: string
+  department: string
+  category: string
+  currency: string
+  amount: string
+  reason: string | null
+  status: string
+  approved_by_user_id: string | null
+  approved_by_user_name: string | null
+  approval_remark: string | null
+  payment_method: string | null
+  remark: string | null
+  created_by_user_id: string
+  created_by_user_name: string
+  items: ReimbursementItem[]
+}
+
+export interface ReimbursementList {
+  items: Reimbursement[]
+  total: number
+  total_amount: string
+}
+
+export interface ReimbursementItemCreatePayload {
+  expense_item: string
+  amount: string
+  remark?: string | null
+}
+
+export interface ReimbursementCreatePayload {
+  reimbursement_no: string
+  applicant_user_id: string
+  applicant_user_name: string
+  department: string
+  category: string
+  currency: string
+  amount: string
+  reason?: string | null
+  remark?: string | null
+  items?: ReimbursementItemCreatePayload[]
+}
+
+export interface ReimbursementApprovePayload {
+  approved: boolean
+  approval_remark?: string | null
+}
+
+export interface ReimbursementPayPayload {
+  payment_method: string
+  remark?: string | null
+}
+
+// ---- 口岸数据导入 (port data import) ----
+
+export interface CustomsDeclarationRecord {
+  id: string
+  batch_id: string
+  declaration_no: string
+  customs_receipt_no: string | null
+  trade_type: string
+  export_contract_no: string | null
+  customs_date: string | null
+  product_name: string
+  hs_code: string | null
+  quantity: string | null
+  unit: string | null
+  amount: string
+  currency: string
+  customer_or_supplier: string | null
+  match_status: string
+  verification_document_id: string | null
+  verification_document_no: string | null
+}
+
+export interface CustomsDeclarationRecordList {
+  items: CustomsDeclarationRecord[]
+  total: number
+}
+
+export interface CustomsReceiptMatchRecord {
+  declaration_no: string
+  customs_receipt_no: string
+  verification_document_id: string
+  verification_document_no: string
+}
+
+export interface CustomsReceiptAutoMatchResult {
+  matched_count: number
+  unmatched_count: number
+  matched_records: CustomsReceiptMatchRecord[]
+}
+
+export interface PortImportBatch {
+  id: string
+  batch_no: string
+  source: string
+  imported_at: string
+  record_count: number
+  status: string
+  remark: string | null
+  created_by_user_id: string
+  created_by_user_name: string
+  records: CustomsDeclarationRecord[]
+}
+
+export interface PortImportBatchList {
+  items: PortImportBatch[]
+  total: number
+}
+
+export interface CustomsDeclarationRecordCreatePayload {
+  declaration_no: string
+  customs_receipt_no?: string | null
+  trade_type: string
+  export_contract_no?: string | null
+  customs_date?: string | null
+  product_name: string
+  hs_code?: string | null
+  quantity?: string | null
+  unit?: string | null
+  amount: string
+  currency: string
+  customer_or_supplier?: string | null
+}
+
+export interface PortImportBatchCreatePayload {
+  batch_no: string
+  source: string
+  imported_at: string
+  record_count: number
+  remark?: string | null
+  records: CustomsDeclarationRecordCreatePayload[]
+}
+
+// ---- 财务统计报表 (finance reports, read-only) ----
+
+export interface ReceiptUsageDetailRow {
+  receipt_no: string
+  received_at: string
+  payer_name: string
+  customer_name: string | null
+  allocation_type: string
+  contract_no: string | null
+  invoice_no: string | null
+  allocated_at: string
+  currency: string
+  amount: string
+}
+
+export interface ReceiptUsageCurrencySummary {
+  currency: string
+  allocation_count: number
+  allocated_amount: string
+}
+
+export interface ReceiptUsageDetailReport {
+  rows: ReceiptUsageDetailRow[]
+  currency_summaries: ReceiptUsageCurrencySummary[]
+  total_count: number
+}
+
+export interface BankReceiptCurrencySummary {
+  currency: string
+  receipt_count: number
+  total_amount: string
+  allocated_amount: string
+  unallocated_amount: string
+}
+
+export interface BankReceiptOperatorSummary {
+  operator_name: string
+  currency: string
+  receipt_count: number
+  total_amount: string
+}
+
+export interface BankReceiptSummaryReport {
+  currency_summaries: BankReceiptCurrencySummary[]
+  operator_summaries: BankReceiptOperatorSummary[]
+  receipt_count: number
+}
+
+export interface GoodsPaymentQueryRow {
+  request_no: string
+  request_date: string
+  supplier_invoice_no: string
+  supplier_name: string
+  purchase_contract_no: string | null
+  payment_type: string
+  currency: string
+  requested_amount: string
+  approved_amount: string
+  paid_amount: string
+  outstanding_amount: string
+  status: string
+}
+
+export interface GoodsPaymentCurrencySummary {
+  currency: string
+  request_count: number
+  requested_amount: string
+  approved_amount: string
+  paid_amount: string
+  outstanding_amount: string
+}
+
+export interface GoodsPaymentQueryReport {
+  rows: GoodsPaymentQueryRow[]
+  currency_summaries: GoodsPaymentCurrencySummary[]
+  total_count: number
+}
+
+export interface FeePaymentQueryRow {
+  request_no: string
+  request_date: string
+  partner_fee_invoice_no: string
+  partner_name: string
+  partner_type: string | null
+  fee_type: string
+  shipment_no: string | null
+  sales_user_name: string | null
+  currency: string
+  requested_amount: string
+  approved_amount: string
+  paid_amount: string
+  outstanding_amount: string
+  status: string
+}
+
+export interface FeePaymentCurrencySummary {
+  currency: string
+  request_count: number
+  requested_amount: string
+  approved_amount: string
+  paid_amount: string
+  outstanding_amount: string
+}
+
+export interface FeePaymentQueryReport {
+  rows: FeePaymentQueryRow[]
+  currency_summaries: FeePaymentCurrencySummary[]
+  total_count: number
+}
+
+export interface CustomsReceiptCollectionRow {
+  document_no: string
+  received_at: string
+  owner_user_name: string | null
+  shipment_no: string | null
+  customer_name: string | null
+  customs_declaration_no: string | null
+  customs_receipt_no: string | null
+  reminder_date: string
+  reminder_status: string
+  valid_until: string
+  currency: string
+  refundable_amount: string
+}
+
+export interface CustomsReceiptStatusSummary {
+  reminder_status: string
+  count: number
+}
+
+export interface CustomsReceiptCollectionReport {
+  rows: CustomsReceiptCollectionRow[]
+  status_summaries: CustomsReceiptStatusSummary[]
+  total_count: number
+}
+
+export interface TaxRefundStatusSummary {
+  status: string
+  currency: string
+  document_count: number
+  refundable_amount: string
+  refunded_amount: string
+  outstanding_amount: string
+}
+
+export interface TaxRefundCurrencyTotal {
+  currency: string
+  document_count: number
+  refundable_amount: string
+  refunded_amount: string
+  outstanding_amount: string
+}
+
+export interface TaxRefundStatisticsReport {
+  status_summaries: TaxRefundStatusSummary[]
+  currency_totals: TaxRefundCurrencyTotal[]
+  document_count: number
+  refund_record_count: number
+}
+
+export interface FinanceReportFieldExplanation {
+  label: string
+  field: string
+  formula: string
+}
+
+export interface FinanceReportExplanation {
+  report_key: string
+  title: string
+  source_tables: string[]
+  metric_rules: string[]
+  fields: FinanceReportFieldExplanation[]
+}
+
+export interface FinanceReportDrilldownItem {
+  label: string
+  value: string | null
+  target_path: string | null
+}
+
+export interface FinanceReportDrilldown {
+  report_key: string
+  source_type: string
+  source_no: string
+  items: FinanceReportDrilldownItem[]
+}
+
 export interface ProfitCostItem {
   id: string
   settlement_id: string
@@ -1147,6 +1481,71 @@ export interface ProductExport {
   filename: string
   content_type: string
   content: string
+}
+
+export interface ProductImportError {
+  row: number
+  code: string | null
+  message: string
+}
+
+export interface ProductImportResult {
+  created: number
+  updated: number
+  failed: number
+  errors: ProductImportError[]
+}
+
+export interface ProductCustomer {
+  customer_id: string | null
+  customer_name: string
+  contract_count: number
+  total_quantity: string
+  total_amount: string
+  last_contract_date: string | null
+}
+
+export interface ProductCustomerList {
+  items: ProductCustomer[]
+  total: number
+}
+
+export interface ProductTransaction {
+  source_type: string
+  source_code: string
+  occurred_at: string
+  counterparty_name: string | null
+  quantity: string | null
+  unit: string | null
+  amount: string | null
+  summary: string
+}
+
+export interface ProductTransactionList {
+  items: ProductTransaction[]
+  total: number
+}
+
+export interface FileUploadResult {
+  url: string
+  filename: string
+  content_type: string
+  size: number
+}
+
+export interface DocumentPrint {
+  document_type: string
+  document_code: string
+  content_type: string
+  html: string
+}
+
+export interface DocumentFile {
+  document_type: string
+  document_code: string
+  filename: string
+  content_type: string
+  content_base64: string
 }
 
 export interface CustomerContact {
@@ -1482,6 +1881,8 @@ export interface SampleFee {
   remark: string | null
   payment_status: string
   payment_request_no: string | null
+  finance_invoice_no: string | null
+  finance_payment_request_id: string | null
 }
 
 export interface SampleRequest {
@@ -1636,6 +2037,22 @@ export interface SampleRecordList {
   total: number
 }
 
+export interface SampleRequestToRecordPayload {
+  code: string
+  sample_type: string
+  status: string
+  received_at: string
+  submitted_at?: string | null
+  quantity: string
+  unit: string
+  customer_sku?: string | null
+  supplier_sku?: string | null
+  purchase_contract_id?: string | null
+  purchase_contract_no?: string | null
+  description?: string | null
+  images: SampleRecordImagePayload[]
+}
+
 export interface SampleRecordImagePayload {
   file_id: string
   filename: string
@@ -1679,6 +2096,22 @@ export interface SampleRecordStockEventPayload {
   delivery_no?: string | null
   recipient?: string | null
   note?: string | null
+}
+
+export interface SampleRecordImportPayload {
+  records: SampleRecordCreatePayload[]
+}
+
+export interface SampleRecordImportResult {
+  created_count: number
+  records: SampleRecord[]
+}
+
+export interface CsvExportResult {
+  filename: string
+  content_type: string
+  content: string
+  total: number
 }
 
 export interface SampleDeliveryLine {
@@ -1803,6 +2236,33 @@ export interface SampleDeliveryFeeStatistics {
   items: SampleDeliveryFeeStatistic[]
   total_amount: string
   currency: string
+}
+
+export interface SampleDeliveryStatusStatistic {
+  status: string
+  delivery_count: number
+  total_quantity: string
+}
+
+export interface SampleDeliveryCustomerStatistic {
+  customer_id: string | null
+  customer_name: string
+  delivery_count: number
+  total_quantity: string
+}
+
+export interface SampleDeliveryExpressStatistic {
+  express_company: string
+  delivery_count: number
+  total_quantity: string
+}
+
+export interface SampleDeliveryStatistics {
+  total_deliveries: number
+  total_quantity: string
+  by_status: SampleDeliveryStatusStatistic[]
+  by_customer: SampleDeliveryCustomerStatistic[]
+  by_express: SampleDeliveryExpressStatistic[]
 }
 
 export interface ExportQuotationLine {
@@ -3788,6 +4248,251 @@ export function listProfitCalculations(filters: {
   return request<ProfitCalculationList>(`/finance/profit-calculations${suffix}`)
 }
 
+// ---- 报销管理 API ----
+
+export function listReimbursements(filters: {
+  q?: string
+  status?: string
+  category?: string
+  applicant_user_id?: string
+} = {}): Promise<ReimbursementList> {
+  const params = new URLSearchParams()
+  if (filters.q) params.set('q', filters.q)
+  if (filters.status) params.set('status', filters.status)
+  if (filters.category) params.set('category', filters.category)
+  if (filters.applicant_user_id) params.set('applicant_user_id', filters.applicant_user_id)
+  const suffix = params.size > 0 ? `?${params.toString()}` : ''
+  return request<ReimbursementList>(`/finance/reimbursements${suffix}`)
+}
+
+export function createReimbursement(payload: ReimbursementCreatePayload): Promise<Reimbursement> {
+  return request<Reimbursement>('/finance/reimbursements', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function approveReimbursement(
+  reimbursementId: string,
+  payload: ReimbursementApprovePayload,
+): Promise<Reimbursement> {
+  return request<Reimbursement>(`/finance/reimbursements/${reimbursementId}/approve`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function payReimbursement(
+  reimbursementId: string,
+  payload: ReimbursementPayPayload,
+): Promise<Reimbursement> {
+  return request<Reimbursement>(`/finance/reimbursements/${reimbursementId}/pay`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+// ---- 口岸数据导入 API ----
+
+export function listPortImportBatches(filters: {
+  source?: string
+  status?: string
+} = {}): Promise<PortImportBatchList> {
+  const params = new URLSearchParams()
+  if (filters.source) params.set('source', filters.source)
+  if (filters.status) params.set('status', filters.status)
+  const suffix = params.size > 0 ? `?${params.toString()}` : ''
+  return request<PortImportBatchList>(`/finance/port-import-batches${suffix}`)
+}
+
+export function createPortImportBatch(
+  payload: PortImportBatchCreatePayload,
+): Promise<PortImportBatch> {
+  return request<PortImportBatch>('/finance/port-import-batches', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function listCustomsDeclarationRecords(filters: {
+  declaration_no?: string
+  customs_receipt_no?: string
+  trade_type?: string
+  batch_id?: string
+} = {}): Promise<CustomsDeclarationRecordList> {
+  const params = new URLSearchParams()
+  if (filters.declaration_no) params.set('declaration_no', filters.declaration_no)
+  if (filters.customs_receipt_no) params.set('customs_receipt_no', filters.customs_receipt_no)
+  if (filters.trade_type) params.set('trade_type', filters.trade_type)
+  if (filters.batch_id) params.set('batch_id', filters.batch_id)
+  const suffix = params.size > 0 ? `?${params.toString()}` : ''
+  return request<CustomsDeclarationRecordList>(`/finance/customs-declaration-records${suffix}`)
+}
+
+export function autoMatchCustomsReceipts(): Promise<CustomsReceiptAutoMatchResult> {
+  return request<CustomsReceiptAutoMatchResult>(
+    '/finance/customs-declaration-records/auto-match',
+    { method: 'POST' },
+  )
+}
+
+// ---- 财务统计报表 API（只读）----
+
+function financeReportSuffix(filters: Record<string, string | boolean | undefined>): string {
+  const params = new URLSearchParams()
+  for (const [key, value] of Object.entries(filters)) {
+    if (value === undefined || value === '' || value === false) continue
+    params.set(key, String(value))
+  }
+  return params.size > 0 ? `?${params.toString()}` : ''
+}
+
+export function getReceiptUsageReport(filters: {
+  date_from?: string
+  date_to?: string
+  currency?: string
+  receipt_no?: string
+} = {}): Promise<ReceiptUsageDetailReport> {
+  const suffix = financeReportSuffix(filters)
+  return request<ReceiptUsageDetailReport>(`/finance/reports/receipt-usage${suffix}`)
+}
+
+export function exportReceiptUsageReport(filters: {
+  date_from?: string
+  date_to?: string
+  currency?: string
+  receipt_no?: string
+} = {}): Promise<CsvExportResult> {
+  const suffix = financeReportSuffix(filters)
+  return request<CsvExportResult>(`/finance/reports/receipt-usage/export${suffix}`)
+}
+
+export function getBankReceiptSummaryReport(filters: {
+  date_from?: string
+  date_to?: string
+  currency?: string
+  receipt_type?: string
+} = {}): Promise<BankReceiptSummaryReport> {
+  const suffix = financeReportSuffix(filters)
+  return request<BankReceiptSummaryReport>(`/finance/reports/bank-receipt-summary${suffix}`)
+}
+
+export function exportBankReceiptSummaryReport(filters: {
+  date_from?: string
+  date_to?: string
+  currency?: string
+  receipt_type?: string
+} = {}): Promise<CsvExportResult> {
+  const suffix = financeReportSuffix(filters)
+  return request<CsvExportResult>(`/finance/reports/bank-receipt-summary/export${suffix}`)
+}
+
+export function getGoodsPaymentReport(filters: {
+  date_from?: string
+  date_to?: string
+  currency?: string
+  supplier_name?: string
+  status?: string
+} = {}): Promise<GoodsPaymentQueryReport> {
+  const suffix = financeReportSuffix(filters)
+  return request<GoodsPaymentQueryReport>(`/finance/reports/goods-payment${suffix}`)
+}
+
+export function exportGoodsPaymentReport(filters: {
+  date_from?: string
+  date_to?: string
+  currency?: string
+  supplier_name?: string
+  status?: string
+} = {}): Promise<CsvExportResult> {
+  const suffix = financeReportSuffix(filters)
+  return request<CsvExportResult>(`/finance/reports/goods-payment/export${suffix}`)
+}
+
+export function getFeePaymentReport(filters: {
+  date_from?: string
+  date_to?: string
+  currency?: string
+  partner_name?: string
+  fee_type?: string
+  sales_user_id?: string
+  status?: string
+} = {}): Promise<FeePaymentQueryReport> {
+  const suffix = financeReportSuffix(filters)
+  return request<FeePaymentQueryReport>(`/finance/reports/fee-payment${suffix}`)
+}
+
+export function exportFeePaymentReport(filters: {
+  date_from?: string
+  date_to?: string
+  currency?: string
+  partner_name?: string
+  fee_type?: string
+  sales_user_id?: string
+  status?: string
+} = {}): Promise<CsvExportResult> {
+  const suffix = financeReportSuffix(filters)
+  return request<CsvExportResult>(`/finance/reports/fee-payment/export${suffix}`)
+}
+
+export function getCustomsReceiptCollectionReport(filters: {
+  date_from?: string
+  date_to?: string
+  owner_user_id?: string
+  reminder_status?: string
+  include_registered?: boolean
+} = {}): Promise<CustomsReceiptCollectionReport> {
+  const suffix = financeReportSuffix(filters)
+  return request<CustomsReceiptCollectionReport>(
+    `/finance/reports/customs-receipt-collection${suffix}`,
+  )
+}
+
+export function exportCustomsReceiptCollectionReport(filters: {
+  date_from?: string
+  date_to?: string
+  owner_user_id?: string
+  reminder_status?: string
+  include_registered?: boolean
+} = {}): Promise<CsvExportResult> {
+  const suffix = financeReportSuffix(filters)
+  return request<CsvExportResult>(
+    `/finance/reports/customs-receipt-collection/export${suffix}`,
+  )
+}
+
+export function getTaxRefundStatisticsReport(filters: {
+  date_from?: string
+  date_to?: string
+  currency?: string
+  status?: string
+} = {}): Promise<TaxRefundStatisticsReport> {
+  const suffix = financeReportSuffix(filters)
+  return request<TaxRefundStatisticsReport>(`/finance/reports/tax-refund-statistics${suffix}`)
+}
+
+export function exportTaxRefundStatisticsReport(filters: {
+  date_from?: string
+  date_to?: string
+  currency?: string
+  status?: string
+} = {}): Promise<CsvExportResult> {
+  const suffix = financeReportSuffix(filters)
+  return request<CsvExportResult>(`/finance/reports/tax-refund-statistics/export${suffix}`)
+}
+
+export function explainFinanceReport(reportKey: string): Promise<FinanceReportExplanation> {
+  return request<FinanceReportExplanation>(`/finance/reports/${reportKey}/explain`)
+}
+
+export function drilldownFinanceReport(
+  reportKey: string,
+  sourceNo: string,
+): Promise<FinanceReportDrilldown> {
+  const suffix = financeReportSuffix({ source_no: sourceNo })
+  return request<FinanceReportDrilldown>(`/finance/reports/${reportKey}/drilldown${suffix}`)
+}
+
 export function createScheduleEvent(payload: ScheduleCreatePayload): Promise<ScheduleEvent> {
   return request<ScheduleEvent>('/schedules', {
     method: 'POST',
@@ -3860,6 +4565,43 @@ export function exportProducts(): Promise<ProductExport> {
   return request<ProductExport>('/masterdata/products/export')
 }
 
+export function importProducts(
+  filename: string,
+  contentBase64: string,
+): Promise<ProductImportResult> {
+  return request<ProductImportResult>('/masterdata/products/import', {
+    method: 'POST',
+    body: JSON.stringify({ filename, content_base64: contentBase64 }),
+  })
+}
+
+export function listProductCustomers(productId: string): Promise<ProductCustomerList> {
+  return request<ProductCustomerList>(`/masterdata/products/${productId}/customers`)
+}
+
+export function listProductTransactions(productId: string): Promise<ProductTransactionList> {
+  return request<ProductTransactionList>(`/masterdata/products/${productId}/transactions`)
+}
+
+export function uploadImage(filename: string, contentBase64: string): Promise<FileUploadResult> {
+  return request<FileUploadResult>('/files/images', {
+    method: 'POST',
+    body: JSON.stringify({ filename, content_base64: contentBase64 }),
+  })
+}
+
+export function printExportContract(contractId: string): Promise<DocumentPrint> {
+  return request<DocumentPrint>(`/printing/export-contracts/${contractId}`)
+}
+
+export function printSampleRequest(requestId: string): Promise<DocumentPrint> {
+  return request<DocumentPrint>(`/printing/sample-requests/${requestId}`)
+}
+
+export function generatePurchaseContractTemplate(contractId: string): Promise<DocumentFile> {
+  return request<DocumentFile>(`/printing/purchase-contracts/${contractId}/template`)
+}
+
 export function listCustomers(filters: {
   q?: string
   country?: string
@@ -3903,6 +4645,26 @@ export function addCustomerContact(
   return request<CustomerContact>(`/masterdata/customers/${customerId}/contacts`, {
     method: 'POST',
     body: JSON.stringify(payload),
+  })
+}
+
+export function updateCustomerContact(
+  customerId: string,
+  contactId: string,
+  payload: CustomerContactPayload,
+): Promise<CustomerContact> {
+  return request<CustomerContact>(`/masterdata/customers/${customerId}/contacts/${contactId}`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function deleteCustomerContact(
+  customerId: string,
+  contactId: string,
+): Promise<CustomerContact> {
+  return request<CustomerContact>(`/masterdata/customers/${customerId}/contacts/${contactId}`, {
+    method: 'DELETE',
   })
 }
 
@@ -3956,6 +4718,26 @@ export function addSupplierContact(
   })
 }
 
+export function updateSupplierContact(
+  supplierId: string,
+  contactId: string,
+  payload: SupplierContactPayload,
+): Promise<SupplierContact> {
+  return request<SupplierContact>(`/masterdata/suppliers/${supplierId}/contacts/${contactId}`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function deleteSupplierContact(
+  supplierId: string,
+  contactId: string,
+): Promise<SupplierContact> {
+  return request<SupplierContact>(`/masterdata/suppliers/${supplierId}/contacts/${contactId}`, {
+    method: 'DELETE',
+  })
+}
+
 export function listSupplierTransactions(supplierId: string): Promise<SupplierTransactionList> {
   return request<SupplierTransactionList>(`/masterdata/suppliers/${supplierId}/transactions`)
 }
@@ -3988,6 +4770,12 @@ export function updatePartner(
   })
 }
 
+export function deactivatePartner(partnerId: string): Promise<Partner> {
+  return request<Partner>(`/masterdata/partners/${partnerId}`, {
+    method: 'DELETE',
+  })
+}
+
 export function addPartnerContact(
   partnerId: string,
   payload: PartnerContactPayload,
@@ -3995,6 +4783,26 @@ export function addPartnerContact(
   return request<PartnerContact>(`/masterdata/partners/${partnerId}/contacts`, {
     method: 'POST',
     body: JSON.stringify(payload),
+  })
+}
+
+export function updatePartnerContact(
+  partnerId: string,
+  contactId: string,
+  payload: PartnerContactPayload,
+): Promise<PartnerContact> {
+  return request<PartnerContact>(`/masterdata/partners/${partnerId}/contacts/${contactId}`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function deletePartnerContact(
+  partnerId: string,
+  contactId: string,
+): Promise<PartnerContact> {
+  return request<PartnerContact>(`/masterdata/partners/${partnerId}/contacts/${contactId}`, {
+    method: 'DELETE',
   })
 }
 
@@ -4054,11 +4862,15 @@ export function listSampleRequests(filters: {
   q?: string
   status?: string
   customer_id?: string
+  date_from?: string
+  date_to?: string
 } = {}): Promise<SampleRequestList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.status) params.set('status', filters.status)
   if (filters.customer_id) params.set('customer_id', filters.customer_id)
+  if (filters.date_from) params.set('date_from', filters.date_from)
+  if (filters.date_to) params.set('date_to', filters.date_to)
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<SampleRequestList>(`/sample/requests${suffix}`)
 }
@@ -4095,6 +4907,16 @@ export function requestSampleFeePayment(
 ): Promise<SampleFee> {
   return request<SampleFee>(`/sample/requests/${requestId}/fees/${feeId}/payment-request`, {
     method: 'POST',
+  })
+}
+
+export function createSampleRecordFromRequest(
+  requestId: string,
+  payload: SampleRequestToRecordPayload,
+): Promise<SampleRecord> {
+  return request<SampleRecord>(`/sample/requests/${requestId}/sample-record`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
   })
 }
 
@@ -4144,17 +4966,45 @@ export function addSampleRecordStockEvent(
   })
 }
 
+export function importSampleRecords(
+  payload: SampleRecordImportPayload,
+): Promise<SampleRecordImportResult> {
+  return request<SampleRecordImportResult>('/sample/records/import', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function exportSampleRecords(filters: {
+  q?: string
+  sample_type?: string
+  customer_id?: string
+  purchase_contract_id?: string
+} = {}): Promise<CsvExportResult> {
+  const params = new URLSearchParams()
+  if (filters.q) params.set('q', filters.q)
+  if (filters.sample_type) params.set('sample_type', filters.sample_type)
+  if (filters.customer_id) params.set('customer_id', filters.customer_id)
+  if (filters.purchase_contract_id) params.set('purchase_contract_id', filters.purchase_contract_id)
+  const suffix = params.size > 0 ? `?${params.toString()}` : ''
+  return request<CsvExportResult>(`/sample/records/export${suffix}`)
+}
+
 export function listSampleDeliveries(filters: {
   q?: string
   status?: string
   customer_id?: string
   express_company?: string
+  date_from?: string
+  date_to?: string
 } = {}): Promise<SampleDeliveryList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.status) params.set('status', filters.status)
   if (filters.customer_id) params.set('customer_id', filters.customer_id)
   if (filters.express_company) params.set('express_company', filters.express_company)
+  if (filters.date_from) params.set('date_from', filters.date_from)
+  if (filters.date_to) params.set('date_to', filters.date_to)
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<SampleDeliveryList>(`/sample/deliveries${suffix}`)
 }
@@ -4217,6 +5067,36 @@ export function getSampleDeliveryFeeStatistics(filters: {
   if (filters.express_company) params.set('express_company', filters.express_company)
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<SampleDeliveryFeeStatistics>(`/sample/deliveries/fee-statistics${suffix}`)
+}
+
+export function getSampleDeliveryStatistics(filters: {
+  customer_id?: string
+  date_from?: string
+  date_to?: string
+  express_company?: string
+} = {}): Promise<SampleDeliveryStatistics> {
+  const params = new URLSearchParams()
+  if (filters.customer_id) params.set('customer_id', filters.customer_id)
+  if (filters.date_from) params.set('date_from', filters.date_from)
+  if (filters.date_to) params.set('date_to', filters.date_to)
+  if (filters.express_company) params.set('express_company', filters.express_company)
+  const suffix = params.size > 0 ? `?${params.toString()}` : ''
+  return request<SampleDeliveryStatistics>(`/sample/deliveries/statistics${suffix}`)
+}
+
+export function exportSampleDeliveries(filters: {
+  customer_id?: string
+  date_from?: string
+  date_to?: string
+  express_company?: string
+} = {}): Promise<CsvExportResult> {
+  const params = new URLSearchParams()
+  if (filters.customer_id) params.set('customer_id', filters.customer_id)
+  if (filters.date_from) params.set('date_from', filters.date_from)
+  if (filters.date_to) params.set('date_to', filters.date_to)
+  if (filters.express_company) params.set('express_company', filters.express_company)
+  const suffix = params.size > 0 ? `?${params.toString()}` : ''
+  return request<CsvExportResult>(`/sample/deliveries/export${suffix}`)
 }
 
 export function getSampleDeliverySampleHistory(

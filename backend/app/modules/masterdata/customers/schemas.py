@@ -13,6 +13,10 @@ class CustomerContactCreate(BaseModel):
     is_primary: bool = False
 
 
+class CustomerContactUpdate(CustomerContactCreate):
+    pass
+
+
 class CustomerCreditProfileInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
 

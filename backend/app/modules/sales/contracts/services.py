@@ -31,8 +31,6 @@ from app.modules.sales.contracts.schemas import (
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 
-CONTRACT_VIEW_ALL_PERMISSION = "sales:contract:view_all"
-
 
 class PermissionDeniedError(Exception):
     pass
@@ -133,7 +131,6 @@ class ExportContractService:
             self._validate_status(approval_status)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=CONTRACT_VIEW_ALL_PERMISSION,
         )
         contracts, total = await self._repository.list_contracts(
             q=q,
@@ -329,7 +326,6 @@ class ExportContractService:
             raise ExportContractNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=CONTRACT_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and contract.owner_user_id not in allowed_user_ids:
             raise ExportContractNotFoundError

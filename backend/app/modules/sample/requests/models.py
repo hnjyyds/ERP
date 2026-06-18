@@ -105,6 +105,12 @@ class SampleFee(Base):
         nullable=False,
     )
     payment_request_no: Mapped[str | None] = mapped_column(String(80), index=True, nullable=True)
+    finance_invoice_no: Mapped[str | None] = mapped_column(String(120), index=True, nullable=True)
+    finance_payment_request_id: Mapped[str | None] = mapped_column(
+        String(36),
+        index=True,
+        nullable=True,
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC),

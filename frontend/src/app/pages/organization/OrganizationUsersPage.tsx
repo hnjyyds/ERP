@@ -678,6 +678,8 @@ export function OrganizationUsersPage({
   }))
   const [passwordReveal, setPasswordReveal] = useState<PasswordRevealState | null>(null)
   const [permissionModalOpen, setPermissionModalOpen] = useState(false)
+  const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null)
+  const [companyModalOpen, setCompanyModalOpen] = useState(false)
   const [companyForm, setCompanyForm] = useState<CompanyInfoFormState>(() => emptyCompanyForm())
   const [companyUpdatedAt, setCompanyUpdatedAt] = useState<string | null>(null)
   const [companyLoaded, setCompanyLoaded] = useState(false)
@@ -749,6 +751,7 @@ export function OrganizationUsersPage({
   async function loadCompanyInfo() {
     try {
       const info = await getCompanyInfo()
+      setCompanyInfo(info)
       setCompanyForm(companyInfoToForm(info))
       setCompanyUpdatedAt(info.updated_at)
     } catch {
@@ -756,6 +759,17 @@ export function OrganizationUsersPage({
     } finally {
       setCompanyLoaded(true)
     }
+  }
+
+  function openCompanyModal() {
+    setCompanyForm(companyInfo ? companyInfoToForm(companyInfo) : emptyCompanyForm())
+    setActionError('')
+    setCompanyModalOpen(true)
+  }
+
+  function closeCompanyModal() {
+    setCompanyForm(companyInfo ? companyInfoToForm(companyInfo) : emptyCompanyForm())
+    setCompanyModalOpen(false)
   }
 
   async function handleSaveCompanyInfo(event: FormEvent) {
@@ -768,8 +782,10 @@ export function OrganizationUsersPage({
     setBusyAction('company-save')
     try {
       const updated = await updateCompanyInfo(companyFormToPayload(companyForm))
+      setCompanyInfo(updated)
       setCompanyForm(companyInfoToForm(updated))
       setCompanyUpdatedAt(updated.updated_at)
+      setCompanyModalOpen(false)
       setActionMessage('公司信息已保存')
     } catch (caught) {
       showError(caught, '公司信息保存失败')
@@ -1257,37 +1273,44 @@ export function OrganizationUsersPage({
               </p>
             </div>
           </div>
+          <button
+            className="secondary-inline"
+            disabled={!companyLoaded}
+            type="button"
+            onClick={openCompanyModal}
+          >
+            <Pencil size={15} />
+            编辑公司信息
+          </button>
         </header>
         {companyLoaded ? (
-          <form className="organization-company-form" onSubmit={handleSaveCompanyInfo}>
-            <div className="organization-company-grid">
-              {COMPANY_FIELD_LABELS.map((field) => (
-                <label
-                  key={field.key}
-                  className={field.full ? 'organization-company-field full' : 'organization-company-field'}
-                >
-                  <span>
-                    {field.label}
-                    {field.key === 'name' ? ' *' : ''}
-                  </span>
-                  <input
-                    value={companyForm[field.key]}
-                    onChange={(event) =>
-                      setCompanyForm({ ...companyForm, [field.key]: event.target.value })
-                    }
-                  />
-                </label>
-              ))}
+          <div className="organization-company-summary">
+            <div className="organization-company-identity">
+              <span>当前抬头</span>
+              <strong>{companyInfo?.name || '未填写公司名称'}</strong>
+              <small>{companyInfo?.name_en || companyInfo?.letterhead || '暂无英文名称或单证抬头'}</small>
             </div>
-            <div className="organization-company-actions">
-              <button className="inline-submit" disabled={busyAction === 'company-save'} type="submit">
-                <Save size={15} />
-                保存公司信息
-              </button>
+            <div className="organization-company-facts">
+              <div>
+                <span>电话</span>
+                <strong>{companyInfo?.phone || '-'}</strong>
+              </div>
+              <div>
+                <span>邮箱</span>
+                <strong>{companyInfo?.email || '-'}</strong>
+              </div>
+              <div>
+                <span>开户行</span>
+                <strong>{companyInfo?.bank_name || '-'}</strong>
+              </div>
+              <div>
+                <span>银行账号</span>
+                <strong>{companyInfo?.bank_account || '-'}</strong>
+              </div>
             </div>
-          </form>
+          </div>
         ) : (
-          <Skeleton active paragraph={{ rows: 3 }} />
+          <Skeleton active paragraph={{ rows: 2 }} />
         )}
       </section>
 
@@ -1530,6 +1553,50 @@ export function OrganizationUsersPage({
           )}
         </section>
       </div>
+
+      <Modal
+        centered
+        className="organization-company-modal"
+        footer={null}
+        open={companyModalOpen}
+        title="编辑公司信息"
+        width={900}
+        onCancel={closeCompanyModal}
+      >
+        <form
+          className="dashboard-form modal-dashboard-form organization-form organization-company-modal-form"
+          onSubmit={handleSaveCompanyInfo}
+        >
+          <div className="organization-company-grid">
+            {COMPANY_FIELD_LABELS.map((field) => (
+              <label
+                key={field.key}
+                className={field.full ? 'organization-company-field full' : 'organization-company-field'}
+              >
+                <span>
+                  {field.label}
+                  {field.key === 'name' ? ' *' : ''}
+                </span>
+                <input
+                  value={companyForm[field.key]}
+                  onChange={(event) =>
+                    setCompanyForm({ ...companyForm, [field.key]: event.target.value })
+                  }
+                />
+              </label>
+            ))}
+          </div>
+          <div className="modal-actions">
+            <button className="secondary-inline" type="button" onClick={closeCompanyModal}>
+              {translate('common.cancel')}
+            </button>
+            <button className="inline-submit" disabled={busyAction === 'company-save'} type="submit">
+              <Save size={15} />
+              保存公司信息
+            </button>
+          </div>
+        </form>
+      </Modal>
 
       <Modal
         centered

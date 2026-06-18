@@ -7,6 +7,7 @@ from app.api.v1.finance.common import current_user, raise_permission_denied, rai
 from app.modules.finance.port_data.providers import get_port_data_service
 from app.modules.finance.port_data.schemas import (
     CustomsDeclarationRecordListResponse,
+    CustomsReceiptAutoMatchResponse,
     PortImportBatchCreate,
     PortImportBatchListResponse,
     PortImportBatchResponse,
@@ -92,3 +93,20 @@ async def list_customs_declaration_records(
         raise_permission_denied()
     except ValueError as exc:
         raise_unprocessable(str(exc))
+
+
+@router.post(
+    "/customs-declaration-records/auto-match",
+    response_model=ApiResponse[CustomsReceiptAutoMatchResponse],
+)
+async def auto_match_customs_receipts(
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[PortDataService, Depends(get_port_data_service)],
+) -> ApiResponse[CustomsReceiptAutoMatchResponse]:
+    user = await current_user(token, auth_service)
+    try:
+        result = await service.auto_match_customs_receipts(current_user=user)
+        return ApiResponse(data=result)
+    except PortDataPermissionDeniedError:
+        raise_permission_denied()

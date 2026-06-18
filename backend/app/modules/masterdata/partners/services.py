@@ -8,8 +8,10 @@ from app.modules.masterdata.partners.schemas import (
     VALID_PARTNER_TYPES,
     PartnerContactCreate,
     PartnerContactResponse,
+    PartnerContactUpdate,
     PartnerCreate,
     PartnerFeeRecordListResponse,
+    PartnerFeeRecordResponse,
     PartnerListResponse,
     PartnerResponse,
     PartnerUpdate,
@@ -17,14 +19,16 @@ from app.modules.masterdata.partners.schemas import (
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 
-PARTNER_VIEW_ALL_PERMISSION = "masterdata:partner:view_all"
-
 
 class PermissionDeniedError(Exception):
     pass
 
 
 class PartnerNotFoundError(Exception):
+    pass
+
+
+class PartnerContactNotFoundError(Exception):
     pass
 
 
@@ -114,6 +118,48 @@ class PartnerService:
             )
         return self._contact_response(contact)
 
+    async def update_contact(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        partner_id: str,
+        contact_id: str,
+        payload: PartnerContactUpdate,
+    ) -> PartnerContactResponse:
+        self._require(current_user, "masterdata:partner:edit")
+        await self._get_accessible_partner(current_user=current_user, partner_id=partner_id)
+        async with UnitOfWork(self._repository.session):
+            contact = await self._repository.update_contact(
+                partner_id=partner_id,
+                contact_id=contact_id,
+                name=payload.name,
+                title=payload.title,
+                email=payload.email,
+                phone=payload.phone,
+                is_primary=payload.is_primary,
+            )
+            if contact is None:
+                raise PartnerContactNotFoundError
+        return self._contact_response(contact)
+
+    async def delete_contact(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        partner_id: str,
+        contact_id: str,
+    ) -> PartnerContactResponse:
+        self._require(current_user, "masterdata:partner:edit")
+        await self._get_accessible_partner(current_user=current_user, partner_id=partner_id)
+        async with UnitOfWork(self._repository.session):
+            contact = await self._repository.delete_contact(
+                partner_id=partner_id,
+                contact_id=contact_id,
+            )
+            if contact is None:
+                raise PartnerContactNotFoundError
+        return self._contact_response(contact)
+
     async def get_partner(
         self,
         *,
@@ -138,7 +184,6 @@ class PartnerService:
             self._validate_partner_type(partner_type)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=PARTNER_VIEW_ALL_PERMISSION,
         )
         partners, total = await self._repository.list_partners(
             q=q,
@@ -155,7 +200,35 @@ class PartnerService:
         partner_id: str,
     ) -> PartnerFeeRecordListResponse:
         await self._get_accessible_partner(current_user=current_user, partner_id=partner_id)
-        return PartnerFeeRecordListResponse(items=[], total=0)
+        rows = await self._repository.list_fee_records(partner_id=partner_id)
+        items = [
+            PartnerFeeRecordResponse(
+                source_type=row.source_type,
+                source_code=row.source_code,
+                occurred_at=row.occurred_at,
+                amount=str(row.amount) if row.amount is not None else None,
+                summary=row.summary,
+            )
+            for row in rows
+        ]
+        return PartnerFeeRecordListResponse(items=items, total=len(items))
+
+    async def deactivate_partner(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        partner_id: str,
+    ) -> PartnerResponse:
+        self._require(current_user, "masterdata:partner:edit")
+        await self._get_accessible_partner(current_user=current_user, partner_id=partner_id)
+        async with UnitOfWork(self._repository.session):
+            partner = await self._repository.set_partner_status(
+                partner_id=partner_id,
+                status="inactive",
+            )
+            if partner is None:
+                raise PartnerNotFoundError
+        return await self._partner_response(partner)
 
     async def _get_accessible_partner(
         self,
@@ -169,7 +242,6 @@ class PartnerService:
             raise PartnerNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=PARTNER_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and partner.owner_user_id not in allowed_user_ids:
             raise PartnerNotFoundError

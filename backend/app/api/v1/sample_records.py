@@ -8,6 +8,9 @@ from app.modules.sample.records.schemas import (
     SampleImageCreate,
     SampleImageResponse,
     SampleRecordCreate,
+    SampleRecordExportResponse,
+    SampleRecordImportRequest,
+    SampleRecordImportResponse,
     SampleRecordListResponse,
     SampleRecordResponse,
     SampleStockEventCreate,
@@ -86,6 +89,53 @@ async def create_sample_record(
     try:
         record = await service.create_record(current_user=user, payload=payload)
         return ApiResponse(data=record)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except ValueError:
+        _raise_invalid_sample_record()
+
+
+@router.post(
+    "/import",
+    status_code=status.HTTP_201_CREATED,
+    response_model=ApiResponse[SampleRecordImportResponse],
+)
+async def import_sample_records(
+    payload: SampleRecordImportRequest,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[SampleRecordService, Depends(get_sample_record_service)],
+) -> ApiResponse[SampleRecordImportResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        result = await service.import_records(current_user=user, payload=payload)
+        return ApiResponse(data=result)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except ValueError:
+        _raise_invalid_sample_record()
+
+
+@router.get("/export", response_model=ApiResponse[SampleRecordExportResponse])
+async def export_sample_records(
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[SampleRecordService, Depends(get_sample_record_service)],
+    q: Annotated[str | None, Query(max_length=120)] = None,
+    sample_type: Annotated[str | None, Query(max_length=40)] = None,
+    customer_id: Annotated[str | None, Query(max_length=36)] = None,
+    purchase_contract_id: Annotated[str | None, Query(max_length=36)] = None,
+) -> ApiResponse[SampleRecordExportResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        result = await service.export_records(
+            current_user=user,
+            q=q,
+            sample_type=sample_type,
+            customer_id=customer_id,
+            purchase_contract_id=purchase_contract_id,
+        )
+        return ApiResponse(data=result)
     except PermissionDeniedError:
         _raise_permission_denied()
     except ValueError:

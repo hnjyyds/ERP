@@ -11,6 +11,8 @@ from app.modules.sample.deliveries.models import (
     SampleDeliveryLine,
 )
 
+REPORTABLE_SAMPLE_DELIVERY_STATUSES = ("approved", "shipped")
+
 
 @dataclass(frozen=True)
 class SampleDeliveryRow:
@@ -75,6 +77,28 @@ class SampleDeliveryFeeStatisticRow:
     currency: str
     total_amount: str
     delivery_count: int
+
+
+@dataclass(frozen=True)
+class SampleDeliveryStatusStatisticRow:
+    status: str
+    delivery_count: int
+    total_quantity: Decimal
+
+
+@dataclass(frozen=True)
+class SampleDeliveryCustomerStatisticRow:
+    customer_id: str | None
+    customer_name: str
+    delivery_count: int
+    total_quantity: Decimal
+
+
+@dataclass(frozen=True)
+class SampleDeliveryExpressStatisticRow:
+    express_company: str
+    delivery_count: int
+    total_quantity: Decimal
 
 
 class SampleDeliveryRepository:
@@ -299,6 +323,8 @@ class SampleDeliveryRepository:
         status: str | None = None,
         customer_id: str | None = None,
         express_company: str | None = None,
+        date_from: date | None = None,
+        date_to: date | None = None,
         owner_user_ids: list[str] | None = None,
         limit: int = 50,
         offset: int = 0,
@@ -337,6 +363,10 @@ class SampleDeliveryRepository:
             conditions.append(SampleDelivery.customer_id == customer_id)
         if express_company:
             conditions.append(SampleDelivery.express_company == express_company)
+        if date_from:
+            conditions.append(SampleDelivery.delivery_date >= date_from)
+        if date_to:
+            conditions.append(SampleDelivery.delivery_date <= date_to)
         if owner_user_ids is not None:
             conditions.append(SampleDelivery.owner_user_id.in_(owner_user_ids))
         for condition in conditions:
@@ -375,6 +405,7 @@ class SampleDeliveryRepository:
         date_from: date | None,
         date_to: date | None,
         express_company: str | None,
+        owner_user_ids: list[str] | None,
     ) -> list[SampleDeliveryFeeStatisticRow]:
         statement = (
             select(
@@ -386,7 +417,7 @@ class SampleDeliveryRepository:
                 func.count(distinct(SampleDelivery.id)),
             )
             .join(SampleDeliveryFee, SampleDeliveryFee.delivery_id == SampleDelivery.id)
-            .where(SampleDelivery.status == "approved")
+            .where(SampleDelivery.status.in_(REPORTABLE_SAMPLE_DELIVERY_STATUSES))
             .group_by(
                 SampleDelivery.customer_id,
                 SampleDelivery.customer_name,
@@ -395,14 +426,14 @@ class SampleDeliveryRepository:
             )
             .order_by(SampleDelivery.customer_name.asc(), SampleDelivery.express_company.asc())
         )
-        if customer_id:
-            statement = statement.where(SampleDelivery.customer_id == customer_id)
-        if date_from:
-            statement = statement.where(SampleDelivery.delivery_date >= date_from)
-        if date_to:
-            statement = statement.where(SampleDelivery.delivery_date <= date_to)
-        if express_company:
-            statement = statement.where(SampleDelivery.express_company == express_company)
+        statement = self._apply_report_filters(
+            statement,
+            date_from=date_from,
+            date_to=date_to,
+            customer_id=customer_id,
+            express_company=express_company,
+            owner_user_ids=owner_user_ids,
+        )
 
         rows = await self.session.execute(statement)
         return [
@@ -422,6 +453,119 @@ class SampleDeliveryRepository:
                 total_amount,
                 delivery_count,
             ) in rows
+        ]
+
+    async def get_status_statistics(
+        self,
+        *,
+        date_from: date | None,
+        date_to: date | None,
+        customer_id: str | None,
+        express_company: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> list[SampleDeliveryStatusStatisticRow]:
+        statement = (
+            select(
+                SampleDelivery.status,
+                func.count(distinct(SampleDelivery.id)),
+                func.sum(SampleDeliveryLine.quantity),
+            )
+            .join(SampleDeliveryLine, SampleDeliveryLine.delivery_id == SampleDelivery.id)
+            .group_by(SampleDelivery.status)
+            .order_by(SampleDelivery.status.asc())
+        )
+        statement = self._apply_report_filters(
+            statement,
+            date_from=date_from,
+            date_to=date_to,
+            customer_id=customer_id,
+            express_company=express_company,
+            owner_user_ids=owner_user_ids,
+        )
+        rows = await self.session.execute(statement)
+        return [
+            SampleDeliveryStatusStatisticRow(
+                status=status_value,
+                delivery_count=int(delivery_count or 0),
+                total_quantity=Decimal(str(total_quantity or 0)),
+            )
+            for status_value, delivery_count, total_quantity in rows
+        ]
+
+    async def get_customer_statistics(
+        self,
+        *,
+        date_from: date | None,
+        date_to: date | None,
+        customer_id: str | None,
+        express_company: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> list[SampleDeliveryCustomerStatisticRow]:
+        statement = (
+            select(
+                SampleDelivery.customer_id,
+                SampleDelivery.customer_name,
+                func.count(distinct(SampleDelivery.id)),
+                func.sum(SampleDeliveryLine.quantity),
+            )
+            .join(SampleDeliveryLine, SampleDeliveryLine.delivery_id == SampleDelivery.id)
+            .group_by(SampleDelivery.customer_id, SampleDelivery.customer_name)
+            .order_by(SampleDelivery.customer_name.asc())
+        )
+        statement = self._apply_report_filters(
+            statement,
+            date_from=date_from,
+            date_to=date_to,
+            customer_id=customer_id,
+            express_company=express_company,
+            owner_user_ids=owner_user_ids,
+        )
+        rows = await self.session.execute(statement)
+        return [
+            SampleDeliveryCustomerStatisticRow(
+                customer_id=customer_id_value,
+                customer_name=customer_name,
+                delivery_count=int(delivery_count or 0),
+                total_quantity=Decimal(str(total_quantity or 0)),
+            )
+            for customer_id_value, customer_name, delivery_count, total_quantity in rows
+        ]
+
+    async def get_express_statistics(
+        self,
+        *,
+        date_from: date | None,
+        date_to: date | None,
+        customer_id: str | None,
+        express_company: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> list[SampleDeliveryExpressStatisticRow]:
+        statement = (
+            select(
+                SampleDelivery.express_company,
+                func.count(distinct(SampleDelivery.id)),
+                func.sum(SampleDeliveryLine.quantity),
+            )
+            .join(SampleDeliveryLine, SampleDeliveryLine.delivery_id == SampleDelivery.id)
+            .group_by(SampleDelivery.express_company)
+            .order_by(SampleDelivery.express_company.asc())
+        )
+        statement = self._apply_report_filters(
+            statement,
+            date_from=date_from,
+            date_to=date_to,
+            customer_id=customer_id,
+            express_company=express_company,
+            owner_user_ids=owner_user_ids,
+        )
+        rows = await self.session.execute(statement)
+        return [
+            SampleDeliveryExpressStatisticRow(
+                express_company=express_company_value,
+                delivery_count=int(delivery_count or 0),
+                total_quantity=Decimal(str(total_quantity or 0)),
+            )
+            for express_company_value, delivery_count, total_quantity in rows
         ]
 
     async def list_sample_history(
@@ -453,13 +597,13 @@ class SampleDeliveryRepository:
         statement = (
             select(SampleDelivery)
             .join(SampleDeliveryLine, SampleDeliveryLine.delivery_id == SampleDelivery.id)
-            .where(SampleDelivery.status == "approved")
+            .where(SampleDelivery.status.in_(REPORTABLE_SAMPLE_DELIVERY_STATUSES))
         )
         count_statement = (
             select(func.count(distinct(SampleDelivery.id)))
             .select_from(SampleDelivery)
             .join(SampleDeliveryLine, SampleDeliveryLine.delivery_id == SampleDelivery.id)
-            .where(SampleDelivery.status == "approved")
+            .where(SampleDelivery.status.in_(REPORTABLE_SAMPLE_DELIVERY_STATUSES))
         )
         if customer_id:
             statement = statement.where(SampleDelivery.customer_id == customer_id)
@@ -474,6 +618,28 @@ class SampleDeliveryRepository:
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)
         return [self._map_delivery(row) for row in rows], int(total or 0)
+
+    def _apply_report_filters(
+        self,
+        statement: Select[tuple[object, ...]],
+        *,
+        date_from: date | None,
+        date_to: date | None,
+        customer_id: str | None,
+        express_company: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> Select[tuple[object, ...]]:
+        if date_from:
+            statement = statement.where(SampleDelivery.delivery_date >= date_from)
+        if date_to:
+            statement = statement.where(SampleDelivery.delivery_date <= date_to)
+        if customer_id:
+            statement = statement.where(SampleDelivery.customer_id == customer_id)
+        if express_company:
+            statement = statement.where(SampleDelivery.express_company == express_company)
+        if owner_user_ids is not None:
+            statement = statement.where(SampleDelivery.owner_user_id.in_(owner_user_ids))
+        return statement
 
     async def _scalars(self, statement: Select[tuple[SampleDelivery]]) -> list[SampleDelivery]:
         result = await self.session.scalars(statement)

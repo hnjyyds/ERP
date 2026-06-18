@@ -1,7 +1,9 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from app.api.error_handlers import register_error_handlers
 from app.api.v1.router import api_router
@@ -12,6 +14,7 @@ from app.modules.finance.fee_payments import models as finance_fee_payment_model
 from app.modules.finance.misc_fees import models as finance_misc_fee_models  # noqa: F401
 from app.modules.finance.payments import models as finance_payment_models  # noqa: F401
 from app.modules.finance.port_data import models as finance_port_data_models  # noqa: F401
+from app.modules.finance.port_data.migrations import ensure_port_data_schema
 from app.modules.finance.receipts import models as finance_receipt_models  # noqa: F401
 from app.modules.finance.reimbursements import models as finance_reimbursement_models  # noqa: F401
 from app.modules.finance.settlements import models as finance_settlement_models  # noqa: F401
@@ -59,6 +62,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         await connection.run_sync(ensure_dashboard_schema)
         await connection.run_sync(ensure_product_schema)
         await connection.run_sync(ensure_company_schema)
+        await connection.run_sync(ensure_port_data_schema)
 
     if settings.seed_demo_data:
         async with SessionLocal() as session:
@@ -74,6 +78,13 @@ def create_app() -> FastAPI:
     app = FastAPI(title=settings.app_name, lifespan=lifespan)
     register_error_handlers(app)
     app.include_router(api_router, prefix=settings.api_v1_prefix)
+    upload_dir = Path(settings.upload_dir)
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    app.mount(
+        settings.upload_url_prefix,
+        StaticFiles(directory=str(upload_dir)),
+        name="uploads",
+    )
     return app
 
 

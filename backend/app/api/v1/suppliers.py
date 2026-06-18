@@ -7,6 +7,7 @@ from app.modules.masterdata.suppliers.providers import get_supplier_service
 from app.modules.masterdata.suppliers.schemas import (
     SupplierContactCreate,
     SupplierContactResponse,
+    SupplierContactUpdate,
     SupplierCreate,
     SupplierListResponse,
     SupplierResponse,
@@ -15,6 +16,7 @@ from app.modules.masterdata.suppliers.schemas import (
 )
 from app.modules.masterdata.suppliers.services import (
     PermissionDeniedError,
+    SupplierContactNotFoundError,
     SupplierNotFoundError,
     SupplierService,
 )
@@ -157,6 +159,62 @@ async def add_supplier_contact(
         _raise_permission_denied()
     except SupplierNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="供应商不存在") from None
+
+
+@router.put(
+    "/{supplier_id}/contacts/{contact_id}",
+    response_model=ApiResponse[SupplierContactResponse],
+)
+async def update_supplier_contact(
+    supplier_id: str,
+    contact_id: str,
+    payload: SupplierContactUpdate,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[SupplierService, Depends(get_supplier_service)],
+) -> ApiResponse[SupplierContactResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        contact = await service.update_contact(
+            current_user=user,
+            supplier_id=supplier_id,
+            contact_id=contact_id,
+            payload=payload,
+        )
+        return ApiResponse(data=contact)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except SupplierNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="供应商不存在") from None
+    except SupplierContactNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="联系人不存在") from None
+
+
+@router.delete(
+    "/{supplier_id}/contacts/{contact_id}",
+    response_model=ApiResponse[SupplierContactResponse],
+)
+async def delete_supplier_contact(
+    supplier_id: str,
+    contact_id: str,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[SupplierService, Depends(get_supplier_service)],
+) -> ApiResponse[SupplierContactResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        contact = await service.delete_contact(
+            current_user=user,
+            supplier_id=supplier_id,
+            contact_id=contact_id,
+        )
+        return ApiResponse(data=contact)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except SupplierNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="供应商不存在") from None
+    except SupplierContactNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="联系人不存在") from None
 
 
 @router.get(

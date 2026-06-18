@@ -24,8 +24,6 @@ from app.modules.purchase.invoice_notices.schemas import (
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 
-PURCHASE_INVOICE_NOTICE_VIEW_ALL_PERMISSION = "purchase:invoice_notice:view_all"
-
 
 class PermissionDeniedError(Exception):
     pass
@@ -115,7 +113,6 @@ class PurchaseInvoiceNoticeService:
             self._validate_status(status)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=PURCHASE_INVOICE_NOTICE_VIEW_ALL_PERMISSION,
         )
         rows, total = await self._repository.list_notices(
             q=q,
@@ -205,7 +202,6 @@ class PurchaseInvoiceNoticeService:
         self._require(current_user, "purchase:invoice_notice:view")
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=PURCHASE_INVOICE_NOTICE_VIEW_ALL_PERMISSION,
         )
         reminders = await self._repository.list_reminders(
             owner_user_ids=owner_user_ids,
@@ -227,7 +223,6 @@ class PurchaseInvoiceNoticeService:
             raise PurchaseInvoiceNoticeNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=PURCHASE_INVOICE_NOTICE_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and notice.owner_user_id not in allowed_user_ids:
             raise PurchaseInvoiceNoticeNotFoundError

@@ -34,8 +34,6 @@ from app.modules.warehouse.inbound_plans.repositories import (
     InboundPlanRow,
 )
 
-INBOUND_ORDER_VIEW_ALL_PERMISSION = "warehouse:inbound_order:view_all"
-
 
 class PermissionDeniedError(Exception):
     pass
@@ -209,7 +207,6 @@ class InboundOrderService:
             self._validate_mode(inbound_mode)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=INBOUND_ORDER_VIEW_ALL_PERMISSION,
         )
         rows, total = await self._repository.list_orders(
             q=q,
@@ -284,7 +281,6 @@ class InboundOrderService:
             raise InboundOrderPlanNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=INBOUND_ORDER_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and plan.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
@@ -301,7 +297,6 @@ class InboundOrderService:
             raise InboundOrderNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=INBOUND_ORDER_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and order.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError

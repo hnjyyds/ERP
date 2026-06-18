@@ -102,3 +102,66 @@ class ProductExportResponse(BaseModel):
     filename: str
     content_type: str
     content: str
+
+
+class ProductImportRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    filename: str = Field(min_length=1, max_length=200)
+    # 文件内容 base64 编码，复用前端 FileReader.readAsDataURL 的产出（可含 data: 前缀）。
+    content_base64: str = Field(min_length=1)
+
+
+class ProductImportError(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    row: int
+    code: str | None
+    message: str
+
+
+class ProductImportResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    created: int
+    updated: int
+    failed: int
+    errors: list[ProductImportError]
+
+
+class ProductCustomerResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    customer_id: str | None
+    customer_name: str
+    contract_count: int
+    total_quantity: Decimal
+    total_amount: Decimal
+    last_contract_date: str | None
+
+
+class ProductCustomerListResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    items: list[ProductCustomerResponse]
+    total: int
+
+
+class ProductTransactionResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    source_type: str
+    source_code: str
+    occurred_at: str
+    counterparty_name: str | None
+    quantity: str | None
+    unit: str | None
+    amount: str | None
+    summary: str
+
+
+class ProductTransactionListResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    items: list[ProductTransactionResponse]
+    total: int

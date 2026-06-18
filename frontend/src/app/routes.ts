@@ -33,7 +33,63 @@ export const financeFeesPath = '/finance/fees'
 export const financeTaxPath = '/finance/tax'
 export const financeMiscPath = '/finance/misc'
 export const financeSettlementPath = '/finance/settlement'
+export const financeReimbursementsPath = '/finance/reimbursements'
+export const financePortDataPath = '/finance/port-data'
+export const financeReportsPath = '/finance/reports'
 export const reportingPath = '/reporting'
+
+const detailRootPaths = [
+  productPath,
+  customerPath,
+  supplierPath,
+  partnerPath,
+  documentPartyPath,
+  sampleRequestPath,
+  sampleRecordPath,
+  sampleDeliveryPath,
+  exportQuotationPath,
+  exportContractPath,
+  shipmentPath,
+  purchaseInquiryPath,
+  purchaseContractPath,
+  purchaseInvoiceNoticePath,
+  followupPath,
+  qualityInspectionPath,
+  warehouseInboundPlanPath,
+  warehouseInboundOrderPath,
+  warehouseOutboundPlanPath,
+  warehouseOutboundOrderPath,
+]
+
+export function detailRootPath(path: string): string {
+  return detailRootPaths.find((root) => path === root || path.startsWith(`${root}/`)) ?? path
+}
+
+export function isDetailPathFor(rootPath: string, path: string): boolean {
+  return detailRootPath(path) === rootPath
+}
+
+export function moduleDetailPath(rootPath: string, id: string): string {
+  return `${rootPath}/${encodeURIComponent(id)}`
+}
+
+export function moduleDetailId(rootPath: string, path: string): string | null {
+  if (!path.startsWith(`${rootPath}/`)) return null
+  const id = path.slice(rootPath.length + 1).split('/')[0]
+  return id ? decodeURIComponent(id) : null
+}
+
+export function isProductPath(path: string): boolean {
+  return detailRootPath(path) === productPath
+}
+
+export function productDetailPath(productId: string): string {
+  return moduleDetailPath(productPath, productId)
+}
+
+export function productDetailId(path: string): string | null {
+  return moduleDetailId(productPath, path)
+}
 
 export const dashboardSectionPaths = new Set([
   dashboardPath,
@@ -52,6 +108,9 @@ export type FinanceModule =
   | 'tax'
   | 'misc'
   | 'settlement'
+  | 'reimbursements'
+  | 'portData'
+  | 'reports'
 
 const financeModuleByBasePath: Record<string, FinanceModule> = {
   [financePath]: 'home',
@@ -62,6 +121,9 @@ const financeModuleByBasePath: Record<string, FinanceModule> = {
   [financeTaxPath]: 'tax',
   [financeMiscPath]: 'misc',
   [financeSettlementPath]: 'settlement',
+  [financeReimbursementsPath]: 'reimbursements',
+  [financePortDataPath]: 'portData',
+  [financeReportsPath]: 'reports',
 }
 
 export const financeModulePathByModule: Record<FinanceModule, string> = {
@@ -73,6 +135,9 @@ export const financeModulePathByModule: Record<FinanceModule, string> = {
   tax: financeTaxPath,
   misc: financeMiscPath,
   settlement: financeSettlementPath,
+  reimbursements: financeReimbursementsPath,
+  portData: financePortDataPath,
+  reports: financeReportsPath,
 }
 
 export function isFinancePath(path: string) {

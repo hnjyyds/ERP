@@ -8,9 +8,11 @@ from app.modules.sample.deliveries.providers import get_sample_delivery_service
 from app.modules.sample.deliveries.schemas import (
     SampleDeliveryApprove,
     SampleDeliveryCreate,
+    SampleDeliveryExportResponse,
     SampleDeliveryFeeStatisticsResponse,
     SampleDeliveryListResponse,
     SampleDeliveryResponse,
+    SampleDeliveryStatisticsResponse,
     SampleDeliveryTrackingUpdate,
 )
 from app.modules.sample.deliveries.services import (
@@ -53,6 +55,8 @@ async def list_sample_deliveries(
     status_filter: Annotated[str | None, Query(alias="status", max_length=40)] = None,
     customer_id: Annotated[str | None, Query(max_length=36)] = None,
     express_company: Annotated[str | None, Query(max_length=120)] = None,
+    date_from: date | None = None,
+    date_to: date | None = None,
 ) -> ApiResponse[SampleDeliveryListResponse]:
     user = await _current_user(token, auth_service)
     try:
@@ -62,6 +66,8 @@ async def list_sample_deliveries(
             status=status_filter,
             customer_id=customer_id,
             express_company=express_company,
+            date_from=date_from,
+            date_to=date_to,
         )
         return ApiResponse(data=deliveries)
     except PermissionDeniedError:
@@ -137,6 +143,58 @@ async def get_sample_delivery_fee_statistics(
         return ApiResponse(data=statistics)
     except PermissionDeniedError:
         _raise_permission_denied()
+
+
+@router.get("/statistics", response_model=ApiResponse[SampleDeliveryStatisticsResponse])
+async def get_sample_delivery_statistics(
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[SampleDeliveryService, Depends(get_sample_delivery_service)],
+    date_from: date | None = None,
+    date_to: date | None = None,
+    customer_id: Annotated[str | None, Query(max_length=36)] = None,
+    express_company: Annotated[str | None, Query(max_length=120)] = None,
+) -> ApiResponse[SampleDeliveryStatisticsResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        statistics = await service.get_statistics(
+            current_user=user,
+            date_from=date_from,
+            date_to=date_to,
+            customer_id=customer_id,
+            express_company=express_company,
+        )
+        return ApiResponse(data=statistics)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except ValueError:
+        _raise_invalid_sample_delivery()
+
+
+@router.get("/export", response_model=ApiResponse[SampleDeliveryExportResponse])
+async def export_sample_deliveries(
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[SampleDeliveryService, Depends(get_sample_delivery_service)],
+    date_from: date | None = None,
+    date_to: date | None = None,
+    customer_id: Annotated[str | None, Query(max_length=36)] = None,
+    express_company: Annotated[str | None, Query(max_length=120)] = None,
+) -> ApiResponse[SampleDeliveryExportResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        exported = await service.export_deliveries(
+            current_user=user,
+            date_from=date_from,
+            date_to=date_to,
+            customer_id=customer_id,
+            express_company=express_company,
+        )
+        return ApiResponse(data=exported)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except ValueError:
+        _raise_invalid_sample_delivery()
 
 
 @router.get(

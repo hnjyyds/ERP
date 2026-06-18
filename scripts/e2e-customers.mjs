@@ -17,12 +17,30 @@ await mkdir(resolve('artifacts'), { recursive: true })
 const browser = await chromium.launch()
 const page = await browser.newPage({ viewport: { width: 1440, height: 1180 } })
 
-try {
+function waitForCustomers(method, matcher = () => true) {
+  return page.waitForResponse((response) => {
+    const request = response.request()
+    return (
+      response.url().includes('/api/v1/masterdata/customers') &&
+      request.method() === method &&
+      response.ok() &&
+      matcher(response)
+    )
+  })
+}
+
+async function activeDialog() {
+  const dialog = page.getByRole('dialog').last()
+  await dialog.waitFor()
+  return dialog
+}
+
+async function login() {
   await page.goto(frontendUrl)
   await page.evaluate(() => window.localStorage.clear())
   await page.reload()
 
-  await page.getByRole('heading', { name: '登录工作台' }).waitFor()
+  await page.getByLabel('用户名').waitFor()
   await page.getByLabel('用户名').fill('demo')
   await page.getByLabel('密码').fill('demo123')
 
@@ -31,81 +49,85 @@ try {
   )
   await page.getByRole('button', { name: '登录' }).click()
   await loginResponse
+}
 
-  const listResponse = page.waitForResponse((response) =>
-    response.url().includes('/api/v1/masterdata/customers') &&
-    response.request().method() === 'GET' &&
-    response.ok(),
-  )
-  await page.getByRole('link', { name: '客户资料' }).click()
+try {
+  await login()
+
+  const listResponse = waitForCustomers('GET')
+  await page.goto(new URL('/masterdata/customers', frontendUrl).toString())
   await listResponse
-  await page.getByRole('heading', { name: '客户资料和信用联系人' }).waitFor()
+  await page.getByRole('heading', { name: '客户资料', exact: true }).waitFor()
 
-  await page.getByLabel('客户编号', { exact: true }).fill(customerCode)
-  await page.getByLabel('客户中文名称', { exact: true }).fill('端到端欧洲客户')
-  await page.getByLabel('客户英文名称', { exact: true }).fill('E2E Europe Buyer')
-  await page.getByLabel('客户国家', { exact: true }).fill('Germany')
-  await page.getByLabel('客户地址', { exact: true }).fill('Hamburg Trade Center')
-  await page.getByLabel('客户网址', { exact: true }).fill('https://example.com/e2e-buyer')
-  await page.getByLabel('主联系人姓名', { exact: true }).fill('Anna Schmidt')
-  await page.getByLabel('主联系人职务', { exact: true }).fill('Sourcing Manager')
-  await page.getByLabel('主联系人邮箱', { exact: true }).fill('anna.e2e@example.com')
-  await page.getByLabel('主联系人电话', { exact: true }).fill('+49-40-1234')
-  await page.getByLabel('信用等级', { exact: true }).fill('A')
-  await page.getByLabel('授信额度', { exact: true }).fill('50000')
-  await page.getByLabel('授信币种', { exact: true }).fill('USD')
-  await page.getByLabel('付款条款', { exact: true }).fill('T/T 30 days')
-
-  const createResponse = page.waitForResponse((response) =>
-    response.url().endsWith('/api/v1/masterdata/customers') &&
-    response.request().method() === 'POST' &&
-    response.status() === 201,
-  )
-  const refreshResponse = page.waitForResponse((response) =>
-    response.url().includes('/api/v1/masterdata/customers') &&
-    response.request().method() === 'GET' &&
-    response.ok(),
-  )
   await page.getByRole('button', { name: '新增客户' }).click()
+  const createDialog = await activeDialog()
+  await createDialog.getByLabel('编号', { exact: true }).fill(customerCode)
+  await createDialog.getByLabel('中文名称', { exact: true }).fill('端到端欧洲客户')
+  await createDialog.getByLabel('英文名称', { exact: true }).fill('E2E Europe Buyer')
+  await createDialog.getByLabel('国家/地区', { exact: true }).fill('Germany')
+  await createDialog.getByLabel('网站', { exact: true }).fill('https://example.com/e2e-buyer')
+  await createDialog.getByLabel('地址', { exact: true }).fill('Hamburg Trade Center')
+  await createDialog.getByLabel('授信额度', { exact: true }).fill('50000')
+  await createDialog.getByLabel('币种', { exact: true }).fill('USD')
+  await createDialog.getByLabel('账期', { exact: true }).fill('T/T 30 days')
+  await createDialog.getByLabel('姓名', { exact: true }).fill('Anna Schmidt')
+  await createDialog.getByLabel('职务', { exact: true }).fill('Sourcing Manager')
+  await createDialog.getByLabel('邮箱', { exact: true }).fill('anna.e2e@example.com')
+  await createDialog.getByLabel('电话', { exact: true }).fill('+49-40-1234')
+
+  const createResponse = waitForCustomers('POST', (response) =>
+    response.url().endsWith('/api/v1/masterdata/customers') && response.status() === 201,
+  )
+  await createDialog.getByRole('button', { name: '新增客户' }).click()
   await createResponse
-  await refreshResponse
 
   await page.getByText(customerCode).first().waitFor()
   await page.getByText('端到端欧洲客户').first().waitFor()
   await page.getByText('Anna Schmidt').first().waitFor()
 
-  await page.getByLabel('编辑信用等级', { exact: true }).fill('B')
-  await page.getByLabel('编辑授信额度', { exact: true }).fill('62000')
-  await page.getByLabel('编辑付款条款', { exact: true }).fill('T/T 45 days')
+  await page.getByRole('button', { name: '新增联系人' }).click()
+  const addContactDialog = await activeDialog()
+  await addContactDialog.getByLabel('姓名', { exact: true }).fill('Bob Carter')
+  await addContactDialog.getByLabel('职务', { exact: true }).fill('Import Director')
+  await addContactDialog.getByLabel('邮箱', { exact: true }).fill('bob.e2e@example.com')
+  await addContactDialog.getByLabel('电话', { exact: true }).fill('+1-212-0000')
 
-  const updateResponse = page.waitForResponse((response) =>
-    response.url().includes('/api/v1/masterdata/customers/') &&
-    response.request().method() === 'PUT' &&
-    response.ok(),
+  const createContactResponse = waitForCustomers('POST', (response) =>
+    response.url().includes('/contacts') && response.status() === 201,
   )
-  await page.getByRole('button', { name: '更新客户' }).click()
-  await updateResponse
-  await page.getByText(`已更新客户 ${customerCode}`).waitFor()
-  await page.getByText('T/T 45 days').first().waitFor()
-
-  await page.getByLabel('追加联系人姓名', { exact: true }).fill('Bob Carter')
-  await page.getByLabel('追加联系人职务', { exact: true }).fill('Import Director')
-  await page.getByLabel('追加联系人邮箱', { exact: true }).fill('bob.e2e@example.com')
-  await page.getByLabel('追加联系人电话', { exact: true }).fill('+1-212-0000')
-
-  const contactResponse = page.waitForResponse((response) =>
-    response.url().includes('/contacts') &&
-    response.request().method() === 'POST' &&
-    response.status() === 201,
-  )
-  await page.getByRole('button', { name: '追加联系人' }).click()
-  await contactResponse
+  const refreshAfterCreateContact = waitForCustomers('GET')
+  await addContactDialog.getByRole('button', { name: '新增联系人' }).click()
+  await createContactResponse
+  await refreshAfterCreateContact
   await page.getByText('Bob Carter').first().waitFor()
-  await page.getByText('报价、出口合同、出货和收款模块接入后将在此汇总。').waitFor()
 
-  assert.ok(
-    (await page.getByRole('cell', { name: 'Bob Carter' }).count()) >= 1,
-    'appending a contact should add a visible contact row',
+  const bobCard = page.locator('.contact-card').filter({ hasText: 'Bob Carter' }).first()
+  await bobCard.locator('button').first().click()
+  const editContactDialog = await activeDialog()
+  await editContactDialog.getByLabel('姓名', { exact: true }).fill('Robert Carter')
+  await editContactDialog.getByLabel('职务', { exact: true }).fill('Senior Import Director')
+
+  const updateContactResponse = waitForCustomers('PUT', (response) => response.url().includes('/contacts/'))
+  const refreshAfterUpdateContact = waitForCustomers('GET')
+  await editContactDialog.getByRole('button', { name: '保存联系人' }).click()
+  await updateContactResponse
+  await refreshAfterUpdateContact
+  await page.getByText('Robert Carter').first().waitFor()
+
+  const robertCard = page.locator('.contact-card').filter({ hasText: 'Robert Carter' }).first()
+  await robertCard.locator('button').nth(1).click()
+  const deleteDialog = await activeDialog()
+  const deleteContactResponse = waitForCustomers('DELETE', (response) => response.url().includes('/contacts/'))
+  const refreshAfterDeleteContact = waitForCustomers('GET')
+  await deleteDialog.locator('button').filter({ hasText: '删' }).last().click()
+  await deleteContactResponse
+  await refreshAfterDeleteContact
+  await page.waitForFunction((name) => !document.body.innerText.includes(name), 'Robert Carter')
+
+  assert.equal(
+    await page.locator('.contact-card').filter({ hasText: 'Robert Carter' }).count(),
+    0,
+    'deleting a customer contact should remove the visible contact card',
   )
 
   await page.screenshot({ path: screenshotPath, fullPage: true })

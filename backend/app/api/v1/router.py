@@ -7,6 +7,7 @@ from app.api.v1 import (
     document_parties,
     export_contracts,
     export_quotations,
+    files,
     finance,
     followup,
     health,
@@ -16,6 +17,7 @@ from app.api.v1 import (
     outbound_orders,
     outbound_plans,
     partners,
+    printing,
     products,
     purchase_contracts,
     purchase_inquiries,
@@ -36,10 +38,12 @@ api_router.include_router(auth.router)
 api_router.include_router(system.router)
 api_router.include_router(organization.router)
 api_router.include_router(dashboard.router)
+api_router.include_router(files.router)
 api_router.include_router(products.router)
 api_router.include_router(customers.router)
 api_router.include_router(suppliers.router)
 api_router.include_router(partners.router)
+api_router.include_router(printing.router)
 api_router.include_router(document_parties.router)
 api_router.include_router(sample_requests.router)
 api_router.include_router(sample_records.router)

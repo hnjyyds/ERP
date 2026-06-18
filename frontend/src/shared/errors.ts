@@ -4,8 +4,7 @@ import { Modal } from 'antd'
  * 统一的接口错误对象。
  *
  * 关键点：构造时 `super(friendlyMessage)`，因此 `error.message` 本身就是
- * 用户友好文案。这样即使某个 catch 没改到、仍读取 `caught.message`，
- * 拿到的也是友好文案而非后端技术文案，向后兼容。
+ * 用户友好文案，界面层读取 `caught.message` 时不会暴露后端技术文案。
  */
 export class ApiError extends Error {
   code: string

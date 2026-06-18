@@ -1,8 +1,10 @@
+from datetime import date
 from typing import Annotated, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.api.deps import get_bearer_token
+from app.modules.sample.records.schemas import SampleRecordResponse
 from app.modules.sample.requests.providers import get_sample_request_service
 from app.modules.sample.requests.schemas import (
     SampleFeeCreate,
@@ -12,10 +14,12 @@ from app.modules.sample.requests.schemas import (
     SampleRequestCreate,
     SampleRequestListResponse,
     SampleRequestResponse,
+    SampleRequestToRecordCreate,
 )
 from app.modules.sample.requests.services import (
     PermissionDeniedError,
     SampleFeeNotFoundError,
+    SampleRecordAlreadyCreatedError,
     SampleRequestNotFoundError,
     SampleRequestService,
 )
@@ -53,6 +57,8 @@ async def list_sample_requests(
     q: Annotated[str | None, Query(max_length=120)] = None,
     status_filter: Annotated[str | None, Query(alias="status", max_length=40)] = None,
     customer_id: Annotated[str | None, Query(max_length=36)] = None,
+    date_from: date | None = None,
+    date_to: date | None = None,
 ) -> ApiResponse[SampleRequestListResponse]:
     user = await _current_user(token, auth_service)
     try:
@@ -61,10 +67,45 @@ async def list_sample_requests(
             q=q,
             status=status_filter,
             customer_id=customer_id,
+            date_from=date_from,
+            date_to=date_to,
         )
         return ApiResponse(data=requests)
     except PermissionDeniedError:
         _raise_permission_denied()
+    except ValueError:
+        _raise_invalid_sample_request()
+
+
+@router.post(
+    "/{request_id}/sample-record",
+    status_code=status.HTTP_201_CREATED,
+    response_model=ApiResponse[SampleRecordResponse],
+)
+async def create_sample_record_from_request(
+    request_id: str,
+    payload: SampleRequestToRecordCreate,
+    token: Annotated[str, Depends(get_bearer_token)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[SampleRequestService, Depends(get_sample_request_service)],
+) -> ApiResponse[SampleRecordResponse]:
+    user = await _current_user(token, auth_service)
+    try:
+        record = await service.create_sample_record_from_request(
+            current_user=user,
+            request_id=request_id,
+            payload=payload,
+        )
+        return ApiResponse(data=record)
+    except PermissionDeniedError:
+        _raise_permission_denied()
+    except SampleRequestNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="打样单不存在") from None
+    except SampleRecordAlreadyCreatedError:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="该打样单已转为样品登记",
+        ) from None
     except ValueError:
         _raise_invalid_sample_request()
 

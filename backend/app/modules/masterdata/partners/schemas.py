@@ -13,6 +13,10 @@ class PartnerContactCreate(BaseModel):
     is_primary: bool = False
 
 
+class PartnerContactUpdate(PartnerContactCreate):
+    pass
+
+
 class PartnerCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 

@@ -30,8 +30,6 @@ from app.modules.warehouse.outbound_plans.repositories import (
     OutboundPlanRow,
 )
 
-OUTBOUND_ORDER_VIEW_ALL_PERMISSION = "warehouse:outbound_order:view_all"
-
 
 class PermissionDeniedError(Exception):
     pass
@@ -209,7 +207,6 @@ class OutboundOrderService:
             self._validate_mode(outbound_mode)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=OUTBOUND_ORDER_VIEW_ALL_PERMISSION,
         )
         rows, total = await self._repository.list_orders(
             q=q,
@@ -245,7 +242,6 @@ class OutboundOrderService:
             raise OutboundOrderPlanNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=OUTBOUND_ORDER_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and plan.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
@@ -262,7 +258,6 @@ class OutboundOrderService:
             raise OutboundOrderNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=OUTBOUND_ORDER_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and order.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError

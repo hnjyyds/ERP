@@ -10,18 +10,18 @@ from app.modules.masterdata.suppliers.repositories import (
 from app.modules.masterdata.suppliers.schemas import (
     SupplierContactCreate,
     SupplierContactResponse,
+    SupplierContactUpdate,
     SupplierCreate,
     SupplierCreditProfileInput,
     SupplierCreditProfileResponse,
     SupplierListResponse,
     SupplierResponse,
     SupplierTransactionListResponse,
+    SupplierTransactionResponse,
     SupplierUpdate,
 )
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
-
-SUPPLIER_VIEW_ALL_PERMISSION = "masterdata:supplier:view_all"
 
 
 class PermissionDeniedError(Exception):
@@ -29,6 +29,10 @@ class PermissionDeniedError(Exception):
 
 
 class SupplierNotFoundError(Exception):
+    pass
+
+
+class SupplierContactNotFoundError(Exception):
     pass
 
 
@@ -126,6 +130,48 @@ class SupplierService:
             )
         return self._contact_response(contact)
 
+    async def update_contact(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        supplier_id: str,
+        contact_id: str,
+        payload: SupplierContactUpdate,
+    ) -> SupplierContactResponse:
+        self._require(current_user, "masterdata:supplier:edit")
+        await self._get_accessible_supplier(current_user=current_user, supplier_id=supplier_id)
+        async with UnitOfWork(self._repository.session):
+            contact = await self._repository.update_contact(
+                supplier_id=supplier_id,
+                contact_id=contact_id,
+                name=payload.name,
+                title=payload.title,
+                email=payload.email,
+                phone=payload.phone,
+                is_primary=payload.is_primary,
+            )
+            if contact is None:
+                raise SupplierContactNotFoundError
+        return self._contact_response(contact)
+
+    async def delete_contact(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        supplier_id: str,
+        contact_id: str,
+    ) -> SupplierContactResponse:
+        self._require(current_user, "masterdata:supplier:edit")
+        await self._get_accessible_supplier(current_user=current_user, supplier_id=supplier_id)
+        async with UnitOfWork(self._repository.session):
+            contact = await self._repository.delete_contact(
+                supplier_id=supplier_id,
+                contact_id=contact_id,
+            )
+            if contact is None:
+                raise SupplierContactNotFoundError
+        return self._contact_response(contact)
+
     async def get_supplier(
         self,
         *,
@@ -152,7 +198,6 @@ class SupplierService:
         self._require(current_user, "masterdata:supplier:view")
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=SUPPLIER_VIEW_ALL_PERMISSION,
         )
         suppliers, total = await self._repository.list_suppliers(
             q=q,
@@ -176,7 +221,18 @@ class SupplierService:
         supplier_id: str,
     ) -> SupplierTransactionListResponse:
         await self._get_accessible_supplier(current_user=current_user, supplier_id=supplier_id)
-        return SupplierTransactionListResponse(items=[], total=0)
+        rows = await self._repository.list_transactions(supplier_id=supplier_id)
+        items = [
+            SupplierTransactionResponse(
+                source_type=row.source_type,
+                source_code=row.source_code,
+                occurred_at=row.occurred_at,
+                amount=str(row.amount) if row.amount is not None else None,
+                summary=row.summary,
+            )
+            for row in rows
+        ]
+        return SupplierTransactionListResponse(items=items, total=len(items))
 
     async def deactivate_supplier(
         self,
@@ -210,7 +266,6 @@ class SupplierService:
             raise SupplierNotFoundError
         allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
-            view_all_permission=SUPPLIER_VIEW_ALL_PERMISSION,
         )
         if allowed_user_ids is not None and supplier.owner_user_id not in allowed_user_ids:
             raise SupplierNotFoundError
