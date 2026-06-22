@@ -4257,9 +4257,9 @@ function SampleRequestsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
 
               <form className="record-form compact-section" onSubmit={submitProgress}>
                 <div className="form-divider">打样进度</div>
-                <label htmlFor="sample-progress-stage">进度阶段</label>
+                <label>
+                  进度阶段
                 <FormSelect
-                  id="sample-progress-stage"
                   value={progressForm.stage}
                   onChange={(event) => setProgressForm({ ...progressForm, stage: event.target.value })}
                 >
@@ -4269,9 +4269,10 @@ function SampleRequestsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                     </option>
                   ))}
                 </FormSelect>
-                <label htmlFor="sample-progress-status">进度状态</label>
+                </label>
+                <label>
+                  进度状态
                 <FormSelect
-                  id="sample-progress-status"
                   value={progressForm.status}
                   onChange={(event) => setProgressForm({ ...progressForm, status: event.target.value })}
                 >
@@ -4281,6 +4282,7 @@ function SampleRequestsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                     </option>
                   ))}
                 </FormSelect>
+                </label>
                 <label>
                   进度日期
                   <Input
@@ -4327,9 +4329,9 @@ function SampleRequestsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
 
               <form className="record-form compact-section" onSubmit={submitFee}>
                 <div className="form-divider">打样费用</div>
-                <label htmlFor="sample-fee-type">打样费用类型</label>
+                <label>
+                  打样费用类型
                 <FormSelect
-                  id="sample-fee-type"
                   value={feeForm.fee_type}
                   onChange={(event) => setFeeForm({ ...feeForm, fee_type: event.target.value })}
                 >
@@ -4339,6 +4341,7 @@ function SampleRequestsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                     </option>
                   ))}
                 </FormSelect>
+                </label>
                 <label>
                   打样费用金额
                   <Input
@@ -4356,9 +4359,9 @@ function SampleRequestsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                     onChange={(event) => setFeeForm({ ...feeForm, currency: event.target.value })}
                   />
                 </label>
-                <label htmlFor="sample-fee-payee-type">收款方类型</label>
+                <label>
+                  收款方类型
                 <FormSelect
-                  id="sample-fee-payee-type"
                   value={feeForm.payee_type}
                   onChange={(event) => setFeeForm({ ...feeForm, payee_type: event.target.value })}
                 >
@@ -4368,6 +4371,7 @@ function SampleRequestsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                     </option>
                   ))}
                 </FormSelect>
+                </label>
                 <label>
                   收款方名称
                   <Input
@@ -4433,9 +4437,9 @@ function SampleRequestsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                       onChange={(event) => setRecordForm({ ...recordForm, code: event.target.value })}
                     />
                   </label>
-                  <label htmlFor="sample-request-record-type">样品分类</label>
+                  <label>
+                    样品分类
                   <FormSelect
-                    id="sample-request-record-type"
                     value={recordForm.sample_type}
                     onChange={(event) => setRecordForm({ ...recordForm, sample_type: event.target.value })}
                   >
@@ -4445,6 +4449,7 @@ function SampleRequestsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                       </option>
                     ))}
                   </FormSelect>
+                  </label>
                   <label>
                     收样数量
                     <Input
@@ -5178,9 +5183,9 @@ function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
 
                 <form className="record-form" onSubmit={submitStockEvent}>
                   <div className="form-divider">数量事件</div>
-                  <label htmlFor="sample-stock-event-type">事件类型</label>
+                  <label>
+                    事件类型
                   <FormSelect
-                    id="sample-stock-event-type"
                     value={stockForm.event_type}
                     onChange={(event) => setStockForm({ ...stockForm, event_type: event.target.value })}
                   >
@@ -5190,6 +5195,7 @@ function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                       </option>
                     ))}
                   </FormSelect>
+                  </label>
                   <label>
                     数量
                     <Input
@@ -6060,9 +6066,9 @@ function SampleDeliveriesPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                       onChange={(event) => setTrackingForm({ ...trackingForm, tracking_no: event.target.value })}
                     />
                   </label>
-                  <label htmlFor="sample-delivery-track-status">物流状态</label>
+                  <label>
+                    物流状态
                   <FormSelect
-                    id="sample-delivery-track-status"
                     value={trackingForm.status}
                     onChange={(event) => setTrackingForm({ ...trackingForm, status: event.target.value })}
                   >
@@ -6072,6 +6078,7 @@ function SampleDeliveriesPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                       </option>
                     ))}
                   </FormSelect>
+                  </label>
                 </div>
                 <Button htmlType="submit" loading={submitting}>
                   更新物流
@@ -6555,9 +6562,9 @@ function ExportQuotationsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </label>
-              <label htmlFor="export-quotation-status-filter">审批状态</label>
+              <label>
+                审批状态
               <FormSelect
-                id="export-quotation-status-filter"
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
               >
@@ -6570,6 +6577,7 @@ function ExportQuotationsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                     </option>
                   ))}
               </FormSelect>
+              </label>
               <label>
                 客户筛选
                 <Select
@@ -6715,13 +6723,14 @@ function ExportQuotationsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                 />
               </label>
             </div>
-            <label htmlFor="export-quotation-description">报价描述</label>
-            <Input.TextArea
-              id="export-quotation-description"
-              rows={2}
-              value={form.description}
-              onChange={(event) => setForm({ ...form, description: event.target.value })}
-            />
+            <label>
+              报价描述
+              <Input.TextArea
+                rows={2}
+                value={form.description}
+                onChange={(event) => setForm({ ...form, description: event.target.value })}
+              />
+            </label>
             <div className="form-divider">报价商品明细</div>
             <div className="form-pair two">
               <label>
@@ -6786,9 +6795,9 @@ function ExportQuotationsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
               </label>
             </div>
             <div className="form-pair two">
-              <label htmlFor="export-quotation-freight-method">货运方式</label>
-              <FormSelect
-                id="export-quotation-freight-method"
+              <label>
+                货运方式
+                <FormSelect
                 value={form.freight_method}
                 onChange={(event) => setForm({ ...form, freight_method: event.target.value })}
               >
@@ -6798,6 +6807,7 @@ function ExportQuotationsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                   </option>
                 ))}
               </FormSelect>
+            </label>
               <label>
                 运费
                 <Input
@@ -7096,6 +7106,7 @@ function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [createModalOpen, setCreateModalOpen] = useState(false)
   const [form, setForm] = useState<ExportContractFormState>(() => initialExportContractForm())
   const [approveForm, setApproveForm] = useState<ExportContractApproveFormState>(() =>
     initialExportContractApproveForm(),
@@ -7240,7 +7251,7 @@ function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   function loadContractIntoForm(contract: ExportContract) {
     setSelectedContractId(contract.id)
     setForm(exportContractToForm(contract))
-    onNavigate(exportContractPath)
+    setCreateModalOpen(true)
   }
 
   async function submitContract(event: FormEvent<HTMLFormElement>) {
@@ -7253,6 +7264,7 @@ function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
       const created = await createExportContract(exportContractPayload(form))
       setMessage(`已新增出口合同 ${created.code}`)
       setForm(initialExportContractForm())
+      setCreateModalOpen(false)
       upsertContract(created)
       await loadContracts(created.id)
     } catch (caught) {
@@ -7412,25 +7424,30 @@ function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
 
       <section className="business-grid export-contract-grid">
         {!detailId ? (
-          <section className="workspace-panel list-panel product-list-panel">
+          <section className="workspace-panel list-panel product-list-panel" style={{ gridColumn: '1 / -1' }}>
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="合同列表" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadContracts()
-              }}
-            >
-              <label>
-                合同搜索
-                <Input
-                  value={search}
-                  placeholder="合同号 / 客户 / 产品 / 条款"
-                  onChange={(event) => setSearch(event.target.value)}
-                />
-              </label>
-              <label htmlFor="export-contract-status-filter">审批状态</label>
+            <Button type="primary" icon={<Plus size={16} />} onClick={() => setCreateModalOpen(true)}>
+              新增合同
+            </Button>
+          </div>
+          <form
+            className="inline-filters"
+            onSubmit={(event) => {
+              event.preventDefault()
+              void loadContracts()
+            }}
+          >
+            <label>
+              合同搜索
+              <Input
+                value={search}
+                placeholder="合同号 / 客户 / 产品 / 条款"
+                onChange={(event) => setSearch(event.target.value)}
+              />
+            </label>
+            <label>
+              审批状态
               <FormSelect
                 id="export-contract-status-filter"
                 value={statusFilter}
@@ -7443,26 +7460,29 @@ function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                   </option>
                 ))}
               </FormSelect>
-              <label>
-                客户筛选
-                <Select
-                  allowClear
-                  showSearch
-                  loading={loadingCustomers}
-                  value={customerFilter || undefined}
-                  placeholder="从客户资料筛选"
-                  optionFilterProp="label"
-                  notFoundContent={loadingCustomers ? '加载客户资料中' : '暂无客户资料'}
-                  onChange={(value) => setCustomerFilter(value ?? '')}
-                >
-                  {renderCustomerOptions(customers)}
-                </Select>
-              </label>
+            </label>
+            <label>
+              客户筛选
+              <Select
+                allowClear
+                showSearch
+                loading={loadingCustomers}
+                value={customerFilter || undefined}
+                placeholder="从客户资料筛选"
+                optionFilterProp="label"
+                notFoundContent={loadingCustomers ? '加载客户资料中' : '暂无客户资料'}
+                onChange={(value) => setCustomerFilter(value ?? '')}
+              >
+                {renderCustomerOptions(customers)}
+              </Select>
+            </label>
+            <label>
+              <span>&nbsp;</span>
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
-            </form>
-          </div>
+            </label>
+          </form>
 
           <Table<ExportContract>
             columns={[
@@ -7512,11 +7532,16 @@ function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
           </section>
         ) : null}
 
-        {!detailId ? (
-          <section className="workspace-panel form-panel product-form-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="新增出口合同" />
-          <form className="record-form" onSubmit={submitContract}>
-            <div className="form-pair two">
+        <Modal
+          centered
+          footer={null}
+          open={createModalOpen}
+          title={selectedContract && form.code ? '编辑出口合同' : '新增出口合同'}
+          width={960}
+          onCancel={() => setCreateModalOpen(false)}
+        >
+          <form className="record-form entity-modal-form contract-modal-form" onSubmit={submitContract}>
+            <div className="form-row">
               <label>
                 合同号
                 <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
@@ -7529,8 +7554,15 @@ function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                   onChange={(event) => setForm({ ...form, contract_date: event.target.value })}
                 />
               </label>
+              <label>
+                业务员
+                <Input
+                  value={form.sales_user_name}
+                  onChange={(event) => setForm({ ...form, sales_user_name: event.target.value })}
+                />
+              </label>
             </div>
-            <div className="form-pair two">
+            <div className="form-row">
               <label>
                 选择客户
                 <Select
@@ -7547,21 +7579,8 @@ function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                 </Select>
               </label>
               <label>
-                客户标识
-                <Input value={form.customer_id} readOnly placeholder="选择客户后自动带出" />
-              </label>
-            </div>
-            <label>
-              客户名称
-              <Input value={form.customer_name} readOnly placeholder="选择客户后自动带出" />
-            </label>
-            <div className="form-pair two">
-              <label>
-                业务员
-                <Input
-                  value={form.sales_user_name}
-                  onChange={(event) => setForm({ ...form, sales_user_name: event.target.value })}
-                />
+                客户名称
+                <Input value={form.customer_name} readOnly placeholder="选择客户后自动带出" />
               </label>
               <label>
                 币种
@@ -7571,12 +7590,19 @@ function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                 />
               </label>
             </div>
-            <div className="form-pair two">
+            <div className="form-row">
               <label>
                 贸易条款
                 <Input
                   value={form.trade_term}
                   onChange={(event) => setForm({ ...form, trade_term: event.target.value })}
+                />
+              </label>
+              <label>
+                付款条款
+                <Input
+                  value={form.payment_terms}
+                  onChange={(event) => setForm({ ...form, payment_terms: event.target.value })}
                 />
               </label>
               <label>
@@ -7588,14 +7614,7 @@ function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                 />
               </label>
             </div>
-            <label>
-              付款条款
-              <Input
-                value={form.payment_terms}
-                onChange={(event) => setForm({ ...form, payment_terms: event.target.value })}
-              />
-            </label>
-            <div className="form-pair two">
+            <div className="form-row">
               <label>
                 来源报价号
                 <Input
@@ -7604,29 +7623,21 @@ function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                 />
               </label>
               <label>
-                来源报价标识
+                合同备注
                 <Input
-                  value={form.source_quotation_id}
-                  onChange={(event) => setForm({ ...form, source_quotation_id: event.target.value })}
+                  value={form.remarks}
+                  onChange={(event) => setForm({ ...form, remarks: event.target.value })}
                 />
+              </label>
+              <label>
+                <span>&nbsp;</span>
+                <Button htmlType="submit" type="primary" loading={submitting}>
+                  {selectedContract && form.code ? '保存合同' : '新增出口合同'}
+                </Button>
               </label>
             </div>
-            <label>
-              合同备注
-              <Input
-                value={form.remarks}
-                onChange={(event) => setForm({ ...form, remarks: event.target.value })}
-              />
-            </label>
             <div className="form-divider">合同商品明细</div>
-            <div className="form-pair two">
-              <label>
-                商品标识
-                <Input
-                  value={form.product_id}
-                  onChange={(event) => setForm({ ...form, product_id: event.target.value })}
-                />
-              </label>
+            <div className="form-row">
               <label>
                 商品编号
                 <Input
@@ -7634,15 +7645,13 @@ function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                   onChange={(event) => setForm({ ...form, product_code: event.target.value })}
                 />
               </label>
-            </div>
-            <label>
-              商品名称
-              <Input
-                value={form.product_name}
-                onChange={(event) => setForm({ ...form, product_name: event.target.value })}
-              />
-            </label>
-            <div className="form-pair two">
+              <label>
+                商品名称
+                <Input
+                  value={form.product_name}
+                  onChange={(event) => setForm({ ...form, product_name: event.target.value })}
+                />
+              </label>
               <label>
                 规格
                 <Input
@@ -7650,12 +7659,12 @@ function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                   onChange={(event) => setForm({ ...form, specification: event.target.value })}
                 />
               </label>
+            </div>
+            <div className="form-row">
               <label>
                 型号
                 <Input value={form.model} onChange={(event) => setForm({ ...form, model: event.target.value })} />
               </label>
-            </div>
-            <div className="form-pair three">
               <label>
                 数量
                 <Input
@@ -7665,10 +7674,6 @@ function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                   value={form.quantity}
                   onChange={(event) => setForm({ ...form, quantity: event.target.value })}
                 />
-              </label>
-              <label>
-                单位
-                <Input value={form.unit} onChange={(event) => setForm({ ...form, unit: event.target.value })} />
               </label>
               <label>
                 销售单价
@@ -7681,7 +7686,11 @@ function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                 />
               </label>
             </div>
-            <div className="form-pair two">
+            <div className="form-row">
+              <label>
+                单位
+                <Input value={form.unit} onChange={(event) => setForm({ ...form, unit: event.target.value })} />
+              </label>
               <label>
                 已采购数量
                 <Input
@@ -7703,33 +7712,8 @@ function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                 />
               </label>
             </div>
-            <label>
-              商品图片
-              <Input
-                value={form.image_url}
-                onChange={(event) => setForm({ ...form, image_url: event.target.value })}
-              />
-            </label>
-            <label>
-              明细备注
-              <Input
-                value={form.line_remark}
-                onChange={(event) => setForm({ ...form, line_remark: event.target.value })}
-              />
-            </label>
-            <Button htmlType="submit" loading={submitting} type="primary">
-              新增出口合同
-            </Button>
-            <Button
-              disabled={!selectedContract || selectedContract.approval_status !== 'draft'}
-              loading={submitting}
-              onClick={() => void saveContractDraft()}
-            >
-              保存草稿编辑
-            </Button>
           </form>
-          </section>
-        ) : null}
+        </Modal>
 
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
@@ -8324,9 +8308,9 @@ function ShipmentsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </label>
-              <label htmlFor="shipment-status-filter">审批状态</label>
+              <label>
+                审批状态
               <FormSelect
-                id="shipment-status-filter"
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
               >
@@ -8337,6 +8321,7 @@ function ShipmentsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                   </option>
                 ))}
               </FormSelect>
+              </label>
               <label>
                 客户标识
                 <Input
@@ -8435,9 +8420,9 @@ function ShipmentsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                   onChange={(event) => setForm({ ...form, planned_ship_date: event.target.value })}
                 />
               </label>
-              <label htmlFor="shipment-method">运输方式</label>
+              <label>
+                运输方式
               <FormSelect
-                id="shipment-method"
                 value={form.shipping_method}
                 onChange={(event) => setForm({ ...form, shipping_method: event.target.value })}
               >
@@ -8447,6 +8432,7 @@ function ShipmentsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                   </option>
                 ))}
               </FormSelect>
+              </label>
             </div>
             <div className="form-divider">出口合同选择</div>
             <div className="form-pair two">
@@ -9067,9 +9053,9 @@ function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPageProps) 
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </label>
-              <label htmlFor="purchase-inquiry-status-filter">询价状态</label>
+              <label>
+                询价状态
               <FormSelect
-                id="purchase-inquiry-status-filter"
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
               >
@@ -9080,6 +9066,7 @@ function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPageProps) 
                   </option>
                 ))}
               </FormSelect>
+              </label>
               <label>
                 商品标识
                 <Input
@@ -9254,13 +9241,14 @@ function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPageProps) 
                 <Input value={form.unit} onChange={(event) => setForm({ ...form, unit: event.target.value })} />
               </label>
             </div>
-            <label htmlFor="purchase-inquiry-remarks">询价备注</label>
-            <Input.TextArea
-              id="purchase-inquiry-remarks"
-              rows={2}
-              value={form.remarks}
-              onChange={(event) => setForm({ ...form, remarks: event.target.value })}
-            />
+            <label>
+              询价备注
+              <Input.TextArea
+                rows={2}
+                value={form.remarks}
+                onChange={(event) => setForm({ ...form, remarks: event.target.value })}
+              />
+            </label>
             <Button htmlType="submit" loading={submitting} type="primary">
               {editingInquiryId ? '保存草稿编辑' : '新增采购询价'}
             </Button>
@@ -9996,9 +9984,9 @@ function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) 
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </label>
-              <label htmlFor="purchase-contract-status-filter">审批状态</label>
-              <FormSelect
-                id="purchase-contract-status-filter"
+              <label>
+                审批状态
+                <FormSelect
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
               >
@@ -10009,9 +9997,10 @@ function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) 
                   </option>
                 ))}
               </FormSelect>
-              <label htmlFor="purchase-contract-source-filter">来源类型</label>
+            </label>
+              <label>
+                来源类型
               <FormSelect
-                id="purchase-contract-source-filter"
                 value={sourceFilter}
                 onChange={(event) => setSourceFilter(event.target.value)}
               >
@@ -10022,6 +10011,7 @@ function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) 
                   </option>
                 ))}
               </FormSelect>
+              </label>
               <label>
                 供应商标识
                 <Input
@@ -10183,9 +10173,9 @@ function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) 
                   onChange={(event) => setForm({ ...form, delivery_date: event.target.value })}
                 />
               </label>
-              <label htmlFor="purchase-contract-source-type">来源</label>
+              <label>
+                来源
               <FormSelect
-                id="purchase-contract-source-type"
                 value={form.source_type}
                 onChange={(event) =>
                   setForm({
@@ -10200,6 +10190,7 @@ function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) 
                   </option>
                 ))}
               </FormSelect>
+              </label>
             </div>
             <label>
               付款条款
@@ -10320,13 +10311,14 @@ function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) 
                 onChange={(event) => setForm({ ...form, line_remark: event.target.value })}
               />
             </label>
-            <label htmlFor="purchase-contract-remarks">合同备注</label>
-            <Input.TextArea
-              id="purchase-contract-remarks"
-              rows={2}
-              value={form.remarks}
-              onChange={(event) => setForm({ ...form, remarks: event.target.value })}
-            />
+            <label>
+              合同备注
+              <Input.TextArea
+                rows={2}
+                value={form.remarks}
+                onChange={(event) => setForm({ ...form, remarks: event.target.value })}
+              />
+            </label>
             <Button htmlType="submit" loading={submitting} type="primary">
               {editingContractId ? '保存采购合同' : '新增采购合同'}
             </Button>
@@ -10941,9 +10933,9 @@ function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetailPagePr
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </label>
-              <label htmlFor="purchase-invoice-status-filter">通知状态</label>
-              <FormSelect
-                id="purchase-invoice-status-filter"
+              <label>
+                通知状态
+                <FormSelect
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
               >
@@ -10954,6 +10946,7 @@ function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetailPagePr
                   </option>
                 ))}
               </FormSelect>
+            </label>
               <label>
                 供应商标识
                 <Input
@@ -11796,9 +11789,9 @@ function FollowupPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </label>
-              <label htmlFor="followup-status-filter">整体状态</label>
+              <label>
+                整体状态
               <FormSelect
-                id="followup-status-filter"
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
               >
@@ -11809,6 +11802,7 @@ function FollowupPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                   </option>
                 ))}
               </FormSelect>
+              </label>
               <label>
                 供应商标识
                 <Input
@@ -11902,9 +11896,9 @@ function FollowupPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                   onChange={(event) => setTemplateForm({ ...templateForm, name: event.target.value })}
                 />
               </label>
-              <label htmlFor="followup-template-default">默认模板</label>
+              <label>
+                默认模板
               <FormSelect
-                id="followup-template-default"
                 value={String(templateForm.is_default)}
                 onChange={(event) =>
                   setTemplateForm({ ...templateForm, is_default: event.target.value === 'true' })
@@ -11913,6 +11907,7 @@ function FollowupPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                 <option value="true">是</option>
                 <option value="false">否</option>
               </FormSelect>
+              </label>
             </div>
             <label className="checkbox-label" htmlFor="followup-template-enabled">
               <input
@@ -12021,9 +12016,9 @@ function FollowupPage({ detailId, onNavigate }: RoutedDetailPageProps) {
               />
             </label>
             <div className="form-pair two">
-              <label htmlFor="followup-source-node">节点</label>
+              <label>
+                节点
               <FormSelect
-                id="followup-source-node"
                 value={sourceEventForm.node_code}
                 onChange={(event) =>
                   setSourceEventForm({
@@ -12039,9 +12034,10 @@ function FollowupPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                   </option>
                 ))}
               </FormSelect>
-              <label htmlFor="followup-source-type">来源类型</label>
+              </label>
+              <label>
+                来源类型
               <FormSelect
-                id="followup-source-type"
                 value={sourceEventForm.source_record_type}
                 onChange={(event) =>
                   setSourceEventForm({ ...sourceEventForm, source_record_type: event.target.value })
@@ -12053,6 +12049,7 @@ function FollowupPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                   </option>
                 ))}
               </FormSelect>
+              </label>
             </div>
             <div className="form-pair two">
               <label htmlFor="followup-source-id">
@@ -12393,60 +12390,65 @@ function QualityInspectionsPage({ detailId, onNavigate }: RoutedDetailPageProps)
           <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="QC 查验列表" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadQualityInspections()
-              }}
-            >
-              <label>
-                查验搜索
-                <Input
-                  value={search}
-                  placeholder="QC 单号 / 合同 / 供应商"
-                  onChange={(event) => setSearch(event.target.value)}
-                />
-              </label>
-              <label htmlFor="quality-result-filter">
-                查验结果
-                <FormSelect
-                  id="quality-result-filter"
-                  value={resultFilter}
-                  onChange={(event) => setResultFilter(event.target.value)}
-                >
-                  <option value="">全部结果</option>
-                  {qualityResultOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                供应商标识
-                <Input
-                  value={supplierFilter}
-                  placeholder="supplier-id"
-                  onChange={(event) => setSupplierFilter(event.target.value)}
-                />
-              </label>
-              <label>
-                采购合同 ID
-                <Input
-                  value={contractFilter}
-                  placeholder="purchase-contract-id"
-                  onChange={(event) => setContractFilter(event.target.value)}
-                />
-              </label>
+          </div>
+          <form
+            className="inline-filters"
+            onSubmit={(event) => {
+              event.preventDefault()
+              void loadQualityInspections()
+            }}
+          >
+            <label>
+              查验搜索
+              <Input
+                value={search}
+                placeholder="QC 单号 / 合同 / 供应商"
+                onChange={(event) => setSearch(event.target.value)}
+              />
+            </label>
+            <label>
+              查验结果
+              <FormSelect
+                value={resultFilter}
+                onChange={(event) => setResultFilter(event.target.value)}
+              >
+                <option value="">全部结果</option>
+                {qualityResultOptions.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>
+                ))}
+              </FormSelect>
+            </label>
+            <label>
+              供应商标识
+              <Input
+                value={supplierFilter}
+                placeholder="supplier-id"
+                onChange={(event) => setSupplierFilter(event.target.value)}
+              />
+            </label>
+            <label>
+              采购合同 ID
+              <Input
+                value={contractFilter}
+                placeholder="purchase-contract-id"
+                onChange={(event) => setContractFilter(event.target.value)}
+              />
+            </label>
+            <label>
+              <span>&nbsp;</span>
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
-              <Button htmlType="button" icon={<Plus size={16} />} onClick={startNewInspection}>
+            </label>
+            <label>
+              <span>&nbsp;</span>
+              <Button type="primary" icon={<Plus size={16} />} onClick={startNewInspection}>
                 新增 QC 单
               </Button>
-            </form>
-          </div>
+            </label>
+          </form>
 
           <Table<QualityInspection>
             columns={[
