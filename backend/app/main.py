@@ -27,11 +27,13 @@ from app.modules.masterdata.products import models as product_models  # noqa: F4
 from app.modules.masterdata.products.migrations import ensure_product_schema
 from app.modules.masterdata.suppliers import models as supplier_models  # noqa: F401
 from app.modules.purchase.contracts import models as purchase_contract_models  # noqa: F401
+from app.modules.purchase.contracts.migrations import ensure_purchase_contract_schema
 from app.modules.purchase.inquiries import models as purchase_inquiry_models  # noqa: F401
 from app.modules.purchase.invoice_notices import (
     models as purchase_invoice_notice_models,  # noqa: F401
 )
 from app.modules.quality.inspections import models as quality_inspection_models  # noqa: F401
+from app.modules.quality.inspections.migrations import ensure_quality_inspection_schema
 from app.modules.sales.contracts import models as contract_models  # noqa: F401
 from app.modules.sales.quotations import models as quotation_models  # noqa: F401
 from app.modules.sales.shipments import models as shipment_models  # noqa: F401
@@ -63,6 +65,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         await connection.run_sync(ensure_product_schema)
         await connection.run_sync(ensure_company_schema)
         await connection.run_sync(ensure_port_data_schema)
+        await connection.run_sync(ensure_purchase_contract_schema)
+        await connection.run_sync(ensure_quality_inspection_schema)
 
     if settings.seed_demo_data:
         async with SessionLocal() as session:

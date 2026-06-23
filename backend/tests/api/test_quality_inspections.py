@@ -13,8 +13,13 @@ async def _login_token(
     return response.json()["data"]["access_token"]
 
 
-def _purchase_contract_payload(code: str = "PC-QC-API") -> dict[str, object]:
-    return {
+def _purchase_contract_payload(
+    code: str = "PC-QC-API",
+    *,
+    qc_user_id: str | None = None,
+    qc_user_name: str | None = None,
+) -> dict[str, object]:
+    payload: dict[str, object] = {
         "code": code,
         "contract_date": "2026-08-05",
         "supplier_id": "supplier-pack-a",
@@ -43,6 +48,11 @@ def _purchase_contract_payload(code: str = "PC-QC-API") -> dict[str, object]:
             }
         ],
     }
+    if qc_user_id is not None:
+        payload["qc_user_id"] = qc_user_id
+    if qc_user_name is not None:
+        payload["qc_user_name"] = qc_user_name
+    return payload
 
 
 async def test_quality_inspection_api_creates_record_and_updates_followup(
@@ -102,6 +112,8 @@ async def test_quality_inspection_api_creates_record_and_updates_followup(
     inspection = inspection_response.json()["data"]
     assert inspection["result"] == "passed"
     assert inspection["purchase_contract_no"] == "PC-QC-API"
+    assert inspection["qc_user_id"] is None
+    assert inspection["qc_user_name"] is None
     assert inspection["lines"][0]["inspected_quantity"] == "120"
 
     list_response = await api_client.get(
@@ -133,6 +145,82 @@ async def test_quality_inspection_api_creates_record_and_updates_followup(
     assert qc_node["actual_date"] == "2026-08-19"
     assert qc_node["source_record_type"] == "quality_inspection"
     assert qc_node["source_record_id"] == inspection["id"]
+
+
+async def test_quality_inspection_api_inherits_contract_qc_assignee_and_filters(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    create_response = await api_client.post(
+        "/api/v1/purchase/contracts",
+        headers=headers,
+        json=_purchase_contract_payload(
+            "PC-QC-ASSIGNED",
+            qc_user_id="u-finance",
+            qc_user_name="前端传入姓名会被后端覆盖",
+        ),
+    )
+    assert create_response.status_code == 201
+    contract = create_response.json()["data"]
+    submit_response = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract['id']}/submit",
+        headers=headers,
+    )
+    assert submit_response.status_code == 200
+    approve_response = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract['id']}/approve",
+        headers=headers,
+        json={"reviewer_name": "演示业务主管", "approved_at": "2026-08-05"},
+    )
+    assert approve_response.status_code == 200
+
+    inspection_response = await api_client.post(
+        "/api/v1/quality/inspections",
+        headers=headers,
+        json={
+            "code": "QC-API-ASSIGNED",
+            "purchase_contract_id": contract["id"],
+            "inspected_at": "2026-08-19",
+            "result": "passed",
+            "inspector_id": "u-worker-001",
+            "inspector_name": "现场查验员",
+            "issue_summary": None,
+            "attachment_group_id": "attach-qc-assigned",
+            "lines": [
+                {
+                    "purchase_contract_line_id": contract["lines"][0]["id"],
+                    "product_name": "Eco Shopping Bag",
+                    "inspected_quantity": "120",
+                    "failed_quantity": "0",
+                    "unit": "pcs",
+                    "result": "passed",
+                }
+            ],
+            "issues": [],
+        },
+    )
+    assert inspection_response.status_code == 201
+    inspection = inspection_response.json()["data"]
+    assert inspection["qc_user_id"] == "u-finance"
+    assert inspection["qc_user_name"] == "演示财务"
+
+    assigned_response = await api_client.get(
+        "/api/v1/quality/inspections",
+        headers=headers,
+        params={"assignee_user_id": "u-finance", "q": "QC-API-ASSIGNED"},
+    )
+    assert assigned_response.status_code == 200
+    assert assigned_response.json()["data"]["total"] == 1
+
+    other_response = await api_client.get(
+        "/api/v1/quality/inspections",
+        headers=headers,
+        params={"assignee_user_id": "u-qc-002", "q": "QC-API-ASSIGNED"},
+    )
+    assert other_response.status_code == 200
+    assert other_response.json()["data"]["total"] == 0
 
 
 async def test_quality_inspection_api_rejects_unauthorized_and_finance_role(

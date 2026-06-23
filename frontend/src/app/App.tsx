@@ -1486,6 +1486,8 @@ type PurchaseContractFormState = {
   supplier_name: string
   buyer_user_id: string
   buyer_user_name: string
+  qc_user_id: string
+  qc_user_name: string
   currency: string
   delivery_date: string
   payment_terms: string
@@ -1514,6 +1516,8 @@ type PurchaseContractGenerateFormState = {
   supplier_name: string
   buyer_user_id: string
   buyer_user_name: string
+  qc_user_id: string
+  qc_user_name: string
   currency: string
   delivery_date: string
   unit_price: string
@@ -1704,6 +1708,12 @@ type ModuleNavigationProps = {
 type RoutedDetailPageProps = ModuleNavigationProps & {
   detailId: string | null
 }
+
+type RoutedDetailPageWithCurrentUserProps = RoutedDetailPageProps & {
+  currentUser: CurrentUser
+}
+
+type QualityInspectionAssigneeFilter = 'all' | 'mine'
 
 type OperationFlowKind = 'sales' | 'purchase' | 'warehouse' | 'finance'
 
@@ -2226,7 +2236,11 @@ function App() {
             ) : isDetailPathFor(followupPath, activePath) ? (
               <FollowupPage detailId={moduleDetailId(followupPath, activePath)} onNavigate={navigate} />
             ) : isDetailPathFor(qualityInspectionPath, activePath) ? (
-              <QualityInspectionsPage detailId={moduleDetailId(qualityInspectionPath, activePath)} onNavigate={navigate} />
+              <QualityInspectionsPage
+                currentUser={session.user}
+                detailId={moduleDetailId(qualityInspectionPath, activePath)}
+                onNavigate={navigate}
+              />
             ) : isDetailPathFor(warehouseInboundPlanPath, activePath) ? (
               <InboundPlansPage detailId={moduleDetailId(warehouseInboundPlanPath, activePath)} onNavigate={navigate} />
             ) : isDetailPathFor(warehouseInboundOrderPath, activePath) ? (
@@ -9620,6 +9634,7 @@ function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) 
   const [reminders, setReminders] = useState<PurchaseContractReminder[]>([])
   const [products, setProducts] = useState<Product[]>([])
   const [suppliers, setSuppliers] = useState<Supplier[]>([])
+  const [assignableUsers, setAssignableUsers] = useState<AssignableUser[]>([])
   const [selectedContractId, setSelectedContractId] = useState<string | null>(null)
   const [editingContractId, setEditingContractId] = useState<string | null>(null)
   const [contractModalOpen, setContractModalOpen] = useState(false)
@@ -9632,6 +9647,7 @@ function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) 
   const [loading, setLoading] = useState(false)
   const [loadingProducts, setLoadingProducts] = useState(false)
   const [loadingSuppliers, setLoadingSuppliers] = useState(false)
+  const [loadingAssignableUsers, setLoadingAssignableUsers] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
@@ -9656,6 +9672,7 @@ function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) 
     void loadContractReminders()
     void loadProductsForContract()
     void loadSuppliersForContract()
+    void loadAssignableUsersForContract()
   }, [])
 
   useEffect(() => {
@@ -9746,6 +9763,36 @@ function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) 
     } finally {
       setLoadingSuppliers(false)
     }
+  }
+
+  async function loadAssignableUsersForContract() {
+    setLoadingAssignableUsers(true)
+    try {
+      const result = await listAssignableUsers()
+      setAssignableUsers(result.users)
+    } catch (caught) {
+      showError(caught, '人员列表加载失败')
+    } finally {
+      setLoadingAssignableUsers(false)
+    }
+  }
+
+  function applyQcUserToPurchaseContractForm(userId: string | undefined) {
+    const user = userId ? assignableUsers.find((item) => item.id === userId) : null
+    setForm((current) => ({
+      ...current,
+      qc_user_id: user?.id ?? '',
+      qc_user_name: user?.display_name ?? '',
+    }))
+  }
+
+  function applyQcUserToPurchaseContractGenerateForm(userId: string | undefined) {
+    const user = userId ? assignableUsers.find((item) => item.id === userId) : null
+    setGenerateForm((current) => ({
+      ...current,
+      qc_user_id: user?.id ?? '',
+      qc_user_name: user?.display_name ?? '',
+    }))
   }
 
   function upsertContract(contract: PurchaseContract) {
@@ -10050,6 +10097,11 @@ function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) 
               { title: '状态', dataIndex: 'approval_status', render: purchaseContractStatusLabel },
               { title: '来源', dataIndex: 'source_type', render: purchaseContractSourceTypeLabel },
               { title: '供应商', dataIndex: 'supplier_name' },
+              {
+                title: 'QC 负责人',
+                dataIndex: 'qc_user_name',
+                render: (value: string | null) => value ?? '未指定',
+              },
               { title: '交货日', dataIndex: 'delivery_date', render: formatDate },
               {
                 title: '金额',
@@ -10155,6 +10207,23 @@ function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) 
                   value={form.buyer_user_id}
                   onChange={(event) => setForm({ ...form, buyer_user_id: event.target.value })}
                 />
+              </label>
+            </div>
+            <div className="form-pair two">
+              <label>
+                QC 负责人
+                <Select
+                  allowClear
+                  showSearch
+                  loading={loadingAssignableUsers}
+                  value={form.qc_user_id || undefined}
+                  placeholder={assignableUsers.length > 0 ? '从系统用户选择' : '暂无可选用户'}
+                  optionFilterProp="label"
+                  notFoundContent={loadingAssignableUsers ? '加载人员中' : '暂无可选用户'}
+                  onChange={applyQcUserToPurchaseContractForm}
+                >
+                  {renderAssignableUserOptions(assignableUsers)}
+                </Select>
               </label>
             </div>
             <div className="form-pair three">
@@ -10415,6 +10484,23 @@ function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) 
                 />
               </label>
             </div>
+            <div className="form-pair two">
+              <label>
+                QC 负责人
+                <Select
+                  allowClear
+                  showSearch
+                  loading={loadingAssignableUsers}
+                  value={generateForm.qc_user_id || undefined}
+                  placeholder={assignableUsers.length > 0 ? '从系统用户选择' : '暂无可选用户'}
+                  optionFilterProp="label"
+                  notFoundContent={loadingAssignableUsers ? '加载人员中' : '暂无可选用户'}
+                  onChange={applyQcUserToPurchaseContractGenerateForm}
+                >
+                  {renderAssignableUserOptions(assignableUsers)}
+                </Select>
+              </label>
+            </div>
             <label>
               付款条款
               <Input
@@ -10464,6 +10550,10 @@ function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) 
                 <div>
                   <dt>采购员</dt>
                   <dd>{selectedContract.buyer_user_name ?? '未指定'}</dd>
+                </div>
+                <div>
+                  <dt>QC 负责人</dt>
+                  <dd>{selectedContract.qc_user_name ?? '未指定'}</dd>
                 </div>
                 <div>
                   <dt>交货日期</dt>
@@ -12228,7 +12318,11 @@ function FollowupPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   )
 }
 
-function QualityInspectionsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
+function QualityInspectionsPage({
+  currentUser,
+  detailId,
+  onNavigate,
+}: RoutedDetailPageWithCurrentUserProps) {
   const [inspections, setInspections] = useState<QualityInspection[]>([])
   const [selectedInspectionId, setSelectedInspectionId] = useState<string | null>(null)
   const [editingInspectionId, setEditingInspectionId] = useState<string | null>(null)
@@ -12236,6 +12330,7 @@ function QualityInspectionsPage({ detailId, onNavigate }: RoutedDetailPageProps)
   const [resultFilter, setResultFilter] = useState('')
   const [supplierFilter, setSupplierFilter] = useState('')
   const [contractFilter, setContractFilter] = useState('')
+  const [assigneeFilter, setAssigneeFilter] = useState<QualityInspectionAssigneeFilter>('all')
   const [eligibility, setEligibility] = useState<QualityInspectionInboundEligibility | null>(null)
   const [form, setForm] = useState<QualityInspectionFormState>(() => initialQualityInspectionForm())
   const [inspectionModalOpen, setInspectionModalOpen] = useState(false)
@@ -12279,6 +12374,7 @@ function QualityInspectionsPage({ detailId, onNavigate }: RoutedDetailPageProps)
         result: resultFilter || undefined,
         supplier_id: supplierFilter.trim() || undefined,
         purchase_contract_id: contractFilter.trim() || undefined,
+        assignee_user_id: assigneeFilter === 'mine' ? currentUser.id : undefined,
       })
       setInspections(result.items)
       const nextId =
@@ -12437,6 +12533,18 @@ function QualityInspectionsPage({ detailId, onNavigate }: RoutedDetailPageProps)
               />
             </label>
             <label>
+              QC 范围
+              <FormSelect
+                value={assigneeFilter}
+                onChange={(event) =>
+                  setAssigneeFilter(event.target.value as QualityInspectionAssigneeFilter)
+                }
+              >
+                <option value="all">看全部</option>
+                <option value="mine">只看我的</option>
+              </FormSelect>
+            </label>
+            <label>
               <span>&nbsp;</span>
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
@@ -12474,6 +12582,11 @@ function QualityInspectionsPage({ detailId, onNavigate }: RoutedDetailPageProps)
               },
               { title: '采购合同', dataIndex: 'purchase_contract_no' },
               { title: '供应商', dataIndex: 'supplier_name' },
+              {
+                title: 'QC 负责人',
+                dataIndex: 'qc_user_name',
+                render: (value: string | null) => value ?? '未指定',
+              },
               { title: '查验日', dataIndex: 'inspected_at', render: formatDate },
               {
                 title: '异常',
@@ -12804,6 +12917,10 @@ function QualityInspectionsPage({ detailId, onNavigate }: RoutedDetailPageProps)
                 <div>
                   <dt>查验人</dt>
                   <dd>{selectedInspection.inspector_name}</dd>
+                </div>
+                <div>
+                  <dt>QC 负责人</dt>
+                  <dd>{selectedInspection.qc_user_name ?? '未指定'}</dd>
                 </div>
                 <div>
                   <dt>附件组</dt>
@@ -23010,6 +23127,21 @@ function renderSupplierOptions(suppliers: Supplier[]): ReactNode {
   })
 }
 
+function assignableUserOptionLabel(user: AssignableUser): string {
+  return [user.display_name, user.username, user.department_name].filter(Boolean).join(' / ')
+}
+
+function renderAssignableUserOptions(users: AssignableUser[]): ReactNode {
+  return users.map((user) => {
+    const label = assignableUserOptionLabel(user)
+    return (
+      <Select.Option key={user.id} value={user.id} label={label}>
+        {label}
+      </Select.Option>
+    )
+  })
+}
+
 function mergePurchaseLineRemark(current: string, addition: string): string {
   if (!current.trim()) return addition
   if (current.includes(addition)) return current
@@ -23402,6 +23534,8 @@ function initialPurchaseContractForm(): PurchaseContractFormState {
     supplier_name: '',
     buyer_user_id: '',
     buyer_user_name: '',
+    qc_user_id: '',
+    qc_user_name: '',
     currency: 'RMB',
     delivery_date: todayInputValue(),
     payment_terms: '',
@@ -23432,6 +23566,8 @@ function initialPurchaseContractGenerateForm(): PurchaseContractGenerateFormStat
     supplier_name: '远景辅料供应商',
     buyer_user_id: 'u-001',
     buyer_user_name: '演示业务主管',
+    qc_user_id: '',
+    qc_user_name: '',
     currency: 'USD',
     delivery_date: todayInputValue(),
     unit_price: '0.12',
@@ -23456,6 +23592,8 @@ function purchaseContractToForm(contract: PurchaseContract): PurchaseContractFor
     supplier_name: contract.supplier_name,
     buyer_user_id: contract.buyer_user_id ?? '',
     buyer_user_name: contract.buyer_user_name ?? '',
+    qc_user_id: contract.qc_user_id ?? '',
+    qc_user_name: contract.qc_user_name ?? '',
     currency: contract.currency,
     delivery_date: contract.delivery_date,
     payment_terms: contract.payment_terms,
@@ -23484,6 +23622,8 @@ function purchaseContractPayload(form: PurchaseContractFormState): PurchaseContr
     supplier_name: form.supplier_name.trim(),
     buyer_user_id: emptyToNull(form.buyer_user_id),
     buyer_user_name: emptyToNull(form.buyer_user_name),
+    qc_user_id: emptyToNull(form.qc_user_id),
+    qc_user_name: emptyToNull(form.qc_user_name),
     currency: form.currency.trim(),
     delivery_date: form.delivery_date,
     payment_terms: form.payment_terms.trim(),
@@ -23523,6 +23663,8 @@ function purchaseContractGeneratePayload(
     supplier_name: form.supplier_name.trim(),
     buyer_user_id: emptyToNull(form.buyer_user_id),
     buyer_user_name: emptyToNull(form.buyer_user_name),
+    qc_user_id: emptyToNull(form.qc_user_id),
+    qc_user_name: emptyToNull(form.qc_user_name),
     currency: form.currency.trim(),
     delivery_date: form.delivery_date,
     payment_terms: form.payment_terms.trim(),

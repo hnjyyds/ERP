@@ -22,6 +22,8 @@ class PurchaseContract(Base):
     supplier_name: Mapped[str] = mapped_column(String(240), index=True, nullable=False)
     buyer_user_id: Mapped[str | None] = mapped_column(String(36), index=True, nullable=True)
     buyer_user_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    qc_user_id: Mapped[str | None] = mapped_column(String(36), index=True, nullable=True)
+    qc_user_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
     currency: Mapped[str] = mapped_column(String(10), nullable=False)
     delivery_date: Mapped[date] = mapped_column(Date, index=True, nullable=False)
     payment_terms: Mapped[str] = mapped_column(Text, nullable=False)

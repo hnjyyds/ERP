@@ -130,6 +130,8 @@ class QualityInspectionResponse(BaseModel):
     result: str
     inspector_id: str | None
     inspector_name: str
+    qc_user_id: str | None
+    qc_user_name: str | None
     issue_summary: str | None
     attachment_group_id: str | None
     owner_user_id: str

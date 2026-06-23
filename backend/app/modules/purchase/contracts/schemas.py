@@ -34,6 +34,8 @@ class PurchaseContractCreate(BaseModel):
     supplier_name: str = Field(min_length=1, max_length=240)
     buyer_user_id: str | None = Field(default=None, max_length=36)
     buyer_user_name: str | None = Field(default=None, max_length=160)
+    qc_user_id: str | None = Field(default=None, max_length=36)
+    qc_user_name: str | None = Field(default=None, max_length=160)
     currency: str = Field(min_length=1, max_length=10)
     delivery_date: date
     payment_terms: str = Field(min_length=1, max_length=2000)
@@ -57,6 +59,8 @@ class PurchaseContractGenerateFromExportContracts(BaseModel):
     supplier_name: str = Field(min_length=1, max_length=240)
     buyer_user_id: str | None = Field(default=None, max_length=36)
     buyer_user_name: str | None = Field(default=None, max_length=160)
+    qc_user_id: str | None = Field(default=None, max_length=36)
+    qc_user_name: str | None = Field(default=None, max_length=160)
     currency: str = Field(min_length=1, max_length=10)
     delivery_date: date
     payment_terms: str = Field(min_length=1, max_length=2000)
@@ -143,6 +147,8 @@ class PurchaseContractResponse(BaseModel):
     supplier_name: str
     buyer_user_id: str | None
     buyer_user_name: str | None
+    qc_user_id: str | None
+    qc_user_name: str | None
     currency: str
     delivery_date: date
     payment_terms: str

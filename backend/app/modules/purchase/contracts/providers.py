@@ -15,9 +15,11 @@ from app.modules.system.auth.repositories import AuthRepository
 def get_purchase_contract_service(
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> PurchaseContractService:
+    auth_repository = AuthRepository(session)
     return PurchaseContractService(
         purchase_repository=PurchaseContractRepository(session),
         export_contract_repository=ExportContractRepository(session),
         product_repository=ProductRepository(session),
-        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+        data_scope_resolver=DataScopeResolver(auth_repository),
+        auth_repository=auth_repository,
     )

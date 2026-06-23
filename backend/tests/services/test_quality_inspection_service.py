@@ -14,6 +14,7 @@ from app.modules.quality.inspections.schemas import (
 )
 from app.modules.quality.inspections.services import (
     PermissionDeniedError,
+    QualityInspectionNotFoundError,
     QualityInspectionService,
 )
 from app.modules.sample.records.repositories import SampleRecordRepository
@@ -62,21 +63,30 @@ def _quality_user() -> CurrentUserResponse:
     )
 
 
-async def _create_approved_contract(repository: PurchaseContractRepository) -> tuple[str, str]:
+async def _create_approved_contract(
+    repository: PurchaseContractRepository,
+    *,
+    code: str = "PC-QC-SVC",
+    qc_user_id: str | None = None,
+    qc_user_name: str | None = None,
+    owner_user_id: str = "u-001",
+) -> tuple[str, str]:
     contract = await repository.create_contract(
-        code="PC-QC-SVC",
+        code=code,
         contract_date=date(2026, 8, 5),
         supplier_id="supplier-pack-a",
         supplier_name="华东包装制品厂",
         buyer_user_id="u-001",
         buyer_user_name="演示业务主管",
+        qc_user_id=qc_user_id,
+        qc_user_name=qc_user_name,
         currency="USD",
         delivery_date=date(2026, 8, 30),
         payment_terms="30% 预付，70% 出货前",
         source_type="stock_purchase",
         remarks="QC 查验服务测试",
         approval_status="submitted",
-        owner_user_id="u-001",
+        owner_user_id=owner_user_id,
     )
     line = await repository.add_line(
         contract_id=contract.id,
@@ -150,6 +160,8 @@ async def test_quality_inspection_service_records_failed_result_and_blocks_forma
         )
 
     assert inspection.result == "failed"
+    assert inspection.qc_user_id is None
+    assert inspection.qc_user_name is None
     assert inspection.issues[0].attachment_group_id == "attach-qc-issue"
     assert eligibility.eligible is False
     assert eligibility.latest_result == "failed"
@@ -241,4 +253,197 @@ async def test_quality_inspection_service_requires_edit_permission(
                 result=None,
                 supplier_id=None,
                 purchase_contract_id=None,
+                assignee_user_id=None,
             )
+
+
+async def test_quality_inspection_service_scopes_qc_user_to_assigned_records(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        purchase_repository = PurchaseContractRepository(session)
+        contract_id, line_id = await _create_approved_contract(
+            purchase_repository,
+            code="PC-QC-ASSIGNEE-SVC",
+            qc_user_id="u-qc-001",
+            qc_user_name="QC 张工",
+        )
+        service = _make_service(session)
+        assigned_user = _user(
+            ["quality:inspection:view", "quality:inspection:edit"],
+            user_id="u-qc-001",
+        )
+        other_user = _user(
+            ["quality:inspection:view", "quality:inspection:edit"],
+            user_id="u-qc-002",
+        )
+
+        inspection = await service.create_inspection(
+            current_user=assigned_user,
+            payload=QualityInspectionCreate(
+                code="QC-SVC-ASSIGNED",
+                purchase_contract_id=contract_id,
+                inspected_at=date(2026, 8, 19),
+                result="passed",
+                inspector_id="u-worker-001",
+                inspector_name="现场查验员",
+                issue_summary=None,
+                attachment_group_id="attach-qc-assignee",
+                lines=[
+                    QualityInspectionLineCreate(
+                        purchase_contract_line_id=line_id,
+                        product_name="Eco Shopping Bag",
+                        inspected_quantity="120",
+                        failed_quantity="0",
+                        unit="pcs",
+                        result="passed",
+                    )
+                ],
+                issues=[],
+            ),
+        )
+        assigned_list = await service.list_inspections(
+            current_user=assigned_user,
+            q="QC-SVC-ASSIGNED",
+            result=None,
+            supplier_id=None,
+            purchase_contract_id=None,
+            assignee_user_id=None,
+        )
+        other_list = await service.list_inspections(
+            current_user=other_user,
+            q="QC-SVC-ASSIGNED",
+            result=None,
+            supplier_id=None,
+            purchase_contract_id=None,
+            assignee_user_id=None,
+        )
+        manager_filtered = await service.list_inspections(
+            current_user=_quality_user(),
+            q="QC-SVC-ASSIGNED",
+            result=None,
+            supplier_id=None,
+            purchase_contract_id=None,
+            assignee_user_id="u-qc-001",
+        )
+        detail = await service.get_inspection(
+            current_user=assigned_user,
+            inspection_id=inspection.id,
+        )
+        with pytest.raises(QualityInspectionNotFoundError):
+            await service.get_inspection(
+                current_user=other_user,
+                inspection_id=inspection.id,
+            )
+
+    assert inspection.qc_user_id == "u-qc-001"
+    assert inspection.qc_user_name == "QC 张工"
+    assert assigned_list.total == 1
+    assert other_list.total == 0
+    assert manager_filtered.total == 1
+    assert detail.id == inspection.id
+
+
+async def test_quality_inspection_service_preserves_owner_scope_and_my_assignee_filter(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        purchase_repository = PurchaseContractRepository(session)
+        owner_contract_id, owner_line_id = await _create_approved_contract(
+            purchase_repository,
+            code="PC-QC-OWNER-SCOPE",
+            owner_user_id="u-qc-001",
+        )
+        assigned_contract_id, assigned_line_id = await _create_approved_contract(
+            purchase_repository,
+            code="PC-QC-MY-SCOPE",
+            qc_user_id="u-qc-001",
+            qc_user_name="QC 张工",
+            owner_user_id="u-other-owner",
+        )
+        service = _make_service(session)
+        current_user = _user(
+            ["quality:inspection:view", "quality:inspection:edit"],
+            user_id="u-qc-001",
+        )
+
+        owner_scope_inspection = await service.create_inspection(
+            current_user=current_user,
+            payload=QualityInspectionCreate(
+                code="QC-SVC-OWNER-SCOPE",
+                purchase_contract_id=owner_contract_id,
+                inspected_at=date(2026, 8, 19),
+                result="passed",
+                inspector_id="u-worker-001",
+                inspector_name="现场查验员",
+                issue_summary=None,
+                attachment_group_id=None,
+                lines=[
+                    QualityInspectionLineCreate(
+                        purchase_contract_line_id=owner_line_id,
+                        product_name="Eco Shopping Bag",
+                        inspected_quantity="120",
+                        failed_quantity="0",
+                        unit="pcs",
+                        result="passed",
+                    )
+                ],
+                issues=[],
+            ),
+        )
+        assigned_inspection = await service.create_inspection(
+            current_user=current_user,
+            payload=QualityInspectionCreate(
+                code="QC-SVC-MY-SCOPE",
+                purchase_contract_id=assigned_contract_id,
+                inspected_at=date(2026, 8, 20),
+                result="passed",
+                inspector_id="u-worker-001",
+                inspector_name="现场查验员",
+                issue_summary=None,
+                attachment_group_id=None,
+                lines=[
+                    QualityInspectionLineCreate(
+                        purchase_contract_line_id=assigned_line_id,
+                        product_name="Eco Shopping Bag",
+                        inspected_quantity="80",
+                        failed_quantity="0",
+                        unit="pcs",
+                        result="passed",
+                    )
+                ],
+                issues=[],
+            ),
+        )
+        all_visible = await service.list_inspections(
+            current_user=current_user,
+            q="SCOPE",
+            result=None,
+            supplier_id=None,
+            purchase_contract_id=None,
+            assignee_user_id=None,
+        )
+        my_assigned = await service.list_inspections(
+            current_user=current_user,
+            q="SCOPE",
+            result=None,
+            supplier_id=None,
+            purchase_contract_id=None,
+            assignee_user_id="u-qc-001",
+        )
+        owner_detail = await service.get_inspection(
+            current_user=current_user,
+            inspection_id=owner_scope_inspection.id,
+        )
+        assigned_detail = await service.get_inspection(
+            current_user=current_user,
+            inspection_id=assigned_inspection.id,
+        )
+
+    assert {item.id for item in all_visible.items} == {
+        owner_scope_inspection.id,
+        assigned_inspection.id,
+    }
+    assert [item.id for item in my_assigned.items] == [assigned_inspection.id]
+    assert owner_detail.id == owner_scope_inspection.id
+    assert assigned_detail.id == assigned_inspection.id

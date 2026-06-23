@@ -22,6 +22,8 @@ class PurchaseContractRow:
     supplier_name: str
     buyer_user_id: str | None
     buyer_user_name: str | None
+    qc_user_id: str | None
+    qc_user_name: str | None
     currency: str
     delivery_date: date
     payment_terms: str
@@ -111,6 +113,8 @@ class PurchaseContractRepository:
         remarks: str | None,
         approval_status: str,
         owner_user_id: str,
+        qc_user_id: str | None = None,
+        qc_user_name: str | None = None,
     ) -> PurchaseContractRow:
         contract = PurchaseContract(
             code=code,
@@ -119,6 +123,8 @@ class PurchaseContractRepository:
             supplier_name=supplier_name,
             buyer_user_id=buyer_user_id,
             buyer_user_name=buyer_user_name,
+            qc_user_id=qc_user_id,
+            qc_user_name=qc_user_name,
             currency=currency,
             delivery_date=delivery_date,
             payment_terms=payment_terms,
@@ -146,6 +152,8 @@ class PurchaseContractRepository:
         payment_terms: str,
         source_type: str,
         remarks: str | None,
+        qc_user_id: str | None = None,
+        qc_user_name: str | None = None,
     ) -> PurchaseContractRow | None:
         contract = await self._get_contract_model(contract_id)
         if contract is None:
@@ -156,6 +164,8 @@ class PurchaseContractRepository:
         contract.supplier_name = supplier_name
         contract.buyer_user_id = buyer_user_id
         contract.buyer_user_name = buyer_user_name
+        contract.qc_user_id = qc_user_id
+        contract.qc_user_name = qc_user_name
         contract.currency = currency
         contract.delivery_date = delivery_date
         contract.payment_terms = payment_terms
@@ -489,6 +499,8 @@ class PurchaseContractRepository:
             supplier_name=contract.supplier_name,
             buyer_user_id=contract.buyer_user_id,
             buyer_user_name=contract.buyer_user_name,
+            qc_user_id=contract.qc_user_id,
+            qc_user_name=contract.qc_user_name,
             currency=contract.currency,
             delivery_date=contract.delivery_date,
             payment_terms=contract.payment_terms,

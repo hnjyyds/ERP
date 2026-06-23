@@ -25,6 +25,8 @@ class QualityInspection(Base):
     result: Mapped[str] = mapped_column(String(40), index=True, nullable=False)
     inspector_id: Mapped[str | None] = mapped_column(String(36), index=True, nullable=True)
     inspector_name: Mapped[str] = mapped_column(String(160), nullable=False)
+    qc_user_id: Mapped[str | None] = mapped_column(String(36), index=True, nullable=True)
+    qc_user_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
     issue_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
     attachment_group_id: Mapped[str | None] = mapped_column(String(80), index=True, nullable=True)
     owner_user_id: Mapped[str] = mapped_column(String(36), index=True, nullable=False)

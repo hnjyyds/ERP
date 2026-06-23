@@ -20,14 +20,17 @@ from app.modules.sales.contracts.repositories import ExportContractRepository
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.auth.seed import seed_system_demo_data
 
 
 def _make_service(session: AsyncSession) -> PurchaseContractService:
+    auth_repository = AuthRepository(session)
     return PurchaseContractService(
         purchase_repository=PurchaseContractRepository(session),
         export_contract_repository=ExportContractRepository(session),
         product_repository=ProductRepository(session),
-        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+        data_scope_resolver=DataScopeResolver(auth_repository),
+        auth_repository=auth_repository,
     )
 
 
@@ -151,6 +154,7 @@ async def test_purchase_contract_service_generates_from_export_contracts_and_app
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         export_repository = ExportContractRepository(session)
         product_repository = ProductRepository(session)
         service = _make_service(session)
@@ -230,6 +234,7 @@ async def test_purchase_contract_service_supports_stock_purchase_and_private_fil
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         service = _make_service(session)
         owner = _user_with_permissions(["purchase:contract:edit"], user_id="u-owner")
         created = await service.create_contract(
@@ -253,6 +258,7 @@ async def test_purchase_contract_service_requires_permission(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         service = _make_service(session)
 
         with pytest.raises(PermissionDeniedError):

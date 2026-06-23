@@ -2728,6 +2728,8 @@ export interface PurchaseContract {
   supplier_name: string
   buyer_user_id: string | null
   buyer_user_name: string | null
+  qc_user_id: string | null
+  qc_user_name: string | null
   currency: string
   delivery_date: string
   payment_terms: string
@@ -3082,6 +3084,8 @@ export interface PurchaseContractCreatePayload {
   supplier_name: string
   buyer_user_id?: string | null
   buyer_user_name?: string | null
+  qc_user_id?: string | null
+  qc_user_name?: string | null
   currency: string
   delivery_date: string
   payment_terms: string
@@ -3097,6 +3101,8 @@ export interface PurchaseContractGeneratePayload {
   supplier_name: string
   buyer_user_id?: string | null
   buyer_user_name?: string | null
+  qc_user_id?: string | null
+  qc_user_name?: string | null
   currency: string
   delivery_date: string
   payment_terms: string
@@ -3350,6 +3356,8 @@ export interface QualityInspection {
   result: string
   inspector_id: string | null
   inspector_name: string
+  qc_user_id: string | null
+  qc_user_name: string | null
   issue_summary: string | null
   attachment_group_id: string | null
   owner_user_id: string
@@ -5706,6 +5714,7 @@ export function listQualityInspections(filters: {
   result?: string
   supplier_id?: string
   purchase_contract_id?: string
+  assignee_user_id?: string
 } = {}): Promise<QualityInspectionList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
@@ -5714,6 +5723,7 @@ export function listQualityInspections(filters: {
   if (filters.purchase_contract_id) {
     params.set('purchase_contract_id', filters.purchase_contract_id)
   }
+  if (filters.assignee_user_id) params.set('assignee_user_id', filters.assignee_user_id)
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<QualityInspectionList>(`/quality/inspections${suffix}`)
 }

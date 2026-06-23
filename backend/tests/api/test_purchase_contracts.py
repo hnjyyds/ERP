@@ -84,6 +84,8 @@ def _stock_purchase_payload(code: str = "PC-API-STOCK") -> dict[str, object]:
         "supplier_name": "华东包装制品厂",
         "buyer_user_id": "u-001",
         "buyer_user_name": "演示业务主管",
+        "qc_user_id": "u-001",
+        "qc_user_name": "前端传入姓名会被后端覆盖",
         "currency": "USD",
         "delivery_date": "2026-08-28",
         "payment_terms": "30% 预付，70% 出货前",
@@ -173,6 +175,8 @@ async def test_purchase_contract_flow_generate_stock_approve_and_reminders(
             "supplier_name": "华东包装制品厂",
             "buyer_user_id": "u-001",
             "buyer_user_name": "演示业务主管",
+            "qc_user_id": "u-finance",
+            "qc_user_name": "前端传入姓名会被后端覆盖",
             "currency": "USD",
             "delivery_date": "2026-08-30",
             "payment_terms": "30% 预付，70% 出货前",
@@ -187,6 +191,8 @@ async def test_purchase_contract_flow_generate_stock_approve_and_reminders(
     assert generate_response.status_code == 201
     generated = generate_response.json()["data"]
     assert generated["source_type"] == "export_contract"
+    assert generated["qc_user_id"] == "u-finance"
+    assert generated["qc_user_name"] == "演示财务"
     assert generated["lines"][0]["product_name"] == "棉绳"
     assert generated["lines"][0]["quantity"] == "675"
     assert generated["statistics"]["total_amount"] == "81.00"
@@ -205,6 +211,8 @@ async def test_purchase_contract_flow_generate_stock_approve_and_reminders(
         "supplier_name": "华东包装制品厂-编辑",
         "buyer_user_id": "u-001",
         "buyer_user_name": "演示业务主管",
+        "qc_user_id": "u-001",
+        "qc_user_name": "前端传入姓名会被后端覆盖",
         "currency": "USD",
         "delivery_date": "2026-08-30",
         "payment_terms": "30% 预付，70% 出货前",
@@ -233,7 +241,10 @@ async def test_purchase_contract_flow_generate_stock_approve_and_reminders(
         json=update_payload,
     )
     assert update_response.status_code == 200
-    assert update_response.json()["data"]["supplier_name"] == "华东包装制品厂-编辑"
+    updated_data = update_response.json()["data"]
+    assert updated_data["supplier_name"] == "华东包装制品厂-编辑"
+    assert updated_data["qc_user_id"] == "u-001"
+    assert updated_data["qc_user_name"] == "演示业务主管"
 
     submit_response = await api_client.post(
         f"/api/v1/purchase/contracts/{contract_id}/submit",
@@ -265,7 +276,10 @@ async def test_purchase_contract_flow_generate_stock_approve_and_reminders(
         json=_stock_purchase_payload("PC-API-STOCK"),
     )
     assert stock_response.status_code == 201
-    assert stock_response.json()["data"]["source_type"] == "stock_purchase"
+    stock_data = stock_response.json()["data"]
+    assert stock_data["source_type"] == "stock_purchase"
+    assert stock_data["qc_user_id"] == "u-001"
+    assert stock_data["qc_user_name"] == "演示业务主管"
 
     reminders_response = await api_client.get(
         "/api/v1/purchase/contracts/reminders",

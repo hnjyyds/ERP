@@ -59,6 +59,7 @@ async def list_quality_inspections(
     result: Annotated[str | None, Query(max_length=40)] = None,
     supplier_id: Annotated[str | None, Query(max_length=36)] = None,
     purchase_contract_id: Annotated[str | None, Query(max_length=36)] = None,
+    assignee_user_id: Annotated[str | None, Query(max_length=36)] = None,
 ) -> ApiResponse[QualityInspectionListResponse]:
     user = await _current_user(token, auth_service)
     try:
@@ -68,6 +69,7 @@ async def list_quality_inspections(
             result=result,
             supplier_id=supplier_id,
             purchase_contract_id=purchase_contract_id,
+            assignee_user_id=assignee_user_id,
         )
         return ApiResponse(data=inspections)
     except PermissionDeniedError:

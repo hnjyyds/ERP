@@ -32,6 +32,7 @@ from app.modules.sales.contracts.repositories import (
     ExportContractRow,
 )
 from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
 
@@ -73,11 +74,13 @@ class PurchaseContractService:
         export_contract_repository: ExportContractRepository,
         product_repository: ProductRepository,
         data_scope_resolver: DataScopeResolver,
+        auth_repository: AuthRepository,
     ) -> None:
         self._repository = purchase_repository
         self._export_contract_repository = export_contract_repository
         self._product_repository = product_repository
         self._data_scope_resolver = data_scope_resolver
+        self._auth_repository = auth_repository
 
     async def create_contract(
         self,
@@ -86,6 +89,7 @@ class PurchaseContractService:
         payload: PurchaseContractCreate,
     ) -> PurchaseContractResponse:
         self._require(current_user, "purchase:contract:edit")
+        qc_user_id, qc_user_name = await self._resolve_qc_assignee(payload.qc_user_id)
         async with UnitOfWork(self._repository.session):
             contract = await self._repository.create_contract(
                 code=payload.code,
@@ -94,6 +98,8 @@ class PurchaseContractService:
                 supplier_name=payload.supplier_name,
                 buyer_user_id=payload.buyer_user_id,
                 buyer_user_name=payload.buyer_user_name,
+                qc_user_id=qc_user_id,
+                qc_user_name=qc_user_name,
                 currency=payload.currency,
                 delivery_date=payload.delivery_date,
                 payment_terms=payload.payment_terms,
@@ -122,6 +128,7 @@ class PurchaseContractService:
         )
         if contract.approval_status != "draft":
             raise ValueError("只有草稿采购合同可以编辑")
+        qc_user_id, qc_user_name = await self._resolve_qc_assignee(payload.qc_user_id)
         async with UnitOfWork(self._repository.session):
             updated = await self._repository.update_contract(
                 contract_id=contract.id,
@@ -131,6 +138,8 @@ class PurchaseContractService:
                 supplier_name=payload.supplier_name,
                 buyer_user_id=payload.buyer_user_id,
                 buyer_user_name=payload.buyer_user_name,
+                qc_user_id=qc_user_id,
+                qc_user_name=qc_user_name,
                 currency=payload.currency,
                 delivery_date=payload.delivery_date,
                 payment_terms=payload.payment_terms,
@@ -157,6 +166,7 @@ class PurchaseContractService:
             source_lines=source_lines,
             unit_price=payload.unit_price,
         )
+        qc_user_id, qc_user_name = await self._resolve_qc_assignee(payload.qc_user_id)
         async with UnitOfWork(self._repository.session):
             contract = await self._repository.create_contract(
                 code=payload.code,
@@ -165,6 +175,8 @@ class PurchaseContractService:
                 supplier_name=payload.supplier_name,
                 buyer_user_id=payload.buyer_user_id,
                 buyer_user_name=payload.buyer_user_name,
+                qc_user_id=qc_user_id,
+                qc_user_name=qc_user_name,
                 currency=payload.currency,
                 delivery_date=payload.delivery_date,
                 payment_terms=payload.payment_terms,
@@ -477,6 +489,18 @@ class PurchaseContractService:
         )
         await inbound_plan_service.ensure_plan_for_contract(contract=contract)
 
+    async def _resolve_qc_assignee(
+        self,
+        qc_user_id: str | None,
+    ) -> tuple[str | None, str | None]:
+        if qc_user_id is None or not qc_user_id.strip():
+            return None, None
+        users = await self._auth_repository.list_active_users_by_ids([qc_user_id.strip()])
+        if not users:
+            raise ValueError("QC 负责人不存在")
+        user = users[0]
+        return user.id, user.display_name
+
     async def _get_accessible_contract(
         self,
         *,
@@ -518,6 +542,8 @@ class PurchaseContractService:
             supplier_name=contract.supplier_name,
             buyer_user_id=contract.buyer_user_id,
             buyer_user_name=contract.buyer_user_name,
+            qc_user_id=contract.qc_user_id,
+            qc_user_name=contract.qc_user_name,
             currency=contract.currency,
             delivery_date=contract.delivery_date,
             payment_terms=contract.payment_terms,

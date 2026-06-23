@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Select, func, or_, select
+from sqlalchemy import Select, false, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.quality.inspections.models import (
@@ -24,6 +24,8 @@ class QualityInspectionRow:
     result: str
     inspector_id: str | None
     inspector_name: str
+    qc_user_id: str | None
+    qc_user_name: str | None
     issue_summary: str | None
     attachment_group_id: str | None
     owner_user_id: str
@@ -79,6 +81,8 @@ class QualityInspectionRepository:
         issue_summary: str | None,
         attachment_group_id: str | None,
         owner_user_id: str,
+        qc_user_id: str | None = None,
+        qc_user_name: str | None = None,
     ) -> QualityInspectionRow:
         inspection = QualityInspection(
             code=code,
@@ -90,6 +94,8 @@ class QualityInspectionRepository:
             result=result,
             inspector_id=inspector_id,
             inspector_name=inspector_name,
+            qc_user_id=qc_user_id,
+            qc_user_name=qc_user_name,
             issue_summary=issue_summary,
             attachment_group_id=attachment_group_id,
             owner_user_id=owner_user_id,
@@ -109,6 +115,8 @@ class QualityInspectionRepository:
         inspector_name: str,
         issue_summary: str | None,
         attachment_group_id: str | None,
+        qc_user_id: str | None = None,
+        qc_user_name: str | None = None,
     ) -> QualityInspectionRow | None:
         inspection = await self.session.get(QualityInspection, inspection_id)
         if inspection is None:
@@ -118,6 +126,8 @@ class QualityInspectionRepository:
         inspection.result = result
         inspection.inspector_id = inspector_id
         inspection.inspector_name = inspector_name
+        inspection.qc_user_id = qc_user_id
+        inspection.qc_user_name = qc_user_name
         inspection.issue_summary = issue_summary
         inspection.attachment_group_id = attachment_group_id
         await self.session.flush()
@@ -231,6 +241,8 @@ class QualityInspectionRepository:
         supplier_id: str | None,
         purchase_contract_id: str | None,
         owner_user_ids: list[str] | None,
+        visible_assignee_user_id: str | None = None,
+        assignee_user_id: str | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[QualityInspectionRow], int]:
@@ -264,8 +276,15 @@ class QualityInspectionRepository:
             conditions.append(QualityInspection.supplier_id == supplier_id)
         if purchase_contract_id:
             conditions.append(QualityInspection.purchase_contract_id == purchase_contract_id)
+        if assignee_user_id:
+            conditions.append(QualityInspection.qc_user_id == assignee_user_id)
         if owner_user_ids is not None:
-            conditions.append(QualityInspection.owner_user_id.in_(owner_user_ids))
+            visibility_conditions = []
+            if owner_user_ids:
+                visibility_conditions.append(QualityInspection.owner_user_id.in_(owner_user_ids))
+            if visible_assignee_user_id:
+                visibility_conditions.append(QualityInspection.qc_user_id == visible_assignee_user_id)
+            conditions.append(or_(*visibility_conditions) if visibility_conditions else false())
         for condition in conditions:
             statement = statement.where(condition)
             count_statement = count_statement.where(condition)
@@ -322,6 +341,8 @@ class QualityInspectionRepository:
             result=inspection.result,
             inspector_id=inspection.inspector_id,
             inspector_name=inspection.inspector_name,
+            qc_user_id=inspection.qc_user_id,
+            qc_user_name=inspection.qc_user_name,
             issue_summary=inspection.issue_summary,
             attachment_group_id=inspection.attachment_group_id,
             owner_user_id=inspection.owner_user_id,
