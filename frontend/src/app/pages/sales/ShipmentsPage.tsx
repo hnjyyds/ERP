@@ -7,7 +7,7 @@ import { shipmentPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { shipmentStatusOptions, freightMethodOptions } from '../../../shared/formOptions'
-import { formatDate, formatMoney, nullableText, todayInputValue, OperationFlowRail, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { formatDate, formatMoney, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
 
 function freightMethodLabel(value: string): string {
   return freightMethodOptions.find((item) => item.value === value)?.label ?? value
@@ -309,9 +309,7 @@ export function ShipmentsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
 
   return (
     <section className="shipment-page">
-      <OperationFlowRail activePath={shipmentPath} kind="sales" onNavigate={onNavigate} />
-
-      <div className="summary-strip" aria-label="出货明细概览">
+<div className="summary-strip" aria-label="出货明细概览">
         <Metric label="出货单" value={shipments.length} />
         <Metric label="待审批" value={shipments.filter((item) => item.approval_status === 'submitted').length} />
         <Metric label="已审批" value={shipments.filter((item) => item.approval_status === 'approved').length} />

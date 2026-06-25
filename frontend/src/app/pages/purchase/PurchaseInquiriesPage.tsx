@@ -7,7 +7,7 @@ import { purchaseInquiryPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { purchaseInquiryStatusOptions , sampleRecordStatusOptions} from '../../../shared/formOptions'
-import { formatDate, formatMoney, nullableText, todayInputValue, OperationFlowRail, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { formatDate, formatMoney, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
 
 function sampleRecordStatusLabel(value: string): string {
   return sampleRecordStatusOptions.find((item) => item.value === value)?.label ?? value
@@ -397,9 +397,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
 
   return (
     <section className="purchase-inquiry-page">
-      <OperationFlowRail activePath={purchaseInquiryPath} kind="purchase" onNavigate={onNavigate} />
-
-      <div className="summary-strip" aria-label="采购询价概览">
+<div className="summary-strip" aria-label="采购询价概览">
         <Metric label="询价单" value={inquiries.length} />
         <Metric label="已发模板" value={sentCount} />
         <Metric label="已报价" value={quotedCount} />

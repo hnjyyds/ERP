@@ -8,7 +8,7 @@ import { financePath, financeOverviewPath, financeReceiptsPath, financePaymentsP
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { receiptStatusOptions, receiptTypeOptions, allocationTypeOptions, supplierInvoiceStatusOptions, paymentRequestStatusOptions, paymentTypeOptions, partnerFeeInvoiceStatusOptions, feePaymentRequestStatusOptions, feeTypeOptions, verificationDocumentStatusOptions, verificationReminderStatusOptions, miscFeeCategoryOptions, miscFeeAllocationMethodOptions, miscFeeItemStatusOptions, settlementStatusOptions, profitCostTypeOptions, reportingDocumentTypeOptions, reportingStatusOptions , partnerTypeOptions, shipmentStatusOptions, purchaseInvoiceNoticeStatusOptions, sampleFeeTypeOptions} from '../../../shared/formOptions'
-import { formatDate, formatDateTime, formatMoney, formatFinanceAmount, formatPercent, nullableText, todayInputValue, pageTitle, statusTag, severityTag, partnerTypeLabel, OperationFlowRail, type ModuleNavigationProps , emptyToNull} from '../appHelpers'
+import { formatDate, formatDateTime, formatMoney, formatFinanceAmount, formatPercent, nullableText, todayInputValue, pageTitle, statusTag, severityTag, partnerTypeLabel, type ModuleNavigationProps , emptyToNull} from '../appHelpers'
 import { shipmentStatusLabel, purchaseInvoiceNoticeStatusLabel, samplePaymentStatusLabel, BankReceiptFormState, ReceiptClaimFormState, ReceiptAllocationFormState, SupplierInvoiceFormState, PaymentRequestFormState, PaymentApprovalFormState, PartnerFeeInvoiceFormState, FeePaymentRequestFormState, FeePaymentApprovalFormState, VerificationDocumentFormState, CustomsReceiptFormState, VerificationRegisterFormState, TaxRefundFormState, MiscFeeItemFormState, MiscFeeAllocationFormState, FinancialSettlementFormState, ManualProfitCostFormState, initialBankReceiptForm, initialReceiptClaimForm, initialReceiptAllocationForm, bankReceiptPayload, receiptClaimPayload, receiptAllocationPayload, receiptStatusLabel, receiptStatusColor, receiptStatusTag, receiptTypeLabel, allocationTypeLabel, receivableStatusLabel, receivableStatusTag, initialSupplierInvoiceForm, initialPaymentRequestForm, initialPaymentApprovalForm, supplierInvoicePayload, paymentRequestPayload, paymentApprovalPayload, supplierInvoiceStatusLabel, supplierInvoiceStatusTag, paymentRequestStatusLabel, paymentRequestStatusTag, paymentTypeLabel, initialPartnerFeeInvoiceForm, initialFeePaymentRequestForm, initialFeePaymentApprovalForm, partnerFeeInvoicePayload, feePaymentRequestPayload, feePaymentApprovalPayload, partnerFeeInvoiceStatusLabel, partnerFeeInvoiceStatusTag, feePaymentRequestStatusLabel, feePaymentRequestStatusTag, feeTypeLabel, initialVerificationDocumentForm, initialCustomsReceiptForm, initialVerificationRegisterForm, initialTaxRefundForm, verificationDocumentPayload, customsReceiptPayload, verificationRegisterPayload, taxRefundPayload, verificationDocumentStatusLabel, verificationDocumentStatusTag, verificationReminderStatusLabel, verificationReminderStatusTag, initialMiscFeeItemForm, initialMiscFeeAllocationForm, miscFeeItemPayload, miscFeeAllocationPayload, miscFeeCategoryLabel, miscFeeAllocationMethodLabel, miscFeeItemStatusLabel, miscFeeItemStatusTag, reimbursementCategoryLabel, reimbursementStatusTag, initialFinancialSettlementForm, initialManualProfitCostForm, financialSettlementPayload, manualProfitCostPayload, settlementStatusLabel, settlementStatusTag, approvalDocumentTypeLabel, approvalDocumentTypeTag, approvalStatusTag, sourcePathTag, profitCostTypeLabel, profitCostDirectionTag } from './financeHelpers'
 
 
@@ -1583,14 +1583,7 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
   if (activeModule === 'home') {
     return (
       <section className="finance-page finance-home">
-        <OperationFlowRail
-          activeLabel="银行水单"
-          activePath={financeReceiptsPath}
-          kind="finance"
-          onNavigate={onNavigate}
-        />
-
-        {summaryStrip}
+{summaryStrip}
         {moduleAlerts}
 
         <section className="finance-module-cards" aria-label="财务模块入口">

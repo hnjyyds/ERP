@@ -7,7 +7,7 @@ import { purchaseInvoiceNoticePath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { purchaseInvoiceNoticeStatusOptions } from '../../../shared/formOptions'
-import { formatDate, formatMoney, nullableText, todayInputValue, OperationFlowRail, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { formatDate, formatMoney, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
 
 type PurchaseInvoiceNoticeFormState = {
   customs_declaration_id: string
@@ -376,9 +376,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
 
   return (
     <section className="purchase-invoice-page">
-      <OperationFlowRail activePath={purchaseInvoiceNoticePath} kind="purchase" onNavigate={onNavigate} />
-
-      <div className="summary-strip" aria-label="开票通知概览">
+<div className="summary-strip" aria-label="开票通知概览">
         <Metric label="开票通知" value={notices.length} />
         <Metric label="已发送" value={sentCount} />
         <Metric label="已收票" value={receivedCount} />

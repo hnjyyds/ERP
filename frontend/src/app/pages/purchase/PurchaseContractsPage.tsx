@@ -8,7 +8,7 @@ import { purchaseContractPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { purchaseContractStatusOptions, purchaseContractSourceTypeOptions } from '../../../shared/formOptions'
-import { formatDate, formatMoney, nullableText, todayInputValue, OperationFlowRail, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { formatDate, formatMoney, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
 
 function supplierOptionLabel(supplier: Supplier): string {
   return [supplier.code, supplier.cn_name, supplier.en_name].filter(Boolean).join(' / ')
@@ -661,9 +661,7 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
 
   return (
     <section className="purchase-contract-page">
-      <OperationFlowRail activePath={purchaseContractPath} kind="purchase" onNavigate={onNavigate} />
-
-      <div className="summary-strip" aria-label="采购合同概览">
+<div className="summary-strip" aria-label="采购合同概览">
         <Metric label="采购合同" value={contracts.length} />
         <Metric label="待审批" value={contracts.filter((item) => item.approval_status === 'submitted').length} />
         <Metric label="已审批" value={contracts.filter((item) => item.approval_status === 'approved').length} />
@@ -678,7 +676,7 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="采购合同列表" />
+            <PanelTitle icon={<Search size={18} />} title="采购合同列表234" />
             <form
               className="inline-filters"
               onSubmit={(event) => {

@@ -582,7 +582,6 @@ body {
 .inline-filters label .ant-select,
 .inline-filters label select,
 .inline-filters label .ant-input-number {
-  width: 180px;
   max-width: 300px;
 }
 
@@ -1113,7 +1112,6 @@ body {
 .sample-request-page .inline-filters .inline-filter-search,
 .sample-record-page .inline-filters .inline-filter-search,
 .sample-delivery-page .inline-filters .inline-filter-search {
-  flex: 1 1 320px;
   min-width: 0;
 }
 
@@ -1214,7 +1212,6 @@ body {
 /* 平铺型筛选区（商品 / 单证 / 合作伙伴）：搜索框弹性占满，其余筛选框固定窄宽，
    保证五页搜索框宽度与标题一致。 */
 .masterdata-page .inline-filters .inline-filter-search {
-  flex: 1 1 320px;
   min-width: 0;
 }
 
@@ -1228,9 +1225,8 @@ body {
   padding-inline: 16px;
 }
 
-.masterdata-page .inline-filters .ant-btn:hover,
-.masterdata-page .inline-filters .ant-btn:focus {
-  color: #1D4ED8 !important;
+.ant-btn:hover,
+.ant-btn:focus {
   background: #3c8af1 !important;
 }
 
@@ -4399,12 +4395,6 @@ body {
   box-shadow: 0 4px 12px color-mix(in srgb, var(--erp-primary) 22%, transparent);
 }
 
-.ant-btn:hover,
-.ant-btn:focus {
-  color: #fff;
-  background: var(--erp-primary-strong);
-  border-color: color-mix(in srgb, var(--erp-primary-strong) 80%, #000);
-}
 
 .ant-btn:active {
   color: #fff;
@@ -4443,7 +4433,16 @@ body {
 
 .ant-select-single .ant-select-selection-item,
 .ant-select-single .ant-select-selection-placeholder {
-  line-height: 32px;
+  line-height: 30px;
+}
+
+.inline-filters .ant-select-single .ant-select-selection-item,
+.inline-filters .ant-select-single .ant-select-selection-placeholder,
+.record-form .ant-select-single .ant-select-selection-item,
+.record-form .ant-select-single .ant-select-selection-placeholder,
+.masterdata-page .inline-filters .ant-select-single .ant-select-selection-item,
+.masterdata-page .inline-filters .ant-select-single .ant-select-selection-placeholder {
+  line-height: 34px;
 }
 
 .ant-input::placeholder,

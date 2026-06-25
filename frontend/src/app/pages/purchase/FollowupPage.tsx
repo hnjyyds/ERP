@@ -7,7 +7,7 @@ import { followupPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { followupStatusOptions, followupNodeOptions, followupSourceTypeOptions } from '../../../shared/formOptions'
-import { formatDate, nullableText, todayInputValue, OperationFlowRail, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { formatDate, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
 
 function followupSourceTypeLabel(value: string | null): string {
   if (!value) return '未回写'
@@ -463,9 +463,7 @@ export function FollowupPage({ detailId, onNavigate }: RoutedDetailPageProps) {
 
   return (
     <section className="followup-page">
-      <OperationFlowRail activePath={followupPath} kind="purchase" onNavigate={onNavigate} />
-
-      <div className="summary-strip" aria-label="采购跟单概览">
+<div className="summary-strip" aria-label="采购跟单概览">
         <Metric label="跟单计划" value={plans.length} />
         <Metric label="已完成计划" value={completedPlans} />
         <Metric label="逾期计划" value={overduePlans} intent={overduePlans > 0 ? 'warning' : 'normal'} />

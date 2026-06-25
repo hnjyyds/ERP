@@ -1,4 +1,4 @@
-import { emptyToNull, formatDate, formatQuantity, nullableText, todayInputValue, OperationFlowRail, type RoutedDetailPageProps } from '../appHelpers'
+import { emptyToNull, formatDate, formatQuantity, nullableText, todayInputValue, type RoutedDetailPageProps } from '../appHelpers'
 type RoutedDetailPageWithCurrentUserProps = RoutedDetailPageProps & { currentUser: any }
 import { Alert, Button, Input, Modal, Skeleton, Table, Tag } from 'antd'
 import { followupSourceTypeOptions } from '../../../shared/formOptions'
@@ -328,9 +328,7 @@ export function QualityInspectionsPage({
 
   return (
     <section className="quality-inspection-page">
-      <OperationFlowRail activePath={qualityInspectionPath} kind="warehouse" onNavigate={onNavigate} />
-
-      <div className="summary-strip" aria-label="QC 查验概览">
+<div className="summary-strip" aria-label="QC 查验概览">
         <Metric label="QC 单数" value={inspections.length} />
         <Metric label="已通过" value={passedCount} />
         <Metric label="不通过" value={failedCount} intent={failedCount > 0 ? 'danger' : 'normal'} />

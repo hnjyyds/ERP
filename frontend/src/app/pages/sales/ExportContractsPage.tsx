@@ -8,7 +8,7 @@ import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { downloadCsv, openExportContractPrint } from '../../../shared/print'
 import { exportContractStatusOptions } from '../../../shared/formOptions'
-import { formatDate, formatMoney, formatPercent, nullableText, todayInputValue, OperationFlowRail, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { formatDate, formatMoney, formatPercent, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
 
 function customerDisplayName(customer: Customer): string {
   return customer.cn_name || customer.en_name || customer.code
@@ -574,9 +574,7 @@ export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPagePr
 
   return (
     <section className="export-contract-page">
-      <OperationFlowRail activePath={exportContractPath} kind="sales" onNavigate={onNavigate} />
-
-      <div className="summary-strip" aria-label="出口合同概览">
+<div className="summary-strip" aria-label="出口合同概览">
         <Metric label="合同数" value={contracts.length} />
         <Metric label="待审批" value={contracts.filter((item) => item.approval_status === 'submitted').length} />
         <Metric label="已审批" value={contracts.filter((item) => item.approval_status === 'approved').length} />

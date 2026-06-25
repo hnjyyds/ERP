@@ -7,7 +7,7 @@ import { warehouseOutboundPlanPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { outboundPlanStatusOptions, outboundPlanTypeOptions, outboundPlanSourceTypeOptions } from '../../../shared/formOptions'
-import { formatDate, formatMoney, formatQuantity, nullableText, todayInputValue, OperationFlowRail, type RoutedDetailPageProps , emptyToNull, trimDecimal} from '../appHelpers'
+import { formatDate, formatMoney, formatQuantity, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull, trimDecimal} from '../appHelpers'
 
 type OutboundPlanGenerateFormState = {
   shipment_plan_id: string
@@ -307,9 +307,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
 
   return (
     <section className="outbound-plan-page">
-      <OperationFlowRail activePath={warehouseOutboundPlanPath} kind="warehouse" onNavigate={onNavigate} />
-
-      <div className="summary-strip" aria-label="出库计划概览">
+<div className="summary-strip" aria-label="出库计划概览">
         <Metric label="出库计划" value={plans.length} />
         <Metric label="待安排" value={plannedCount} intent={plannedCount > 0 ? 'warning' : 'normal'} />
         <Metric label="已排库位" value={scheduledCount} />

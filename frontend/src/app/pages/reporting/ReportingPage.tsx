@@ -7,7 +7,7 @@ import { reportingPath, type FinanceModule } from '../../routes'
 import { Metric, PanelTitle , FormSelect} from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { t } from '../../App'
-import { formatDate, formatFinanceAmount, formatMoney, formatPercent, nullableText, pageTitle, statusTag, severityTag, partnerTypeLabel, OperationFlowRail, type ModuleNavigationProps } from '../appHelpers'
+import { formatDate, formatFinanceAmount, formatMoney, formatPercent, nullableText, pageTitle, statusTag, severityTag, partnerTypeLabel, type ModuleNavigationProps } from '../appHelpers'
 
 type FollowupTemplateFormState = {
   name: string
@@ -205,9 +205,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
 
   return (
     <section className="reporting-page">
-      <OperationFlowRail activeLabel="经理报表" activePath={reportingPath} kind="finance" onNavigate={onNavigate} />
-
-      <div className="summary-strip" aria-label="经理查询概览">
+<div className="summary-strip" aria-label="经理查询概览">
         <Metric label="审批单据" value={approvals?.total ?? 0} />
         <Metric
           label="待审批"

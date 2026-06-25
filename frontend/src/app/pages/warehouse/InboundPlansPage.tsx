@@ -7,7 +7,7 @@ import { warehouseInboundPlanPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { inboundPlanStatusOptions, inboundPlanTypeOptions } from '../../../shared/formOptions'
-import { formatDate, formatMoney, formatQuantity, nullableText, todayInputValue, OperationFlowRail, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { formatDate, formatMoney, formatQuantity, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
 
 type InboundPlanGenerateFormState = {
   purchase_contract_id: string
@@ -252,9 +252,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
 
   return (
     <section className="inbound-plan-page">
-      <OperationFlowRail activePath={warehouseInboundPlanPath} kind="warehouse" onNavigate={onNavigate} />
-
-      <div className="summary-strip" aria-label="入库计划概览">
+<div className="summary-strip" aria-label="入库计划概览">
         <Metric label="入库计划" value={plans.length} />
         <Metric label="待安排" value={plannedCount} intent={plannedCount > 0 ? 'warning' : 'normal'} />
         <Metric label="已排库位" value={scheduledCount} />

@@ -7,7 +7,7 @@ import { warehouseOutboundOrderPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { outboundOrderStatusOptions, outboundOrderModeOptions , outboundPlanTypeOptions, outboundPlanStatusOptions, outboundPlanSourceTypeOptions} from '../../../shared/formOptions'
-import { formatDate, formatMoney, formatQuantity, nullableText, todayInputValue, OperationFlowRail, type RoutedDetailPageProps , emptyToNull, trimDecimal} from '../appHelpers'
+import { formatDate, formatMoney, formatQuantity, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull, trimDecimal} from '../appHelpers'
 
 function outboundPlanStatusLabel(value: string): string {
   return outboundPlanStatusOptions.find((item) => item.value === value)?.label ?? value
@@ -389,9 +389,7 @@ export function OutboundOrdersPage({ detailId, onNavigate }: RoutedDetailPagePro
 
   return (
     <section className="outbound-order-page">
-      <OperationFlowRail activePath={warehouseOutboundOrderPath} kind="warehouse" onNavigate={onNavigate} />
-
-      <div className="summary-strip" aria-label="货物出库概览">
+<div className="summary-strip" aria-label="货物出库概览">
         <Metric label="出库单" value={orders.length} />
         <Metric label="草稿" value={draftCount} />
         <Metric label="待审批" value={submittedCount} intent={submittedCount > 0 ? 'warning' : 'normal'} />

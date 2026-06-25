@@ -7,7 +7,7 @@ import { warehouseInboundOrderPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { inboundOrderStatusOptions, inboundOrderModeOptions , inboundPlanStatusOptions} from '../../../shared/formOptions'
-import { formatDate, formatMoney, formatQuantity, nullableText, todayInputValue, OperationFlowRail, type RoutedDetailPageProps , trimDecimal} from '../appHelpers'
+import { formatDate, formatMoney, formatQuantity, nullableText, todayInputValue, type RoutedDetailPageProps , trimDecimal} from '../appHelpers'
 
 function inboundPlanStatusLabel(value: string): string {
   return inboundPlanStatusOptions.find((item) => item.value === value)?.label ?? value
@@ -368,9 +368,7 @@ export function InboundOrdersPage({ detailId, onNavigate }: RoutedDetailPageProp
 
   return (
     <section className="inbound-order-page">
-      <OperationFlowRail activePath={warehouseInboundOrderPath} kind="warehouse" onNavigate={onNavigate} />
-
-      <div className="summary-strip" aria-label="货物入库概览">
+<div className="summary-strip" aria-label="货物入库概览">
         <Metric label="入库单" value={orders.length} />
         <Metric label="草稿" value={draftCount} />
         <Metric label="待审批" value={submittedCount} intent={submittedCount > 0 ? 'warning' : 'normal'} />

@@ -8,7 +8,7 @@ import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { downloadCsv } from '../../../shared/print'
 import { exportQuotationStatusOptions, freightMethodOptions , sampleDeliveryStatusOptions} from '../../../shared/formOptions'
-import { formatDate, formatMoney, formatPercent, nullableText, todayInputValue, OperationFlowRail, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { formatDate, formatMoney, formatPercent, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
 
 function sampleDeliveryStatusLabel(value: string): string {
   return sampleDeliveryStatusOptions.find((item) => item.value === value)?.label ?? value
@@ -534,9 +534,7 @@ export function ExportQuotationsPage({ detailId, onNavigate }: RoutedDetailPageP
 
   return (
     <section className="export-quotation-page">
-      <OperationFlowRail activePath={exportQuotationPath} kind="sales" onNavigate={onNavigate} />
-
-      <div className="summary-strip" aria-label="出口报价概览">
+<div className="summary-strip" aria-label="出口报价概览">
         <Metric label="报价单" value={quotations.length} />
         <Metric label="待审批" value={quotations.filter((item) => item.approval_status === 'submitted').length} />
         <Metric
