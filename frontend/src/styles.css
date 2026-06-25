@@ -598,27 +598,50 @@ body {
 
 
 
-/* 筛选区单行 —— 嵌套型（客户 / 供应商：fields + actions） */
+/* 筛选区两行 —— 嵌套型（客户 / 供应商：fields + actions） */
 .masterdata-page .partner-inline-filters {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   align-items: flex-end;
   width: 100%;
-  gap: 12px;
+  gap: 12px 16px;
   padding-bottom: 0 !important;
 }
 
 .masterdata-page .partner-inline-filters .inline-filter-fields {
-  flex: 1 1 auto;
-  width: auto;
-  grid-template-columns: minmax(0, 1fr) 160px 160px 160px;
+  display: grid;
+  grid-template-columns: 1fr 160px 160px 160px;
+  gap: 10px 20px;
+  width: 100%;
+}
+
+.masterdata-page .partner-inline-filters .inline-filter-fields label {
+  min-width: 0;
+}
+
+.masterdata-page .partner-inline-filters .inline-filter-fields label .ant-input,
+.masterdata-page .partner-inline-filters .inline-filter-fields label .ant-input-affix-wrapper,
+.masterdata-page .partner-inline-filters .inline-filter-fields label .ant-select {
+  width: 100%;
+  max-width: none;
+}
+
+.masterdata-page .partner-inline-filters .inline-filter-fields .inline-filter-search {
+  grid-column: 1 / -1;
+}
+
+.masterdata-page .partner-inline-filters .inline-filter-fields .inline-filter-search .ant-input {
+  width: 100%;
 }
 
 .masterdata-page .partner-inline-filters .inline-filter-actions {
-  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  width: 100%;
   justify-content: flex-start;
   border-top: 0;
-  margin-top: 0;
+  margin-top: 4px;
   padding-top: 0;
 }
 
@@ -1205,6 +1228,12 @@ body {
   padding-inline: 16px;
 }
 
+.masterdata-page .inline-filters .ant-btn:hover,
+.masterdata-page .inline-filters .ant-btn:focus {
+  color: #1D4ED8 !important;
+  background: #3c8af1 !important;
+}
+
 .masterdata-page .inline-filters .ant-input,
 .masterdata-page .inline-filters .ant-select-selector {
   min-height: 38px;
@@ -1220,9 +1249,9 @@ body {
 
 .toolbar-create-button:hover,
 .toolbar-create-button:focus-visible {
-  border-color: #8C8F9C !important;
-  background: rgba(247, 244, 236, 0.72) !important;
-  color: #1D2129 !important;
+  border-color: #93C5FD !important;
+  background: #5c9ff6 !important;
+  color: #1D4ED8 !important;
 }
 
 .inline-filters .ant-select,
@@ -2868,6 +2897,8 @@ body {
 .ant-btn-primary:hover,
 .ant-btn-primary:focus {
   color: #FFFFFF !important;
+  background: #3B82F6 !important;
+  border-color: #3B82F6 !important;
 }
 
 .ant-btn-primary:disabled,
