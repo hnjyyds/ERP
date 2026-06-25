@@ -5110,6 +5110,79 @@ button[type="submit"],
   transform: translateX(2px);
 }
 
+/* ── Submenu (children) ──────────────────────────────────────────── */
+
+.nav-submenu {
+  margin-top: 0;
+}
+
+.nav-submenu > .nav-link-parent {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  border-radius: 6px;
+  padding: 0 9px;
+  list-style: none;
+}
+
+.nav-submenu > .nav-link-parent::-webkit-details-marker {
+  display: none;
+}
+
+.nav-submenu > .nav-link-parent.active {
+  border-color: color-mix(in srgb, var(--erp-primary) 80%, #1a2420);
+  background: linear-gradient(135deg, var(--erp-primary), color-mix(in srgb, var(--erp-primary) 85%, #1a2420));
+  box-shadow:
+    0 8px 24px color-mix(in srgb, var(--erp-primary) 24%, transparent),
+    0 2px 6px color-mix(in srgb, var(--erp-primary) 14%, transparent);
+  color: #FFFFFF;
+}
+
+.nav-submenu > .nav-link-parent.active .nav-link-icon {
+  color: #7C9BF2;
+}
+
+.nav-submenu-chevron {
+  margin-left: auto;
+  flex: 0 0 auto;
+  color: #8C8F9C;
+  transition: transform 0.2s ease;
+}
+
+.nav-submenu[open] > .nav-link-parent .nav-submenu-chevron {
+  transform: rotate(90deg);
+}
+
+.nav-submenu-items {
+  display: grid;
+  gap: 1px;
+  padding: 2px 0 4px 20px;
+}
+
+.nav-submenu-items .nav-child {
+  min-height: 34px;
+  border-radius: 6px;
+  padding: 0 10px;
+  font-size: 13px;
+  color: #5A5E69;
+}
+
+.nav-submenu-items .nav-child:hover {
+  background: rgba(79, 110, 247, 0.06);
+  color: #1D2129;
+}
+
+.nav-submenu-items .nav-child.active {
+  background: rgba(79, 110, 247, 0.08);
+  color: var(--erp-primary);
+  font-weight: 600;
+}
+
+.nav-submenu-items .nav-child.active::after {
+  display: none;
+}
+
 .nav-link.active {
   border-color: color-mix(in srgb, var(--erp-primary) 80%, #1a2420);
   background: linear-gradient(135deg, var(--erp-primary), color-mix(in srgb, var(--erp-primary) 85%, #1a2420));
@@ -6470,10 +6543,9 @@ h2 {
 }
 
 .finance-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(340px, 0.8fr);
+  display: flex;
+  flex-direction: column;
   gap: 16px;
-  align-items: start;
 }
 
 .finance-receipt-grid,
@@ -6482,10 +6554,9 @@ h2 {
 .finance-tax-grid,
 .finance-misc-grid,
 .finance-settlement-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.18fr) minmax(360px, 0.82fr);
+  display: flex;
+  flex-direction: column;
   gap: 16px;
-  align-items: start;
   margin-top: 16px;
 }
 
@@ -6549,6 +6620,11 @@ h2 {
 .finance-settlement-list-panel {
   grid-row: span 2;
   min-width: 0;
+}
+
+.finance-page .panel-heading.toolbar-heading {
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .finance-receipt-form-panel,

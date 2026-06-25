@@ -1,19 +1,13 @@
-import { ChevronDown, LayoutDashboard, LockKeyhole } from 'lucide-react'
+import { ChevronDown, ChevronRight, LayoutDashboard, LockKeyhole } from 'lucide-react'
 import type { MenuItem } from '../../../api'
 import { lockedWorkflowPaths } from '../../pages/appHelpers'
 import { t } from '../../App'
-
-type Group = {
-  id: string
-  label: string
-  icon: React.ComponentType<{ size?: number; strokeWidth?: number }>
-  items: MenuItem[]
-}
+import type { SidebarGroup, SidebarItem } from '../../App'
 
 type Props = {
   activePath: string
   dashboardMenu?: MenuItem | null
-  sidebarMenuGroups: Group[]
+  sidebarMenuGroups: SidebarGroup[]
   onNavigate: (path: string) => void
 }
 
@@ -61,7 +55,9 @@ export function AppSidebar({ activePath, dashboardMenu, sidebarMenuGroups, onNav
                 <div className="nav-group-items">
                   {group.items.map((item) => {
                     const isLocked = lockedWorkflowPaths.has(item.path)
+                    const hasChildren = item.children && item.children.length > 0
                     const active = !isLocked && isActive(item.path, activePath)
+                    const childActive = hasChildren && item.children!.some((child) => isActive(child.path, activePath))
                     const Icon = item.icon ? item.icon as unknown as React.ComponentType<{ className?: string; size?: number; strokeWidth?: number }> : LayoutDashboard
 
                     if (isLocked) {
@@ -71,6 +67,48 @@ export function AppSidebar({ activePath, dashboardMenu, sidebarMenuGroups, onNav
                           <span>{item.label}</span>
                           <LockKeyhole className="nav-lock-icon" size={13} strokeWidth={2.2} />
                         </button>
+                      )
+                    }
+
+                    if (hasChildren) {
+                      return (
+                        <details className="nav-submenu" key={item.id} open={childActive || undefined}>
+                          <summary
+                            className="nav-link nav-link-parent"
+                            onClick={(e) => {
+                              const details = (e.currentTarget as HTMLElement).parentElement as HTMLDetailsElement
+                              // If currently closed, native toggle will open it; navigate to parent
+                              // If currently open, native toggle will close it; only navigate if not closing
+                              if (details.open) {
+                                // about to close — just let it close, no navigation
+                                return
+                              }
+                              // about to open — also navigate to parent (总览)
+                              e.preventDefault()
+                              details.open = true
+                              onNavigate(item.path)
+                            }}
+                          >
+                            <Icon className="nav-link-icon" size={16} strokeWidth={2} />
+                            <span>{item.label}</span>
+                            <ChevronRight className="nav-submenu-chevron" size={14} />
+                          </summary>
+                          <div className="nav-submenu-items">
+                            {item.children!.map((child) => {
+                              const isChildActive = isActive(child.path, activePath)
+                              return (
+                                <a
+                                  key={child.path}
+                                  className={isChildActive ? 'nav-link nav-child active' : 'nav-link nav-child'}
+                                  href={child.path}
+                                  onClick={(e) => { e.preventDefault(); onNavigate(child.path) }}
+                                >
+                                  <span>{child.label}</span>
+                                </a>
+                              )
+                            })}
+                          </div>
+                        </details>
                       )
                     }
 

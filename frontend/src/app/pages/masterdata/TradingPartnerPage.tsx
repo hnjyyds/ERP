@@ -488,7 +488,7 @@ export function TradingPartnerPage({
                   查询
                 </Button>
                 <Button
-                  className="toolbar-create-button"
+                  
                   htmlType="button"
                   icon={<Plus size={16} />}
                   onClick={openCreate}

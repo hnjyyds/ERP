@@ -44,6 +44,16 @@ import {
   warehouseOutboundPlanPath,
   warehouseOutboundOrderPath,
   financePath,
+  financeOverviewPath,
+  financeReceiptsPath,
+  financePaymentsPath,
+  financeFeesPath,
+  financeTaxPath,
+  financeMiscPath,
+  financeSettlementPath,
+  financeReimbursementsPath,
+  financePortDataPath,
+  financeReportsPath,
   reportingPath,
 } from './routes'
 import { showError } from '../shared/errors'
@@ -227,6 +237,7 @@ const sidebarNavGroups: Array<{
   label: string
   icon: LucideIcon
   paths: string[]
+  children?: { path: string; label: string }[]
 }> = [
   {
     id: 'masterdata',
@@ -262,6 +273,18 @@ const sidebarNavGroups: Array<{
     label: '财务经营',
     icon: BarChart3,
     paths: [financePath, reportingPath],
+    children: [
+      { path: financeOverviewPath, label: '经营总览' },
+      { path: financeReceiptsPath, label: '收款管理' },
+      { path: financePaymentsPath, label: '付款管理' },
+      { path: financeFeesPath, label: '付费管理' },
+      { path: financeTaxPath, label: '核销退税' },
+      { path: financeMiscPath, label: '杂费管理' },
+      { path: financeSettlementPath, label: '结算核算' },
+      { path: financeReimbursementsPath, label: '报销管理' },
+      { path: financePortDataPath, label: '口岸数据' },
+      { path: financeReportsPath, label: '财务报表' },
+    ],
   },
   {
     id: 'system',
@@ -277,14 +300,36 @@ const sidebarNavGroups: Array<{
   },
 ]
 
-function getSidebarMenuGroups(menus: MenuItem[]) {
+export type SidebarChild = { path: string; label: string; active: boolean }
+export type SidebarItem = MenuItem & { children?: SidebarChild[] }
+export type SidebarGroup = {
+  id: string
+  label: string
+  icon: React.ComponentType<{ size?: number; strokeWidth?: number }>
+  items: SidebarItem[]
+}
+
+function getSidebarMenuGroups(menus: MenuItem[]): SidebarGroup[] {
   const menuByPath = new Map(menus.map((item) => [item.path, item]))
   const groupedPaths = new Set<string>()
   const groups = sidebarNavGroups
     .map((group) => {
-      const items = group.paths
+      const items: SidebarItem[] = group.paths
         .map((path) => menuByPath.get(path))
         .filter((item): item is MenuItem => Boolean(item))
+        .map((menu) => {
+          const groupDef = sidebarNavGroups.find((g) => g.id === group.id)
+          if (groupDef?.children && menu.path === groupDef.paths[0]) {
+            return {
+              ...menu,
+              children: groupDef.children.map((child) => ({
+                ...child,
+                active: false,
+              })),
+            }
+          }
+          return menu
+        })
       items.forEach((item) => groupedPaths.add(item.path))
       return { ...group, items }
     })
@@ -297,7 +342,6 @@ function getSidebarMenuGroups(menus: MenuItem[]) {
       id: 'other',
       label: '其他',
       icon: LayoutDashboard,
-      paths: [],
       items: otherItems,
     },
   ]

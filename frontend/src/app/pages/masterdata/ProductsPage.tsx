@@ -12,6 +12,7 @@ import {
   Users,
 } from 'lucide-react'
 import type { ChangeEvent, FormEvent, MouseEvent } from 'react'
+import React from 'react'
 import { useEffect, useMemo, useState } from 'react'
 
 import {
@@ -36,7 +37,8 @@ import {
   type ProductTransaction,
   type ProductUpdatePayload,
 } from '../../../api'
-import { showError, showWarningDialog } from '../../../shared/errors'
+import { showError, showSuccess, showWarningDialog } from '../../../shared/errors'
+import { downloadCsv } from '../../../shared/print'
 import { Metric, PanelTitle, useColumnView, type ColumnOption } from '../../../shared/ui'
 import { productDetailPath, productPath } from '../../routes'
 
@@ -104,6 +106,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [exportResult, setExportResult] = useState<ProductExport | null>(null)
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const [form, setForm] = useState<ProductFormState>(() => initialProductForm())
   const [accessoryForm, setAccessoryForm] = useState<ProductAccessoryFormState>(() =>
     initialProductAccessoryForm(),
@@ -381,16 +384,24 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
     })
   }
 
-  async function exportProductCsv() {
-    setMessage('')
-    setError('')
-    try {
-      const result = await exportProducts()
-      setExportResult(result)
-      setMessage(`CSV 已生成：${result.filename}`)
-    } catch (caught) {
-      showError(caught, '商品导出失败')
+  function exportSelectedCsv() {
+    const selectedIds = new Set(selectedRowKeys.map(String))
+    const toExport = selectedIds.size > 0
+      ? products.filter((p) => selectedIds.has(p.id))
+      : products
+    if (toExport.length === 0) {
+      showWarningDialog('请先选择要导出的商品，或直接导出全部')
+      return
     }
+    const headers = ['编号', '中文名称', '英文名称', '规格', '型号', '海关编码', '退税率', '包装信息', '单位', '状态']
+    const csvRows = toExport.map((p) => [
+      p.code, p.cn_name, p.en_name, p.specification ?? '', p.model ?? '',
+      p.customs_code, p.rebate_rate, p.package_info, p.unit,
+      p.status === 'active' ? '启用' : '停用',
+    ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(','))
+    const csv = [headers.join(','), ...csvRows].join('\n')
+    downloadCsv('产品资料.csv', csv)
+    showSuccess(`已导出 ${toExport.length} 条商品`)
   }
 
   function openProductDetail(product: Product) {
@@ -456,14 +467,18 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
                 >
                   导入
                 </Button>
-                <Button icon={<RefreshCw size={16} />} onClick={exportProductCsv}>
-                  导出
+                <Button icon={<RefreshCw size={16} />} onClick={exportSelectedCsv}>
+                  {selectedRowKeys.length > 0 ? `导出 (${selectedRowKeys.length})` : '导出全部'}
                 </Button>
                 {columnViewControl}
               </form>
             </div>
 
             <Table<Product>
+              rowSelection={{
+                selectedRowKeys,
+                onChange: (keys) => setSelectedRowKeys(keys),
+              }}
               columns={[
                 {
                   title: '编号',

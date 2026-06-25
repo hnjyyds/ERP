@@ -1,4 +1,4 @@
-import { Modal } from 'antd'
+import { Modal, message } from 'antd'
 
 /**
  * 统一的接口错误对象。
@@ -57,25 +57,20 @@ function resolveContent(error: unknown, fallback: string): string {
   return fallback
 }
 
-/** 居中的错误弹窗（用于失败提示） */
+/** 错误 toast 提示（3 秒自动消失） */
 export function showErrorDialog(error: unknown, fallback = '操作未成功，请稍后重试'): void {
-  Modal.error({
-    title: '操作未成功',
-    content: resolveContent(error, fallback),
-    centered: true,
-    okText: '知道了',
-  })
+  message.error(resolveContent(error, fallback), 3)
 }
 
-/** 居中的提醒弹窗（用于前端必填/格式校验提示） */
-export function showWarningDialog(content: string, title = '请完善信息'): void {
-  Modal.warning({
-    title,
-    content,
-    centered: true,
-    okText: '知道了',
-  })
+/** 警告 toast 提示（3 秒自动消失） */
+export function showWarningDialog(content: string, _title = '请完善信息'): void {
+  message.warning(content, 3)
 }
 
 /** catch 专用糖：与原有 catch 文案参数对齐，便于批量替换 */
+/** 成功 toast 提示（3 秒自动消失） */
+export function showSuccess(content: string): void {
+  message.success(content, 3)
+}
+
 export const showError = (error: unknown, fallback?: string) => showErrorDialog(error, fallback)

@@ -241,9 +241,16 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
   const [loadingFinancialSettlements, setLoadingFinancialSettlements] = useState(false)
   const [loadingProfitCalculations, setLoadingProfitCalculations] = useState(false)
   const [submittingReceipt, setSubmittingReceipt] = useState(false)
+  const [receiptModalOpen, setReceiptModalOpen] = useState(false)
+  const [feeInvoiceModalOpen, setFeeInvoiceModalOpen] = useState(false)
+  const [taxDocumentModalOpen, setTaxDocumentModalOpen] = useState(false)
+  const [settlementModalOpen, setSettlementModalOpen] = useState(false)
+  const [miscItemModalOpen, setMiscItemModalOpen] = useState(false)
+  const [reimbursementModalOpen, setReimbursementModalOpen] = useState(false)
   const [submittingClaim, setSubmittingClaim] = useState(false)
   const [submittingAllocation, setSubmittingAllocation] = useState(false)
   const [submittingSupplierInvoice, setSubmittingSupplierInvoice] = useState(false)
+  const [invoiceModalOpen, setInvoiceModalOpen] = useState(false)
   const [submittingPaymentRequest, setSubmittingPaymentRequest] = useState(false)
   const [submittingPaymentApproval, setSubmittingPaymentApproval] = useState(false)
   const [submittingPartnerFeeInvoice, setSubmittingPartnerFeeInvoice] = useState(false)
@@ -1611,27 +1618,7 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
     )
   }
 
-  const moduleHeader = (
-    <div className="finance-subnav">
-      <button className="finance-back-button" type="button" onClick={goFinanceHome}>
-        <ArrowLeft size={16} />
-        财务首页
-      </button>
-      <nav className="finance-tab-rail" aria-label="财务模块切换">
-        {financeModuleCards.map((card) => (
-          <button
-            key={card.module}
-            aria-current={card.module === activeModule ? 'page' : undefined}
-            className={card.module === activeModule ? 'finance-tab active' : 'finance-tab'}
-            type="button"
-            onClick={() => goModule(card.module)}
-          >
-            {card.title}
-          </button>
-        ))}
-      </nav>
-    </div>
-  )
+  const moduleHeader = null
 
   if (activeModule === 'overview') {
     return (
@@ -1843,6 +1830,9 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
+              <Button icon={<Plus size={16} />} onClick={() => setReceiptModalOpen(true)}>
+                水单录入
+              </Button>
             </form>
           </div>
 
@@ -1897,9 +1887,15 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
         ) : null}
 
         {!detailId ? (
-        <section className="workspace-panel finance-receipt-form-panel">
-          <PanelTitle icon={<Wallet size={18} />} title="水单录入" />
-          <form className="record-form" onSubmit={submitReceipt}>
+        <Modal
+          centered
+          footer={null}
+          open={receiptModalOpen}
+          title="水单录入"
+          width={720}
+          onCancel={() => setReceiptModalOpen(false)}
+        >
+          <form className="record-form" onSubmit={(e) => { submitReceipt(e); setReceiptModalOpen(false) }}>
             <div className="form-pair two">
               <label>
                 银行水单号
@@ -1991,11 +1987,16 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
                 onChange={(event) => setReceiptForm({ ...receiptForm, remark: event.target.value })}
               />
             </label>
-            <Button htmlType="submit" icon={<Save size={16} />} loading={submittingReceipt}>
-              保存水单
-            </Button>
+            <div className="modal-actions">
+              <button className="secondary-inline" type="button" onClick={() => setReceiptModalOpen(false)}>
+                取消
+              </button>
+              <button className="inline-submit" disabled={submittingReceipt} type="submit">
+                保存水单
+              </button>
+            </div>
           </form>
-        </section>
+        </Modal>
         ) : null}
 
         {detailId ? (
@@ -2322,6 +2323,9 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
+              <Button icon={<Plus size={16} />} onClick={() => setInvoiceModalOpen(true)}>
+                发票登记
+              </Button>
             </form>
           </div>
           <Table<SupplierInvoice>
@@ -2368,9 +2372,15 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
         ) : null}
 
         {!detailId ? (
-        <section className="workspace-panel finance-payment-form-panel">
-          <PanelTitle icon={<Wallet size={18} />} title="供应商发票登记" />
-          <form className="record-form" onSubmit={submitSupplierInvoice}>
+        <Modal
+          centered
+          footer={null}
+          open={invoiceModalOpen}
+          title="供应商发票登记"
+          width={760}
+          onCancel={() => setInvoiceModalOpen(false)}
+        >
+          <form className="record-form" onSubmit={(e) => { submitSupplierInvoice(e); setInvoiceModalOpen(false) }}>
             <div className="form-pair two">
               <label>
                 供应商发票号
@@ -2497,11 +2507,16 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
                 }
               />
             </label>
-            <Button htmlType="submit" icon={<Save size={16} />} loading={submittingSupplierInvoice}>
-              登记供应商发票
-            </Button>
+            <div className="modal-actions">
+              <button className="secondary-inline" type="button" onClick={() => setInvoiceModalOpen(false)}>
+                取消
+              </button>
+              <button className="inline-submit" disabled={submittingSupplierInvoice} type="submit">
+                登记供应商发票
+              </button>
+            </div>
           </form>
-        </section>
+        </Modal>
         ) : null}
 
         {detailId ? (
@@ -2885,6 +2900,9 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
+              <Button icon={<Plus size={16} />} onClick={() => setFeeInvoiceModalOpen(true)}>
+                发票登记
+              </Button>
             </form>
           </div>
           <Table<PartnerFeeInvoice>
@@ -2932,9 +2950,15 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
         ) : null}
 
         {!detailId ? (
-        <section className="workspace-panel finance-fee-form-panel">
-          <PanelTitle icon={<Wallet size={18} />} title="费用发票登记" />
-          <form className="record-form" onSubmit={submitPartnerFeeInvoice}>
+        <Modal
+          centered
+          footer={null}
+          open={feeInvoiceModalOpen}
+          title="费用发票登记"
+          width={760}
+          onCancel={() => setFeeInvoiceModalOpen(false)}
+        >
+                    <form className="record-form" onSubmit={(e) => { submitPartnerFeeInvoice(e); setFeeInvoiceModalOpen(false) }}>
             <div className="form-pair two">
               <label>
                 费用发票号
@@ -3088,11 +3112,16 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
                 }
               />
             </label>
-            <Button htmlType="submit" icon={<Save size={16} />} loading={submittingPartnerFeeInvoice}>
-              登记费用发票
-            </Button>
+            <div className="modal-actions">
+              <button className="secondary-inline" type="button" onClick={() => setFeeInvoiceModalOpen(false)}>
+                取消
+              </button>
+              <button className="inline-submit" disabled={submittingPartnerFeeInvoice} type="submit">
+                登记费用发票
+              </button>
+            </div>
           </form>
-        </section>
+        </Modal>
         ) : null}
 
         {detailId ? (
@@ -3477,6 +3506,9 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
+              <Button icon={<Plus size={16} />} onClick={() => setTaxDocumentModalOpen(true)}>
+                领用核销单
+              </Button>
             </form>
           </div>
           <Table<VerificationDocument>
@@ -3523,9 +3555,15 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
         ) : null}
 
         {!detailId ? (
-        <section className="workspace-panel finance-tax-form-panel">
-          <PanelTitle icon={<Save size={18} />} title="核销单领用" />
-          <form className="record-form" onSubmit={submitVerificationDocument}>
+        <Modal
+          centered
+          footer={null}
+          open={taxDocumentModalOpen}
+          title="核销单领用"
+          width={760}
+          onCancel={() => setTaxDocumentModalOpen(false)}
+        >
+                    <form className="record-form" onSubmit={(e) => { submitVerificationDocument(e); setTaxDocumentModalOpen(false) }}>
             <div className="form-pair two">
               <label>
                 核销单号
@@ -3670,11 +3708,16 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
                 }
               />
             </label>
-            <Button htmlType="submit" icon={<Save size={16} />} loading={submittingVerificationDocument}>
-              领用核销单
-            </Button>
+            <div className="modal-actions">
+              <button className="secondary-inline" type="button" onClick={() => setTaxDocumentModalOpen(false)}>
+                取消
+              </button>
+              <button className="inline-submit" disabled={submittingVerificationDocument} type="submit">
+                领用核销单
+              </button>
+            </div>
           </form>
-        </section>
+        </Modal>
         ) : null}
 
         {detailId ? (
@@ -4047,6 +4090,9 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
+              <Button icon={<Plus size={16} />} onClick={() => setMiscItemModalOpen(true)}>
+                新增杂费
+              </Button>
             </form>
           </div>
           <Table<MiscFeeItem>
@@ -4087,9 +4133,15 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
         ) : null}
 
         {!detailId ? (
-        <section className="workspace-panel finance-misc-form-panel">
-          <PanelTitle icon={<Save size={18} />} title="新增杂费项目" />
-          <form className="record-form" onSubmit={submitMiscFeeItem}>
+        <Modal
+          centered
+          footer={null}
+          open={miscItemModalOpen}
+          title="新增杂费项目"
+          width={640}
+          onCancel={() => setMiscItemModalOpen(false)}
+        >
+          <form className="record-form" onSubmit={(e) => { submitMiscFeeItem(e); setMiscItemModalOpen(false) }}>
             <div className="form-pair two">
               <label>
                 项目编码
@@ -4158,11 +4210,16 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
                 onChange={(event) => setMiscFeeItemForm({ ...miscFeeItemForm, remark: event.target.value })}
               />
             </label>
-            <Button htmlType="submit" icon={<Save size={16} />} loading={submittingMiscFeeItem}>
-              保存项目
-            </Button>
+            <div className="modal-actions">
+              <button className="secondary-inline" type="button" onClick={() => setMiscItemModalOpen(false)}>
+                取消
+              </button>
+              <button className="inline-submit" disabled={submittingMiscFeeItem} type="submit">
+                保存项目
+              </button>
+            </div>
           </form>
-        </section>
+        </Modal>
         ) : null}
 
         {detailId ? (
@@ -4488,6 +4545,9 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
             <Button htmlType="submit" icon={<Search size={16} />}>
               查询
             </Button>
+            <Button icon={<Plus size={16} />} onClick={() => setSettlementModalOpen(true)}>
+              新增结算
+            </Button>
           </form>
           <div className="finance-receipt-strip">
             <span>锁定结算 {financialSettlements.length} 单</span>
@@ -4555,9 +4615,15 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
         ) : null}
 
         {!detailId ? (
-        <section className="workspace-panel finance-settlement-form-panel">
-          <PanelTitle icon={<Save size={18} />} title="单票结算锁定" />
-          <form className="record-form" onSubmit={submitFinancialSettlement}>
+        <Modal
+          centered
+          footer={null}
+          open={settlementModalOpen}
+          title="单票结算锁定"
+          width={640}
+          onCancel={() => setSettlementModalOpen(false)}
+        >
+                    <form className="record-form" onSubmit={(e) => { submitFinancialSettlement(e); setSettlementModalOpen(false) }}>
             <label>
               结算单号
               <Input
@@ -4598,11 +4664,16 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
                 onChange={(event) => setSettlementForm({ ...settlementForm, remark: event.target.value })}
               />
             </label>
-            <Button htmlType="submit" icon={<Save size={16} />} loading={submittingSettlement}>
-              锁定结算
-            </Button>
+            <div className="modal-actions">
+              <button className="secondary-inline" type="button" onClick={() => setSettlementModalOpen(false)}>
+                取消
+              </button>
+              <button className="inline-submit" disabled={submittingSettlement} type="submit">
+                锁定结算
+              </button>
+            </div>
           </form>
-        </section>
+        </Modal>
         ) : null}
 
         {detailId ? (
@@ -4900,6 +4971,9 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
                 <Button htmlType="submit" icon={<Search size={16} />}>
                   查询
                 </Button>
+                <Button icon={<Plus size={16} />} onClick={() => setReimbursementModalOpen(true)}>
+                  新增报销
+                </Button>
               </form>
             </div>
             <Table<Reimbursement>
@@ -4934,10 +5008,15 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
           </section>
 
           <section className="workspace-panel">
-            <div className="panel-heading">
-              <PanelTitle icon={<Plus size={18} />} title="新增报销单" />
-            </div>
-            <form className="record-form" onSubmit={submitReimbursement}>
+            <Modal
+              centered
+              footer={null}
+              open={reimbursementModalOpen}
+              title="新增报销单"
+              width={720}
+              onCancel={() => setReimbursementModalOpen(false)}
+            >
+              <form className="record-form" onSubmit={(e) => { submitReimbursement(e); setReimbursementModalOpen(false) }}>
               <label>
                 报销单号
                 <Input
@@ -5027,7 +5106,8 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
               <Button htmlType="submit" type="primary" loading={submittingReimbursement} icon={<Save size={16} />}>
                 登记报销单
               </Button>
-            </form>
+              </form>
+            </Modal>
 
             {selectedReimbursement ? (
               <div className="finance-action-block">
