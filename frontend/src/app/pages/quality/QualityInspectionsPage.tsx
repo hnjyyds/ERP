@@ -4,10 +4,10 @@ import { Alert, Button, Input, Modal, Skeleton, Table, Tag } from 'antd'
 import { followupSourceTypeOptions } from '../../../shared/formOptions'
 import { ArrowLeft, LayoutDashboard, Plus, Search, ShieldCheck , FilePenLine} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
-import { createQualityInspection, getQualityInboundEligibility, listQualityInspections, updateQualityInspection, type QualityInspection, type QualityInspectionInboundEligibility, type QualityInspectionPayload } from '../../../api'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { createQualityInspection, getQualityInboundEligibility, listPurchaseContracts, listQualityInspections, updateQualityInspection, type QualityInspection, type QualityInspectionInboundEligibility, type QualityInspectionPayload } from '../../../api'
 import { qualityInspectionPath, moduleDetailPath } from '../../routes'
-import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { FormSelect, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { qualityResultOptions, qualityIssueSeverityOptions, qualityIssueStatusOptions } from '../../../shared/formOptions'
 
@@ -199,6 +199,16 @@ export function QualityInspectionsPage({
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
+  const fetchContractOptions = useCallback(async (query: string) => {
+    const result = await listPurchaseContracts({
+      q: query.trim() || undefined,
+    })
+    return result.items.slice(0, 20).map((item) => ({
+      value: item.id,
+      label: `${item.code} / ${item.supplier_name}`,
+      description: `下单 ${item.contract_date}  交货 ${item.delivery_date}`,
+    }))
+  }, [])
   const selectedInspection = useMemo(
     () => {
       if (detailId) return inspections.find((item) => item.id === detailId) ?? null
@@ -504,13 +514,15 @@ export function QualityInspectionsPage({
                 />
               </label>
               <label htmlFor="quality-contract-id">
-                采购合同 ID
-                <Input
+                采购合同
+                <RemoteSelect
                   id="quality-contract-id"
                   required
-                  value={form.purchase_contract_id}
-                  onChange={(event) =>
-                    setForm({ ...form, purchase_contract_id: event.target.value })
+                  fetchOptions={fetchContractOptions}
+                  placeholder="输入合同号或供应商搜索"
+                  value={form.purchase_contract_id || null}
+                  onChange={(value) =>
+                    setForm({ ...form, purchase_contract_id: value })
                   }
                 />
               </label>

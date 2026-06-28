@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { approvePurchaseContract, createPurchaseContract, generatePurchaseContractFromExportContracts, generatePurchaseContractTemplate, listPurchaseContractReminders, listPurchaseContracts, submitPurchaseContract, updatePurchaseContract, type PurchaseContract, type PurchaseContractApprovePayload, type PurchaseContractCreatePayload, type PurchaseContractGeneratePayload, type PurchaseContractLine, type PurchaseContractReminder, type PurchaseContractSourceLink, type Supplier , AssignableUser, Product, listAssignableUsers, listProducts, listSuppliers} from '../../../api'
 import { purchaseContractPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
-import { showError } from '../../../shared/errors'
+import { showError, showWarningDialog } from '../../../shared/errors'
 import { purchaseContractStatusOptions, purchaseContractSourceTypeOptions } from '../../../shared/formOptions'
 import { formatDate, formatMoney, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
 
@@ -549,6 +549,12 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
     setSubmitting(true)
     setMessage('')
     setError('')
+    const sources = [generateForm.source_contract_id_a, generateForm.source_contract_id_b].map((item) => item.trim()).filter(Boolean)
+    if (sources.length === 0) {
+      showWarningDialog("请至少填写一个出口合同 ID")
+      setSubmitting(false)
+      return
+    }
     try {
       const generated = await generatePurchaseContractFromExportContracts(
         purchaseContractGeneratePayload(generateForm),
@@ -830,7 +836,6 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
               <label>
                 选择工厂
                 <Select
-                  allowClear
                   showSearch
                   loading={loadingSuppliers}
                   value={form.supplier_id || undefined}
@@ -874,7 +879,7 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
               <label>
                 QC 负责人
                 <Select
-                  allowClear
+
                   showSearch
                   loading={loadingAssignableUsers}
                   value={form.qc_user_id || undefined}
@@ -935,7 +940,7 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
               <label>
                 选择商品
                 <Select
-                  allowClear
+
                   showSearch
                   loading={loadingProducts}
                   value={form.product_id || undefined}
@@ -1149,7 +1154,7 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
               <label>
                 QC 负责人
                 <Select
-                  allowClear
+
                   showSearch
                   loading={loadingAssignableUsers}
                   value={generateForm.qc_user_id || undefined}

@@ -61,7 +61,7 @@ class QualityInspectionService:
             purchase_contract_id=payload.purchase_contract_id,
         )
         if contract.approval_status != "approved":
-            raise ValueError("采购合同审批通过后才能登记 QC")
+            raise ValueError("请先审批该采购合同，再登记 QC 查验")
         qc_user_id, qc_user_name = self._inspection_assignee_from_contract(contract)
         async with UnitOfWork(self._repository.session):
             inspection = await self._repository.create_inspection(

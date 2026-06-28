@@ -236,3 +236,49 @@ async def test_quality_inspection_api_rejects_unauthorized_and_finance_role(
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 403
+
+
+async def test_quality_inspection_api_rejects_unapproved_contract(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    create_response = await api_client.post(
+        "/api/v1/purchase/contracts",
+        headers=headers,
+        json=_purchase_contract_payload("PC-UNAPPROVED-QC"),
+    )
+    assert create_response.status_code == 201
+    contract = create_response.json()["data"]
+
+    inspection_response = await api_client.post(
+        "/api/v1/quality/inspections",
+        headers=headers,
+        json={
+            "code": "QC-UNAPPROVED",
+            "purchase_contract_id": contract["id"],
+            "inspected_at": "2026-08-19",
+            "result": "passed",
+            "inspector_id": "u-qc-001",
+            "inspector_name": "QC 张工",
+            "issue_summary": None,
+            "attachment_group_id": "attach-qc-unapproved",
+            "lines": [
+                {
+                    "purchase_contract_line_id": contract["lines"][0]["id"],
+                    "product_id": "product-bag",
+                    "product_code": "BAG-40",
+                    "product_name": "Eco Shopping Bag",
+                    "inspected_quantity": "50",
+                    "failed_quantity": "0",
+                    "unit": "pcs",
+                    "result": "passed",
+                }
+            ],
+            "issues": [],
+        },
+    )
+    assert inspection_response.status_code == 422
+    detail = inspection_response.json()["detail"]
+    assert detail == "请先审批该采购合同，再登记 QC 查验"

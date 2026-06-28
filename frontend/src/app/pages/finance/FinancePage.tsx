@@ -5765,24 +5765,6 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
             />
           ) : null}
 
-          {reportExplanation ? (
-            <section className="finance-action-block" aria-label="报表口径说明">
-              <PanelTitle icon={<FileText size={18} />} title="统计口径" />
-              <Descriptions column={1} size="small">
-                <Descriptions.Item label="数据来源">
-                  {reportExplanation.source_tables.join('、')}
-                </Descriptions.Item>
-                <Descriptions.Item label="计算规则">
-                  {reportExplanation.metric_rules.join('；')}
-                </Descriptions.Item>
-                <Descriptions.Item label="字段">
-                  {reportExplanation.fields.map((field) => `${field.label}: ${field.formula}`).join('；')}
-                </Descriptions.Item>
-              </Descriptions>
-              {loadingReportExplanation ? <Skeleton active paragraph={false} /> : null}
-            </section>
-          ) : null}
-
           {reportDrilldown ? (
             <section className="finance-action-block" aria-label="报表下钻">
               <PanelTitle icon={<ChevronRight size={18} />} title="来源下钻" />

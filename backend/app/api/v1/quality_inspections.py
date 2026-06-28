@@ -38,7 +38,7 @@ def _raise_permission_denied() -> NoReturn:
 def _raise_invalid_inspection() -> NoReturn:
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-        detail="QC 查验数据无效",
+        detail="QC 查验数据无效，请检查填写内容",
     )
 
 

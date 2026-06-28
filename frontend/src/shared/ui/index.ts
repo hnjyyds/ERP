@@ -9,3 +9,4 @@ export {
   type AvatarPresetId,
 } from './UserAvatar'
 export { UserAvatarPicker, type UserAvatarPickerValue } from './UserAvatarPicker'
+export { RemoteSelect } from './RemoteSelect'
