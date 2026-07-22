@@ -1,4 +1,4 @@
-import { Button, Checkbox, Dropdown } from 'antd'
+import { Button, Dropdown, Menu, type MenuProps } from 'antd'
 import { SlidersHorizontal } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
 
@@ -80,27 +80,35 @@ type ControlProps = {
 }
 
 function ColumnViewControl({ options, isVisible, onToggle, onReset }: ControlProps) {
-  const menu = (
-    <div className="column-view-menu">
-      {options.map((option) => (
-        <div key={option.key} className="column-view-item">
-          <Checkbox
-            checked={isVisible(option.key)}
-            disabled={option.required}
-            onChange={(event) => onToggle(option.key, event.target.checked)}
-          >
-            {option.title}
-          </Checkbox>
-        </div>
-      ))}
-      <button className="column-view-reset" type="button" onClick={onReset}>
-        恢复默认
-      </button>
-    </div>
-  )
+  const menuItems: MenuProps['items'] = [
+    ...options.map((option) => ({
+      key: option.key,
+      label: (
+        <span
+          style={{ cursor: option.required ? 'not-allowed' : 'pointer', opacity: option.required ? 0.5 : 1 }}
+          onClick={(e) => {
+            if (!option.required) {
+              e.stopPropagation()
+              onToggle(option.key, !isVisible(option.key))
+            }
+          }}
+        >
+          {option.title}
+        </span>
+      ),
+      icon: isVisible(option.key) ? <span style={{ width: 14, display: 'inline-block' }}>✓</span> : <span style={{ width: 14 }} />,
+      disabled: option.required,
+    })),
+    { type: 'divider' },
+    {
+      key: '__reset__',
+      label: '恢复默认',
+      onClick: () => onReset(),
+    },
+  ]
 
   return (
-    <Dropdown dropdownRender={() => menu} trigger={['click']}>
+    <Dropdown dropdownRender={() => <Menu selectable={false} items={menuItems} />} trigger={['click']}>
       <Button icon={<SlidersHorizontal size={16} />}>视图</Button>
     </Dropdown>
   )
