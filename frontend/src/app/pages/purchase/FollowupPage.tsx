@@ -30,7 +30,7 @@ function FollowupTemplateNodeFields({
   templateForm: FollowupTemplateFormState
 }) {
   return (
-    <div className="form-row">
+    <div className="form-pair two">
       <label>
         {label}
         <Input
@@ -613,18 +613,19 @@ export function FollowupPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                 <option value="false">否</option>
               </FormSelect>
               </label>
+              <label className="checkbox-label" htmlFor="followup-template-enabled">
+                <input
+                  checked={templateForm.enabled}
+                  id="followup-template-enabled"
+                  type="checkbox"
+                  onChange={(event) =>
+                    setTemplateForm({ ...templateForm, enabled: event.target.checked })
+                  }
+                />
+                启用模板
+              </label>
             </div>
-            <label className="checkbox-label" htmlFor="followup-template-enabled">
-              <input
-                checked={templateForm.enabled}
-                id="followup-template-enabled"
-                type="checkbox"
-                onChange={(event) =>
-                  setTemplateForm({ ...templateForm, enabled: event.target.checked })
-                }
-              />
-              启用模板
-            </label>
+
 
             <div className="form-divider">节点标准天数 / 提前提醒天数</div>
             <FollowupTemplateNodeFields

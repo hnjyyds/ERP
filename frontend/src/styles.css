@@ -6093,10 +6093,10 @@ h2 {
 }
 
 .record-form .checkbox-label {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-start;
   gap: 8px;
+  flex-direction: row !important;
+
+  align-items: center;
 }
 
 .record-form .checkbox-label input {

@@ -678,7 +678,7 @@ export function QualityInspectionsPage({
                 />
               </label>
             </div>
-            <div className="form-pair three">
+            <div className="form-pair two">
               <label htmlFor="quality-inspected-quantity">
                 查验数量
                 <Input
@@ -740,7 +740,7 @@ export function QualityInspectionsPage({
             </div>
 
             <div className="form-divider">异常问题（可选）</div>
-            <div className="form-pair three">
+            <div className="form-pair two">
               <label htmlFor="quality-issue-type">
                 问题类型
                 <Input
