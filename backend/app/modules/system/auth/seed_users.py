@@ -8,20 +8,26 @@ def demo_roles() -> list[Role]:
     """Demo-only roles. Production系统角色仅保留超级管理员（见 seed_navigation.system_roles）。"""
     return [
         Role(id="role-sales-manager", name="业务主管", code="sales_manager", data_scope="all"),
+        Role(id="role-purchase", name="采购专员", code="purchase", data_scope="all"),
         Role(id="role-finance", name="财务", code="finance", data_scope="all"),
+        Role(id="role-warehouse", name="仓库专员", code="warehouse", data_scope="all"),
+        Role(id="role-qc", name="QC 专员", code="qc", data_scope="all"),
     ]
 
 
 def demo_users() -> list[User]:
     admin_salt = "admin-salt"
     demo_salt = "demo-salt"
+    purchase_salt = "purchase-salt"
     finance_salt = "finance-salt"
+    warehouse_salt = "warehouse-salt"
+    qc_salt = "qc-salt"
     return [
         User(
             id="u-admin",
             username="admin",
             display_name="演示管理员",
-            department_id=None,
+            department_id="dept-admin",
             avatar_type="preset",
             avatar_value="ink-halo",
             password_hash=hash_password("admin123", admin_salt),
@@ -33,7 +39,7 @@ def demo_users() -> list[User]:
             id="u-001",
             username="demo",
             display_name="演示业务主管",
-            department_id=None,
+            department_id="dept-sales",
             avatar_type="preset",
             avatar_value="amber-orbit",
             password_hash=hash_password("demo123", demo_salt),
@@ -42,14 +48,50 @@ def demo_users() -> list[User]:
             created_at=datetime.now(UTC),
         ),
         User(
+            id="u-purchase",
+            username="purchase",
+            display_name="演示采购专员",
+            department_id="dept-purchase",
+            avatar_type="preset",
+            avatar_value="copper-wave",
+            password_hash=hash_password("purchase123", purchase_salt),
+            password_salt=purchase_salt,
+            is_active=True,
+            created_at=datetime.now(UTC),
+        ),
+        User(
             id="u-finance",
             username="finance",
             display_name="演示财务",
-            department_id=None,
+            department_id="dept-finance",
             avatar_type="preset",
             avatar_value="sage-pulse",
             password_hash=hash_password("finance123", finance_salt),
             password_salt=finance_salt,
+            is_active=True,
+            created_at=datetime.now(UTC),
+        ),
+        User(
+            id="u-warehouse",
+            username="warehouse",
+            display_name="演示仓库专员",
+            department_id="dept-warehouse",
+            avatar_type="preset",
+            avatar_value="blueprint-grid",
+            password_hash=hash_password("warehouse123", warehouse_salt),
+            password_salt=warehouse_salt,
+            is_active=True,
+            created_at=datetime.now(UTC),
+        ),
+        User(
+            id="u-qc",
+            username="qc",
+            display_name="演示 QC 专员",
+            department_id="dept-quality",
+            avatar_type="preset",
+            avatar_value="rose-signal",
+            password_hash=hash_password("qc123", qc_salt),
+            password_salt=qc_salt,
             is_active=True,
             created_at=datetime.now(UTC),
         ),
@@ -60,12 +102,15 @@ def demo_user_roles() -> list[UserRole]:
     return [
         UserRole(id="ur-admin", user_id="u-admin", role_id="role-admin"),
         UserRole(id="ur-demo-sales-manager", user_id="u-001", role_id="role-sales-manager"),
+        UserRole(id="ur-purchase", user_id="u-purchase", role_id="role-purchase"),
         UserRole(id="ur-finance", user_id="u-finance", role_id="role-finance"),
+        UserRole(id="ur-warehouse", user_id="u-warehouse", role_id="role-warehouse"),
+        UserRole(id="ur-qc", user_id="u-qc", role_id="role-qc"),
     ]
 
 
 def demo_role_permissions() -> list[RolePermission]:
-    return [
+    role_permissions = [
         RolePermission(
             id="rp-admin-dashboard",
             role_id="role-admin",
@@ -521,4 +566,91 @@ def demo_role_permissions() -> list[RolePermission]:
             role_id="role-finance",
             permission_id="perm-finance-report-export",
         ),
+    ]
+    role_permissions.extend(
+        _role_permissions(
+            role_id="role-purchase",
+            id_prefix="purchase",
+            permission_ids=[
+                "perm-dashboard-view",
+                "perm-schedule-create",
+                "perm-product-view",
+                "perm-supplier-view",
+                "perm-supplier-edit",
+                "perm-supplier-credit-view",
+                "perm-supplier-view-all",
+                "perm-purchase-inquiry-view",
+                "perm-purchase-inquiry-edit",
+                "perm-purchase-inquiry-view-all",
+                "perm-purchase-inquiry-export",
+                "perm-purchase-contract-view",
+                "perm-purchase-contract-edit",
+                "perm-purchase-contract-view-all",
+                "perm-purchase-contract-approve",
+                "perm-purchase-invoice-notice-view",
+                "perm-purchase-invoice-notice-edit",
+                "perm-purchase-invoice-notice-view-all",
+                "perm-purchase-invoice-notice-send",
+                "perm-purchase-followup-view",
+                "perm-followup-template-view",
+                "perm-followup-plan-view",
+                "perm-followup-plan-edit",
+                "perm-followup-plan-view-all",
+            ],
+        )
+    )
+    role_permissions.extend(
+        _role_permissions(
+            role_id="role-warehouse",
+            id_prefix="warehouse",
+            permission_ids=[
+                "perm-dashboard-view",
+                "perm-product-view",
+                "perm-warehouse-inbound-plan-view",
+                "perm-warehouse-inbound-plan-edit",
+                "perm-warehouse-inbound-plan-view-all",
+                "perm-warehouse-inbound-order-view",
+                "perm-warehouse-inbound-order-edit",
+                "perm-warehouse-inbound-order-approve",
+                "perm-warehouse-inbound-order-view-all",
+                "perm-warehouse-outbound-plan-view",
+                "perm-warehouse-outbound-plan-edit",
+                "perm-warehouse-outbound-plan-view-all",
+                "perm-warehouse-outbound-order-view",
+                "perm-warehouse-outbound-order-edit",
+                "perm-warehouse-outbound-order-approve",
+                "perm-warehouse-outbound-order-view-all",
+            ],
+        )
+    )
+    role_permissions.extend(
+        _role_permissions(
+            role_id="role-qc",
+            id_prefix="qc",
+            permission_ids=[
+                "perm-dashboard-view",
+                "perm-product-view",
+                "perm-purchase-contract-view",
+                "perm-purchase-contract-view-all",
+                "perm-quality-inspection-view",
+                "perm-quality-inspection-edit",
+                "perm-quality-inspection-view-all",
+                "perm-warehouse-inbound-plan-view",
+                "perm-warehouse-inbound-plan-view-all",
+            ],
+        )
+    )
+    return role_permissions
+
+
+def _role_permissions(
+    *, role_id: str, id_prefix: str, permission_ids: list[str]
+) -> list[RolePermission]:
+    return [
+        RolePermission(
+            id=f"rp-{id_prefix}-{permission_id.removeprefix('perm-')}",
+            role_id=role_id,
+            permission_id=permission_id,
+        )
+        for permission_id in permission_ids
     ]

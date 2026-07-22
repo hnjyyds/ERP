@@ -25,28 +25,28 @@ async def test_auth_service_verifies_password_and_token_round_trip(
     demo_assignee = next(user for user in assignable_users.users if user.id == "u-001")
     assert demo_assignee.avatar_value == "amber-orbit"
     assert [item.label for item in current.menus] == [
-        "工作桌面",
-        "商品资料",
+        "工作台",
+        "产品资料",
+        "工厂资料",
         "客户资料",
-        "供应商资料",
-        "合作伙伴",
-        "单证资料",
+        "订单中心",
+        "采购合同",
+        "QC 中心",
+        "跟单中心",
+        "入仓",
+        "老板看板",
+        "出口报价",
         "打样管理",
         "样品登记",
         "寄样管理",
-        "出口报价",
-        "出口合同",
+        "合作伙伴",
+        "单证资料",
         "出货明细",
         "采购询价",
-        "采购合同",
         "开票通知",
-        "采购跟单",
-        "QC 查验",
         "入库计划",
-        "货物入库",
         "出库计划",
         "货物出库",
-        "经理查询",
     ]
 
 
@@ -59,6 +59,42 @@ async def test_auth_service_rejects_invalid_password(
 
         with pytest.raises(InvalidCredentialsError):
             await service.login(username="demo", password="bad")
+
+
+async def test_seed_system_demo_data_provisions_employee_role_accounts(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    expected_accounts = [
+        ("demo", "demo123", "业务主管", "业务部", {"工作台", "出口报价", "订单中心"}),
+        (
+            "purchase",
+            "purchase123",
+            "采购专员",
+            "采购部",
+            {"工作台", "采购询价", "采购合同", "跟单中心"},
+        ),
+        ("finance", "finance123", "财务", "财务部", {"工作台", "财务摘要"}),
+        (
+            "warehouse",
+            "warehouse123",
+            "仓库专员",
+            "仓储部",
+            {"工作台", "入库计划", "入仓", "货物出库"},
+        ),
+        ("qc", "qc123", "QC 专员", "品质部", {"工作台", "QC 中心"}),
+    ]
+
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        await seed_system_demo_data(session)
+        service = AuthService(AuthRepository(session), TokenService(secret_key="test-secret"))
+
+        for username, password, role_name, department_name, expected_menus in expected_accounts:
+            auth_session = await service.login(username=username, password=password)
+
+            assert auth_session.user.roles == [role_name]
+            assert auth_session.user.department_name == department_name
+            assert expected_menus.issubset({item.label for item in auth_session.menus})
 
 
 async def test_seed_system_demo_data_deduplicates_role_permissions_by_role_and_permission(

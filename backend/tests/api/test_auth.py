@@ -19,7 +19,7 @@ async def test_login_returns_token_user_and_permission_menus(
     assert data["user"]["id"] == "u-001"
     assert data["user"]["username"] == "demo"
     assert data["user"]["display_name"] == "演示业务主管"
-    assert data["user"]["department_name"] == ""
+    assert data["user"]["department_name"] == "业务部"
     assert data["user"]["avatar_type"] == "preset"
     assert data["user"]["avatar_value"] == "amber-orbit"
     assert data["user"]["roles"] == ["业务主管"]
@@ -110,28 +110,28 @@ async def test_login_returns_token_user_and_permission_menus(
         "warehouse:outbound_order:view_all",
     }
     assert [item["label"] for item in data["menus"]] == [
-        "工作桌面",
-        "商品资料",
+        "工作台",
+        "产品资料",
+        "工厂资料",
         "客户资料",
-        "供应商资料",
-        "合作伙伴",
-        "单证资料",
+        "订单中心",
+        "采购合同",
+        "QC 中心",
+        "跟单中心",
+        "入仓",
+        "老板看板",
+        "出口报价",
         "打样管理",
         "样品登记",
         "寄样管理",
-        "出口报价",
-        "出口合同",
+        "合作伙伴",
+        "单证资料",
         "出货明细",
         "采购询价",
-        "采购合同",
         "开票通知",
-        "采购跟单",
-        "QC 查验",
         "入库计划",
-        "货物入库",
         "出库计划",
         "货物出库",
-        "经理查询",
     ]
 
 
@@ -177,8 +177,8 @@ async def test_current_user_and_menus_require_bearer_token(
     )
     assert menus_response.status_code == 200
     assert [item["label"] for item in menus_response.json()["data"]["menus"]] == [
-        "工作桌面",
-        "财务管理",
+        "工作台",
+        "财务摘要",
     ]
 
     unauthorized_response = await api_client.get("/api/v1/system/menus")
@@ -202,8 +202,22 @@ async def test_assignable_users_require_authentication(
     )
     assert response.status_code == 200
     users = response.json()["data"]["users"]
-    assert {item["id"] for item in users} == {"u-admin", "u-001", "u-finance"}
-    assert {item["display_name"] for item in users} == {"演示管理员", "演示业务主管", "演示财务"}
+    assert {item["id"] for item in users} == {
+        "u-admin",
+        "u-001",
+        "u-purchase",
+        "u-finance",
+        "u-warehouse",
+        "u-qc",
+    }
+    assert {item["display_name"] for item in users} == {
+        "演示管理员",
+        "演示业务主管",
+        "演示采购专员",
+        "演示财务",
+        "演示仓库专员",
+        "演示 QC 专员",
+    }
     assert all("avatar_type" in item and "avatar_value" in item for item in users)
 
     unauthorized_response = await api_client.get("/api/v1/auth/users")

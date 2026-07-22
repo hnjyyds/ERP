@@ -8,7 +8,14 @@ def system_roles() -> list[Role]:
 
 
 def system_departments() -> list[Department]:
-    return []
+    return [
+        Department(id="dept-admin", name="管理部", parent_id=None, sort_order=5),
+        Department(id="dept-sales", name="业务部", parent_id=None, sort_order=10),
+        Department(id="dept-purchase", name="采购部", parent_id=None, sort_order=20),
+        Department(id="dept-finance", name="财务部", parent_id=None, sort_order=30),
+        Department(id="dept-warehouse", name="仓储部", parent_id=None, sort_order=40),
+        Department(id="dept-quality", name="品质部", parent_id=None, sort_order=50),
+    ]
 
 
 def system_menus() -> list[MenuItem]:
