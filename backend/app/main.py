@@ -50,6 +50,7 @@ from app.modules.system.dashboard import models as dashboard_models  # noqa: F40
 from app.modules.system.dashboard.migrations import ensure_dashboard_schema
 from app.modules.system.dashboard.seed import seed_dashboard_demo_data
 from app.modules.warehouse.inbound_orders import models as inbound_order_models  # noqa: F401
+from app.modules.warehouse.inbound_orders.migrations import ensure_inbound_order_schema
 from app.modules.warehouse.inbound_plans import models as inbound_plan_models  # noqa: F401
 from app.modules.warehouse.outbound_orders import models as outbound_order_models  # noqa: F401
 from app.modules.warehouse.outbound_plans import models as outbound_plan_models  # noqa: F401
@@ -67,6 +68,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         await connection.run_sync(ensure_port_data_schema)
         await connection.run_sync(ensure_purchase_contract_schema)
         await connection.run_sync(ensure_quality_inspection_schema)
+        await connection.run_sync(ensure_inbound_order_schema)
 
     if settings.seed_demo_data:
         async with SessionLocal() as session:

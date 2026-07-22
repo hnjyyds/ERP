@@ -37,6 +37,7 @@ class InboundOrder(Base):
     status: Mapped[str] = mapped_column(String(40), index=True, default="draft", nullable=False)
     submitted_at: Mapped[date | None] = mapped_column(Date, nullable=True)
     approved_at: Mapped[date | None] = mapped_column(Date, nullable=True)
+    reviewer_id: Mapped[str | None] = mapped_column(String(36), index=True, nullable=True)
     reviewer_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
     owner_user_id: Mapped[str] = mapped_column(String(36), index=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(

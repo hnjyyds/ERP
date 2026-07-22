@@ -39,6 +39,7 @@ class InboundOrderGenerateFromPlan(BaseModel):
 class InboundOrderApprove(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
+    reviewer_id: str | None = Field(default=None, min_length=1, max_length=36)
     reviewer_name: str = Field(min_length=1, max_length=160)
     approved_at: date
 
@@ -82,6 +83,7 @@ class InboundOrderResponse(BaseModel):
     status: str
     submitted_at: date | None
     approved_at: date | None
+    reviewer_id: str | None
     reviewer_name: str | None
     owner_user_id: str
     lines: list[InboundOrderLineResponse]

@@ -46,7 +46,12 @@ async def test_inbound_order_repository_records_inventory_balance_and_ledger(
             remark="正式入库",
         )
         submitted = await repository.submit_order(order.id)
-        approved = await repository.approve_order(order.id, "业务主管", date(2026, 8, 31))
+        approved = await repository.approve_order(
+            order.id,
+            "u-001",
+            "业务主管",
+            date(2026, 8, 31),
+        )
         balance = await repository.increase_balance(
             warehouse_id="wh-ningbo",
             warehouse_name="宁波总仓",
@@ -97,6 +102,7 @@ async def test_inbound_order_repository_records_inventory_balance_and_ledger(
     assert submitted.status == "submitted"
     assert approved is not None
     assert approved.status == "approved"
+    assert approved.reviewer_id == "u-001"
     assert lines[0].quantity == "1000"
     assert balance.available_quantity == "1000"
     assert balance.pending_inspection_quantity == "0"

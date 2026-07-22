@@ -129,11 +129,17 @@ async def test_inbound_order_api_formal_inbound_posts_inventory_and_supplier_rec
     approve_order_response = await api_client.post(
         f"/api/v1/warehouse/inbound-orders/{order['id']}/approve",
         headers=headers,
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-08-30"},
+        json={
+            "reviewer_id": "u-001",
+            "reviewer_name": "演示业务主管",
+            "approved_at": "2026-08-30",
+        },
     )
     assert approve_order_response.status_code == 200
     approved_order = approve_order_response.json()["data"]
     assert approved_order["status"] == "approved"
+    assert approved_order["reviewer_id"] == "u-001"
+    assert approved_order["reviewer_name"] == "演示业务主管"
     assert approved_order["lines"][0]["stock_status"] == "available"
 
     balances_response = await api_client.get(

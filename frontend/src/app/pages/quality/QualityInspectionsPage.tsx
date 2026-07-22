@@ -1,16 +1,16 @@
-import { emptyToNull, formatDate, formatQuantity, nullableText, todayInputValue, type RoutedDetailPageProps } from '../appHelpers'
-type RoutedDetailPageWithCurrentUserProps = RoutedDetailPageProps & { currentUser: any }
-import { Alert, Button, Input, Modal, Skeleton, Table, Tag } from 'antd'
+import { emptyToNull, formatDate, formatQuantity, nullableText, type RoutedDetailPageProps } from '../appHelpers'
+import { Alert, Button, Input, Modal, Select, Skeleton, Table, Tag } from 'antd'
 import { followupSourceTypeOptions } from '../../../shared/formOptions'
 import { ArrowLeft, LayoutDashboard, Plus, Search, ShieldCheck , FilePenLine} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { createQualityInspection, getQualityInboundEligibility, listPurchaseContracts, listQualityInspections, updateQualityInspection, type QualityInspection, type QualityInspectionInboundEligibility, type QualityInspectionPayload } from '../../../api'
+import { createQualityInspection, getQualityInboundEligibility, listAssignableUsers, listPurchaseContracts, listQualityInspections, updateQualityInspection, type AssignableUser, type CurrentUser, type QualityInspection, type QualityInspectionInboundEligibility, type QualityInspectionPayload } from '../../../api'
 import { qualityInspectionPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { qualityResultOptions, qualityIssueSeverityOptions, qualityIssueStatusOptions } from '../../../shared/formOptions'
 
+type RoutedDetailPageWithCurrentUserProps = RoutedDetailPageProps & { currentUser: CurrentUser }
 type QualityInspectionAssigneeFilter = 'all' | 'mine'
 
 
@@ -51,14 +51,18 @@ function followupSourceTypeLabel(value: string | null): string {
   return followupSourceTypeOptions.find((item) => item.value === value)?.label ?? value
 }
 
-function initialQualityInspectionForm(): QualityInspectionFormState {
+function assignableUserOptionLabel(user: AssignableUser): string {
+  return [user.display_name, user.username, user.department_name].filter(Boolean).join(' / ')
+}
+
+function initialQualityInspectionForm(currentUser: CurrentUser): QualityInspectionFormState {
   return {
     code: `QC-${Date.now().toString().slice(-6)}`,
     purchase_contract_id: '',
     inspected_at: '2026-08-19',
     result: 'passed',
-    inspector_id: 'u-qc-001',
-    inspector_name: 'QC 张工',
+    inspector_id: currentUser.id,
+    inspector_name: currentUser.display_name,
     issue_summary: '',
     attachment_group_id: 'attach-qc-demo',
     purchase_contract_line_id: '',
@@ -192,9 +196,12 @@ export function QualityInspectionsPage({
   const [contractFilter, setContractFilter] = useState('')
   const [assigneeFilter, setAssigneeFilter] = useState<QualityInspectionAssigneeFilter>('all')
   const [eligibility, setEligibility] = useState<QualityInspectionInboundEligibility | null>(null)
-  const [form, setForm] = useState<QualityInspectionFormState>(() => initialQualityInspectionForm())
+  const [form, setForm] = useState<QualityInspectionFormState>(() => initialQualityInspectionForm(currentUser))
+  const [assignableUsers, setAssignableUsers] = useState<AssignableUser[]>([])
   const [inspectionModalOpen, setInspectionModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [loadingAssignableUsers, setLoadingAssignableUsers] = useState(false)
+  const [assignableUsersLoaded, setAssignableUsersLoaded] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
@@ -220,6 +227,11 @@ export function QualityInspectionsPage({
   useEffect(() => {
     void loadQualityInspections()
   }, [])
+
+  useEffect(() => {
+    if (!inspectionModalOpen || assignableUsersLoaded || loadingAssignableUsers) return
+    void loadAssignableUsersForInspection()
+  }, [inspectionModalOpen, assignableUsersLoaded, loadingAssignableUsers])
 
   useEffect(() => {
     if (detailId && selectedInspection) {
@@ -262,6 +274,28 @@ export function QualityInspectionsPage({
     }
   }
 
+  async function loadAssignableUsersForInspection() {
+    setLoadingAssignableUsers(true)
+    try {
+      const result = await listAssignableUsers()
+      setAssignableUsers(result.users)
+    } catch (caught) {
+      showError(caught, '查验人员列表加载失败')
+    } finally {
+      setAssignableUsersLoaded(true)
+      setLoadingAssignableUsers(false)
+    }
+  }
+
+  function applyInspector(userId: string) {
+    const user = assignableUsers.find((item) => item.id === userId)
+    setForm((current) => ({
+      ...current,
+      inspector_id: user?.id ?? '',
+      inspector_name: user?.display_name ?? '',
+    }))
+  }
+
   async function refreshQualityInboundEligibility(purchaseContractId: string) {
     if (!purchaseContractId.trim()) {
       setEligibility(null)
@@ -278,7 +312,8 @@ export function QualityInspectionsPage({
 
   function startNewInspection() {
     setEditingInspectionId(null)
-    setForm(initialQualityInspectionForm())
+    setForm(initialQualityInspectionForm(currentUser))
+    if (assignableUsers.length === 0) setAssignableUsersLoaded(false)
     setMessage('')
     setError('')
     setInspectionModalOpen(true)
@@ -302,11 +337,16 @@ export function QualityInspectionsPage({
     if (!selectedInspection) return
     setEditingInspectionId(selectedInspection.id)
     setForm(qualityInspectionToForm(selectedInspection))
+    if (assignableUsers.length === 0) setAssignableUsersLoaded(false)
     setInspectionModalOpen(true)
   }
 
   async function saveQualityInspection(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (!form.inspector_id || !form.inspector_name.trim()) {
+      showError(new Error('请选择查验人'))
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
@@ -554,14 +594,39 @@ export function QualityInspectionsPage({
               </label>
             </div>
             <div className="form-pair two">
-              <label htmlFor="quality-inspector-name">
+              <label htmlFor="quality-inspector-id">
                 查验人
-                <Input
-                  id="quality-inspector-name"
-                  required
-                  value={form.inspector_name}
-                  onChange={(event) => setForm({ ...form, inspector_name: event.target.value })}
-                />
+                <Select
+                  id="quality-inspector-id"
+                  aria-label="查验人"
+                  showSearch
+                  loading={loadingAssignableUsers}
+                  value={form.inspector_id || undefined}
+                  placeholder={loadingAssignableUsers ? '正在加载员工' : '请选择系统员工'}
+                  optionFilterProp="label"
+                  notFoundContent={loadingAssignableUsers ? '加载人员中' : '暂无可选员工'}
+                  onChange={applyInspector}
+                >
+                  {form.inspector_id &&
+                  !assignableUsers.some((user) => user.id === form.inspector_id) ? (
+                    <Select.Option
+                      key={form.inspector_id}
+                      value={form.inspector_id}
+                      label={`${form.inspector_name} / 历史记录`}
+                      disabled
+                    >
+                      {form.inspector_name} / 历史记录
+                    </Select.Option>
+                  ) : null}
+                  {assignableUsers.map((user) => {
+                    const label = assignableUserOptionLabel(user)
+                    return (
+                      <Select.Option key={user.id} value={user.id} label={label}>
+                        {label}
+                      </Select.Option>
+                    )
+                  })}
+                </Select>
               </label>
               <label htmlFor="quality-attachment-group">
                 附件组

@@ -1,8 +1,8 @@
-import { Alert, Button, Descriptions, Input, Modal, Skeleton, Table, Tag } from 'antd'
+import { Alert, Button, Descriptions, Input, Modal, Select, Skeleton, Table, Tag } from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search, Warehouse , CheckCircle2, PackagePlus, Send} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { approveInboundOrder, generateInboundOrderFromPlan, listInboundOrders, submitInboundOrder, type InboundOrder, type InboundOrderApprovePayload, type InboundOrderGeneratePayload , InboundPlan, InventoryBalance, InventoryLedger, listInboundPlans, listInventoryBalances, listInventoryLedgers} from '../../../api'
+import { approveInboundOrder, generateInboundOrderFromPlan, listAssignableUsers, listInboundOrders, submitInboundOrder, type AssignableUser, type InboundOrder, type InboundOrderApprovePayload, type InboundOrderGeneratePayload , InboundPlan, InventoryBalance, InventoryLedger, listInboundPlans, listInventoryBalances, listInventoryLedgers} from '../../../api'
 import { warehouseInboundOrderPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
@@ -27,6 +27,7 @@ type InboundOrderFormState = {
 }
 
 type InboundOrderApprovalFormState = {
+  reviewer_id: string
   reviewer_name: string
   approved_at: string
 }
@@ -48,9 +49,14 @@ function initialInboundOrderForm(): InboundOrderFormState {
 
 function initialInboundOrderApprovalForm(): InboundOrderApprovalFormState {
   return {
-    reviewer_name: '演示业务主管',
+    reviewer_id: '',
+    reviewer_name: '',
     approved_at: '2026-08-30',
   }
+}
+
+function assignableUserOptionLabel(user: AssignableUser): string {
+  return [user.display_name, user.username, user.department_name].filter(Boolean).join(' / ')
 }
 
 function inboundOrderFormForPlan(
@@ -102,6 +108,7 @@ function inboundOrderApprovePayload(
   form: InboundOrderApprovalFormState,
 ): InboundOrderApprovePayload {
   return {
+    reviewer_id: form.reviewer_id,
     reviewer_name: form.reviewer_name.trim(),
     approved_at: form.approved_at,
   }
@@ -144,8 +151,11 @@ export function InboundOrdersPage({ detailId, onNavigate }: RoutedDetailPageProp
   const [approvalForm, setApprovalForm] = useState<InboundOrderApprovalFormState>(() =>
     initialInboundOrderApprovalForm(),
   )
+  const [assignableUsers, setAssignableUsers] = useState<AssignableUser[]>([])
   const [inboundOrderModalOpen, setInboundOrderModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [loadingAssignableUsers, setLoadingAssignableUsers] = useState(false)
+  const [assignableUsersLoaded, setAssignableUsersLoaded] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
@@ -163,10 +173,16 @@ export function InboundOrdersPage({ detailId, onNavigate }: RoutedDetailPageProp
   }, [])
 
   useEffect(() => {
+    if (!inboundOrderModalOpen || assignableUsersLoaded || loadingAssignableUsers) return
+    void loadAssignableUsersForApproval()
+  }, [inboundOrderModalOpen, assignableUsersLoaded, loadingAssignableUsers])
+
+  useEffect(() => {
     if (!selectedOrder) return
     setForm(inboundOrderToForm(selectedOrder))
     setApprovalForm({
-      reviewer_name: selectedOrder.reviewer_name ?? '演示业务主管',
+      reviewer_id: selectedOrder.reviewer_id ?? '',
+      reviewer_name: selectedOrder.reviewer_name ?? '',
       approved_at: selectedOrder.approved_at ?? selectedOrder.inbound_at,
     })
   }, [selectedOrder?.id, selectedOrder?.status])
@@ -229,6 +245,28 @@ export function InboundOrdersPage({ detailId, onNavigate }: RoutedDetailPageProp
       planById.set(plan.id, plan)
     }
     return [...planById.values()]
+  }
+
+  async function loadAssignableUsersForApproval() {
+    setLoadingAssignableUsers(true)
+    try {
+      const result = await listAssignableUsers()
+      setAssignableUsers(result.users)
+    } catch (caught) {
+      showError(caught, '审批人员列表加载失败')
+    } finally {
+      setAssignableUsersLoaded(true)
+      setLoadingAssignableUsers(false)
+    }
+  }
+
+  function applyReviewer(userId: string) {
+    const user = assignableUsers.find((item) => item.id === userId)
+    setApprovalForm((current) => ({
+      ...current,
+      reviewer_id: user?.id ?? '',
+      reviewer_name: user?.display_name ?? '',
+    }))
   }
 
   async function loadInventorySnapshotForOrder(
@@ -331,6 +369,10 @@ export function InboundOrdersPage({ detailId, onNavigate }: RoutedDetailPageProp
     event.preventDefault()
     if (!selectedOrder) return
     if (selectedOrder.status !== 'submitted') return
+    if (!approvalForm.reviewer_id || !approvalForm.reviewer_name.trim()) {
+      showError(new Error('请选择审批人'))
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
@@ -640,14 +682,43 @@ export function InboundOrdersPage({ detailId, onNavigate }: RoutedDetailPageProp
             <div className="form-pair two">
               <label htmlFor="inbound-order-reviewer">
                 审批人
-                <Input
+                <Select
                   id="inbound-order-reviewer"
-                  required
-                  value={approvalForm.reviewer_name}
-                  onChange={(event) =>
-                    setApprovalForm({ ...approvalForm, reviewer_name: event.target.value })
+                  aria-label="审批人"
+                  showSearch
+                  loading={loadingAssignableUsers}
+                  value={approvalForm.reviewer_id || undefined}
+                  placeholder={
+                    loadingAssignableUsers
+                      ? '正在加载员工'
+                      : approvalForm.reviewer_name
+                        ? `${approvalForm.reviewer_name} / 历史记录，请重新选择`
+                        : '请选择系统员工'
                   }
-                />
+                  optionFilterProp="label"
+                  notFoundContent={loadingAssignableUsers ? '加载人员中' : '暂无可选员工'}
+                  onChange={applyReviewer}
+                >
+                  {approvalForm.reviewer_id &&
+                  !assignableUsers.some((user) => user.id === approvalForm.reviewer_id) ? (
+                    <Select.Option
+                      key={approvalForm.reviewer_id}
+                      value={approvalForm.reviewer_id}
+                      label={`${approvalForm.reviewer_name} / 历史记录`}
+                      disabled
+                    >
+                      {approvalForm.reviewer_name} / 历史记录
+                    </Select.Option>
+                  ) : null}
+                  {assignableUsers.map((user) => {
+                    const label = assignableUserOptionLabel(user)
+                    return (
+                      <Select.Option key={user.id} value={user.id} label={label}>
+                        {label}
+                      </Select.Option>
+                    )
+                  })}
+                </Select>
               </label>
               <label htmlFor="inbound-order-approved-at">
                 审批日期
@@ -839,5 +910,4 @@ export function InboundOrdersPage({ detailId, onNavigate }: RoutedDetailPageProp
     </section>
   )
 }
-
 

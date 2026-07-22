@@ -2846,6 +2846,7 @@ export interface InboundOrder {
   status: string
   submitted_at: string | null
   approved_at: string | null
+  reviewer_id: string | null
   reviewer_name: string | null
   owner_user_id: string
   lines: InboundOrderLine[]
@@ -2880,6 +2881,7 @@ export interface InboundOrderGeneratePayload {
 }
 
 export interface InboundOrderApprovePayload {
+  reviewer_id?: string | null
   reviewer_name: string
   approved_at: string
 }

@@ -161,6 +161,7 @@ class InboundOrderService:
         async with UnitOfWork(self._repository.session):
             approved = await self._repository.approve_order(
                 order.id,
+                payload.reviewer_id,
                 payload.reviewer_name,
                 payload.approved_at,
             )
@@ -439,6 +440,7 @@ class InboundOrderService:
             status=order.status,
             submitted_at=order.submitted_at,
             approved_at=order.approved_at,
+            reviewer_id=order.reviewer_id,
             reviewer_name=order.reviewer_name,
             owner_user_id=order.owner_user_id,
             lines=[self._line_response(line) for line in lines],

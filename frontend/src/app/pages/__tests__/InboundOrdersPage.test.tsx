@@ -1,7 +1,61 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+
+vi.mock('../../../api', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../api')>()
+  return {
+    ...actual,
+    approveInboundOrder: vi.fn().mockRejectedValue(new Error('stop after payload capture')),
+    listAssignableUsers: vi.fn().mockResolvedValue({
+      users: [
+        {
+          id: 'user-manager',
+          username: 'business_manager',
+          display_name: '演示业务主管',
+          department_name: '业务部',
+          avatar_type: 'preset',
+          avatar_value: 'blue-orbit',
+        },
+      ],
+    }),
+    listInboundOrders: vi.fn().mockResolvedValue({
+      items: [
+        {
+          id: 'inbound-order-1',
+          code: 'IO-TEST-001',
+          plan_id: 'inbound-plan-1',
+          purchase_contract_id: 'purchase-contract-1',
+          purchase_contract_no: 'PC-TEST-001',
+          supplier_id: 'supplier-1',
+          supplier_name: '测试供应商',
+          inbound_type: 'purchase',
+          inbound_mode: 'pending_inspection',
+          inbound_at: '2026-08-30',
+          warehouse_id: 'wh-ningbo',
+          warehouse_name: '宁波总仓',
+          location_id: 'loc-a-01',
+          location_name: 'A-01',
+          operator_name: '仓库主管',
+          status: 'submitted',
+          submitted_at: '2026-08-30',
+          approved_at: null,
+          reviewer_id: null,
+          reviewer_name: null,
+          owner_user_id: 'user-warehouse',
+          lines: [],
+        },
+      ],
+      total: 1,
+    }),
+    listInboundPlans: vi.fn().mockResolvedValue({ items: [], total: 0 }),
+    listInventoryBalances: vi.fn().mockResolvedValue({ items: [], total: 0 }),
+    listInventoryLedgers: vi.fn().mockResolvedValue({ items: [], total: 0 }),
+  }
+})
+
 import { InboundOrdersPage } from '../warehouse/InboundOrdersPage'
+import { approveInboundOrder, listAssignableUsers } from '../../../api'
 
 describe('InboundOrdersPage', () => {
   const onNavigate = vi.fn()
@@ -39,6 +93,35 @@ describe('InboundOrdersPage', () => {
     const openButton = screen.getByText('生成/审批入库单')
     await user.click(openButton)
     expect(screen.getByText('入库单生成和审批')).toBeTruthy()
+  })
+
+  it('selects an active employee and submits the linked reviewer id and name', async () => {
+    const user = userEvent.setup()
+    render(<InboundOrdersPage detailId={undefined} onNavigate={onNavigate} />)
+
+    await waitFor(() => expect(screen.getByText('IO-TEST-001')).toBeTruthy())
+    await user.click(screen.getByText('生成/审批入库单'))
+    await waitFor(() => expect(listAssignableUsers).toHaveBeenCalledTimes(1))
+
+    const reviewerSelect = screen.getByRole('combobox', { name: '审批人' })
+    expect(screen.queryByRole('textbox', { name: '审批人' })).toBeNull()
+    await user.click(reviewerSelect)
+    await user.click(await screen.findByText('演示业务主管 / business_manager / 业务部'))
+
+    const approveButton = screen.getByRole('button', { name: '审批入库' })
+    const form = approveButton.closest('form')
+    expect(form).toBeTruthy()
+    fireEvent.submit(form!)
+
+    await waitFor(() => {
+      expect(approveInboundOrder).toHaveBeenCalledWith(
+        'inbound-order-1',
+        expect.objectContaining({
+          reviewer_id: 'user-manager',
+          reviewer_name: '演示业务主管',
+        }),
+      )
+    })
   })
 
   it('renders without detail view when no detailId', () => {

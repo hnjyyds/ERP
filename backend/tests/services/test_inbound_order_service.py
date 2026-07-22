@@ -258,7 +258,11 @@ async def test_inbound_order_service_formal_inbound_posts_inventory_and_followup
         approved = await service.approve_order(
             current_user=_warehouse_user(),
             order_id=order.id,
-            payload=InboundOrderApprove(reviewer_name="业务主管", approved_at=date(2026, 8, 30)),
+            payload=InboundOrderApprove(
+                reviewer_id="u-001",
+                reviewer_name="业务主管",
+                approved_at=date(2026, 8, 30),
+            ),
         )
         balances = await service.list_inventory_balances(current_user=_warehouse_user(), q="BAG-40")
         ledgers = await service.list_inventory_ledgers(
@@ -276,6 +280,8 @@ async def test_inbound_order_service_formal_inbound_posts_inventory_and_followup
         )
 
     assert approved.status == "approved"
+    assert approved.reviewer_id == "u-001"
+    assert approved.reviewer_name == "业务主管"
     assert balances.items[0].available_quantity == "1000"
     assert balances.items[0].pending_inspection_quantity == "0"
     assert ledgers.items[0].quantity == "1000"
