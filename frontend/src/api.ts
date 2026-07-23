@@ -170,6 +170,38 @@ export interface CompanyInfo {
 
 export type CompanyInfoUpdatePayload = Partial<Omit<CompanyInfo, 'updated_at'>>
 
+export interface McpResourceInfo {
+  key: string
+  label: string
+  tools: string[]
+}
+
+export interface McpSettings {
+  enabled: boolean
+  server_name: string
+  transport: 'streamable_http'
+  endpoint_path: string
+  token_parameter: string
+  token_prefix_required: boolean
+  credential_available: boolean
+  credential_issued_at: string | null
+  credential_expires_at: string | null
+  tool_count: number
+  resources: McpResourceInfo[]
+  updated_by: string | null
+  updated_at: string | null
+}
+
+export interface McpSettingsUpdatePayload {
+  enabled: boolean
+}
+
+export interface McpCredential {
+  access_token: string
+  token_type: 'Bearer'
+  expires_at: string
+}
+
 export interface AuthSession {
   access_token: string
   token_type: string
@@ -3645,6 +3677,23 @@ export async function login(username: string, password: string): Promise<AuthSes
 
 export function getCurrentSession(): Promise<{ user: CurrentUser; menus: MenuItem[] }> {
   return request<{ user: CurrentUser; menus: MenuItem[] }>('/auth/me')
+}
+
+export function getMcpSettings(): Promise<McpSettings> {
+  return request<McpSettings>('/system/mcp')
+}
+
+export function updateMcpSettings(payload: McpSettingsUpdatePayload): Promise<McpSettings> {
+  return request<McpSettings>('/system/mcp', {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function createMcpCredential(): Promise<McpCredential> {
+  return request<McpCredential>('/system/mcp/credentials', {
+    method: 'POST',
+  })
 }
 
 export function updateCurrentUserAvatar(

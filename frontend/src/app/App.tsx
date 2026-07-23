@@ -23,6 +23,7 @@ import {
   dashboardPath,
   detailRootPath,
   organizationUsersPath,
+  mcpSettingsPath,
   productPath,
   customerPath,
   supplierPath,
@@ -290,7 +291,7 @@ const sidebarNavGroups: Array<{
     id: 'system',
     label: '系统设置',
     icon: Settings,
-    paths: [organizationUsersPath],
+    paths: [organizationUsersPath, mcpSettingsPath],
   },
   {
     id: 'legacyPurchase',

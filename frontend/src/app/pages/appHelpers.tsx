@@ -16,6 +16,7 @@ import {
   followupPath,
   isFinancePath,
   organizationUsersPath,
+  mcpSettingsPath,
   parseFinanceView,
   partnerPath,
   productPath,
@@ -39,16 +40,29 @@ import {
 export const superAdminPermission = 'system:super_admin'
 
 export const workflowPageTitleByPath: Record<string, { 'zh-CN': string; 'en-US': string }> = {
+  [mcpSettingsPath]: { 'zh-CN': 'MCP 与 AI 数据接入', 'en-US': 'MCP and AI data access' },
   [exportContractPath]: { 'zh-CN': '订单 Workflow', 'en-US': 'Order workflow' },
-  [purchaseContractPath]: { 'zh-CN': '采购合同和工厂履约', 'en-US': 'Purchase contracts and factory fulfillment' },
+  [purchaseContractPath]: {
+    'zh-CN': '采购合同和工厂履约',
+    'en-US': 'Purchase contracts and factory fulfillment',
+  },
   [qualityInspectionPath]: { 'zh-CN': 'QC 任务中心', 'en-US': 'QC task center' },
   [followupPath]: { 'zh-CN': '跟单任务中心', 'en-US': 'Follow-up task center' },
   [supplierPath]: { 'zh-CN': '工厂资料和验货地址', 'en-US': 'Factories and inspection addresses' },
-  [productPath]: { 'zh-CN': '产品资料、价格和质量要求', 'en-US': 'Products, prices, and quality requirements' },
+  [productPath]: {
+    'zh-CN': '产品资料、价格和质量要求',
+    'en-US': 'Products, prices, and quality requirements',
+  },
   [customerPath]: { 'zh-CN': '客户资料和订单要求', 'en-US': 'Customers and order requirements' },
-  [warehouseInboundOrderPath]: { 'zh-CN': '入仓和库存确认', 'en-US': 'Inbound and inventory confirmation' },
+  [warehouseInboundOrderPath]: {
+    'zh-CN': '入仓和库存确认',
+    'en-US': 'Inbound and inventory confirmation',
+  },
   [financePath]: { 'zh-CN': '财务摘要和订单利润', 'en-US': 'Finance summary and order profit' },
-  [reportingPath]: { 'zh-CN': '老板看板和经营分析', 'en-US': 'Executive board and business analysis' },
+  [reportingPath]: {
+    'zh-CN': '老板看板和经营分析',
+    'en-US': 'Executive board and business analysis',
+  },
 }
 
 export function canCreateAnnouncement(user: CurrentUser) {
@@ -201,7 +215,11 @@ export function partnerTypeLabel(value: string): string {
 }
 
 // ── Page title / tag helpers (used by App shell) ─────────────────────
-export function workflowPageTitle(path: string, fallback: string, settings: AppSettings = runtimeSettings): string {
+export function workflowPageTitle(
+  path: string,
+  fallback: string,
+  settings: AppSettings = runtimeSettings,
+): string {
   return workflowPageTitleByPath[path]?.[settings.language] ?? fallback
 }
 
@@ -242,11 +260,20 @@ export function pageTitle(
 
 export function statusTag(value: string) {
   const color = value === 'done' || value === 'completed' ? 'green' : 'gold'
-  return <Tag color={color}>{value === 'completed' || value === 'done' ? '已完成' : value === 'pending' ? '待处理' : value}</Tag>
+  return (
+    <Tag color={color}>
+      {value === 'completed' || value === 'done'
+        ? '已完成'
+        : value === 'pending'
+          ? '待处理'
+          : value}
+    </Tag>
+  )
 }
 
 export function severityTag(value: string) {
-  const color = value === 'high' || value === 'urgent' ? 'red' : value === 'warning' ? 'gold' : 'blue'
+  const color =
+    value === 'high' || value === 'urgent' ? 'red' : value === 'warning' ? 'gold' : 'blue'
   return <Tag color={color}>{value}</Tag>
 }
 
@@ -276,4 +303,3 @@ export const lockedWorkflowPaths = new Set([
   warehouseOutboundPlanPath,
   warehouseOutboundOrderPath,
 ])
-
