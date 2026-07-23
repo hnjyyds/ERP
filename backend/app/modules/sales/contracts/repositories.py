@@ -235,6 +235,24 @@ class ExportContractRepository:
         )
         await self.session.flush()
 
+    async def delete_contract(self, contract_id: str) -> ExportContractRow | None:
+        contract = await self.session.scalar(
+            select(ExportContract).where(ExportContract.id == contract_id)
+        )
+        if contract is None:
+            return None
+        row = self._map_contract(contract)
+        for model in (
+            ExportContractLine,
+            ExportContractSignature,
+            ExportContractAdvancePayment,
+            ExportContractEvent,
+        ):
+            await self.session.execute(delete(model).where(model.contract_id == contract_id))
+        await self.session.delete(contract)
+        await self.session.flush()
+        return row
+
     async def refresh_statistics(self, contract_id: str) -> ExportContractRow | None:
         contract = await self.session.scalar(
             select(ExportContract).where(ExportContract.id == contract_id)

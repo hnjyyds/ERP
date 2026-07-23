@@ -235,9 +235,11 @@ class ProductService:
         *,
         current_user: CurrentUserResponse,
         q: str | None,
+        limit: int = 50,
+        offset: int = 0,
     ) -> ProductListResponse:
         self._require(current_user, "masterdata:product:view")
-        products, total = await self._repository.list_products(q=q)
+        products, total = await self._repository.list_products(q=q, limit=limit, offset=offset)
         items = [
             self._product_response(product, await self._repository.list_accessories(product.id))
             for product in products

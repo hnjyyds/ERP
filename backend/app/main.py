@@ -4,12 +4,16 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy.exc import OperationalError
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.api.error_handlers import register_error_handlers
 from app.api.v1.router import api_router
 from app.core.config import get_settings
 from app.db.base import Base
 from app.db.session import SessionLocal, engine
+from app.mcp.availability import McpAvailabilityMiddleware
+from app.mcp.server import create_authenticated_mcp_app, mcp_http_app
 from app.modules.finance.fee_payments import models as finance_fee_payment_models  # noqa: F401
 from app.modules.finance.misc_fees import models as finance_misc_fee_models  # noqa: F401
 from app.modules.finance.payments import models as finance_payment_models  # noqa: F401
@@ -49,6 +53,8 @@ from app.modules.system.company.seed import seed_company_default
 from app.modules.system.dashboard import models as dashboard_models  # noqa: F401
 from app.modules.system.dashboard.migrations import ensure_dashboard_schema
 from app.modules.system.dashboard.seed import seed_dashboard_demo_data
+from app.modules.system.mcp_settings import models as mcp_settings_models  # noqa: F401
+from app.modules.system.mcp_settings.migrations import ensure_mcp_settings_schema
 from app.modules.warehouse.inbound_orders import models as inbound_order_models  # noqa: F401
 from app.modules.warehouse.inbound_orders.migrations import ensure_inbound_order_schema
 from app.modules.warehouse.inbound_plans import models as inbound_plan_models  # noqa: F401
@@ -56,19 +62,35 @@ from app.modules.warehouse.outbound_orders import models as outbound_order_model
 from app.modules.warehouse.outbound_plans import models as outbound_plan_models  # noqa: F401
 
 
+async def initialize_database_schema() -> None:
+    """Initialize tables safely when multiple API replicas start together."""
+    for attempt in range(3):
+        try:
+            async with engine.begin() as connection:
+                await connection.run_sync(Base.metadata.create_all)
+                await connection.run_sync(ensure_auth_schema)
+                await connection.run_sync(ensure_dashboard_schema)
+                await connection.run_sync(ensure_product_schema)
+                await connection.run_sync(ensure_company_schema)
+                await connection.run_sync(ensure_port_data_schema)
+                await connection.run_sync(ensure_purchase_contract_schema)
+                await connection.run_sync(ensure_quality_inspection_schema)
+                await connection.run_sync(ensure_inbound_order_schema)
+                await connection.run_sync(ensure_mcp_settings_schema)
+            return
+        except OperationalError as exc:
+            message = str(exc).lower()
+            concurrent_create = (
+                "already exists" in message or "duplicate column name" in message
+            )
+            if not concurrent_create or attempt == 2:
+                raise
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
-    async with engine.begin() as connection:
-        await connection.run_sync(Base.metadata.create_all)
-        await connection.run_sync(ensure_auth_schema)
-        await connection.run_sync(ensure_dashboard_schema)
-        await connection.run_sync(ensure_product_schema)
-        await connection.run_sync(ensure_company_schema)
-        await connection.run_sync(ensure_port_data_schema)
-        await connection.run_sync(ensure_purchase_contract_schema)
-        await connection.run_sync(ensure_quality_inspection_schema)
-        await connection.run_sync(ensure_inbound_order_schema)
+    await initialize_database_schema()
 
     if settings.seed_demo_data:
         async with SessionLocal() as session:
@@ -76,10 +98,14 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             await seed_dashboard_demo_data(session, user_id=settings.demo_user_id)
             await seed_company_default(session)
 
-    yield
+    async with mcp_http_app.router.lifespan_context(mcp_http_app):
+        yield
 
 
-def create_app() -> FastAPI:
+def create_app(
+    *,
+    mcp_session_factory: async_sessionmaker[AsyncSession] = SessionLocal,
+) -> FastAPI:
     settings = get_settings()
     app = FastAPI(title=settings.app_name, lifespan=lifespan)
     register_error_handlers(app)
@@ -90,6 +116,15 @@ def create_app() -> FastAPI:
         settings.upload_url_prefix,
         StaticFiles(directory=str(upload_dir)),
         name="uploads",
+    )
+    # Keep this catch-all mount last so FastAPI API/static routes retain priority.
+    app.mount(
+        "/",
+        McpAvailabilityMiddleware(
+            create_authenticated_mcp_app(mcp_session_factory),
+            session_factory=mcp_session_factory,
+        ),
+        name="mcp",
     )
     return app
 

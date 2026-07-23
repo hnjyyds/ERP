@@ -39,6 +39,15 @@ def system_menus() -> list[MenuItem]:
             is_active=True,
         ),
         MenuItem(
+            id="menu-mcp-settings",
+            label="MCP 接入",
+            path="/system/mcp",
+            icon="settings",
+            required_permission="system:super_admin",
+            sort_order=93,
+            is_active=True,
+        ),
+        MenuItem(
             id="menu-products",
             label="产品资料",
             path="/masterdata/products",

@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     seed_demo_data: bool = False
     demo_user_id: str = "u-001"
     auth_secret_key: str = "dev-only-change-me"
+    mcp_credential_ttl_seconds: int = 30 * 24 * 60 * 60
     # 上传文件落地目录与对外访问前缀（本地对象存储；生产可挂载到对象存储卷）。
     upload_dir: str = "./.data/uploads"
     upload_url_prefix: str = "/uploads"

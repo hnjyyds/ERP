@@ -194,6 +194,8 @@ class CustomerService:
         q: str | None,
         country: str | None,
         credit_grade: str | None,
+        limit: int = 50,
+        offset: int = 0,
     ) -> CustomerListResponse:
         self._require(current_user, "masterdata:customer:view")
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
@@ -204,6 +206,8 @@ class CustomerService:
             country=country,
             credit_grade=credit_grade,
             owner_user_ids=owner_user_ids,
+            limit=limit,
+            offset=offset,
         )
         items = [
             await self._customer_response(

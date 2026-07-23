@@ -4,6 +4,7 @@ from decimal import Decimal
 from io import StringIO
 
 from app.db.uow import UnitOfWork
+from app.modules.sales.contracts.references import ExportContractReferenceRepository
 from app.modules.sales.contracts.repositories import (
     ExportContractAdvancePaymentRow,
     ExportContractLineRow,
@@ -46,9 +47,11 @@ class ExportContractService:
         repository: ExportContractRepository,
         *,
         data_scope_resolver: DataScopeResolver,
+        reference_repository: ExportContractReferenceRepository,
     ) -> None:
         self._repository = repository
         self._data_scope_resolver = data_scope_resolver
+        self._reference_repository = reference_repository
 
     async def create_contract(
         self,
@@ -118,6 +121,29 @@ class ExportContractService:
                 raise ExportContractNotFoundError
         return await self._contract_response(updated)
 
+    async def delete_contract(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        contract_id: str,
+    ) -> ExportContractResponse:
+        self._require(current_user, "sales:contract:edit")
+        contract = await self._get_accessible_contract(
+            current_user=current_user,
+            contract_id=contract_id,
+        )
+        if contract.approval_status != "draft":
+            raise ValueError("只有草稿合同可以删除")
+        references = await self._reference_repository.get_state(contract.id)
+        if contract.source_quotation_id is not None or references.has_any:
+            raise ValueError("合同已被其他业务单据引用，不能删除")
+        response = await self._contract_response(contract)
+        async with UnitOfWork(self._repository.session):
+            deleted = await self._repository.delete_contract(contract.id)
+            if deleted is None:
+                raise ExportContractNotFoundError
+        return response
+
     async def list_contracts(
         self,
         *,
@@ -125,6 +151,8 @@ class ExportContractService:
         q: str | None,
         approval_status: str | None,
         customer_id: str | None,
+        limit: int = 50,
+        offset: int = 0,
     ) -> ExportContractListResponse:
         self._require(current_user, "sales:contract:view")
         if approval_status is not None:
@@ -137,6 +165,8 @@ class ExportContractService:
             approval_status=approval_status,
             customer_id=customer_id,
             owner_user_ids=owner_user_ids,
+            limit=limit,
+            offset=offset,
         )
         return ExportContractListResponse(
             items=[await self._contract_response(contract) for contract in contracts],

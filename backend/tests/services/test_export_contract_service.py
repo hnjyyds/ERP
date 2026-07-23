@@ -1,8 +1,12 @@
 from datetime import date
+from decimal import Decimal
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from app.modules.finance.receipts.models import BankReceipt, ReceiptAllocation
+from app.modules.purchase.contracts.models import PurchaseContract, PurchaseContractLine
+from app.modules.sales.contracts.references import ExportContractReferenceRepository
 from app.modules.sales.contracts.repositories import ExportContractRepository
 from app.modules.sales.contracts.schemas import (
     ExportContractAdvancePaymentCreate,
@@ -11,7 +15,10 @@ from app.modules.sales.contracts.schemas import (
     ExportContractLineCreate,
     ExportContractSignatureCreate,
 )
-from app.modules.sales.contracts.services import ExportContractService
+from app.modules.sales.contracts.services import (
+    ExportContractNotFoundError,
+    ExportContractService,
+)
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
@@ -21,6 +28,7 @@ def _make_service(session: AsyncSession) -> ExportContractService:
     return ExportContractService(
         ExportContractRepository(session),
         data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+        reference_repository=ExportContractReferenceRepository(session),
     )
 
 
@@ -55,8 +63,8 @@ def _contract_payload(code: str = "EC-SVC-001") -> ExportContractCreate:
         trade_term="FOB Ningbo",
         planned_ship_date=date(2026, 8, 10),
         payment_terms="30% T/T in advance",
-        source_quotation_id="quotation-a",
-        source_quotation_no="QT-SVC-001",
+        source_quotation_id=None,
+        source_quotation_no=None,
         remarks="出口合同",
         lines=[
             ExportContractLineCreate(
@@ -185,6 +193,184 @@ async def test_export_contract_service_rejects_approval_before_submit(
                     approved_at=date(2026, 7, 6),
                 ),
             )
+
+
+async def test_export_contract_service_only_deletes_draft_contracts(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        service = _make_service(session)
+        current_user = _user_with_permissions(
+            ["sales:contract:edit", "sales:contract:view"],
+            user_id="u-001",
+        )
+        draft = await service.create_contract(
+            current_user=current_user,
+            payload=_contract_payload("EC-SVC-DELETE"),
+        )
+        deleted = await service.delete_contract(
+            current_user=current_user,
+            contract_id=draft.id,
+        )
+
+        assert deleted.id == draft.id
+        with pytest.raises(ExportContractNotFoundError):
+            await service.get_contract(current_user=current_user, contract_id=draft.id)
+
+        submitted = await service.create_contract(
+            current_user=current_user,
+            payload=_contract_payload("EC-SVC-KEEP"),
+        )
+        await service.submit_contract(
+            current_user=current_user,
+            contract_id=submitted.id,
+        )
+        with pytest.raises(ValueError, match="只有草稿合同可以删除"):
+            await service.delete_contract(
+                current_user=current_user,
+                contract_id=submitted.id,
+            )
+
+
+async def test_export_contract_service_rejects_deleting_quotation_generated_draft(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        service = _make_service(session)
+        current_user = _user_with_permissions(
+            ["sales:contract:edit", "sales:contract:view"],
+            user_id="u-001",
+        )
+        generated = await service.create_contract(
+            current_user=current_user,
+            payload=_contract_payload("EC-SVC-QUOTATION").model_copy(
+                update={
+                    "source_quotation_id": "quotation-a",
+                    "source_quotation_no": "QT-SVC-001",
+                }
+            ),
+        )
+
+        with pytest.raises(ValueError, match="已被其他业务单据引用"):
+            await service.delete_contract(
+                current_user=current_user,
+                contract_id=generated.id,
+            )
+
+        loaded = await service.get_contract(
+            current_user=current_user,
+            contract_id=generated.id,
+        )
+        assert loaded.id == generated.id
+
+
+async def test_export_contract_service_rejects_deleting_receipt_allocated_draft(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        service = _make_service(session)
+        current_user = _user_with_permissions(
+            ["sales:contract:edit", "sales:contract:view"],
+            user_id="u-001",
+        )
+        draft = await service.create_contract(
+            current_user=current_user,
+            payload=_contract_payload("EC-SVC-RECEIPT"),
+        )
+        receipt = BankReceipt(
+            receipt_no="BR-SVC-DELETE-GUARD",
+            received_at=date(2026, 7, 8),
+            payer_name="客户 A",
+            customer_id="customer-a",
+            customer_name="客户 A",
+            amount=Decimal("100"),
+            allocated_amount=Decimal("100"),
+            currency="USD",
+            bank_account="TEST-ACCOUNT",
+            reference_no=None,
+            receipt_type="advance",
+            status="allocated",
+            claim_message="已认领",
+            remark=None,
+            created_by_user_id="u-finance",
+            created_by_user_name="财务",
+        )
+        session.add(receipt)
+        await session.flush()
+        session.add(
+            ReceiptAllocation(
+                receipt_id=receipt.id,
+                allocation_type="contract",
+                contract_id=draft.id,
+                contract_no=draft.code,
+                invoice_no=None,
+                allocated_at=date(2026, 7, 8),
+                amount=Decimal("100"),
+                currency="USD",
+                remark=None,
+            )
+        )
+        await session.commit()
+
+        with pytest.raises(ValueError, match="已被其他业务单据引用"):
+            await service.delete_contract(
+                current_user=current_user,
+                contract_id=draft.id,
+            )
+
+
+async def test_export_contract_service_rejects_deleting_draft_referenced_by_purchase_line(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        service = _make_service(session)
+        current_user = _user_with_permissions(
+            ["sales:contract:edit", "sales:contract:view"],
+            user_id="u-001",
+        )
+        draft = await service.create_contract(
+            current_user=current_user,
+            payload=_contract_payload("EC-SVC-PURCHASE-LINE"),
+        )
+        purchase_contract = PurchaseContract(
+            code="PC-SVC-EXPORT-REFERENCE",
+            contract_date=date(2026, 7, 8),
+            supplier_name="测试供应商",
+            currency="CNY",
+            delivery_date=date(2026, 8, 8),
+            payment_terms="月结 30 天",
+            source_type="manual",
+            approval_status="draft",
+            owner_user_id="u-001",
+        )
+        session.add(purchase_contract)
+        await session.flush()
+        purchase_line = PurchaseContractLine(
+            contract_id=purchase_contract.id,
+            product_name="测试商品",
+            quantity=Decimal("10"),
+            unit="pcs",
+            unit_price=Decimal("5"),
+            amount=Decimal("50"),
+            source_export_contract_id=draft.id,
+            source_export_contract_no=draft.code,
+            source_export_contract_line_id=draft.lines[0].id,
+        )
+        session.add(purchase_line)
+        await session.commit()
+
+        with pytest.raises(ValueError, match="已被其他业务单据引用"):
+            await service.delete_contract(
+                current_user=current_user,
+                contract_id=draft.id,
+            )
+
+        assert (
+            await service.get_contract(current_user=current_user, contract_id=draft.id)
+        ).id == draft.id
+        persisted_line = await session.get(PurchaseContractLine, purchase_line.id)
+        assert persisted_line is not None
+        assert persisted_line.source_export_contract_id == draft.id
 
 
 async def test_export_contract_service_filters_private_records_without_view_all(

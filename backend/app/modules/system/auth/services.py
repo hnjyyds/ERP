@@ -12,15 +12,15 @@ from app.modules.system.auth.repositories import (
     UserIdentityRow,
 )
 from app.modules.system.auth.schemas import (
-    AssignableUserListResponse,
-    AssignableUserResponse,
-    AuthSessionResponse,
-    CurrentUserResponse,
-    CurrentUserAvatarUpdate,
     DEFAULT_AVATAR_TYPE,
     DEFAULT_AVATAR_VALUE,
     ORGANIZATION_AVATAR_PRESETS,
+    AssignableUserListResponse,
+    AssignableUserResponse,
+    AuthSessionResponse,
     AvatarType,
+    CurrentUserAvatarUpdate,
+    CurrentUserResponse,
     CurrentUserSessionResponse,
     MenuItemResponse,
     MenuListResponse,
@@ -111,6 +111,12 @@ class AuthService:
             menus=[self._menu_response(row) for row in menus],
         )
 
+    async def get_current_user_by_id(self, user_id: str) -> CurrentUserResponse:
+        identity = await self._repository.get_user_identity_by_id(user_id)
+        if identity is None:
+            raise InvalidTokenError
+        return self._user_response(identity)
+
     async def get_menus(self, access_token: str) -> MenuListResponse:
         current = await self.get_current_user(access_token)
         return MenuListResponse(menus=current.menus)
@@ -141,9 +147,14 @@ class AuthService:
 
     async def list_assignable_users(self) -> AssignableUserListResponse:
         rows = await self._repository.list_active_users()
-        return AssignableUserListResponse(users=[self._assignable_user_response(row) for row in rows])
+        return AssignableUserListResponse(
+            users=[self._assignable_user_response(row) for row in rows]
+        )
 
-    async def list_assignable_users_by_ids(self, user_ids: list[str]) -> list[AssignableUserResponse]:
+    async def list_assignable_users_by_ids(
+        self,
+        user_ids: list[str],
+    ) -> list[AssignableUserResponse]:
         rows = await self._repository.list_active_users_by_ids(user_ids)
         return [self._assignable_user_response(row) for row in rows]
 

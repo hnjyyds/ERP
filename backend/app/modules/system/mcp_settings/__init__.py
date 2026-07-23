@@ -1,0 +1,1 @@
+"""Persistent MCP availability settings."""
