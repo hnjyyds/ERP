@@ -1,3 +1,4 @@
+import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -8,8 +9,10 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.api.error_handlers import register_error_handlers
+from app.api.request_logging import RequestLoggingMiddleware
 from app.api.v1.router import api_router
 from app.core.config import get_settings
+from app.core.logging import configure_logging
 from app.db.base import Base
 from app.db.session import SessionLocal, engine
 from app.mcp.availability import McpAvailabilityMiddleware
@@ -61,6 +64,8 @@ from app.modules.warehouse.inbound_plans import models as inbound_plan_models  #
 from app.modules.warehouse.outbound_orders import models as outbound_order_models  # noqa: F401
 from app.modules.warehouse.outbound_plans import models as outbound_plan_models  # noqa: F401
 
+_lifecycle_logger = logging.getLogger("app.lifecycle")
+
 
 async def initialize_database_schema() -> None:
     """Initialize tables safely when multiple API replicas start together."""
@@ -84,22 +89,62 @@ async def initialize_database_schema() -> None:
                 "already exists" in message or "duplicate column name" in message
             )
             if not concurrent_create or attempt == 2:
+                _lifecycle_logger.exception(
+                    "database schema initialization failed",
+                    extra={
+                        "event": "database_schema_initialization_failed",
+                        "attempt": attempt + 1,
+                    },
+                )
                 raise
+            _lifecycle_logger.warning(
+                "database schema initialization will retry",
+                extra={
+                    "event": "database_schema_initialization_retry",
+                    "attempt": attempt + 1,
+                },
+            )
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
+    _lifecycle_logger.info(
+        "service starting",
+        extra={
+            "event": "service_starting",
+            "app_name": settings.app_name,
+            "seed_demo_data": settings.seed_demo_data,
+        },
+    )
     await initialize_database_schema()
+    _lifecycle_logger.info(
+        "database schema ready",
+        extra={"event": "database_schema_ready"},
+    )
 
     if settings.seed_demo_data:
         async with SessionLocal() as session:
             await seed_system_demo_data(session)
             await seed_dashboard_demo_data(session, user_id=settings.demo_user_id)
             await seed_company_default(session)
+        _lifecycle_logger.info(
+            "demo data ready",
+            extra={"event": "demo_data_ready"},
+        )
 
-    async with mcp_http_app.router.lifespan_context(mcp_http_app):
-        yield
+    try:
+        async with mcp_http_app.router.lifespan_context(mcp_http_app):
+            _lifecycle_logger.info(
+                "service ready",
+                extra={"event": "service_ready"},
+            )
+            yield
+    finally:
+        _lifecycle_logger.info(
+            "service stopped",
+            extra={"event": "service_stopped"},
+        )
 
 
 def create_app(
@@ -107,8 +152,14 @@ def create_app(
     mcp_session_factory: async_sessionmaker[AsyncSession] = SessionLocal,
 ) -> FastAPI:
     settings = get_settings()
+    configure_logging(level=settings.log_level, format_name=settings.log_format)
     app = FastAPI(title=settings.app_name, lifespan=lifespan)
     register_error_handlers(app)
+    app.add_middleware(
+        RequestLoggingMiddleware,
+        slow_request_ms=settings.log_slow_request_ms,
+        log_health_requests=settings.log_health_requests,
+    )
     app.include_router(api_router, prefix=settings.api_v1_prefix)
     upload_dir = Path(settings.upload_dir)
     upload_dir.mkdir(parents=True, exist_ok=True)

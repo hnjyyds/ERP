@@ -5,6 +5,7 @@ async def test_health_endpoint_returns_stable_api_response(api_client: AsyncClie
     response = await api_client.get("/api/v1/health")
 
     assert response.status_code == 200
+    assert len(response.headers["X-Request-ID"]) == 32
     assert response.json() == {
         "success": True,
         "code": "SUCCESS",

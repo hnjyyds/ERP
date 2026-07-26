@@ -1,5 +1,7 @@
 from functools import lru_cache
+from typing import Literal
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -13,6 +15,10 @@ class Settings(BaseSettings):
     demo_user_id: str = "u-001"
     auth_secret_key: str = "dev-only-change-me"
     mcp_credential_ttl_seconds: int = 30 * 24 * 60 * 60
+    log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
+    log_format: Literal["json", "text"] = "json"
+    log_slow_request_ms: int = Field(default=1_000, ge=0)
+    log_health_requests: bool = False
     # 上传文件落地目录与对外访问前缀（本地对象存储；生产可挂载到对象存储卷）。
     upload_dir: str = "./.data/uploads"
     upload_url_prefix: str = "/uploads"

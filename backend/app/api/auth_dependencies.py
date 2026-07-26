@@ -4,6 +4,7 @@ from fastapi import Depends
 
 from app.api.deps import get_bearer_token
 from app.api.http_exceptions import raise_unauthorized
+from app.core.logging import set_current_user_id
 from app.modules.system.auth.providers import get_auth_service
 from app.modules.system.auth.schemas import CurrentUserResponse, CurrentUserSessionResponse
 from app.modules.system.auth.services import AuthService, InvalidTokenError
@@ -14,9 +15,11 @@ async def get_current_user_session(
     service: Annotated[AuthService, Depends(get_auth_service)],
 ) -> CurrentUserSessionResponse:
     try:
-        return await service.get_current_user(access_token)
+        session = await service.get_current_user(access_token)
     except InvalidTokenError:
         raise_unauthorized()
+    set_current_user_id(session.user.id)
+    return session
 
 
 async def get_current_user(
