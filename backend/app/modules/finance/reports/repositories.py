@@ -5,14 +5,25 @@ finance module tables to produce report rows and grouped summaries.
 """
 
 from datetime import date
-from decimal import Decimal
 
-from sqlalchemy import func, select
+from sqlalchemy import Select, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.finance.fee_payments.models import FeePaymentRequest
 from app.modules.finance.payments.models import PaymentRequest
 from app.modules.finance.receipts.models import BankReceipt, ReceiptAllocation
+from app.modules.finance.reports.repository_support import (
+    decimal_value as _decimal,
+)
+from app.modules.finance.reports.repository_support import (
+    format_money as _format,
+)
+from app.modules.finance.reports.repository_support import (
+    money as _money,
+)
+from app.modules.finance.reports.repository_support import (
+    payment_currency_summary as _payment_currency_summary,
+)
 from app.modules.finance.reports.row_data import (
     BankReceiptCurrencySummaryData,
     BankReceiptOperatorSummaryData,
@@ -35,9 +46,7 @@ class ReportsRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
-    # ------------------------------------------------------------------
     # 1. 水单使用情况明细表
-    # ------------------------------------------------------------------
     async def list_receipt_usage_details(
         self,
         *,
@@ -211,15 +220,15 @@ class ReportsRepository:
             for operator_name, row_currency, count, amount in result.all()
         ]
 
-    def _apply_receipt_filters(
+    def _apply_receipt_filters[SelectRow: tuple[object, ...]](
         self,
-        stmt,  # noqa: ANN001 - SQLAlchemy Select, kept loose for reuse
+        stmt: Select[SelectRow],
         *,
         date_from: date | None,
         date_to: date | None,
         currency: str | None,
         receipt_type: str | None,
-    ):
+    ) -> Select[SelectRow]:
         if date_from is not None:
             stmt = stmt.where(BankReceipt.received_at >= date_from)
         if date_to is not None:
@@ -410,9 +419,9 @@ class ReportsRepository:
             for row in result.all()
         ]
 
-    def _apply_fee_filters(
+    def _apply_fee_filters[SelectRow: tuple[object, ...]](
         self,
-        stmt,  # noqa: ANN001 - SQLAlchemy Select, kept loose for reuse
+        stmt: Select[SelectRow],
         *,
         date_from: date | None,
         date_to: date | None,
@@ -421,7 +430,7 @@ class ReportsRepository:
         fee_type: str | None,
         sales_user_id: str | None,
         status: str | None,
-    ):
+    ) -> Select[SelectRow]:
         if date_from is not None:
             stmt = stmt.where(FeePaymentRequest.request_date >= date_from)
         if date_to is not None:
@@ -515,16 +524,16 @@ class ReportsRepository:
             for status_value, count in result.all()
         ]
 
-    def _apply_customs_filters(
+    def _apply_customs_filters[SelectRow: tuple[object, ...]](
         self,
-        stmt,  # noqa: ANN001 - SQLAlchemy Select, kept loose for reuse
+        stmt: Select[SelectRow],
         *,
         date_from: date | None,
         date_to: date | None,
         owner_user_id: str | None,
         reminder_status: str | None,
         include_registered: bool,
-    ):
+    ) -> Select[SelectRow]:
         # By default only documents whose customs receipt has NOT been registered
         # are returned (the actual "催收" collection list).
         if not include_registered:
@@ -671,15 +680,15 @@ class ReportsRepository:
         )
         return value is not None
 
-    def _apply_tax_refund_filters(
+    def _apply_tax_refund_filters[SelectRow: tuple[object, ...]](
         self,
-        stmt,  # noqa: ANN001 - SQLAlchemy Select, kept loose for reuse
+        stmt: Select[SelectRow],
         *,
         date_from: date | None,
         date_to: date | None,
         currency: str | None,
         status: str | None,
-    ):
+    ) -> Select[SelectRow]:
         if date_from is not None:
             stmt = stmt.where(VerificationDocument.received_at >= date_from)
         if date_to is not None:
@@ -689,29 +698,3 @@ class ReportsRepository:
         if status:
             stmt = stmt.where(VerificationDocument.status == status)
         return stmt
-
-
-def _payment_currency_summary(row) -> PaymentCurrencySummaryData:  # noqa: ANN001 - SQLAlchemy Row
-    row_currency, count, requested, approved, paid = row
-    requested_amount = _decimal(requested)
-    paid_amount = _decimal(paid)
-    return PaymentCurrencySummaryData(
-        currency=str(row_currency),
-        request_count=int(count or 0),
-        requested_amount=_format(requested_amount),
-        approved_amount=_format(approved),
-        paid_amount=_format(paid_amount),
-        outstanding_amount=_format(requested_amount - paid_amount),
-    )
-
-
-def _money(value: Decimal | int | str | None) -> str:
-    return _format(_decimal(value))
-
-
-def _format(value: Decimal | int | str | None) -> str:
-    return f"{_decimal(value):.2f}"
-
-
-def _decimal(value: Decimal | int | str | None) -> Decimal:
-    return Decimal(str(value or 0))

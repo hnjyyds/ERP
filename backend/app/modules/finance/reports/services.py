@@ -4,57 +4,34 @@ Every report method enforces the ``finance:view`` permission and converts the
 read-only repository rows into response schemas.
 """
 
-import csv
-from collections.abc import Sequence
 from datetime import date
-from io import StringIO
 
-from app.modules.finance.reports.repositories import ReportsRepository
-from app.modules.finance.reports.row_data import (
-    BankReceiptCurrencySummaryData,
-    BankReceiptOperatorSummaryData,
-    CustomsReceiptCollectionRowData,
-    CustomsReceiptStatusSummaryData,
-    PaymentCurrencySummaryData,
-    PaymentQueryRowData,
-    ReceiptUsageCurrencySummaryData,
-    ReceiptUsageDetailRowData,
-    TaxRefundCurrencyTotalData,
-    TaxRefundStatusSummaryData,
+from app.modules.finance.reports.report_definitions import (
+    REPORT_EXPLANATIONS,
+    REPORT_SOURCE_TYPES,
 )
+from app.modules.finance.reports.repositories import ReportsRepository
 from app.modules.finance.reports.schemas import (
-    BankReceiptCurrencySummary,
-    BankReceiptOperatorSummary,
     BankReceiptSummaryResponse,
     CustomsReceiptCollectionResponse,
-    CustomsReceiptCollectionRow,
-    CustomsReceiptStatusSummary,
-    FeePaymentCurrencySummary,
     FeePaymentQueryResponse,
-    FeePaymentQueryRow,
-    FinanceReportDrilldownItem,
     FinanceReportDrilldownResponse,
     FinanceReportExplanationResponse,
     FinanceReportExportResponse,
-    FinanceReportFieldExplanation,
-    GoodsPaymentCurrencySummary,
     GoodsPaymentQueryResponse,
-    GoodsPaymentQueryRow,
-    ReceiptUsageCurrencySummary,
     ReceiptUsageDetailResponse,
-    ReceiptUsageDetailRow,
-    TaxRefundCurrencyTotal,
     TaxRefundStatisticsResponse,
-    TaxRefundStatusSummary,
+)
+from app.modules.finance.reports.service_support import (
+    PermissionDeniedError as PermissionDeniedError,
+)
+from app.modules.finance.reports.service_support import (
+    ReportsServiceSupport,
 )
 from app.modules.system.auth.schemas import CurrentUserResponse
 
 
-class PermissionDeniedError(Exception):
-    pass
-
-
-class ReportsService:
+class ReportsService(ReportsServiceSupport):
     def __init__(self, repository: ReportsRepository) -> None:
         self._repository = repository
 
@@ -585,7 +562,7 @@ class ReportsService:
     ) -> FinanceReportExplanationResponse:
         self._require_finance(current_user)
         try:
-            return _REPORT_EXPLANATIONS[report_key]
+            return REPORT_EXPLANATIONS[report_key]
         except KeyError as exc:
             raise ValueError("财务报表不存在") from exc
 
@@ -597,7 +574,7 @@ class ReportsService:
         source_no: str,
     ) -> FinanceReportDrilldownResponse:
         self._require_finance(current_user)
-        source_type = _REPORT_SOURCE_TYPES.get(report_key)
+        source_type = REPORT_SOURCE_TYPES.get(report_key)
         if source_type is None:
             raise ValueError("财务报表不存在")
         items = await self._drilldown_items(report_key=report_key, source_no=source_no)
@@ -607,364 +584,3 @@ class ReportsService:
             source_no=source_no,
             items=items,
         )
-
-    # -- mappers --------------------------------------------------------
-    def _receipt_usage_row(
-        self,
-        row: ReceiptUsageDetailRowData,
-    ) -> ReceiptUsageDetailRow:
-        return ReceiptUsageDetailRow(
-            receipt_no=row.receipt_no,
-            received_at=row.received_at,
-            payer_name=row.payer_name,
-            customer_name=row.customer_name,
-            allocation_type=row.allocation_type,
-            contract_no=row.contract_no,
-            invoice_no=row.invoice_no,
-            allocated_at=row.allocated_at,
-            currency=row.currency,
-            amount=row.amount,
-        )
-
-    def _receipt_usage_summary(
-        self,
-        item: ReceiptUsageCurrencySummaryData,
-    ) -> ReceiptUsageCurrencySummary:
-        return ReceiptUsageCurrencySummary(
-            currency=item.currency,
-            allocation_count=item.allocation_count,
-            allocated_amount=item.allocated_amount,
-        )
-
-    def _bank_currency_summary(
-        self,
-        item: BankReceiptCurrencySummaryData,
-    ) -> BankReceiptCurrencySummary:
-        return BankReceiptCurrencySummary(
-            currency=item.currency,
-            receipt_count=item.receipt_count,
-            total_amount=item.total_amount,
-            allocated_amount=item.allocated_amount,
-            unallocated_amount=item.unallocated_amount,
-        )
-
-    def _bank_operator_summary(
-        self,
-        item: BankReceiptOperatorSummaryData,
-    ) -> BankReceiptOperatorSummary:
-        return BankReceiptOperatorSummary(
-            operator_name=item.operator_name,
-            currency=item.currency,
-            receipt_count=item.receipt_count,
-            total_amount=item.total_amount,
-        )
-
-    def _goods_payment_row(self, row: PaymentQueryRowData) -> GoodsPaymentQueryRow:
-        return GoodsPaymentQueryRow(
-            request_no=row.request_no,
-            request_date=row.request_date,
-            supplier_invoice_no=row.reference_no,
-            supplier_name=row.party_name,
-            purchase_contract_no=row.secondary_ref,
-            payment_type=row.type_label,
-            currency=row.currency,
-            requested_amount=row.requested_amount,
-            approved_amount=row.approved_amount,
-            paid_amount=row.paid_amount,
-            outstanding_amount=row.outstanding_amount,
-            status=row.status,
-        )
-
-    def _goods_currency_summary(
-        self,
-        item: PaymentCurrencySummaryData,
-    ) -> GoodsPaymentCurrencySummary:
-        return GoodsPaymentCurrencySummary(
-            currency=item.currency,
-            request_count=item.request_count,
-            requested_amount=item.requested_amount,
-            approved_amount=item.approved_amount,
-            paid_amount=item.paid_amount,
-            outstanding_amount=item.outstanding_amount,
-        )
-
-    def _fee_payment_row(self, row: PaymentQueryRowData) -> FeePaymentQueryRow:
-        return FeePaymentQueryRow(
-            request_no=row.request_no,
-            request_date=row.request_date,
-            partner_fee_invoice_no=row.reference_no,
-            partner_name=row.party_name,
-            partner_type=row.partner_type,
-            fee_type=row.type_label,
-            shipment_no=row.shipment_no,
-            sales_user_name=row.sales_user_name,
-            currency=row.currency,
-            requested_amount=row.requested_amount,
-            approved_amount=row.approved_amount,
-            paid_amount=row.paid_amount,
-            outstanding_amount=row.outstanding_amount,
-            status=row.status,
-        )
-
-    def _fee_currency_summary(
-        self,
-        item: PaymentCurrencySummaryData,
-    ) -> FeePaymentCurrencySummary:
-        return FeePaymentCurrencySummary(
-            currency=item.currency,
-            request_count=item.request_count,
-            requested_amount=item.requested_amount,
-            approved_amount=item.approved_amount,
-            paid_amount=item.paid_amount,
-            outstanding_amount=item.outstanding_amount,
-        )
-
-    def _customs_row(
-        self,
-        row: CustomsReceiptCollectionRowData,
-    ) -> CustomsReceiptCollectionRow:
-        return CustomsReceiptCollectionRow(
-            document_no=row.document_no,
-            received_at=row.received_at,
-            owner_user_name=row.owner_user_name,
-            shipment_no=row.shipment_no,
-            customer_name=row.customer_name,
-            customs_declaration_no=row.customs_declaration_no,
-            customs_receipt_no=row.customs_receipt_no,
-            reminder_date=row.reminder_date,
-            reminder_status=row.reminder_status,
-            valid_until=row.valid_until,
-            currency=row.currency,
-            refundable_amount=row.refundable_amount,
-        )
-
-    def _customs_status_summary(
-        self,
-        item: CustomsReceiptStatusSummaryData,
-    ) -> CustomsReceiptStatusSummary:
-        return CustomsReceiptStatusSummary(
-            reminder_status=item.reminder_status,
-            count=item.count,
-        )
-
-    def _tax_status_summary(
-        self,
-        item: TaxRefundStatusSummaryData,
-    ) -> TaxRefundStatusSummary:
-        return TaxRefundStatusSummary(
-            status=item.status,
-            currency=item.currency,
-            document_count=item.document_count,
-            refundable_amount=item.refundable_amount,
-            refunded_amount=item.refunded_amount,
-            outstanding_amount=item.outstanding_amount,
-        )
-
-    def _tax_currency_total(
-        self,
-        item: TaxRefundCurrencyTotalData,
-    ) -> TaxRefundCurrencyTotal:
-        return TaxRefundCurrencyTotal(
-            currency=item.currency,
-            document_count=item.document_count,
-            refundable_amount=item.refundable_amount,
-            refunded_amount=item.refunded_amount,
-            outstanding_amount=item.outstanding_amount,
-        )
-
-    def _require_finance(self, current_user: CurrentUserResponse) -> None:
-        if "finance:view" not in current_user.permissions:
-            raise PermissionDeniedError
-
-    def _require_export(self, current_user: CurrentUserResponse) -> None:
-        self._require_finance(current_user)
-        if "finance:report:export" not in current_user.permissions:
-            raise PermissionDeniedError
-
-    def _export_response(
-        self,
-        *,
-        filename: str,
-        headers: list[str],
-        rows: Sequence[Sequence[object]],
-    ) -> FinanceReportExportResponse:
-        csv_content = self._tabular_content(headers=headers, rows=rows)
-        return FinanceReportExportResponse(
-            filename=filename,
-            content_type="text/csv",
-            content=csv_content,
-            total=len(rows),
-        )
-
-    def _tabular_content(
-        self,
-        *,
-        headers: list[str],
-        rows: Sequence[Sequence[object]],
-    ) -> str:
-        output = StringIO()
-        writer = csv.writer(output)
-        writer.writerow(headers)
-        writer.writerows(rows)
-        return output.getvalue()
-
-    async def _drilldown_items(
-        self,
-        *,
-        report_key: str,
-        source_no: str,
-    ) -> list[FinanceReportDrilldownItem]:
-        if not source_no:
-            return []
-        if not await self._source_exists(report_key=report_key, source_no=source_no):
-            return []
-        route_by_report = {
-            "receipt-usage": "/finance/receipts",
-            "goods-payment": "/finance/payments",
-            "fee-payment": "/finance/fees",
-            "customs-receipt-collection": "/finance/tax",
-        }
-        return [
-            FinanceReportDrilldownItem(
-                label="来源单据",
-                value=source_no,
-                target_path=route_by_report.get(report_key),
-            )
-        ]
-
-    async def _source_exists(self, *, report_key: str, source_no: str) -> bool:
-        if report_key == "receipt-usage":
-            return await self._repository.exists_bank_receipt(source_no)
-        if report_key == "goods-payment":
-            return await self._repository.exists_goods_payment(source_no)
-        if report_key == "fee-payment":
-            return await self._repository.exists_fee_payment(source_no)
-        if report_key == "customs-receipt-collection":
-            return await self._repository.exists_verification_document(source_no)
-        return False
-
-
-_REPORT_SOURCE_TYPES = {
-    "receipt-usage": "bank_receipt",
-    "goods-payment": "payment_request",
-    "fee-payment": "fee_payment_request",
-    "customs-receipt-collection": "verification_document",
-}
-
-
-_REPORT_EXPLANATIONS = {
-    "receipt-usage": FinanceReportExplanationResponse(
-        report_key="receipt-usage",
-        title="水单使用情况明细表",
-        source_tables=["finance_bank_receipts", "finance_receipt_allocations"],
-        metric_rules=[
-            "按水单分摊日期筛选。",
-            "金额取银行水单分摊明细金额，币种取分摊币种。",
-        ],
-        fields=[
-            FinanceReportFieldExplanation(
-                label="水单号",
-                field="receipt_no",
-                formula="finance_bank_receipts.receipt_no",
-            ),
-            FinanceReportFieldExplanation(
-                label="分摊金额",
-                field="amount",
-                formula="finance_receipt_allocations.amount",
-            ),
-        ],
-    ),
-    "bank-receipt-summary": FinanceReportExplanationResponse(
-        report_key="bank-receipt-summary",
-        title="银行水单汇总表",
-        source_tables=["finance_bank_receipts"],
-        metric_rules=["按收款日期筛选，并按币种/经办人汇总。"],
-        fields=[
-            FinanceReportFieldExplanation(
-                label="总金额",
-                field="total_amount",
-                formula="sum(amount)",
-            ),
-            FinanceReportFieldExplanation(
-                label="未分摊",
-                field="unallocated_amount",
-                formula="sum(amount) - sum(allocated_amount)",
-            ),
-        ],
-    ),
-    "goods-payment": FinanceReportExplanationResponse(
-        report_key="goods-payment",
-        title="货款支付情况查询",
-        source_tables=["finance_payment_requests"],
-        metric_rules=["按付款申请日期筛选，未付金额=申请金额-已付金额。"],
-        fields=[
-            FinanceReportFieldExplanation(
-                label="付款单号",
-                field="request_no",
-                formula="finance_payment_requests.request_no",
-            ),
-            FinanceReportFieldExplanation(
-                label="未付金额",
-                field="outstanding_amount",
-                formula="requested_amount - paid_amount",
-            ),
-        ],
-    ),
-    "fee-payment": FinanceReportExplanationResponse(
-        report_key="fee-payment",
-        title="费用支付情况查询",
-        source_tables=["finance_fee_payment_requests"],
-        metric_rules=["按付费申请日期筛选，支持合作伙伴、费用类型、业务员和状态筛选。"],
-        fields=[
-            FinanceReportFieldExplanation(
-                label="付费单号",
-                field="request_no",
-                formula="finance_fee_payment_requests.request_no",
-            ),
-            FinanceReportFieldExplanation(
-                label="未付金额",
-                field="outstanding_amount",
-                formula="requested_amount - paid_amount",
-            ),
-        ],
-    ),
-    "customs-receipt-collection": FinanceReportExplanationResponse(
-        report_key="customs-receipt-collection",
-        title="报关回单催收查询",
-        source_tables=["finance_verification_documents"],
-        metric_rules=["默认仅统计未登记报关回单的核销单，可选择包含已登记记录。"],
-        fields=[
-            FinanceReportFieldExplanation(
-                label="核销单号",
-                field="document_no",
-                formula="finance_verification_documents.document_no",
-            ),
-            FinanceReportFieldExplanation(
-                label="催收状态",
-                field="reminder_status",
-                formula="finance_verification_documents.reminder_status",
-            ),
-        ],
-    ),
-    "tax-refund-statistics": FinanceReportExplanationResponse(
-        report_key="tax-refund-statistics",
-        title="申报退税统计",
-        source_tables=[
-            "finance_verification_documents",
-            "finance_verification_tax_refunds",
-        ],
-        metric_rules=["可退税额来自核销单，已退税额来自退税登记，待退税额=可退税额-已退税额。"],
-        fields=[
-            FinanceReportFieldExplanation(
-                label="可退税额",
-                field="refundable_amount",
-                formula="sum(finance_verification_documents.refundable_amount)",
-            ),
-            FinanceReportFieldExplanation(
-                label="已退税额",
-                field="refunded_amount",
-                formula="sum(finance_verification_documents.refunded_amount)",
-            ),
-        ],
-    ),
-}
