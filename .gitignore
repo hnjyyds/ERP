@@ -15,6 +15,7 @@ build/
 target/
 out/
 *.egg-info/
+*.tsbuildinfo
 artifacts/
 
 # Node

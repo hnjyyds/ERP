@@ -242,7 +242,12 @@ class OrganizationRoleUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     name: str | None = Field(default=None, min_length=1, max_length=120)
-    code: str | None = Field(default=None, min_length=2, max_length=80, pattern=r"^[a-z][a-z0-9_]*$")
+    code: str | None = Field(
+        default=None,
+        min_length=2,
+        max_length=80,
+        pattern=r"^[a-z][a-z0-9_]*$",
+    )
     data_scope: DataScope | None = Field(default=None)
 
     @field_validator("name")

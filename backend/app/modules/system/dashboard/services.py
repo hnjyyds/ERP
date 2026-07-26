@@ -1,6 +1,7 @@
 from datetime import UTC, datetime
 
 from app.db.uow import UnitOfWork
+from app.modules.system.auth.schemas import AssignableUserResponse, CurrentUserResponse
 from app.modules.system.dashboard.repositories import (
     AnnouncementRow,
     DashboardRepository,
@@ -24,7 +25,6 @@ from app.modules.system.dashboard.schemas import (
     TodoCreateResponse,
     TodoTaskResponse,
 )
-from app.modules.system.auth.schemas import AssignableUserResponse, CurrentUserResponse
 
 
 class TodoAssigneeNotFoundError(Exception):

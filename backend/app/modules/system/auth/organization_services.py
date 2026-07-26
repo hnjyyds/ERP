@@ -179,7 +179,11 @@ class OrganizationService:
         if existing is None:
             raise OrganizationUserNotFoundError
 
-        next_department_id = payload.department_id if payload.department_id is not None else existing.department_id
+        next_department_id = (
+            payload.department_id
+            if payload.department_id is not None
+            else existing.department_id
+        )
         if next_department_id is not None:
             await self._validate_department(next_department_id)
         role_ids = [role.id for role in existing.roles]
@@ -191,7 +195,11 @@ class OrganizationService:
             raise OrganizationSelfDeactivateError
         avatar_type, avatar_value = self._normalize_avatar(
             avatar_type=payload.avatar_type or existing.avatar_type,
-            avatar_value=payload.avatar_value if payload.avatar_value is not None else existing.avatar_value,
+            avatar_value=(
+                payload.avatar_value
+                if payload.avatar_value is not None
+                else existing.avatar_value
+            ),
         )
 
         async with UnitOfWork(self._repository.session):
@@ -305,7 +313,11 @@ class OrganizationService:
             if "parent_id" in payload.model_fields_set
             else existing.parent_id
         )
-        next_sort_order = payload.sort_order if payload.sort_order is not None else existing.sort_order
+        next_sort_order = (
+            payload.sort_order
+            if payload.sort_order is not None
+            else existing.sort_order
+        )
         await self._ensure_department_name_available(name=next_name, department_id=department_id)
         await self._validate_department_parent(next_parent_id, department_id=department_id)
 
@@ -533,7 +545,11 @@ class OrganizationService:
             raise OrganizationPermissionDeniedError
 
     def _normalize_avatar(self, *, avatar_type: str, avatar_value: str) -> tuple[AvatarType, str]:
-        normalized_type = avatar_type if avatar_type in {"preset", "upload"} else DEFAULT_AVATAR_TYPE
+        normalized_type = (
+            avatar_type
+            if avatar_type in {"preset", "upload"}
+            else DEFAULT_AVATAR_TYPE
+        )
         normalized_value = avatar_value.strip() or DEFAULT_AVATAR_VALUE
 
         if normalized_type == "preset":

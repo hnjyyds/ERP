@@ -1,6 +1,6 @@
+from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Sequence
 from typing import TypeVar
 
 from sqlalchemy import Select, func, select
