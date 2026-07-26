@@ -19,6 +19,34 @@ from app.modules.system.mcp_settings.models import McpSettings
 from app.modules.system.mcp_settings.repositories import McpSettingsRepository
 
 
+def _properties_without_description(
+    schema: dict[str, object],
+    *,
+    path: str,
+) -> list[str]:
+    missing: list[str] = []
+    properties = schema.get("properties", {})
+    if isinstance(properties, dict):
+        for field_name, field_schema in properties.items():
+            if not isinstance(field_schema, dict):
+                continue
+            description = field_schema.get("description")
+            if not isinstance(description, str) or not description.strip():
+                missing.append(f"{path}.{field_name}")
+
+    definitions = schema.get("$defs", {})
+    if isinstance(definitions, dict):
+        for model_name, model_schema in definitions.items():
+            if isinstance(model_schema, dict):
+                missing.extend(
+                    _properties_without_description(
+                        model_schema,
+                        path=f"{path}.$defs.{model_name}",
+                    )
+                )
+    return missing
+
+
 async def test_fastmcp_exposes_expected_crud_tools() -> None:
     tools = await mcp.list_tools()
 
@@ -40,6 +68,28 @@ async def test_fastmcp_exposes_expected_crud_tools() -> None:
         "delete_export_order",
     }
     assert all("access_token" not in tool.inputSchema.get("properties", {}) for tool in tools)
+
+
+async def test_fastmcp_tool_schemas_describe_every_exposed_field() -> None:
+    tools = await mcp.list_tools()
+    missing: list[str] = []
+
+    for tool in tools:
+        missing.extend(
+            _properties_without_description(
+                tool.inputSchema,
+                path=f"{tool.name}.inputSchema",
+            )
+        )
+        if tool.outputSchema is not None:
+            missing.extend(
+                _properties_without_description(
+                    tool.outputSchema,
+                    path=f"{tool.name}.outputSchema",
+                )
+            )
+
+    assert missing == []
 
 
 async def test_fastapi_serves_fastmcp_over_streamable_http(
@@ -139,9 +189,7 @@ async def test_rotating_mcp_credential_revokes_the_previous_token(
     )
 
     async with session_factory() as session:
-        second = await McpSettingsRepository(session).rotate_credential(
-            updated_by="u-admin"
-        )
+        second = await McpSettingsRepository(session).rotate_credential(updated_by="u-admin")
         assert second is not None
         await session.commit()
     new_token, _ = token_service.create(

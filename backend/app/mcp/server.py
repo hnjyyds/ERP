@@ -52,8 +52,120 @@ from app.modules.sales.contracts.services import (
 )
 from app.modules.system.auth.services import InvalidTokenError, TokenService
 
-PageLimit = Annotated[int, Field(ge=1, le=200)]
-PageOffset = Annotated[int, Field(ge=0)]
+PageLimit = Annotated[
+    int,
+    Field(
+        ge=1,
+        le=200,
+        description="单次返回的最大记录数，范围为 1 到 200。",
+        examples=[50],
+    ),
+]
+PageOffset = Annotated[
+    int,
+    Field(
+        ge=0,
+        description="分页起始偏移量；首次查询传 0，下一页增加 limit。",
+        examples=[0],
+    ),
+]
+ProductSearchQuery = Annotated[
+    str | None,
+    Field(
+        description="商品搜索词，可匹配商品编码、中文名、英文名和海关编码。",
+        examples=["BAG-40"],
+    ),
+]
+CustomerSearchQuery = Annotated[
+    str | None,
+    Field(
+        description="客户搜索词，可匹配客户编码、中文名和英文名。",
+        examples=["Example Handel"],
+    ),
+]
+ExportOrderSearchQuery = Annotated[
+    str | None,
+    Field(
+        description="出口订单搜索词，可匹配订单号或客户名称。",
+        examples=["EC-2026-001"],
+    ),
+]
+ProductId = Annotated[
+    str,
+    Field(
+        description="ERP 商品 ID；应先通过 list_products 或 create_product 获取。",
+        examples=["product-001"],
+    ),
+]
+CustomerId = Annotated[
+    str,
+    Field(
+        description="ERP 客户 ID；应先通过 list_customers 或 create_customer 获取。",
+        examples=["customer-001"],
+    ),
+]
+OptionalCustomerId = Annotated[
+    str | None,
+    Field(
+        description="按 ERP 客户 ID 筛选；不传则包含当前账号可见的全部客户。",
+        examples=["customer-001"],
+    ),
+]
+ExportOrderId = Annotated[
+    str,
+    Field(
+        description="ERP 出口订单 ID；应先通过 list_export_orders 获取。",
+        examples=["export-contract-001"],
+    ),
+]
+DeleteConfirmation = Annotated[
+    bool,
+    Field(
+        description="删除确认开关。危险操作必须显式传 true，否则不会执行。",
+        examples=[True],
+    ),
+]
+CustomerCountryFilter = Annotated[
+    str | None,
+    Field(
+        description="按客户所在国家或地区筛选，值应与客户资料中的 country 一致。",
+        examples=["DE"],
+    ),
+]
+CustomerCreditGradeFilter = Annotated[
+    str | None,
+    Field(
+        description="按客户内部信用等级筛选。",
+        examples=["A"],
+    ),
+]
+ApprovalStatusFilter = Annotated[
+    str | None,
+    Field(
+        description="按出口订单审批状态筛选；常见值为 draft、submitted、approved、rejected。",
+        examples=["draft"],
+    ),
+]
+ProductCreatePayload = Annotated[
+    ProductCreate,
+    Field(description="待创建的完整商品资料。"),
+]
+ProductUpdatePayload = Annotated[
+    ProductUpdate,
+    Field(description="商品更新后的完整资料；未提供的配件不会在此工具中变更。"),
+]
+CustomerCreatePayload = Annotated[
+    CustomerCreate,
+    Field(description="待创建的完整客户资料，可包含联系人和信用资料。"),
+]
+CustomerUpdatePayload = Annotated[
+    CustomerUpdate,
+    Field(description="客户更新后的主体和信用资料。"),
+]
+ExportOrderPayload = Annotated[
+    ExportContractCreate,
+    Field(description="待创建或更新的完整出口订单草稿，至少包含一条商品明细。"),
+]
 
 
 async def _execute[T](operation: Awaitable[T]) -> T:
@@ -99,7 +211,7 @@ def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
 
     @server.tool()
     async def list_products(
-        q: str | None = None,
+        q: ProductSearchQuery = None,
         limit: PageLimit = 50,
         offset: PageOffset = 0,
     ) -> ProductListResponse:
@@ -114,7 +226,7 @@ def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
         )
 
     @server.tool()
-    async def get_product(product_id: str) -> ProductResponse:
+    async def get_product(product_id: ProductId) -> ProductResponse:
         """按 ERP 商品 ID 查询商品详情。"""
         return await _execute(
             service.get_product(user_id=_authenticated_user_id(), product_id=product_id)
@@ -122,7 +234,7 @@ def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
 
     @server.tool()
     async def create_product(
-        payload: ProductCreate,
+        payload: ProductCreatePayload,
     ) -> ProductResponse:
         """创建一个商品；payload 使用 ERP 商品字段。"""
         return await _execute(
@@ -131,8 +243,8 @@ def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
 
     @server.tool()
     async def update_product(
-        product_id: str,
-        payload: ProductUpdate,
+        product_id: ProductId,
+        payload: ProductUpdatePayload,
     ) -> ProductResponse:
         """按商品 ID 更新商品。"""
         return await _execute(
@@ -145,8 +257,8 @@ def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
 
     @server.tool()
     async def delete_product(
-        product_id: str,
-        confirm: bool = False,
+        product_id: ProductId,
+        confirm: DeleteConfirmation = False,
     ) -> ProductResponse:
         """停用商品（软删除）；必须显式传 confirm=true。"""
         return await _execute(
@@ -159,9 +271,9 @@ def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
 
     @server.tool()
     async def list_customers(
-        q: str | None = None,
-        country: str | None = None,
-        credit_grade: str | None = None,
+        q: CustomerSearchQuery = None,
+        country: CustomerCountryFilter = None,
+        credit_grade: CustomerCreditGradeFilter = None,
         limit: PageLimit = 50,
         offset: PageOffset = 0,
     ) -> CustomerListResponse:
@@ -178,7 +290,7 @@ def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
         )
 
     @server.tool()
-    async def get_customer(customer_id: str) -> CustomerResponse:
+    async def get_customer(customer_id: CustomerId) -> CustomerResponse:
         """按 ERP 客户 ID 查询客户详情。"""
         return await _execute(
             service.get_customer(user_id=_authenticated_user_id(), customer_id=customer_id)
@@ -186,7 +298,7 @@ def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
 
     @server.tool()
     async def create_customer(
-        payload: CustomerCreate,
+        payload: CustomerCreatePayload,
     ) -> CustomerResponse:
         """创建客户，可同时写入联系人和信用资料。"""
         return await _execute(
@@ -195,8 +307,8 @@ def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
 
     @server.tool()
     async def update_customer(
-        customer_id: str,
-        payload: CustomerUpdate,
+        customer_id: CustomerId,
+        payload: CustomerUpdatePayload,
     ) -> CustomerResponse:
         """按客户 ID 更新客户。"""
         return await _execute(
@@ -209,8 +321,8 @@ def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
 
     @server.tool()
     async def delete_customer(
-        customer_id: str,
-        confirm: bool = False,
+        customer_id: CustomerId,
+        confirm: DeleteConfirmation = False,
     ) -> CustomerResponse:
         """停用客户（软删除）；必须显式传 confirm=true。"""
         return await _execute(
@@ -223,9 +335,9 @@ def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
 
     @server.tool()
     async def list_export_orders(
-        q: str | None = None,
-        approval_status: str | None = None,
-        customer_id: str | None = None,
+        q: ExportOrderSearchQuery = None,
+        approval_status: ApprovalStatusFilter = None,
+        customer_id: OptionalCustomerId = None,
         limit: PageLimit = 50,
         offset: PageOffset = 0,
     ) -> ExportContractListResponse:
@@ -243,7 +355,7 @@ def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
 
     @server.tool()
     async def get_export_order(
-        order_id: str,
+        order_id: ExportOrderId,
     ) -> ExportContractResponse:
         """按 ERP 出口订单 ID 查询订单及明细。"""
         return await _execute(
@@ -252,7 +364,7 @@ def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
 
     @server.tool()
     async def create_export_order(
-        payload: ExportContractCreate,
+        payload: ExportOrderPayload,
     ) -> ExportContractResponse:
         """创建草稿出口订单，至少需要一条商品明细。"""
         return await _execute(
@@ -261,8 +373,8 @@ def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
 
     @server.tool()
     async def update_export_order(
-        order_id: str,
-        payload: ExportContractCreate,
+        order_id: ExportOrderId,
+        payload: ExportOrderPayload,
     ) -> ExportContractResponse:
         """更新草稿出口订单；已提交或已审批订单不可编辑。"""
         return await _execute(
@@ -275,8 +387,8 @@ def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
 
     @server.tool()
     async def delete_export_order(
-        order_id: str,
-        confirm: bool = False,
+        order_id: ExportOrderId,
+        confirm: DeleteConfirmation = False,
     ) -> ExportContractResponse:
         """删除草稿出口订单；必须显式传 confirm=true，非草稿不可删除。"""
         return await _execute(
