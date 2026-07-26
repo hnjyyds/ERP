@@ -1,9 +1,10 @@
 from datetime import date
-from typing import Annotated, NoReturn
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
-from app.api.deps import get_bearer_token
+from app.api.auth_dependencies import CurrentUserDep
+from app.api.http_exceptions import raise_permission_denied, raise_unprocessable
 from app.modules.sample.records.schemas import SampleRecordResponse
 from app.modules.sample.requests.providers import get_sample_request_service
 from app.modules.sample.requests.schemas import (
@@ -23,36 +24,14 @@ from app.modules.sample.requests.services import (
     SampleRequestNotFoundError,
     SampleRequestService,
 )
-from app.modules.system.auth.providers import get_auth_service
-from app.modules.system.auth.schemas import CurrentUserResponse
-from app.modules.system.auth.services import AuthService, InvalidTokenError
 from app.schemas.responses import ApiResponse
 
 router = APIRouter(prefix="/sample/requests", tags=["sample-requests"])
 
 
-async def _current_user(token: str, auth_service: AuthService) -> CurrentUserResponse:
-    try:
-        return (await auth_service.get_current_user(token)).user
-    except InvalidTokenError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
-
-
-def _raise_permission_denied() -> NoReturn:
-    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少打样管理权限")
-
-
-def _raise_invalid_sample_request() -> NoReturn:
-    raise HTTPException(
-        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-        detail="打样数据无效",
-    )
-
-
 @router.get("", response_model=ApiResponse[SampleRequestListResponse])
 async def list_sample_requests(
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[SampleRequestService, Depends(get_sample_request_service)],
     q: Annotated[str | None, Query(max_length=120)] = None,
     status_filter: Annotated[str | None, Query(alias="status", max_length=40)] = None,
@@ -60,7 +39,6 @@ async def list_sample_requests(
     date_from: date | None = None,
     date_to: date | None = None,
 ) -> ApiResponse[SampleRequestListResponse]:
-    user = await _current_user(token, auth_service)
     try:
         requests = await service.list_requests(
             current_user=user,
@@ -72,9 +50,9 @@ async def list_sample_requests(
         )
         return ApiResponse(data=requests)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少打样管理权限")
     except ValueError:
-        _raise_invalid_sample_request()
+        raise_unprocessable("打样数据无效")
 
 
 @router.post(
@@ -85,11 +63,9 @@ async def list_sample_requests(
 async def create_sample_record_from_request(
     request_id: str,
     payload: SampleRequestToRecordCreate,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[SampleRequestService, Depends(get_sample_request_service)],
 ) -> ApiResponse[SampleRecordResponse]:
-    user = await _current_user(token, auth_service)
     try:
         record = await service.create_sample_record_from_request(
             current_user=user,
@@ -98,7 +74,7 @@ async def create_sample_record_from_request(
         )
         return ApiResponse(data=record)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少打样管理权限")
     except SampleRequestNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="打样单不存在") from None
     except SampleRecordAlreadyCreatedError:
@@ -107,7 +83,7 @@ async def create_sample_record_from_request(
             detail="该打样单已转为样品登记",
         ) from None
     except ValueError:
-        _raise_invalid_sample_request()
+        raise_unprocessable("打样数据无效")
 
 
 @router.post(
@@ -117,33 +93,29 @@ async def create_sample_record_from_request(
 )
 async def create_sample_request(
     payload: SampleRequestCreate,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[SampleRequestService, Depends(get_sample_request_service)],
 ) -> ApiResponse[SampleRequestResponse]:
-    user = await _current_user(token, auth_service)
     try:
         sample_request = await service.create_request(current_user=user, payload=payload)
         return ApiResponse(data=sample_request)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少打样管理权限")
     except ValueError:
-        _raise_invalid_sample_request()
+        raise_unprocessable("打样数据无效")
 
 
 @router.get("/{request_id}", response_model=ApiResponse[SampleRequestResponse])
 async def get_sample_request(
     request_id: str,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[SampleRequestService, Depends(get_sample_request_service)],
 ) -> ApiResponse[SampleRequestResponse]:
-    user = await _current_user(token, auth_service)
     try:
         sample_request = await service.get_request(current_user=user, request_id=request_id)
         return ApiResponse(data=sample_request)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少打样管理权限")
     except SampleRequestNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="打样单不存在") from None
 
@@ -156,11 +128,9 @@ async def get_sample_request(
 async def add_sample_progress(
     request_id: str,
     payload: SampleProgressCreate,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[SampleRequestService, Depends(get_sample_request_service)],
 ) -> ApiResponse[SampleProgressResponse]:
-    user = await _current_user(token, auth_service)
     try:
         progress = await service.add_progress(
             current_user=user,
@@ -169,11 +139,11 @@ async def add_sample_progress(
         )
         return ApiResponse(data=progress)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少打样管理权限")
     except SampleRequestNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="打样单不存在") from None
     except ValueError:
-        _raise_invalid_sample_request()
+        raise_unprocessable("打样数据无效")
 
 
 @router.post(
@@ -184,11 +154,9 @@ async def add_sample_progress(
 async def add_sample_fee(
     request_id: str,
     payload: SampleFeeCreate,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[SampleRequestService, Depends(get_sample_request_service)],
 ) -> ApiResponse[SampleFeeResponse]:
-    user = await _current_user(token, auth_service)
     try:
         fee = await service.add_fee(
             current_user=user,
@@ -197,7 +165,7 @@ async def add_sample_fee(
         )
         return ApiResponse(data=fee)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少打样管理权限")
     except SampleRequestNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="打样单不存在") from None
 
@@ -209,11 +177,9 @@ async def add_sample_fee(
 async def request_sample_fee_payment(
     request_id: str,
     fee_id: str,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[SampleRequestService, Depends(get_sample_request_service)],
 ) -> ApiResponse[SampleFeeResponse]:
-    user = await _current_user(token, auth_service)
     try:
         fee = await service.request_fee_payment(
             current_user=user,
@@ -222,7 +188,7 @@ async def request_sample_fee_payment(
         )
         return ApiResponse(data=fee)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少打样管理权限")
     except SampleRequestNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

@@ -1,8 +1,9 @@
-from typing import Annotated, NoReturn
+from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, Query, status
 
-from app.api.deps import get_bearer_token
+from app.api.auth_dependencies import CurrentUserDep
+from app.api.http_exceptions import raise_not_found, raise_permission_denied, raise_unprocessable
 from app.modules.sales.contracts.providers import get_export_contract_service
 from app.modules.sales.contracts.schemas import (
     ExportContractAdvancePaymentCreate,
@@ -19,46 +20,19 @@ from app.modules.sales.contracts.services import (
     ExportContractService,
     PermissionDeniedError,
 )
-from app.modules.system.auth.providers import get_auth_service
-from app.modules.system.auth.schemas import CurrentUserResponse
-from app.modules.system.auth.services import AuthService, InvalidTokenError
 from app.schemas.responses import ApiResponse
 
 router = APIRouter(prefix="/sales/contracts", tags=["export-contracts"])
 
 
-async def _current_user(token: str, auth_service: AuthService) -> CurrentUserResponse:
-    try:
-        return (await auth_service.get_current_user(token)).user
-    except InvalidTokenError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
-
-
-def _raise_permission_denied() -> NoReturn:
-    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少出口合同权限")
-
-
-def _raise_invalid_contract() -> NoReturn:
-    raise HTTPException(
-        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-        detail="出口合同数据无效",
-    )
-
-
-def _raise_contract_not_found() -> NoReturn:
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="出口合同不存在")
-
-
 @router.get("", response_model=ApiResponse[ExportContractListResponse])
 async def list_export_contracts(
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[ExportContractService, Depends(get_export_contract_service)],
     q: Annotated[str | None, Query(max_length=120)] = None,
     approval_status: Annotated[str | None, Query(max_length=40)] = None,
     customer_id: Annotated[str | None, Query(max_length=36)] = None,
 ) -> ApiResponse[ExportContractListResponse]:
-    user = await _current_user(token, auth_service)
     try:
         contracts = await service.list_contracts(
             current_user=user,
@@ -68,9 +42,9 @@ async def list_export_contracts(
         )
         return ApiResponse(data=contracts)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少出口合同权限")
     except ValueError:
-        _raise_invalid_contract()
+        raise_unprocessable("出口合同数据无效")
 
 
 @router.post(
@@ -80,44 +54,38 @@ async def list_export_contracts(
 )
 async def create_export_contract(
     payload: ExportContractCreate,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[ExportContractService, Depends(get_export_contract_service)],
 ) -> ApiResponse[ExportContractResponse]:
-    user = await _current_user(token, auth_service)
     try:
         contract = await service.create_contract(current_user=user, payload=payload)
         return ApiResponse(data=contract)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少出口合同权限")
 
 
 @router.get("/{contract_id}", response_model=ApiResponse[ExportContractResponse])
 async def get_export_contract(
     contract_id: str,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[ExportContractService, Depends(get_export_contract_service)],
 ) -> ApiResponse[ExportContractResponse]:
-    user = await _current_user(token, auth_service)
     try:
         contract = await service.get_contract(current_user=user, contract_id=contract_id)
         return ApiResponse(data=contract)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少出口合同权限")
     except ExportContractNotFoundError:
-        _raise_contract_not_found()
+        raise_not_found("出口合同不存在")
 
 
 @router.put("/{contract_id}", response_model=ApiResponse[ExportContractResponse])
 async def update_export_contract(
     contract_id: str,
     payload: ExportContractCreate,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[ExportContractService, Depends(get_export_contract_service)],
 ) -> ApiResponse[ExportContractResponse]:
-    user = await _current_user(token, auth_service)
     try:
         contract = await service.update_contract(
             current_user=user,
@@ -126,21 +94,19 @@ async def update_export_contract(
         )
         return ApiResponse(data=contract)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少出口合同权限")
     except ExportContractNotFoundError:
-        _raise_contract_not_found()
+        raise_not_found("出口合同不存在")
     except ValueError:
-        _raise_invalid_contract()
+        raise_unprocessable("出口合同数据无效")
 
 
 @router.post("/{contract_id}/submit", response_model=ApiResponse[ExportContractResponse])
 async def submit_export_contract(
     contract_id: str,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[ExportContractService, Depends(get_export_contract_service)],
 ) -> ApiResponse[ExportContractResponse]:
-    user = await _current_user(token, auth_service)
     try:
         contract = await service.submit_contract(
             current_user=user,
@@ -148,22 +114,20 @@ async def submit_export_contract(
         )
         return ApiResponse(data=contract)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少出口合同权限")
     except ExportContractNotFoundError:
-        _raise_contract_not_found()
+        raise_not_found("出口合同不存在")
     except ValueError:
-        _raise_invalid_contract()
+        raise_unprocessable("出口合同数据无效")
 
 
 @router.post("/{contract_id}/approve", response_model=ApiResponse[ExportContractResponse])
 async def approve_export_contract(
     contract_id: str,
     payload: ExportContractApprove,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[ExportContractService, Depends(get_export_contract_service)],
 ) -> ApiResponse[ExportContractResponse]:
-    user = await _current_user(token, auth_service)
     try:
         contract = await service.approve_contract(
             current_user=user,
@@ -172,22 +136,20 @@ async def approve_export_contract(
         )
         return ApiResponse(data=contract)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少出口合同权限")
     except ExportContractNotFoundError:
-        _raise_contract_not_found()
+        raise_not_found("出口合同不存在")
     except ValueError:
-        _raise_invalid_contract()
+        raise_unprocessable("出口合同数据无效")
 
 
 @router.post("/{contract_id}/signature", response_model=ApiResponse[ExportContractResponse])
 async def register_export_contract_signature(
     contract_id: str,
     payload: ExportContractSignatureCreate,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[ExportContractService, Depends(get_export_contract_service)],
 ) -> ApiResponse[ExportContractResponse]:
-    user = await _current_user(token, auth_service)
     try:
         contract = await service.register_signature(
             current_user=user,
@@ -196,9 +158,9 @@ async def register_export_contract_signature(
         )
         return ApiResponse(data=contract)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少出口合同权限")
     except ExportContractNotFoundError:
-        _raise_contract_not_found()
+        raise_not_found("出口合同不存在")
 
 
 @router.post(
@@ -209,11 +171,9 @@ async def register_export_contract_signature(
 async def add_export_contract_advance_payment(
     contract_id: str,
     payload: ExportContractAdvancePaymentCreate,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[ExportContractService, Depends(get_export_contract_service)],
 ) -> ApiResponse[ExportContractAdvancePaymentResponse]:
-    user = await _current_user(token, auth_service)
     try:
         payment = await service.add_advance_payment(
             current_user=user,
@@ -222,20 +182,18 @@ async def add_export_contract_advance_payment(
         )
         return ApiResponse(data=payment)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少出口合同权限")
     except ExportContractNotFoundError:
-        _raise_contract_not_found()
+        raise_not_found("出口合同不存在")
 
 
 @router.get("/{contract_id}/export", response_model=ApiResponse[ExportContractExportResponse])
 async def export_export_contract(
     contract_id: str,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[ExportContractService, Depends(get_export_contract_service)],
     export_format: Annotated[str, Query(alias="format", max_length=20)] = "pdf",
 ) -> ApiResponse[ExportContractExportResponse]:
-    user = await _current_user(token, auth_service)
     try:
         export = await service.export_contract(
             current_user=user,
@@ -244,8 +202,8 @@ async def export_export_contract(
         )
         return ApiResponse(data=export)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少出口合同权限")
     except ExportContractNotFoundError:
-        _raise_contract_not_found()
+        raise_not_found("出口合同不存在")
     except ValueError:
-        _raise_invalid_contract()
+        raise_unprocessable("出口合同数据无效")

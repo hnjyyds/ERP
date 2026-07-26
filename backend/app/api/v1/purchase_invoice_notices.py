@@ -1,8 +1,9 @@
-from typing import Annotated, NoReturn
+from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, Query, status
 
-from app.api.deps import get_bearer_token
+from app.api.auth_dependencies import CurrentUserDep
+from app.api.http_exceptions import raise_not_found, raise_permission_denied, raise_unprocessable
 from app.modules.purchase.invoice_notices.providers import (
     get_purchase_invoice_notice_service,
 )
@@ -19,40 +20,14 @@ from app.modules.purchase.invoice_notices.services import (
     PurchaseInvoiceNoticeNotFoundError,
     PurchaseInvoiceNoticeService,
 )
-from app.modules.system.auth.providers import get_auth_service
-from app.modules.system.auth.schemas import CurrentUserResponse
-from app.modules.system.auth.services import AuthService, InvalidTokenError
 from app.schemas.responses import ApiResponse
 
 router = APIRouter(prefix="/purchase/invoice-notices", tags=["purchase-invoice-notices"])
 
 
-async def _current_user(token: str, auth_service: AuthService) -> CurrentUserResponse:
-    try:
-        return (await auth_service.get_current_user(token)).user
-    except InvalidTokenError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="登录已失效") from None
-
-
-def _raise_permission_denied() -> NoReturn:
-    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少开票通知权限")
-
-
-def _raise_invalid_notice() -> NoReturn:
-    raise HTTPException(
-        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-        detail="开票通知数据无效",
-    )
-
-
-def _raise_notice_not_found() -> NoReturn:
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="开票通知不存在")
-
-
 @router.get("", response_model=ApiResponse[PurchaseInvoiceNoticeListResponse])
 async def list_purchase_invoice_notices(
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[
         PurchaseInvoiceNoticeService,
         Depends(get_purchase_invoice_notice_service),
@@ -62,7 +37,6 @@ async def list_purchase_invoice_notices(
     supplier_id: Annotated[str | None, Query(max_length=36)] = None,
     customs_declaration_id: Annotated[str | None, Query(max_length=36)] = None,
 ) -> ApiResponse[PurchaseInvoiceNoticeListResponse]:
-    user = await _current_user(token, auth_service)
     try:
         notices = await service.list_notices(
             current_user=user,
@@ -73,9 +47,9 @@ async def list_purchase_invoice_notices(
         )
         return ApiResponse(data=notices)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少开票通知权限")
     except ValueError:
-        _raise_invalid_notice()
+        raise_unprocessable("开票通知数据无效")
 
 
 @router.post(
@@ -85,14 +59,12 @@ async def list_purchase_invoice_notices(
 )
 async def generate_purchase_invoice_notices_from_customs_declaration(
     payload: PurchaseInvoiceNoticeGenerateFromDeclaration,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[
         PurchaseInvoiceNoticeService,
         Depends(get_purchase_invoice_notice_service),
     ],
 ) -> ApiResponse[PurchaseInvoiceNoticeListResponse]:
-    user = await _current_user(token, auth_service)
     try:
         notices = await service.generate_from_customs_declaration(
             current_user=user,
@@ -100,9 +72,9 @@ async def generate_purchase_invoice_notices_from_customs_declaration(
         )
         return ApiResponse(data=notices)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少开票通知权限")
     except ValueError:
-        _raise_invalid_notice()
+        raise_unprocessable("开票通知数据无效")
 
 
 @router.get(
@@ -110,39 +82,35 @@ async def generate_purchase_invoice_notices_from_customs_declaration(
     response_model=ApiResponse[PurchaseInvoiceNoticeReminderListResponse],
 )
 async def list_purchase_invoice_notice_reminders(
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[
         PurchaseInvoiceNoticeService,
         Depends(get_purchase_invoice_notice_service),
     ],
 ) -> ApiResponse[PurchaseInvoiceNoticeReminderListResponse]:
-    user = await _current_user(token, auth_service)
     try:
         reminders = await service.list_reminders(current_user=user)
         return ApiResponse(data=reminders)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少开票通知权限")
 
 
 @router.get("/{notice_id}", response_model=ApiResponse[PurchaseInvoiceNoticeResponse])
 async def get_purchase_invoice_notice(
     notice_id: str,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[
         PurchaseInvoiceNoticeService,
         Depends(get_purchase_invoice_notice_service),
     ],
 ) -> ApiResponse[PurchaseInvoiceNoticeResponse]:
-    user = await _current_user(token, auth_service)
     try:
         notice = await service.get_notice(current_user=user, notice_id=notice_id)
         return ApiResponse(data=notice)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少开票通知权限")
     except PurchaseInvoiceNoticeNotFoundError:
-        _raise_notice_not_found()
+        raise_not_found("开票通知不存在")
 
 
 @router.post(
@@ -152,14 +120,12 @@ async def get_purchase_invoice_notice(
 async def send_purchase_invoice_notice(
     notice_id: str,
     payload: PurchaseInvoiceNoticeSend,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[
         PurchaseInvoiceNoticeService,
         Depends(get_purchase_invoice_notice_service),
     ],
 ) -> ApiResponse[PurchaseInvoiceNoticeResponse]:
-    user = await _current_user(token, auth_service)
     try:
         notice = await service.send_notice(
             current_user=user,
@@ -168,11 +134,11 @@ async def send_purchase_invoice_notice(
         )
         return ApiResponse(data=notice)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少开票通知权限")
     except PurchaseInvoiceNoticeNotFoundError:
-        _raise_notice_not_found()
+        raise_not_found("开票通知不存在")
     except ValueError:
-        _raise_invalid_notice()
+        raise_unprocessable("开票通知数据无效")
 
 
 @router.post(
@@ -182,14 +148,12 @@ async def send_purchase_invoice_notice(
 async def receive_purchase_invoice_notice_tax_invoice(
     notice_id: str,
     payload: PurchaseInvoiceNoticeReceiveTaxInvoice,
-    token: Annotated[str, Depends(get_bearer_token)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    user: CurrentUserDep,
     service: Annotated[
         PurchaseInvoiceNoticeService,
         Depends(get_purchase_invoice_notice_service),
     ],
 ) -> ApiResponse[PurchaseInvoiceNoticeResponse]:
-    user = await _current_user(token, auth_service)
     try:
         notice = await service.receive_tax_invoice(
             current_user=user,
@@ -198,8 +162,8 @@ async def receive_purchase_invoice_notice_tax_invoice(
         )
         return ApiResponse(data=notice)
     except PermissionDeniedError:
-        _raise_permission_denied()
+        raise_permission_denied("缺少开票通知权限")
     except PurchaseInvoiceNoticeNotFoundError:
-        _raise_notice_not_found()
+        raise_not_found("开票通知不存在")
     except ValueError:
-        _raise_invalid_notice()
+        raise_unprocessable("开票通知数据无效")

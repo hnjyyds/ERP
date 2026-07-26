@@ -1,8 +1,9 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 
-from app.api.deps import get_bearer_token
+from app.api.auth_dependencies import CurrentUserDep, CurrentUserSessionDep
+from app.api.http_exceptions import raise_unauthorized, raise_unprocessable
 from app.modules.system.auth.providers import get_auth_service
 from app.modules.system.auth.schemas import (
     AssignableUserListResponse,
@@ -31,59 +32,38 @@ async def login(
         session = await service.login(username=payload.username, password=payload.password)
         return ApiResponse(data=session)
     except InvalidCredentialsError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="用户名或密码错误",
-        ) from None
+        raise_unauthorized("用户名或密码错误")
 
 
 @router.get("/me", response_model=ApiResponse[CurrentUserSessionResponse])
 async def get_me(
-    token: Annotated[str, Depends(get_bearer_token)],
-    service: Annotated[AuthService, Depends(get_auth_service)],
+    session: CurrentUserSessionDep,
 ) -> ApiResponse[CurrentUserSessionResponse]:
-    try:
-        current = await service.get_current_user(token)
-        return ApiResponse(data=current)
-    except InvalidTokenError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="登录已失效",
-        ) from None
+    return ApiResponse(data=session)
 
 
 @router.patch("/me/avatar", response_model=ApiResponse[CurrentUserSessionResponse])
 async def update_me_avatar(
     payload: CurrentUserAvatarUpdate,
-    token: Annotated[str, Depends(get_bearer_token)],
+    current_user: CurrentUserDep,
     service: Annotated[AuthService, Depends(get_auth_service)],
 ) -> ApiResponse[CurrentUserSessionResponse]:
     try:
-        current = await service.update_current_user_avatar(access_token=token, payload=payload)
+        current = await service.update_current_user_avatar(
+            user_id=current_user.id,
+            payload=payload,
+        )
         return ApiResponse(data=current)
     except InvalidTokenError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="登录已失效",
-        ) from None
+        raise_unauthorized()
     except InvalidAvatarError:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="头像配置无效",
-        ) from None
+        raise_unprocessable("头像配置无效")
 
 
 @router.get("/users", response_model=ApiResponse[AssignableUserListResponse])
 async def list_assignable_users(
-    token: Annotated[str, Depends(get_bearer_token)],
+    _current_user: CurrentUserDep,
     service: Annotated[AuthService, Depends(get_auth_service)],
 ) -> ApiResponse[AssignableUserListResponse]:
-    try:
-        await service.get_current_user(token)
-    except InvalidTokenError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="登录已失效",
-        ) from None
     users = await service.list_assignable_users()
     return ApiResponse(data=users)

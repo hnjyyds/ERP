@@ -25,6 +25,15 @@ def _import_modules(file_path: Path) -> list[str]:
     return modules
 
 
+def _function_names(file_path: Path) -> list[str]:
+    tree = ast.parse(file_path.read_text(encoding="utf-8"))
+    return [
+        node.name
+        for node in ast.walk(tree)
+        if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef)
+    ]
+
+
 def _api_routes_with_paths() -> list[tuple[str, APIRoute]]:
     app = create_app()
     collected: list[tuple[str, APIRoute]] = []
@@ -45,11 +54,7 @@ def _api_routes_with_paths() -> list[tuple[str, APIRoute]]:
 
 
 def test_api_routes_have_explicit_response_models() -> None:
-    api_routes = [
-        route
-        for path, route in _api_routes_with_paths()
-        if path.startswith("/api/v1")
-    ]
+    api_routes = [route for path, route in _api_routes_with_paths() if path.startswith("/api/v1")]
 
     assert api_routes
     assert all(route.response_model is not None for route in api_routes)
@@ -91,5 +96,24 @@ def test_services_do_not_import_api_layer() -> None:
         for module in _import_modules(file_path):
             if module.startswith("app.api"):
                 violations.append(f"{file_path.relative_to(BACKEND_ROOT)} imports {module}")
+
+    assert violations == []
+
+
+def test_route_modules_reuse_auth_dependencies_and_do_not_define_exception_helpers() -> None:
+    violations: list[str] = []
+    route_root = APP_ROOT / "api" / "v1"
+
+    for file_path in _python_files(route_root):
+        relative_path = file_path.relative_to(BACKEND_ROOT)
+        for function_name in _function_names(file_path):
+            if function_name in {"_current_user", "current_user"}:
+                violations.append(f"{relative_path} defines current-user helper {function_name}")
+            if function_name.startswith(("_raise_", "raise_")):
+                violations.append(f"{relative_path} defines HTTP exception helper {function_name}")
+
+        source = file_path.read_text(encoding="utf-8")
+        if "Depends(get_bearer_token)" in source:
+            violations.append(f"{relative_path} injects bearer tokens instead of get_current_user")
 
     assert violations == []

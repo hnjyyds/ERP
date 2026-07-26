@@ -124,16 +124,15 @@ class AuthService:
     async def update_current_user_avatar(
         self,
         *,
-        access_token: str,
+        user_id: str,
         payload: CurrentUserAvatarUpdate,
     ) -> CurrentUserSessionResponse:
-        token = self._token_service.verify_access_token(access_token)
         avatar_type, avatar_value = self._normalize_avatar(
             avatar_type=payload.avatar_type,
             avatar_value=payload.avatar_value,
         )
         identity = await self._repository.update_user_avatar(
-            user_id=token.user_id,
+            user_id=user_id,
             avatar_type=avatar_type,
             avatar_value=avatar_value,
         )
