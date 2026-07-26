@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import React from 'react'
 
 // ── Mock API module (must be inline, no external variables due to hoisting) ──
 vi.mock('../../../api', () => ({
@@ -24,7 +25,6 @@ vi.mock('../../routes', async (importOriginal) => {
 
 // ── Mock shared modules ──────────────────────────────────────────
 vi.mock('../../../shared/ui', () => {
-  const React = require('react')
   return {
     FormSelect: (props: Record<string, unknown>) =>
       React.createElement('select', { ...props, 'data-testid': 'form-select' }),
@@ -70,7 +70,7 @@ describe('ExportContractsPage', () => {
 
   it('renders without crashing (list view)', async () => {
     const { container } = render(
-      <ExportContractsPage detailId={undefined} onNavigate={onNavigate} />,
+      <ExportContractsPage detailId={null} onNavigate={onNavigate} />,
     )
     expect(container).toBeTruthy()
     await waitFor(() => {
@@ -79,7 +79,7 @@ describe('ExportContractsPage', () => {
   })
 
   it('renders summary strip', async () => {
-    render(<ExportContractsPage detailId={undefined} onNavigate={onNavigate} />)
+    render(<ExportContractsPage detailId={null} onNavigate={onNavigate} />)
     await waitFor(() => {
       expect(api.listExportContracts).toHaveBeenCalled()
     })
@@ -87,7 +87,7 @@ describe('ExportContractsPage', () => {
   })
 
   it('clicking search button triggers API call', async () => {
-    render(<ExportContractsPage detailId={undefined} onNavigate={onNavigate} />)
+    render(<ExportContractsPage detailId={null} onNavigate={onNavigate} />)
     await waitFor(() => {
       expect(api.listExportContracts).toHaveBeenCalled()
     })

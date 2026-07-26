@@ -30,6 +30,7 @@ import {
   purchaseInvoiceNoticePath,
   followupPath,
   qualityInspectionPath,
+  myQualityTasksPath,
   warehouseInboundPlanPath,
   warehouseInboundOrderPath,
   warehouseOutboundPlanPath,
@@ -131,6 +132,11 @@ const QualityInspectionsPage = React.lazy(() =>
     default: m.QualityInspectionsPage,
   })),
 )
+const MyQualityTasksPage = React.lazy(() =>
+  import('../../pages/quality/MyQualityTasksPage').then((m) => ({
+    default: m.MyQualityTasksPage,
+  })),
+)
 const InboundPlansPage = React.lazy(() =>
   import('../../pages/warehouse/InboundPlansPage').then((m) => ({ default: m.InboundPlansPage })),
 )
@@ -176,10 +182,14 @@ export function AppRouter({
   onRefreshDashboard,
   canNavigatePath,
 }: Props) {
+  const canAccessActivePath = canNavigatePath(activePath)
+
   return (
     <PageErrorBoundary pageKey={activePath}>
       <Suspense fallback={<Skeleton active paragraph={{ rows: 6 }} />}>
-        {activePath === dashboardPath ? (
+        {!canAccessActivePath ? (
+          <AccessDeniedPage />
+        ) : activePath === dashboardPath ? (
           <DashboardPage
             currentUser={session.user}
             dashboard={dashboard}
@@ -285,6 +295,8 @@ export function AppRouter({
             detailId={moduleDetailId(followupPath, activePath)}
             onNavigate={onNavigate}
           />
+        ) : activePath === myQualityTasksPath ? (
+          <MyQualityTasksPage currentUser={session.user} />
         ) : isDetailPathFor(qualityInspectionPath, activePath) ? (
           <QualityInspectionsPage
             currentUser={session.user}
@@ -298,6 +310,7 @@ export function AppRouter({
           />
         ) : isDetailPathFor(warehouseInboundOrderPath, activePath) ? (
           <InboundOrdersPage
+            currentUser={session.user}
             detailId={moduleDetailId(warehouseInboundOrderPath, activePath)}
             onNavigate={onNavigate}
           />
@@ -314,7 +327,11 @@ export function AppRouter({
         ) : activePath === reportingPath ? (
           <ReportingPage onNavigate={onNavigate} />
         ) : isFinancePath(activePath) ? (
-          <FinancePage view={parseFinanceView(activePath)} onNavigate={onNavigate} />
+          <FinancePage
+            currentUser={session.user}
+            view={parseFinanceView(activePath)}
+            onNavigate={onNavigate}
+          />
         ) : (
           <AccessDeniedPage />
         )}

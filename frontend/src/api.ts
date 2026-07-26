@@ -1,11 +1,16 @@
-import { ApiError, ERROR_MESSAGES, friendlyMessageFor } from './shared/errors'
+import {
+  ApiError,
+  ERROR_MESSAGES,
+  friendlyMessageFor,
+  type ApiErrorDetail,
+} from './shared/errors'
 
 export interface ApiResponse<T> {
   success: boolean
   code: string
   message: string
   data: T
-  error: { code: string; message: string } | null
+  error: { code: string; message: string; details?: ApiErrorDetail[] } | null
 }
 
 type ApiErrorBody = Partial<ApiResponse<unknown>> & {
@@ -667,7 +672,6 @@ export interface PaymentRequestCreatePayload {
 export interface PaymentRequestApprovePayload {
   approved_amount: string
   approved_at: string
-  reviewer_name: string
   payment_account?: string | null
   remark?: string | null
 }
@@ -796,7 +800,6 @@ export interface FeePaymentRequestCreatePayload {
 export interface FeePaymentRequestApprovePayload {
   approved_amount: string
   approved_at: string
-  reviewer_name: string
   payment_account?: string | null
   remark?: string | null
 }
@@ -2912,9 +2915,11 @@ export interface InboundOrderGeneratePayload {
   lines: InboundOrderLinePayload[]
 }
 
+export interface InboundOrderSubmitPayload {
+  reviewer_id: string
+}
+
 export interface InboundOrderApprovePayload {
-  reviewer_id?: string | null
-  reviewer_name: string
   approved_at: string
 }
 
@@ -3379,6 +3384,8 @@ export interface QualityIssue {
   attachment_group_id: string | null
 }
 
+export type QualityInspectionStatus = 'pending' | 'in_progress' | 'completed' | 'cancelled'
+
 export interface QualityInspection {
   id: string
   code: string
@@ -3386,8 +3393,10 @@ export interface QualityInspection {
   purchase_contract_no: string
   supplier_id: string | null
   supplier_name: string
-  inspected_at: string
-  result: string
+  status: QualityInspectionStatus
+  scheduled_at: string
+  inspected_at: string | null
+  result: string | null
   inspector_id: string | null
   inspector_name: string
   qc_user_id: string | null
@@ -3428,9 +3437,11 @@ export interface QualityIssuePayload {
 export interface QualityInspectionPayload {
   code: string
   purchase_contract_id: string
-  inspected_at: string
-  result: string
-  inspector_id?: string | null
+  status: QualityInspectionStatus
+  scheduled_at: string
+  inspected_at: string | null
+  result: string | null
+  inspector_id: string
   inspector_name: string
   issue_summary?: string | null
   attachment_group_id?: string | null
@@ -3602,23 +3613,26 @@ function notifyAuthExpired(): void {
   window.dispatchEvent(new Event(authExpiredEventName))
 }
 
-async function readApiError(response: Response): Promise<{ code: string; message: string }> {
+async function readApiError(
+  response: Response,
+): Promise<{ code: string; message: string; details: ApiErrorDetail[] }> {
   try {
     const body = (await response.json()) as ApiErrorBody
     const code = body.error?.code ?? body.code ?? 'UNKNOWN'
-    if (body.error?.message) return { code, message: body.error.message }
-    if (body.message) return { code, message: body.message }
-    if (typeof body.detail === 'string') return { code, message: body.detail }
+    const details = body.error?.details ?? []
+    if (body.error?.message) return { code, message: body.error.message, details }
+    if (body.message) return { code, message: body.message, details }
+    if (typeof body.detail === 'string') return { code, message: body.detail, details }
     if (Array.isArray(body.detail)) {
       const message = body.detail
         .map((item) => item.msg)
         .filter((value): value is string => Boolean(value))
         .join('；')
-      return { code, message }
+      return { code, message, details }
     }
-    return { code, message: '' }
+    return { code, message: '', details }
   } catch {
-    return { code: 'UNKNOWN', message: '' }
+    return { code: 'UNKNOWN', message: '', details: [] }
   }
 }
 
@@ -3633,11 +3647,21 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   })
 
   if (!response.ok) {
-    const { code, message } = await readApiError(response)
+    const { code, message, details } = await readApiError(response)
     if (response.status === 401) {
       notifyAuthExpired()
     }
-    throw new ApiError(friendlyMessageFor(code, message), code, message, response.status)
+    const friendlyMessage =
+      code === 'VALIDATION_ERROR' && details.length === 0 && message.trim()
+        ? message.trim()
+        : friendlyMessageFor(code, message)
+    throw new ApiError(
+      friendlyMessage,
+      code,
+      message,
+      response.status,
+      details,
+    )
   }
 
   const body = (await response.json()) as ApiResponse<T>
@@ -5594,9 +5618,13 @@ export function generateInboundOrderFromPlan(
   })
 }
 
-export function submitInboundOrder(orderId: string): Promise<InboundOrder> {
+export function submitInboundOrder(
+  orderId: string,
+  payload: InboundOrderSubmitPayload,
+): Promise<InboundOrder> {
   return request<InboundOrder>(`/warehouse/inbound-orders/${orderId}/submit`, {
     method: 'POST',
+    body: JSON.stringify(payload),
   })
 }
 
@@ -5762,19 +5790,23 @@ export function listFollowupOverdueNodes(asOf: string): Promise<PurchaseFollowOv
 
 export function listQualityInspections(filters: {
   q?: string
+  status?: string
   result?: string
   supplier_id?: string
   purchase_contract_id?: string
   assignee_user_id?: string
+  inspector_user_id?: string
 } = {}): Promise<QualityInspectionList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
+  if (filters.status) params.set('status', filters.status)
   if (filters.result) params.set('result', filters.result)
   if (filters.supplier_id) params.set('supplier_id', filters.supplier_id)
   if (filters.purchase_contract_id) {
     params.set('purchase_contract_id', filters.purchase_contract_id)
   }
   if (filters.assignee_user_id) params.set('assignee_user_id', filters.assignee_user_id)
+  if (filters.inspector_user_id) params.set('inspector_user_id', filters.inspector_user_id)
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<QualityInspectionList>(`/quality/inspections${suffix}`)
 }

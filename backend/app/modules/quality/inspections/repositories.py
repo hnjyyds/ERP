@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, time
 from decimal import Decimal
 
 from sqlalchemy import Select, false, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.elements import ColumnElement
 
 from app.modules.quality.inspections.models import (
     QualityInspection,
@@ -20,6 +21,8 @@ class QualityInspectionRow:
     purchase_contract_no: str
     supplier_id: str | None
     supplier_name: str
+    status: str
+    scheduled_at: datetime
     inspected_at: date
     result: str
     inspector_id: str | None
@@ -83,6 +86,8 @@ class QualityInspectionRepository:
         owner_user_id: str,
         qc_user_id: str | None = None,
         qc_user_name: str | None = None,
+        status: str = "completed",
+        scheduled_at: datetime | None = None,
     ) -> QualityInspectionRow:
         inspection = QualityInspection(
             code=code,
@@ -90,6 +95,8 @@ class QualityInspectionRepository:
             purchase_contract_no=purchase_contract_no,
             supplier_id=supplier_id,
             supplier_name=supplier_name,
+            status=status,
+            scheduled_at=scheduled_at or datetime.combine(inspected_at, time(hour=9)),
             inspected_at=inspected_at,
             result=result,
             inspector_id=inspector_id,
@@ -117,11 +124,15 @@ class QualityInspectionRepository:
         attachment_group_id: str | None,
         qc_user_id: str | None = None,
         qc_user_name: str | None = None,
+        status: str = "completed",
+        scheduled_at: datetime | None = None,
     ) -> QualityInspectionRow | None:
         inspection = await self.session.get(QualityInspection, inspection_id)
         if inspection is None:
             return None
         inspection.code = code
+        inspection.status = status
+        inspection.scheduled_at = scheduled_at or datetime.combine(inspected_at, time(hour=9))
         inspection.inspected_at = inspected_at
         inspection.result = result
         inspection.inspector_id = inspector_id
@@ -237,18 +248,20 @@ class QualityInspectionRepository:
         self,
         *,
         q: str | None,
+        status: str | None = None,
         result: str | None,
         supplier_id: str | None,
         purchase_contract_id: str | None,
         owner_user_ids: list[str] | None,
         visible_assignee_user_id: str | None = None,
         assignee_user_id: str | None = None,
+        inspector_user_id: str | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[QualityInspectionRow], int]:
         statement = select(QualityInspection)
         count_statement = select(func.count()).select_from(QualityInspection)
-        conditions = []
+        conditions: list[ColumnElement[bool]] = []
         if q:
             pattern = f"%{q}%"
             line_exists = (
@@ -272,18 +285,27 @@ class QualityInspectionRepository:
             )
         if result:
             conditions.append(QualityInspection.result == result)
+        if status:
+            conditions.append(QualityInspection.status == status)
         if supplier_id:
             conditions.append(QualityInspection.supplier_id == supplier_id)
         if purchase_contract_id:
             conditions.append(QualityInspection.purchase_contract_id == purchase_contract_id)
         if assignee_user_id:
             conditions.append(QualityInspection.qc_user_id == assignee_user_id)
+        if inspector_user_id:
+            conditions.append(QualityInspection.inspector_id == inspector_user_id)
         if owner_user_ids is not None:
-            visibility_conditions = []
+            visibility_conditions: list[ColumnElement[bool]] = []
             if owner_user_ids:
                 visibility_conditions.append(QualityInspection.owner_user_id.in_(owner_user_ids))
             if visible_assignee_user_id:
-                visibility_conditions.append(QualityInspection.qc_user_id == visible_assignee_user_id)
+                visibility_conditions.append(
+                    or_(
+                        QualityInspection.inspector_id == visible_assignee_user_id,
+                        QualityInspection.qc_user_id == visible_assignee_user_id,
+                    )
+                )
             conditions.append(or_(*visibility_conditions) if visibility_conditions else false())
         for condition in conditions:
             statement = statement.where(condition)
@@ -307,6 +329,7 @@ class QualityInspectionRepository:
         inspection = await self.session.scalar(
             select(QualityInspection)
             .where(QualityInspection.purchase_contract_id == purchase_contract_id)
+            .where(QualityInspection.status == "completed")
             .order_by(QualityInspection.inspected_at.desc(), QualityInspection.created_at.desc())
         )
         if inspection is None:
@@ -318,6 +341,7 @@ class QualityInspectionRepository:
             select(func.count())
             .select_from(QualityInspection)
             .where(QualityInspection.purchase_contract_id == purchase_contract_id)
+            .where(QualityInspection.status == "completed")
             .where(QualityInspection.result == "passed")
         )
         return bool(count)
@@ -337,6 +361,9 @@ class QualityInspectionRepository:
             purchase_contract_no=inspection.purchase_contract_no,
             supplier_id=inspection.supplier_id,
             supplier_name=inspection.supplier_name,
+            status=inspection.status,
+            scheduled_at=inspection.scheduled_at
+            or datetime.combine(inspection.inspected_at, time(hour=9)),
             inspected_at=inspection.inspected_at,
             result=inspection.result,
             inspector_id=inspection.inspector_id,

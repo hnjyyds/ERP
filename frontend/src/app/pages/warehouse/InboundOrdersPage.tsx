@@ -2,7 +2,7 @@ import { Alert, Button, Descriptions, Input, Modal, Select, Skeleton, Table, Tag
 import { ArrowLeft, LayoutDashboard, Plus, Search, Warehouse , CheckCircle2, PackagePlus, Send} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { approveInboundOrder, generateInboundOrderFromPlan, listAssignableUsers, listInboundOrders, submitInboundOrder, type AssignableUser, type InboundOrder, type InboundOrderApprovePayload, type InboundOrderGeneratePayload , InboundPlan, InventoryBalance, InventoryLedger, listInboundPlans, listInventoryBalances, listInventoryLedgers} from '../../../api'
+import { approveInboundOrder, generateInboundOrderFromPlan, listAssignableUsers, listInboundOrders, submitInboundOrder, type AssignableUser, type CurrentUser, type InboundOrder, type InboundOrderApprovePayload, type InboundOrderGeneratePayload , InboundPlan, InventoryBalance, InventoryLedger, listInboundPlans, listInventoryBalances, listInventoryLedgers} from '../../../api'
 import { warehouseInboundOrderPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
@@ -38,7 +38,7 @@ function initialInboundOrderForm(): InboundOrderFormState {
     plan_id: '',
     code: `IO-${Date.now().toString().slice(-6)}`,
     inbound_mode: 'formal',
-    inbound_at: '2026-08-30',
+    inbound_at: todayInputValue(),
     warehouse_id: 'wh-ningbo',
     warehouse_name: '宁波总仓',
     location_id: 'loc-a-01',
@@ -51,7 +51,7 @@ function initialInboundOrderApprovalForm(): InboundOrderApprovalFormState {
   return {
     reviewer_id: '',
     reviewer_name: '',
-    approved_at: '2026-08-30',
+    approved_at: todayInputValue(),
   }
 }
 
@@ -108,8 +108,6 @@ function inboundOrderApprovePayload(
   form: InboundOrderApprovalFormState,
 ): InboundOrderApprovePayload {
   return {
-    reviewer_id: form.reviewer_id,
-    reviewer_name: form.reviewer_name.trim(),
     approved_at: form.approved_at,
   }
 }
@@ -135,7 +133,11 @@ function inventoryDirectionLabel(value: string): string {
 }
 
 
-export function InboundOrdersPage({ detailId, onNavigate }: RoutedDetailPageProps) {
+type InboundOrdersPageProps = RoutedDetailPageProps & {
+  currentUser: CurrentUser
+}
+
+export function InboundOrdersPage({ currentUser, detailId, onNavigate }: InboundOrdersPageProps) {
   const [orders, setOrders] = useState<InboundOrder[]>([])
   const [inboundPlans, setInboundPlans] = useState<InboundPlan[]>([])
   const [inventoryBalances, setInventoryBalances] = useState<InventoryBalance[]>([])
@@ -349,11 +351,17 @@ export function InboundOrdersPage({ detailId, onNavigate }: RoutedDetailPageProp
 
   async function submitSelectedInboundOrder() {
     if (!selectedOrder) return
+    if (!approvalForm.reviewer_id) {
+      showError(new Error('请选择审批人'))
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
     try {
-      const order = await submitInboundOrder(selectedOrder.id)
+      const order = await submitInboundOrder(selectedOrder.id, {
+        reviewer_id: approvalForm.reviewer_id,
+      })
       const inventoryQuery = order.lines[0]?.product_code ?? order.lines[0]?.product_name ?? ''
       upsertInboundOrder(order)
       await loadInboundOrders(order.id, order, inventoryQuery)
@@ -369,8 +377,8 @@ export function InboundOrdersPage({ detailId, onNavigate }: RoutedDetailPageProp
     event.preventDefault()
     if (!selectedOrder) return
     if (selectedOrder.status !== 'submitted') return
-    if (!approvalForm.reviewer_id || !approvalForm.reviewer_name.trim()) {
-      showError(new Error('请选择审批人'))
+    if (selectedOrder.reviewer_id !== currentUser.id) {
+      showError(new Error(`该入库单应由 ${selectedOrder.reviewer_name ?? '指定审批人'} 审批`))
       return
     }
     setSubmitting(true)
@@ -687,6 +695,7 @@ export function InboundOrdersPage({ detailId, onNavigate }: RoutedDetailPageProp
                   aria-label="审批人"
                   showSearch
                   loading={loadingAssignableUsers}
+                  disabled={selectedOrder?.status !== 'draft'}
                   value={approvalForm.reviewer_id || undefined}
                   placeholder={
                     loadingAssignableUsers
@@ -734,7 +743,11 @@ export function InboundOrdersPage({ detailId, onNavigate }: RoutedDetailPageProp
               </label>
             </div>
             <Button
-              disabled={!selectedOrder || selectedOrder.status !== 'submitted'}
+              disabled={
+                !selectedOrder ||
+                selectedOrder.status !== 'submitted' ||
+                selectedOrder.reviewer_id !== currentUser.id
+              }
               htmlType="submit"
               icon={<CheckCircle2 size={16} />}
               loading={submitting}
@@ -742,6 +755,14 @@ export function InboundOrdersPage({ detailId, onNavigate }: RoutedDetailPageProp
             >
               审批入库
             </Button>
+            {selectedOrder?.status === 'submitted' &&
+            selectedOrder.reviewer_id !== currentUser.id ? (
+              <Alert
+                showIcon
+                type="info"
+                message={`等待 ${selectedOrder.reviewer_name ?? '指定审批人'} 审批`}
+              />
+            ) : null}
           </form>
           </div>
         </Modal>
@@ -910,4 +931,3 @@ export function InboundOrdersPage({ detailId, onNavigate }: RoutedDetailPageProp
     </section>
   )
 }
-

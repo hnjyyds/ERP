@@ -22,6 +22,7 @@ export const purchaseContractPath = '/purchase/contracts'
 export const purchaseInvoiceNoticePath = '/purchase/invoice-notices'
 export const followupPath = '/purchase/followup'
 export const qualityInspectionPath = '/quality/inspections'
+export const myQualityTasksPath = '/quality/tasks'
 export const warehouseInboundPlanPath = '/warehouse/inbound-plans'
 export const warehouseInboundOrderPath = '/warehouse/inbound-orders'
 export const warehouseOutboundPlanPath = '/warehouse/outbound-plans'
@@ -160,4 +161,14 @@ export function parseFinanceView(path: string): FinanceView {
 
 export function financeDetailPath(module: FinanceModule, id: string) {
   return `${financeModulePathByModule[module]}/${encodeURIComponent(id)}`
+}
+
+export function canAccessPath(path: string, menuPaths: readonly string[]): boolean {
+  if (dashboardSectionPaths.has(path)) {
+    return menuPaths.includes(dashboardPath)
+  }
+  if (isFinancePath(path)) {
+    return menuPaths.includes(financePath)
+  }
+  return menuPaths.includes(detailRootPath(path))
 }

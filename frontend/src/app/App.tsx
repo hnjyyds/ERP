@@ -21,6 +21,7 @@ import {
 } from '../api'
 import {
   dashboardPath,
+  canAccessPath,
   detailRootPath,
   organizationUsersPath,
   mcpSettingsPath,
@@ -40,6 +41,7 @@ import {
   purchaseInvoiceNoticePath,
   followupPath,
   qualityInspectionPath,
+  myQualityTasksPath,
   warehouseInboundPlanPath,
   warehouseInboundOrderPath,
   warehouseOutboundPlanPath,
@@ -256,7 +258,14 @@ const sidebarNavGroups: Array<{
     id: 'taskCenter',
     label: 'QC / 跟单',
     icon: ShieldCheck,
-    paths: [qualityInspectionPath, followupPath, sampleRecordPath, sampleRequestPath, sampleDeliveryPath],
+    paths: [
+      qualityInspectionPath,
+      myQualityTasksPath,
+      followupPath,
+      sampleRecordPath,
+      sampleRequestPath,
+      sampleDeliveryPath,
+    ],
   },
   {
     id: 'warehouse',
@@ -466,8 +475,22 @@ export default function App() {
   const sidebarMenuGroups = useMemo(() => getSidebarMenuGroups(session?.menus ?? []), [session?.menus])
 
   const activeMenu = useMemo(() => {
-    return session?.menus?.find((m) => m.path === activePath) ?? null
+    return (
+      [...(session?.menus ?? [])]
+        .sort((left, right) => right.path.length - left.path.length)
+        .find(
+          (menu) =>
+            menu.path === activePath ||
+            activePath.startsWith(`${menu.path === dashboardPath ? '' : menu.path}/`),
+        ) ?? null
+    )
   }, [session, activePath])
+
+  const canNavigatePath = (path: string) =>
+    canAccessPath(
+      path,
+      session?.menus.map((menu) => menu.path) ?? [],
+    )
 
   // ── renders ──────────────────────────────────────────────────────────────
 
@@ -526,7 +549,7 @@ export default function App() {
             activeMenu={activeMenu}
             onNavigate={navigate}
             onRefreshDashboard={async () => { await loadDashboard() }}
-            canNavigatePath={() => true}
+            canNavigatePath={canNavigatePath}
           />
         </section>
       </main>

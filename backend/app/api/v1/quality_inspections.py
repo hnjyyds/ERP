@@ -35,10 +35,10 @@ def _raise_permission_denied() -> NoReturn:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="缺少 QC 查验权限")
 
 
-def _raise_invalid_inspection() -> NoReturn:
+def _raise_invalid_inspection(message: str = "QC 查验数据无效，请检查填写内容") -> NoReturn:
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-        detail="QC 查验数据无效，请检查填写内容",
+        detail=message,
     )
 
 
@@ -56,26 +56,30 @@ async def list_quality_inspections(
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
     service: Annotated[QualityInspectionService, Depends(get_quality_inspection_service)],
     q: Annotated[str | None, Query(max_length=120)] = None,
+    status: Annotated[str | None, Query(max_length=40)] = None,
     result: Annotated[str | None, Query(max_length=40)] = None,
     supplier_id: Annotated[str | None, Query(max_length=36)] = None,
     purchase_contract_id: Annotated[str | None, Query(max_length=36)] = None,
     assignee_user_id: Annotated[str | None, Query(max_length=36)] = None,
+    inspector_user_id: Annotated[str | None, Query(max_length=36)] = None,
 ) -> ApiResponse[QualityInspectionListResponse]:
     user = await _current_user(token, auth_service)
     try:
         inspections = await service.list_inspections(
             current_user=user,
             q=q,
+            status=status,
             result=result,
             supplier_id=supplier_id,
             purchase_contract_id=purchase_contract_id,
             assignee_user_id=assignee_user_id,
+            inspector_user_id=inspector_user_id,
         )
         return ApiResponse(data=inspections)
     except PermissionDeniedError:
         _raise_permission_denied()
-    except ValueError:
-        _raise_invalid_inspection()
+    except ValueError as exc:
+        _raise_invalid_inspection(str(exc))
 
 
 @router.post(
@@ -97,8 +101,8 @@ async def create_quality_inspection(
         _raise_permission_denied()
     except QualityInspectionPurchaseContractNotFoundError:
         _raise_purchase_contract_not_found()
-    except ValueError:
-        _raise_invalid_inspection()
+    except ValueError as exc:
+        _raise_invalid_inspection(str(exc))
 
 
 @router.get(
@@ -161,5 +165,5 @@ async def update_quality_inspection(
         _raise_permission_denied()
     except QualityInspectionNotFoundError:
         _raise_inspection_not_found()
-    except ValueError:
-        _raise_invalid_inspection()
+    except ValueError as exc:
+        _raise_invalid_inspection(str(exc))

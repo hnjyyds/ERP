@@ -59,7 +59,7 @@ function initialOutboundOrderForm(): OutboundOrderFormState {
     plan_id: '',
     code: `OO-${Date.now().toString().slice(-6)}`,
     outbound_mode: 'formal',
-    outbound_at: '2026-10-30',
+    outbound_at: todayInputValue(),
     warehouse_id: 'wh-ningbo',
     warehouse_name: '宁波总仓',
     location_id: 'loc-fg-01',
@@ -72,7 +72,7 @@ function initialOutboundOrderForm(): OutboundOrderFormState {
 function initialOutboundOrderApprovalForm(): OutboundOrderApprovalFormState {
   return {
     reviewer_name: '演示业务主管',
-    approved_at: '2026-10-30',
+    approved_at: todayInputValue(),
     allow_negative: false,
   }
 }
@@ -896,5 +896,4 @@ export function OutboundOrdersPage({ detailId, onNavigate }: RoutedDetailPagePro
     </section>
   )
 }
-
 

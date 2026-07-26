@@ -6,6 +6,7 @@ from app.modules.followup.services import FollowupService
 from app.modules.purchase.contracts.repositories import PurchaseContractRepository
 from app.modules.quality.inspections.repositories import QualityInspectionRepository
 from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.warehouse.inbound_orders.repositories import (
     InboundOrderLineRow,
@@ -23,6 +24,7 @@ from app.modules.warehouse.inbound_orders.schemas import (
     InboundOrderLineResponse,
     InboundOrderListResponse,
     InboundOrderResponse,
+    InboundOrderSubmit,
     InventoryBalanceListResponse,
     InventoryBalanceResponse,
     InventoryLedgerListResponse,
@@ -68,6 +70,7 @@ class InboundOrderService:
         quality_repository: QualityInspectionRepository,
         followup_service: FollowupService,
         data_scope_resolver: DataScopeResolver,
+        auth_repository: AuthRepository,
     ) -> None:
         self._repository = inbound_repository
         self._inbound_plan_repository = inbound_plan_repository
@@ -75,6 +78,7 @@ class InboundOrderService:
         self._quality_repository = quality_repository
         self._followup_service = followup_service
         self._data_scope_resolver = data_scope_resolver
+        self._auth_repository = auth_repository
 
     async def generate_from_plan(
         self,
@@ -130,13 +134,25 @@ class InboundOrderService:
         *,
         current_user: CurrentUserResponse,
         order_id: str,
+        payload: InboundOrderSubmit,
     ) -> InboundOrderResponse:
         self._require(current_user, "warehouse:inbound_order:edit")
         order = await self._get_accessible_order(current_user=current_user, order_id=order_id)
         if order.status != "draft":
             raise ValueError("只有草稿入库单可以提交")
+        if payload.reviewer_id == current_user.id:
+            raise ValueError("不能将自己设为审批人")
+        reviewer = await self._auth_repository.get_user_identity_by_id(payload.reviewer_id)
+        if reviewer is None:
+            raise ValueError("审批人不存在或已停用")
+        if "warehouse:inbound_order:approve" not in reviewer.permissions:
+            raise ValueError("所选员工没有入库审批权限")
         async with UnitOfWork(self._repository.session):
-            submitted = await self._repository.submit_order(order.id)
+            submitted = await self._repository.submit_order(
+                order.id,
+                reviewer_id=reviewer.id,
+                reviewer_name=reviewer.display_name,
+            )
             if submitted is None:
                 raise InboundOrderNotFoundError
         return await self._order_response(submitted)
@@ -152,6 +168,8 @@ class InboundOrderService:
         order = await self._get_accessible_order(current_user=current_user, order_id=order_id)
         if order.status != "submitted":
             raise ValueError("只有已提交入库单可以审批")
+        if order.reviewer_id != current_user.id:
+            raise PermissionDeniedError
         lines = await self._repository.list_lines(order.id)
         if not lines:
             raise ValueError("入库单没有明细")
@@ -161,8 +179,8 @@ class InboundOrderService:
         async with UnitOfWork(self._repository.session):
             approved = await self._repository.approve_order(
                 order.id,
-                payload.reviewer_id,
-                payload.reviewer_name,
+                current_user.id,
+                current_user.display_name,
                 payload.approved_at,
             )
             if approved is None:

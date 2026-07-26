@@ -12,6 +12,7 @@ from app.modules.warehouse.inbound_orders.schemas import (
     InboundOrderGenerateFromPlan,
     InboundOrderListResponse,
     InboundOrderResponse,
+    InboundOrderSubmit,
     InventoryBalanceListResponse,
     InventoryLedgerListResponse,
 )
@@ -169,13 +170,18 @@ async def get_inbound_order(
 @router.post("/{order_id}/submit", response_model=ApiResponse[InboundOrderResponse])
 async def submit_inbound_order(
     order_id: str,
+    payload: InboundOrderSubmit,
     token: Annotated[str, Depends(get_bearer_token)],
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
     service: Annotated[InboundOrderService, Depends(get_inbound_order_service)],
 ) -> ApiResponse[InboundOrderResponse]:
     user = await _current_user(token, auth_service)
     try:
-        order = await service.submit_order(current_user=user, order_id=order_id)
+        order = await service.submit_order(
+            current_user=user,
+            order_id=order_id,
+            payload=payload,
+        )
         return ApiResponse(data=order)
     except PermissionDeniedError:
         _raise_permission_denied()

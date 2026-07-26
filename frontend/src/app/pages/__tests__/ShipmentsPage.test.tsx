@@ -8,12 +8,12 @@ describe('ShipmentsPage', () => {
   beforeEach(() => { vi.clearAllMocks() })
 
   it('renders without crashing', () => {
-    const { container } = render(<ShipmentsPage detailId={undefined} onNavigate={onNavigate} />)
+    const { container } = render(<ShipmentsPage detailId={null} onNavigate={onNavigate} />)
     expect(container).toBeTruthy()
   })
 
   it('renders shipment list panel', () => {
-    render(<ShipmentsPage detailId={undefined} onNavigate={onNavigate} />)
+    render(<ShipmentsPage detailId={null} onNavigate={onNavigate} />)
     expect(screen.getByText('出货计划列表')).toBeTruthy()
   })
 })

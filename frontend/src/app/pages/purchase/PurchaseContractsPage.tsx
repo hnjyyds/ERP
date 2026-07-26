@@ -682,7 +682,7 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="采购合同列表234" />
+            <PanelTitle icon={<Search size={18} />} title="采购合同列表" />
             <form
               className="inline-filters"
               onSubmit={(event) => {
@@ -1475,5 +1475,4 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
     </section>
   )
 }
-
 

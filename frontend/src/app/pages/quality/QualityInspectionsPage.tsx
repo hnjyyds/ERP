@@ -1,164 +1,193 @@
-import { emptyToNull, formatDate, formatQuantity, nullableText, type RoutedDetailPageProps } from '../appHelpers'
-import { Alert, Button, Input, Modal, Select, Skeleton, Table, Tag } from 'antd'
-import { followupSourceTypeOptions } from '../../../shared/formOptions'
-import { ArrowLeft, LayoutDashboard, Plus, Search, ShieldCheck , FilePenLine} from 'lucide-react'
-import type { FormEvent, MouseEvent } from 'react'
+import { Alert, Button, Input, Modal, Select, Table, Tag } from 'antd'
+import { ArrowLeft, LayoutDashboard, Plus, Search, ShieldCheck } from 'lucide-react'
+import type { FormEvent, MouseEvent, ReactNode } from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { createQualityInspection, getQualityInboundEligibility, listAssignableUsers, listPurchaseContracts, listQualityInspections, updateQualityInspection, type AssignableUser, type CurrentUser, type QualityInspection, type QualityInspectionInboundEligibility, type QualityInspectionPayload } from '../../../api'
-import { qualityInspectionPath, moduleDetailPath } from '../../routes'
-import { FormSelect, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
-import { showError } from '../../../shared/errors'
-import { qualityResultOptions, qualityIssueSeverityOptions, qualityIssueStatusOptions } from '../../../shared/formOptions'
 
-type RoutedDetailPageWithCurrentUserProps = RoutedDetailPageProps & { currentUser: CurrentUser }
+import {
+  createQualityInspection,
+  getQualityInboundEligibility,
+  listAssignableUsers,
+  listPurchaseContracts,
+  listQualityInspections,
+  type AssignableUser,
+  type CurrentUser,
+  type QualityInspection,
+  type QualityInspectionInboundEligibility,
+  type QualityInspectionPayload,
+  type QualityInspectionStatus,
+} from '../../../api'
+import {
+  qualityIssueSeverityOptions,
+  qualityIssueStatusOptions,
+  qualityResultOptions,
+  qualityTaskStatusOptions,
+} from '../../../shared/formOptions'
+import { ApiError, showError, showWarningDialog } from '../../../shared/errors'
+import { FormSelect, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
+import { moduleDetailPath, qualityInspectionPath } from '../../routes'
+import { emptyToNull, formatDate, nullableText, type RoutedDetailPageProps } from '../appHelpers'
+
+type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 type QualityInspectionAssigneeFilter = 'all' | 'mine'
 
-
-type QualityInspectionFormState = {
+type QualityTaskFormState = {
   code: string
   purchase_contract_id: string
-  inspected_at: string
-  result: string
+  scheduled_at: string
   inspector_id: string
   inspector_name: string
-  issue_summary: string
+  task_note: string
   attachment_group_id: string
-  purchase_contract_line_id: string
-  product_id: string
-  product_code: string
-  product_name: string
-  inspected_quantity: string
-  failed_quantity: string
-  unit: string
-  line_result: string
-  line_remark: string
-  issue_type: string
-  severity: string
-  description: string
-  corrective_action: string
-  issue_status: string
-  issue_attachment_group_id: string
 }
 
-function sourceTypeFromNodeCode(nodeCode: string) {
-  if (nodeCode === 'inbound_completed') return 'inventory_inbound'
-  if (nodeCode === 'outbound_completed') return 'inventory_outbound'
-  return 'quality_inspection'
+type QualityTaskValidationField = 'code' | 'purchase_contract_id' | 'scheduled_at' | 'inspector_id'
+
+type QualityTaskFormErrors = Partial<Record<QualityTaskValidationField, string>>
+
+const validationOrder: QualityTaskValidationField[] = [
+  'code',
+  'purchase_contract_id',
+  'scheduled_at',
+  'inspector_id',
+]
+
+const fieldLabels: Record<QualityTaskValidationField, string> = {
+  code: 'QC 任务单号',
+  purchase_contract_id: '采购合同',
+  scheduled_at: '排期时间',
+  inspector_id: '负责人',
 }
 
-function followupSourceTypeLabel(value: string | null): string {
-  if (!value) return '未回写'
-  return followupSourceTypeOptions.find((item) => item.value === value)?.label ?? value
+const fieldIds: Record<QualityTaskValidationField, string> = {
+  code: 'quality-code',
+  purchase_contract_id: 'quality-contract-id',
+  scheduled_at: 'quality-scheduled-at',
+  inspector_id: 'quality-inspector-id',
+}
+
+const backendFieldMap: Record<string, QualityTaskValidationField> = {
+  code: 'code',
+  purchase_contract_id: 'purchase_contract_id',
+  scheduled_at: 'scheduled_at',
+  inspector_id: 'inspector_id',
+  inspector_name: 'inspector_id',
+}
+
+function localDateTimeInput(value: Date): string {
+  const pad = (part: number) => String(part).padStart(2, '0')
+  return `${value.getFullYear()}-${pad(value.getMonth() + 1)}-${pad(value.getDate())}T${pad(
+    value.getHours(),
+  )}:${pad(value.getMinutes())}`
+}
+
+function defaultScheduledAt(): string {
+  const value = new Date()
+  value.setDate(value.getDate() + 1)
+  value.setHours(9, 0, 0, 0)
+  return localDateTimeInput(value)
+}
+
+function formatScheduledAt(value: string): string {
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) return value
+  const pad = (part: number) => String(part).padStart(2, '0')
+  return `${parsed.getFullYear()}/${pad(parsed.getMonth() + 1)}/${pad(parsed.getDate())} ${pad(
+    parsed.getHours(),
+  )}:${pad(parsed.getMinutes())}`
+}
+
+function initialTaskForm(currentUser: CurrentUser): QualityTaskFormState {
+  return {
+    code: `QC-${Date.now().toString().slice(-6)}`,
+    purchase_contract_id: '',
+    scheduled_at: defaultScheduledAt(),
+    inspector_id: currentUser.id,
+    inspector_name: currentUser.display_name,
+    task_note: '',
+    attachment_group_id: '',
+  }
+}
+
+function validateTaskForm(form: QualityTaskFormState): QualityTaskFormErrors {
+  const errors: QualityTaskFormErrors = {}
+  if (!form.code.trim()) errors.code = '请输入 QC 任务单号'
+  if (!form.purchase_contract_id.trim()) {
+    errors.purchase_contract_id = '请选择采购合同'
+  }
+  if (!form.scheduled_at) errors.scheduled_at = '请选择排期时间'
+  if (!form.inspector_id.trim() || !form.inspector_name.trim()) {
+    errors.inspector_id = '请选择负责人'
+  }
+  return errors
+}
+
+function validationErrorsFromApi(error: unknown): QualityTaskFormErrors {
+  if (!(error instanceof ApiError) || error.code !== 'VALIDATION_ERROR') return {}
+  return error.details.reduce<QualityTaskFormErrors>((errors, detail) => {
+    const field = backendFieldMap[detail.field]
+    if (field && !errors[field]) errors[field] = detail.message
+    return errors
+  }, {})
+}
+
+function RequiredFieldLabel({ children }: { children: ReactNode }) {
+  return (
+    <span className="form-field-label">
+      {children}
+      <span aria-hidden="true" className="form-required-mark">
+        *
+      </span>
+    </span>
+  )
+}
+
+function FieldError({ field, message }: { field: QualityTaskValidationField; message?: string }) {
+  if (!message) return null
+  return (
+    <span className="form-field-error" id={`${fieldIds[field]}-error`}>
+      {message}
+    </span>
+  )
+}
+
+function taskPayload(form: QualityTaskFormState): QualityInspectionPayload {
+  return {
+    code: form.code.trim(),
+    purchase_contract_id: form.purchase_contract_id.trim(),
+    status: 'pending',
+    scheduled_at: form.scheduled_at,
+    inspected_at: null,
+    result: null,
+    inspector_id: form.inspector_id.trim(),
+    inspector_name: form.inspector_name.trim(),
+    issue_summary: emptyToNull(form.task_note),
+    attachment_group_id: emptyToNull(form.attachment_group_id),
+    lines: [],
+    issues: [],
+  }
 }
 
 function assignableUserOptionLabel(user: AssignableUser): string {
   return [user.display_name, user.username, user.department_name].filter(Boolean).join(' / ')
 }
 
-function initialQualityInspectionForm(currentUser: CurrentUser): QualityInspectionFormState {
-  return {
-    code: `QC-${Date.now().toString().slice(-6)}`,
-    purchase_contract_id: '',
-    inspected_at: '2026-08-19',
-    result: 'passed',
-    inspector_id: currentUser.id,
-    inspector_name: currentUser.display_name,
-    issue_summary: '',
-    attachment_group_id: 'attach-qc-demo',
-    purchase_contract_line_id: '',
-    product_id: 'product-bag',
-    product_code: 'BAG-40',
-    product_name: 'Eco Shopping Bag',
-    inspected_quantity: '120',
-    failed_quantity: '0',
-    unit: 'pcs',
-    line_result: 'passed',
-    line_remark: '首检通过',
-    issue_type: '包装破损',
-    severity: 'major',
-    description: '',
-    corrective_action: '',
-    issue_status: 'open',
-    issue_attachment_group_id: '',
-  }
+function taskStatusLabel(value: QualityInspectionStatus): string {
+  return qualityTaskStatusOptions.find((option) => option.value === value)?.label ?? value
 }
 
-function qualityInspectionToForm(inspection: QualityInspection): QualityInspectionFormState {
-  const line = inspection.lines[0]
-  const issue = inspection.issues[0]
-  return {
-    code: inspection.code,
-    purchase_contract_id: inspection.purchase_contract_id,
-    inspected_at: inspection.inspected_at,
-    result: inspection.result,
-    inspector_id: inspection.inspector_id ?? '',
-    inspector_name: inspection.inspector_name,
-    issue_summary: inspection.issue_summary ?? '',
-    attachment_group_id: inspection.attachment_group_id ?? '',
-    purchase_contract_line_id: line?.purchase_contract_line_id ?? '',
-    product_id: line?.product_id ?? '',
-    product_code: line?.product_code ?? '',
-    product_name: line?.product_name ?? '',
-    inspected_quantity: line?.inspected_quantity ?? '0',
-    failed_quantity: line?.failed_quantity ?? '0',
-    unit: line?.unit ?? 'pcs',
-    line_result: line?.result ?? inspection.result,
-    line_remark: line?.remark ?? '',
-    issue_type: issue?.issue_type ?? '包装破损',
-    severity: issue?.severity ?? 'major',
-    description: issue?.description ?? '',
-    corrective_action: issue?.corrective_action ?? '',
-    issue_status: issue?.status ?? 'open',
-    issue_attachment_group_id: issue?.attachment_group_id ?? '',
-  }
+function taskStatusColor(value: QualityInspectionStatus): string {
+  if (value === 'pending') return 'warning'
+  if (value === 'in_progress') return 'processing'
+  if (value === 'completed') return 'success'
+  return 'default'
 }
 
-function qualityInspectionPayload(form: QualityInspectionFormState): QualityInspectionPayload {
-  const issues = form.description.trim()
-    ? [
-        {
-          issue_type: form.issue_type.trim(),
-          severity: form.severity,
-          description: form.description.trim(),
-          corrective_action: emptyToNull(form.corrective_action),
-          status: form.issue_status,
-          attachment_group_id: emptyToNull(form.issue_attachment_group_id),
-        },
-      ]
-    : []
-
-  return {
-    code: form.code.trim(),
-    purchase_contract_id: form.purchase_contract_id.trim(),
-    inspected_at: form.inspected_at,
-    result: form.result,
-    inspector_id: emptyToNull(form.inspector_id),
-    inspector_name: form.inspector_name.trim(),
-    issue_summary: emptyToNull(form.issue_summary),
-    attachment_group_id: emptyToNull(form.attachment_group_id),
-    lines: [
-      {
-        purchase_contract_line_id: emptyToNull(form.purchase_contract_line_id),
-        product_id: emptyToNull(form.product_id),
-        product_code: emptyToNull(form.product_code),
-        product_name: form.product_name.trim(),
-        inspected_quantity: form.inspected_quantity,
-        failed_quantity: form.failed_quantity || '0',
-        unit: form.unit.trim(),
-        result: form.line_result,
-        remark: emptyToNull(form.line_remark),
-      },
-    ],
-    issues,
-  }
-}
-
-function qualityResultLabel(value: string | null): string {
+function resultLabel(value: string | null): string {
   if (!value) return '未判定'
-  return qualityResultOptions.find((item) => item.value === value)?.label ?? value
+  return qualityResultOptions.find((option) => option.value === value)?.label ?? value
 }
 
-function qualityResultTagColor(value: string): string {
+function resultColor(value: string | null): string {
   if (value === 'passed') return 'success'
   if (value === 'failed') return 'error'
   if (value === 'partial_passed') return 'warning'
@@ -166,49 +195,47 @@ function qualityResultTagColor(value: string): string {
   return 'default'
 }
 
-function qualityIssueSeverityLabel(value: string): string {
-  return qualityIssueSeverityOptions.find((item) => item.value === value)?.label ?? value
+function issueSeverityLabel(value: string): string {
+  return qualityIssueSeverityOptions.find((option) => option.value === value)?.label ?? value
 }
 
-function qualityIssueStatusLabel(value: string): string {
-  return qualityIssueStatusOptions.find((item) => item.value === value)?.label ?? value
+function issueStatusLabel(value: string): string {
+  return qualityIssueStatusOptions.find((option) => option.value === value)?.label ?? value
 }
 
-function qualityInboundReason(inspection: QualityInspection): string {
+function inboundReason(inspection: QualityInspection): string {
+  if (inspection.status !== 'completed') return 'QC 任务尚未完成，暂不能入库'
   if (inspection.result === 'passed') return 'QC 已通过'
   if (inspection.result === 'failed') return 'QC 未通过，禁止入库'
   if (inspection.result === 'partial_passed') return 'QC 部分通过，需按合格数量入库'
-  if (inspection.result === 'recheck_required') return 'QC 待复检，暂缓入库'
+  if (inspection.result === 'recheck_required') return 'QC 需要复检，暂缓入库'
   return '等待 QC 判定'
 }
 
-export function QualityInspectionsPage({
-  currentUser,
-  detailId,
-  onNavigate,
-}: RoutedDetailPageWithCurrentUserProps) {
+export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Props) {
   const [inspections, setInspections] = useState<QualityInspection[]>([])
   const [selectedInspectionId, setSelectedInspectionId] = useState<string | null>(null)
-  const [editingInspectionId, setEditingInspectionId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
   const [resultFilter, setResultFilter] = useState('')
   const [supplierFilter, setSupplierFilter] = useState('')
   const [contractFilter, setContractFilter] = useState('')
   const [assigneeFilter, setAssigneeFilter] = useState<QualityInspectionAssigneeFilter>('all')
   const [eligibility, setEligibility] = useState<QualityInspectionInboundEligibility | null>(null)
-  const [form, setForm] = useState<QualityInspectionFormState>(() => initialQualityInspectionForm(currentUser))
+  const [form, setForm] = useState<QualityTaskFormState>(() => initialTaskForm(currentUser))
+  const [fieldErrors, setFieldErrors] = useState<QualityTaskFormErrors>({})
   const [assignableUsers, setAssignableUsers] = useState<AssignableUser[]>([])
-  const [inspectionModalOpen, setInspectionModalOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [loadingAssignableUsers, setLoadingAssignableUsers] = useState(false)
   const [assignableUsersLoaded, setAssignableUsersLoaded] = useState(false)
+  const [loadingAssignableUsers, setLoadingAssignableUsers] = useState(false)
+  const [taskModalOpen, setTaskModalOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
 
   const fetchContractOptions = useCallback(async (query: string) => {
     const result = await listPurchaseContracts({
       q: query.trim() || undefined,
+      approval_status: 'approved',
     })
     return result.items.slice(0, 20).map((item) => ({
       value: item.id,
@@ -216,75 +243,101 @@ export function QualityInspectionsPage({
       description: `下单 ${item.contract_date}  交货 ${item.delivery_date}`,
     }))
   }, [])
-  const selectedInspection = useMemo(
-    () => {
-      if (detailId) return inspections.find((item) => item.id === detailId) ?? null
-      return inspections.find((item) => item.id === selectedInspectionId) ?? inspections[0] ?? null
-    },
-    [detailId, inspections, selectedInspectionId],
-  )
+
+  const selectedInspection = useMemo(() => {
+    if (detailId) return inspections.find((item) => item.id === detailId) ?? null
+    return inspections.find((item) => item.id === selectedInspectionId) ?? inspections[0] ?? null
+  }, [detailId, inspections, selectedInspectionId])
 
   useEffect(() => {
     void loadQualityInspections()
   }, [])
 
   useEffect(() => {
-    if (!inspectionModalOpen || assignableUsersLoaded || loadingAssignableUsers) return
-    void loadAssignableUsersForInspection()
-  }, [inspectionModalOpen, assignableUsersLoaded, loadingAssignableUsers])
+    if (!taskModalOpen || assignableUsersLoaded || loadingAssignableUsers) return
+    void loadAssignableUsersForTask()
+  }, [taskModalOpen, assignableUsersLoaded, loadingAssignableUsers])
 
   useEffect(() => {
-    if (detailId && selectedInspection) {
-      void refreshQualityInboundEligibility(selectedInspection.purchase_contract_id)
+    if (!detailId || !selectedInspection) {
+      setEligibility(null)
       return
     }
-    setEligibility(null)
+    void refreshEligibility(selectedInspection.purchase_contract_id)
   }, [detailId, selectedInspection?.id])
 
   useEffect(() => {
-    if (detailId && inspections.length > 0 && !inspections.some((item) => item.id === detailId)) {
+    if (detailId && inspections.length > 0 && !selectedInspection) {
       onNavigate(qualityInspectionPath)
     }
-  }, [detailId, inspections, onNavigate])
+  }, [detailId, inspections, onNavigate, selectedInspection])
 
   async function loadQualityInspections(preferredInspectionId?: string) {
     setLoading(true)
-    setError('')
     try {
       const result = await listQualityInspections({
         q: search.trim() || undefined,
+        status: statusFilter || undefined,
         result: resultFilter || undefined,
         supplier_id: supplierFilter.trim() || undefined,
         purchase_contract_id: contractFilter.trim() || undefined,
-        assignee_user_id: assigneeFilter === 'mine' ? currentUser.id : undefined,
+        inspector_user_id: assigneeFilter === 'mine' ? currentUser.id : undefined,
       })
       setInspections(result.items)
-      const nextId =
-        preferredInspectionId ??
-        (result.items.some((item) => item.id === selectedInspectionId)
-          ? selectedInspectionId
-          : null) ??
-        result.items[0]?.id ??
-        null
-      setSelectedInspectionId(nextId)
+      setSelectedInspectionId((current) => {
+        if (preferredInspectionId) return preferredInspectionId
+        if (current && result.items.some((item) => item.id === current)) return current
+        return result.items[0]?.id ?? null
+      })
     } catch (caught) {
-      showError(caught, 'QC 查验加载失败')
+      showError(caught, 'QC 任务加载失败')
     } finally {
       setLoading(false)
     }
   }
 
-  async function loadAssignableUsersForInspection() {
+  async function loadAssignableUsersForTask() {
     setLoadingAssignableUsers(true)
     try {
       const result = await listAssignableUsers()
       setAssignableUsers(result.users)
     } catch (caught) {
-      showError(caught, '查验人员列表加载失败')
+      showError(caught, '负责人列表加载失败')
     } finally {
       setAssignableUsersLoaded(true)
       setLoadingAssignableUsers(false)
     }
+  }
+
+  async function refreshEligibility(purchaseContractId: string) {
+    try {
+      setEligibility(await getQualityInboundEligibility(purchaseContractId))
+    } catch (caught) {
+      setEligibility(null)
+      showError(caught, '入库判定加载失败')
+    }
+  }
+
+  function startNewTask() {
+    setForm(initialTaskForm(currentUser))
+    setFieldErrors({})
+    setMessage('')
+    if (assignableUsers.length === 0) setAssignableUsersLoaded(false)
+    setTaskModalOpen(true)
+  }
+
+  function updateFormField<Field extends keyof QualityTaskFormState>(
+    field: Field,
+    value: QualityTaskFormState[Field],
+  ) {
+    setForm((current) => ({ ...current, [field]: value }))
+    if (!validationOrder.includes(field as QualityTaskValidationField)) return
+    setFieldErrors((current) => {
+      if (!current[field as QualityTaskValidationField]) return current
+      const next = { ...current }
+      delete next[field as QualityTaskValidationField]
+      return next
+    })
   }
 
   function applyInspector(userId: string) {
@@ -294,339 +347,397 @@ export function QualityInspectionsPage({
       inspector_id: user?.id ?? '',
       inspector_name: user?.display_name ?? '',
     }))
+    setFieldErrors((current) => {
+      if (!current.inspector_id) return current
+      const next = { ...current }
+      delete next.inspector_id
+      return next
+    })
   }
 
-  async function refreshQualityInboundEligibility(purchaseContractId: string) {
-    if (!purchaseContractId.trim()) {
-      setEligibility(null)
-      return
-    }
-    try {
-      const result = await getQualityInboundEligibility(purchaseContractId)
-      setEligibility(result)
-    } catch (caught) {
-      setEligibility(null)
-      showError(caught, '入库判定加载失败')
-    }
+  function focusField(field: QualityTaskValidationField, keepSummaryVisible = false) {
+    window.setTimeout(() => {
+      const element = document.getElementById(fieldIds[field])
+      if (!(element instanceof HTMLElement)) return
+      element.focus({ preventScroll: true })
+      const scrollContainer = element.closest('.workflow-modal-content')
+      if (keepSummaryVisible && scrollContainer instanceof HTMLElement) {
+        scrollContainer.scrollTop = 0
+        return
+      }
+      element.scrollIntoView?.({ behavior: 'smooth', block: 'nearest' })
+    }, 0)
   }
 
-  function startNewInspection() {
-    setEditingInspectionId(null)
-    setForm(initialQualityInspectionForm(currentUser))
-    if (assignableUsers.length === 0) setAssignableUsersLoaded(false)
-    setMessage('')
-    setError('')
-    setInspectionModalOpen(true)
+  function applyValidationErrors(errors: QualityTaskFormErrors) {
+    const entries = validationOrder.filter((field) => errors[field])
+    if (entries.length === 0) return
+    setFieldErrors(errors)
+    const names = entries.map((field) => fieldLabels[field])
+    showWarningDialog(`请完善 ${names.length} 项信息：${names.slice(0, 3).join('、')}`)
+    focusField(entries[0], true)
   }
 
-  function selectInspection(inspection: QualityInspection) {
-    setSelectedInspectionId(inspection.id)
-  }
-
-  function openInspectionDetail(inspection: QualityInspection) {
-    setSelectedInspectionId(inspection.id)
-    onNavigate(moduleDetailPath(qualityInspectionPath, inspection.id))
-  }
-
-  function stopAndOpenInspectionDetail(event: MouseEvent<HTMLElement>, inspection: QualityInspection) {
-    event.stopPropagation()
-    openInspectionDetail(inspection)
-  }
-
-  function editSelectedInspection() {
-    if (!selectedInspection) return
-    setEditingInspectionId(selectedInspection.id)
-    setForm(qualityInspectionToForm(selectedInspection))
-    if (assignableUsers.length === 0) setAssignableUsersLoaded(false)
-    setInspectionModalOpen(true)
-  }
-
-  async function saveQualityInspection(event: FormEvent<HTMLFormElement>) {
+  async function createTask(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!form.inspector_id || !form.inspector_name.trim()) {
-      showError(new Error('请选择查验人'))
+    const errors = validateTaskForm(form)
+    if (validationOrder.some((field) => errors[field])) {
+      applyValidationErrors(errors)
       return
     }
     setSubmitting(true)
-    setMessage('')
-    setError('')
     try {
-      const payload = qualityInspectionPayload(form)
-      const inspection = editingInspectionId
-        ? await updateQualityInspection(editingInspectionId, payload)
-        : await createQualityInspection(payload)
-      setSelectedInspectionId(inspection.id)
-      setEditingInspectionId(null)
-      setForm(qualityInspectionToForm(inspection))
-      setInspectionModalOpen(false)
-      setMessage(`已登记 ${inspection.code}，QC 节点已回写采购跟单`)
-      await loadQualityInspections(inspection.id)
-      await refreshQualityInboundEligibility(inspection.purchase_contract_id)
+      const task = await createQualityInspection(taskPayload(form))
+      setTaskModalOpen(false)
+      setMessage(`已创建 ${task.code}，任务已进入负责人待查验列表`)
+      await loadQualityInspections(task.id)
     } catch (caught) {
-      showError(caught, 'QC 查验保存失败')
+      const backendErrors = validationErrorsFromApi(caught)
+      if (validationOrder.some((field) => backendErrors[field])) {
+        applyValidationErrors(backendErrors)
+      } else {
+        showError(caught, 'QC 任务创建失败')
+      }
     } finally {
       setSubmitting(false)
     }
   }
 
-  const passedCount = inspections.filter((item) => item.result === 'passed').length
-  const failedCount = inspections.filter((item) => item.result === 'failed').length
-  const recheckCount = inspections.filter((item) =>
-    ['partial_passed', 'recheck_required'].includes(item.result),
-  ).length
-  const issueCount = inspections.reduce((sum, item) => sum + item.issues.length, 0)
+  function openDetail(event: MouseEvent<HTMLElement>, inspection: QualityInspection) {
+    event.stopPropagation()
+    setSelectedInspectionId(inspection.id)
+    onNavigate(moduleDetailPath(qualityInspectionPath, inspection.id))
+  }
+
+  const pendingCount = inspections.filter((item) => item.status === 'pending').length
+  const inProgressCount = inspections.filter((item) => item.status === 'in_progress').length
+  const completedCount = inspections.filter((item) => item.status === 'completed').length
+  const cancelledCount = inspections.filter((item) => item.status === 'cancelled').length
+  const validationEntries = validationOrder.flatMap((field) => {
+    const error = fieldErrors[field]
+    return error ? [{ field, message: error }] : []
+  })
 
   return (
     <section className="quality-inspection-page">
-<div className="summary-strip" aria-label="QC 查验概览">
-        <Metric label="QC 单数" value={inspections.length} />
-        <Metric label="已通过" value={passedCount} />
-        <Metric label="不通过" value={failedCount} intent={failedCount > 0 ? 'danger' : 'normal'} />
-        <Metric label="待复检" value={recheckCount} intent={recheckCount > 0 ? 'warning' : 'normal'} />
-        <Metric label="异常问题" value={issueCount} intent={issueCount > 0 ? 'warning' : 'normal'} />
+      <div className="summary-strip" aria-label="QC 任务概览">
+        <Metric label="QC 任务" value={inspections.length} />
+        <Metric label="待查验" value={pendingCount} intent={pendingCount ? 'warning' : 'normal'} />
+        <Metric
+          label="查验中"
+          value={inProgressCount}
+          intent={inProgressCount ? 'warning' : 'normal'}
+        />
+        <Metric label="已完成" value={completedCount} />
+        <Metric label="已取消" value={cancelledCount} />
       </div>
 
-      {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
+      {message ? (
+        <Alert className="workspace-alert" title={message} type="success" showIcon />
+      ) : null}
 
       <section className="business-grid quality-inspection-grid">
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="QC 查验列表" />
-          </div>
-          <form
-            className="inline-filters"
-            onSubmit={(event) => {
-              event.preventDefault()
-              void loadQualityInspections()
-            }}
-          >
-            <label>
-              查验搜索
-              <Input
-                value={search}
-                placeholder="QC 单号 / 合同 / 供应商"
-                onChange={(event) => setSearch(event.target.value)}
-              />
-            </label>
-            <label>
-              查验结果
-              <FormSelect
-                value={resultFilter}
-                onChange={(event) => setResultFilter(event.target.value)}
-              >
-                <option value="">全部结果</option>
-                {qualityResultOptions.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </FormSelect>
-            </label>
-            <label>
-              供应商标识
-              <Input
-                value={supplierFilter}
-                placeholder="supplier-id"
-                onChange={(event) => setSupplierFilter(event.target.value)}
-              />
-            </label>
-            <label>
-              采购合同 ID
-              <Input
-                value={contractFilter}
-                placeholder="purchase-contract-id"
-                onChange={(event) => setContractFilter(event.target.value)}
-              />
-            </label>
-            <label>
-              QC 范围
-              <FormSelect
-                value={assigneeFilter}
-                onChange={(event) =>
-                  setAssigneeFilter(event.target.value as QualityInspectionAssigneeFilter)
-                }
-              >
-                <option value="all">看全部</option>
-                <option value="mine">只看我的</option>
-              </FormSelect>
-            </label>
-            <label>
-              <span>&nbsp;</span>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-            </label>
-            <label>
-              <span>&nbsp;</span>
-              <Button type="primary" icon={<Plus size={16} />} onClick={startNewInspection}>
-                新增 QC 单
-              </Button>
-            </label>
-          </form>
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<Search size={18} />} title="QC 任务列表" />
+            </div>
+            <form
+              className="inline-filters"
+              onSubmit={(event) => {
+                event.preventDefault()
+                void loadQualityInspections()
+              }}
+            >
+              <label>
+                任务搜索
+                <Input
+                  value={search}
+                  placeholder="QC 单号 / 合同 / 供应商"
+                  onChange={(event) => setSearch(event.target.value)}
+                />
+              </label>
+              <label>
+                任务状态
+                <FormSelect
+                  value={statusFilter}
+                  onChange={(event) => setStatusFilter(event.target.value)}
+                >
+                  <option value="">全部状态</option>
+                  {qualityTaskStatusOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </FormSelect>
+              </label>
+              <label>
+                查验结果
+                <FormSelect
+                  value={resultFilter}
+                  onChange={(event) => setResultFilter(event.target.value)}
+                >
+                  <option value="">全部结果</option>
+                  {qualityResultOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </FormSelect>
+              </label>
+              <label>
+                供应商标识
+                <Input
+                  value={supplierFilter}
+                  placeholder="supplier-id"
+                  onChange={(event) => setSupplierFilter(event.target.value)}
+                />
+              </label>
+              <label>
+                采购合同 ID
+                <Input
+                  value={contractFilter}
+                  placeholder="purchase-contract-id"
+                  onChange={(event) => setContractFilter(event.target.value)}
+                />
+              </label>
+              <label>
+                负责人范围
+                <FormSelect
+                  value={assigneeFilter}
+                  onChange={(event) =>
+                    setAssigneeFilter(event.target.value as QualityInspectionAssigneeFilter)
+                  }
+                >
+                  <option value="all">看全部</option>
+                  <option value="mine">只看我的</option>
+                </FormSelect>
+              </label>
+              <label>
+                <span>&nbsp;</span>
+                <Button htmlType="submit" icon={<Search size={16} />}>
+                  查询
+                </Button>
+              </label>
+              <label>
+                <span>&nbsp;</span>
+                <Button type="primary" icon={<Plus size={16} />} onClick={startNewTask}>
+                  新增 QC 单
+                </Button>
+              </label>
+            </form>
 
-          <Table<QualityInspection>
-            columns={[
-              {
-                title: 'QC 单号',
-                dataIndex: 'code',
-                render: (value: string, record: QualityInspection) => (
-                  <button
-                    className="row-button"
-                    type="button"
-                    onClick={(event) => stopAndOpenInspectionDetail(event, record)}
-                  >
-                    {value}
-                  </button>
-                ),
-              },
-              {
-                title: '结果',
-                dataIndex: 'result',
-                render: (value: string) => (
-                  <Tag color={qualityResultTagColor(value)}>{qualityResultLabel(value)}</Tag>
-                ),
-              },
-              { title: '采购合同', dataIndex: 'purchase_contract_no' },
-              { title: '供应商', dataIndex: 'supplier_name' },
-              {
-                title: 'QC 负责人',
-                dataIndex: 'qc_user_name',
-                render: (value: string | null) => value ?? '未指定',
-              },
-              { title: '查验日', dataIndex: 'inspected_at', render: formatDate },
-              {
-                title: '异常',
-                dataIndex: 'issues',
-                render: (_, inspection) => `${inspection.issues.length} 条`,
-              },
-              {
-                title: '入口',
-                key: 'detail',
-                width: 110,
-                render: (_: unknown, record: QualityInspection) => (
-                  <Button size="small" onClick={(event) => stopAndOpenInspectionDetail(event, record)}>
-                    查看详情
-                  </Button>
-                ),
-              },
-            ]}
-            dataSource={inspections}
-            loading={loading}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedInspection?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => selectInspection(record),
-            })}
-          />
+            <Table<QualityInspection>
+              columns={[
+                {
+                  title: 'QC 任务单号',
+                  dataIndex: 'code',
+                  render: (value: string, record) => (
+                    <button
+                      className="row-button"
+                      type="button"
+                      onClick={(event) => openDetail(event, record)}
+                    >
+                      {value}
+                    </button>
+                  ),
+                },
+                {
+                  title: '任务状态',
+                  dataIndex: 'status',
+                  render: (value: QualityInspectionStatus) => (
+                    <Tag color={taskStatusColor(value)}>{taskStatusLabel(value)}</Tag>
+                  ),
+                },
+                {
+                  title: '查验结果',
+                  dataIndex: 'result',
+                  render: (value: string | null) => (
+                    <Tag color={resultColor(value)}>{resultLabel(value)}</Tag>
+                  ),
+                },
+                { title: '采购合同', dataIndex: 'purchase_contract_no' },
+                { title: '供应商', dataIndex: 'supplier_name' },
+                { title: '负责人', dataIndex: 'inspector_name' },
+                {
+                  title: '排期时间',
+                  dataIndex: 'scheduled_at',
+                  render: formatScheduledAt,
+                },
+                {
+                  title: '入口',
+                  key: 'detail',
+                  width: 110,
+                  render: (_: unknown, record) => (
+                    <Button size="small" onClick={(event) => openDetail(event, record)}>
+                      查看详情
+                    </Button>
+                  ),
+                },
+              ]}
+              dataSource={inspections}
+              loading={loading}
+              pagination={false}
+              rowKey="id"
+              size="small"
+              onRow={(record) => ({
+                onClick: () => setSelectedInspectionId(record.id),
+              })}
+            />
           </section>
         ) : null}
 
         <Modal
           centered
           footer={null}
-          open={inspectionModalOpen}
-          title={editingInspectionId ? '编辑 QC 查验' : '新增 QC 查验'}
-          width={1040}
+          open={taskModalOpen}
+          title="新增 QC 任务"
+          width={860}
           onCancel={() => {
-            setEditingInspectionId(null)
-            setInspectionModalOpen(false)
+            setFieldErrors({})
+            setTaskModalOpen(false)
           }}
         >
           <div className="workflow-modal-content entity-modal-form">
-          <div className="panel-heading quality-form-heading">
-            <PanelTitle icon={<ShieldCheck size={18} />} title="QC 查验登记" />
-          </div>
-
-          <form className="record-form" onSubmit={saveQualityInspection}>
-            <div className="form-divider">查验主信息</div>
-            <div className="form-pair two">
-              <label htmlFor="quality-code">
-                QC 单号
-                <Input
-                  id="quality-code"
-                  required
-                  value={form.code}
-                  onChange={(event) => setForm({ ...form, code: event.target.value })}
+            <div className="panel-heading quality-form-heading">
+              <PanelTitle icon={<ShieldCheck size={18} />} title="建立 QC 任务" />
+            </div>
+            <Alert
+              showIcon
+              title="这里只建立任务，不填写查验结果"
+              description="负责人将在“我的 QC 任务”中开始查验并登记结果。"
+              type="info"
+            />
+            <form className="record-form" noValidate onSubmit={createTask}>
+              {validationEntries.length > 0 ? (
+                <Alert
+                  className="quality-form-validation-summary"
+                  description={
+                    <ul className="quality-form-validation-list">
+                      {validationEntries.map(({ field, message: errorMessage }) => (
+                        <li key={field}>
+                          <button type="button" onClick={() => focusField(field)}>
+                            {fieldLabels[field]}：{errorMessage}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  }
+                  showIcon
+                  title={`请完善以下 ${validationEntries.length} 项信息`}
+                  type="error"
                 />
-              </label>
-              <label htmlFor="quality-contract-id">
-                采购合同
-                <RemoteSelect
-                  id="quality-contract-id"
-                  required
-                  fetchOptions={fetchContractOptions}
-                  placeholder="输入合同号或供应商搜索"
-                  value={form.purchase_contract_id || null}
-                  onChange={(value) =>
-                    setForm({ ...form, purchase_contract_id: value })
+              ) : null}
+
+              <div className="form-divider">任务信息</div>
+              <div className="form-pair two">
+                <label htmlFor="quality-code">
+                  <RequiredFieldLabel>QC 任务单号</RequiredFieldLabel>
+                  <Input
+                    aria-describedby={fieldErrors.code ? 'quality-code-error' : undefined}
+                    aria-invalid={Boolean(fieldErrors.code)}
+                    id="quality-code"
+                    required
+                    status={fieldErrors.code ? 'error' : undefined}
+                    value={form.code}
+                    onChange={(event) => updateFormField('code', event.target.value)}
+                  />
+                  <FieldError field="code" message={fieldErrors.code} />
+                </label>
+                <label htmlFor="quality-contract-id">
+                  <RequiredFieldLabel>采购合同</RequiredFieldLabel>
+                  <RemoteSelect
+                    ariaDescribedBy={
+                      fieldErrors.purchase_contract_id ? 'quality-contract-id-error' : undefined
+                    }
+                    ariaInvalid={Boolean(fieldErrors.purchase_contract_id)}
+                    ariaLabel="采购合同"
+                    fetchOptions={fetchContractOptions}
+                    id="quality-contract-id"
+                    placeholder="输入合同号或供应商搜索"
+                    required
+                    status={fieldErrors.purchase_contract_id ? 'error' : undefined}
+                    value={form.purchase_contract_id || null}
+                    onChange={(value) => updateFormField('purchase_contract_id', value)}
+                  />
+                  <FieldError
+                    field="purchase_contract_id"
+                    message={fieldErrors.purchase_contract_id}
+                  />
+                </label>
+              </div>
+
+              <div className="form-pair two">
+                <label htmlFor="quality-scheduled-at">
+                  <RequiredFieldLabel>排期时间</RequiredFieldLabel>
+                  <Input
+                    aria-describedby={
+                      fieldErrors.scheduled_at ? 'quality-scheduled-at-error' : undefined
+                    }
+                    aria-invalid={Boolean(fieldErrors.scheduled_at)}
+                    id="quality-scheduled-at"
+                    required
+                    status={fieldErrors.scheduled_at ? 'error' : undefined}
+                    type="datetime-local"
+                    value={form.scheduled_at}
+                    onChange={(event) => updateFormField('scheduled_at', event.target.value)}
+                  />
+                  <FieldError field="scheduled_at" message={fieldErrors.scheduled_at} />
+                </label>
+                <label htmlFor="quality-inspector-id">
+                  <RequiredFieldLabel>负责人</RequiredFieldLabel>
+                  <Select
+                    aria-describedby={
+                      fieldErrors.inspector_id ? 'quality-inspector-id-error' : undefined
+                    }
+                    aria-invalid={Boolean(fieldErrors.inspector_id)}
+                    aria-label="负责人"
+                    aria-required="true"
+                    id="quality-inspector-id"
+                    loading={loadingAssignableUsers}
+                    notFoundContent={loadingAssignableUsers ? '加载人员中' : '暂无可选员工'}
+                    optionFilterProp="label"
+                    placeholder={loadingAssignableUsers ? '正在加载员工' : '请选择系统员工'}
+                    showSearch
+                    status={fieldErrors.inspector_id ? 'error' : undefined}
+                    value={form.inspector_id || undefined}
+                    onChange={applyInspector}
+                  >
+                    {form.inspector_id &&
+                    !assignableUsers.some((user) => user.id === form.inspector_id) ? (
+                      <Select.Option
+                        key={form.inspector_id}
+                        disabled
+                        label={`${form.inspector_name} / 当前用户`}
+                        value={form.inspector_id}
+                      >
+                        {form.inspector_name} / 当前用户
+                      </Select.Option>
+                    ) : null}
+                    {assignableUsers.map((user) => {
+                      const label = assignableUserOptionLabel(user)
+                      return (
+                        <Select.Option key={user.id} label={label} value={user.id}>
+                          {label}
+                        </Select.Option>
+                      )
+                    })}
+                  </Select>
+                  <FieldError field="inspector_id" message={fieldErrors.inspector_id} />
+                </label>
+              </div>
+
+              <label htmlFor="quality-task-note">
+                任务说明
+                <Input.TextArea
+                  id="quality-task-note"
+                  placeholder="例如：验货地址、重点检查项、供应商联系人"
+                  rows={3}
+                  value={form.task_note}
+                  onChange={(event) =>
+                    setForm((current) => ({ ...current, task_note: event.target.value }))
                   }
                 />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label htmlFor="quality-inspected-at">
-                查验日期
-                <Input
-                  id="quality-inspected-at"
-                  required
-                  type="date"
-                  value={form.inspected_at}
-                  onChange={(event) => setForm({ ...form, inspected_at: event.target.value })}
-                />
-              </label>
-              <label htmlFor="quality-result">
-                查验结果
-                <FormSelect
-                  id="quality-result"
-                  value={form.result}
-                  onChange={(event) => setForm({ ...form, result: event.target.value })}
-                >
-                  {qualityResultOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label htmlFor="quality-inspector-id">
-                查验人
-                <Select
-                  id="quality-inspector-id"
-                  aria-label="查验人"
-                  showSearch
-                  loading={loadingAssignableUsers}
-                  value={form.inspector_id || undefined}
-                  placeholder={loadingAssignableUsers ? '正在加载员工' : '请选择系统员工'}
-                  optionFilterProp="label"
-                  notFoundContent={loadingAssignableUsers ? '加载人员中' : '暂无可选员工'}
-                  onChange={applyInspector}
-                >
-                  {form.inspector_id &&
-                  !assignableUsers.some((user) => user.id === form.inspector_id) ? (
-                    <Select.Option
-                      key={form.inspector_id}
-                      value={form.inspector_id}
-                      label={`${form.inspector_name} / 历史记录`}
-                      disabled
-                    >
-                      {form.inspector_name} / 历史记录
-                    </Select.Option>
-                  ) : null}
-                  {assignableUsers.map((user) => {
-                    const label = assignableUserOptionLabel(user)
-                    return (
-                      <Select.Option key={user.id} value={user.id} label={label}>
-                        {label}
-                      </Select.Option>
-                    )
-                  })}
-                </Select>
               </label>
               <label htmlFor="quality-attachment-group">
                 附件组
@@ -634,322 +745,171 @@ export function QualityInspectionsPage({
                   id="quality-attachment-group"
                   value={form.attachment_group_id}
                   onChange={(event) =>
-                    setForm({ ...form, attachment_group_id: event.target.value })
+                    setForm((current) => ({
+                      ...current,
+                      attachment_group_id: event.target.value,
+                    }))
                   }
                 />
               </label>
-            </div>
-            <label htmlFor="quality-issue-summary">
-              查验摘要
-              <Input
-                id="quality-issue-summary"
-                value={form.issue_summary}
-                onChange={(event) => setForm({ ...form, issue_summary: event.target.value })}
-              />
-            </label>
 
-            <div className="form-divider">查验明细</div>
-            <label htmlFor="quality-line-id">
-              采购合同明细 ID
-              <Input
-                id="quality-line-id"
-                value={form.purchase_contract_line_id}
-                onChange={(event) =>
-                  setForm({ ...form, purchase_contract_line_id: event.target.value })
-                }
-              />
-            </label>
-            <div className="form-pair two">
-              <label htmlFor="quality-product-code">
-                商品编码
-                <Input
-                  id="quality-product-code"
-                  value={form.product_code}
-                  onChange={(event) => setForm({ ...form, product_code: event.target.value })}
-                />
-              </label>
-              <label htmlFor="quality-product-name">
-                商品名称
-                <Input
-                  id="quality-product-name"
-                  required
-                  value={form.product_name}
-                  onChange={(event) => setForm({ ...form, product_name: event.target.value })}
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label htmlFor="quality-inspected-quantity">
-                查验数量
-                <Input
-                  id="quality-inspected-quantity"
-                  min="0"
-                  required
-                  step="0.0001"
-                  type="number"
-                  value={form.inspected_quantity}
-                  onChange={(event) =>
-                    setForm({ ...form, inspected_quantity: event.target.value })
-                  }
-                />
-              </label>
-              <label htmlFor="quality-failed-quantity">
-                不良数量
-                <Input
-                  id="quality-failed-quantity"
-                  min="0"
-                  step="0.0001"
-                  type="number"
-                  value={form.failed_quantity}
-                  onChange={(event) => setForm({ ...form, failed_quantity: event.target.value })}
-                />
-              </label>
-              <label htmlFor="quality-unit">
-                单位
-                <Input
-                  id="quality-unit"
-                  required
-                  value={form.unit}
-                  onChange={(event) => setForm({ ...form, unit: event.target.value })}
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label htmlFor="quality-line-result">
-                明细结果
-                <FormSelect
-                  id="quality-line-result"
-                  value={form.line_result}
-                  onChange={(event) => setForm({ ...form, line_result: event.target.value })}
-                >
-                  {qualityResultOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label htmlFor="quality-line-remark">
-                明细备注
-                <Input
-                  id="quality-line-remark"
-                  value={form.line_remark}
-                  onChange={(event) => setForm({ ...form, line_remark: event.target.value })}
-                />
-              </label>
-            </div>
-
-            <div className="form-divider">异常问题（可选）</div>
-            <div className="form-pair two">
-              <label htmlFor="quality-issue-type">
-                问题类型
-                <Input
-                  id="quality-issue-type"
-                  value={form.issue_type}
-                  onChange={(event) => setForm({ ...form, issue_type: event.target.value })}
-                />
-              </label>
-              <label htmlFor="quality-severity">
-                严重度
-                <FormSelect
-                  id="quality-severity"
-                  value={form.severity}
-                  onChange={(event) => setForm({ ...form, severity: event.target.value })}
-                >
-                  {qualityIssueSeverityOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label htmlFor="quality-issue-status">
-                处理状态
-                <FormSelect
-                  id="quality-issue-status"
-                  value={form.issue_status}
-                  onChange={(event) => setForm({ ...form, issue_status: event.target.value })}
-                >
-                  {qualityIssueStatusOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-            </div>
-            <label htmlFor="quality-description">
-              问题描述
-              <Input.TextArea
-                id="quality-description"
-                rows={2}
-                value={form.description}
-                onChange={(event) => setForm({ ...form, description: event.target.value })}
-              />
-            </label>
-            <label htmlFor="quality-corrective-action">
-              整改措施
-              <Input
-                id="quality-corrective-action"
-                value={form.corrective_action}
-                onChange={(event) =>
-                  setForm({ ...form, corrective_action: event.target.value })
-                }
-              />
-            </label>
-
-            <Button htmlType="submit" loading={submitting} type="primary">
-              {editingInspectionId ? '保存 QC 查验' : '新增 QC 查验'}
-            </Button>
-          </form>
+              <Button htmlType="submit" loading={submitting} type="primary">
+                创建 QC 任务
+              </Button>
+            </form>
           </div>
         </Modal>
 
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="QC 查验明细和入库判定" />
-            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(qualityInspectionPath)}>
-              返回列表
-            </Button>
-          </div>
-          {selectedInspection ? (
-            <>
-              <div
-                className={`quality-eligibility ${
-                  eligibility?.eligible ? 'eligible' : 'blocked'
-                }`}
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<LayoutDashboard size={18} />} title="QC 任务详情" />
+              <Button
+                icon={<ArrowLeft size={16} />}
+                onClick={() => onNavigate(qualityInspectionPath)}
               >
-                <strong>{eligibility?.reason ?? qualityInboundReason(selectedInspection)}</strong>
-                <span>
-                  最新查验：{formatDate(eligibility?.inspected_at ?? selectedInspection.inspected_at)}
-                  {' / '}
-                  {qualityResultLabel(eligibility?.latest_result ?? selectedInspection.result)}
-                </span>
-              </div>
-
-              <dl className="detail-list">
-                <div>
-                  <dt>QC 单号</dt>
-                  <dd>{selectedInspection.code}</dd>
-                </div>
-                <div>
-                  <dt>查验结果</dt>
-                  <dd>{qualityResultLabel(selectedInspection.result)}</dd>
-                </div>
-                <div>
-                  <dt>采购合同</dt>
-                  <dd>{selectedInspection.purchase_contract_no}</dd>
-                </div>
-                <div>
-                  <dt>供应商</dt>
-                  <dd>{selectedInspection.supplier_name}</dd>
-                </div>
-                <div>
-                  <dt>查验日期</dt>
-                  <dd>{formatDate(selectedInspection.inspected_at)}</dd>
-                </div>
-                <div>
-                  <dt>查验人</dt>
-                  <dd>{selectedInspection.inspector_name}</dd>
-                </div>
-                <div>
-                  <dt>QC 负责人</dt>
-                  <dd>{selectedInspection.qc_user_name ?? '未指定'}</dd>
-                </div>
-                <div>
-                  <dt>附件组</dt>
-                  <dd>{nullableText(selectedInspection.attachment_group_id)}</dd>
-                </div>
-                <div>
-                  <dt>摘要</dt>
-                  <dd>{nullableText(selectedInspection.issue_summary)}</dd>
-                </div>
-              </dl>
-
-              <div className="delivery-action-row">
-                <Button icon={<FilePenLine size={16} />} onClick={editSelectedInspection}>
-                  编辑 QC 单
-                </Button>
-              </div>
-
-              <div className="accessory-heading">
-                <strong>商品查验明细</strong>
-                <span>{selectedInspection.lines.length} 行</span>
-              </div>
-              <table className="data-table compact-table">
-                <thead>
-                  <tr>
-                    <th>商品</th>
-                    <th>查验数量</th>
-                    <th>不良数量</th>
-                    <th>单位</th>
-                    <th>结果</th>
-                    <th>备注</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedInspection.lines.map((line) => (
-                    <tr key={line.id}>
-                      <td>{line.product_name}</td>
-                      <td>{line.inspected_quantity}</td>
-                      <td>{line.failed_quantity}</td>
-                      <td>{line.unit}</td>
-                      <td>{qualityResultLabel(line.result)}</td>
-                      <td>{nullableText(line.remark)}</td>
-                    </tr>
-                  ))}
-                  {selectedInspection.lines.length === 0 ? (
-                    <tr>
-                      <td className="empty-cell" colSpan={6}>
-                        暂无查验明细
-                      </td>
-                    </tr>
-                  ) : null}
-                </tbody>
-              </table>
-
-              <div className="accessory-heading">
-                <strong>异常问题</strong>
-                <span>{selectedInspection.issues.length} 条</span>
-              </div>
-              <table className="data-table compact-table">
-                <thead>
-                  <tr>
-                    <th>类型</th>
-                    <th>严重度</th>
-                    <th>描述</th>
-                    <th>整改</th>
-                    <th>状态</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedInspection.issues.map((issue) => (
-                    <tr key={issue.id}>
-                      <td>{issue.issue_type}</td>
-                      <td>{qualityIssueSeverityLabel(issue.severity)}</td>
-                      <td>{issue.description}</td>
-                      <td>{nullableText(issue.corrective_action)}</td>
-                      <td>{qualityIssueStatusLabel(issue.status)}</td>
-                    </tr>
-                  ))}
-                  {selectedInspection.issues.length === 0 ? (
-                    <tr>
-                      <td className="empty-cell" colSpan={5}>
-                        暂无异常问题
-                      </td>
-                    </tr>
-                  ) : null}
-                </tbody>
-              </table>
-            </>
-          ) : (
-            <div className="module-state panel-empty-state">
-              <ShieldCheck size={28} />
-              <strong>暂无 QC 查验单</strong>
-              <span>请返回列表选择 QC 单查看详情</span>
+                返回列表
+              </Button>
             </div>
-          )}
+            {selectedInspection ? (
+              <>
+                <div
+                  className={`quality-eligibility ${
+                    eligibility?.eligible ? 'eligible' : 'blocked'
+                  }`}
+                >
+                  <strong>{eligibility?.reason ?? inboundReason(selectedInspection)}</strong>
+                  <span>
+                    任务状态：{taskStatusLabel(selectedInspection.status)}
+                    {' / '}
+                    查验结果：{resultLabel(selectedInspection.result)}
+                  </span>
+                </div>
+
+                <dl className="detail-list">
+                  <div>
+                    <dt>QC 任务单号</dt>
+                    <dd>{selectedInspection.code}</dd>
+                  </div>
+                  <div>
+                    <dt>任务状态</dt>
+                    <dd>{taskStatusLabel(selectedInspection.status)}</dd>
+                  </div>
+                  <div>
+                    <dt>排期时间</dt>
+                    <dd>{formatScheduledAt(selectedInspection.scheduled_at)}</dd>
+                  </div>
+                  <div>
+                    <dt>负责人</dt>
+                    <dd>{selectedInspection.inspector_name}</dd>
+                  </div>
+                  <div>
+                    <dt>采购合同</dt>
+                    <dd>{selectedInspection.purchase_contract_no}</dd>
+                  </div>
+                  <div>
+                    <dt>供应商</dt>
+                    <dd>{selectedInspection.supplier_name}</dd>
+                  </div>
+                  <div>
+                    <dt>实际查验日期</dt>
+                    <dd>
+                      {selectedInspection.inspected_at
+                        ? formatDate(selectedInspection.inspected_at)
+                        : '未开始'}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>查验结果</dt>
+                    <dd>{resultLabel(selectedInspection.result)}</dd>
+                  </div>
+                  <div>
+                    <dt>任务说明</dt>
+                    <dd>{nullableText(selectedInspection.issue_summary)}</dd>
+                  </div>
+                  <div>
+                    <dt>附件组</dt>
+                    <dd>{nullableText(selectedInspection.attachment_group_id)}</dd>
+                  </div>
+                </dl>
+
+                <div className="accessory-heading">
+                  <strong>商品查验明细</strong>
+                  <span>{selectedInspection.lines.length} 行</span>
+                </div>
+                <table className="data-table compact-table">
+                  <thead>
+                    <tr>
+                      <th>商品</th>
+                      <th>查验数量</th>
+                      <th>不良数量</th>
+                      <th>单位</th>
+                      <th>结果</th>
+                      <th>备注</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedInspection.lines.map((line) => (
+                      <tr key={line.id}>
+                        <td>{line.product_name}</td>
+                        <td>{line.inspected_quantity}</td>
+                        <td>{line.failed_quantity}</td>
+                        <td>{line.unit}</td>
+                        <td>{resultLabel(line.result)}</td>
+                        <td>{nullableText(line.remark)}</td>
+                      </tr>
+                    ))}
+                    {selectedInspection.lines.length === 0 ? (
+                      <tr>
+                        <td className="empty-cell" colSpan={6}>
+                          任务尚未完成，暂无查验明细
+                        </td>
+                      </tr>
+                    ) : null}
+                  </tbody>
+                </table>
+
+                <div className="accessory-heading">
+                  <strong>异常问题</strong>
+                  <span>{selectedInspection.issues.length} 条</span>
+                </div>
+                <table className="data-table compact-table">
+                  <thead>
+                    <tr>
+                      <th>类型</th>
+                      <th>严重度</th>
+                      <th>描述</th>
+                      <th>整改</th>
+                      <th>状态</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedInspection.issues.map((issue) => (
+                      <tr key={issue.id}>
+                        <td>{issue.issue_type}</td>
+                        <td>{issueSeverityLabel(issue.severity)}</td>
+                        <td>{issue.description}</td>
+                        <td>{nullableText(issue.corrective_action)}</td>
+                        <td>{issueStatusLabel(issue.status)}</td>
+                      </tr>
+                    ))}
+                    {selectedInspection.issues.length === 0 ? (
+                      <tr>
+                        <td className="empty-cell" colSpan={5}>
+                          暂无异常问题
+                        </td>
+                      </tr>
+                    ) : null}
+                  </tbody>
+                </table>
+              </>
+            ) : (
+              <div className="module-state panel-empty-state">
+                <ShieldCheck size={28} />
+                <strong>暂无 QC 任务</strong>
+                <span>请返回列表选择任务查看详情</span>
+              </div>
+            )}
           </section>
         ) : null}
       </section>

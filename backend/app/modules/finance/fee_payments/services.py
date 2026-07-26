@@ -169,6 +169,8 @@ class FeePaymentService:
     ) -> FeePaymentRequestResponse:
         self._require_finance(current_user)
         request = await self._get_fee_payment_request(fee_payment_request_id)
+        if request.requester_user_id == current_user.id:
+            raise ValueError("付费申请人不能审批自己的申请")
         invoice = await self._get_partner_fee_invoice(request.partner_fee_invoice_id)
         self._validate_fee_approval(request, invoice, payload)
         async with UnitOfWork(self._repository.session):
@@ -176,7 +178,7 @@ class FeePaymentService:
                 request_id=request.id,
                 approved_amount=payload.approved_amount,
                 approved_at=payload.approved_at,
-                reviewer_name=payload.reviewer_name,
+                reviewer_name=current_user.display_name,
                 payment_account=payload.payment_account,
                 remark=payload.remark,
             )

@@ -33,6 +33,7 @@ async def test_auth_service_verifies_password_and_token_round_trip(
         "采购合同",
         "QC 中心",
         "跟单中心",
+        "我的 QC 任务",
         "入仓",
         "老板看板",
         "出口报价",
@@ -81,7 +82,13 @@ async def test_seed_system_demo_data_provisions_employee_role_accounts(
             "仓储部",
             {"工作台", "入库计划", "入仓", "货物出库"},
         ),
-        ("qc", "qc123", "QC 专员", "品质部", {"工作台", "QC 中心"}),
+        (
+            "qc",
+            "qc123",
+            "QC 专员",
+            "品质部",
+            {"工作台", "QC 中心", "我的 QC 任务"},
+        ),
     ]
 
     async with session_factory() as session:

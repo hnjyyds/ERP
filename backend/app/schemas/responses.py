@@ -5,11 +5,20 @@ from app.core.status_codes import AppStatusCode, get_status_definition
 _SUCCESS_STATUS = get_status_definition(AppStatusCode.SUCCESS)
 
 
+class ValidationIssue(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    field: str
+    message: str
+    type: str
+
+
 class ErrorResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     code: str
     message: str
+    details: list[ValidationIssue] | None = None
 
 
 class ApiResponse[DataT](BaseModel):

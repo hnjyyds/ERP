@@ -8,12 +8,12 @@ describe('DocumentPartiesPage', () => {
   beforeEach(() => { vi.clearAllMocks() })
 
   it('renders without crashing', () => {
-    const { container } = render(<DocumentPartiesPage onNavigate={onNavigate} />)
+    const { container } = render(<DocumentPartiesPage detailId={null} onNavigate={onNavigate} />)
     expect(container).toBeTruthy()
   })
 
   it('renders document parties list panel', () => {
-    render(<DocumentPartiesPage onNavigate={onNavigate} />)
+    render(<DocumentPartiesPage detailId={null} onNavigate={onNavigate} />)
     expect(screen.getByText('单证资料')).toBeTruthy()
   })
 })

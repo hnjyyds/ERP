@@ -10,24 +10,24 @@ describe('OutboundPlansPage', () => {
   })
 
   it('renders without crashing', () => {
-    const { container } = render(<OutboundPlansPage detailId={undefined} onNavigate={onNavigate} />)
+    const { container } = render(<OutboundPlansPage detailId={null} onNavigate={onNavigate} />)
     expect(container).toBeTruthy()
   })
 
   it('renders summary strip with outbound plan metrics', () => {
-    render(<OutboundPlansPage detailId={undefined} onNavigate={onNavigate} />)
+    render(<OutboundPlansPage detailId={null} onNavigate={onNavigate} />)
     expect(screen.getByLabelText('出库计划概览')).toBeTruthy()
   })
 
   it('renders filter inputs', () => {
-    render(<OutboundPlansPage detailId={undefined} onNavigate={onNavigate} />)
+    render(<OutboundPlansPage detailId={null} onNavigate={onNavigate} />)
     expect(screen.getByPlaceholderText('计划号 / 来源单 / 商品')).toBeTruthy()
     expect(screen.getByPlaceholderText('customer-id')).toBeTruthy()
     expect(screen.getByPlaceholderText('shipment-id')).toBeTruthy()
   })
 
   it('renders without detail view when no detailId', () => {
-    render(<OutboundPlansPage detailId={undefined} onNavigate={onNavigate} />)
+    render(<OutboundPlansPage detailId={null} onNavigate={onNavigate} />)
     expect(screen.queryByText('待出库清单')).toBeFalsy()
   })
 })

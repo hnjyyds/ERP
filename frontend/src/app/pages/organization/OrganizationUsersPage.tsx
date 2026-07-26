@@ -1321,7 +1321,7 @@ export function OrganizationUsersPage({
             <Building2 size={18} />
             <div>
               <h2>部门管理</h2>
-              <p>初始部门为空，由超级管理员先创建部门，再新增成员。</p>
+              <p>统一维护组织部门；新增成员时需关联一个有效部门。</p>
             </div>
           </div>
           <button className="secondary-inline" type="button" onClick={openCreateDepartmentModal}>

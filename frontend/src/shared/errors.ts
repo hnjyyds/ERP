@@ -1,5 +1,11 @@
 import { Modal, message } from 'antd'
 
+export type ApiErrorDetail = {
+  field: string
+  message: string
+  type?: string
+}
+
 /**
  * 统一的接口错误对象。
  *
@@ -11,14 +17,22 @@ export class ApiError extends Error {
   friendlyMessage: string
   rawMessage: string
   status?: number
+  details: ApiErrorDetail[]
 
-  constructor(friendlyMessage: string, code: string, rawMessage: string, status?: number) {
+  constructor(
+    friendlyMessage: string,
+    code: string,
+    rawMessage: string,
+    status?: number,
+    details: ApiErrorDetail[] = [],
+  ) {
     super(friendlyMessage)
     this.name = 'ApiError'
     this.code = code
     this.friendlyMessage = friendlyMessage
     this.rawMessage = rawMessage
     this.status = status
+    this.details = details
   }
 }
 

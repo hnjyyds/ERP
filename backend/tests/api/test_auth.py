@@ -118,6 +118,7 @@ async def test_login_returns_token_user_and_permission_menus(
         "采购合同",
         "QC 中心",
         "跟单中心",
+        "我的 QC 任务",
         "入仓",
         "老板看板",
         "出口报价",
@@ -207,6 +208,7 @@ async def test_assignable_users_require_authentication(
         "u-001",
         "u-purchase",
         "u-finance",
+        "u-finance-manager",
         "u-warehouse",
         "u-qc",
     }
@@ -215,6 +217,7 @@ async def test_assignable_users_require_authentication(
         "演示业务主管",
         "演示采购专员",
         "演示财务",
+        "演示财务主管",
         "演示仓库专员",
         "演示 QC 专员",
     }

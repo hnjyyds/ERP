@@ -147,6 +147,157 @@ async def test_quality_inspection_api_creates_record_and_updates_followup(
     assert qc_node["source_record_id"] == inspection["id"]
 
 
+async def test_quality_inspection_api_creates_a_scheduled_pending_task_without_result(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    create_response = await api_client.post(
+        "/api/v1/purchase/contracts",
+        headers=headers,
+        json=_purchase_contract_payload("PC-QC-TASK-API"),
+    )
+    assert create_response.status_code == 201
+    contract = create_response.json()["data"]
+    assert (
+        await api_client.post(
+            f"/api/v1/purchase/contracts/{contract['id']}/submit",
+            headers=headers,
+        )
+    ).status_code == 200
+    assert (
+        await api_client.post(
+            f"/api/v1/purchase/contracts/{contract['id']}/approve",
+            headers=headers,
+            json={"reviewer_name": "演示业务主管", "approved_at": "2026-08-05"},
+        )
+    ).status_code == 200
+
+    task_response = await api_client.post(
+        "/api/v1/quality/inspections",
+        headers=headers,
+        json={
+            "code": "QC-TASK-API-001",
+            "purchase_contract_id": contract["id"],
+            "scheduled_at": "2026-08-20T09:30:00",
+            "status": "pending",
+            "inspector_id": "u-qc-001",
+            "inspector_name": "QC 张工",
+            "issue_summary": "宁波仓验货",
+            "attachment_group_id": None,
+            "lines": [],
+            "issues": [],
+        },
+    )
+
+    assert task_response.status_code == 201
+    task = task_response.json()["data"]
+    assert task["status"] == "pending"
+    assert task["scheduled_at"] == "2026-08-20T09:30:00"
+    assert task["inspected_at"] is None
+    assert task["result"] is None
+    assert task["lines"] == []
+
+    list_response = await api_client.get(
+        "/api/v1/quality/inspections",
+        headers=headers,
+        params={
+            "inspector_user_id": "u-qc-001",
+            "status": "pending",
+            "q": "QC-TASK-API-001",
+        },
+    )
+    assert list_response.status_code == 200
+    assert list_response.json()["data"]["total"] == 1
+
+    eligibility_response = await api_client.get(
+        "/api/v1/quality/inspections/inbound-eligibility",
+        headers=headers,
+        params={"purchase_contract_id": contract["id"]},
+    )
+    assert eligibility_response.status_code == 200
+    eligibility = eligibility_response.json()["data"]
+    assert eligibility["eligible"] is False
+    assert eligibility["latest_inspection_id"] is None
+    assert eligibility["latest_result"] is None
+
+    followup_response = await api_client.get(
+        "/api/v1/followup/plans",
+        headers=headers,
+        params={"q": "PC-QC-TASK-API"},
+    )
+    assert followup_response.status_code == 200
+    plan = followup_response.json()["data"]["items"][0]
+    qc_node = next(node for node in plan["nodes"] if node["node_code"] == "quality_inspection")
+    assert qc_node["actual_date"] is None
+    assert qc_node["source_record_id"] is None
+
+    start_response = await api_client.put(
+        f"/api/v1/quality/inspections/{task['id']}",
+        headers=headers,
+        json={
+            "code": task["code"],
+            "purchase_contract_id": contract["id"],
+            "scheduled_at": task["scheduled_at"],
+            "status": "in_progress",
+            "inspector_id": task["inspector_id"],
+            "inspector_name": task["inspector_name"],
+            "issue_summary": task["issue_summary"],
+            "attachment_group_id": task["attachment_group_id"],
+            "lines": [],
+            "issues": [],
+        },
+    )
+    assert start_response.status_code == 200
+    assert start_response.json()["data"]["status"] == "in_progress"
+
+    complete_response = await api_client.put(
+        f"/api/v1/quality/inspections/{task['id']}",
+        headers=headers,
+        json={
+            "code": task["code"],
+            "purchase_contract_id": contract["id"],
+            "scheduled_at": task["scheduled_at"],
+            "status": "completed",
+            "inspected_at": "2026-08-20",
+            "result": "passed",
+            "inspector_id": task["inspector_id"],
+            "inspector_name": task["inspector_name"],
+            "issue_summary": task["issue_summary"],
+            "attachment_group_id": task["attachment_group_id"],
+            "lines": [
+                {
+                    "purchase_contract_line_id": contract["lines"][0]["id"],
+                    "product_id": "product-bag",
+                    "product_code": "BAG-40",
+                    "product_name": "Eco Shopping Bag",
+                    "inspected_quantity": "1000",
+                    "failed_quantity": "0",
+                    "unit": "pcs",
+                    "result": "passed",
+                    "remark": "任务完成",
+                }
+            ],
+            "issues": [],
+        },
+    )
+    assert complete_response.status_code == 200
+    assert complete_response.json()["data"]["status"] == "completed"
+
+    completed_followup_response = await api_client.get(
+        "/api/v1/followup/plans",
+        headers=headers,
+        params={"q": "PC-QC-TASK-API"},
+    )
+    completed_plan = completed_followup_response.json()["data"]["items"][0]
+    completed_qc_node = next(
+        node for node in completed_plan["nodes"] if node["node_code"] == "quality_inspection"
+    )
+    assert completed_qc_node["actual_date"] == "2026-08-20"
+    assert completed_qc_node["source_record_id"] == task["id"]
+
+
 async def test_quality_inspection_api_inherits_contract_qc_assignee_and_filters(
     api_client: AsyncClient,
     seeded_system: None,
@@ -280,5 +431,46 @@ async def test_quality_inspection_api_rejects_unapproved_contract(
         },
     )
     assert inspection_response.status_code == 422
-    detail = inspection_response.json()["detail"]
-    assert detail == "请先审批该采购合同，再登记 QC 查验"
+    message = inspection_response.json()["error"]["message"]
+    assert message == "请先审批该采购合同，再登记 QC 查验"
+
+
+async def test_quality_inspection_api_returns_field_level_validation_details(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    response = await api_client.post(
+        "/api/v1/quality/inspections",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "code": " ",
+            "purchase_contract_id": "",
+            "inspected_at": "2026-08-19",
+            "result": "passed",
+            "inspector_id": "",
+            "inspector_name": " ",
+            "lines": [
+                {
+                    "product_name": "Eco Shopping Bag",
+                    "inspected_quantity": "120",
+                    "failed_quantity": "0",
+                    "unit": "pcs",
+                    "result": "passed",
+                }
+            ],
+            "issues": [],
+        },
+    )
+
+    assert response.status_code == 422
+    body = response.json()
+    assert body["code"] == "VALIDATION_ERROR"
+    details = body["error"]["details"]
+    assert {detail["field"] for detail in details} == {
+        "code",
+        "purchase_contract_id",
+        "inspector_id",
+        "inspector_name",
+    }
+    assert all(detail["message"] == "不能为空" for detail in details)

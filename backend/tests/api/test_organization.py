@@ -20,8 +20,11 @@ async def test_super_admin_can_manage_users_and_role_permissions_without_passwor
     options_response = await api_client.get("/api/v1/organization/options", headers=headers)
     assert options_response.status_code == 200
     options = options_response.json()["data"]
-    assert options["departments"] == []
+    assert options["departments"]
     sales_role = next(item for item in options["roles"] if item["code"] == "sales_manager")
+    sales_department = next(
+        item for item in options["departments"] if item["id"] == "dept-sales"
+    )
 
     no_department_response = await api_client.post(
         "/api/v1/organization/users",
@@ -36,16 +39,8 @@ async def test_super_admin_can_manage_users_and_role_permissions_without_passwor
             "avatar_value": "copper-wave",
         },
     )
-    assert no_department_response.status_code == 409
-    assert no_department_response.json()["message"] == "请先新增部门"
-
-    department_response = await api_client.post(
-        "/api/v1/organization/departments",
-        headers=headers,
-        json={"name": "业务部", "sort_order": 10},
-    )
-    assert department_response.status_code == 201
-    sales_department = department_response.json()["data"]
+    assert no_department_response.status_code == 422
+    assert no_department_response.json()["message"] == "部门或角色不存在"
 
     create_response = await api_client.post(
         "/api/v1/organization/users",

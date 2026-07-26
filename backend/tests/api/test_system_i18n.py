@@ -31,8 +31,8 @@ async def test_i18n_config_exposes_languages_timezones_and_labels(
     assert data["messages"]["en-US"]["dashboard.countdownPrefix"] == "Starts in"
     assert set(data["messages"]["zh-CN"]) == set(data["messages"]["en-US"])
     assert data["path_labels"]["/"]["en-US"] == "Workbench"
-    assert data["page_titles"]["/purchase/followup"]["zh-CN"] == "采购跟单和逾期预警"
-    assert data["sidebar_groups"]["warehouse"]["en-US"] == "QC and warehouse"
+    assert data["page_titles"]["/purchase/followup"]["zh-CN"] == "跟单任务中心"
+    assert data["sidebar_groups"]["warehouse"]["en-US"] == "Warehouse"
     for mapping_name in ("path_labels", "page_titles", "sidebar_groups"):
         for value in data[mapping_name].values():
             assert set(value) == {"zh-CN", "en-US"}

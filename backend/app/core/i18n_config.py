@@ -245,6 +245,7 @@ I18N_CONFIG: I18nConfigDict = {
         "/purchase/invoice-notices": {"zh-CN": "开票通知", "en-US": "Invoice notices"},
         "/purchase/followup": {"zh-CN": "跟单中心", "en-US": "Follow-up center"},
         "/quality/inspections": {"zh-CN": "QC 中心", "en-US": "QC center"},
+        "/quality/tasks": {"zh-CN": "我的 QC 任务", "en-US": "My QC tasks"},
         "/warehouse/inbound-plans": {"zh-CN": "入库计划", "en-US": "Inbound plans"},
         "/warehouse/inbound-orders": {"zh-CN": "入仓", "en-US": "Inbound"},
         "/warehouse/outbound-plans": {"zh-CN": "出库计划", "en-US": "Outbound plans"},
@@ -322,6 +323,10 @@ I18N_CONFIG: I18nConfigDict = {
         "/quality/inspections": {
             "zh-CN": "QC 任务中心",
             "en-US": "QC task center",
+        },
+        "/quality/tasks": {
+            "zh-CN": "我的 QC 任务",
+            "en-US": "My QC tasks",
         },
         "/warehouse/inbound-plans": {
             "zh-CN": "入库计划和库位预安排",

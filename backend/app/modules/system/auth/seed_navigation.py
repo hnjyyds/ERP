@@ -192,6 +192,15 @@ def system_menus() -> list[MenuItem]:
             is_active=True,
         ),
         MenuItem(
+            id="menu-quality-tasks",
+            label="我的 QC 任务",
+            path="/quality/tasks",
+            icon="clipboard-check",
+            required_permission="quality:inspection:view",
+            sort_order=42,
+            is_active=True,
+        ),
+        MenuItem(
             id="menu-warehouse-inbound-plans",
             label="入库计划",
             path="/warehouse/inbound-plans",

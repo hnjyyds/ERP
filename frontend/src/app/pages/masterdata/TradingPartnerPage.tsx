@@ -53,7 +53,7 @@ const defaultColumnOptions: ColumnOption[] = [
   { key: 'status', title: '状态' },
 ]
 
-type TradingPartnerPageProps = {
+export type TradingPartnerPageProps = {
   className: string
   entityLabel: string
   pageTitle: string

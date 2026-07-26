@@ -8,17 +8,17 @@ describe('ProductsPage', () => {
   beforeEach(() => { vi.clearAllMocks() })
 
   it('renders without crashing', () => {
-    const { container } = render(<ProductsPage onNavigate={onNavigate} />)
+    const { container } = render(<ProductsPage detailId={null} onNavigate={onNavigate} />)
     expect(container).toBeTruthy()
   })
 
   it('renders product list panel', () => {
-    render(<ProductsPage onNavigate={onNavigate} />)
+    render(<ProductsPage detailId={null} onNavigate={onNavigate} />)
     expect(screen.getByText('商品列表')).toBeTruthy()
   })
 
   it('renders search input', () => {
-    render(<ProductsPage onNavigate={onNavigate} />)
+    render(<ProductsPage detailId={null} onNavigate={onNavigate} />)
     expect(screen.getByPlaceholderText('编号 / 中文 / 英文 / 海关编码')).toBeTruthy()
   })
 })

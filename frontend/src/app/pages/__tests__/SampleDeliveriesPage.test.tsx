@@ -8,12 +8,12 @@ describe('SampleDeliveriesPage', () => {
   beforeEach(() => { vi.clearAllMocks() })
 
   it('renders without crashing', () => {
-    const { container } = render(<SampleDeliveriesPage detailId={undefined} onNavigate={onNavigate} />)
+    const { container } = render(<SampleDeliveriesPage detailId={null} onNavigate={onNavigate} />)
     expect(container).toBeTruthy()
   })
 
   it('renders sample delivery list panel', () => {
-    render(<SampleDeliveriesPage detailId={undefined} onNavigate={onNavigate} />)
+    render(<SampleDeliveriesPage detailId={null} onNavigate={onNavigate} />)
     expect(screen.getByText('寄样单列表')).toBeTruthy()
   })
 })

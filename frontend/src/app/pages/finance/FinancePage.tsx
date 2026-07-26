@@ -3,7 +3,7 @@ import { Alert, Button, Descriptions, Input, Modal, Select, Skeleton, Table, Tag
 import { ArrowLeft, BarChart3, Coins, FileText, LayoutDashboard, Plus, Search , CheckCircle2, ChevronRight, ClipboardCheck, FileSpreadsheet, FileStack, Handshake, PackagePlus, Receipt, RefreshCw, Save, ShieldCheck, Ship, Wallet} from 'lucide-react'
 import type { FormEvent, ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { allocateBankReceipt, approveFeePaymentRequest, approvePaymentRequest, autoMatchCustomsReceipts, claimBankReceipt, addManualProfitCost, createBankReceipt, createFinancialSettlement, createFeePaymentRequest, createMiscFeeAllocation, createMiscFeeItem, createPartnerFeeInvoice, createPaymentRequest, createSupplierInvoice, createVerificationDocument, createPortImportBatch, createReimbursement, approveReimbursement, payReimbursement, getFinanceOverview, listBankReceipts, listFinancialSettlements, listFeePayables, listFeePaymentRequests, listMiscFeeAllocationSummary, listMiscFeeAllocations, listMiscFeeItems, listPartnerFeeInvoices, listPayables, listPaymentRequests, listProfitCalculations, listReceivables, listSupplierInvoices, listVerificationDocuments, listVerificationUsage, listReimbursements, listPortImportBatches, listCustomsDeclarationRecords, registerVerification, registerVerificationCustomsReceipt, registerTaxRefund, getReceiptUsageReport, getBankReceiptSummaryReport, getGoodsPaymentReport, getFeePaymentReport, getCustomsReceiptCollectionReport, getTaxRefundStatisticsReport, type BankReceipt, type BankReceiptAllocationPayload, type BankReceiptClaimPayload, type BankReceiptCreatePayload, type CustomsReceiptRegisterPayload, type FeePayableItem, type FeePaymentRequest, type FeePaymentRequestApprovePayload, type FeePaymentRequestCreatePayload, type FinancialSettlement, type FinancialSettlementCreatePayload, type ManualProfitCostCreatePayload, type PayableItem, type PaymentRequestApprovePayload, type PaymentRequestCreatePayload, type FinanceOverview, type PartnerFeeInvoice, type PartnerFeeInvoiceCreatePayload, type MiscFeeAllocation, type MiscFeeAllocationCreatePayload, type MiscFeeItem, type MiscFeeItemCreatePayload, type ProfitCostItem, type ReceivableItem, type SupplierInvoice, type SupplierInvoiceCreatePayload, type SupplierPaymentRequest, type TaxRefundRegisterPayload, type VerificationDocument, type VerificationDocumentCreatePayload, type VerificationRegisterPayload, type VerificationUsageItem, type Reimbursement, type ReimbursementCreatePayload, type PortImportBatch, type PortImportBatchCreatePayload, type CustomsDeclarationRecord, type ReceiptUsageDetailRow, type ReceiptUsageDetailReport, type BankReceiptCurrencySummary, type BankReceiptSummaryReport, type GoodsPaymentQueryRow, type GoodsPaymentQueryReport, type FeePaymentQueryRow, type FeePaymentQueryReport, type CustomsReceiptCollectionRow, type CustomsReceiptCollectionReport, type TaxRefundCurrencyTotal, type TaxRefundStatisticsReport , CustomsDeclarationRecordCreatePayload, FinanceCurrencySummary, FinancePartnerTypeSummary, FinanceReportDrilldown, FinanceReportExplanation, FinanceShipmentProfit, FinanceStatusAmount, exportBankReceiptSummaryReport, exportCustomsReceiptCollectionReport, exportFeePaymentReport, exportGoodsPaymentReport, exportReceiptUsageReport, exportTaxRefundStatisticsReport, drilldownFinanceReport, explainFinanceReport} from '../../../api'
+import { allocateBankReceipt, approveFeePaymentRequest, approvePaymentRequest, autoMatchCustomsReceipts, claimBankReceipt, addManualProfitCost, createBankReceipt, createFinancialSettlement, createFeePaymentRequest, createMiscFeeAllocation, createMiscFeeItem, createPartnerFeeInvoice, createPaymentRequest, createSupplierInvoice, createVerificationDocument, createPortImportBatch, createReimbursement, approveReimbursement, payReimbursement, getFinanceOverview, listBankReceipts, listFinancialSettlements, listFeePayables, listFeePaymentRequests, listMiscFeeAllocationSummary, listMiscFeeAllocations, listMiscFeeItems, listPartnerFeeInvoices, listPayables, listPaymentRequests, listProfitCalculations, listReceivables, listSupplierInvoices, listVerificationDocuments, listVerificationUsage, listReimbursements, listPortImportBatches, listCustomsDeclarationRecords, registerVerification, registerVerificationCustomsReceipt, registerTaxRefund, getReceiptUsageReport, getBankReceiptSummaryReport, getGoodsPaymentReport, getFeePaymentReport, getCustomsReceiptCollectionReport, getTaxRefundStatisticsReport, type BankReceipt, type BankReceiptAllocationPayload, type BankReceiptClaimPayload, type BankReceiptCreatePayload, type CurrentUser, type CustomsReceiptRegisterPayload, type FeePayableItem, type FeePaymentRequest, type FeePaymentRequestApprovePayload, type FeePaymentRequestCreatePayload, type FinancialSettlement, type FinancialSettlementCreatePayload, type ManualProfitCostCreatePayload, type PayableItem, type PaymentRequestApprovePayload, type PaymentRequestCreatePayload, type FinanceOverview, type PartnerFeeInvoice, type PartnerFeeInvoiceCreatePayload, type MiscFeeAllocation, type MiscFeeAllocationCreatePayload, type MiscFeeItem, type MiscFeeItemCreatePayload, type ProfitCostItem, type ReceivableItem, type SupplierInvoice, type SupplierInvoiceCreatePayload, type SupplierPaymentRequest, type TaxRefundRegisterPayload, type VerificationDocument, type VerificationDocumentCreatePayload, type VerificationRegisterPayload, type VerificationUsageItem, type Reimbursement, type ReimbursementCreatePayload, type PortImportBatch, type PortImportBatchCreatePayload, type CustomsDeclarationRecord, type ReceiptUsageDetailRow, type ReceiptUsageDetailReport, type BankReceiptCurrencySummary, type BankReceiptSummaryReport, type GoodsPaymentQueryRow, type GoodsPaymentQueryReport, type FeePaymentQueryRow, type FeePaymentQueryReport, type CustomsReceiptCollectionRow, type CustomsReceiptCollectionReport, type TaxRefundCurrencyTotal, type TaxRefundStatisticsReport , CustomsDeclarationRecordCreatePayload, FinanceCurrencySummary, FinancePartnerTypeSummary, FinanceReportDrilldown, FinanceReportExplanation, FinanceShipmentProfit, FinanceStatusAmount, exportBankReceiptSummaryReport, exportCustomsReceiptCollectionReport, exportFeePaymentReport, exportGoodsPaymentReport, exportReceiptUsageReport, exportTaxRefundStatisticsReport, drilldownFinanceReport, explainFinanceReport} from '../../../api'
 import { financePath, financeOverviewPath, financeReceiptsPath, financePaymentsPath, financeFeesPath, financeTaxPath, financeMiscPath, financeSettlementPath, financeReimbursementsPath, financePortDataPath, financeReportsPath, financeModulePathByModule, financeDetailPath, isFinancePath, parseFinanceView, reportingPath, type FinanceModule, type FinanceView } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
@@ -17,10 +17,11 @@ import { shipmentStatusLabel, purchaseInvoiceNoticeStatusLabel, samplePaymentSta
 
 
 type FinancePageProps = ModuleNavigationProps & {
+  currentUser: CurrentUser
   view: FinanceView
 }
 
-export function FinancePage({ view, onNavigate }: FinancePageProps) {
+export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps) {
   const activeModule = view.module
   const detailId = view.id
   const goModule = (module: FinanceModule) => onNavigate(financeModulePathByModule[module])
@@ -194,7 +195,7 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
     initialPaymentRequestForm(),
   )
   const [paymentApprovalForm, setPaymentApprovalForm] = useState<PaymentApprovalFormState>(() =>
-    initialPaymentApprovalForm(),
+    initialPaymentApprovalForm('1200.00', currentUser.display_name),
   )
   const [partnerFeeInvoiceForm, setPartnerFeeInvoiceForm] = useState<PartnerFeeInvoiceFormState>(() =>
     initialPartnerFeeInvoiceForm(),
@@ -203,7 +204,7 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
     initialFeePaymentRequestForm(),
   )
   const [feePaymentApprovalForm, setFeePaymentApprovalForm] = useState<FeePaymentApprovalFormState>(() =>
-    initialFeePaymentApprovalForm(),
+    initialFeePaymentApprovalForm('400.00', currentUser.display_name),
   )
   const [verificationDocumentForm, setVerificationDocumentForm] =
     useState<VerificationDocumentFormState>(() => initialVerificationDocumentForm())
@@ -1200,7 +1201,7 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
         paymentApprovalPayload(paymentApprovalForm),
       )
       setMessage(`已审批付款申请 ${approved.request_no}`)
-      setPaymentApprovalForm(initialPaymentApprovalForm())
+      setPaymentApprovalForm(initialPaymentApprovalForm('1200.00', currentUser.display_name))
       await loadPaymentRequests(approved.id)
       await loadSupplierInvoices(selectedSupplierInvoice?.id)
       await loadPayables()
@@ -1258,7 +1259,7 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
         feePaymentApprovalPayload(feePaymentApprovalForm),
       )
       setMessage(`已审批付费申请 ${approved.request_no}`)
-      setFeePaymentApprovalForm(initialFeePaymentApprovalForm())
+      setFeePaymentApprovalForm(initialFeePaymentApprovalForm('400.00', currentUser.display_name))
       await loadFeePaymentRequests(approved.id)
       await loadPartnerFeeInvoices(selectedPartnerFeeInvoice?.id)
       await loadFeePayables()
@@ -1446,8 +1447,12 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
   const selectedReceiptCanAllocate = selectedReceipt
     ? selectedReceipt.status !== 'unclaimed' && Number(selectedReceipt.unallocated_amount) > 0
     : false
-  const selectedPaymentRequestCanApprove = selectedPaymentRequest?.status === 'submitted'
-  const selectedFeePaymentRequestCanApprove = selectedFeePaymentRequest?.status === 'submitted'
+  const selectedPaymentRequestCanApprove =
+    selectedPaymentRequest?.status === 'submitted' &&
+    selectedPaymentRequest.requester_user_id !== currentUser.id
+  const selectedFeePaymentRequestCanApprove =
+    selectedFeePaymentRequest?.status === 'submitted' &&
+    selectedFeePaymentRequest.requester_user_id !== currentUser.id
   const selectedVerificationCanRegisterCustoms =
     selectedVerificationDocument?.status === 'issued' ||
     selectedVerificationDocument?.status === 'customs_receipt_registered'
@@ -2363,7 +2368,9 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
               onClick: () => {
                 setSelectedSupplierInvoiceId(record.id)
                 setPaymentRequestForm(initialPaymentRequestForm(record))
-                setPaymentApprovalForm(initialPaymentApprovalForm(record.unpaid_amount))
+                setPaymentApprovalForm(
+                  initialPaymentApprovalForm(record.unpaid_amount, currentUser.display_name),
+                )
                 goDetail('payments', record.id)
               },
             })}
@@ -2662,10 +2669,8 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
                 <label>
                   审批人
                   <Input
+                    disabled
                     value={paymentApprovalForm.reviewer_name}
-                    onChange={(event) =>
-                      setPaymentApprovalForm({ ...paymentApprovalForm, reviewer_name: event.target.value })
-                    }
                   />
                 </label>
                 <label>
@@ -2695,6 +2700,9 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
               >
                 审批付款
               </Button>
+              {selectedPaymentRequest?.requester_user_id === currentUser.id ? (
+                <Alert showIcon type="info" message="申请人不能审批自己的付款申请" />
+              ) : null}
             </form>
           </div>
           <section className="finance-allocation-history">
@@ -2734,7 +2742,9 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
               onRow={(record) => ({
                 onClick: () => {
                   setSelectedPaymentRequestId(record.id)
-                  setPaymentApprovalForm(initialPaymentApprovalForm(record.requested_amount))
+                  setPaymentApprovalForm(
+                    initialPaymentApprovalForm(record.requested_amount, currentUser.display_name),
+                  )
                 },
               })}
             />
@@ -2941,7 +2951,9 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
               onClick: () => {
                 setSelectedPartnerFeeInvoiceId(record.id)
                 setFeePaymentRequestForm(initialFeePaymentRequestForm(record))
-                setFeePaymentApprovalForm(initialFeePaymentApprovalForm(record.unpaid_amount))
+                setFeePaymentApprovalForm(
+                  initialFeePaymentApprovalForm(record.unpaid_amount, currentUser.display_name),
+                )
                 goDetail('fees', record.id)
               },
             })}
@@ -3250,10 +3262,8 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
                 <label>
                   审批人
                   <Input
+                    disabled
                     value={feePaymentApprovalForm.reviewer_name}
-                    onChange={(event) =>
-                      setFeePaymentApprovalForm({ ...feePaymentApprovalForm, reviewer_name: event.target.value })
-                    }
                   />
                 </label>
                 <label>
@@ -3286,6 +3296,9 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
               >
                 审批付费
               </Button>
+              {selectedFeePaymentRequest?.requester_user_id === currentUser.id ? (
+                <Alert showIcon type="info" message="申请人不能审批自己的付费申请" />
+              ) : null}
             </form>
           </div>
           <section className="finance-allocation-history">
@@ -3325,7 +3338,9 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
               onRow={(record) => ({
                 onClick: () => {
                   setSelectedFeePaymentRequestId(record.id)
-                  setFeePaymentApprovalForm(initialFeePaymentApprovalForm(record.requested_amount))
+                  setFeePaymentApprovalForm(
+                    initialFeePaymentApprovalForm(record.requested_amount, currentUser.display_name),
+                  )
                 },
               })}
             />
@@ -5788,4 +5803,3 @@ export function FinancePage({ view, onNavigate }: FinancePageProps) {
 
   return null
 }
-

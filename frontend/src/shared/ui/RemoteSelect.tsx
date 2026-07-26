@@ -9,23 +9,31 @@ type RemoteSelectOption = {
 
 type RemoteSelectProps = {
   allowClear?: boolean
+  ariaDescribedBy?: string
+  ariaInvalid?: boolean
+  ariaLabel?: string
   disabled?: boolean
   fetchOptions: (query: string) => Promise<RemoteSelectOption[]>
   id?: string
   onChange?: (value: string) => void
   placeholder?: string
   required?: boolean
+  status?: 'error' | 'warning'
   value?: string | null
 }
 
 export function RemoteSelect({
   allowClear = true,
+  ariaDescribedBy,
+  ariaInvalid,
+  ariaLabel,
   disabled,
   fetchOptions,
   id,
   onChange,
   placeholder = '输入关键词搜索',
   required,
+  status,
   value,
 }: RemoteSelectProps) {
   const [options, setOptions] = useState<RemoteSelectOption[]>([])
@@ -54,14 +62,19 @@ export function RemoteSelect({
     }
   }, [loadOptions])
 
-  const selectedOption = value ? options.find((option) => option.value === value) ?? null : null
-  const resolvedOptions = selectedOption && !options.some((option) => option.value === selectedOption.value)
-    ? [selectedOption, ...options]
-    : options
+  const selectedOption = value ? (options.find((option) => option.value === value) ?? null) : null
+  const resolvedOptions =
+    selectedOption && !options.some((option) => option.value === selectedOption.value)
+      ? [selectedOption, ...options]
+      : options
 
   return (
     <Select
       allowClear={allowClear}
+      aria-describedby={ariaDescribedBy}
+      aria-invalid={ariaInvalid}
+      aria-label={ariaLabel}
+      aria-required={required}
       disabled={disabled}
       filterOption={false}
       id={id}
@@ -72,7 +85,7 @@ export function RemoteSelect({
       optionLabelProp="label"
       placeholder={placeholder}
       showSearch
-      status={required && !value ? 'error' : undefined}
+      status={status}
       value={value || undefined}
     >
       {resolvedOptions.map((option) => (

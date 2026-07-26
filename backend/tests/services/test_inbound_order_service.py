@@ -11,10 +11,12 @@ from app.modules.sample.records.repositories import SampleRecordRepository
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.auth.seed import seed_system_demo_data
 from app.modules.warehouse.inbound_orders.repositories import InboundOrderRepository
 from app.modules.warehouse.inbound_orders.schemas import (
     InboundOrderApprove,
     InboundOrderGenerateFromPlan,
+    InboundOrderSubmit,
 )
 from app.modules.warehouse.inbound_orders.services import (
     InboundOrderService,
@@ -25,8 +27,9 @@ from app.modules.warehouse.inbound_plans.services import InboundPlanService
 
 
 def _make_service(session: AsyncSession) -> InboundOrderService:
+    auth_repository = AuthRepository(session)
     purchase_contract_repository = PurchaseContractRepository(session)
-    data_scope_resolver = DataScopeResolver(AuthRepository(session))
+    data_scope_resolver = DataScopeResolver(auth_repository)
     return InboundOrderService(
         inbound_repository=InboundOrderRepository(session),
         inbound_plan_repository=InboundPlanRepository(session),
@@ -39,6 +42,7 @@ def _make_service(session: AsyncSession) -> InboundOrderService:
             data_scope_resolver=data_scope_resolver,
         ),
         data_scope_resolver=data_scope_resolver,
+        auth_repository=auth_repository,
     )
 
 
@@ -46,12 +50,14 @@ def _user(
     permissions: list[str],
     *,
     user_id: str = "u-001",
+    display_name: str = "演示业务主管",
 ) -> CurrentUserResponse:
     return CurrentUserResponse(
         id=user_id,
         username=user_id,
-        display_name="演示业务主管",
+        display_name=display_name,
         department_name="业务部",
+        data_scope="all",
         roles=["业务主管"],
         permissions=permissions,
     )
@@ -64,7 +70,21 @@ def _warehouse_user() -> CurrentUserResponse:
             "warehouse:inbound_order:edit",
             "warehouse:inbound_order:approve",
             "warehouse:inbound_order:view_all",
-        ]
+        ],
+        user_id="u-warehouse",
+        display_name="演示仓库专员",
+    )
+
+
+def _business_approver() -> CurrentUserResponse:
+    return _user(
+        [
+            "warehouse:inbound_order:view",
+            "warehouse:inbound_order:approve",
+            "warehouse:inbound_order:view_all",
+        ],
+        user_id="u-001",
+        display_name="演示业务主管",
     )
 
 
@@ -73,6 +93,7 @@ async def _prepare_plan(
     *,
     approval_status: str = "approved",
 ) -> tuple[str, str, str]:
+    await seed_system_demo_data(session)
     purchase_repository = PurchaseContractRepository(session)
     contract = await purchase_repository.create_contract(
         code=f"PC-IO-{approval_status}",
@@ -187,11 +208,15 @@ async def test_inbound_order_service_pending_inspection_does_not_increase_availa
             current_user=_warehouse_user(),
             payload=_payload(plan_id, inbound_mode="pending_inspection"),
         )
-        submitted = await service.submit_order(current_user=_warehouse_user(), order_id=order.id)
-        approved = await service.approve_order(
+        submitted = await service.submit_order(
             current_user=_warehouse_user(),
+            order_id=order.id,
+            payload=InboundOrderSubmit(reviewer_id="u-001"),
+        )
+        approved = await service.approve_order(
+            current_user=_business_approver(),
             order_id=submitted.id,
-            payload=InboundOrderApprove(reviewer_name="业务主管", approved_at=date(2026, 8, 30)),
+            payload=InboundOrderApprove(approved_at=date(2026, 8, 30)),
         )
         balances = await service.list_inventory_balances(current_user=_warehouse_user(), q="BAG-40")
         ledgers = await service.list_inventory_ledgers(
@@ -222,16 +247,17 @@ async def test_inbound_order_service_formal_inbound_requires_passed_qc(
             current_user=_warehouse_user(),
             payload=_payload(plan_id, inbound_mode="formal"),
         )
-        await service.submit_order(current_user=_warehouse_user(), order_id=order.id)
+        await service.submit_order(
+            current_user=_warehouse_user(),
+            order_id=order.id,
+            payload=InboundOrderSubmit(reviewer_id="u-001"),
+        )
 
         with pytest.raises(ValueError):
             await service.approve_order(
-                current_user=_warehouse_user(),
+                current_user=_business_approver(),
                 order_id=order.id,
-                payload=InboundOrderApprove(
-                    reviewer_name="业务主管",
-                    approved_at=date(2026, 8, 30),
-                ),
+                payload=InboundOrderApprove(approved_at=date(2026, 8, 30)),
             )
 
 
@@ -254,15 +280,15 @@ async def test_inbound_order_service_formal_inbound_posts_inventory_and_followup
             current_user=_warehouse_user(),
             payload=_payload(plan_id, inbound_mode="formal"),
         )
-        await service.submit_order(current_user=_warehouse_user(), order_id=order.id)
-        approved = await service.approve_order(
+        await service.submit_order(
             current_user=_warehouse_user(),
             order_id=order.id,
-            payload=InboundOrderApprove(
-                reviewer_id="u-001",
-                reviewer_name="业务主管",
-                approved_at=date(2026, 8, 30),
-            ),
+            payload=InboundOrderSubmit(reviewer_id="u-001"),
+        )
+        approved = await service.approve_order(
+            current_user=_business_approver(),
+            order_id=order.id,
+            payload=InboundOrderApprove(approved_at=date(2026, 8, 30)),
         )
         balances = await service.list_inventory_balances(current_user=_warehouse_user(), q="BAG-40")
         ledgers = await service.list_inventory_ledgers(
@@ -281,7 +307,7 @@ async def test_inbound_order_service_formal_inbound_posts_inventory_and_followup
 
     assert approved.status == "approved"
     assert approved.reviewer_id == "u-001"
-    assert approved.reviewer_name == "业务主管"
+    assert approved.reviewer_name == "演示业务主管"
     assert balances.items[0].available_quantity == "1000"
     assert balances.items[0].pending_inspection_quantity == "0"
     assert ledgers.items[0].quantity == "1000"
@@ -294,6 +320,40 @@ async def test_inbound_order_service_formal_inbound_posts_inventory_and_followup
     assert inbound_node is not None
     assert inbound_node.status == "completed"
     assert inbound_node.actual_date == date(2026, 8, 30)
+
+
+async def test_inbound_order_approval_requires_designated_logged_in_reviewer(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        _, _, plan_id = await _prepare_plan(session)
+        service = _make_service(session)
+        order = await service.generate_from_plan(
+            current_user=_warehouse_user(),
+            payload=_payload(plan_id, inbound_mode="pending_inspection"),
+        )
+
+        with pytest.raises(ValueError, match="不能将自己设为审批人"):
+            await service.submit_order(
+                current_user=_warehouse_user(),
+                order_id=order.id,
+                payload=InboundOrderSubmit(reviewer_id="u-warehouse"),
+            )
+
+        submitted = await service.submit_order(
+            current_user=_warehouse_user(),
+            order_id=order.id,
+            payload=InboundOrderSubmit(reviewer_id="u-001"),
+        )
+        assert submitted.reviewer_id == "u-001"
+        assert submitted.reviewer_name == "演示业务主管"
+
+        with pytest.raises(PermissionDeniedError):
+            await service.approve_order(
+                current_user=_warehouse_user(),
+                order_id=submitted.id,
+                payload=InboundOrderApprove(approved_at=date(2026, 8, 30)),
+            )
 
 
 async def test_inbound_order_service_requires_view_permission(

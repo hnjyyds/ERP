@@ -1,3 +1,5 @@
+from datetime import datetime, time
+
 from app.db.uow import UnitOfWork
 from app.modules.followup.services import FollowupService
 from app.modules.purchase.contracts.repositories import (
@@ -12,6 +14,7 @@ from app.modules.quality.inspections.repositories import (
 )
 from app.modules.quality.inspections.schemas import (
     VALID_QUALITY_INSPECTION_RESULTS,
+    VALID_QUALITY_INSPECTION_STATUSES,
     QualityInspectionCreate,
     QualityInspectionInboundEligibilityResponse,
     QualityInspectionLineResponse,
@@ -63,6 +66,14 @@ class QualityInspectionService:
         if contract.approval_status != "approved":
             raise ValueError("请先审批该采购合同，再登记 QC 查验")
         qc_user_id, qc_user_name = self._inspection_assignee_from_contract(contract)
+        task_status = payload.status or "completed"
+        if payload.inspected_at is not None:
+            inspected_at = payload.inspected_at
+        elif payload.scheduled_at is not None:
+            inspected_at = payload.scheduled_at.date()
+        else:
+            raise ValueError("查验日期或排期时间至少填写一项")
+        scheduled_at = payload.scheduled_at or datetime.combine(inspected_at, time(hour=9))
         async with UnitOfWork(self._repository.session):
             inspection = await self._repository.create_inspection(
                 code=payload.code,
@@ -70,8 +81,10 @@ class QualityInspectionService:
                 purchase_contract_no=contract.code,
                 supplier_id=contract.supplier_id,
                 supplier_name=contract.supplier_name,
-                inspected_at=payload.inspected_at,
-                result=payload.result,
+                status=task_status,
+                scheduled_at=scheduled_at,
+                inspected_at=inspected_at,
+                result=payload.result or "",
                 inspector_id=payload.inspector_id,
                 inspector_name=payload.inspector_name,
                 qc_user_id=qc_user_id,
@@ -98,17 +111,28 @@ class QualityInspectionService:
         )
         if inspection.purchase_contract_id != payload.purchase_contract_id:
             raise ValueError("QC 查验不能更换采购合同")
+        task_status = payload.status or "completed"
+        self._validate_status_transition(inspection.status, task_status)
         contract = await self._get_accessible_contract(
             current_user=current_user,
             purchase_contract_id=inspection.purchase_contract_id,
         )
         qc_user_id, qc_user_name = self._inspection_assignee_from_contract(contract)
+        if payload.inspected_at is not None:
+            inspected_at = payload.inspected_at
+        elif payload.scheduled_at is not None:
+            inspected_at = payload.scheduled_at.date()
+        else:
+            raise ValueError("查验日期或排期时间至少填写一项")
+        scheduled_at = payload.scheduled_at or datetime.combine(inspected_at, time(hour=9))
         async with UnitOfWork(self._repository.session):
             updated = await self._repository.update_inspection(
                 inspection_id=inspection.id,
                 code=payload.code,
-                inspected_at=payload.inspected_at,
-                result=payload.result,
+                status=task_status,
+                scheduled_at=scheduled_at,
+                inspected_at=inspected_at,
+                result=payload.result or "",
                 inspector_id=payload.inspector_id,
                 inspector_name=payload.inspector_name,
                 qc_user_id=qc_user_id,
@@ -128,20 +152,27 @@ class QualityInspectionService:
         *,
         current_user: CurrentUserResponse,
         q: str | None,
+        status: str | None = None,
         result: str | None,
         supplier_id: str | None,
         purchase_contract_id: str | None,
         assignee_user_id: str | None,
+        inspector_user_id: str | None = None,
     ) -> QualityInspectionListResponse:
         self._require(current_user, "quality:inspection:view")
         if result is not None:
             self._validate_result(result)
+        if status is not None:
+            self._validate_status(status)
         can_view_all = self._can_view_all(current_user)
         owner_user_ids = None
         visible_assignee_user_id = None
         resolved_assignee_user_id = assignee_user_id
+        resolved_inspector_user_id = inspector_user_id
         if not can_view_all:
             if assignee_user_id is not None and assignee_user_id != current_user.id:
+                raise PermissionDeniedError
+            if inspector_user_id is not None and inspector_user_id != current_user.id:
                 raise PermissionDeniedError
             owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
                 current_user=current_user,
@@ -149,12 +180,14 @@ class QualityInspectionService:
             visible_assignee_user_id = current_user.id
         rows, total = await self._repository.list_inspections(
             q=q,
+            status=status,
             result=result,
             supplier_id=supplier_id,
             purchase_contract_id=purchase_contract_id,
             owner_user_ids=owner_user_ids,
             visible_assignee_user_id=visible_assignee_user_id,
             assignee_user_id=resolved_assignee_user_id,
+            inspector_user_id=resolved_inspector_user_id,
         )
         return QualityInspectionListResponse(
             items=[await self._inspection_response(row) for row in rows],
@@ -192,7 +225,7 @@ class QualityInspectionService:
                 latest_inspection_id=None,
                 latest_result=None,
                 inspected_at=None,
-                reason="尚无 QC 查验记录",
+                reason="尚无已完成的 QC 查验记录",
             )
         eligible = latest.result == "passed"
         return QualityInspectionInboundEligibilityResponse(
@@ -235,7 +268,7 @@ class QualityInspectionService:
             )
 
     async def _write_back_followup_if_passed(self, inspection: QualityInspectionRow) -> None:
-        if inspection.result != "passed":
+        if inspection.status != "completed" or inspection.result != "passed":
             return
         await self._followup_service.complete_node_from_source(
             purchase_contract_id=inspection.purchase_contract_id,
@@ -283,8 +316,13 @@ class QualityInspectionService:
             allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
                 current_user=current_user,
             )
-            is_owner_visible = allowed_user_ids is None or inspection.owner_user_id in allowed_user_ids
-            is_assigned_qc = inspection.qc_user_id == current_user.id
+            is_owner_visible = (
+                allowed_user_ids is None or inspection.owner_user_id in allowed_user_ids
+            )
+            is_assigned_qc = (
+                inspection.inspector_id == current_user.id
+                or inspection.qc_user_id == current_user.id
+            )
             if not is_owner_visible and not is_assigned_qc:
                 raise QualityInspectionNotFoundError
             return inspection
@@ -303,8 +341,10 @@ class QualityInspectionService:
             purchase_contract_no=inspection.purchase_contract_no,
             supplier_id=inspection.supplier_id,
             supplier_name=inspection.supplier_name,
-            inspected_at=inspection.inspected_at,
-            result=inspection.result,
+            status=inspection.status,
+            scheduled_at=inspection.scheduled_at,
+            inspected_at=inspection.inspected_at if inspection.status == "completed" else None,
+            result=inspection.result if inspection.status == "completed" else None,
             inspector_id=inspection.inspector_id,
             inspector_name=inspection.inspector_name,
             qc_user_id=inspection.qc_user_id,
@@ -360,3 +400,17 @@ class QualityInspectionService:
     def _validate_result(self, result: str) -> None:
         if result not in VALID_QUALITY_INSPECTION_RESULTS:
             raise ValueError("QC 查验结果无效")
+
+    def _validate_status(self, status: str) -> None:
+        if status not in VALID_QUALITY_INSPECTION_STATUSES:
+            raise ValueError("QC 任务状态无效")
+
+    def _validate_status_transition(self, current_status: str, next_status: str) -> None:
+        allowed_transitions = {
+            "pending": {"pending", "in_progress", "completed", "cancelled"},
+            "in_progress": {"in_progress", "completed", "cancelled"},
+            "completed": {"completed"},
+            "cancelled": {"cancelled"},
+        }
+        if next_status not in allowed_transitions.get(current_status, {current_status}):
+            raise ValueError("QC 任务状态不能这样变更")

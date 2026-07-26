@@ -24,6 +24,7 @@ import {
   purchaseInquiryPath,
   purchaseInvoiceNoticePath,
   qualityInspectionPath,
+  myQualityTasksPath,
   reportingPath,
   sampleDeliveryPath,
   sampleRecordPath,
@@ -47,6 +48,7 @@ export const workflowPageTitleByPath: Record<string, { 'zh-CN': string; 'en-US':
     'en-US': 'Purchase contracts and factory fulfillment',
   },
   [qualityInspectionPath]: { 'zh-CN': 'QC 任务中心', 'en-US': 'QC task center' },
+  [myQualityTasksPath]: { 'zh-CN': '我的 QC 任务', 'en-US': 'My QC tasks' },
   [followupPath]: { 'zh-CN': '跟单任务中心', 'en-US': 'Follow-up task center' },
   [supplierPath]: { 'zh-CN': '工厂资料和验货地址', 'en-US': 'Factories and inspection addresses' },
   [productPath]: {
@@ -184,8 +186,19 @@ export function nullableText(value: string | null): string {
   return value ?? '-'
 }
 
+export function dateInputValue(date: Date): string {
+  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60_000)
+  return localDate.toISOString().slice(0, 10)
+}
+
 export function todayInputValue(): string {
-  return new Date().toISOString().slice(0, 10)
+  return dateInputValue(new Date())
+}
+
+export function daysFromTodayInputValue(days: number): string {
+  const date = new Date()
+  date.setDate(date.getDate() + days)
+  return dateInputValue(date)
 }
 
 export function formatQuantity(value: number): string {

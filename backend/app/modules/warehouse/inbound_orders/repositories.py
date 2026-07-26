@@ -250,19 +250,27 @@ class InboundOrderRepository:
         total = await self.session.scalar(count_statement)
         return [self._map_order(row) for row in rows], int(total or 0)
 
-    async def submit_order(self, order_id: str) -> InboundOrderRow | None:
+    async def submit_order(
+        self,
+        order_id: str,
+        *,
+        reviewer_id: str,
+        reviewer_name: str,
+    ) -> InboundOrderRow | None:
         order = await self.session.get(InboundOrder, order_id)
         if order is None:
             return None
         order.status = "submitted"
         order.submitted_at = order.inbound_at
+        order.reviewer_id = reviewer_id
+        order.reviewer_name = reviewer_name
         await self.session.flush()
         return self._map_order(order)
 
     async def approve_order(
         self,
         order_id: str,
-        reviewer_id: str | None,
+        reviewer_id: str,
         reviewer_name: str,
         approved_at: date,
     ) -> InboundOrderRow | None:

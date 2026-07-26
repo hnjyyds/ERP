@@ -7,7 +7,7 @@ import { warehouseOutboundPlanPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { outboundPlanStatusOptions, outboundPlanTypeOptions, outboundPlanSourceTypeOptions } from '../../../shared/formOptions'
-import { formatDate, formatMoney, formatQuantity, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull, trimDecimal} from '../appHelpers'
+import { daysFromTodayInputValue, formatDate, formatMoney, formatQuantity, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull, trimDecimal} from '../appHelpers'
 
 type OutboundPlanGenerateFormState = {
   shipment_plan_id: string
@@ -54,7 +54,7 @@ function initialOutboundPlanGenerateForm(): OutboundPlanGenerateFormState {
 
 function initialOutboundPlanScheduleForm(): OutboundPlanScheduleFormState {
   return {
-    planned_date: '2026-09-27',
+    planned_date: daysFromTodayInputValue(7),
     warehouse_id: 'wh-ningbo',
     warehouse_name: '宁波总仓',
     location_id: 'loc-fg-b02',
@@ -696,5 +696,4 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
     </section>
   )
 }
-
 

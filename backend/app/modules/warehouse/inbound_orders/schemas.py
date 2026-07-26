@@ -36,11 +36,15 @@ class InboundOrderGenerateFromPlan(BaseModel):
     lines: list[InboundOrderLineReceive] = Field(default_factory=list)
 
 
+class InboundOrderSubmit(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    reviewer_id: str = Field(min_length=1, max_length=36)
+
+
 class InboundOrderApprove(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    reviewer_id: str | None = Field(default=None, min_length=1, max_length=36)
-    reviewer_name: str = Field(min_length=1, max_length=160)
     approved_at: date
 
 

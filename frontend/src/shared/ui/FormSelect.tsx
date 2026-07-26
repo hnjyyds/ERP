@@ -8,10 +8,13 @@ type FormSelectChangeEvent = {
 }
 
 type FormSelectProps = {
+  'aria-describedby'?: string
+  'aria-invalid'?: boolean
   children?: ReactNode
   disabled?: boolean
   id?: string
   required?: boolean
+  status?: 'error' | 'warning'
   value?: string
   defaultValue?: string
   onChange?: (event: FormSelectChangeEvent) => void

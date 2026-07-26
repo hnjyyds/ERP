@@ -10,6 +10,7 @@ async def _login_token(
         "/api/v1/auth/login",
         json={"username": username, "password": password},
     )
+    assert response.status_code == 200
     return response.json()["data"]["access_token"]
 
 
@@ -95,6 +96,11 @@ async def test_finance_payment_flow_invoice_request_approve_and_payables(
 ) -> None:
     business_token = await _login_token(api_client)
     finance_token = await _login_token(api_client, "finance", "finance123")
+    finance_manager_token = await _login_token(
+        api_client,
+        "finance_manager",
+        "finance-manager123",
+    )
     notice = await _received_purchase_invoice_notice(api_client, business_token)
 
     invoice = await _create_supplier_invoice(api_client, finance_token, notice)
@@ -125,13 +131,24 @@ async def test_finance_payment_flow_invoice_request_approve_and_payables(
     assert payment_request["paid_amount"] == "0.00"
     assert payment_request["supplier_invoice_no"] == "SI-PAY-API-001"
 
-    approve_response = await api_client.post(
+    self_approve_response = await api_client.post(
         f"/api/v1/finance/payment-requests/{payment_request['id']}/approve",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
             "approved_amount": "1200.00",
             "approved_at": "2026-09-11",
-            "reviewer_name": "演示财务",
+            "payment_account": "BOC 8888",
+            "remark": "申请人不得审批自己的付款",
+        },
+    )
+    assert self_approve_response.status_code == 422
+
+    approve_response = await api_client.post(
+        f"/api/v1/finance/payment-requests/{payment_request['id']}/approve",
+        headers={"Authorization": f"Bearer {finance_manager_token}"},
+        json={
+            "approved_amount": "1200.00",
+            "approved_at": "2026-09-11",
             "payment_account": "BOC 8888",
             "remark": "财务审批并付款",
         },
@@ -139,6 +156,7 @@ async def test_finance_payment_flow_invoice_request_approve_and_payables(
     assert approve_response.status_code == 200
     approved = approve_response.json()["data"]
     assert approved["status"] == "approved"
+    assert approved["reviewer_name"] == "演示财务主管"
     assert approved["approved_amount"] == "1200.00"
     assert approved["paid_amount"] == "1200.00"
 
@@ -187,11 +205,10 @@ async def test_finance_payment_flow_invoice_request_approve_and_payables(
 
     final_approve_response = await api_client.post(
         f"/api/v1/finance/payment-requests/{final_request['id']}/approve",
-        headers={"Authorization": f"Bearer {finance_token}"},
+        headers={"Authorization": f"Bearer {finance_manager_token}"},
         json={
             "approved_amount": "2000.00",
             "approved_at": "2026-09-13",
-            "reviewer_name": "演示财务",
             "payment_account": "BOC 8888",
             "remark": "尾款付清",
         },
@@ -217,6 +234,11 @@ async def test_finance_payment_rejects_excess_amount_and_permissions(
 ) -> None:
     business_token = await _login_token(api_client)
     finance_token = await _login_token(api_client, "finance", "finance123")
+    finance_manager_token = await _login_token(
+        api_client,
+        "finance_manager",
+        "finance-manager123",
+    )
     notice = await _received_purchase_invoice_notice(
         api_client,
         business_token,
@@ -247,7 +269,7 @@ async def test_finance_payment_rejects_excess_amount_and_permissions(
 
     excess_request_response = await api_client.post(
         "/api/v1/finance/payment-requests",
-        headers={"Authorization": f"Bearer {finance_token}"},
+        headers={"Authorization": f"Bearer {finance_manager_token}"},
         json={
             "request_no": "PR-PAY-API-OVER",
             "supplier_invoice_id": invoice["id"],

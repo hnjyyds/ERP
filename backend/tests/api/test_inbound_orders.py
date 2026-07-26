@@ -121,19 +121,25 @@ async def test_inbound_order_api_formal_inbound_posts_inventory_and_supplier_rec
     order = generate_response.json()["data"]
     assert order["status"] == "draft"
 
+    warehouse_token = await _login_token(
+        api_client,
+        username="warehouse",
+        password="warehouse123",
+    )
+    warehouse_headers = {"Authorization": f"Bearer {warehouse_token}"}
     submit_response = await api_client.post(
         f"/api/v1/warehouse/inbound-orders/{order['id']}/submit",
-        headers=headers,
+        headers=warehouse_headers,
+        json={"reviewer_id": "u-001"},
     )
     assert submit_response.status_code == 200
+    submitted_order = submit_response.json()["data"]
+    assert submitted_order["reviewer_id"] == "u-001"
+    assert submitted_order["reviewer_name"] == "演示业务主管"
     approve_order_response = await api_client.post(
         f"/api/v1/warehouse/inbound-orders/{order['id']}/approve",
         headers=headers,
-        json={
-            "reviewer_id": "u-001",
-            "reviewer_name": "演示业务主管",
-            "approved_at": "2026-08-30",
-        },
+        json={"approved_at": "2026-08-30"},
     )
     assert approve_order_response.status_code == 200
     approved_order = approve_order_response.json()["data"]

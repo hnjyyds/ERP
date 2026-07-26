@@ -21,6 +21,17 @@ class QualityInspection(Base):
     purchase_contract_no: Mapped[str] = mapped_column(String(80), index=True, nullable=False)
     supplier_id: Mapped[str | None] = mapped_column(String(36), index=True, nullable=True)
     supplier_name: Mapped[str] = mapped_column(String(240), index=True, nullable=False)
+    status: Mapped[str] = mapped_column(
+        String(40),
+        index=True,
+        default="completed",
+        nullable=False,
+    )
+    scheduled_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        index=True,
+        nullable=True,
+    )
     inspected_at: Mapped[date] = mapped_column(Date, index=True, nullable=False)
     result: Mapped[str] = mapped_column(String(40), index=True, nullable=False)
     inspector_id: Mapped[str | None] = mapped_column(String(36), index=True, nullable=True)

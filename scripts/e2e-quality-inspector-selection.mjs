@@ -37,8 +37,31 @@ try {
   await page.getByRole('button', { name: '新增 QC 单' }).click()
   await usersResponse
 
-  const modal = page.getByRole('dialog', { name: '新增 QC 查验' })
-  const inspectorSelect = modal.getByRole('combobox', { name: '查验人' })
+  const modal = page.getByRole('dialog', { name: '新增 QC 任务' })
+  let createRequestCount = 0
+  page.on('request', (request) => {
+    if (
+      request.url().endsWith('/api/v1/quality/inspections') &&
+      request.method() === 'POST'
+    ) {
+      createRequestCount += 1
+    }
+  })
+
+  await modal.getByRole('button', { name: '创建 QC 任务' }).click()
+  await modal.getByText('请完善以下 1 项信息').waitFor()
+  await modal.getByText('采购合同：请选择采购合同').waitFor()
+  assert.equal(
+    await modal.getByRole('combobox', { name: '采购合同' }).getAttribute('aria-invalid'),
+    'true',
+  )
+  assert.equal(
+    await modal.locator('label[for="quality-contract-id"] .form-required-mark').count(),
+    1,
+  )
+  assert.equal(createRequestCount, 0)
+
+  const inspectorSelect = modal.getByRole('combobox', { name: '负责人' })
   await inspectorSelect.click()
   await page.getByRole('option', { name: '演示仓库专员 / warehouse / 仓储部' }).click()
 

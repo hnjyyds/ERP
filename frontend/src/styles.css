@@ -7817,3 +7817,66 @@ h2 {
   font-size: 12px;
   color: var(--erp-faint);
 }
+
+/* QC 表单校验：必填标识、字段错误和可定位的错误摘要 */
+.form-field-label {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 3px;
+}
+
+.form-required-mark {
+  color: var(--erp-danger);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.form-field-error {
+  color: var(--erp-danger);
+  font-size: 12px;
+  font-weight: 560;
+  line-height: 1.45;
+}
+
+.task-schedule-overdue {
+  color: var(--color-danger, #d4380d);
+  font-weight: 600;
+}
+
+.quality-form-validation-summary {
+  margin-bottom: 2px;
+  border-color: color-mix(in srgb, var(--erp-danger) 28%, var(--erp-border));
+  background: color-mix(in srgb, var(--erp-danger) 5%, var(--erp-surface));
+}
+
+.quality-form-validation-list {
+  display: grid;
+  gap: 4px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quality-form-validation-list button {
+  border: 0;
+  background: transparent;
+  color: var(--erp-danger);
+  cursor: pointer;
+  font: inherit;
+  line-height: 1.5;
+  padding: 0;
+  text-align: left;
+}
+
+.quality-form-validation-list button:hover,
+.quality-form-validation-list button:focus-visible {
+  text-decoration: underline;
+}
+
+.entity-modal-form .ant-input-status-error,
+.entity-modal-form .ant-select-status-error .ant-select-selector,
+.entity-modal-form textarea.ant-input-status-error {
+  border-color: var(--erp-danger) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--erp-danger) 12%, transparent) !important;
+}

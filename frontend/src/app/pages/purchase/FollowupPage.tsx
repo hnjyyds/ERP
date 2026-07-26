@@ -109,7 +109,7 @@ function initialFollowupTemplateForm(): FollowupTemplateFormState {
 function initialFollowupPlanForm(): FollowupPlanFormState {
   return {
     purchase_contract_id: '',
-    as_of: '2026-08-05',
+    as_of: todayInputValue(),
   }
 }
 
@@ -119,7 +119,7 @@ function initialFollowupSourceEventForm(): FollowupSourceEventFormState {
     node_code: 'quality_inspection',
     source_record_type: 'quality_inspection',
     source_record_id: 'qc-demo-001',
-    actual_date: '2026-08-19',
+    actual_date: todayInputValue(),
     source_summary: 'QC 查验通过',
   }
 }
@@ -263,7 +263,7 @@ export function FollowupPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [statusFilter, setStatusFilter] = useState('')
   const [supplierFilter, setSupplierFilter] = useState('')
   const [contractFilter, setContractFilter] = useState('')
-  const [overdueAsOf, setOverdueAsOf] = useState('2026-09-05')
+  const [overdueAsOf, setOverdueAsOf] = useState(() => todayInputValue())
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
@@ -933,4 +933,3 @@ export function FollowupPage({ detailId, onNavigate }: RoutedDetailPageProps) {
     </section>
   )
 }
-

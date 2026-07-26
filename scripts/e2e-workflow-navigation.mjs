@@ -85,6 +85,7 @@ const menus = [
   ['menu-purchase-invoice-notices', '开票通知', '/purchase/invoice-notices', 'file-pen-line', 'purchase:invoice_notice:view', 88],
   ['menu-purchase-followup', '跟单中心', '/purchase/followup', 'check-circle', 'followup:plan:view', 41],
   ['menu-quality-inspections', 'QC 中心', '/quality/inspections', 'clipboard-check', 'quality:inspection:view', 40],
+  ['menu-quality-tasks', '我的 QC 任务', '/quality/tasks', 'clipboard-check', 'quality:inspection:view', 42],
   ['menu-warehouse-inbound-plans', '入库计划', '/warehouse/inbound-plans', 'warehouse', 'warehouse:inbound_plan:view', 89],
   ['menu-warehouse-inbound-orders', '入仓', '/warehouse/inbound-orders', 'warehouse', 'warehouse:inbound_order:view', 50],
   ['menu-warehouse-outbound-plans', '出库计划', '/warehouse/outbound-plans', 'send', 'warehouse:outbound_plan:view', 91],

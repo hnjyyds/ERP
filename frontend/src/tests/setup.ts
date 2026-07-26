@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest'
 import { vi } from 'vitest'
 
 // ── Fetch mock (prevent real network calls in tests) ─────────────
-global.fetch = vi.fn().mockResolvedValue(
+globalThis.fetch = vi.fn().mockResolvedValue(
   new Response(JSON.stringify({ success: true, data: { data: [], total: 0 } }), {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
@@ -87,7 +87,7 @@ document.createRange = () => {
   range.getClientRects = () => ({
     item: () => null,
     length: 0,
-    [Symbol.iterator]: function* () {},
+    [Symbol.iterator]: () => ([] as DOMRect[])[Symbol.iterator](),
   })
   return range
 }

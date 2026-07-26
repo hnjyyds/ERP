@@ -19,8 +19,9 @@ from app.modules.warehouse.inbound_plans.repositories import InboundPlanReposito
 def get_inbound_order_service(
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> InboundOrderService:
+    auth_repository = AuthRepository(session)
     purchase_contract_repository = PurchaseContractRepository(session)
-    data_scope_resolver = DataScopeResolver(AuthRepository(session))
+    data_scope_resolver = DataScopeResolver(auth_repository)
     return InboundOrderService(
         inbound_repository=InboundOrderRepository(session),
         inbound_plan_repository=InboundPlanRepository(session),
@@ -33,4 +34,5 @@ def get_inbound_order_service(
             data_scope_resolver=data_scope_resolver,
         ),
         data_scope_resolver=data_scope_resolver,
+        auth_repository=auth_repository,
     )

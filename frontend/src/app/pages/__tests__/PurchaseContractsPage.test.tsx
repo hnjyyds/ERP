@@ -8,12 +8,12 @@ describe('PurchaseContractsPage', () => {
   beforeEach(() => { vi.clearAllMocks() })
 
   it('renders without crashing', () => {
-    const { container } = render(<PurchaseContractsPage detailId={undefined} onNavigate={onNavigate} />)
+    const { container } = render(<PurchaseContractsPage detailId={null} onNavigate={onNavigate} />)
     expect(container).toBeTruthy()
   })
 
   it('renders purchase contract summary', () => {
-    render(<PurchaseContractsPage detailId={undefined} onNavigate={onNavigate} />)
+    render(<PurchaseContractsPage detailId={null} onNavigate={onNavigate} />)
     expect(screen.getAllByText('采购合同').length).toBeGreaterThanOrEqual(1)
   })
 })

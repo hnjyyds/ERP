@@ -7,7 +7,7 @@ import { warehouseInboundPlanPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { inboundPlanStatusOptions, inboundPlanTypeOptions } from '../../../shared/formOptions'
-import { formatDate, formatMoney, formatQuantity, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { daysFromTodayInputValue, formatDate, formatMoney, formatQuantity, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
 
 type InboundPlanGenerateFormState = {
   purchase_contract_id: string
@@ -52,7 +52,7 @@ function initialInboundPlanGenerateForm(): InboundPlanGenerateFormState {
 
 function initialInboundPlanScheduleForm(): InboundPlanScheduleFormState {
   return {
-    planned_date: '2026-08-28',
+    planned_date: daysFromTodayInputValue(7),
     warehouse_id: 'wh-ningbo',
     warehouse_name: '宁波总仓',
     location_id: 'loc-a-01',
@@ -616,5 +616,4 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
     </section>
   )
 }
-
 

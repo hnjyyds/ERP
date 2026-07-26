@@ -159,6 +159,8 @@ class PaymentService:
     ) -> PaymentRequestResponse:
         self._require_finance(current_user)
         payment_request = await self._get_payment_request(payment_request_id)
+        if payment_request.requester_user_id == current_user.id:
+            raise ValueError("付款申请人不能审批自己的申请")
         invoice = await self._get_supplier_invoice(payment_request.supplier_invoice_id)
         self._validate_payment_approval(payment_request, invoice, payload)
         async with UnitOfWork(self._repository.session):
@@ -166,7 +168,7 @@ class PaymentService:
                 request_id=payment_request.id,
                 approved_amount=payload.approved_amount,
                 approved_at=payload.approved_at,
-                reviewer_name=payload.reviewer_name,
+                reviewer_name=current_user.display_name,
                 payment_account=payload.payment_account,
                 remark=payload.remark,
             )

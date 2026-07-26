@@ -42,7 +42,6 @@ class PaymentRequestApprove(BaseModel):
 
     approved_amount: Decimal = Field(gt=0)
     approved_at: date
-    reviewer_name: str = Field(min_length=1, max_length=160)
     payment_account: str | None = Field(default=None, max_length=160)
     remark: str | None = Field(default=None, max_length=2000)
 

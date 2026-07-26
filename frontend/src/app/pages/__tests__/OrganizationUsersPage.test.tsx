@@ -8,26 +8,24 @@ const mockCurrentUser: CurrentUser = {
   username: 'testuser',
   display_name: 'Test User',
   department_name: 'Engineering',
-  avatar_type: 'initials',
+  avatar_type: 'preset',
   avatar_value: 'TU',
   roles: [],
   permissions: ['superadmin'],
 }
 
 describe('OrganizationUsersPage', () => {
-  const onNavigate = vi.fn()
-
   beforeEach(() => { vi.clearAllMocks() })
 
   it('renders without crashing', () => {
     const { container } = render(
-      <OrganizationUsersPage currentUser={mockCurrentUser} onNavigate={onNavigate} />,
+      <OrganizationUsersPage currentUser={mockCurrentUser} />,
     )
     expect(container).toBeTruthy()
   })
 
   it('renders search input', () => {
-    render(<OrganizationUsersPage currentUser={mockCurrentUser} onNavigate={onNavigate} />)
+    render(<OrganizationUsersPage currentUser={mockCurrentUser} />)
     expect(screen.getByPlaceholderText('搜索用户、部门或角色')).toBeTruthy()
   })
 })

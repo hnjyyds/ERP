@@ -280,6 +280,13 @@ export const qualityResultOptions = [
   { value: 'recheck_required', label: '待复检' },
 ]
 
+export const qualityTaskStatusOptions = [
+  { value: 'pending', label: '待查验' },
+  { value: 'in_progress', label: '查验中' },
+  { value: 'completed', label: '已完成' },
+  { value: 'cancelled', label: '已取消' },
+]
+
 export const qualityIssueSeverityOptions = [
   { value: 'minor', label: '轻微' },
   { value: 'major', label: '主要' },

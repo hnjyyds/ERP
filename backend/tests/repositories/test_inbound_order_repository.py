@@ -45,7 +45,11 @@ async def test_inbound_order_repository_records_inventory_balance_and_ledger(
             stock_status="available",
             remark="正式入库",
         )
-        submitted = await repository.submit_order(order.id)
+        submitted = await repository.submit_order(
+            order.id,
+            reviewer_id="u-001",
+            reviewer_name="业务主管",
+        )
         approved = await repository.approve_order(
             order.id,
             "u-001",

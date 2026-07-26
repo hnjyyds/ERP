@@ -20,6 +20,7 @@ def demo_users() -> list[User]:
     demo_salt = "demo-salt"
     purchase_salt = "purchase-salt"
     finance_salt = "finance-salt"
+    finance_manager_salt = "finance-manager-salt"
     warehouse_salt = "warehouse-salt"
     qc_salt = "qc-salt"
     return [
@@ -72,6 +73,18 @@ def demo_users() -> list[User]:
             created_at=datetime.now(UTC),
         ),
         User(
+            id="u-finance-manager",
+            username="finance_manager",
+            display_name="演示财务主管",
+            department_id="dept-finance",
+            avatar_type="preset",
+            avatar_value="ink-halo",
+            password_hash=hash_password("finance-manager123", finance_manager_salt),
+            password_salt=finance_manager_salt,
+            is_active=True,
+            created_at=datetime.now(UTC),
+        ),
+        User(
             id="u-warehouse",
             username="warehouse",
             display_name="演示仓库专员",
@@ -104,6 +117,11 @@ def demo_user_roles() -> list[UserRole]:
         UserRole(id="ur-demo-sales-manager", user_id="u-001", role_id="role-sales-manager"),
         UserRole(id="ur-purchase", user_id="u-purchase", role_id="role-purchase"),
         UserRole(id="ur-finance", user_id="u-finance", role_id="role-finance"),
+        UserRole(
+            id="ur-finance-manager",
+            user_id="u-finance-manager",
+            role_id="role-finance",
+        ),
         UserRole(id="ur-warehouse", user_id="u-warehouse", role_id="role-warehouse"),
         UserRole(id="ur-qc", user_id="u-qc", role_id="role-qc"),
     ]

@@ -8,12 +8,12 @@ describe('ExportQuotationsPage', () => {
   beforeEach(() => { vi.clearAllMocks() })
 
   it('renders without crashing', () => {
-    const { container } = render(<ExportQuotationsPage detailId={undefined} onNavigate={onNavigate} />)
+    const { container } = render(<ExportQuotationsPage detailId={null} onNavigate={onNavigate} />)
     expect(container).toBeTruthy()
   })
 
   it('renders quotation list panel', () => {
-    render(<ExportQuotationsPage detailId={undefined} onNavigate={onNavigate} />)
+    render(<ExportQuotationsPage detailId={null} onNavigate={onNavigate} />)
     expect(screen.getByText('报价单列表')).toBeTruthy()
   })
 })

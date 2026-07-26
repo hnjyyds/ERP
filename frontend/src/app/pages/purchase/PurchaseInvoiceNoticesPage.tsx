@@ -59,8 +59,8 @@ function initialPurchaseInvoiceNoticeForm(): PurchaseInvoiceNoticeFormState {
   return {
     customs_declaration_id: `customs-${Date.now().toString().slice(-6)}`,
     customs_declaration_no: `CD-${Date.now().toString().slice(-6)}`,
-    declaration_date: '2026-09-03',
-    notice_date: '2026-09-04',
+    declaration_date: todayInputValue(),
+    notice_date: todayInputValue(),
     currency: 'CNY',
     remarks: '根据报关单证按供应商生成开票通知。',
     supplier_id_a: 'supplier-pack-a',
@@ -95,14 +95,14 @@ function initialPurchaseInvoiceNoticeForm(): PurchaseInvoiceNoticeFormState {
 function initialPurchaseInvoiceNoticeSendForm(): PurchaseInvoiceNoticeSendFormState {
   return {
     sender_name: '演示业务主管',
-    sent_at: '2026-09-05',
+    sent_at: todayInputValue(),
   }
 }
 
 function initialPurchaseInvoiceNoticeReceiveForm(): PurchaseInvoiceNoticeReceiveFormState {
   return {
     tax_invoice_no: 'VAT-2026-001',
-    received_at: '2026-09-09',
+    received_at: todayInputValue(),
   }
 }
 
@@ -1019,5 +1019,4 @@ function PurchaseInvoiceLineFields({
     </>
   )
 }
-
 

@@ -8,12 +8,12 @@ describe('PurchaseInquiriesPage', () => {
   beforeEach(() => { vi.clearAllMocks() })
 
   it('renders without crashing', () => {
-    const { container } = render(<PurchaseInquiriesPage detailId={undefined} onNavigate={onNavigate} />)
+    const { container } = render(<PurchaseInquiriesPage detailId={null} onNavigate={onNavigate} />)
     expect(container).toBeTruthy()
   })
 
   it('renders purchase inquiry list panel', () => {
-    render(<PurchaseInquiriesPage detailId={undefined} onNavigate={onNavigate} />)
+    render(<PurchaseInquiriesPage detailId={null} onNavigate={onNavigate} />)
     expect(screen.getByText('采购询价列表')).toBeTruthy()
   })
 })

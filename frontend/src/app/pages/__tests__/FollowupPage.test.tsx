@@ -8,12 +8,12 @@ describe('FollowupPage', () => {
   beforeEach(() => { vi.clearAllMocks() })
 
   it('renders without crashing', () => {
-    const { container } = render(<FollowupPage detailId={undefined} onNavigate={onNavigate} />)
+    const { container } = render(<FollowupPage detailId={null} onNavigate={onNavigate} />)
     expect(container).toBeTruthy()
   })
 
   it('renders followup list panel', () => {
-    render(<FollowupPage detailId={undefined} onNavigate={onNavigate} />)
+    render(<FollowupPage detailId={null} onNavigate={onNavigate} />)
     expect(screen.getByText('采购跟单计划')).toBeTruthy()
   })
 })

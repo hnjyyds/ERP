@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -8,6 +8,12 @@ VALID_QUALITY_INSPECTION_RESULTS = (
     "failed",
     "partial_passed",
     "recheck_required",
+)
+VALID_QUALITY_INSPECTION_STATUSES = (
+    "pending",
+    "in_progress",
+    "completed",
+    "cancelled",
 )
 VALID_QUALITY_ISSUE_SEVERITIES = ("minor", "major", "critical")
 VALID_QUALITY_ISSUE_STATUSES = ("open", "resolved")
@@ -33,6 +39,14 @@ class QualityInspectionLineCreate(BaseModel):
             raise ValueError("QC 明细结果无效")
         return value
 
+    @field_validator("product_name", "unit")
+    @classmethod
+    def validate_required_text(cls, value: str) -> str:
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("不能为空")
+        return normalized
+
     @model_validator(mode="after")
     def validate_failed_quantity(self) -> "QualityInspectionLineCreate":
         if self.failed_quantity > self.inspected_quantity:
@@ -57,6 +71,14 @@ class QualityInspectionIssueCreate(BaseModel):
             raise ValueError("QC 异常严重程度无效")
         return value
 
+    @field_validator("issue_type", "description")
+    @classmethod
+    def validate_required_text(cls, value: str) -> str:
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("不能为空")
+        return normalized
+
     @field_validator("status")
     @classmethod
     def validate_status(cls, value: str) -> str:
@@ -70,21 +92,58 @@ class QualityInspectionCreate(BaseModel):
 
     code: str = Field(min_length=1, max_length=80)
     purchase_contract_id: str = Field(min_length=1, max_length=36)
-    inspected_at: date
-    result: str = Field(min_length=1, max_length=40)
-    inspector_id: str | None = Field(default=None, max_length=36)
+    scheduled_at: datetime | None = None
+    status: str | None = Field(default=None, min_length=1, max_length=40)
+    inspected_at: date | None = None
+    result: str | None = Field(default=None, min_length=1, max_length=40)
+    inspector_id: str = Field(min_length=1, max_length=36)
     inspector_name: str = Field(min_length=1, max_length=160)
     issue_summary: str | None = Field(default=None, max_length=4000)
     attachment_group_id: str | None = Field(default=None, max_length=80)
-    lines: list[QualityInspectionLineCreate] = Field(min_length=1)
+    lines: list[QualityInspectionLineCreate] = Field(default_factory=list)
     issues: list[QualityInspectionIssueCreate] = Field(default_factory=list)
 
     @field_validator("result")
     @classmethod
-    def validate_result(cls, value: str) -> str:
+    def validate_result(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
         if value not in VALID_QUALITY_INSPECTION_RESULTS:
             raise ValueError("QC 查验结果无效")
         return value
+
+    @field_validator("status")
+    @classmethod
+    def validate_status(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        if value not in VALID_QUALITY_INSPECTION_STATUSES:
+            raise ValueError("QC 任务状态无效")
+        return value
+
+    @field_validator("code", "purchase_contract_id", "inspector_id", "inspector_name")
+    @classmethod
+    def validate_required_text(cls, value: str) -> str:
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("不能为空")
+        return normalized
+
+    @model_validator(mode="after")
+    def validate_task_lifecycle(self) -> "QualityInspectionCreate":
+        if self.status is None:
+            self.status = (
+                "completed"
+                if self.inspected_at is not None or self.result is not None or self.lines
+                else "pending"
+            )
+        if self.status in {"pending", "in_progress", "cancelled"} and self.scheduled_at is None:
+            raise ValueError("未完成的 QC 任务必须填写排期时间")
+        if self.status == "completed" and (
+            self.inspected_at is None or self.result is None or not self.lines
+        ):
+            raise ValueError("已完成的 QC 任务必须填写查验日期、结果和明细")
+        return self
 
 
 class QualityInspectionLineResponse(BaseModel):
@@ -126,8 +185,10 @@ class QualityInspectionResponse(BaseModel):
     purchase_contract_no: str
     supplier_id: str | None
     supplier_name: str
-    inspected_at: date
-    result: str
+    status: str
+    scheduled_at: datetime
+    inspected_at: date | None
+    result: str | None
     inspector_id: str | None
     inspector_name: str
     qc_user_id: str | None

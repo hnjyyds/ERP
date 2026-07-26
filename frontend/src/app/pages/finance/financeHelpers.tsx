@@ -28,6 +28,7 @@ import type {
   SupplierInvoiceCreatePayload,
   VerificationDocument,
   VerificationDocumentCreatePayload,
+  VerificationUsageItem,
   VerificationRegisterPayload,
   TaxRefundRegisterPayload,
   MiscFeeItem,
@@ -50,7 +51,7 @@ import type {
   CustomsReceiptCollectionReport,
   TaxRefundStatisticsReport,
 } from '../../../api'
-import { emptyToNull } from '../appHelpers'
+import { daysFromTodayInputValue, emptyToNull, todayInputValue } from '../appHelpers'
 import { allocationTypeOptions, feePaymentRequestStatusOptions, feeTypeOptions, miscFeeAllocationMethodOptions, miscFeeCategoryOptions, miscFeeItemStatusOptions, partnerFeeInvoiceStatusOptions, paymentRequestStatusOptions, paymentTypeOptions, profitCostTypeOptions, purchaseInvoiceNoticeStatusOptions, receiptStatusOptions, receiptTypeOptions, reportingDocumentTypeOptions, reportingStatusOptions, sampleFeeTypeOptions, settlementStatusOptions, shipmentStatusOptions, supplierInvoiceStatusOptions, verificationDocumentStatusOptions, verificationReminderStatusOptions } from '../../../shared/formOptions'
 
 import type { FinanceModule } from '../../routes'
@@ -251,7 +252,7 @@ export type ManualProfitCostFormState = {
 export function initialBankReceiptForm(): BankReceiptFormState {
   return {
     receipt_no: `BR-${Date.now().toString().slice(-6)}`,
-    received_at: '2026-08-01',
+    received_at: todayInputValue(),
     payer_name: 'Euro Home Retail Ltd.',
     customer_id: 'customer-euro-home',
     customer_name: '欧陆家居用品有限公司',
@@ -266,7 +267,7 @@ export function initialBankReceiptForm(): BankReceiptFormState {
 
 export function initialReceiptClaimForm(): ReceiptClaimFormState {
   return {
-    claimed_at: '2026-08-02',
+    claimed_at: todayInputValue(),
     sales_user_id: 'u-001',
     sales_user_name: '演示业务主管',
     note: '确认客户预收款',
@@ -279,7 +280,7 @@ export function initialReceiptAllocationForm(currency = 'USD'): ReceiptAllocatio
     contract_id: '',
     contract_no: '',
     invoice_no: '',
-    allocated_at: '2026-08-03',
+    allocated_at: todayInputValue(),
     amount: '300.00',
     currency,
     remark: '',
@@ -363,7 +364,7 @@ export function receivableStatusTag(value: string): ReactNode {
 export function initialSupplierInvoiceForm(): SupplierInvoiceFormState {
   return {
     invoice_no: `SI-${Date.now().toString().slice(-6)}`,
-    invoice_date: '2026-09-09',
+    invoice_date: todayInputValue(),
     supplier_id: 'supplier-pack-a',
     supplier_name: '华东包装制品厂',
     purchase_invoice_notice_id: '',
@@ -372,7 +373,7 @@ export function initialSupplierInvoiceForm(): SupplierInvoiceFormState {
     purchase_contract_no: 'PC-PAY-UI-001',
     total_amount: '3200.00',
     currency: 'CNY',
-    due_date: '2026-09-20',
+    due_date: daysFromTodayInputValue(30),
     remark: '',
   }
 }
@@ -382,18 +383,21 @@ export function initialPaymentRequestForm(invoice?: SupplierInvoice): PaymentReq
     request_no: `PR-${Date.now().toString().slice(-6)}`,
     supplier_invoice_id: invoice?.id ?? '',
     payment_type: 'goods_payment',
-    request_date: '2026-09-10',
+    request_date: todayInputValue(),
     requested_amount: invoice?.unpaid_amount ?? '1200.00',
     currency: invoice?.currency ?? 'CNY',
     remark: '',
   }
 }
 
-export function initialPaymentApprovalForm(amount = '1200.00'): PaymentApprovalFormState {
+export function initialPaymentApprovalForm(
+  amount = '1200.00',
+  reviewerName = '',
+): PaymentApprovalFormState {
   return {
     approved_amount: amount,
-    approved_at: '2026-09-11',
-    reviewer_name: '演示财务',
+    approved_at: todayInputValue(),
+    reviewer_name: reviewerName,
     payment_account: 'BOC 8888',
     remark: '',
   }
@@ -432,7 +436,6 @@ export function paymentApprovalPayload(form: PaymentApprovalFormState): PaymentR
   return {
     approved_amount: form.approved_amount.trim(),
     approved_at: form.approved_at,
-    reviewer_name: form.reviewer_name.trim(),
     payment_account: emptyToNull(form.payment_account),
     remark: emptyToNull(form.remark),
   }
@@ -463,7 +466,7 @@ export function paymentTypeLabel(value: string): string {
 export function initialPartnerFeeInvoiceForm(): PartnerFeeInvoiceFormState {
   return {
     invoice_no: `PFI-${Date.now().toString().slice(-6)}`,
-    invoice_date: '2026-09-12',
+    invoice_date: todayInputValue(),
     partner_id: 'partner-freight-ui',
     partner_name: '上海远洋货代有限公司',
     partner_type: 'freight_forwarder',
@@ -474,7 +477,7 @@ export function initialPartnerFeeInvoiceForm(): PartnerFeeInvoiceFormState {
     fee_type: 'freight',
     total_amount: '980.00',
     currency: 'USD',
-    due_date: '2026-09-25',
+    due_date: daysFromTodayInputValue(30),
     remark: '',
   }
 }
@@ -483,18 +486,21 @@ export function initialFeePaymentRequestForm(invoice?: PartnerFeeInvoice): FeePa
   return {
     request_no: `FPR-${Date.now().toString().slice(-6)}`,
     partner_fee_invoice_id: invoice?.id ?? '',
-    request_date: '2026-09-13',
+    request_date: todayInputValue(),
     requested_amount: invoice?.unpaid_amount ?? '400.00',
     currency: invoice?.currency ?? 'USD',
     remark: '',
   }
 }
 
-export function initialFeePaymentApprovalForm(amount = '400.00'): FeePaymentApprovalFormState {
+export function initialFeePaymentApprovalForm(
+  amount = '400.00',
+  reviewerName = '',
+): FeePaymentApprovalFormState {
   return {
     approved_amount: amount,
-    approved_at: '2026-09-14',
-    reviewer_name: '演示财务',
+    approved_at: todayInputValue(),
+    reviewer_name: reviewerName,
     payment_account: 'BOC 9999',
     remark: '',
   }
@@ -534,7 +540,6 @@ export function feePaymentApprovalPayload(form: FeePaymentApprovalFormState): Fe
   return {
     approved_amount: form.approved_amount.trim(),
     approved_at: form.approved_at,
-    reviewer_name: form.reviewer_name.trim(),
     payment_account: emptyToNull(form.payment_account),
     remark: emptyToNull(form.remark),
   }
@@ -565,7 +570,7 @@ export function feeTypeLabel(value: string): string {
 export function initialVerificationDocumentForm(): VerificationDocumentFormState {
   return {
     document_no: `VD-${Date.now().toString().slice(-6)}`,
-    received_at: '2026-11-27',
+    received_at: todayInputValue(),
     owner_user_id: 'u-001',
     owner_user_name: '演示业务主管',
     shipment_plan_id: '',
@@ -573,7 +578,7 @@ export function initialVerificationDocumentForm(): VerificationDocumentFormState
     customer_name: '欧陆家居用品有限公司',
     currency: 'USD',
     refundable_amount: '96.00',
-    valid_until: '2026-12-27',
+    valid_until: daysFromTodayInputValue(30),
     remark: '',
   }
 }
@@ -582,7 +587,7 @@ export function initialCustomsReceiptForm(): CustomsReceiptFormState {
   return {
     customs_declaration_no: `CD-${Date.now().toString().slice(-6)}`,
     customs_receipt_no: `CR-${Date.now().toString().slice(-6)}`,
-    received_at: '2026-11-28',
+    received_at: todayInputValue(),
     remark: '',
   }
 }
@@ -590,7 +595,7 @@ export function initialCustomsReceiptForm(): CustomsReceiptFormState {
 export function initialVerificationRegisterForm(): VerificationRegisterFormState {
   return {
     verification_no: `VERIFY-${Date.now().toString().slice(-6)}`,
-    verified_at: '2026-12-01',
+    verified_at: todayInputValue(),
     remark: '',
   }
 }
@@ -598,7 +603,7 @@ export function initialVerificationRegisterForm(): VerificationRegisterFormState
 export function initialTaxRefundForm(currency = 'USD', amount = '96.00'): TaxRefundFormState {
   return {
     refund_no: `TR-${Date.now().toString().slice(-6)}`,
-    refunded_at: '2026-12-08',
+    refunded_at: todayInputValue(),
     amount,
     currency,
     bank_receipt_no: '',
@@ -696,7 +701,7 @@ export function initialMiscFeeAllocationForm(item?: MiscFeeItem): MiscFeeAllocat
     shipment_no: 'SP-MISC-UI-001',
     sales_user_id: 'u-001',
     sales_user_name: '演示业务主管',
-    allocated_at: '2026-12-22',
+    allocated_at: todayInputValue(),
     amount: '36.00',
     currency: 'USD',
     allocation_method: item?.default_allocation_method ?? 'manual',

@@ -615,9 +615,11 @@ async def test_product_transactions_include_inventory_ledger_after_inbound_appro
     )
     assert inspection_response.status_code == 201
 
+    warehouse_token = await _login_token(api_client, "warehouse", "warehouse123")
+    warehouse_headers = {"Authorization": f"Bearer {warehouse_token}"}
     inbound_order_response = await api_client.post(
         "/api/v1/warehouse/inbound-orders/from-plan",
-        headers=headers,
+        headers=warehouse_headers,
         json={
             "plan_id": plan["id"],
             "code": "IO-PRODUCT-TXN-001",
@@ -633,14 +635,16 @@ async def test_product_transactions_include_inventory_ledger_after_inbound_appro
     )
     assert inbound_order_response.status_code == 201
     inbound_order = inbound_order_response.json()["data"]
-    await api_client.post(
+    submit_response = await api_client.post(
         f"/api/v1/warehouse/inbound-orders/{inbound_order['id']}/submit",
-        headers=headers,
+        headers=warehouse_headers,
+        json={"reviewer_id": "u-001"},
     )
+    assert submit_response.status_code == 200
     approve_inbound_response = await api_client.post(
         f"/api/v1/warehouse/inbound-orders/{inbound_order['id']}/approve",
         headers=headers,
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-08-30"},
+        json={"approved_at": "2026-08-30"},
     )
     assert approve_inbound_response.status_code == 200
 

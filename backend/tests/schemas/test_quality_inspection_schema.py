@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 
 import pytest
@@ -52,6 +52,35 @@ def test_quality_inspection_create_schema_accepts_lines_issues_and_attachment_gr
     assert payload.issues[0].severity == "major"
 
 
+def test_quality_inspection_schema_accepts_a_scheduled_pending_task_without_result() -> None:
+    payload = QualityInspectionCreate(
+        code="QC-TASK-001",
+        purchase_contract_id="pc-001",
+        scheduled_at=datetime(2026, 8, 20, 9, 30),
+        status="pending",
+        inspector_id="u-qc-001",
+        inspector_name="QC 张工",
+    )
+
+    assert payload.status == "pending"
+    assert payload.scheduled_at == datetime(2026, 8, 20, 9, 30)
+    assert payload.inspected_at is None
+    assert payload.result is None
+    assert payload.lines == []
+
+
+def test_quality_inspection_schema_requires_result_and_lines_when_completed() -> None:
+    with pytest.raises(ValidationError, match="已完成的 QC 任务必须填写查验日期、结果和明细"):
+        QualityInspectionCreate(
+            code="QC-TASK-COMPLETE-001",
+            purchase_contract_id="pc-001",
+            scheduled_at=datetime(2026, 8, 20, 9, 30),
+            status="completed",
+            inspector_id="u-qc-001",
+            inspector_name="QC 张工",
+        )
+
+
 def test_quality_inspection_schema_rejects_invalid_result_and_empty_lines() -> None:
     with pytest.raises(ValidationError):
         QualityInspectionCreate(
@@ -89,4 +118,60 @@ def test_quality_inspection_schema_forbids_extra_fields() -> None:
             unit="pcs",
             result="passed",
             unexpected="field",
+        )
+
+
+def test_quality_inspection_schema_rejects_blank_required_text() -> None:
+    with pytest.raises(ValidationError) as exc_info:
+        QualityInspectionCreate(
+            code="   ",
+            purchase_contract_id=" ",
+            inspected_at=date(2026, 8, 19),
+            result="passed",
+            inspector_id="",
+            inspector_name="  ",
+            lines=[
+                QualityInspectionLineCreate(
+                    product_name="Eco Shopping Bag",
+                    inspected_quantity="120",
+                    unit="pcs",
+                    result="passed",
+                )
+            ],
+        )
+
+    error_locations = {tuple(error["loc"]) for error in exc_info.value.errors()}
+    assert error_locations == {
+        ("code",),
+        ("purchase_contract_id",),
+        ("inspector_id",),
+        ("inspector_name",),
+    }
+
+
+def test_quality_inspection_line_schema_rejects_blank_text_and_invalid_quantities() -> None:
+    with pytest.raises(ValidationError) as exc_info:
+        QualityInspectionLineCreate(
+            product_name=" ",
+            inspected_quantity="0",
+            failed_quantity="-1",
+            unit="  ",
+            result="passed",
+        )
+
+    error_locations = {tuple(error["loc"]) for error in exc_info.value.errors()}
+    assert error_locations == {
+        ("product_name",),
+        ("inspected_quantity",),
+        ("failed_quantity",),
+        ("unit",),
+    }
+
+    with pytest.raises(ValidationError, match="不合格数量不能大于查验数量"):
+        QualityInspectionLineCreate(
+            product_name="Eco Shopping Bag",
+            inspected_quantity="10",
+            failed_quantity="11",
+            unit="pcs",
+            result="failed",
         )

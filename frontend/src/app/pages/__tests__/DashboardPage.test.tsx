@@ -16,6 +16,7 @@ const mockCurrentUser = {
   department_name: 'IT',
   avatar_type: 'preset' as const,
   avatar_value: 'default',
+  roles: ['admin'],
   permissions: ['system:super_admin'],
   is_active: true,
 }
@@ -26,11 +27,13 @@ const emptyDashboard = {
     todo_count: 0,
     unread_notification_count: 0,
     today_schedule_count: 0,
+    shortcut_count: 0,
   },
   todos: [],
   notifications: [],
   schedule_events: [],
   announcements: [],
+  shortcuts: [],
 }
 
 const defaultProps = {
