@@ -680,7 +680,9 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                     status={fieldErrors.scheduled_at ? 'error' : undefined}
                     type="datetime-local"
                     value={form.scheduled_at}
-                    onChange={(event) => updateFormField('scheduled_at', event.target.value)}
+                    onInput={(event) =>
+                      updateFormField('scheduled_at', event.currentTarget.value)
+                    }
                   />
                   <FieldError field="scheduled_at" message={fieldErrors.scheduled_at} />
                 </label>

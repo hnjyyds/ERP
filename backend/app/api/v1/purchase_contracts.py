@@ -3,7 +3,11 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, status
 
 from app.api.auth_dependencies import CurrentUserDep
-from app.api.http_exceptions import raise_not_found, raise_permission_denied, raise_unprocessable
+from app.api.http_exceptions import (
+    raise_business_validation,
+    raise_not_found,
+    raise_permission_denied,
+)
 from app.modules.purchase.contracts.providers import get_purchase_contract_service
 from app.modules.purchase.contracts.schemas import (
     PurchaseContractApprove,
@@ -43,8 +47,8 @@ async def list_purchase_contracts(
         return ApiResponse(data=contracts)
     except PermissionDeniedError:
         raise_permission_denied("缺少采购合同权限")
-    except ValueError:
-        raise_unprocessable("采购合同数据无效")
+    except ValueError as exc:
+        raise_business_validation(exc, fallback_detail="采购合同数据无效")
 
 
 @router.post(
@@ -62,8 +66,8 @@ async def create_purchase_contract(
         return ApiResponse(data=contract)
     except PermissionDeniedError:
         raise_permission_denied("缺少采购合同权限")
-    except ValueError:
-        raise_unprocessable("采购合同数据无效")
+    except ValueError as exc:
+        raise_business_validation(exc, fallback_detail="采购合同数据无效")
 
 
 @router.post(
@@ -84,8 +88,8 @@ async def generate_purchase_contract_from_export_contracts(
         return ApiResponse(data=contract)
     except PermissionDeniedError:
         raise_permission_denied("缺少采购合同权限")
-    except ValueError:
-        raise_unprocessable("采购合同数据无效")
+    except ValueError as exc:
+        raise_business_validation(exc, fallback_detail="采购合同数据无效")
 
 
 @router.get(
@@ -136,8 +140,8 @@ async def update_purchase_contract(
         raise_permission_denied("缺少采购合同权限")
     except PurchaseContractNotFoundError:
         raise_not_found("采购合同不存在")
-    except ValueError:
-        raise_unprocessable("采购合同数据无效")
+    except ValueError as exc:
+        raise_business_validation(exc, fallback_detail="采购合同数据无效")
 
 
 @router.post("/{contract_id}/submit", response_model=ApiResponse[PurchaseContractResponse])
@@ -153,8 +157,8 @@ async def submit_purchase_contract(
         raise_permission_denied("缺少采购合同权限")
     except PurchaseContractNotFoundError:
         raise_not_found("采购合同不存在")
-    except ValueError:
-        raise_unprocessable("采购合同数据无效")
+    except ValueError as exc:
+        raise_business_validation(exc, fallback_detail="采购合同数据无效")
 
 
 @router.post("/{contract_id}/approve", response_model=ApiResponse[PurchaseContractResponse])
@@ -175,5 +179,5 @@ async def approve_purchase_contract(
         raise_permission_denied("缺少采购合同权限")
     except PurchaseContractNotFoundError:
         raise_not_found("采购合同不存在")
-    except ValueError:
-        raise_unprocessable("采购合同数据无效")
+    except ValueError as exc:
+        raise_business_validation(exc, fallback_detail="采购合同数据无效")

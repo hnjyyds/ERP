@@ -828,7 +828,7 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
                 <Input
                   type="date"
                   value={form.contract_date}
-                  onChange={(event) => setForm({ ...form, contract_date: event.target.value })}
+                  onInput={(event) => setForm({ ...form, contract_date: event.currentTarget.value })}
                 />
               </label>
             </div>
@@ -905,7 +905,7 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
                 <Input
                   type="date"
                   value={form.delivery_date}
-                  onChange={(event) => setForm({ ...form, delivery_date: event.target.value })}
+                  onInput={(event) => setForm({ ...form, delivery_date: event.currentTarget.value })}
                 />
               </label>
               <label>
@@ -1083,7 +1083,9 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
                 <Input
                   type="date"
                   value={generateForm.contract_date}
-                  onChange={(event) => setGenerateForm({ ...generateForm, contract_date: event.target.value })}
+                  onInput={(event) =>
+                    setGenerateForm({ ...generateForm, contract_date: event.currentTarget.value })
+                  }
                 />
               </label>
             </div>
@@ -1136,7 +1138,9 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
                 <Input
                   type="date"
                   value={generateForm.delivery_date}
-                  onChange={(event) => setGenerateForm({ ...generateForm, delivery_date: event.target.value })}
+                  onInput={(event) =>
+                    setGenerateForm({ ...generateForm, delivery_date: event.currentTarget.value })
+                  }
                 />
               </label>
               <label>
@@ -1303,8 +1307,8 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
                         <Input
                           type="date"
                           value={approveForm.approved_at}
-                          onChange={(event) =>
-                            setApproveForm({ ...approveForm, approved_at: event.target.value })
+                          onInput={(event) =>
+                            setApproveForm({ ...approveForm, approved_at: event.currentTarget.value })
                           }
                         />
                       </label>
@@ -1475,4 +1479,3 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
     </section>
   )
 }
-

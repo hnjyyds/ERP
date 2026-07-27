@@ -122,6 +122,12 @@ describe('QualityInspectionsPage', () => {
     await user.click(inspectorSelect)
     await user.click(await screen.findByText('演示 QC 专员 / qc / 品质部'))
 
+    const scheduledAtInput = document.querySelector<HTMLInputElement>('#quality-scheduled-at')
+    expect(scheduledAtInput).toBeTruthy()
+    fireEvent.input(scheduledAtInput!, {
+      target: { value: '2026-08-26T09:00' },
+    })
+
     const submitButton = screen.getByRole('button', { name: '创建 QC 任务' })
     const form = submitButton.closest('form')
     expect(form).toBeTruthy()
@@ -131,7 +137,7 @@ describe('QualityInspectionsPage', () => {
       expect(createQualityInspection).toHaveBeenCalledWith(
         expect.objectContaining({
           status: 'pending',
-          scheduled_at: expect.any(String),
+          scheduled_at: '2026-08-26T09:00',
           inspector_id: 'user-qc',
           inspector_name: '演示 QC 专员',
           inspected_at: null,

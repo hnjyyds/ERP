@@ -40,8 +40,10 @@ def _product_payload(code: str = "BAG-PC-API") -> dict[str, object]:
 
 def _export_contract_payload(
     code: str,
-    product_id: str,
+    product_id: str | None,
     quantity: str,
+    *,
+    product_code: str = "BAG-40",
 ) -> dict[str, object]:
     return {
         "code": code,
@@ -60,7 +62,7 @@ def _export_contract_payload(
         "lines": [
             {
                 "product_id": product_id,
-                "product_code": "BAG-40",
+                "product_code": product_code,
                 "product_name": "Eco Shopping Bag",
                 "specification": "40x35cm",
                 "model": "BAG-40",
@@ -309,3 +311,35 @@ async def test_purchase_contract_endpoints_enforce_menu_permission(
     )
 
     assert response.status_code == 403
+
+
+async def test_purchase_generation_returns_specific_missing_product_message(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    export_id = await _create_approved_export_contract(
+        api_client,
+        token,
+        code="EC-PC-API-MISSING-PRODUCT",
+        product_id=None,
+        quantity="120",
+    )
+
+    response = await api_client.post(
+        "/api/v1/purchase/contracts/generate-from-export-contracts",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "code": "PC-API-MISSING-PRODUCT",
+            "contract_date": "2026-08-06",
+            "supplier_name": "华东包装制品厂",
+            "currency": "USD",
+            "delivery_date": "2026-08-30",
+            "payment_terms": "30% 预付，70% 出货前",
+            "unit_price": "0.12",
+            "sources": [{"export_contract_id": export_id}],
+        },
+    )
+
+    assert response.status_code == 422
+    assert response.json()["message"] == "商品编码 BAG-40 未关联商品资料，请先选择商品后重试"

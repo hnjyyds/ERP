@@ -64,6 +64,7 @@ class _GeneratedLine:
 class _SourceContractLine:
     contract: ExportContractRow
     line: ExportContractLineRow
+    resolved_product_id: str
 
 
 class PurchaseContractService:
@@ -111,6 +112,12 @@ class PurchaseContractService:
             updated = await self._replace_lines(contract.id, payload.lines)
             if updated is None:
                 raise PurchaseContractNotFoundError
+            await self._sync_source_links_from_lines(
+                contract_id=contract.id,
+                source_type=payload.source_type,
+                lines=payload.lines,
+                preserve_existing_when_empty=False,
+            )
             await self._rebuild_reminders(updated)
         return await self._contract_response(updated)
 
@@ -151,6 +158,12 @@ class PurchaseContractService:
             updated = await self._replace_lines(contract.id, payload.lines)
             if updated is None:
                 raise PurchaseContractNotFoundError
+            await self._sync_source_links_from_lines(
+                contract_id=contract.id,
+                source_type=payload.source_type,
+                lines=payload.lines,
+                preserve_existing_when_empty=True,
+            )
             await self._rebuild_reminders(updated)
         return await self._contract_response(updated)
 
@@ -192,7 +205,7 @@ class PurchaseContractService:
                     export_contract_no=source.contract.code,
                     export_contract_line_id=source.line.id,
                     customer_name=source.contract.customer_name,
-                    product_id=source.line.product_id,
+                    product_id=source.resolved_product_id,
                     product_code=source.line.product_code,
                     demand_quantity=source.line.quantity,
                     unit=source.line.unit,
@@ -352,6 +365,69 @@ class PurchaseContractService:
             )
         return await self._repository.refresh_statistics(contract_id)
 
+    async def _sync_source_links_from_lines(
+        self,
+        *,
+        contract_id: str,
+        source_type: str,
+        lines: list[PurchaseContractLineCreate],
+        preserve_existing_when_empty: bool,
+    ) -> None:
+        """让手工录入的出口来源与自动生成合同拥有相同的可追溯关联。"""
+        if source_type != "export_contract":
+            await self._repository.delete_source_links(contract_id)
+            return
+
+        source_lines = [
+            line
+            for line in lines
+            if line.source_export_contract_id and line.source_export_contract_line_id
+        ]
+        if not source_lines:
+            if preserve_existing_when_empty:
+                return
+            raise ValueError("出口合同来源必须选择来源合同明细")
+
+        await self._repository.delete_source_links(contract_id)
+        added_source_line_ids: set[str] = set()
+        for line in source_lines:
+            export_contract_id = line.source_export_contract_id
+            export_contract_line_id = line.source_export_contract_line_id
+            if export_contract_id is None or export_contract_line_id is None:
+                raise ValueError("出口合同来源明细缺少来源合同或来源明细标识")
+            if export_contract_line_id in added_source_line_ids:
+                continue
+            source_contract = await self._export_contract_repository.get_contract(
+                export_contract_id
+            )
+            if source_contract is None:
+                raise ValueError("来源出口合同不存在")
+            contract_lines = await self._export_contract_repository.list_lines(
+                source_contract.id
+            )
+            source_line = next(
+                (
+                    item
+                    for item in contract_lines
+                    if item.id == export_contract_line_id
+                ),
+                None,
+            )
+            if source_line is None:
+                raise ValueError("来源出口合同明细不存在")
+            await self._repository.add_source_link(
+                contract_id=contract_id,
+                export_contract_id=source_contract.id,
+                export_contract_no=source_contract.code,
+                export_contract_line_id=source_line.id,
+                customer_name=source_contract.customer_name,
+                product_id=source_line.product_id or line.product_id,
+                product_code=source_line.product_code or line.product_code,
+                demand_quantity=line.quantity,
+                unit=line.unit,
+            )
+            added_source_line_ids.add(source_line.id)
+
     async def _rebuild_reminders(self, contract: PurchaseContractRow) -> None:
         await self._repository.delete_reminders(contract.id)
         total_amount = Decimal(contract.total_amount)
@@ -387,7 +463,13 @@ class PurchaseContractService:
                 raise ValueError("只能从已审批出口合同生成采购合同")
             lines = await self._export_contract_repository.list_lines(contract.id)
             for line in lines:
-                selected.append(_SourceContractLine(contract=contract, line=line))
+                selected.append(
+                    _SourceContractLine(
+                        contract=contract,
+                        line=line,
+                        resolved_product_id=await self._resolve_source_product_id(line),
+                    )
+                )
         if not selected:
             raise ValueError("来源出口合同没有商品明细")
         return selected
@@ -402,11 +484,16 @@ class PurchaseContractService:
         first_source: dict[tuple[str, str], _SourceContractLine] = {}
         first_accessory: dict[tuple[str, str], ProductAccessoryRow] = {}
         for source in source_lines:
-            if source.line.product_id is None:
-                raise ValueError("出口合同明细缺少商品标识，无法读取配件")
-            accessories = await self._product_repository.list_accessories(source.line.product_id)
+            accessories = await self._product_repository.list_accessories(
+                source.resolved_product_id
+            )
             if not accessories:
-                raise ValueError("商品缺少配件明细，无法生成采购合同")
+                product_reference = (
+                    source.line.product_code or source.line.product_name
+                )
+                raise ValueError(
+                    f"商品 {product_reference} 缺少配件明细，无法生成采购合同"
+                )
             for accessory in accessories:
                 key = (accessory.accessory_name, accessory.unit)
                 aggregate[key] = aggregate.get(key, Decimal("0")) + (
@@ -441,6 +528,19 @@ class PurchaseContractService:
                 )
             )
         return generated
+
+    async def _resolve_source_product_id(self, line: ExportContractLineRow) -> str:
+        if line.product_id:
+            return line.product_id
+        product_code = (line.product_code or "").strip()
+        if not product_code:
+            raise ValueError("出口合同明细未关联商品资料，请先选择商品后重试")
+        product = await self._product_repository.get_product_by_code(product_code)
+        if product is None:
+            raise ValueError(
+                f"商品编码 {product_code} 未关联商品资料，请先选择商品后重试"
+            )
+        return product.id
 
     async def _write_back_export_purchase_progress(self, contract_id: str) -> None:
         source_links = await self._repository.list_source_links(contract_id)

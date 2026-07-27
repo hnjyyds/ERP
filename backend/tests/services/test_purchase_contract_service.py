@@ -80,9 +80,13 @@ def _stock_purchase_payload(code: str = "PC-SVC-STOCK") -> PurchaseContractCreat
     )
 
 
-async def _create_product_with_accessory(product_repository: ProductRepository) -> str:
+async def _create_product_with_accessory(
+    product_repository: ProductRepository,
+    *,
+    code: str = "BAG-SVC-40",
+) -> str:
     product = await product_repository.create_product(
-        code="BAG-SVC-40",
+        code=code,
         cn_name="环保购物袋",
         en_name="Eco Shopping Bag",
         specification="40x35cm",
@@ -109,7 +113,8 @@ async def _create_approved_export_contract(
     export_repository: ExportContractRepository,
     *,
     code: str,
-    product_id: str,
+    product_id: str | None,
+    product_code: str = "BAG-40",
     quantity: str,
 ) -> tuple[str, str]:
     contract = await export_repository.create_contract(
@@ -132,7 +137,7 @@ async def _create_approved_export_contract(
     line = await export_repository.add_line(
         contract_id=contract.id,
         product_id=product_id,
-        product_code="BAG-40",
+        product_code=product_code,
         product_name="Eco Shopping Bag",
         specification="40x35cm",
         model="BAG-40",
@@ -228,6 +233,154 @@ async def test_purchase_contract_service_generates_from_export_contracts_and_app
     assert export_a.purchased_quantity == "1000"
     assert export_a_lines[0].id == export_a_line_id
     assert export_a_lines[0].purchased_quantity == 1000
+
+
+async def test_purchase_generation_resolves_legacy_export_product_by_code(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        export_repository = ExportContractRepository(session)
+        product_repository = ProductRepository(session)
+        service = _make_service(session)
+        current_user = _user_with_permissions(
+            ["purchase:contract:edit", "purchase:contract:view", "purchase:contract:view_all"]
+        )
+        product_id = await _create_product_with_accessory(
+            product_repository,
+            code="BAG-LEGACY-40",
+        )
+        export_id, _line_id = await _create_approved_export_contract(
+            export_repository,
+            code="EC-SVC-LEGACY-PRODUCT",
+            product_id=None,
+            product_code="BAG-LEGACY-40",
+            quantity="120",
+        )
+
+        generated = await service.generate_from_export_contracts(
+            current_user=current_user,
+            payload=PurchaseContractGenerateFromExportContracts(
+                code="PC-SVC-LEGACY-PRODUCT",
+                contract_date=date(2026, 8, 6),
+                supplier_id="supplier-pack-a",
+                supplier_name="华东包装制品厂",
+                currency="USD",
+                delivery_date=date(2026, 8, 30),
+                payment_terms="30% 预付，70% 出货前",
+                unit_price="0.12",
+                sources=[PurchaseContractSourceSelection(export_contract_id=export_id)],
+            ),
+        )
+
+    assert generated.lines[0].product_name == "棉绳"
+    assert generated.lines[0].quantity == "54"
+    assert len(generated.source_links) == 1
+    assert generated.source_links[0].product_id == product_id
+
+
+async def test_purchase_generation_identifies_product_missing_accessories(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        export_repository = ExportContractRepository(session)
+        product_repository = ProductRepository(session)
+        service = _make_service(session)
+        current_user = _user_with_permissions(
+            ["purchase:contract:edit", "purchase:contract:view", "purchase:contract:view_all"]
+        )
+        product = await product_repository.create_product(
+            code="BAG-NO-BOM",
+            cn_name="无配件购物袋",
+            en_name="Bag Without BOM",
+            specification="40x35cm",
+            model="BAG-NO-BOM",
+            customs_code="4202920000",
+            tax_rate="0.13",
+            rebate_rate="0.09",
+            package_info="100 pcs/carton",
+            unit="pcs",
+            image_url=None,
+        )
+        export_id, _line_id = await _create_approved_export_contract(
+            export_repository,
+            code="EC-SVC-NO-BOM",
+            product_id=product.id,
+            product_code=product.code,
+            quantity="120",
+        )
+
+        with pytest.raises(
+            ValueError,
+            match="商品 BAG-NO-BOM 缺少配件明细，无法生成采购合同",
+        ):
+            await service.generate_from_export_contracts(
+                current_user=current_user,
+                payload=PurchaseContractGenerateFromExportContracts(
+                    code="PC-SVC-NO-BOM",
+                    contract_date=date(2026, 8, 6),
+                    supplier_id="supplier-pack-a",
+                    supplier_name="华东包装制品厂",
+                    currency="USD",
+                    delivery_date=date(2026, 8, 30),
+                    payment_terms="30% 预付，70% 出货前",
+                    unit_price="0.12",
+                    sources=[PurchaseContractSourceSelection(export_contract_id=export_id)],
+                ),
+            )
+
+
+async def test_manual_export_source_contract_builds_traceable_source_link(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        export_repository = ExportContractRepository(session)
+        product_repository = ProductRepository(session)
+        service = _make_service(session)
+        current_user = _user_with_permissions(
+            ["purchase:contract:edit", "purchase:contract:view", "purchase:contract:view_all"]
+        )
+        product_id = await _create_product_with_accessory(product_repository)
+        export_id, export_line_id = await _create_approved_export_contract(
+            export_repository,
+            code="EC-SVC-MANUAL-LINK",
+            product_id=product_id,
+            quantity="120",
+        )
+
+        created = await service.create_contract(
+            current_user=current_user,
+            payload=PurchaseContractCreate(
+                code="PC-SVC-MANUAL-LINK",
+                contract_date=date(2026, 8, 6),
+                supplier_id="supplier-pack-a",
+                supplier_name="华东包装制品厂",
+                currency="USD",
+                delivery_date=date(2026, 8, 30),
+                payment_terms="30% 预付，70% 出货前",
+                source_type="export_contract",
+                lines=[
+                    PurchaseContractLineCreate(
+                        product_id=product_id,
+                        product_code="BAG-40",
+                        product_name="Eco Shopping Bag",
+                        quantity="120",
+                        unit="pcs",
+                        unit_price="0.82",
+                        source_export_contract_id=export_id,
+                        source_export_contract_no="EC-SVC-MANUAL-LINK",
+                        source_export_contract_line_id=export_line_id,
+                    )
+                ],
+            ),
+        )
+
+    assert len(created.source_links) == 1
+    assert created.source_links[0].export_contract_id == export_id
+    assert created.source_links[0].export_contract_line_id == export_line_id
+    assert created.source_links[0].demand_quantity == "120"
 
 
 async def test_purchase_contract_service_supports_stock_purchase_and_private_filter(

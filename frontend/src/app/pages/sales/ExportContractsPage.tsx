@@ -2,10 +2,10 @@ import { Alert, Button, Descriptions, Input, Modal, Table, Tag , Select} from 'a
 import { ArrowLeft, LayoutDashboard, Plus, Search , FileStack} from 'lucide-react'
 import type { FormEvent, MouseEvent , ReactNode} from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { addExportContractAdvancePayment, approveExportContract, createExportContract, exportExportContract, listExportContracts, registerExportContractSignature, submitExportContract, updateExportContract, type ExportContract, type ExportContractAdvancePayment, type ExportContractAdvancePaymentPayload, type ExportContractApprovePayload, type ExportContractCreatePayload, type ExportContractLine, type ExportContractSignature, type ExportContractSignaturePayload, type Customer, type Product , ExportContractPurchaseStatus, ExportContractShipmentStatus, ExportQuotation, listCustomers, getExportQuotationHistory} from '../../../api'
+import { addExportContractAdvancePayment, approveExportContract, createExportContract, exportExportContract, listExportContracts, registerExportContractSignature, submitExportContract, updateExportContract, type ExportContract, type ExportContractAdvancePayment, type ExportContractAdvancePaymentPayload, type ExportContractApprovePayload, type ExportContractCreatePayload, type ExportContractLine, type ExportContractSignature, type ExportContractSignaturePayload, type Customer, type Product , ExportContractPurchaseStatus, ExportContractShipmentStatus, ExportQuotation, listCustomers, listProducts, getExportQuotationHistory} from '../../../api'
 import { exportContractPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
-import { showError } from '../../../shared/errors'
+import { showError, showWarningDialog } from '../../../shared/errors'
 import { downloadCsv, openExportContractPrint } from '../../../shared/print'
 import { exportContractStatusOptions } from '../../../shared/formOptions'
 import { formatDate, formatMoney, formatPercent, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
@@ -23,6 +23,21 @@ function renderCustomerOptions(customers: Customer[]): ReactNode {
     const label = customerOptionLabel(customer)
     return (
       <Select.Option key={customer.id} value={customer.id} label={label}>
+        {label}
+      </Select.Option>
+    )
+  })
+}
+
+function productOptionLabel(product: Product): string {
+  return [product.code, product.cn_name, product.en_name].filter(Boolean).join(' / ')
+}
+
+function renderProductOptions(products: Product[]): ReactNode {
+  return products.map((product) => {
+    const label = productOptionLabel(product)
+    return (
+      <Select.Option key={product.id} value={product.id} label={label}>
         {label}
       </Select.Option>
     )
@@ -259,6 +274,7 @@ function signatureStatusLabel(value: string): string {
 
 export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [contracts, setContracts] = useState<ExportContract[]>([])
+  const [products, setProducts] = useState<Product[]>([])
   const [selectedContractId, setSelectedContractId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
@@ -268,10 +284,12 @@ export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPagePr
   const [exportPreview, setExportPreview] = useState('')
   const [loading, setLoading] = useState(false)
   const [loadingCustomers, setLoadingCustomers] = useState(false)
+  const [loadingProducts, setLoadingProducts] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [createModalOpen, setCreateModalOpen] = useState(false)
+  const [editingContractId, setEditingContractId] = useState<string | null>(null)
   const [form, setForm] = useState<ExportContractFormState>(() => initialExportContractForm())
   const [approveForm, setApproveForm] = useState<ExportContractApproveFormState>(() =>
     initialExportContractApproveForm(),
@@ -293,6 +311,7 @@ export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPagePr
   useEffect(() => {
     void loadContracts()
     void loadCustomerOptions()
+    void loadProductOptions()
   }, [])
 
   useEffect(() => {
@@ -345,12 +364,41 @@ export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPagePr
     }
   }
 
+  async function loadProductOptions() {
+    setLoadingProducts(true)
+    try {
+      const result = await listProducts()
+      setProducts(result.items)
+    } catch (caught) {
+      showError(caught, '商品资料加载失败')
+    } finally {
+      setLoadingProducts(false)
+    }
+  }
+
   function applyCustomerToContractForm(customerId?: string) {
     const customer = customers.find((item) => item.id === customerId)
     setForm((current) => ({
       ...current,
       customer_id: customer?.id ?? '',
       customer_name: customer ? customerDisplayName(customer) : '',
+    }))
+  }
+
+  function applyProductToContractForm(productId?: string) {
+    const product = products.find((item) => item.id === productId)
+    setForm((current) => ({
+      ...current,
+      product_id: product?.id ?? '',
+      product_code: product?.code ?? '',
+      product_name: product?.cn_name ?? '',
+      specification: product?.specification ?? '',
+      model: product?.model ?? '',
+      unit: product?.unit ?? current.unit,
+      image_url: product?.image_url ?? '',
+      line_remark: product?.package_info
+        ? `包装: ${product.package_info}`
+        : current.line_remark,
     }))
   }
 
@@ -415,42 +463,39 @@ export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPagePr
 
   function loadContractIntoForm(contract: ExportContract) {
     setSelectedContractId(contract.id)
+    setEditingContractId(contract.id)
     setForm(exportContractToForm(contract))
+    setCreateModalOpen(true)
+  }
+
+  function openCreateContractModal() {
+    setEditingContractId(null)
+    setForm(initialExportContractForm())
     setCreateModalOpen(true)
   }
 
   async function submitContract(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (!form.product_id) {
+      showWarningDialog('请选择商品资料，确保后续采购和 QC 流程可以正确关联')
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
     setExportPreview('')
     try {
-      const created = await createExportContract(exportContractPayload(form))
-      setMessage(`已新增出口合同 ${created.code}`)
+      const saved = editingContractId
+        ? await updateExportContract(editingContractId, exportContractPayload(form))
+        : await createExportContract(exportContractPayload(form))
+      setMessage(editingContractId ? `已保存出口合同 ${saved.code}` : `已新增出口合同 ${saved.code}`)
+      setEditingContractId(null)
       setForm(initialExportContractForm())
       setCreateModalOpen(false)
-      upsertContract(created)
-      await loadContracts(created.id)
+      upsertContract(saved)
+      await loadContracts(saved.id)
     } catch (caught) {
-      showError(caught, '出口合同新增失败')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  async function saveContractDraft() {
-    if (!selectedContract) return
-    setSubmitting(true)
-    setMessage('')
-    setError('')
-    try {
-      const updated = await updateExportContract(selectedContract.id, exportContractPayload(form))
-      setMessage(`已保存出口合同 ${updated.code}`)
-      upsertContract(updated)
-      await loadContracts(updated.id)
-    } catch (caught) {
-      showError(caught, '出口合同草稿保存失败')
+      showError(caught, editingContractId ? '出口合同草稿保存失败' : '出口合同新增失败')
     } finally {
       setSubmitting(false)
     }
@@ -590,7 +635,7 @@ export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPagePr
           <section className="workspace-panel list-panel product-list-panel" style={{ gridColumn: '1 / -1' }}>
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="合同列表" />
-            <Button type="primary" icon={<Plus size={16} />} onClick={() => setCreateModalOpen(true)}>
+            <Button type="primary" icon={<Plus size={16} />} onClick={openCreateContractModal}>
               新增合同
             </Button>
           </div>
@@ -699,9 +744,12 @@ export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPagePr
           centered
           footer={null}
           open={createModalOpen}
-          title={selectedContract && form.code ? '编辑出口合同' : '新增出口合同'}
+          title={editingContractId ? '编辑出口合同' : '新增出口合同'}
           width={960}
-          onCancel={() => setCreateModalOpen(false)}
+          onCancel={() => {
+            setCreateModalOpen(false)
+            setEditingContractId(null)
+          }}
         >
           <form className="record-form entity-modal-form contract-modal-form" onSubmit={submitContract}>
             <div className="form-row">
@@ -714,7 +762,7 @@ export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPagePr
                 <Input
                   type="date"
                   value={form.contract_date}
-                  onChange={(event) => setForm({ ...form, contract_date: event.target.value })}
+                  onInput={(event) => setForm({ ...form, contract_date: event.currentTarget.value })}
                 />
               </label>
               <label>
@@ -773,7 +821,7 @@ export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPagePr
                 <Input
                   type="date"
                   value={form.planned_ship_date}
-                  onChange={(event) => setForm({ ...form, planned_ship_date: event.target.value })}
+                  onInput={(event) => setForm({ ...form, planned_ship_date: event.currentTarget.value })}
                 />
               </label>
             </div>
@@ -795,26 +843,42 @@ export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPagePr
               <label>
                 <span>&nbsp;</span>
                 <Button htmlType="submit" type="primary" loading={submitting}>
-                  {selectedContract && form.code ? '保存合同' : '新增出口合同'}
+                  {editingContractId ? '保存合同' : '新增出口合同'}
                 </Button>
               </label>
             </div>
             <div className="form-divider">合同商品明细</div>
             <div className="form-row">
               <label>
+                选择商品 *
+                <Select
+                  showSearch
+                  loading={loadingProducts}
+                  value={form.product_id || undefined}
+                  placeholder={products.length > 0 ? '从商品资料选择' : '请先在商品资料录入'}
+                  optionFilterProp="label"
+                  notFoundContent={loadingProducts ? '加载商品资料中' : '暂无商品资料'}
+                  onChange={applyProductToContractForm}
+                >
+                  {renderProductOptions(products)}
+                </Select>
+              </label>
+              <label>
                 商品编号
                 <Input
                   value={form.product_code}
-                  onChange={(event) => setForm({ ...form, product_code: event.target.value })}
+                  readOnly
                 />
               </label>
               <label>
                 商品名称
                 <Input
                   value={form.product_name}
-                  onChange={(event) => setForm({ ...form, product_name: event.target.value })}
+                  readOnly
                 />
               </label>
+            </div>
+            <div className="form-row">
               <label>
                 规格
                 <Input
@@ -1259,5 +1323,3 @@ export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPagePr
     </section>
   )
 }
-
-

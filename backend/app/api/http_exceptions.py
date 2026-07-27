@@ -43,3 +43,13 @@ def raise_unprocessable(detail: str, *, cause: BaseException | None = None) -> N
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail=detail,
     ) from cause
+
+
+def raise_business_validation(
+    exc: ValueError,
+    *,
+    fallback_detail: str = "业务数据无效",
+) -> NoReturn:
+    """把服务层业务校验错误稳定映射为可理解的 422 响应。"""
+    detail = str(exc).strip() or fallback_detail
+    raise_unprocessable(detail, cause=exc)
