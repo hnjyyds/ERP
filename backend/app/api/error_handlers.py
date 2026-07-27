@@ -1,9 +1,14 @@
+import logging
+from typing import cast
+
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic_core import ErrorDetails
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.types import HTTPExceptionHandler
 
+from app.core.logging import get_request_id
 from app.core.status_codes import (
     AppStatusCode,
     get_status_definition,
@@ -11,6 +16,8 @@ from app.core.status_codes import (
     resolve_error_message,
 )
 from app.schemas.responses import ErrorResponse, ValidationIssue
+
+_http_logger = logging.getLogger("app.http")
 
 
 def error_response_body(
@@ -76,9 +83,21 @@ async def http_exception_handler(
     request: Request,
     exc: StarletteHTTPException,
 ) -> JSONResponse:
-    del request
     code = resolve_error_code(exc.status_code, exc.detail)
     message = resolve_error_message(code, exc.detail)
+    if exc.status_code >= 400:
+        _http_logger.warning(
+            "http exception",
+            extra={
+                "event": "http_exception",
+                "request_id": get_request_id(),
+                "method": request.method,
+                "path": request.url.path,
+                "status_code": exc.status_code,
+                "detail": message,
+                "error_type": code.value,
+            },
+        )
     return JSONResponse(
         status_code=exc.status_code,
         content=error_response_body(code, message),
@@ -100,5 +119,11 @@ async def request_validation_exception_handler(
 
 
 def register_error_handlers(app: FastAPI) -> None:
-    app.add_exception_handler(StarletteHTTPException, http_exception_handler)
-    app.add_exception_handler(RequestValidationError, request_validation_exception_handler)
+    app.add_exception_handler(
+        StarletteHTTPException,
+        cast(HTTPExceptionHandler, http_exception_handler),
+    )
+    app.add_exception_handler(
+        RequestValidationError,
+        cast(HTTPExceptionHandler, request_validation_exception_handler),
+    )

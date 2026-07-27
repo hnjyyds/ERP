@@ -7,6 +7,8 @@ from collections.abc import AsyncIterator
 from fastapi import FastAPI, HTTPException
 from httpx import ASGITransport, AsyncClient
 
+from app.api.error_handlers import register_error_handlers
+from app.api.http_exceptions import raise_unprocessable
 from app.api.request_logging import RequestLoggingMiddleware
 from app.core.logging import JsonLogFormatter, set_current_user_id
 
@@ -100,6 +102,38 @@ async def test_client_error_is_logged_as_warning(
     record = _completed_record(caplog.records)
     assert record.levelno == logging.WARNING
     assert record.status_code == 404
+
+
+async def test_business_error_log_contains_specific_reason(
+    caplog: logging.LogCaptureFixture,
+) -> None:
+    app = FastAPI()
+    app.add_middleware(RequestLoggingMiddleware, log_health_requests=True)
+    register_error_handlers(app)
+
+    @app.get("/business-error")
+    async def business_error() -> None:
+        raise_unprocessable("商品未关联")
+
+    with caplog.at_level(logging.WARNING, logger="app.http"):
+        async for client in _client_for(app):
+            response = await client.get(
+                "/business-error",
+                headers={"X-Request-ID": "business-error-001"},
+            )
+
+    assert response.status_code == 422
+    assert response.json()["message"] == "商品未关联"
+    record = next(
+        record
+        for record in caplog.records
+        if getattr(record, "event", None) == "http_exception"
+    )
+    assert record.request_id == "business-error-001"
+    assert record.method == "GET"
+    assert record.path == "/business-error"
+    assert record.status_code == 422
+    assert record.detail == "商品未关联"
 
 
 async def test_unhandled_error_returns_traceable_response_and_logs_stack(
