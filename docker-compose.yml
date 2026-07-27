@@ -1,5 +1,6 @@
 name: yuanjing-trade
 
+# Container layer: cap local json-file logs so diagnostics cannot exhaust the host disk.
 x-logging: &default-logging
   driver: json-file
   options:
@@ -15,6 +16,7 @@ services:
       AUTH_SECRET_KEY: ${AUTH_SECRET_KEY:?AUTH_SECRET_KEY must be set}
       DATABASE_URL: sqlite+aiosqlite:////app/.data/yuanjing.db
       SEED_DEMO_DATA: ${SEED_DEMO_DATA:-false}
+      # Application observability is configured at deployment time, not in business code.
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       LOG_FORMAT: ${LOG_FORMAT:-json}
       LOG_SLOW_REQUEST_MS: ${LOG_SLOW_REQUEST_MS:-1000}

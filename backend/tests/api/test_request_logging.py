@@ -1,3 +1,5 @@
+"""请求日志契约测试：锁定关联 ID、日志级别、用户上下文和敏感信息脱敏。"""
+
 import json
 import logging
 from collections.abc import AsyncIterator

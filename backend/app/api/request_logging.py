@@ -1,3 +1,8 @@
+"""HTTP 可观测性层：为请求建立关联上下文并记录统一的访问与异常日志。
+
+中间件只处理 HTTP 协议协调，不读取业务请求体，也不承担业务异常判断。
+"""
+
 import logging
 import re
 from time import perf_counter
@@ -17,11 +22,13 @@ from app.core.logging import (
 from app.core.status_codes import AppStatusCode, get_status_definition
 
 REQUEST_ID_HEADER = "X-Request-ID"
+# 限制客户端关联 ID 的长度和字符集，防止换行注入及日志字段污染。
 _REQUEST_ID_PATTERN = re.compile(r"^[A-Za-z0-9._:-]{1,128}$")
 _request_logger = logging.getLogger("app.request")
 
 
 def _request_id(scope: Scope) -> str:
+    """复用安全的客户端 ID，否则生成服务端 ID。"""
     supplied = Headers(scope=scope).get(REQUEST_ID_HEADER)
     if isinstance(supplied, str) and _REQUEST_ID_PATTERN.fullmatch(supplied):
         return supplied
@@ -49,6 +56,7 @@ def _log_fields(
     duration_ms: float,
     slow_request: bool,
 ) -> dict[str, object]:
+    """构造成功和失败日志共用的稳定字段契约。"""
     return {
         "request_id": request_id,
         "user_id": get_current_user_id(),
@@ -63,6 +71,12 @@ def _log_fields(
 
 
 class RequestLoggingMiddleware:
+    """记录请求结果、耗时和异常，并保证响应始终携带关联 ID。
+
+    健康检查成功日志默认关闭以降低容器噪声；失败仍会记录。未处理异常在响应尚未开始时
+    转换为标准 500 响应，从而让客户端拿到可用于检索异常堆栈的 ``X-Request-ID``。
+    """
+
     def __init__(
         self,
         app: ASGIApp,
@@ -90,6 +104,7 @@ class RequestLoggingMiddleware:
         async def send_with_request_id(message: Message) -> None:
             nonlocal response_started, status_code
             if message["type"] == "http.response.start":
+                # 响应头只能在 http.response.start 阶段安全写入。
                 response_started = True
                 status_code = cast(int, message["status"])
                 MutableHeaders(scope=message)[REQUEST_ID_HEADER] = request_id
@@ -122,6 +137,7 @@ class RequestLoggingMiddleware:
                 extra={"event": "request_failed", **fields},
             )
             if response_started:
+                # 流式响应已经发送后不能再构造第二个响应，只记录并交给服务器处理。
                 raise
 
             definition = get_status_definition(AppStatusCode.SERVER_ERROR)

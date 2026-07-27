@@ -1,3 +1,5 @@
+"""应用装配层：连接基础设施、API 路由、生命周期任务和 MCP 挂载点。"""
+
 import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
@@ -108,6 +110,7 @@ async def initialize_database_schema() -> None:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    """按依赖顺序初始化数据库、演示数据和 MCP，并记录服务生命周期事件。"""
     settings = get_settings()
     _lifecycle_logger.info(
         "service starting",
@@ -151,10 +154,13 @@ def create_app(
     *,
     mcp_session_factory: async_sessionmaker[AsyncSession] = SessionLocal,
 ) -> FastAPI:
+    """创建 FastAPI 应用，并按 HTTP 边界顺序注册日志、异常和业务路由。"""
     settings = get_settings()
+    # 日志必须先于应用和生命周期对象配置，保证启动失败也使用统一格式。
     configure_logging(level=settings.log_level, format_name=settings.log_format)
     app = FastAPI(title=settings.app_name, lifespan=lifespan)
     register_error_handlers(app)
+    # 请求日志位于 HTTP 边界，覆盖 API、上传文件和最后挂载的 MCP 应用。
     app.add_middleware(
         RequestLoggingMiddleware,
         slow_request_ms=settings.log_slow_request_ms,
