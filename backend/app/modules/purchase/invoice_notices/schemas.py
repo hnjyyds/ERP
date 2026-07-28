@@ -1,7 +1,9 @@
 from datetime import date
 from decimal import Decimal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict, Field
+
+from app.schemas.base import BaseModel
 
 VALID_PURCHASE_INVOICE_NOTICE_STATUSES = ("draft", "sent", "received")
 

@@ -4,6 +4,7 @@ from datetime import datetime
 from sqlalchemy import Select, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.masterdata.document_parties.models import DocumentParty
 
 
@@ -109,9 +110,7 @@ class DocumentPartyRepository:
         status: str,
         owner_user_id: str,
     ) -> DocumentPartyRow | None:
-        party = await self.session.scalar(
-            select(DocumentParty).where(DocumentParty.id == party_id)
-        )
+        party = await self.session.scalar(select(DocumentParty).where(DocumentParty.id == party_id))
         if party is None:
             return None
         if is_default:
@@ -226,8 +225,8 @@ class DocumentPartyRepository:
                 DocumentParty.created_at.desc(),
                 DocumentParty.code.asc(),
             )
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)

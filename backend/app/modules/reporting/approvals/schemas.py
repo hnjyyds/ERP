@@ -1,6 +1,8 @@
 from datetime import date
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import ConfigDict
+
+from app.schemas.base import BaseModel
 
 VALID_APPROVAL_DOCUMENT_TYPES = ("export_contract", "purchase_contract")
 VALID_APPROVAL_STATUSES = ("submitted", "approved")

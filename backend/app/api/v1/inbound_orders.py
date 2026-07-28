@@ -3,7 +3,6 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, status
 
 from app.api.auth_dependencies import CurrentUserDep
-from app.api.http_exceptions import raise_not_found, raise_permission_denied, raise_unprocessable
 from app.modules.warehouse.inbound_orders.providers import get_inbound_order_service
 from app.modules.warehouse.inbound_orders.schemas import (
     InboundOrderApprove,
@@ -15,10 +14,7 @@ from app.modules.warehouse.inbound_orders.schemas import (
     InventoryLedgerListResponse,
 )
 from app.modules.warehouse.inbound_orders.services import (
-    InboundOrderNotFoundError,
-    InboundOrderPlanNotFoundError,
     InboundOrderService,
-    PermissionDeniedError,
 )
 from app.schemas.responses import ApiResponse
 
@@ -35,20 +31,15 @@ async def list_inbound_orders(
     supplier_id: Annotated[str | None, Query(max_length=36)] = None,
     purchase_contract_id: Annotated[str | None, Query(max_length=36)] = None,
 ) -> ApiResponse[InboundOrderListResponse]:
-    try:
-        orders = await service.list_orders(
-            current_user=user,
-            q=q,
-            status=status,
-            inbound_mode=inbound_mode,
-            supplier_id=supplier_id,
-            purchase_contract_id=purchase_contract_id,
-        )
-        return ApiResponse(data=orders)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少货物入库权限")
-    except ValueError:
-        raise_unprocessable("货物入库数据无效")
+    orders = await service.list_orders(
+        current_user=user,
+        q=q,
+        status=status,
+        inbound_mode=inbound_mode,
+        supplier_id=supplier_id,
+        purchase_contract_id=purchase_contract_id,
+    )
+    return ApiResponse(data=orders)
 
 
 @router.post(
@@ -61,15 +52,8 @@ async def generate_inbound_order_from_plan(
     user: CurrentUserDep,
     service: Annotated[InboundOrderService, Depends(get_inbound_order_service)],
 ) -> ApiResponse[InboundOrderResponse]:
-    try:
-        order = await service.generate_from_plan(current_user=user, payload=payload)
-        return ApiResponse(data=order)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少货物入库权限")
-    except InboundOrderPlanNotFoundError:
-        raise_not_found("入库计划不存在")
-    except ValueError:
-        raise_unprocessable("货物入库数据无效")
+    order = await service.generate_from_plan(current_user=user, payload=payload)
+    return ApiResponse(data=order)
 
 
 @router.get("/inventory-balances", response_model=ApiResponse[InventoryBalanceListResponse])
@@ -81,17 +65,14 @@ async def list_inventory_balances(
     location_id: Annotated[str | None, Query(max_length=36)] = None,
     product_id: Annotated[str | None, Query(max_length=36)] = None,
 ) -> ApiResponse[InventoryBalanceListResponse]:
-    try:
-        balances = await service.list_inventory_balances(
-            current_user=user,
-            q=q,
-            warehouse_id=warehouse_id,
-            location_id=location_id,
-            product_id=product_id,
-        )
-        return ApiResponse(data=balances)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少货物入库权限")
+    balances = await service.list_inventory_balances(
+        current_user=user,
+        q=q,
+        warehouse_id=warehouse_id,
+        location_id=location_id,
+        product_id=product_id,
+    )
+    return ApiResponse(data=balances)
 
 
 @router.get("/inventory-ledgers", response_model=ApiResponse[InventoryLedgerListResponse])
@@ -102,16 +83,13 @@ async def list_inventory_ledgers(
     source_id: Annotated[str | None, Query(max_length=36)] = None,
     product_id: Annotated[str | None, Query(max_length=36)] = None,
 ) -> ApiResponse[InventoryLedgerListResponse]:
-    try:
-        ledgers = await service.list_inventory_ledgers(
-            current_user=user,
-            q=q,
-            source_id=source_id,
-            product_id=product_id,
-        )
-        return ApiResponse(data=ledgers)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少货物入库权限")
+    ledgers = await service.list_inventory_ledgers(
+        current_user=user,
+        q=q,
+        source_id=source_id,
+        product_id=product_id,
+    )
+    return ApiResponse(data=ledgers)
 
 
 @router.get("/{order_id}", response_model=ApiResponse[InboundOrderResponse])
@@ -120,13 +98,8 @@ async def get_inbound_order(
     user: CurrentUserDep,
     service: Annotated[InboundOrderService, Depends(get_inbound_order_service)],
 ) -> ApiResponse[InboundOrderResponse]:
-    try:
-        order = await service.get_order(current_user=user, order_id=order_id)
-        return ApiResponse(data=order)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少货物入库权限")
-    except InboundOrderNotFoundError:
-        raise_not_found("入库单不存在")
+    order = await service.get_order(current_user=user, order_id=order_id)
+    return ApiResponse(data=order)
 
 
 @router.post("/{order_id}/submit", response_model=ApiResponse[InboundOrderResponse])
@@ -136,19 +109,12 @@ async def submit_inbound_order(
     user: CurrentUserDep,
     service: Annotated[InboundOrderService, Depends(get_inbound_order_service)],
 ) -> ApiResponse[InboundOrderResponse]:
-    try:
-        order = await service.submit_order(
-            current_user=user,
-            order_id=order_id,
-            payload=payload,
-        )
-        return ApiResponse(data=order)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少货物入库权限")
-    except InboundOrderNotFoundError:
-        raise_not_found("入库单不存在")
-    except ValueError:
-        raise_unprocessable("货物入库数据无效")
+    order = await service.submit_order(
+        current_user=user,
+        order_id=order_id,
+        payload=payload,
+    )
+    return ApiResponse(data=order)
 
 
 @router.post("/{order_id}/approve", response_model=ApiResponse[InboundOrderResponse])
@@ -158,14 +124,5 @@ async def approve_inbound_order(
     user: CurrentUserDep,
     service: Annotated[InboundOrderService, Depends(get_inbound_order_service)],
 ) -> ApiResponse[InboundOrderResponse]:
-    try:
-        order = await service.approve_order(current_user=user, order_id=order_id, payload=payload)
-        return ApiResponse(data=order)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少货物入库权限")
-    except InboundOrderNotFoundError:
-        raise_not_found("入库单不存在")
-    except InboundOrderPlanNotFoundError:
-        raise_not_found("入库计划不存在")
-    except ValueError:
-        raise_unprocessable("货物入库数据无效")
+    order = await service.approve_order(current_user=user, order_id=order_id, payload=payload)
+    return ApiResponse(data=order)

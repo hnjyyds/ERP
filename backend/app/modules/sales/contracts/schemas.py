@@ -2,7 +2,9 @@ from datetime import date
 from decimal import Decimal
 from typing import Self
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import ConfigDict, Field, model_validator
+
+from app.schemas.base import BaseModel
 
 VALID_CONTRACT_STATUSES = ("draft", "submitted", "approved", "rejected")
 VALID_CONTRACT_EXPORT_FORMATS = ("pdf", "excel")

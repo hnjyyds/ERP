@@ -6,6 +6,7 @@ from sqlalchemy import Select, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.elements import ColumnElement
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.finance.fee_payments.models import PartnerFeeInvoice
 from app.modules.finance.misc_fees.models import MiscFeeAllocation
 from app.modules.finance.settlements.models import FinancialSettlement, ProfitCostLink
@@ -268,8 +269,8 @@ class FinancialSettlementRepository:
                 FinancialSettlement.settlement_date.desc(),
                 FinancialSettlement.settlement_no.asc(),
             )
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._settlement_scalars(statement)
         total = await self.session.scalar(count_statement)

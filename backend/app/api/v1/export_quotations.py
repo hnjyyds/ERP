@@ -3,7 +3,6 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, status
 
 from app.api.auth_dependencies import CurrentUserDep
-from app.api.http_exceptions import raise_not_found, raise_permission_denied, raise_unprocessable
 from app.modules.sales.quotations.providers import get_export_quotation_service
 from app.modules.sales.quotations.schemas import (
     ExportQuotationApprove,
@@ -16,9 +15,7 @@ from app.modules.sales.quotations.schemas import (
     ExportQuotationResponse,
 )
 from app.modules.sales.quotations.services import (
-    ExportQuotationNotFoundError,
     ExportQuotationService,
-    PermissionDeniedError,
 )
 from app.modules.sample.deliveries.schemas import SampleDeliveryListResponse
 from app.schemas.responses import ApiResponse
@@ -34,18 +31,13 @@ async def list_export_quotations(
     approval_status: Annotated[str | None, Query(max_length=40)] = None,
     customer_id: Annotated[str | None, Query(max_length=36)] = None,
 ) -> ApiResponse[ExportQuotationListResponse]:
-    try:
-        quotations = await service.list_quotations(
-            current_user=user,
-            q=q,
-            approval_status=approval_status,
-            customer_id=customer_id,
-        )
-        return ApiResponse(data=quotations)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少出口报价权限")
-    except ValueError:
-        raise_unprocessable("出口报价数据无效")
+    quotations = await service.list_quotations(
+        current_user=user,
+        q=q,
+        approval_status=approval_status,
+        customer_id=customer_id,
+    )
+    return ApiResponse(data=quotations)
 
 
 @router.post(
@@ -58,11 +50,8 @@ async def create_export_quotation(
     user: CurrentUserDep,
     service: Annotated[ExportQuotationService, Depends(get_export_quotation_service)],
 ) -> ApiResponse[ExportQuotationResponse]:
-    try:
-        quotation = await service.create_quotation(current_user=user, payload=payload)
-        return ApiResponse(data=quotation)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少出口报价权限")
+    quotation = await service.create_quotation(current_user=user, payload=payload)
+    return ApiResponse(data=quotation)
 
 
 @router.get("/history", response_model=ApiResponse[ExportQuotationListResponse])
@@ -72,15 +61,12 @@ async def get_export_quotation_history(
     customer_id: Annotated[str | None, Query(max_length=36)] = None,
     product_id: Annotated[str | None, Query(max_length=36)] = None,
 ) -> ApiResponse[ExportQuotationListResponse]:
-    try:
-        history = await service.get_history(
-            current_user=user,
-            customer_id=customer_id,
-            product_id=product_id,
-        )
-        return ApiResponse(data=history)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少出口报价权限")
+    history = await service.get_history(
+        current_user=user,
+        customer_id=customer_id,
+        product_id=product_id,
+    )
+    return ApiResponse(data=history)
 
 
 @router.get(
@@ -92,14 +78,11 @@ async def get_export_quotation_purchase_references(
     service: Annotated[ExportQuotationService, Depends(get_export_quotation_service)],
     product_id: Annotated[str | None, Query(max_length=36)] = None,
 ) -> ApiResponse[ExportQuotationPurchaseReferenceListResponse]:
-    try:
-        references = await service.get_purchase_references(
-            current_user=user,
-            product_id=product_id,
-        )
-        return ApiResponse(data=references)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少出口报价权限")
+    references = await service.get_purchase_references(
+        current_user=user,
+        product_id=product_id,
+    )
+    return ApiResponse(data=references)
 
 
 @router.get("/{quotation_id}", response_model=ApiResponse[ExportQuotationResponse])
@@ -108,13 +91,8 @@ async def get_export_quotation(
     user: CurrentUserDep,
     service: Annotated[ExportQuotationService, Depends(get_export_quotation_service)],
 ) -> ApiResponse[ExportQuotationResponse]:
-    try:
-        quotation = await service.get_quotation(current_user=user, quotation_id=quotation_id)
-        return ApiResponse(data=quotation)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少出口报价权限")
-    except ExportQuotationNotFoundError:
-        raise_not_found("出口报价不存在")
+    quotation = await service.get_quotation(current_user=user, quotation_id=quotation_id)
+    return ApiResponse(data=quotation)
 
 
 @router.put("/{quotation_id}", response_model=ApiResponse[ExportQuotationResponse])
@@ -124,19 +102,12 @@ async def update_export_quotation(
     user: CurrentUserDep,
     service: Annotated[ExportQuotationService, Depends(get_export_quotation_service)],
 ) -> ApiResponse[ExportQuotationResponse]:
-    try:
-        quotation = await service.update_quotation(
-            current_user=user,
-            quotation_id=quotation_id,
-            payload=payload,
-        )
-        return ApiResponse(data=quotation)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少出口报价权限")
-    except ExportQuotationNotFoundError:
-        raise_not_found("出口报价不存在")
-    except ValueError:
-        raise_unprocessable("出口报价数据无效")
+    quotation = await service.update_quotation(
+        current_user=user,
+        quotation_id=quotation_id,
+        payload=payload,
+    )
+    return ApiResponse(data=quotation)
 
 
 @router.post("/{quotation_id}/submit", response_model=ApiResponse[ExportQuotationResponse])
@@ -145,18 +116,11 @@ async def submit_export_quotation(
     user: CurrentUserDep,
     service: Annotated[ExportQuotationService, Depends(get_export_quotation_service)],
 ) -> ApiResponse[ExportQuotationResponse]:
-    try:
-        quotation = await service.submit_quotation(
-            current_user=user,
-            quotation_id=quotation_id,
-        )
-        return ApiResponse(data=quotation)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少出口报价权限")
-    except ExportQuotationNotFoundError:
-        raise_not_found("出口报价不存在")
-    except ValueError:
-        raise_unprocessable("出口报价数据无效")
+    quotation = await service.submit_quotation(
+        current_user=user,
+        quotation_id=quotation_id,
+    )
+    return ApiResponse(data=quotation)
 
 
 @router.post("/{quotation_id}/approve", response_model=ApiResponse[ExportQuotationResponse])
@@ -166,19 +130,12 @@ async def approve_export_quotation(
     user: CurrentUserDep,
     service: Annotated[ExportQuotationService, Depends(get_export_quotation_service)],
 ) -> ApiResponse[ExportQuotationResponse]:
-    try:
-        quotation = await service.approve_quotation(
-            current_user=user,
-            quotation_id=quotation_id,
-            payload=payload,
-        )
-        return ApiResponse(data=quotation)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少出口报价权限")
-    except ExportQuotationNotFoundError:
-        raise_not_found("出口报价不存在")
-    except ValueError:
-        raise_unprocessable("出口报价数据无效")
+    quotation = await service.approve_quotation(
+        current_user=user,
+        quotation_id=quotation_id,
+        payload=payload,
+    )
+    return ApiResponse(data=quotation)
 
 
 @router.post(
@@ -191,19 +148,12 @@ async def confirm_export_quotation_contract(
     user: CurrentUserDep,
     service: Annotated[ExportQuotationService, Depends(get_export_quotation_service)],
 ) -> ApiResponse[ExportQuotationContractResponse]:
-    try:
-        contract = await service.confirm_contract(
-            current_user=user,
-            quotation_id=quotation_id,
-            payload=payload,
-        )
-        return ApiResponse(data=contract)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少出口报价权限")
-    except ExportQuotationNotFoundError:
-        raise_not_found("出口报价不存在")
-    except ValueError:
-        raise_unprocessable("出口报价数据无效")
+    contract = await service.confirm_contract(
+        current_user=user,
+        quotation_id=quotation_id,
+        payload=payload,
+    )
+    return ApiResponse(data=contract)
 
 
 @router.get(
@@ -215,16 +165,11 @@ async def get_export_quotation_sample_deliveries(
     user: CurrentUserDep,
     service: Annotated[ExportQuotationService, Depends(get_export_quotation_service)],
 ) -> ApiResponse[SampleDeliveryListResponse]:
-    try:
-        deliveries = await service.get_sample_deliveries(
-            current_user=user,
-            quotation_id=quotation_id,
-        )
-        return ApiResponse(data=deliveries)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少出口报价权限")
-    except ExportQuotationNotFoundError:
-        raise_not_found("出口报价不存在")
+    deliveries = await service.get_sample_deliveries(
+        current_user=user,
+        quotation_id=quotation_id,
+    )
+    return ApiResponse(data=deliveries)
 
 
 @router.get("/{quotation_id}/export", response_model=ApiResponse[ExportQuotationExportResponse])
@@ -234,16 +179,9 @@ async def export_export_quotation(
     service: Annotated[ExportQuotationService, Depends(get_export_quotation_service)],
     export_format: Annotated[str, Query(alias="format", max_length=20)] = "pdf",
 ) -> ApiResponse[ExportQuotationExportResponse]:
-    try:
-        export = await service.export_quotation(
-            current_user=user,
-            quotation_id=quotation_id,
-            export_format=export_format,
-        )
-        return ApiResponse(data=export)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少出口报价权限")
-    except ExportQuotationNotFoundError:
-        raise_not_found("出口报价不存在")
-    except ValueError:
-        raise_unprocessable("出口报价数据无效")
+    export = await service.export_quotation(
+        current_user=user,
+        quotation_id=quotation_id,
+        export_format=export_format,
+    )
+    return ApiResponse(data=export)

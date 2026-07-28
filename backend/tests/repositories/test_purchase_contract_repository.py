@@ -1,5 +1,6 @@
 from datetime import date
 
+from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.modules.purchase.contracts.repositories import (
@@ -83,6 +84,18 @@ async def test_purchase_contract_repository_records_lines_sources_and_reminders(
         lines = await repository.list_lines(contract.id)
         sources = await repository.list_source_links(contract.id)
         reminders = await repository.list_reminders(contract.id)
+        executed_statements = 0
+
+        def count_statement(*_: object) -> None:
+            nonlocal executed_statements
+            executed_statements += 1
+
+        bind = session.get_bind()
+        event.listen(bind, "before_cursor_execute", count_statement)
+        try:
+            details = await repository.list_details([contract.id])
+        finally:
+            event.remove(bind, "before_cursor_execute", count_statement)
 
     assert total == 1
     assert isinstance(contracts[0], PurchaseContractRow)
@@ -93,3 +106,10 @@ async def test_purchase_contract_repository_records_lines_sources_and_reminders(
     assert lines[0].amount == "54.00"
     assert sources[0].export_contract_no == "EC-001"
     assert [item.reminder_type for item in reminders] == ["payment", "delivery"]
+    assert details[contract.id].lines[0].id == line.id
+    assert details[contract.id].source_links[0].export_contract_no == "EC-001"
+    assert [item.reminder_type for item in details[contract.id].reminders] == [
+        "payment",
+        "delivery",
+    ]
+    assert executed_statements == 3

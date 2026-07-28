@@ -5,6 +5,7 @@ from decimal import Decimal
 from sqlalchemy import Select, delete, exists, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.purchase.contracts.models import (
     PurchaseContract,
     PurchaseContractLine,
@@ -91,6 +92,15 @@ class PurchaseContractReminderRow:
     currency: str
     status: str
     created_at: datetime
+
+
+@dataclass
+class PurchaseContractDetails:
+    """Child rows loaded in batches for purchase-contract responses."""
+
+    lines: list[PurchaseContractLineRow]
+    source_links: list[PurchaseContractSourceLinkRow]
+    reminders: list[PurchaseContractReminderRow]
 
 
 class PurchaseContractRepository:
@@ -381,6 +391,59 @@ class PurchaseContractRepository:
         rows = await self.session.scalars(statement)
         return [self._map_reminder(row) for row in rows]
 
+    async def list_details(
+        self,
+        contract_ids: list[str],
+    ) -> dict[str, PurchaseContractDetails]:
+        """Load all response child collections with three bounded queries."""
+        unique_ids = list(dict.fromkeys(contract_ids))
+        details = {
+            contract_id: PurchaseContractDetails(lines=[], source_links=[], reminders=[])
+            for contract_id in unique_ids
+        }
+        if not unique_ids:
+            return details
+
+        line_rows = await self.session.scalars(
+            select(PurchaseContractLine)
+            .where(PurchaseContractLine.contract_id.in_(unique_ids))
+            .order_by(
+                PurchaseContractLine.contract_id.asc(),
+                PurchaseContractLine.created_at.asc(),
+                PurchaseContractLine.id.asc(),
+            )
+        )
+        for line_model in line_rows:
+            details[line_model.contract_id].lines.append(self._map_line(line_model))
+
+        source_rows = await self.session.scalars(
+            select(PurchaseContractSourceLink)
+            .where(PurchaseContractSourceLink.contract_id.in_(unique_ids))
+            .order_by(
+                PurchaseContractSourceLink.contract_id.asc(),
+                PurchaseContractSourceLink.created_at.asc(),
+                PurchaseContractSourceLink.id.asc(),
+            )
+        )
+        for source_model in source_rows:
+            details[source_model.contract_id].source_links.append(
+                self._map_source_link(source_model)
+            )
+
+        reminder_rows = await self.session.scalars(
+            select(PurchaseContractReminder)
+            .where(PurchaseContractReminder.contract_id.in_(unique_ids))
+            .order_by(
+                PurchaseContractReminder.contract_id.asc(),
+                PurchaseContractReminder.due_date.asc(),
+                PurchaseContractReminder.reminder_type.desc(),
+            )
+        )
+        for reminder_model in reminder_rows:
+            details[reminder_model.contract_id].reminders.append(self._map_reminder(reminder_model))
+
+        return details
+
     async def list_contracts(
         self,
         *,
@@ -431,8 +494,8 @@ class PurchaseContractRepository:
             count_statement = count_statement.where(condition)
         statement = (
             statement.order_by(PurchaseContract.contract_date.desc(), PurchaseContract.code.asc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)
@@ -469,9 +532,11 @@ class PurchaseContractRepository:
         export_contract_line_id: str,
         current_contract_id: str,
     ) -> bool:
-        condition = exists().where(
-            PurchaseContractSourceLink.export_contract_line_id == export_contract_line_id
-        ).where(PurchaseContractSourceLink.contract_id == PurchaseContract.id)
+        condition = (
+            exists()
+            .where(PurchaseContractSourceLink.export_contract_line_id == export_contract_line_id)
+            .where(PurchaseContractSourceLink.contract_id == PurchaseContract.id)
+        )
         count = await self.session.scalar(
             select(func.count())
             .select_from(PurchaseContract)

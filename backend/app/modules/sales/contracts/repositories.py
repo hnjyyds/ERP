@@ -5,6 +5,7 @@ from decimal import Decimal
 from sqlalchemy import Select, delete, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.sales.contracts.models import (
     ExportContract,
     ExportContractAdvancePayment,
@@ -96,6 +97,15 @@ class ExportContractAdvancePaymentRow:
     payer_name: str
     remark: str | None
     created_at: datetime
+
+
+@dataclass
+class ExportContractDetails:
+    """Child rows loaded in batches for export-contract responses."""
+
+    lines: list[ExportContractLineRow]
+    signatures: list[ExportContractSignatureRow]
+    advance_payments: list[ExportContractAdvancePaymentRow]
 
 
 @dataclass(frozen=True)
@@ -305,6 +315,54 @@ class ExportContractRepository:
         )
         return [self._map_line(row) for row in rows]
 
+    async def list_details(
+        self,
+        contract_ids: list[str],
+    ) -> dict[str, ExportContractDetails]:
+        """Load all response children with three queries regardless of page size."""
+        details = {
+            contract_id: ExportContractDetails(lines=[], signatures=[], advance_payments=[])
+            for contract_id in contract_ids
+        }
+        if not contract_ids:
+            return details
+
+        lines = await self.session.scalars(
+            select(ExportContractLine)
+            .where(ExportContractLine.contract_id.in_(contract_ids))
+            .order_by(
+                ExportContractLine.contract_id.asc(),
+                ExportContractLine.created_at.asc(),
+            )
+        )
+        for line in lines:
+            details[line.contract_id].lines.append(self._map_line(line))
+
+        signatures = await self.session.scalars(
+            select(ExportContractSignature)
+            .where(ExportContractSignature.contract_id.in_(contract_ids))
+            .order_by(
+                ExportContractSignature.contract_id.asc(),
+                ExportContractSignature.signed_at.desc(),
+                ExportContractSignature.created_at.desc(),
+            )
+        )
+        for signature in signatures:
+            details[signature.contract_id].signatures.append(self._map_signature(signature))
+
+        payments = await self.session.scalars(
+            select(ExportContractAdvancePayment)
+            .where(ExportContractAdvancePayment.contract_id.in_(contract_ids))
+            .order_by(
+                ExportContractAdvancePayment.contract_id.asc(),
+                ExportContractAdvancePayment.received_at.desc(),
+                ExportContractAdvancePayment.created_at.desc(),
+            )
+        )
+        for payment in payments:
+            details[payment.contract_id].advance_payments.append(self._map_advance_payment(payment))
+        return details
+
     async def increase_line_shipped_quantity(
         self,
         *,
@@ -383,8 +441,8 @@ class ExportContractRepository:
             count_statement = count_statement.where(condition)
         statement = (
             statement.order_by(ExportContract.contract_date.desc(), ExportContract.code.asc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)

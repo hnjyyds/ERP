@@ -2,7 +2,9 @@ from datetime import date
 from decimal import Decimal
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict, Field
+
+from app.schemas.base import BaseModel
 
 VALID_INBOUND_ORDER_MODES = ("pending_inspection", "formal")
 VALID_INBOUND_ORDER_STATUSES = ("draft", "submitted", "approved", "cancelled")

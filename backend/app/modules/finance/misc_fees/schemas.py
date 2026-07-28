@@ -1,7 +1,9 @@
 from datetime import date
 from decimal import Decimal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict, Field
+
+from app.schemas.base import BaseModel
 
 VALID_MISC_FEE_CATEGORIES = (
     "office",

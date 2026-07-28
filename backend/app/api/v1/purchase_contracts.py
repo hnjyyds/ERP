@@ -3,11 +3,6 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, status
 
 from app.api.auth_dependencies import CurrentUserDep
-from app.api.http_exceptions import (
-    raise_business_validation,
-    raise_not_found,
-    raise_permission_denied,
-)
 from app.modules.purchase.contracts.providers import get_purchase_contract_service
 from app.modules.purchase.contracts.schemas import (
     PurchaseContractApprove,
@@ -18,8 +13,6 @@ from app.modules.purchase.contracts.schemas import (
     PurchaseContractResponse,
 )
 from app.modules.purchase.contracts.services import (
-    PermissionDeniedError,
-    PurchaseContractNotFoundError,
     PurchaseContractService,
 )
 from app.schemas.responses import ApiResponse
@@ -36,19 +29,14 @@ async def list_purchase_contracts(
     supplier_id: Annotated[str | None, Query(max_length=36)] = None,
     source_type: Annotated[str | None, Query(max_length=40)] = None,
 ) -> ApiResponse[PurchaseContractListResponse]:
-    try:
-        contracts = await service.list_contracts(
-            current_user=user,
-            q=q,
-            approval_status=approval_status,
-            supplier_id=supplier_id,
-            source_type=source_type,
-        )
-        return ApiResponse(data=contracts)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少采购合同权限")
-    except ValueError as exc:
-        raise_business_validation(exc, fallback_detail="采购合同数据无效")
+    contracts = await service.list_contracts(
+        current_user=user,
+        q=q,
+        approval_status=approval_status,
+        supplier_id=supplier_id,
+        source_type=source_type,
+    )
+    return ApiResponse(data=contracts)
 
 
 @router.post(
@@ -61,13 +49,8 @@ async def create_purchase_contract(
     user: CurrentUserDep,
     service: Annotated[PurchaseContractService, Depends(get_purchase_contract_service)],
 ) -> ApiResponse[PurchaseContractResponse]:
-    try:
-        contract = await service.create_contract(current_user=user, payload=payload)
-        return ApiResponse(data=contract)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少采购合同权限")
-    except ValueError as exc:
-        raise_business_validation(exc, fallback_detail="采购合同数据无效")
+    contract = await service.create_contract(current_user=user, payload=payload)
+    return ApiResponse(data=contract)
 
 
 @router.post(
@@ -80,16 +63,11 @@ async def generate_purchase_contract_from_export_contracts(
     user: CurrentUserDep,
     service: Annotated[PurchaseContractService, Depends(get_purchase_contract_service)],
 ) -> ApiResponse[PurchaseContractResponse]:
-    try:
-        contract = await service.generate_from_export_contracts(
-            current_user=user,
-            payload=payload,
-        )
-        return ApiResponse(data=contract)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少采购合同权限")
-    except ValueError as exc:
-        raise_business_validation(exc, fallback_detail="采购合同数据无效")
+    contract = await service.generate_from_export_contracts(
+        current_user=user,
+        payload=payload,
+    )
+    return ApiResponse(data=contract)
 
 
 @router.get(
@@ -100,11 +78,8 @@ async def list_purchase_contract_reminders(
     user: CurrentUserDep,
     service: Annotated[PurchaseContractService, Depends(get_purchase_contract_service)],
 ) -> ApiResponse[PurchaseContractReminderListResponse]:
-    try:
-        reminders = await service.list_reminders(current_user=user)
-        return ApiResponse(data=reminders)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少采购合同权限")
+    reminders = await service.list_reminders(current_user=user)
+    return ApiResponse(data=reminders)
 
 
 @router.get("/{contract_id}", response_model=ApiResponse[PurchaseContractResponse])
@@ -113,13 +88,8 @@ async def get_purchase_contract(
     user: CurrentUserDep,
     service: Annotated[PurchaseContractService, Depends(get_purchase_contract_service)],
 ) -> ApiResponse[PurchaseContractResponse]:
-    try:
-        contract = await service.get_contract(current_user=user, contract_id=contract_id)
-        return ApiResponse(data=contract)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少采购合同权限")
-    except PurchaseContractNotFoundError:
-        raise_not_found("采购合同不存在")
+    contract = await service.get_contract(current_user=user, contract_id=contract_id)
+    return ApiResponse(data=contract)
 
 
 @router.put("/{contract_id}", response_model=ApiResponse[PurchaseContractResponse])
@@ -129,19 +99,12 @@ async def update_purchase_contract(
     user: CurrentUserDep,
     service: Annotated[PurchaseContractService, Depends(get_purchase_contract_service)],
 ) -> ApiResponse[PurchaseContractResponse]:
-    try:
-        contract = await service.update_contract(
-            current_user=user,
-            contract_id=contract_id,
-            payload=payload,
-        )
-        return ApiResponse(data=contract)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少采购合同权限")
-    except PurchaseContractNotFoundError:
-        raise_not_found("采购合同不存在")
-    except ValueError as exc:
-        raise_business_validation(exc, fallback_detail="采购合同数据无效")
+    contract = await service.update_contract(
+        current_user=user,
+        contract_id=contract_id,
+        payload=payload,
+    )
+    return ApiResponse(data=contract)
 
 
 @router.post("/{contract_id}/submit", response_model=ApiResponse[PurchaseContractResponse])
@@ -150,15 +113,8 @@ async def submit_purchase_contract(
     user: CurrentUserDep,
     service: Annotated[PurchaseContractService, Depends(get_purchase_contract_service)],
 ) -> ApiResponse[PurchaseContractResponse]:
-    try:
-        contract = await service.submit_contract(current_user=user, contract_id=contract_id)
-        return ApiResponse(data=contract)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少采购合同权限")
-    except PurchaseContractNotFoundError:
-        raise_not_found("采购合同不存在")
-    except ValueError as exc:
-        raise_business_validation(exc, fallback_detail="采购合同数据无效")
+    contract = await service.submit_contract(current_user=user, contract_id=contract_id)
+    return ApiResponse(data=contract)
 
 
 @router.post("/{contract_id}/approve", response_model=ApiResponse[PurchaseContractResponse])
@@ -168,16 +124,9 @@ async def approve_purchase_contract(
     user: CurrentUserDep,
     service: Annotated[PurchaseContractService, Depends(get_purchase_contract_service)],
 ) -> ApiResponse[PurchaseContractResponse]:
-    try:
-        contract = await service.approve_contract(
-            current_user=user,
-            contract_id=contract_id,
-            payload=payload,
-        )
-        return ApiResponse(data=contract)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少采购合同权限")
-    except PurchaseContractNotFoundError:
-        raise_not_found("采购合同不存在")
-    except ValueError as exc:
-        raise_business_validation(exc, fallback_detail="采购合同数据无效")
+    contract = await service.approve_contract(
+        current_user=user,
+        contract_id=contract_id,
+        payload=payload,
+    )
+    return ApiResponse(data=contract)

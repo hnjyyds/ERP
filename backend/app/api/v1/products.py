@@ -1,9 +1,8 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, Query, status
 
 from app.api.auth_dependencies import CurrentUserDep
-from app.api.http_exceptions import raise_permission_denied
 from app.modules.masterdata.products.providers import get_product_service
 from app.modules.masterdata.products.schemas import (
     ProductAccessoryCreate,
@@ -20,10 +19,6 @@ from app.modules.masterdata.products.schemas import (
     ProductUpdate,
 )
 from app.modules.masterdata.products.services import (
-    PermissionDeniedError,
-    ProductAccessoryNotFoundError,
-    ProductImportInvalidError,
-    ProductNotFoundError,
     ProductService,
 )
 from app.schemas.responses import ApiResponse
@@ -37,11 +32,8 @@ async def list_products(
     service: Annotated[ProductService, Depends(get_product_service)],
     q: Annotated[str | None, Query(max_length=120)] = None,
 ) -> ApiResponse[ProductListResponse]:
-    try:
-        products = await service.list_products(current_user=user, q=q)
-        return ApiResponse(data=products)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少商品资料权限")
+    products = await service.list_products(current_user=user, q=q)
+    return ApiResponse(data=products)
 
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=ApiResponse[ProductResponse])
@@ -50,11 +42,8 @@ async def create_product(
     user: CurrentUserDep,
     service: Annotated[ProductService, Depends(get_product_service)],
 ) -> ApiResponse[ProductResponse]:
-    try:
-        product = await service.create_product(current_user=user, payload=payload)
-        return ApiResponse(data=product)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少商品资料权限")
+    product = await service.create_product(current_user=user, payload=payload)
+    return ApiResponse(data=product)
 
 
 @router.get("/export", response_model=ApiResponse[ProductExportResponse])
@@ -62,11 +51,8 @@ async def export_products(
     user: CurrentUserDep,
     service: Annotated[ProductService, Depends(get_product_service)],
 ) -> ApiResponse[ProductExportResponse]:
-    try:
-        export = await service.export_products(current_user=user)
-        return ApiResponse(data=export)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少商品资料权限")
+    export = await service.export_products(current_user=user)
+    return ApiResponse(data=export)
 
 
 @router.post("/import", response_model=ApiResponse[ProductImportResponse])
@@ -75,16 +61,8 @@ async def import_products(
     user: CurrentUserDep,
     service: Annotated[ProductService, Depends(get_product_service)],
 ) -> ApiResponse[ProductImportResponse]:
-    try:
-        result = await service.import_products(current_user=user, payload=payload)
-        return ApiResponse(data=result)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少商品资料权限")
-    except ProductImportInvalidError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(exc),
-        ) from None
+    result = await service.import_products(current_user=user, payload=payload)
+    return ApiResponse(data=result)
 
 
 @router.get("/{product_id}", response_model=ApiResponse[ProductResponse])
@@ -93,13 +71,8 @@ async def get_product(
     user: CurrentUserDep,
     service: Annotated[ProductService, Depends(get_product_service)],
 ) -> ApiResponse[ProductResponse]:
-    try:
-        product = await service.get_product(current_user=user, product_id=product_id)
-        return ApiResponse(data=product)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少商品资料权限")
-    except ProductNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
+    product = await service.get_product(current_user=user, product_id=product_id)
+    return ApiResponse(data=product)
 
 
 @router.get(
@@ -111,16 +84,11 @@ async def list_product_customers(
     user: CurrentUserDep,
     service: Annotated[ProductService, Depends(get_product_service)],
 ) -> ApiResponse[ProductCustomerListResponse]:
-    try:
-        customers = await service.list_product_customers(
-            current_user=user,
-            product_id=product_id,
-        )
-        return ApiResponse(data=customers)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少商品资料权限")
-    except ProductNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
+    customers = await service.list_product_customers(
+        current_user=user,
+        product_id=product_id,
+    )
+    return ApiResponse(data=customers)
 
 
 @router.get(
@@ -132,16 +100,11 @@ async def list_product_transactions(
     user: CurrentUserDep,
     service: Annotated[ProductService, Depends(get_product_service)],
 ) -> ApiResponse[ProductTransactionListResponse]:
-    try:
-        transactions = await service.list_transactions(
-            current_user=user,
-            product_id=product_id,
-        )
-        return ApiResponse(data=transactions)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少商品资料权限")
-    except ProductNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
+    transactions = await service.list_transactions(
+        current_user=user,
+        product_id=product_id,
+    )
+    return ApiResponse(data=transactions)
 
 
 @router.put("/{product_id}", response_model=ApiResponse[ProductResponse])
@@ -151,17 +114,12 @@ async def update_product(
     user: CurrentUserDep,
     service: Annotated[ProductService, Depends(get_product_service)],
 ) -> ApiResponse[ProductResponse]:
-    try:
-        product = await service.update_product(
-            current_user=user,
-            product_id=product_id,
-            payload=payload,
-        )
-        return ApiResponse(data=product)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少商品资料权限")
-    except ProductNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
+    product = await service.update_product(
+        current_user=user,
+        product_id=product_id,
+        payload=payload,
+    )
+    return ApiResponse(data=product)
 
 
 @router.delete("/{product_id}", response_model=ApiResponse[ProductResponse])
@@ -170,13 +128,8 @@ async def deactivate_product(
     user: CurrentUserDep,
     service: Annotated[ProductService, Depends(get_product_service)],
 ) -> ApiResponse[ProductResponse]:
-    try:
-        product = await service.deactivate_product(current_user=user, product_id=product_id)
-        return ApiResponse(data=product)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少商品资料权限")
-    except ProductNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
+    product = await service.deactivate_product(current_user=user, product_id=product_id)
+    return ApiResponse(data=product)
 
 
 @router.post(
@@ -190,17 +143,12 @@ async def add_accessory(
     user: CurrentUserDep,
     service: Annotated[ProductService, Depends(get_product_service)],
 ) -> ApiResponse[ProductAccessoryResponse]:
-    try:
-        accessory = await service.add_accessory(
-            current_user=user,
-            product_id=product_id,
-            payload=payload,
-        )
-        return ApiResponse(data=accessory)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少商品资料权限")
-    except ProductNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
+    accessory = await service.add_accessory(
+        current_user=user,
+        product_id=product_id,
+        payload=payload,
+    )
+    return ApiResponse(data=accessory)
 
 
 @router.put(
@@ -214,20 +162,13 @@ async def update_accessory(
     user: CurrentUserDep,
     service: Annotated[ProductService, Depends(get_product_service)],
 ) -> ApiResponse[ProductAccessoryResponse]:
-    try:
-        accessory = await service.update_accessory(
-            current_user=user,
-            product_id=product_id,
-            accessory_id=accessory_id,
-            payload=payload,
-        )
-        return ApiResponse(data=accessory)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少商品资料权限")
-    except ProductNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
-    except ProductAccessoryNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="配件不存在") from None
+    accessory = await service.update_accessory(
+        current_user=user,
+        product_id=product_id,
+        accessory_id=accessory_id,
+        payload=payload,
+    )
+    return ApiResponse(data=accessory)
 
 
 @router.delete(
@@ -240,16 +181,9 @@ async def delete_accessory(
     user: CurrentUserDep,
     service: Annotated[ProductService, Depends(get_product_service)],
 ) -> ApiResponse[ProductAccessoryResponse]:
-    try:
-        accessory = await service.delete_accessory(
-            current_user=user,
-            product_id=product_id,
-            accessory_id=accessory_id,
-        )
-        return ApiResponse(data=accessory)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少商品资料权限")
-    except ProductNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="商品不存在") from None
-    except ProductAccessoryNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="配件不存在") from None
+    accessory = await service.delete_accessory(
+        current_user=user,
+        product_id=product_id,
+        accessory_id=accessory_id,
+    )
+    return ApiResponse(data=accessory)

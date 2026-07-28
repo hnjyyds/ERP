@@ -5,7 +5,9 @@ from decimal import Decimal
 
 from sqlalchemy import Select, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.elements import ColumnElement
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.finance.port_data.models import (
     CustomsDeclarationRecord,
     PortImportBatch,
@@ -132,7 +134,7 @@ class PortDataRepository:
     ) -> tuple[list[PortImportBatchRow], int]:
         statement = select(PortImportBatch)
         count_statement = select(func.count()).select_from(PortImportBatch)
-        conditions: list[object] = []
+        conditions: list[ColumnElement[bool]] = []
         if source:
             conditions.append(PortImportBatch.source == source)
         if status:
@@ -145,13 +147,11 @@ class PortDataRepository:
                 PortImportBatch.imported_at.desc(),
                 PortImportBatch.batch_no.asc(),
             )
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._batch_scalars(statement)
-        batches = [
-            self._map_batch(row, await self._records_for_batch(row.id)) for row in rows
-        ]
+        batches = [self._map_batch(row, await self._records_for_batch(row.id)) for row in rows]
         total = await self.session.scalar(count_statement)
         return batches, int(total or 0)
 
@@ -167,7 +167,7 @@ class PortDataRepository:
     ) -> tuple[list[CustomsDeclarationRecordRow], int]:
         statement = select(CustomsDeclarationRecord)
         count_statement = select(func.count()).select_from(CustomsDeclarationRecord)
-        conditions: list[object] = []
+        conditions: list[ColumnElement[bool]] = []
         if declaration_no:
             conditions.append(CustomsDeclarationRecord.declaration_no == declaration_no)
         if customs_receipt_no:
@@ -184,8 +184,8 @@ class PortDataRepository:
                 CustomsDeclarationRecord.customs_date.desc(),
                 CustomsDeclarationRecord.declaration_no.asc(),
             )
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._record_scalars(statement)
         total = await self.session.scalar(count_statement)

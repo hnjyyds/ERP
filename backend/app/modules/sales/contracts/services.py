@@ -7,6 +7,7 @@ from app.db.uow import UnitOfWork
 from app.modules.sales.contracts.references import ExportContractReferenceRepository
 from app.modules.sales.contracts.repositories import (
     ExportContractAdvancePaymentRow,
+    ExportContractDetails,
     ExportContractLineRow,
     ExportContractRepository,
     ExportContractRow,
@@ -169,7 +170,7 @@ class ExportContractService:
             offset=offset,
         )
         return ExportContractListResponse(
-            items=[await self._contract_response(contract) for contract in contracts],
+            items=await self._contract_responses(contracts),
             total=total,
         )
 
@@ -370,9 +371,24 @@ class ExportContractService:
             raise ValueError("合同审批状态无效")
 
     async def _contract_response(self, contract: ExportContractRow) -> ExportContractResponse:
-        lines = await self._repository.list_lines(contract.id)
-        signatures = await self._repository.list_signatures(contract.id)
-        advance_payments = await self._repository.list_advance_payments(contract.id)
+        details = await self._repository.list_details([contract.id])
+        return self._build_contract_response(contract, details[contract.id])
+
+    async def _contract_responses(
+        self,
+        contracts: list[ExportContractRow],
+    ) -> list[ExportContractResponse]:
+        details = await self._repository.list_details([contract.id for contract in contracts])
+        return [
+            self._build_contract_response(contract, details[contract.id]) for contract in contracts
+        ]
+
+    def _build_contract_response(
+        self,
+        contract: ExportContractRow,
+        details: ExportContractDetails,
+    ) -> ExportContractResponse:
+        lines = details.lines
         return ExportContractResponse(
             id=contract.id,
             code=contract.code,
@@ -397,14 +413,12 @@ class ExportContractService:
             owner_user_id=contract.owner_user_id,
             statistics=self._statistics_response(contract),
             lines=[self._line_response(line) for line in lines],
-            signatures=[self._signature_response(signature) for signature in signatures],
+            signatures=[self._signature_response(signature) for signature in details.signatures],
             advance_payments=[
-                self._advance_payment_response(payment) for payment in advance_payments
+                self._advance_payment_response(payment) for payment in details.advance_payments
             ],
             purchase_statuses=[self._purchase_status_response(line) for line in lines],
-            shipment_statuses=[
-                self._shipment_status_response(contract, line) for line in lines
-            ],
+            shipment_statuses=[self._shipment_status_response(contract, line) for line in lines],
         )
 
     def _statistics_response(

@@ -1,5 +1,6 @@
 from datetime import date
 
+from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.modules.sales.contracts.repositories import ExportContractRepository, ExportContractRow
@@ -90,6 +91,18 @@ async def test_export_contract_repository_filters_signature_payment_and_statisti
         signatures = await repository.list_signatures(contract_id)
         payments = await repository.list_advance_payments(contract_id)
         events = await repository.list_events(contract_id)
+        executed_statements = 0
+
+        def count_statement(*_: object) -> None:
+            nonlocal executed_statements
+            executed_statements += 1
+
+        bind = session.get_bind()
+        event.listen(bind, "before_cursor_execute", count_statement)
+        try:
+            details = await repository.list_details([contract_id])
+        finally:
+            event.remove(bind, "before_cursor_execute", count_statement)
 
     assert submitted is not None
     assert submitted.approval_status == "submitted"
@@ -107,6 +120,10 @@ async def test_export_contract_repository_filters_signature_payment_and_statisti
     assert signatures[0].signed_by == "Anna Schmidt"
     assert payments[0].amount == "300.00"
     assert events[0].event_type == "ExportContractApproved"
+    assert details[contract_id].lines[0].id == lines[0].id
+    assert details[contract_id].signatures[0].id == signatures[0].id
+    assert details[contract_id].advance_payments[0].id == payments[0].id
+    assert executed_statements == 3
 
 
 async def test_export_contract_repository_updates_draft_and_replaces_lines(

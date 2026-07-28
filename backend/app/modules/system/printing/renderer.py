@@ -137,7 +137,7 @@ def render_sample_request(data: SampleRequestPrintData) -> str:
         f"<td>{escape(line.product_name)}</td>"
         f"<td>{escape(line.specification)}</td>"
         f"<td>{escape(line.quantity)} {escape(line.unit)}</td>"
-        f"<td colspan=\"2\">{escape(line.requirement)}</td></tr>"
+        f'<td colspan="2">{escape(line.requirement)}</td></tr>'
         for line in data.lines
     )
     if not rows:

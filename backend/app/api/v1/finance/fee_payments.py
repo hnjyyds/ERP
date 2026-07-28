@@ -1,9 +1,8 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, Query, status
 
 from app.api.auth_dependencies import CurrentUserDep
-from app.api.http_exceptions import raise_permission_denied, raise_unprocessable
 from app.modules.finance.fee_payments.providers import get_fee_payment_service
 from app.modules.finance.fee_payments.schemas import (
     FeePayableListResponse,
@@ -15,10 +14,7 @@ from app.modules.finance.fee_payments.schemas import (
     PartnerFeeInvoiceListResponse,
     PartnerFeeInvoiceResponse,
 )
-from app.modules.finance.fee_payments.services import FeePaymentNotFoundError, FeePaymentService
-from app.modules.finance.fee_payments.services import (
-    PermissionDeniedError as FeePaymentPermissionDeniedError,
-)
+from app.modules.finance.fee_payments.services import FeePaymentService
 from app.schemas.responses import ApiResponse
 
 router = APIRouter()
@@ -34,18 +30,8 @@ async def create_partner_fee_invoice(
     user: CurrentUserDep,
     service: Annotated[FeePaymentService, Depends(get_fee_payment_service)],
 ) -> ApiResponse[PartnerFeeInvoiceResponse]:
-    try:
-        invoice = await service.create_partner_fee_invoice(current_user=user, payload=payload)
-        return ApiResponse(data=invoice)
-    except FeePaymentPermissionDeniedError:
-        raise_permission_denied("缺少财务管理权限")
-    except FeePaymentNotFoundError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="合作伙伴费用发票不存在",
-        ) from exc
-    except ValueError as exc:
-        raise_unprocessable(str(exc))
+    invoice = await service.create_partner_fee_invoice(current_user=user, payload=payload)
+    return ApiResponse(data=invoice)
 
 
 @router.get(
@@ -62,21 +48,16 @@ async def list_partner_fee_invoices(
     sales_user_id: Annotated[str | None, Query(max_length=64)] = None,
     shipment_no: Annotated[str | None, Query(max_length=80)] = None,
 ) -> ApiResponse[PartnerFeeInvoiceListResponse]:
-    try:
-        invoices = await service.list_partner_fee_invoices(
-            current_user=user,
-            q=q,
-            status=status_filter,
-            fee_type=fee_type,
-            partner_id=partner_id,
-            sales_user_id=sales_user_id,
-            shipment_no=shipment_no,
-        )
-        return ApiResponse(data=invoices)
-    except FeePaymentPermissionDeniedError:
-        raise_permission_denied("缺少财务管理权限")
-    except ValueError as exc:
-        raise_unprocessable(str(exc))
+    invoices = await service.list_partner_fee_invoices(
+        current_user=user,
+        q=q,
+        status=status_filter,
+        fee_type=fee_type,
+        partner_id=partner_id,
+        sales_user_id=sales_user_id,
+        shipment_no=shipment_no,
+    )
+    return ApiResponse(data=invoices)
 
 
 @router.post(
@@ -89,21 +70,11 @@ async def create_fee_payment_request(
     user: CurrentUserDep,
     service: Annotated[FeePaymentService, Depends(get_fee_payment_service)],
 ) -> ApiResponse[FeePaymentRequestResponse]:
-    try:
-        fee_payment_request = await service.create_fee_payment_request(
-            current_user=user,
-            payload=payload,
-        )
-        return ApiResponse(data=fee_payment_request)
-    except FeePaymentPermissionDeniedError:
-        raise_permission_denied("缺少财务管理权限")
-    except FeePaymentNotFoundError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="付费申请不存在",
-        ) from exc
-    except ValueError as exc:
-        raise_unprocessable(str(exc))
+    fee_payment_request = await service.create_fee_payment_request(
+        current_user=user,
+        payload=payload,
+    )
+    return ApiResponse(data=fee_payment_request)
 
 
 @router.get(
@@ -120,21 +91,16 @@ async def list_fee_payment_requests(
     sales_user_id: Annotated[str | None, Query(max_length=64)] = None,
     shipment_no: Annotated[str | None, Query(max_length=80)] = None,
 ) -> ApiResponse[FeePaymentRequestListResponse]:
-    try:
-        fee_payment_requests = await service.list_fee_payment_requests(
-            current_user=user,
-            q=q,
-            status=status_filter,
-            fee_type=fee_type,
-            partner_id=partner_id,
-            sales_user_id=sales_user_id,
-            shipment_no=shipment_no,
-        )
-        return ApiResponse(data=fee_payment_requests)
-    except FeePaymentPermissionDeniedError:
-        raise_permission_denied("缺少财务管理权限")
-    except ValueError as exc:
-        raise_unprocessable(str(exc))
+    fee_payment_requests = await service.list_fee_payment_requests(
+        current_user=user,
+        q=q,
+        status=status_filter,
+        fee_type=fee_type,
+        partner_id=partner_id,
+        sales_user_id=sales_user_id,
+        shipment_no=shipment_no,
+    )
+    return ApiResponse(data=fee_payment_requests)
 
 
 @router.post(
@@ -147,22 +113,12 @@ async def approve_fee_payment_request(
     user: CurrentUserDep,
     service: Annotated[FeePaymentService, Depends(get_fee_payment_service)],
 ) -> ApiResponse[FeePaymentRequestResponse]:
-    try:
-        fee_payment_request = await service.approve_fee_payment_request(
-            current_user=user,
-            fee_payment_request_id=fee_payment_request_id,
-            payload=payload,
-        )
-        return ApiResponse(data=fee_payment_request)
-    except FeePaymentPermissionDeniedError:
-        raise_permission_denied("缺少财务管理权限")
-    except FeePaymentNotFoundError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="付费申请不存在",
-        ) from exc
-    except ValueError as exc:
-        raise_unprocessable(str(exc))
+    fee_payment_request = await service.approve_fee_payment_request(
+        current_user=user,
+        fee_payment_request_id=fee_payment_request_id,
+        payload=payload,
+    )
+    return ApiResponse(data=fee_payment_request)
 
 
 @router.get("/fee-payables", response_model=ApiResponse[FeePayableListResponse])
@@ -176,18 +132,13 @@ async def list_fee_payables(
     sales_user_id: Annotated[str | None, Query(max_length=64)] = None,
     shipment_no: Annotated[str | None, Query(max_length=80)] = None,
 ) -> ApiResponse[FeePayableListResponse]:
-    try:
-        payables = await service.list_fee_payables(
-            current_user=user,
-            q=q,
-            status=status_filter,
-            fee_type=fee_type,
-            partner_id=partner_id,
-            sales_user_id=sales_user_id,
-            shipment_no=shipment_no,
-        )
-        return ApiResponse(data=payables)
-    except FeePaymentPermissionDeniedError:
-        raise_permission_denied("缺少财务管理权限")
-    except ValueError as exc:
-        raise_unprocessable(str(exc))
+    payables = await service.list_fee_payables(
+        current_user=user,
+        q=q,
+        status=status_filter,
+        fee_type=fee_type,
+        partner_id=partner_id,
+        sales_user_id=sales_user_id,
+        shipment_no=shipment_no,
+    )
+    return ApiResponse(data=payables)

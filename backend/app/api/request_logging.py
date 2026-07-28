@@ -13,7 +13,7 @@ from fastapi.responses import JSONResponse
 from starlette.datastructures import Headers, MutableHeaders
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
-from app.api.error_handlers import error_response_body
+from app.api.error_handlers import domain_exception_definition, error_response_body
 from app.core.logging import (
     get_current_user_id,
     reset_request_context,
@@ -123,8 +123,36 @@ class RequestLoggingMiddleware:
 
         try:
             await self.app(scope, receive, send_with_request_id)
-        except Exception:
+        except Exception as exc:
             duration_ms = (perf_counter() - started_at) * 1_000
+            domain_definition = domain_exception_definition(exc)
+            if domain_definition is not None and not response_started:
+                code, message = domain_definition
+                definition = get_status_definition(code)
+                fields = _log_fields(
+                    scope=scope,
+                    request_id=request_id,
+                    status_code=definition.http_status,
+                    duration_ms=duration_ms,
+                    slow_request=duration_ms >= self.slow_request_ms,
+                )
+                _request_logger.warning(
+                    "domain request failed",
+                    extra={
+                        "event": "domain_request_failed",
+                        "error_type": type(exc).__name__,
+                        "detail": message,
+                        **fields,
+                    },
+                )
+                response = JSONResponse(
+                    status_code=definition.http_status,
+                    content=error_response_body(code, message),
+                    headers={REQUEST_ID_HEADER: request_id},
+                )
+                await response(scope, receive, send)
+                return
+
             fields = _log_fields(
                 scope=scope,
                 request_id=request_id,

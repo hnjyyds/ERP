@@ -209,7 +209,9 @@ class AuthRepository:
         if not permission_ids:
             return []
         rows = await self.session.scalars(
-            select(Permission).where(Permission.id.in_(permission_ids)).order_by(Permission.code.asc())
+            select(Permission)
+            .where(Permission.id.in_(permission_ids))
+            .order_by(Permission.code.asc())
         )
         permissions_by_id = {row.id: self._permission_row(row) for row in rows}
         return [
@@ -227,9 +229,7 @@ class AuthRepository:
         return self._department_row(department)
 
     async def get_department_by_name(self, name: str) -> DepartmentRow | None:
-        department = await self.session.scalar(
-            select(Department).where(Department.name == name)
-        )
+        department = await self.session.scalar(select(Department).where(Department.name == name))
         if department is None:
             return None
         return self._department_row(department)
@@ -335,9 +335,7 @@ class AuthRepository:
         )
         return int(count or 0)
 
-    async def create_role(
-        self, *, role_id: str, name: str, code: str, data_scope: str
-    ) -> RoleRow:
+    async def create_role(self, *, role_id: str, name: str, code: str, data_scope: str) -> RoleRow:
         role = Role(id=role_id, name=name, code=code, data_scope=data_scope)
         self.session.add(role)
         await self.session.flush()
@@ -505,8 +503,6 @@ class AuthRepository:
         user.avatar_type = avatar_type
         user.avatar_value = avatar_value
         await self.session.flush()
-        await self.session.commit()
-        await self.session.refresh(user)
         return await self._identity_for_user(user)
 
     async def _identity_for_user(self, user: User) -> UserIdentityRow:

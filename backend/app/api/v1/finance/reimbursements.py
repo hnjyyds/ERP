@@ -1,9 +1,8 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, Query, status
 
 from app.api.auth_dependencies import CurrentUserDep
-from app.api.http_exceptions import raise_permission_denied, raise_unprocessable
 from app.modules.finance.reimbursements.providers import get_reimbursement_service
 from app.modules.finance.reimbursements.schemas import (
     ReimbursementApprove,
@@ -13,10 +12,6 @@ from app.modules.finance.reimbursements.schemas import (
     ReimbursementResponse,
 )
 from app.modules.finance.reimbursements.services import (
-    PermissionDeniedError as ReimbursementPermissionDeniedError,
-)
-from app.modules.finance.reimbursements.services import (
-    ReimbursementNotFoundError,
     ReimbursementService,
 )
 from app.schemas.responses import ApiResponse
@@ -34,13 +29,8 @@ async def create_reimbursement(
     user: CurrentUserDep,
     service: Annotated[ReimbursementService, Depends(get_reimbursement_service)],
 ) -> ApiResponse[ReimbursementResponse]:
-    try:
-        reimbursement = await service.create_reimbursement(current_user=user, payload=payload)
-        return ApiResponse(data=reimbursement)
-    except ReimbursementPermissionDeniedError:
-        raise_permission_denied("缺少财务管理权限")
-    except ValueError as exc:
-        raise_unprocessable(str(exc))
+    reimbursement = await service.create_reimbursement(current_user=user, payload=payload)
+    return ApiResponse(data=reimbursement)
 
 
 @router.get("/reimbursements", response_model=ApiResponse[ReimbursementListResponse])
@@ -52,19 +42,14 @@ async def list_reimbursements(
     category: Annotated[str | None, Query(max_length=40)] = None,
     applicant_user_id: Annotated[str | None, Query(max_length=64)] = None,
 ) -> ApiResponse[ReimbursementListResponse]:
-    try:
-        reimbursements = await service.list_reimbursements(
-            current_user=user,
-            q=q,
-            status=status_filter,
-            category=category,
-            applicant_user_id=applicant_user_id,
-        )
-        return ApiResponse(data=reimbursements)
-    except ReimbursementPermissionDeniedError:
-        raise_permission_denied("缺少财务管理权限")
-    except ValueError as exc:
-        raise_unprocessable(str(exc))
+    reimbursements = await service.list_reimbursements(
+        current_user=user,
+        q=q,
+        status=status_filter,
+        category=category,
+        applicant_user_id=applicant_user_id,
+    )
+    return ApiResponse(data=reimbursements)
 
 
 @router.post(
@@ -77,22 +62,12 @@ async def approve_reimbursement(
     user: CurrentUserDep,
     service: Annotated[ReimbursementService, Depends(get_reimbursement_service)],
 ) -> ApiResponse[ReimbursementResponse]:
-    try:
-        reimbursement = await service.approve_reimbursement(
-            current_user=user,
-            reimbursement_id=reimbursement_id,
-            payload=payload,
-        )
-        return ApiResponse(data=reimbursement)
-    except ReimbursementPermissionDeniedError:
-        raise_permission_denied("缺少财务管理权限")
-    except ReimbursementNotFoundError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="报销单不存在",
-        ) from exc
-    except ValueError as exc:
-        raise_unprocessable(str(exc))
+    reimbursement = await service.approve_reimbursement(
+        current_user=user,
+        reimbursement_id=reimbursement_id,
+        payload=payload,
+    )
+    return ApiResponse(data=reimbursement)
 
 
 @router.post(
@@ -105,19 +80,9 @@ async def pay_reimbursement(
     user: CurrentUserDep,
     service: Annotated[ReimbursementService, Depends(get_reimbursement_service)],
 ) -> ApiResponse[ReimbursementResponse]:
-    try:
-        reimbursement = await service.pay_reimbursement(
-            current_user=user,
-            reimbursement_id=reimbursement_id,
-            payload=payload,
-        )
-        return ApiResponse(data=reimbursement)
-    except ReimbursementPermissionDeniedError:
-        raise_permission_denied("缺少财务管理权限")
-    except ReimbursementNotFoundError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="报销单不存在",
-        ) from exc
-    except ValueError as exc:
-        raise_unprocessable(str(exc))
+    reimbursement = await service.pay_reimbursement(
+        current_user=user,
+        reimbursement_id=reimbursement_id,
+        payload=payload,
+    )
+    return ApiResponse(data=reimbursement)

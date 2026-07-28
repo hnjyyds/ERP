@@ -5,6 +5,7 @@ from decimal import Decimal
 from sqlalchemy import Select, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.sales.shipments.models import ShipmentLine, ShipmentPlan
 
 
@@ -159,9 +160,7 @@ class ShipmentPlanRepository:
         return self._map_line(line)
 
     async def refresh_finance(self, shipment_id: str) -> ShipmentPlanRow | None:
-        plan = await self.session.scalar(
-            select(ShipmentPlan).where(ShipmentPlan.id == shipment_id)
-        )
+        plan = await self.session.scalar(select(ShipmentPlan).where(ShipmentPlan.id == shipment_id))
         if plan is None:
             return None
         receivable_amount = await self.session.scalar(
@@ -253,8 +252,8 @@ class ShipmentPlanRepository:
             count_statement = count_statement.where(condition)
         statement = (
             statement.order_by(ShipmentPlan.shipment_date.desc(), ShipmentPlan.code.asc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)

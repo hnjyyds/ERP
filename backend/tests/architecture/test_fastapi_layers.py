@@ -60,6 +60,33 @@ def test_api_routes_have_explicit_response_models() -> None:
     assert all(route.response_model is not None for route in api_routes)
 
 
+def test_list_api_routes_document_pagination_contract() -> None:
+    app = create_app()
+    openapi = app.openapi()
+    paths = openapi["paths"]
+    missing: list[str] = []
+
+    for path, route in _api_routes_with_paths():
+        if not path.startswith("/api/v1") or route.response_model is None:
+            continue
+        response_name = str(route.response_model)
+        if "ListResponse" not in response_name and "QueryResponse" not in response_name:
+            continue
+        for method in route.methods or set():
+            if method == "HEAD":
+                continue
+            operation = paths[path][method.lower()]
+            query_parameters = {
+                parameter["name"]
+                for parameter in operation.get("parameters", [])
+                if parameter["in"] == "query"
+            }
+            if not {"limit", "offset"} <= query_parameters:
+                missing.append(f"{method} {path}")
+
+    assert missing == []
+
+
 def test_dashboard_mutation_routes_wrap_path_identifiers_in_schema_dependencies() -> None:
     from app.api.v1 import dashboard
 
@@ -100,6 +127,28 @@ def test_services_do_not_import_api_layer() -> None:
     assert violations == []
 
 
+def test_repositories_do_not_commit_transactions() -> None:
+    violations: list[str] = []
+    for file_path in _python_files(APP_ROOT / "modules"):
+        if file_path.name != "repositories.py":
+            continue
+        tree = ast.parse(file_path.read_text(encoding="utf-8"))
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Await):
+                continue
+            call = node.value
+            if (
+                isinstance(call, ast.Call)
+                and isinstance(call.func, ast.Attribute)
+                and call.func.attr == "commit"
+            ):
+                violations.append(
+                    f"{file_path.relative_to(BACKEND_ROOT)}:{node.lineno} commits transaction"
+                )
+
+    assert violations == []
+
+
 def test_route_modules_reuse_auth_dependencies_and_do_not_define_exception_helpers() -> None:
     violations: list[str] = []
     route_root = APP_ROOT / "api" / "v1"
@@ -115,5 +164,21 @@ def test_route_modules_reuse_auth_dependencies_and_do_not_define_exception_helpe
         source = file_path.read_text(encoding="utf-8")
         if "Depends(get_bearer_token)" in source:
             violations.append(f"{relative_path} injects bearer tokens instead of get_current_user")
+
+    assert violations == []
+
+
+def test_route_functions_do_not_translate_service_exceptions() -> None:
+    violations: list[str] = []
+    route_root = APP_ROOT / "api" / "v1"
+
+    for file_path in _python_files(route_root):
+        tree = ast.parse(file_path.read_text(encoding="utf-8"))
+        for function in ast.walk(tree):
+            if not isinstance(function, ast.AsyncFunctionDef):
+                continue
+            for statement in function.body:
+                if isinstance(statement, ast.Try) and statement.handlers:
+                    violations.append(f"{file_path.relative_to(BACKEND_ROOT)}:{statement.lineno}")
 
     assert violations == []

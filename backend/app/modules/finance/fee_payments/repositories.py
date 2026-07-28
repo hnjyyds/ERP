@@ -4,7 +4,9 @@ from decimal import Decimal
 
 from sqlalchemy import Select, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.elements import ColumnElement
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.finance.fee_payments.models import (
     FeePaymentAllocation,
     FeePaymentRequest,
@@ -182,8 +184,8 @@ class FeePaymentRepository:
                 PartnerFeeInvoice.invoice_date.desc(),
                 PartnerFeeInvoice.invoice_no.asc(),
             )
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         invoices = await self._invoice_scalars(statement)
         total = await self.session.scalar(count_statement)
@@ -277,8 +279,8 @@ class FeePaymentRepository:
                 FeePaymentRequest.request_date.desc(),
                 FeePaymentRequest.request_no.asc(),
             )
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._request_scalars(statement)
         total = await self.session.scalar(count_statement)
@@ -402,8 +404,8 @@ class FeePaymentRepository:
             count_statement = count_statement.where(condition)
         statement = (
             statement.order_by(PartnerFeeInvoice.due_date.asc(), PartnerFeeInvoice.invoice_no.asc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         invoices = await self._invoice_scalars(statement)
         total = await self.session.scalar(count_statement)
@@ -418,8 +420,8 @@ class FeePaymentRepository:
         partner_id: str | None,
         sales_user_id: str | None,
         shipment_no: str | None,
-    ) -> list[object]:
-        conditions: list[object] = []
+    ) -> list[ColumnElement[bool]]:
+        conditions: list[ColumnElement[bool]] = []
         if q:
             pattern = f"%{q}%"
             conditions.append(

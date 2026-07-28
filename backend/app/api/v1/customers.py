@@ -1,9 +1,8 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, Query, status
 
 from app.api.auth_dependencies import CurrentUserDep
-from app.api.http_exceptions import raise_permission_denied
 from app.modules.masterdata.customers.providers import get_customer_service
 from app.modules.masterdata.customers.schemas import (
     CustomerContactCreate,
@@ -16,10 +15,7 @@ from app.modules.masterdata.customers.schemas import (
     CustomerUpdate,
 )
 from app.modules.masterdata.customers.services import (
-    CustomerContactNotFoundError,
-    CustomerNotFoundError,
     CustomerService,
-    PermissionDeniedError,
 )
 from app.schemas.responses import ApiResponse
 
@@ -34,16 +30,13 @@ async def list_customers(
     country: Annotated[str | None, Query(max_length=120)] = None,
     credit_grade: Annotated[str | None, Query(max_length=40)] = None,
 ) -> ApiResponse[CustomerListResponse]:
-    try:
-        customers = await service.list_customers(
-            current_user=user,
-            q=q,
-            country=country,
-            credit_grade=credit_grade,
-        )
-        return ApiResponse(data=customers)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少客户资料权限")
+    customers = await service.list_customers(
+        current_user=user,
+        q=q,
+        country=country,
+        credit_grade=credit_grade,
+    )
+    return ApiResponse(data=customers)
 
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=ApiResponse[CustomerResponse])
@@ -52,11 +45,8 @@ async def create_customer(
     user: CurrentUserDep,
     service: Annotated[CustomerService, Depends(get_customer_service)],
 ) -> ApiResponse[CustomerResponse]:
-    try:
-        customer = await service.create_customer(current_user=user, payload=payload)
-        return ApiResponse(data=customer)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少客户资料权限")
+    customer = await service.create_customer(current_user=user, payload=payload)
+    return ApiResponse(data=customer)
 
 
 @router.get("/{customer_id}", response_model=ApiResponse[CustomerResponse])
@@ -65,13 +55,8 @@ async def get_customer(
     user: CurrentUserDep,
     service: Annotated[CustomerService, Depends(get_customer_service)],
 ) -> ApiResponse[CustomerResponse]:
-    try:
-        customer = await service.get_customer(current_user=user, customer_id=customer_id)
-        return ApiResponse(data=customer)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少客户资料权限")
-    except CustomerNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="客户不存在") from None
+    customer = await service.get_customer(current_user=user, customer_id=customer_id)
+    return ApiResponse(data=customer)
 
 
 @router.put("/{customer_id}", response_model=ApiResponse[CustomerResponse])
@@ -81,17 +66,12 @@ async def update_customer(
     user: CurrentUserDep,
     service: Annotated[CustomerService, Depends(get_customer_service)],
 ) -> ApiResponse[CustomerResponse]:
-    try:
-        customer = await service.update_customer(
-            current_user=user,
-            customer_id=customer_id,
-            payload=payload,
-        )
-        return ApiResponse(data=customer)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少客户资料权限")
-    except CustomerNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="客户不存在") from None
+    customer = await service.update_customer(
+        current_user=user,
+        customer_id=customer_id,
+        payload=payload,
+    )
+    return ApiResponse(data=customer)
 
 
 @router.delete("/{customer_id}", response_model=ApiResponse[CustomerResponse])
@@ -100,16 +80,11 @@ async def delete_customer(
     user: CurrentUserDep,
     service: Annotated[CustomerService, Depends(get_customer_service)],
 ) -> ApiResponse[CustomerResponse]:
-    try:
-        customer = await service.deactivate_customer(
-            current_user=user,
-            customer_id=customer_id,
-        )
-        return ApiResponse(data=customer)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少客户资料权限")
-    except CustomerNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="客户不存在") from None
+    customer = await service.deactivate_customer(
+        current_user=user,
+        customer_id=customer_id,
+    )
+    return ApiResponse(data=customer)
 
 
 @router.post(
@@ -123,17 +98,12 @@ async def add_customer_contact(
     user: CurrentUserDep,
     service: Annotated[CustomerService, Depends(get_customer_service)],
 ) -> ApiResponse[CustomerContactResponse]:
-    try:
-        contact = await service.add_contact(
-            current_user=user,
-            customer_id=customer_id,
-            payload=payload,
-        )
-        return ApiResponse(data=contact)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少客户资料权限")
-    except CustomerNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="客户不存在") from None
+    contact = await service.add_contact(
+        current_user=user,
+        customer_id=customer_id,
+        payload=payload,
+    )
+    return ApiResponse(data=contact)
 
 
 @router.put(
@@ -147,20 +117,13 @@ async def update_customer_contact(
     user: CurrentUserDep,
     service: Annotated[CustomerService, Depends(get_customer_service)],
 ) -> ApiResponse[CustomerContactResponse]:
-    try:
-        contact = await service.update_contact(
-            current_user=user,
-            customer_id=customer_id,
-            contact_id=contact_id,
-            payload=payload,
-        )
-        return ApiResponse(data=contact)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少客户资料权限")
-    except CustomerNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="客户不存在") from None
-    except CustomerContactNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="联系人不存在") from None
+    contact = await service.update_contact(
+        current_user=user,
+        customer_id=customer_id,
+        contact_id=contact_id,
+        payload=payload,
+    )
+    return ApiResponse(data=contact)
 
 
 @router.delete(
@@ -173,19 +136,12 @@ async def delete_customer_contact(
     user: CurrentUserDep,
     service: Annotated[CustomerService, Depends(get_customer_service)],
 ) -> ApiResponse[CustomerContactResponse]:
-    try:
-        contact = await service.delete_contact(
-            current_user=user,
-            customer_id=customer_id,
-            contact_id=contact_id,
-        )
-        return ApiResponse(data=contact)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少客户资料权限")
-    except CustomerNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="客户不存在") from None
-    except CustomerContactNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="联系人不存在") from None
+    contact = await service.delete_contact(
+        current_user=user,
+        customer_id=customer_id,
+        contact_id=contact_id,
+    )
+    return ApiResponse(data=contact)
 
 
 @router.get(
@@ -197,13 +153,8 @@ async def list_customer_transactions(
     user: CurrentUserDep,
     service: Annotated[CustomerService, Depends(get_customer_service)],
 ) -> ApiResponse[CustomerTransactionListResponse]:
-    try:
-        transactions = await service.list_transactions(
-            current_user=user,
-            customer_id=customer_id,
-        )
-        return ApiResponse(data=transactions)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少客户资料权限")
-    except CustomerNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="客户不存在") from None
+    transactions = await service.list_transactions(
+        current_user=user,
+        customer_id=customer_id,
+    )
+    return ApiResponse(data=transactions)

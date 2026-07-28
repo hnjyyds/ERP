@@ -5,6 +5,7 @@ from decimal import Decimal
 from sqlalchemy import Select, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.warehouse.inbound_plans.models import InboundPlan, InboundPlanLine
 
 
@@ -189,8 +190,8 @@ class InboundPlanRepository:
             count_statement = count_statement.where(condition)
         statement = (
             statement.order_by(InboundPlan.planned_date.asc(), InboundPlan.code.asc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)

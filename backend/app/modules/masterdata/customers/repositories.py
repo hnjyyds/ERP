@@ -5,6 +5,7 @@ from decimal import Decimal
 from sqlalchemy import Select, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.masterdata.customers.models import (
     Customer,
     CustomerContact,
@@ -314,8 +315,8 @@ class CustomerRepository:
 
         statement = (
             statement.order_by(Customer.created_at.desc(), Customer.code.asc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)
@@ -339,7 +340,7 @@ class CustomerRepository:
             )
             .where(ExportQuotation.customer_id == customer_id)
             .order_by(ExportQuotation.quote_date.desc())
-            .limit(limit)
+            .limit(resolve_limit(limit))
         )
         for code, quote_date, amount, currency in quotations.all():
             rows.append(
@@ -361,7 +362,7 @@ class CustomerRepository:
             )
             .where(ExportContract.customer_id == customer_id)
             .order_by(ExportContract.contract_date.desc())
-            .limit(limit)
+            .limit(resolve_limit(limit))
         )
         for code, contract_date, amount, currency in contracts.all():
             rows.append(
@@ -383,7 +384,7 @@ class CustomerRepository:
             )
             .where(ShipmentPlan.customer_id == customer_id)
             .order_by(ShipmentPlan.shipment_date.desc())
-            .limit(limit)
+            .limit(resolve_limit(limit))
         )
         for code, shipment_date, amount, currency in shipments.all():
             rows.append(

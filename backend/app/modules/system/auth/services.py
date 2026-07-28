@@ -4,6 +4,7 @@ import hmac
 import time
 from dataclasses import dataclass
 
+from app.db.uow import UnitOfWork
 from app.modules.system.auth.passwords import verify_password
 from app.modules.system.auth.repositories import (
     AssignableUserRow,
@@ -131,14 +132,15 @@ class AuthService:
             avatar_type=payload.avatar_type,
             avatar_value=payload.avatar_value,
         )
-        identity = await self._repository.update_user_avatar(
-            user_id=user_id,
-            avatar_type=avatar_type,
-            avatar_value=avatar_value,
-        )
-        if identity is None:
-            raise InvalidTokenError
-        menus = await self._repository.list_menus_for_permissions(identity.permissions)
+        async with UnitOfWork(self._repository.session):
+            identity = await self._repository.update_user_avatar(
+                user_id=user_id,
+                avatar_type=avatar_type,
+                avatar_value=avatar_value,
+            )
+            if identity is None:
+                raise InvalidTokenError
+            menus = await self._repository.list_menus_for_permissions(identity.permissions)
         return CurrentUserSessionResponse(
             user=self._user_response(identity),
             menus=[self._menu_response(row) for row in menus],

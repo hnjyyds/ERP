@@ -1,4 +1,6 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict, Field
+
+from app.schemas.base import BaseModel
 
 
 class FileUploadRequest(BaseModel):

@@ -6,6 +6,7 @@ from sqlalchemy import Select, false, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.elements import ColumnElement
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.quality.inspections.models import (
     QualityInspection,
     QualityInspectionLine,
@@ -315,8 +316,8 @@ class QualityInspectionRepository:
                 QualityInspection.inspected_at.desc(),
                 QualityInspection.code.desc(),
             )
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._inspection_scalars(statement)
         total = await self.session.scalar(count_statement)

@@ -1,6 +1,8 @@
 from decimal import Decimal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict, Field
+
+from app.schemas.base import BaseModel
 
 
 class SupplierContactCreate(BaseModel):

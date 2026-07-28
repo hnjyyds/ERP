@@ -42,30 +42,30 @@ async def seed_system_demo_data(session: AsyncSession) -> None:
         item.id: item for item in (await session.scalars(select(Permission))).all()
     }
     for permission in permissions:
-        existing = existing_permissions.get(permission.id)
-        if existing is None:
+        existing_permission = existing_permissions.get(permission.id)
+        if existing_permission is None:
             continue
-        existing.name = permission.name
-        existing.category = permission.category
+        existing_permission.name = permission.name
+        existing_permission.category = permission.category
     existing_roles = {item.id: item for item in (await session.scalars(select(Role))).all()}
     for role in roles:
-        existing = existing_roles.get(role.id)
-        if existing is None:
+        existing_role = existing_roles.get(role.id)
+        if existing_role is None:
             continue
-        existing.name = role.name
-        existing.code = role.code
-        existing.data_scope = role.data_scope
+        existing_role.name = role.name
+        existing_role.code = role.code
+        existing_role.data_scope = role.data_scope
     existing_menus = {item.id: item for item in (await session.scalars(select(MenuItem))).all()}
     for menu in menus:
-        existing = existing_menus.get(menu.id)
-        if existing is None:
+        existing_menu = existing_menus.get(menu.id)
+        if existing_menu is None:
             continue
-        existing.label = menu.label
-        existing.path = menu.path
-        existing.icon = menu.icon
-        existing.required_permission = menu.required_permission
-        existing.sort_order = menu.sort_order
-        existing.is_active = menu.is_active
+        existing_menu.label = menu.label
+        existing_menu.path = menu.path
+        existing_menu.icon = menu.icon
+        existing_menu.required_permission = menu.required_permission
+        existing_menu.sort_order = menu.sort_order
+        existing_menu.is_active = menu.is_active
     await session.flush()
 
     demo_role_list = demo_roles()

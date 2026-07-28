@@ -1,10 +1,9 @@
 from datetime import date
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, Query, status
 
 from app.api.auth_dependencies import CurrentUserDep
-from app.api.http_exceptions import raise_permission_denied, raise_unprocessable
 from app.modules.sample.deliveries.providers import get_sample_delivery_service
 from app.modules.sample.deliveries.schemas import (
     SampleDeliveryApprove,
@@ -17,8 +16,6 @@ from app.modules.sample.deliveries.schemas import (
     SampleDeliveryTrackingUpdate,
 )
 from app.modules.sample.deliveries.services import (
-    PermissionDeniedError,
-    SampleDeliveryNotFoundError,
     SampleDeliveryService,
 )
 from app.schemas.responses import ApiResponse
@@ -37,21 +34,16 @@ async def list_sample_deliveries(
     date_from: date | None = None,
     date_to: date | None = None,
 ) -> ApiResponse[SampleDeliveryListResponse]:
-    try:
-        deliveries = await service.list_deliveries(
-            current_user=user,
-            q=q,
-            status=status_filter,
-            customer_id=customer_id,
-            express_company=express_company,
-            date_from=date_from,
-            date_to=date_to,
-        )
-        return ApiResponse(data=deliveries)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少寄样管理权限")
-    except ValueError:
-        raise_unprocessable("寄样数据无效")
+    deliveries = await service.list_deliveries(
+        current_user=user,
+        q=q,
+        status=status_filter,
+        customer_id=customer_id,
+        express_company=express_company,
+        date_from=date_from,
+        date_to=date_to,
+    )
+    return ApiResponse(data=deliveries)
 
 
 @router.post(
@@ -64,13 +56,8 @@ async def create_sample_delivery(
     user: CurrentUserDep,
     service: Annotated[SampleDeliveryService, Depends(get_sample_delivery_service)],
 ) -> ApiResponse[SampleDeliveryResponse]:
-    try:
-        delivery = await service.create_delivery(current_user=user, payload=payload)
-        return ApiResponse(data=delivery)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少寄样管理权限")
-    except ValueError:
-        raise_unprocessable("寄样数据无效")
+    delivery = await service.create_delivery(current_user=user, payload=payload)
+    return ApiResponse(data=delivery)
 
 
 @router.put("/{delivery_id}", response_model=ApiResponse[SampleDeliveryResponse])
@@ -80,19 +67,12 @@ async def update_sample_delivery(
     user: CurrentUserDep,
     service: Annotated[SampleDeliveryService, Depends(get_sample_delivery_service)],
 ) -> ApiResponse[SampleDeliveryResponse]:
-    try:
-        delivery = await service.update_delivery(
-            current_user=user,
-            delivery_id=delivery_id,
-            payload=payload,
-        )
-        return ApiResponse(data=delivery)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少寄样管理权限")
-    except SampleDeliveryNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="寄样单不存在") from None
-    except ValueError:
-        raise_unprocessable("寄样数据无效")
+    delivery = await service.update_delivery(
+        current_user=user,
+        delivery_id=delivery_id,
+        payload=payload,
+    )
+    return ApiResponse(data=delivery)
 
 
 @router.get("/fee-statistics", response_model=ApiResponse[SampleDeliveryFeeStatisticsResponse])
@@ -104,17 +84,14 @@ async def get_sample_delivery_fee_statistics(
     date_to: date | None = None,
     express_company: Annotated[str | None, Query(max_length=120)] = None,
 ) -> ApiResponse[SampleDeliveryFeeStatisticsResponse]:
-    try:
-        statistics = await service.get_fee_statistics(
-            current_user=user,
-            customer_id=customer_id,
-            date_from=date_from,
-            date_to=date_to,
-            express_company=express_company,
-        )
-        return ApiResponse(data=statistics)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少寄样管理权限")
+    statistics = await service.get_fee_statistics(
+        current_user=user,
+        customer_id=customer_id,
+        date_from=date_from,
+        date_to=date_to,
+        express_company=express_company,
+    )
+    return ApiResponse(data=statistics)
 
 
 @router.get("/statistics", response_model=ApiResponse[SampleDeliveryStatisticsResponse])
@@ -126,19 +103,14 @@ async def get_sample_delivery_statistics(
     customer_id: Annotated[str | None, Query(max_length=36)] = None,
     express_company: Annotated[str | None, Query(max_length=120)] = None,
 ) -> ApiResponse[SampleDeliveryStatisticsResponse]:
-    try:
-        statistics = await service.get_statistics(
-            current_user=user,
-            date_from=date_from,
-            date_to=date_to,
-            customer_id=customer_id,
-            express_company=express_company,
-        )
-        return ApiResponse(data=statistics)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少寄样管理权限")
-    except ValueError:
-        raise_unprocessable("寄样数据无效")
+    statistics = await service.get_statistics(
+        current_user=user,
+        date_from=date_from,
+        date_to=date_to,
+        customer_id=customer_id,
+        express_company=express_company,
+    )
+    return ApiResponse(data=statistics)
 
 
 @router.get("/export", response_model=ApiResponse[SampleDeliveryExportResponse])
@@ -150,19 +122,14 @@ async def export_sample_deliveries(
     customer_id: Annotated[str | None, Query(max_length=36)] = None,
     express_company: Annotated[str | None, Query(max_length=120)] = None,
 ) -> ApiResponse[SampleDeliveryExportResponse]:
-    try:
-        exported = await service.export_deliveries(
-            current_user=user,
-            date_from=date_from,
-            date_to=date_to,
-            customer_id=customer_id,
-            express_company=express_company,
-        )
-        return ApiResponse(data=exported)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少寄样管理权限")
-    except ValueError:
-        raise_unprocessable("寄样数据无效")
+    exported = await service.export_deliveries(
+        current_user=user,
+        date_from=date_from,
+        date_to=date_to,
+        customer_id=customer_id,
+        express_company=express_company,
+    )
+    return ApiResponse(data=exported)
 
 
 @router.get(
@@ -174,14 +141,11 @@ async def get_sample_delivery_history(
     user: CurrentUserDep,
     service: Annotated[SampleDeliveryService, Depends(get_sample_delivery_service)],
 ) -> ApiResponse[SampleDeliveryListResponse]:
-    try:
-        history = await service.get_sample_history(
-            current_user=user,
-            sample_record_id=sample_record_id,
-        )
-        return ApiResponse(data=history)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少寄样管理权限")
+    history = await service.get_sample_history(
+        current_user=user,
+        sample_record_id=sample_record_id,
+    )
+    return ApiResponse(data=history)
 
 
 @router.get("/quote-history", response_model=ApiResponse[SampleDeliveryListResponse])
@@ -191,15 +155,12 @@ async def get_sample_delivery_quote_history(
     customer_id: Annotated[str | None, Query(max_length=36)] = None,
     product_id: Annotated[str | None, Query(max_length=36)] = None,
 ) -> ApiResponse[SampleDeliveryListResponse]:
-    try:
-        history = await service.get_quote_history(
-            current_user=user,
-            customer_id=customer_id,
-            product_id=product_id,
-        )
-        return ApiResponse(data=history)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少寄样管理权限")
+    history = await service.get_quote_history(
+        current_user=user,
+        customer_id=customer_id,
+        product_id=product_id,
+    )
+    return ApiResponse(data=history)
 
 
 @router.get("/{delivery_id}", response_model=ApiResponse[SampleDeliveryResponse])
@@ -208,13 +169,8 @@ async def get_sample_delivery(
     user: CurrentUserDep,
     service: Annotated[SampleDeliveryService, Depends(get_sample_delivery_service)],
 ) -> ApiResponse[SampleDeliveryResponse]:
-    try:
-        delivery = await service.get_delivery(current_user=user, delivery_id=delivery_id)
-        return ApiResponse(data=delivery)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少寄样管理权限")
-    except SampleDeliveryNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="寄样单不存在") from None
+    delivery = await service.get_delivery(current_user=user, delivery_id=delivery_id)
+    return ApiResponse(data=delivery)
 
 
 @router.post("/{delivery_id}/submit", response_model=ApiResponse[SampleDeliveryResponse])
@@ -223,15 +179,8 @@ async def submit_sample_delivery(
     user: CurrentUserDep,
     service: Annotated[SampleDeliveryService, Depends(get_sample_delivery_service)],
 ) -> ApiResponse[SampleDeliveryResponse]:
-    try:
-        delivery = await service.submit_delivery(current_user=user, delivery_id=delivery_id)
-        return ApiResponse(data=delivery)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少寄样管理权限")
-    except SampleDeliveryNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="寄样单不存在") from None
-    except ValueError:
-        raise_unprocessable("寄样数据无效")
+    delivery = await service.submit_delivery(current_user=user, delivery_id=delivery_id)
+    return ApiResponse(data=delivery)
 
 
 @router.post("/{delivery_id}/approve", response_model=ApiResponse[SampleDeliveryResponse])
@@ -241,19 +190,12 @@ async def approve_sample_delivery(
     user: CurrentUserDep,
     service: Annotated[SampleDeliveryService, Depends(get_sample_delivery_service)],
 ) -> ApiResponse[SampleDeliveryResponse]:
-    try:
-        delivery = await service.approve_delivery(
-            current_user=user,
-            delivery_id=delivery_id,
-            payload=payload,
-        )
-        return ApiResponse(data=delivery)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少寄样管理权限")
-    except SampleDeliveryNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="寄样单不存在") from None
-    except ValueError:
-        raise_unprocessable("寄样数据无效")
+    delivery = await service.approve_delivery(
+        current_user=user,
+        delivery_id=delivery_id,
+        payload=payload,
+    )
+    return ApiResponse(data=delivery)
 
 
 @router.post("/{delivery_id}/tracking", response_model=ApiResponse[SampleDeliveryResponse])
@@ -263,16 +205,9 @@ async def update_sample_delivery_tracking(
     user: CurrentUserDep,
     service: Annotated[SampleDeliveryService, Depends(get_sample_delivery_service)],
 ) -> ApiResponse[SampleDeliveryResponse]:
-    try:
-        delivery = await service.update_tracking(
-            current_user=user,
-            delivery_id=delivery_id,
-            payload=payload,
-        )
-        return ApiResponse(data=delivery)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少寄样管理权限")
-    except SampleDeliveryNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="寄样单不存在") from None
-    except ValueError:
-        raise_unprocessable("寄样数据无效")
+    delivery = await service.update_tracking(
+        current_user=user,
+        delivery_id=delivery_id,
+        payload=payload,
+    )
+    return ApiResponse(data=delivery)

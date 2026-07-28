@@ -1,6 +1,7 @@
 import base64
 import binascii
 import csv
+from asyncio import to_thread
 from decimal import Decimal, InvalidOperation
 from io import StringIO
 
@@ -285,7 +286,11 @@ class ProductService:
         self._require(current_user, "masterdata:product:edit")
         content = self._decode_import_content(payload.content_base64)
         try:
-            records = parse_import_file(filename=payload.filename, content=content)
+            records = await to_thread(
+                parse_import_file,
+                filename=payload.filename,
+                content=content,
+            )
         except ImportFileError as exc:
             raise ProductImportInvalidError(str(exc)) from exc
 
@@ -298,9 +303,7 @@ class ProductService:
             try:
                 product_create = self._build_import_payload(record)
             except _ImportRowError as exc:
-                errors.append(
-                    ProductImportError(row=line, code=code or None, message=str(exc))
-                )
+                errors.append(ProductImportError(row=line, code=code or None, message=str(exc)))
                 continue
             async with UnitOfWork(self._repository.session):
                 existing = await self._repository.get_product_by_code(product_create.code)

@@ -1,12 +1,13 @@
 from datetime import date
 from decimal import Decimal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict, Field
 
 from app.modules.sales.contracts.schemas import (
     ExportContractPurchaseStatusResponse,
     ExportContractShipmentStatusResponse,
 )
+from app.schemas.base import BaseModel
 
 VALID_SHIPMENT_STATUSES = ("draft", "submitted", "approved", "rejected")
 

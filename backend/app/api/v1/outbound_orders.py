@@ -3,7 +3,6 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, status
 
 from app.api.auth_dependencies import CurrentUserDep
-from app.api.http_exceptions import raise_not_found, raise_permission_denied, raise_unprocessable
 from app.modules.warehouse.outbound_orders.providers import get_outbound_order_service
 from app.modules.warehouse.outbound_orders.schemas import (
     OutboundOrderApprove,
@@ -12,10 +11,7 @@ from app.modules.warehouse.outbound_orders.schemas import (
     OutboundOrderResponse,
 )
 from app.modules.warehouse.outbound_orders.services import (
-    OutboundOrderNotFoundError,
-    OutboundOrderPlanNotFoundError,
     OutboundOrderService,
-    PermissionDeniedError,
 )
 from app.schemas.responses import ApiResponse
 
@@ -33,21 +29,16 @@ async def list_outbound_orders(
     customer_id: Annotated[str | None, Query(max_length=36)] = None,
     source_id: Annotated[str | None, Query(max_length=36)] = None,
 ) -> ApiResponse[OutboundOrderListResponse]:
-    try:
-        orders = await service.list_orders(
-            current_user=user,
-            q=q,
-            status=status,
-            outbound_mode=outbound_mode,
-            outbound_type=outbound_type,
-            customer_id=customer_id,
-            source_id=source_id,
-        )
-        return ApiResponse(data=orders)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少货物出库权限")
-    except ValueError:
-        raise_unprocessable("货物出库数据无效")
+    orders = await service.list_orders(
+        current_user=user,
+        q=q,
+        status=status,
+        outbound_mode=outbound_mode,
+        outbound_type=outbound_type,
+        customer_id=customer_id,
+        source_id=source_id,
+    )
+    return ApiResponse(data=orders)
 
 
 @router.post(
@@ -60,15 +51,8 @@ async def generate_outbound_order_from_plan(
     user: CurrentUserDep,
     service: Annotated[OutboundOrderService, Depends(get_outbound_order_service)],
 ) -> ApiResponse[OutboundOrderResponse]:
-    try:
-        order = await service.generate_from_plan(current_user=user, payload=payload)
-        return ApiResponse(data=order)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少货物出库权限")
-    except OutboundOrderPlanNotFoundError:
-        raise_not_found("出库计划不存在")
-    except ValueError:
-        raise_unprocessable("货物出库数据无效")
+    order = await service.generate_from_plan(current_user=user, payload=payload)
+    return ApiResponse(data=order)
 
 
 @router.get("/{order_id}", response_model=ApiResponse[OutboundOrderResponse])
@@ -77,13 +61,8 @@ async def get_outbound_order(
     user: CurrentUserDep,
     service: Annotated[OutboundOrderService, Depends(get_outbound_order_service)],
 ) -> ApiResponse[OutboundOrderResponse]:
-    try:
-        order = await service.get_order(current_user=user, order_id=order_id)
-        return ApiResponse(data=order)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少货物出库权限")
-    except OutboundOrderNotFoundError:
-        raise_not_found("出库单不存在")
+    order = await service.get_order(current_user=user, order_id=order_id)
+    return ApiResponse(data=order)
 
 
 @router.post("/{order_id}/submit", response_model=ApiResponse[OutboundOrderResponse])
@@ -92,15 +71,8 @@ async def submit_outbound_order(
     user: CurrentUserDep,
     service: Annotated[OutboundOrderService, Depends(get_outbound_order_service)],
 ) -> ApiResponse[OutboundOrderResponse]:
-    try:
-        order = await service.submit_order(current_user=user, order_id=order_id)
-        return ApiResponse(data=order)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少货物出库权限")
-    except OutboundOrderNotFoundError:
-        raise_not_found("出库单不存在")
-    except ValueError:
-        raise_unprocessable("货物出库数据无效")
+    order = await service.submit_order(current_user=user, order_id=order_id)
+    return ApiResponse(data=order)
 
 
 @router.post("/{order_id}/approve", response_model=ApiResponse[OutboundOrderResponse])
@@ -110,14 +82,5 @@ async def approve_outbound_order(
     user: CurrentUserDep,
     service: Annotated[OutboundOrderService, Depends(get_outbound_order_service)],
 ) -> ApiResponse[OutboundOrderResponse]:
-    try:
-        order = await service.approve_order(current_user=user, order_id=order_id, payload=payload)
-        return ApiResponse(data=order)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少货物出库权限")
-    except OutboundOrderNotFoundError:
-        raise_not_found("出库单不存在")
-    except OutboundOrderPlanNotFoundError:
-        raise_not_found("出库计划不存在")
-    except ValueError:
-        raise_unprocessable("货物出库数据无效")
+    order = await service.approve_order(current_user=user, order_id=order_id, payload=payload)
+    return ApiResponse(data=order)

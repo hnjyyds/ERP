@@ -5,6 +5,7 @@ from decimal import Decimal
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.pagination import resolve_limit
 from app.modules.masterdata.partners.models import Partner
 from app.modules.purchase.invoice_notices.models import PurchaseInvoiceNotice
 from app.modules.sales.shipments.models import ShipmentPlan
@@ -163,7 +164,7 @@ class FinanceOverviewRepository:
         rows = await self.session.scalars(
             select(ShipmentPlan)
             .order_by(ShipmentPlan.shipment_date.desc(), ShipmentPlan.code.asc())
-            .limit(limit)
+            .limit(resolve_limit(limit))
         )
         return [self._map_shipment_profit(row) for row in rows]
 

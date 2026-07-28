@@ -4,7 +4,9 @@ from decimal import Decimal
 
 from sqlalchemy import Select, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.elements import ColumnElement
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.finance.payments.models import (
     PaymentAllocation,
     PaymentRequest,
@@ -167,8 +169,8 @@ class PaymentRepository:
                 SupplierInvoice.invoice_date.desc(),
                 SupplierInvoice.invoice_no.asc(),
             )
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         invoices = await self._invoice_scalars(statement)
         total = await self.session.scalar(count_statement)
@@ -250,8 +252,8 @@ class PaymentRepository:
             count_statement = count_statement.where(condition)
         statement = (
             statement.order_by(PaymentRequest.request_date.desc(), PaymentRequest.request_no.asc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         requests = await self._request_scalars(statement)
         total = await self.session.scalar(count_statement)
@@ -371,8 +373,8 @@ class PaymentRepository:
             count_statement = count_statement.where(condition)
         statement = (
             statement.order_by(SupplierInvoice.due_date.asc(), SupplierInvoice.invoice_no.asc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         invoices = await self._invoice_scalars(statement)
         total = await self.session.scalar(count_statement)
@@ -385,8 +387,8 @@ class PaymentRepository:
         status: str | None,
         supplier_id: str | None,
         purchase_contract_no: str | None,
-    ) -> list[object]:
-        conditions: list[object] = []
+    ) -> list[ColumnElement[bool]]:
+        conditions: list[ColumnElement[bool]] = []
         if q:
             pattern = f"%{q}%"
             conditions.append(

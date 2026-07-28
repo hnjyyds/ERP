@@ -5,6 +5,7 @@ from decimal import Decimal
 from sqlalchemy import Select, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.warehouse.inbound_orders.models import InventoryBalance, InventoryLedger
 from app.modules.warehouse.inbound_orders.repositories import (
     InventoryBalanceRow,
@@ -211,8 +212,8 @@ class OutboundOrderRepository:
             count_statement = count_statement.where(condition)
         statement = (
             statement.order_by(OutboundOrder.outbound_at.desc(), OutboundOrder.code.desc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._order_scalars(statement)
         total = await self.session.scalar(count_statement)

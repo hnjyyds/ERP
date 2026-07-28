@@ -4,7 +4,9 @@ from decimal import Decimal
 
 from sqlalchemy import Select, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.elements import ColumnElement
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.finance.misc_fees.models import MiscFeeAllocation, MiscFeeItem
 from app.modules.sales.shipments.models import ShipmentPlan
 
@@ -102,8 +104,8 @@ class MiscFeeRepository:
             count_statement = count_statement.where(condition)
         statement = (
             statement.order_by(MiscFeeItem.category.asc(), MiscFeeItem.code.asc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._item_scalars(statement)
         total = await self.session.scalar(count_statement)
@@ -183,8 +185,8 @@ class MiscFeeRepository:
                 MiscFeeAllocation.allocated_at.desc(),
                 MiscFeeAllocation.allocation_no.asc(),
             )
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._allocation_scalars(statement)
         total = await self.session.scalar(count_statement)
@@ -203,9 +205,9 @@ class MiscFeeRepository:
         if shipment.receivable_amount == 0:
             shipment.profit_rate = Decimal("0")
         else:
-            shipment.profit_rate = (
-                shipment.profit_amount / shipment.receivable_amount
-            ) * Decimal("100")
+            shipment.profit_rate = (shipment.profit_amount / shipment.receivable_amount) * Decimal(
+                "100"
+            )
         await self.session.flush()
 
     def _item_conditions(
@@ -214,8 +216,8 @@ class MiscFeeRepository:
         q: str | None,
         category: str | None,
         status: str | None,
-    ) -> list[object]:
-        conditions: list[object] = []
+    ) -> list[ColumnElement[bool]]:
+        conditions: list[ColumnElement[bool]] = []
         if q:
             pattern = f"%{q}%"
             conditions.append(or_(MiscFeeItem.code.ilike(pattern), MiscFeeItem.name.ilike(pattern)))
@@ -236,8 +238,8 @@ class MiscFeeRepository:
         shipment_no: str | None,
         sales_user_id: str | None,
         status: str | None,
-    ) -> list[object]:
-        conditions: list[object] = []
+    ) -> list[ColumnElement[bool]]:
+        conditions: list[ColumnElement[bool]] = []
         if q:
             pattern = f"%{q}%"
             conditions.append(

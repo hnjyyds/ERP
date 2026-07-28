@@ -122,6 +122,7 @@ class _TemplateWriter:
         index = getattr(cell, "xf_idx", None)
         return int(index) if index is not None else 0
 
+
 def render_purchase_contract_template(data: PurchaseContractTemplateData) -> bytes:
     writer = _TemplateWriter(PURCHASE_CONTRACT_TEMPLATE_PATH)
     _clear_purchase_contract_fields(writer)

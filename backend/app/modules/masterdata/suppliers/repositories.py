@@ -5,6 +5,7 @@ from decimal import Decimal
 from sqlalchemy import Select, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.finance.payments.models import SupplierInvoice
 from app.modules.masterdata.suppliers.models import (
     Supplier,
@@ -318,8 +319,8 @@ class SupplierRepository:
 
         statement = (
             statement.order_by(Supplier.created_at.desc(), Supplier.code.asc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)
@@ -353,7 +354,7 @@ class SupplierRepository:
                 SupplierQuotation.currency,
             )
             .order_by(SupplierQuotation.quoted_at.desc())
-            .limit(limit)
+            .limit(resolve_limit(limit))
         )
         for code, quoted_at, amount, currency in quotations.all():
             rows.append(
@@ -375,7 +376,7 @@ class SupplierRepository:
             )
             .where(PurchaseContract.supplier_id == supplier_id)
             .order_by(PurchaseContract.contract_date.desc())
-            .limit(limit)
+            .limit(resolve_limit(limit))
         )
         for code, contract_date, amount, currency in contracts.all():
             rows.append(
@@ -397,7 +398,7 @@ class SupplierRepository:
             )
             .where(SupplierInvoice.supplier_id == supplier_id)
             .order_by(SupplierInvoice.invoice_date.desc())
-            .limit(limit)
+            .limit(resolve_limit(limit))
         )
         for invoice_no, invoice_date, amount, currency in invoices.all():
             rows.append(

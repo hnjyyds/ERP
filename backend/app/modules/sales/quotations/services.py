@@ -336,10 +336,7 @@ class ExportQuotationService:
         rows = await self._repository.list_purchase_references(product_id=product_id)
         return ExportQuotationPurchaseReferenceListResponse(
             items=[
-                *[
-                    self._purchase_inquiry_reference_response(row)
-                    for row in inquiry_rows
-                ],
+                *[self._purchase_inquiry_reference_response(row) for row in inquiry_rows],
                 *[self._purchase_reference_response(row) for row in rows],
             ],
             total=len(inquiry_rows) + len(rows),

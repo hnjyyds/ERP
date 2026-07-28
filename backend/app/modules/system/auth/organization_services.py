@@ -180,9 +180,7 @@ class OrganizationService:
             raise OrganizationUserNotFoundError
 
         next_department_id = (
-            payload.department_id
-            if payload.department_id is not None
-            else existing.department_id
+            payload.department_id if payload.department_id is not None else existing.department_id
         )
         if next_department_id is not None:
             await self._validate_department(next_department_id)
@@ -196,9 +194,7 @@ class OrganizationService:
         avatar_type, avatar_value = self._normalize_avatar(
             avatar_type=payload.avatar_type or existing.avatar_type,
             avatar_value=(
-                payload.avatar_value
-                if payload.avatar_value is not None
-                else existing.avatar_value
+                payload.avatar_value if payload.avatar_value is not None else existing.avatar_value
             ),
         )
 
@@ -309,14 +305,10 @@ class OrganizationService:
 
         next_name = payload.name.strip() if payload.name is not None else existing.name
         next_parent_id = (
-            payload.parent_id
-            if "parent_id" in payload.model_fields_set
-            else existing.parent_id
+            payload.parent_id if "parent_id" in payload.model_fields_set else existing.parent_id
         )
         next_sort_order = (
-            payload.sort_order
-            if payload.sort_order is not None
-            else existing.sort_order
+            payload.sort_order if payload.sort_order is not None else existing.sort_order
         )
         await self._ensure_department_name_available(name=next_name, department_id=department_id)
         await self._validate_department_parent(next_parent_id, department_id=department_id)
@@ -363,7 +355,7 @@ class OrganizationService:
         self._require_super_admin(current_user)
         existing = await self._repository.get_role(role_id)
         if existing is None:
-            raise OrganizationReferenceNotFoundError
+            raise OrganizationReferenceNotFoundError("角色或权限不存在")
 
         permissions = await self._validate_permission_ids(payload.permission_ids)
         next_permission_codes = {permission.code for permission in permissions}
@@ -381,7 +373,7 @@ class OrganizationService:
             )
 
         if updated is None:
-            raise OrganizationReferenceNotFoundError
+            raise OrganizationReferenceNotFoundError("角色或权限不存在")
         return self._role_response(updated)
 
     async def create_role(
@@ -476,7 +468,7 @@ class OrganizationService:
 
     async def _validate_department(self, department_id: str) -> None:
         if await self._repository.get_department(department_id) is None:
-            raise OrganizationReferenceNotFoundError
+            raise OrganizationReferenceNotFoundError("部门或角色不存在")
 
     async def _require_departments_available(self) -> None:
         if not await self._repository.list_departments():
@@ -501,7 +493,7 @@ class OrganizationService:
         if parent_id is None:
             return
         if parent_id == department_id:
-            raise OrganizationReferenceNotFoundError
+            raise OrganizationReferenceNotFoundError("上级部门不存在")
 
         # 向上遍历父链：父级必须存在，且不能形成环路（A→B→…→A）。
         # 深度上限兜底防止脏数据导致死循环。
@@ -512,22 +504,22 @@ class OrganizationService:
                 return
             ancestor = await self._repository.get_department(cursor)
             if ancestor is None:
-                raise OrganizationReferenceNotFoundError
+                raise OrganizationReferenceNotFoundError("上级部门不存在")
             if department_id is not None and ancestor.parent_id == department_id:
-                raise OrganizationReferenceNotFoundError
+                raise OrganizationReferenceNotFoundError("上级部门不存在")
             cursor = ancestor.parent_id
-        raise OrganizationReferenceNotFoundError
+        raise OrganizationReferenceNotFoundError("上级部门不存在")
 
     async def _validate_role_ids(self, role_ids: list[str]) -> list[str]:
         roles = await self._repository.list_roles_by_ids(role_ids)
         if len(roles) != len(role_ids):
-            raise OrganizationReferenceNotFoundError
+            raise OrganizationReferenceNotFoundError("部门或角色不存在")
         return role_ids
 
     async def _validate_permission_ids(self, permission_ids: list[str]) -> list[PermissionRow]:
         permissions = await self._repository.list_permissions_by_ids(permission_ids)
         if len(permissions) != len(permission_ids):
-            raise OrganizationReferenceNotFoundError
+            raise OrganizationReferenceNotFoundError("权限不存在")
         return permissions
 
     async def _ensure_permissions_initialized(self) -> list[PermissionRow]:
@@ -546,9 +538,7 @@ class OrganizationService:
 
     def _normalize_avatar(self, *, avatar_type: str, avatar_value: str) -> tuple[AvatarType, str]:
         normalized_type = (
-            avatar_type
-            if avatar_type in {"preset", "upload"}
-            else DEFAULT_AVATAR_TYPE
+            avatar_type if avatar_type in {"preset", "upload"} else DEFAULT_AVATAR_TYPE
         )
         normalized_value = avatar_value.strip() or DEFAULT_AVATAR_VALUE
 

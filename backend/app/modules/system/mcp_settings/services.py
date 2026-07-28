@@ -116,8 +116,7 @@ class McpSettingsService:
     def _response(self, row: McpSettingsRow | None) -> McpSettingsResponse:
         credential_issued_at = self._utc(row.credential_issued_at) if row is not None else None
         credential_expires_at = (
-            credential_issued_at
-            + timedelta(seconds=self._credential_token_service.ttl_seconds)
+            credential_issued_at + timedelta(seconds=self._credential_token_service.ttl_seconds)
             if credential_issued_at is not None
             else None
         )

@@ -1,7 +1,9 @@
 from datetime import date
 from decimal import Decimal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict, Field
+
+from app.schemas.base import BaseModel
 
 VALID_PARTNER_FEE_INVOICE_STATUSES = ("unpaid", "partial", "paid")
 VALID_FEE_PAYMENT_REQUEST_STATUSES = ("submitted", "approved", "rejected")

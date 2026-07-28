@@ -1,7 +1,9 @@
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import ConfigDict
+
+from app.schemas.base import BaseModel
 
 
 class McpResourceResponse(BaseModel):

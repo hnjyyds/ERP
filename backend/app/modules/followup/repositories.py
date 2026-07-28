@@ -4,6 +4,7 @@ from datetime import date, datetime
 from sqlalchemy import Select, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.followup.models import (
     FollowProcessNode,
     FollowProcessTemplate,
@@ -383,8 +384,8 @@ class FollowupRepository:
                 PurchaseFollowPlan.base_date.desc(),
                 PurchaseFollowPlan.purchase_contract_no.asc(),
             )
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._plan_scalars(statement)
         total = await self.session.scalar(count_statement)
@@ -409,10 +410,7 @@ class FollowupRepository:
             PurchaseFollowPlan.purchase_contract_no.asc(),
         )
         rows = (await self.session.execute(statement)).all()
-        return [
-            self._map_overdue_node(node, plan, as_of)
-            for node, plan in rows
-        ]
+        return [self._map_overdue_node(node, plan, as_of) for node, plan in rows]
 
     async def _template_scalars(
         self,

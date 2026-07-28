@@ -1,9 +1,8 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, Query, status
 
 from app.api.auth_dependencies import CurrentUserDep
-from app.api.http_exceptions import raise_permission_denied
 from app.modules.masterdata.suppliers.providers import get_supplier_service
 from app.modules.masterdata.suppliers.schemas import (
     SupplierContactCreate,
@@ -16,9 +15,6 @@ from app.modules.masterdata.suppliers.schemas import (
     SupplierUpdate,
 )
 from app.modules.masterdata.suppliers.services import (
-    PermissionDeniedError,
-    SupplierContactNotFoundError,
-    SupplierNotFoundError,
     SupplierService,
 )
 from app.schemas.responses import ApiResponse
@@ -34,16 +30,13 @@ async def list_suppliers(
     country: Annotated[str | None, Query(max_length=120)] = None,
     credit_grade: Annotated[str | None, Query(max_length=40)] = None,
 ) -> ApiResponse[SupplierListResponse]:
-    try:
-        suppliers = await service.list_suppliers(
-            current_user=user,
-            q=q,
-            country=country,
-            credit_grade=credit_grade,
-        )
-        return ApiResponse(data=suppliers)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少供应商资料权限")
+    suppliers = await service.list_suppliers(
+        current_user=user,
+        q=q,
+        country=country,
+        credit_grade=credit_grade,
+    )
+    return ApiResponse(data=suppliers)
 
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=ApiResponse[SupplierResponse])
@@ -52,11 +45,8 @@ async def create_supplier(
     user: CurrentUserDep,
     service: Annotated[SupplierService, Depends(get_supplier_service)],
 ) -> ApiResponse[SupplierResponse]:
-    try:
-        supplier = await service.create_supplier(current_user=user, payload=payload)
-        return ApiResponse(data=supplier)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少供应商资料权限")
+    supplier = await service.create_supplier(current_user=user, payload=payload)
+    return ApiResponse(data=supplier)
 
 
 @router.get("/{supplier_id}", response_model=ApiResponse[SupplierResponse])
@@ -65,13 +55,8 @@ async def get_supplier(
     user: CurrentUserDep,
     service: Annotated[SupplierService, Depends(get_supplier_service)],
 ) -> ApiResponse[SupplierResponse]:
-    try:
-        supplier = await service.get_supplier(current_user=user, supplier_id=supplier_id)
-        return ApiResponse(data=supplier)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少供应商资料权限")
-    except SupplierNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="供应商不存在") from None
+    supplier = await service.get_supplier(current_user=user, supplier_id=supplier_id)
+    return ApiResponse(data=supplier)
 
 
 @router.put("/{supplier_id}", response_model=ApiResponse[SupplierResponse])
@@ -81,17 +66,12 @@ async def update_supplier(
     user: CurrentUserDep,
     service: Annotated[SupplierService, Depends(get_supplier_service)],
 ) -> ApiResponse[SupplierResponse]:
-    try:
-        supplier = await service.update_supplier(
-            current_user=user,
-            supplier_id=supplier_id,
-            payload=payload,
-        )
-        return ApiResponse(data=supplier)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少供应商资料权限")
-    except SupplierNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="供应商不存在") from None
+    supplier = await service.update_supplier(
+        current_user=user,
+        supplier_id=supplier_id,
+        payload=payload,
+    )
+    return ApiResponse(data=supplier)
 
 
 @router.delete("/{supplier_id}", response_model=ApiResponse[SupplierResponse])
@@ -100,16 +80,11 @@ async def delete_supplier(
     user: CurrentUserDep,
     service: Annotated[SupplierService, Depends(get_supplier_service)],
 ) -> ApiResponse[SupplierResponse]:
-    try:
-        supplier = await service.deactivate_supplier(
-            current_user=user,
-            supplier_id=supplier_id,
-        )
-        return ApiResponse(data=supplier)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少供应商资料权限")
-    except SupplierNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="供应商不存在") from None
+    supplier = await service.deactivate_supplier(
+        current_user=user,
+        supplier_id=supplier_id,
+    )
+    return ApiResponse(data=supplier)
 
 
 @router.post(
@@ -123,17 +98,12 @@ async def add_supplier_contact(
     user: CurrentUserDep,
     service: Annotated[SupplierService, Depends(get_supplier_service)],
 ) -> ApiResponse[SupplierContactResponse]:
-    try:
-        contact = await service.add_contact(
-            current_user=user,
-            supplier_id=supplier_id,
-            payload=payload,
-        )
-        return ApiResponse(data=contact)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少供应商资料权限")
-    except SupplierNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="供应商不存在") from None
+    contact = await service.add_contact(
+        current_user=user,
+        supplier_id=supplier_id,
+        payload=payload,
+    )
+    return ApiResponse(data=contact)
 
 
 @router.put(
@@ -147,20 +117,13 @@ async def update_supplier_contact(
     user: CurrentUserDep,
     service: Annotated[SupplierService, Depends(get_supplier_service)],
 ) -> ApiResponse[SupplierContactResponse]:
-    try:
-        contact = await service.update_contact(
-            current_user=user,
-            supplier_id=supplier_id,
-            contact_id=contact_id,
-            payload=payload,
-        )
-        return ApiResponse(data=contact)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少供应商资料权限")
-    except SupplierNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="供应商不存在") from None
-    except SupplierContactNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="联系人不存在") from None
+    contact = await service.update_contact(
+        current_user=user,
+        supplier_id=supplier_id,
+        contact_id=contact_id,
+        payload=payload,
+    )
+    return ApiResponse(data=contact)
 
 
 @router.delete(
@@ -173,19 +136,12 @@ async def delete_supplier_contact(
     user: CurrentUserDep,
     service: Annotated[SupplierService, Depends(get_supplier_service)],
 ) -> ApiResponse[SupplierContactResponse]:
-    try:
-        contact = await service.delete_contact(
-            current_user=user,
-            supplier_id=supplier_id,
-            contact_id=contact_id,
-        )
-        return ApiResponse(data=contact)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少供应商资料权限")
-    except SupplierNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="供应商不存在") from None
-    except SupplierContactNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="联系人不存在") from None
+    contact = await service.delete_contact(
+        current_user=user,
+        supplier_id=supplier_id,
+        contact_id=contact_id,
+    )
+    return ApiResponse(data=contact)
 
 
 @router.get(
@@ -197,13 +153,8 @@ async def list_supplier_transactions(
     user: CurrentUserDep,
     service: Annotated[SupplierService, Depends(get_supplier_service)],
 ) -> ApiResponse[SupplierTransactionListResponse]:
-    try:
-        transactions = await service.list_transactions(
-            current_user=user,
-            supplier_id=supplier_id,
-        )
-        return ApiResponse(data=transactions)
-    except PermissionDeniedError:
-        raise_permission_denied("缺少供应商资料权限")
-    except SupplierNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="供应商不存在") from None
+    transactions = await service.list_transactions(
+        current_user=user,
+        supplier_id=supplier_id,
+    )
+    return ApiResponse(data=transactions)

@@ -5,6 +5,7 @@ from decimal import Decimal
 from sqlalchemy import Select, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.sample.requests.models import (
     SampleFee,
     SampleRequest,
@@ -321,8 +322,8 @@ class SampleRequestRepository:
 
         statement = (
             statement.order_by(SampleRequest.request_date.desc(), SampleRequest.code.asc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)

@@ -321,10 +321,7 @@ class ReportsRepository:
             stmt = stmt.where(PaymentRequest.status == status)
 
         result = await self.session.execute(stmt)
-        return [
-            _payment_currency_summary(row)
-            for row in result.all()
-        ]
+        return [_payment_currency_summary(row) for row in result.all()]
 
     # ------------------------------------------------------------------
     # 4. 费用支付情况查询
@@ -414,10 +411,7 @@ class ReportsRepository:
             status=status,
         )
         result = await self.session.execute(stmt)
-        return [
-            _payment_currency_summary(row)
-            for row in result.all()
-        ]
+        return [_payment_currency_summary(row) for row in result.all()]
 
     def _apply_fee_filters[SelectRow: tuple[object, ...]](
         self,
@@ -674,9 +668,7 @@ class ReportsRepository:
 
     async def exists_verification_document(self, document_no: str) -> bool:
         value = await self.session.scalar(
-            select(VerificationDocument.id).where(
-                VerificationDocument.document_no == document_no
-            )
+            select(VerificationDocument.id).where(VerificationDocument.document_no == document_no)
         )
         return value is not None
 

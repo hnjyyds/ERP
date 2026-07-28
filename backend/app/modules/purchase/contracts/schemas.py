@@ -2,7 +2,9 @@ from datetime import date
 from decimal import Decimal
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict, Field
+
+from app.schemas.base import BaseModel
 
 VALID_PURCHASE_CONTRACT_STATUSES = ("draft", "submitted", "approved")
 VALID_PURCHASE_CONTRACT_SOURCE_TYPES = ("export_contract", "stock_purchase", "manual")

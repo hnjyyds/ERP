@@ -1,7 +1,9 @@
 from datetime import date
 from decimal import Decimal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict, Field
+
+from app.schemas.base import BaseModel
 
 VALID_SAMPLE_RECORD_TYPES = ("incoming", "confirm_sample", "bulk_sample", "retained_sample")
 VALID_SAMPLE_RECORD_STATUSES = ("registered", "submitted", "confirmed", "archived")

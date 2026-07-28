@@ -25,7 +25,6 @@ from app.modules.system.dashboard.schemas import (
 )
 from app.modules.system.dashboard.services import (
     DashboardService,
-    TodoAssigneeNotFoundError,
 )
 from app.schemas.responses import ApiResponse
 
@@ -120,18 +119,12 @@ async def create_todo_tasks(
     service: Annotated[DashboardService, Depends(get_dashboard_service)],
 ) -> ApiResponse[TodoCreateResponse]:
     assignees = await auth_service.list_assignable_users_by_ids(payload.assignee_user_ids)
-    try:
-        todos = await service.create_todo_tasks(
-            current_user=current_user,
-            payload=payload,
-            assignees=assignees,
-        )
-        return ApiResponse(data=todos)
-    except TodoAssigneeNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="指派人不存在",
-        ) from None
+    todos = await service.create_todo_tasks(
+        current_user=current_user,
+        payload=payload,
+        assignees=assignees,
+    )
+    return ApiResponse(data=todos)
 
 
 @router.patch(

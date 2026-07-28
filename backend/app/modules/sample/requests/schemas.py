@@ -1,9 +1,10 @@
 from datetime import date
 from decimal import Decimal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict, Field
 
 from app.modules.sample.records.schemas import SampleImageCreate
+from app.schemas.base import BaseModel
 
 VALID_SAMPLE_STATUSES = ("draft", "sent", "in_progress", "completed", "cancelled")
 VALID_SAMPLE_DESTINATIONS = ("in_house", "factory")

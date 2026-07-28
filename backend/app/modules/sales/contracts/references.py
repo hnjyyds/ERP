@@ -44,9 +44,7 @@ class ExportContractReferenceRepository:
                 )
             ),
             receipt_allocation=await self._exists(
-                select(ReceiptAllocation.id).where(
-                    ReceiptAllocation.contract_id == contract_id
-                )
+                select(ReceiptAllocation.id).where(ReceiptAllocation.contract_id == contract_id)
             ),
             purchase_contract=await self._has_purchase_contract_reference(contract_id),
             shipment=await self._exists(

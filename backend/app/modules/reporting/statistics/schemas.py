@@ -1,6 +1,8 @@
 from datetime import date
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import ConfigDict
+
+from app.schemas.base import BaseModel
 
 VALID_REPORTING_STATUSES = ("draft", "submitted", "approved", "rejected")
 

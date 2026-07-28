@@ -5,6 +5,7 @@ from decimal import Decimal
 from sqlalchemy import Select, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.finance.receipts.models import BankReceipt, ReceiptAllocation, ReceiptClaim
 from app.modules.sales.contracts.models import ExportContract
 
@@ -154,8 +155,8 @@ class ReceiptRepository:
             count_statement = count_statement.where(condition)
         statement = (
             statement.order_by(BankReceipt.received_at.desc(), BankReceipt.receipt_no.asc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)
@@ -306,8 +307,8 @@ class ReceiptRepository:
             count_statement = count_statement.where(condition)
         statement = (
             statement.order_by(ExportContract.contract_date.desc(), ExportContract.code.asc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         result = await self.session.execute(statement)
         total = await self.session.scalar(count_statement)

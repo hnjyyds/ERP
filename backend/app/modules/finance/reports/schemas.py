@@ -6,7 +6,9 @@ the convention used by the finance overview module.
 
 from datetime import date
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import ConfigDict
+
+from app.schemas.base import BaseModel
 
 # ---------------------------------------------------------------------------
 # 1. 水单使用情况明细表 (bank receipt usage detail)

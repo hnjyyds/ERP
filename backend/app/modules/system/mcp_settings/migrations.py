@@ -8,8 +8,7 @@ def ensure_mcp_settings_schema(connection: Connection) -> None:
     columns = {column["name"] for column in inspector.get_columns("mcp_settings")}
     statements = {
         "credential_version": (
-            "ALTER TABLE mcp_settings "
-            "ADD COLUMN credential_version INTEGER NOT NULL DEFAULT 0"
+            "ALTER TABLE mcp_settings ADD COLUMN credential_version INTEGER NOT NULL DEFAULT 0"
         ),
         "credential_issued_at": (
             "ALTER TABLE mcp_settings ADD COLUMN credential_issued_at DATETIME"

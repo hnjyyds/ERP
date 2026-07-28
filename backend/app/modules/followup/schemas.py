@@ -1,6 +1,8 @@
 from datetime import date
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import ConfigDict, Field, field_validator
+
+from app.schemas.base import BaseModel
 
 VALID_FOLLOW_NODE_STATUSES = ("pending", "in_progress", "completed", "overdue")
 VALID_FOLLOW_PLAN_STATUSES = ("pending", "in_progress", "completed", "overdue")

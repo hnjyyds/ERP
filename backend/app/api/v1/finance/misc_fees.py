@@ -1,9 +1,8 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, Query, status
 
 from app.api.auth_dependencies import CurrentUserDep
-from app.api.http_exceptions import raise_permission_denied, raise_unprocessable
 from app.modules.finance.misc_fees.providers import get_misc_fee_service
 from app.modules.finance.misc_fees.schemas import (
     MiscFeeAllocationCreate,
@@ -13,10 +12,7 @@ from app.modules.finance.misc_fees.schemas import (
     MiscFeeItemListResponse,
     MiscFeeItemResponse,
 )
-from app.modules.finance.misc_fees.services import MiscFeeNotFoundError, MiscFeeService
-from app.modules.finance.misc_fees.services import (
-    PermissionDeniedError as MiscFeePermissionDeniedError,
-)
+from app.modules.finance.misc_fees.services import MiscFeeService
 from app.schemas.responses import ApiResponse
 
 router = APIRouter()
@@ -32,13 +28,8 @@ async def create_misc_fee_item(
     user: CurrentUserDep,
     service: Annotated[MiscFeeService, Depends(get_misc_fee_service)],
 ) -> ApiResponse[MiscFeeItemResponse]:
-    try:
-        item = await service.create_item(current_user=user, payload=payload)
-        return ApiResponse(data=item)
-    except MiscFeePermissionDeniedError:
-        raise_permission_denied("缺少财务管理权限")
-    except ValueError as exc:
-        raise_unprocessable(str(exc))
+    item = await service.create_item(current_user=user, payload=payload)
+    return ApiResponse(data=item)
 
 
 @router.get("/misc-fee-items", response_model=ApiResponse[MiscFeeItemListResponse])
@@ -49,18 +40,13 @@ async def list_misc_fee_items(
     category: Annotated[str | None, Query(max_length=40)] = None,
     status_filter: Annotated[str | None, Query(alias="status", max_length=40)] = None,
 ) -> ApiResponse[MiscFeeItemListResponse]:
-    try:
-        items = await service.list_items(
-            current_user=user,
-            q=q,
-            category=category,
-            status=status_filter,
-        )
-        return ApiResponse(data=items)
-    except MiscFeePermissionDeniedError:
-        raise_permission_denied("缺少财务管理权限")
-    except ValueError as exc:
-        raise_unprocessable(str(exc))
+    items = await service.list_items(
+        current_user=user,
+        q=q,
+        category=category,
+        status=status_filter,
+    )
+    return ApiResponse(data=items)
 
 
 @router.post(
@@ -73,15 +59,8 @@ async def create_misc_fee_allocation(
     user: CurrentUserDep,
     service: Annotated[MiscFeeService, Depends(get_misc_fee_service)],
 ) -> ApiResponse[MiscFeeAllocationResponse]:
-    try:
-        allocation = await service.create_allocation(current_user=user, payload=payload)
-        return ApiResponse(data=allocation)
-    except MiscFeePermissionDeniedError:
-        raise_permission_denied("缺少财务管理权限")
-    except MiscFeeNotFoundError as exc:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="杂费项目不存在") from exc
-    except ValueError as exc:
-        raise_unprocessable(str(exc))
+    allocation = await service.create_allocation(current_user=user, payload=payload)
+    return ApiResponse(data=allocation)
 
 
 @router.get(
@@ -98,21 +77,16 @@ async def list_misc_fee_allocations(
     sales_user_id: Annotated[str | None, Query(max_length=64)] = None,
     status_filter: Annotated[str | None, Query(alias="status", max_length=40)] = None,
 ) -> ApiResponse[MiscFeeAllocationListResponse]:
-    try:
-        allocations = await service.list_allocations(
-            current_user=user,
-            q=q,
-            item_id=item_id,
-            category=category,
-            shipment_no=shipment_no,
-            sales_user_id=sales_user_id,
-            status=status_filter,
-        )
-        return ApiResponse(data=allocations)
-    except MiscFeePermissionDeniedError:
-        raise_permission_denied("缺少财务管理权限")
-    except ValueError as exc:
-        raise_unprocessable(str(exc))
+    allocations = await service.list_allocations(
+        current_user=user,
+        q=q,
+        item_id=item_id,
+        category=category,
+        shipment_no=shipment_no,
+        sales_user_id=sales_user_id,
+        status=status_filter,
+    )
+    return ApiResponse(data=allocations)
 
 
 @router.get(
@@ -129,18 +103,13 @@ async def list_misc_fee_allocation_summary(
     sales_user_id: Annotated[str | None, Query(max_length=64)] = None,
     status_filter: Annotated[str | None, Query(alias="status", max_length=40)] = None,
 ) -> ApiResponse[MiscFeeAllocationListResponse]:
-    try:
-        summary = await service.list_allocation_summary(
-            current_user=user,
-            q=q,
-            item_id=item_id,
-            category=category,
-            shipment_no=shipment_no,
-            sales_user_id=sales_user_id,
-            status=status_filter,
-        )
-        return ApiResponse(data=summary)
-    except MiscFeePermissionDeniedError:
-        raise_permission_denied("缺少财务管理权限")
-    except ValueError as exc:
-        raise_unprocessable(str(exc))
+    summary = await service.list_allocation_summary(
+        current_user=user,
+        q=q,
+        item_id=item_id,
+        category=category,
+        shipment_no=shipment_no,
+        sales_user_id=sales_user_id,
+        status=status_filter,
+    )
+    return ApiResponse(data=summary)

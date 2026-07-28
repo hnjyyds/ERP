@@ -11,6 +11,7 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.api.error_handlers import register_error_handlers
+from app.api.pagination import PaginationMiddleware, configure_pagination_openapi
 from app.api.request_logging import RequestLoggingMiddleware
 from app.api.v1.router import api_router
 from app.core.config import get_settings
@@ -87,9 +88,7 @@ async def initialize_database_schema() -> None:
             return
         except OperationalError as exc:
             message = str(exc).lower()
-            concurrent_create = (
-                "already exists" in message or "duplicate column name" in message
-            )
+            concurrent_create = "already exists" in message or "duplicate column name" in message
             if not concurrent_create or attempt == 2:
                 _lifecycle_logger.exception(
                     "database schema initialization failed",
@@ -160,6 +159,7 @@ def create_app(
     configure_logging(level=settings.log_level, format_name=settings.log_format)
     app = FastAPI(title=settings.app_name, lifespan=lifespan)
     register_error_handlers(app)
+    app.add_middleware(PaginationMiddleware)
     # 请求日志位于 HTTP 边界，覆盖 API、上传文件和最后挂载的 MCP 应用。
     app.add_middleware(
         RequestLoggingMiddleware,
@@ -167,6 +167,7 @@ def create_app(
         log_health_requests=settings.log_health_requests,
     )
     app.include_router(api_router, prefix=settings.api_v1_prefix)
+    configure_pagination_openapi(app)
     upload_dir = Path(settings.upload_dir)
     upload_dir.mkdir(parents=True, exist_ok=True)
     app.mount(

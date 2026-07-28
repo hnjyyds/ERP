@@ -5,6 +5,7 @@ from decimal import Decimal
 from sqlalchemy import delete, distinct, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.purchase.inquiries.models import (
     PurchaseInquiry,
     PurchaseInquiryLine,
@@ -316,10 +317,7 @@ class PurchaseInquiryRepository:
             )
         )
         rows = (await self.session.execute(statement)).all()
-        return [
-            await self._map_supplier_quotation(quotation, line)
-            for quotation, line in rows
-        ]
+        return [await self._map_supplier_quotation(quotation, line) for quotation, line in rows]
 
     async def list_inquiries(
         self,
@@ -379,8 +377,8 @@ class PurchaseInquiryRepository:
 
         statement = (
             statement.order_by(PurchaseInquiry.inquiry_date.desc(), PurchaseInquiry.code.asc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         result = await self.session.scalars(statement)
         rows = list(result.unique())

@@ -5,6 +5,7 @@ from decimal import Decimal
 from sqlalchemy import Select, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.masterdata.products.models import Product, ProductAccessory
 from app.modules.purchase.contracts.models import PurchaseContract, PurchaseContractLine
 from app.modules.purchase.inquiries.models import PurchaseInquiry, PurchaseInquiryLine
@@ -255,7 +256,7 @@ class ProductRepository:
                     total_amount=Decimal(str(amount or 0)),
                     last_contract_date=last_date.isoformat() if last_date else None,
                 )
-        )
+            )
         return rows
 
     async def list_transactions(
@@ -287,7 +288,7 @@ class ProductRepository:
                 ExportQuotation.currency,
             )
             .order_by(ExportQuotation.quote_date.desc())
-            .limit(limit)
+            .limit(resolve_limit(limit))
         )
         for code, quote_date, customer_name, quantity, unit, amount, currency in quotations.all():
             rows.append(
@@ -323,7 +324,7 @@ class ProductRepository:
                 ExportContract.currency,
             )
             .order_by(ExportContract.contract_date.desc())
-            .limit(limit)
+            .limit(resolve_limit(limit))
         )
         for code, contract_date, customer_name, quantity, unit, amount, currency in contracts.all():
             rows.append(
@@ -359,7 +360,7 @@ class ProductRepository:
                 ShipmentPlan.currency,
             )
             .order_by(ShipmentPlan.shipment_date.desc())
-            .limit(limit)
+            .limit(resolve_limit(limit))
         )
         for code, shipment_date, customer_name, quantity, unit, amount, currency in shipments.all():
             rows.append(
@@ -392,7 +393,7 @@ class ProductRepository:
                 PurchaseInquiryLine.unit,
             )
             .order_by(PurchaseInquiry.inquiry_date.desc())
-            .limit(limit)
+            .limit(resolve_limit(limit))
         )
         for code, inquiry_date, buyer_name, quantity, unit in inquiries.all():
             rows.append(
@@ -428,7 +429,7 @@ class ProductRepository:
                 PurchaseContract.currency,
             )
             .order_by(PurchaseContract.contract_date.desc())
-            .limit(limit)
+            .limit(resolve_limit(limit))
         )
         for (
             code,
@@ -464,7 +465,7 @@ class ProductRepository:
             )
             .where(InventoryLedger.product_id == product_id)
             .order_by(InventoryLedger.occurred_at.desc(), InventoryLedger.created_at.desc())
-            .limit(limit)
+            .limit(resolve_limit(limit))
         )
         for (
             source_code,
@@ -526,8 +527,8 @@ class ProductRepository:
 
         statement = (
             statement.order_by(Product.created_at.desc(), Product.code.asc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)

@@ -5,12 +5,10 @@ from decimal import Decimal
 from app.db.uow import UnitOfWork
 from app.modules.masterdata.products.repositories import ProductAccessoryRow, ProductRepository
 from app.modules.purchase.contracts.repositories import (
-    PurchaseContractLineRow,
-    PurchaseContractReminderRow,
     PurchaseContractRepository,
     PurchaseContractRow,
-    PurchaseContractSourceLinkRow,
 )
+from app.modules.purchase.contracts.response_builder import PurchaseContractResponseBuilder
 from app.modules.purchase.contracts.schemas import (
     VALID_PURCHASE_CONTRACT_SOURCE_TYPES,
     VALID_PURCHASE_CONTRACT_STATUSES,
@@ -18,13 +16,9 @@ from app.modules.purchase.contracts.schemas import (
     PurchaseContractCreate,
     PurchaseContractGenerateFromExportContracts,
     PurchaseContractLineCreate,
-    PurchaseContractLineResponse,
     PurchaseContractListResponse,
     PurchaseContractReminderListResponse,
-    PurchaseContractReminderResponse,
     PurchaseContractResponse,
-    PurchaseContractSourceLinkResponse,
-    PurchaseContractStatisticsResponse,
 )
 from app.modules.sales.contracts.repositories import (
     ExportContractLineRow,
@@ -82,6 +76,7 @@ class PurchaseContractService:
         self._product_repository = product_repository
         self._data_scope_resolver = data_scope_resolver
         self._auth_repository = auth_repository
+        self._response_builder = PurchaseContractResponseBuilder(purchase_repository)
 
     async def create_contract(
         self,
@@ -119,7 +114,7 @@ class PurchaseContractService:
                 preserve_existing_when_empty=False,
             )
             await self._rebuild_reminders(updated)
-        return await self._contract_response(updated)
+        return await self._response_builder.build(updated)
 
     async def update_contract(
         self,
@@ -165,7 +160,7 @@ class PurchaseContractService:
                 preserve_existing_when_empty=True,
             )
             await self._rebuild_reminders(updated)
-        return await self._contract_response(updated)
+        return await self._response_builder.build(updated)
 
     async def generate_from_export_contracts(
         self,
@@ -214,7 +209,7 @@ class PurchaseContractService:
             if updated is None:
                 raise PurchaseContractNotFoundError
             await self._rebuild_reminders(updated)
-        return await self._contract_response(updated)
+        return await self._response_builder.build(updated)
 
     async def list_contracts(
         self,
@@ -240,8 +235,9 @@ class PurchaseContractService:
             source_type=source_type,
             owner_user_ids=owner_user_ids,
         )
+        responses = await self._response_builder.build_many(rows)
         return PurchaseContractListResponse(
-            items=[await self._contract_response(row) for row in rows],
+            items=responses,
             total=total,
         )
 
@@ -255,7 +251,7 @@ class PurchaseContractService:
             current_user=current_user,
             contract_id=contract_id,
         )
-        return await self._contract_response(contract)
+        return await self._response_builder.build(contract)
 
     async def submit_contract(
         self,
@@ -274,7 +270,7 @@ class PurchaseContractService:
             submitted = await self._repository.submit_contract(contract.id)
             if submitted is None:
                 raise PurchaseContractNotFoundError
-        return await self._contract_response(submitted)
+        return await self._response_builder.build(submitted)
 
     async def approve_contract(
         self,
@@ -301,7 +297,7 @@ class PurchaseContractService:
             await self._write_back_export_purchase_progress(approved.id)
             await self._ensure_followup_plan(approved)
             await self._ensure_inbound_plan(approved)
-        return await self._contract_response(approved)
+        return await self._response_builder.build(approved)
 
     async def list_reminders(
         self,
@@ -311,7 +307,7 @@ class PurchaseContractService:
         self._require(current_user, "purchase:contract:view")
         rows = await self._repository.list_reminders()
         return PurchaseContractReminderListResponse(
-            items=[self._reminder_response(row) for row in rows],
+            items=[self._response_builder.reminder_response(row) for row in rows],
             total=len(rows),
         )
 
@@ -402,15 +398,9 @@ class PurchaseContractService:
             )
             if source_contract is None:
                 raise ValueError("来源出口合同不存在")
-            contract_lines = await self._export_contract_repository.list_lines(
-                source_contract.id
-            )
+            contract_lines = await self._export_contract_repository.list_lines(source_contract.id)
             source_line = next(
-                (
-                    item
-                    for item in contract_lines
-                    if item.id == export_contract_line_id
-                ),
+                (item for item in contract_lines if item.id == export_contract_line_id),
                 None,
             )
             if source_line is None:
@@ -488,12 +478,8 @@ class PurchaseContractService:
                 source.resolved_product_id
             )
             if not accessories:
-                product_reference = (
-                    source.line.product_code or source.line.product_name
-                )
-                raise ValueError(
-                    f"商品 {product_reference} 缺少配件明细，无法生成采购合同"
-                )
+                product_reference = source.line.product_code or source.line.product_name
+                raise ValueError(f"商品 {product_reference} 缺少配件明细，无法生成采购合同")
             for accessory in accessories:
                 key = (accessory.accessory_name, accessory.unit)
                 aggregate[key] = aggregate.get(key, Decimal("0")) + (
@@ -537,9 +523,7 @@ class PurchaseContractService:
             raise ValueError("出口合同明细未关联商品资料，请先选择商品后重试")
         product = await self._product_repository.get_product_by_code(product_code)
         if product is None:
-            raise ValueError(
-                f"商品编码 {product_code} 未关联商品资料，请先选择商品后重试"
-            )
+            raise ValueError(f"商品编码 {product_code} 未关联商品资料，请先选择商品后重试")
         return product.id
 
     async def _write_back_export_purchase_progress(self, contract_id: str) -> None:
@@ -629,102 +613,3 @@ class PurchaseContractService:
     def _validate_source_type(self, source_type: str) -> None:
         if source_type not in VALID_PURCHASE_CONTRACT_SOURCE_TYPES:
             raise ValueError("采购合同来源类型无效")
-
-    async def _contract_response(self, contract: PurchaseContractRow) -> PurchaseContractResponse:
-        lines = await self._repository.list_lines(contract.id)
-        source_links = await self._repository.list_source_links(contract.id)
-        reminders = await self._repository.list_reminders(contract.id)
-        return PurchaseContractResponse(
-            id=contract.id,
-            code=contract.code,
-            contract_date=contract.contract_date,
-            supplier_id=contract.supplier_id,
-            supplier_name=contract.supplier_name,
-            buyer_user_id=contract.buyer_user_id,
-            buyer_user_name=contract.buyer_user_name,
-            qc_user_id=contract.qc_user_id,
-            qc_user_name=contract.qc_user_name,
-            currency=contract.currency,
-            delivery_date=contract.delivery_date,
-            payment_terms=contract.payment_terms,
-            source_type=contract.source_type,
-            remarks=contract.remarks,
-            approval_status=contract.approval_status,
-            submitted_at=contract.submitted_at,
-            approved_at=contract.approved_at,
-            reviewer_name=contract.reviewer_name,
-            owner_user_id=contract.owner_user_id,
-            statistics=self._statistics_response(contract),
-            lines=[self._line_response(line) for line in lines],
-            source_links=[self._source_link_response(link) for link in source_links],
-            reminders=[self._reminder_response(reminder) for reminder in reminders],
-        )
-
-    def _statistics_response(
-        self,
-        contract: PurchaseContractRow,
-    ) -> PurchaseContractStatisticsResponse:
-        return PurchaseContractStatisticsResponse(
-            total_quantity=contract.total_quantity,
-            total_amount=contract.total_amount,
-            received_quantity=contract.received_quantity,
-            unreceived_quantity=contract.unreceived_quantity,
-            paid_amount=contract.paid_amount,
-            unpaid_amount=contract.unpaid_amount,
-        )
-
-    def _line_response(self, line: PurchaseContractLineRow) -> PurchaseContractLineResponse:
-        return PurchaseContractLineResponse(
-            id=line.id,
-            contract_id=line.contract_id,
-            product_id=line.product_id,
-            product_code=line.product_code,
-            product_name=line.product_name,
-            specification=line.specification,
-            model=line.model,
-            quantity=self._quantity(line.quantity),
-            unit=line.unit,
-            unit_price=self._quantity(line.unit_price),
-            amount=line.amount,
-            received_quantity=self._quantity(line.received_quantity),
-            unreceived_quantity=line.unreceived_quantity,
-            source_export_contract_id=line.source_export_contract_id,
-            source_export_contract_no=line.source_export_contract_no,
-            source_export_contract_line_id=line.source_export_contract_line_id,
-            remark=line.remark,
-        )
-
-    def _source_link_response(
-        self,
-        link: PurchaseContractSourceLinkRow,
-    ) -> PurchaseContractSourceLinkResponse:
-        return PurchaseContractSourceLinkResponse(
-            id=link.id,
-            contract_id=link.contract_id,
-            export_contract_id=link.export_contract_id,
-            export_contract_no=link.export_contract_no,
-            export_contract_line_id=link.export_contract_line_id,
-            customer_name=link.customer_name,
-            product_id=link.product_id,
-            product_code=link.product_code,
-            demand_quantity=link.demand_quantity,
-            unit=link.unit,
-        )
-
-    def _reminder_response(
-        self,
-        reminder: PurchaseContractReminderRow,
-    ) -> PurchaseContractReminderResponse:
-        return PurchaseContractReminderResponse(
-            id=reminder.id,
-            contract_id=reminder.contract_id,
-            reminder_type=reminder.reminder_type,
-            title=reminder.title,
-            due_date=reminder.due_date,
-            amount=reminder.amount,
-            currency=reminder.currency,
-            status=reminder.status,
-        )
-
-    def _quantity(self, value: Decimal) -> str:
-        return f"{value:.4f}".rstrip("0").rstrip(".")

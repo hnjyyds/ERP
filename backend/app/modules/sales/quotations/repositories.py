@@ -6,6 +6,7 @@ from uuid import uuid4
 from sqlalchemy import Select, delete, distinct, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.sales.quotations.models import ExportQuotation, ExportQuotationLine
 
 
@@ -266,8 +267,8 @@ class ExportQuotationRepository:
             count_statement = count_statement.where(condition)
         statement = (
             statement.order_by(ExportQuotation.quote_date.desc(), ExportQuotation.code.asc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)

@@ -7,8 +7,7 @@ def ensure_port_data_schema(connection: Connection) -> None:
         return
 
     columns = {
-        column["name"]
-        for column in inspector.get_columns("finance_customs_declaration_records")
+        column["name"] for column in inspector.get_columns("finance_customs_declaration_records")
     }
     statements = {
         "match_status": (

@@ -1,9 +1,10 @@
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import ConfigDict, Field, field_validator
 
 from app.modules.system.auth.data_scope_rules import DEFAULT_DATA_SCOPE, DataScope
+from app.schemas.base import BaseModel
 
 AvatarType = Literal["preset", "upload"]
 DEFAULT_AVATAR_TYPE: AvatarType = "preset"

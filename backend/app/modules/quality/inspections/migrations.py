@@ -14,9 +14,7 @@ def ensure_quality_inspection_schema(connection: Connection) -> None:
             "ALTER TABLE quality_inspections ADD COLUMN status VARCHAR(40) "
             "NOT NULL DEFAULT 'completed'"
         ),
-        "scheduled_at": (
-            "ALTER TABLE quality_inspections ADD COLUMN scheduled_at DATETIME"
-        ),
+        "scheduled_at": ("ALTER TABLE quality_inspections ADD COLUMN scheduled_at DATETIME"),
     }
     for column_name, statement in statements.items():
         if column_name not in columns:
@@ -32,8 +30,7 @@ def ensure_quality_inspection_schema(connection: Connection) -> None:
         "WHERE scheduled_at IS NULL"
     )
     connection.exec_driver_sql(
-        "CREATE INDEX IF NOT EXISTS ix_quality_inspections_status "
-        "ON quality_inspections (status)"
+        "CREATE INDEX IF NOT EXISTS ix_quality_inspections_status ON quality_inspections (status)"
     )
     connection.exec_driver_sql(
         "CREATE INDEX IF NOT EXISTS ix_quality_inspections_scheduled_at "

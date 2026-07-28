@@ -5,6 +5,7 @@ from decimal import Decimal
 from sqlalchemy import Select, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.finance.fee_payments.models import FeePaymentRequest, PartnerFeeInvoice
 from app.modules.masterdata.partners.models import Partner, PartnerContact
 
@@ -252,8 +253,8 @@ class PartnerRepository:
 
         statement = (
             statement.order_by(Partner.created_at.desc(), Partner.code.asc())
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)
@@ -278,7 +279,7 @@ class PartnerRepository:
             )
             .where(PartnerFeeInvoice.partner_id == partner_id)
             .order_by(PartnerFeeInvoice.invoice_date.desc())
-            .limit(limit)
+            .limit(resolve_limit(limit))
         )
         for invoice_no, invoice_date, amount, currency, fee_type in invoices.all():
             rows.append(
@@ -301,7 +302,7 @@ class PartnerRepository:
             )
             .where(FeePaymentRequest.partner_id == partner_id)
             .order_by(FeePaymentRequest.request_date.desc())
-            .limit(limit)
+            .limit(resolve_limit(limit))
         )
         for request_no, request_date, amount, currency, fee_type in requests.all():
             rows.append(

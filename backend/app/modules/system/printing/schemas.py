@@ -1,4 +1,6 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import ConfigDict
+
+from app.schemas.base import BaseModel
 
 
 class DocumentPrintResponse(BaseModel):

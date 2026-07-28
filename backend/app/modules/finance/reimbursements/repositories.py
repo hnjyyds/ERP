@@ -1,10 +1,13 @@
+import builtins
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from decimal import Decimal
 
 from sqlalchemy import Select, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.elements import ColumnElement
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.finance.reimbursements.models import Reimbursement, ReimbursementItem
 from app.modules.finance.reimbursements.schemas import ReimbursementItemCreate
 
@@ -105,7 +108,7 @@ class ReimbursementRepository:
         applicant_user_id: str | None = None,
         limit: int = 50,
         offset: int = 0,
-    ) -> tuple[list[ReimbursementRow], int]:
+    ) -> tuple[builtins.list[ReimbursementRow], int]:
         statement = select(Reimbursement)
         count_statement = select(func.count()).select_from(Reimbursement)
         conditions = self._conditions(
@@ -122,8 +125,8 @@ class ReimbursementRepository:
                 Reimbursement.created_at.desc(),
                 Reimbursement.reimbursement_no.asc(),
             )
-            .limit(limit)
-            .offset(offset)
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
         )
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)
@@ -175,8 +178,8 @@ class ReimbursementRepository:
         status: str | None,
         category: str | None,
         applicant_user_id: str | None,
-    ) -> list[object]:
-        conditions: list[object] = []
+    ) -> builtins.list[ColumnElement[bool]]:
+        conditions: builtins.list[ColumnElement[bool]] = []
         if q:
             pattern = f"%{q}%"
             conditions.append(
@@ -194,11 +197,13 @@ class ReimbursementRepository:
             conditions.append(Reimbursement.applicant_user_id == applicant_user_id)
         return conditions
 
-    async def _scalars(self, statement: Select[tuple[Reimbursement]]) -> list[Reimbursement]:
+    async def _scalars(
+        self, statement: Select[tuple[Reimbursement]]
+    ) -> builtins.list[Reimbursement]:
         result = await self.session.scalars(statement)
-        return list(result.unique())
+        return [row for row in result.unique()]
 
-    async def _load_items(self, reimbursement_id: str) -> list[ReimbursementItemRow]:
+    async def _load_items(self, reimbursement_id: str) -> builtins.list[ReimbursementItemRow]:
         statement = (
             select(ReimbursementItem)
             .where(ReimbursementItem.reimbursement_id == reimbursement_id)

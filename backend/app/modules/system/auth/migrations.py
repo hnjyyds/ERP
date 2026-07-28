@@ -4,24 +4,20 @@ from sqlalchemy import Connection, inspect
 _COLUMN_STATEMENTS: dict[str, dict[str, str]] = {
     "users": {
         "avatar_type": (
-            "ALTER TABLE users ADD COLUMN avatar_type VARCHAR(20) "
-            "NOT NULL DEFAULT 'preset'"
+            "ALTER TABLE users ADD COLUMN avatar_type VARCHAR(20) NOT NULL DEFAULT 'preset'"
         ),
         "avatar_value": (
-            "ALTER TABLE users ADD COLUMN avatar_value TEXT "
-            "NOT NULL DEFAULT 'amber-orbit'"
+            "ALTER TABLE users ADD COLUMN avatar_value TEXT NOT NULL DEFAULT 'amber-orbit'"
         ),
     },
     "permissions": {
         "category": (
-            "ALTER TABLE permissions ADD COLUMN category VARCHAR(20) "
-            "NOT NULL DEFAULT 'functional'"
+            "ALTER TABLE permissions ADD COLUMN category VARCHAR(20) NOT NULL DEFAULT 'functional'"
         ),
     },
     "roles": {
         "data_scope": (
-            "ALTER TABLE roles ADD COLUMN data_scope VARCHAR(20) "
-            "NOT NULL DEFAULT 'self'"
+            "ALTER TABLE roles ADD COLUMN data_scope VARCHAR(20) NOT NULL DEFAULT 'self'"
         ),
     },
 }

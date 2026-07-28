@@ -6,9 +6,9 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
-# The preview image must remain buildable while the repository-wide TypeScript
-# test debt is handled separately. Vite still performs the production bundle.
-RUN npx vite build
+# Keep the container build identical to the repository release gate: TypeScript
+# validation must pass before Vite produces the production bundle.
+RUN npm run build
 
 FROM --platform=linux/amd64 swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/nginx:1.29-alpine
 

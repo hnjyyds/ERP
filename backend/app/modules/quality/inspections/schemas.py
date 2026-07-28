@@ -1,7 +1,9 @@
 from datetime import date, datetime
 from decimal import Decimal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import ConfigDict, Field, field_validator, model_validator
+
+from app.schemas.base import BaseModel
 
 VALID_QUALITY_INSPECTION_RESULTS = (
     "passed",

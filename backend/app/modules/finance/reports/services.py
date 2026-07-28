@@ -88,12 +88,8 @@ class ReportsService(ReportsServiceSupport):
             receipt_type=receipt_type,
         )
         return BankReceiptSummaryResponse(
-            currency_summaries=[
-                self._bank_currency_summary(item) for item in currency_summaries
-            ],
-            operator_summaries=[
-                self._bank_operator_summary(item) for item in operator_summaries
-            ],
+            currency_summaries=[self._bank_currency_summary(item) for item in currency_summaries],
+            operator_summaries=[self._bank_operator_summary(item) for item in operator_summaries],
             receipt_count=sum(item.receipt_count for item in currency_summaries),
         )
 
@@ -125,9 +121,7 @@ class ReportsService(ReportsServiceSupport):
         )
         return GoodsPaymentQueryResponse(
             rows=[self._goods_payment_row(row) for row in rows],
-            currency_summaries=[
-                self._goods_currency_summary(item) for item in summaries
-            ],
+            currency_summaries=[self._goods_currency_summary(item) for item in summaries],
             total_count=len(rows),
         )
 
@@ -230,9 +224,7 @@ class ReportsService(ReportsServiceSupport):
             currency=currency,
         )
         return TaxRefundStatisticsResponse(
-            status_summaries=[
-                self._tax_status_summary(item) for item in status_summaries
-            ],
+            status_summaries=[self._tax_status_summary(item) for item in status_summaries],
             currency_totals=[self._tax_currency_total(item) for item in currency_totals],
             document_count=sum(item.document_count for item in currency_totals),
             refund_record_count=refund_record_count,

@@ -11,13 +11,12 @@ from app.api.error_handlers import register_error_handlers
 from app.api.http_exceptions import raise_unprocessable
 from app.api.request_logging import RequestLoggingMiddleware
 from app.core.logging import JsonLogFormatter, set_current_user_id
+from app.modules.purchase.contracts.services import PurchaseContractNotFoundError
 
 
 def _completed_record(records: list[logging.LogRecord]) -> logging.LogRecord:
     return next(
-        record
-        for record in records
-        if getattr(record, "event", None) == "request_completed"
+        record for record in records if getattr(record, "event", None) == "request_completed"
     )
 
 
@@ -125,15 +124,35 @@ async def test_business_error_log_contains_specific_reason(
     assert response.status_code == 422
     assert response.json()["message"] == "商品未关联"
     record = next(
-        record
-        for record in caplog.records
-        if getattr(record, "event", None) == "http_exception"
+        record for record in caplog.records if getattr(record, "event", None) == "http_exception"
     )
     assert record.request_id == "business-error-001"
     assert record.method == "GET"
     assert record.path == "/business-error"
     assert record.status_code == 422
     assert record.detail == "商品未关联"
+
+
+async def test_domain_exceptions_are_translated_at_the_global_http_boundary() -> None:
+    app = FastAPI()
+    register_error_handlers(app)
+
+    @app.get("/missing-contract")
+    async def missing_contract() -> None:
+        raise PurchaseContractNotFoundError
+
+    @app.get("/invalid-state")
+    async def invalid_state() -> None:
+        raise ValueError("只有草稿采购合同可以提交")
+
+    async for client in _client_for(app):
+        missing_response = await client.get("/missing-contract")
+        invalid_response = await client.get("/invalid-state")
+
+    assert missing_response.status_code == 404
+    assert missing_response.json()["message"] == "采购合同不存在"
+    assert invalid_response.status_code == 422
+    assert invalid_response.json()["message"] == "只有草稿采购合同可以提交"
 
 
 async def test_unhandled_error_returns_traceable_response_and_logs_stack(
