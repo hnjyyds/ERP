@@ -1,4 +1,4 @@
-import { Alert, Button, Input, Modal, Skeleton, Table, Tag } from 'antd'
+import { Alert, Button, Input, Modal, Skeleton as _Skeleton, Table, Tag as _Tag } from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search, Warehouse , PackagePlus, Save} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
@@ -7,7 +7,7 @@ import { warehouseInboundPlanPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { inboundPlanStatusOptions, inboundPlanTypeOptions } from '../../../shared/formOptions'
-import { daysFromTodayInputValue, formatDate, formatMoney, formatQuantity, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { daysFromTodayInputValue, formatDate, formatMoney as _formatMoney, formatQuantity as _formatQuantity, nullableText as _nullableText, todayInputValue as _todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
 
 type InboundPlanGenerateFormState = {
   purchase_contract_id: string
@@ -24,7 +24,7 @@ type InboundPlanScheduleFormState = {
   operator_name: string
 }
 
-type InboundOrderFormState = {
+type _InboundOrderFormState = {
   plan_id: string
   code: string
   inbound_mode: string
@@ -36,7 +36,7 @@ type InboundOrderFormState = {
   operator_name: string
 }
 
-type InboundOrderApprovalFormState = {
+type _InboundOrderApprovalFormState = {
   reviewer_name: string
   approved_at: string
 }

@@ -1,5 +1,5 @@
-import { Alert, Button, Descriptions, Input, Modal, Table, Tag } from 'antd'
-import { ArrowLeft, CheckCircle2, LayoutDashboard, Plus, Search , ClipboardCheck, RefreshCw, Settings} from 'lucide-react'
+import { Alert, Button, Descriptions as _Descriptions, Input, Modal, Table, Tag as _Tag } from 'antd'
+import { ArrowLeft, CheckCircle2 as _CheckCircle2, LayoutDashboard, Plus as _Plus, Search , ClipboardCheck, RefreshCw, Settings} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { createFollowupTemplate, generateFollowupPlanFromPurchaseContract, listFollowupOverdueNodes, listFollowupPlans, listFollowupTemplates, syncFollowupSampleEvents, syncFollowupSourceEvent, updateFollowupTemplate, type FollowProcessTemplate, type FollowProcessTemplateNodePayload, type FollowProcessTemplatePayload, type FollowSourceEventPayload, type PurchaseFollowOverdueNode, type PurchaseFollowPlan, type PurchaseFollowPlanGeneratePayload } from '../../../api'
@@ -7,7 +7,7 @@ import { followupPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { followupStatusOptions, followupNodeOptions, followupSourceTypeOptions } from '../../../shared/formOptions'
-import { formatDate, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { formatDate, nullableText as _nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
 
 function followupSourceTypeLabel(value: string | null): string {
   if (!value) return '未回写'
@@ -615,6 +615,7 @@ export function FollowupPage({ detailId, onNavigate }: RoutedDetailPageProps) {
               </label>
               <label className="checkbox-label" htmlFor="followup-template-enabled">
                 <input
+                  aria-label="启用模板"
                   checked={templateForm.enabled}
                   id="followup-template-enabled"
                   type="checkbox"

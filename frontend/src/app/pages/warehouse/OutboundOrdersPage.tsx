@@ -1,4 +1,4 @@
-import { Alert, Button, Descriptions, Input, Modal, Skeleton, Table, Tag } from 'antd'
+import { Alert, Button, Descriptions as _Descriptions, Input, Modal, Skeleton as _Skeleton, Table, Tag as _Tag } from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search, Warehouse , CheckCircle2, Package, PackagePlus, Send} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
@@ -7,7 +7,7 @@ import { warehouseOutboundOrderPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { outboundOrderStatusOptions, outboundOrderModeOptions , outboundPlanTypeOptions, outboundPlanStatusOptions, outboundPlanSourceTypeOptions} from '../../../shared/formOptions'
-import { formatDate, formatMoney, formatQuantity, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull, trimDecimal} from '../appHelpers'
+import { formatDate, formatMoney as _formatMoney, formatQuantity as _formatQuantity, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull, trimDecimal} from '../appHelpers'
 
 function outboundPlanStatusLabel(value: string): string {
   return outboundPlanStatusOptions.find((item) => item.value === value)?.label ?? value
@@ -710,6 +710,7 @@ export function OutboundOrdersPage({ detailId, onNavigate }: RoutedDetailPagePro
             </div>
             <label className="checkbox-line" htmlFor="outbound-allow-negative">
               <input
+                aria-label="授权负库存出库"
                 id="outbound-allow-negative"
                 type="checkbox"
                 checked={approvalForm.allow_negative}
@@ -896,4 +897,3 @@ export function OutboundOrdersPage({ detailId, onNavigate }: RoutedDetailPagePro
     </section>
   )
 }
-

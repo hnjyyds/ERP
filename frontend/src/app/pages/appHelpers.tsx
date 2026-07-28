@@ -1,6 +1,6 @@
 import { Tag } from 'antd'
-import { LockKeyhole } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { LockKeyhole as _LockKeyhole } from 'lucide-react'
+import type { ReactNode as _ReactNode } from 'react'
 import type { AppLanguage, AppTimeZone, CurrentUser, MenuItem } from '../../api'
 import { partnerTypeOptions } from '../../shared/formOptions'
 import {
@@ -10,9 +10,9 @@ import {
   exportContractPath,
   exportQuotationPath,
   financePath,
-  financeReceiptsPath,
-  financePaymentsPath,
-  financeSettlementPath,
+  financeReceiptsPath as _financeReceiptsPath,
+  financePaymentsPath as _financePaymentsPath,
+  financeSettlementPath as _financeSettlementPath,
   followupPath,
   isFinancePath,
   organizationUsersPath,

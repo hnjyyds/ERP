@@ -20,7 +20,7 @@ import {
   createProduct,
   deactivateProduct,
   deleteProductAccessory,
-  exportProducts,
+  exportProducts as _exportProducts,
   importProducts,
   listProductCustomers,
   listProducts,
@@ -798,7 +798,12 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
                   </div>
                 ) : null}
                 <label className="product-image-upload">
-                  <input accept="image/*" type="file" onChange={handleImageFileChange} />
+                  <input
+                    accept="image/*"
+                    aria-label={form.image_url ? '更换商品图片' : '上传商品图片'}
+                    type="file"
+                    onChange={handleImageFileChange}
+                  />
                   <ImagePlus size={18} />
                   <span>{form.image_url ? '更换图片' : '上传图片'}</span>
                 </label>

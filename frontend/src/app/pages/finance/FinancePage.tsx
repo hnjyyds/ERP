@@ -1,15 +1,15 @@
 import { downloadCsv } from '../../../shared/print'
-import { Alert, Button, Descriptions, Input, Modal, Select, Skeleton, Table, Tag } from 'antd'
+import { Alert, Button, Descriptions, Input, Modal, Select as _Select, Skeleton, Table, Tag } from 'antd'
 import { ArrowLeft, BarChart3, Coins, FileText, LayoutDashboard, Plus, Search , CheckCircle2, ChevronRight, ClipboardCheck, FileSpreadsheet, FileStack, Handshake, PackagePlus, Receipt, RefreshCw, Save, ShieldCheck, Ship, Wallet} from 'lucide-react'
 import type { FormEvent, ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { allocateBankReceipt, approveFeePaymentRequest, approvePaymentRequest, autoMatchCustomsReceipts, claimBankReceipt, addManualProfitCost, createBankReceipt, createFinancialSettlement, createFeePaymentRequest, createMiscFeeAllocation, createMiscFeeItem, createPartnerFeeInvoice, createPaymentRequest, createSupplierInvoice, createVerificationDocument, createPortImportBatch, createReimbursement, approveReimbursement, payReimbursement, getFinanceOverview, listBankReceipts, listFinancialSettlements, listFeePayables, listFeePaymentRequests, listMiscFeeAllocationSummary, listMiscFeeAllocations, listMiscFeeItems, listPartnerFeeInvoices, listPayables, listPaymentRequests, listProfitCalculations, listReceivables, listSupplierInvoices, listVerificationDocuments, listVerificationUsage, listReimbursements, listPortImportBatches, listCustomsDeclarationRecords, registerVerification, registerVerificationCustomsReceipt, registerTaxRefund, getReceiptUsageReport, getBankReceiptSummaryReport, getGoodsPaymentReport, getFeePaymentReport, getCustomsReceiptCollectionReport, getTaxRefundStatisticsReport, type BankReceipt, type BankReceiptAllocationPayload, type BankReceiptClaimPayload, type BankReceiptCreatePayload, type CurrentUser, type CustomsReceiptRegisterPayload, type FeePayableItem, type FeePaymentRequest, type FeePaymentRequestApprovePayload, type FeePaymentRequestCreatePayload, type FinancialSettlement, type FinancialSettlementCreatePayload, type ManualProfitCostCreatePayload, type PayableItem, type PaymentRequestApprovePayload, type PaymentRequestCreatePayload, type FinanceOverview, type PartnerFeeInvoice, type PartnerFeeInvoiceCreatePayload, type MiscFeeAllocation, type MiscFeeAllocationCreatePayload, type MiscFeeItem, type MiscFeeItemCreatePayload, type ProfitCostItem, type ReceivableItem, type SupplierInvoice, type SupplierInvoiceCreatePayload, type SupplierPaymentRequest, type TaxRefundRegisterPayload, type VerificationDocument, type VerificationDocumentCreatePayload, type VerificationRegisterPayload, type VerificationUsageItem, type Reimbursement, type ReimbursementCreatePayload, type PortImportBatch, type PortImportBatchCreatePayload, type CustomsDeclarationRecord, type ReceiptUsageDetailRow, type ReceiptUsageDetailReport, type BankReceiptCurrencySummary, type BankReceiptSummaryReport, type GoodsPaymentQueryRow, type GoodsPaymentQueryReport, type FeePaymentQueryRow, type FeePaymentQueryReport, type CustomsReceiptCollectionRow, type CustomsReceiptCollectionReport, type TaxRefundCurrencyTotal, type TaxRefundStatisticsReport , CustomsDeclarationRecordCreatePayload, FinanceCurrencySummary, FinancePartnerTypeSummary, FinanceReportDrilldown, FinanceReportExplanation, FinanceShipmentProfit, FinanceStatusAmount, exportBankReceiptSummaryReport, exportCustomsReceiptCollectionReport, exportFeePaymentReport, exportGoodsPaymentReport, exportReceiptUsageReport, exportTaxRefundStatisticsReport, drilldownFinanceReport, explainFinanceReport} from '../../../api'
-import { financePath, financeOverviewPath, financeReceiptsPath, financePaymentsPath, financeFeesPath, financeTaxPath, financeMiscPath, financeSettlementPath, financeReimbursementsPath, financePortDataPath, financeReportsPath, financeModulePathByModule, financeDetailPath, isFinancePath, parseFinanceView, reportingPath, type FinanceModule, type FinanceView } from '../../routes'
+import { allocateBankReceipt, approveFeePaymentRequest, approvePaymentRequest, autoMatchCustomsReceipts, claimBankReceipt, addManualProfitCost, createBankReceipt, createFinancialSettlement, createFeePaymentRequest, createMiscFeeAllocation, createMiscFeeItem, createPartnerFeeInvoice, createPaymentRequest, createSupplierInvoice, createVerificationDocument, createPortImportBatch, createReimbursement, approveReimbursement, payReimbursement, getFinanceOverview, listBankReceipts, listFinancialSettlements, listFeePayables, listFeePaymentRequests, listMiscFeeAllocationSummary, listMiscFeeAllocations, listMiscFeeItems, listPartnerFeeInvoices, listPayables, listPaymentRequests, listProfitCalculations, listReceivables, listSupplierInvoices, listVerificationDocuments, listVerificationUsage, listReimbursements, listPortImportBatches, listCustomsDeclarationRecords, registerVerification, registerVerificationCustomsReceipt, registerTaxRefund, getReceiptUsageReport, getBankReceiptSummaryReport, getGoodsPaymentReport, getFeePaymentReport, getCustomsReceiptCollectionReport, getTaxRefundStatisticsReport, type BankReceipt, type BankReceiptAllocationPayload as _BankReceiptAllocationPayload, type BankReceiptClaimPayload as _BankReceiptClaimPayload, type BankReceiptCreatePayload as _BankReceiptCreatePayload, type CurrentUser, type CustomsReceiptRegisterPayload as _CustomsReceiptRegisterPayload, type FeePayableItem, type FeePaymentRequest, type FeePaymentRequestApprovePayload as _FeePaymentRequestApprovePayload, type FeePaymentRequestCreatePayload as _FeePaymentRequestCreatePayload, type FinancialSettlement, type FinancialSettlementCreatePayload as _FinancialSettlementCreatePayload, type ManualProfitCostCreatePayload as _ManualProfitCostCreatePayload, type PayableItem, type PaymentRequestApprovePayload as _PaymentRequestApprovePayload, type PaymentRequestCreatePayload as _PaymentRequestCreatePayload, type FinanceOverview, type PartnerFeeInvoice, type PartnerFeeInvoiceCreatePayload as _PartnerFeeInvoiceCreatePayload, type MiscFeeAllocation, type MiscFeeAllocationCreatePayload as _MiscFeeAllocationCreatePayload, type MiscFeeItem, type MiscFeeItemCreatePayload as _MiscFeeItemCreatePayload, type ProfitCostItem, type ReceivableItem, type SupplierInvoice, type SupplierInvoiceCreatePayload as _SupplierInvoiceCreatePayload, type SupplierPaymentRequest, type TaxRefundRegisterPayload as _TaxRefundRegisterPayload, type VerificationDocument, type VerificationDocumentCreatePayload as _VerificationDocumentCreatePayload, type VerificationRegisterPayload as _VerificationRegisterPayload, type VerificationUsageItem, type Reimbursement, type ReimbursementCreatePayload, type PortImportBatch, type PortImportBatchCreatePayload, type CustomsDeclarationRecord, type ReceiptUsageDetailRow, type ReceiptUsageDetailReport, type BankReceiptCurrencySummary, type BankReceiptSummaryReport, type GoodsPaymentQueryRow, type GoodsPaymentQueryReport, type FeePaymentQueryRow, type FeePaymentQueryReport, type CustomsReceiptCollectionRow, type CustomsReceiptCollectionReport, type TaxRefundCurrencyTotal, type TaxRefundStatisticsReport , CustomsDeclarationRecordCreatePayload, FinanceCurrencySummary, FinancePartnerTypeSummary, FinanceReportDrilldown, FinanceReportExplanation, FinanceShipmentProfit, FinanceStatusAmount, exportBankReceiptSummaryReport, exportCustomsReceiptCollectionReport, exportFeePaymentReport, exportGoodsPaymentReport, exportReceiptUsageReport, exportTaxRefundStatisticsReport, drilldownFinanceReport, explainFinanceReport} from '../../../api'
+import { financePath, financeOverviewPath as _financeOverviewPath, financeReceiptsPath as _financeReceiptsPath, financePaymentsPath as _financePaymentsPath, financeFeesPath as _financeFeesPath, financeTaxPath as _financeTaxPath, financeMiscPath as _financeMiscPath, financeSettlementPath as _financeSettlementPath, financeReimbursementsPath as _financeReimbursementsPath, financePortDataPath as _financePortDataPath, financeReportsPath as _financeReportsPath, financeModulePathByModule, financeDetailPath, isFinancePath as _isFinancePath, parseFinanceView as _parseFinanceView, reportingPath as _reportingPath, type FinanceModule, type FinanceView } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
-import { receiptStatusOptions, receiptTypeOptions, allocationTypeOptions, supplierInvoiceStatusOptions, paymentRequestStatusOptions, paymentTypeOptions, partnerFeeInvoiceStatusOptions, feePaymentRequestStatusOptions, feeTypeOptions, verificationDocumentStatusOptions, verificationReminderStatusOptions, miscFeeCategoryOptions, miscFeeAllocationMethodOptions, miscFeeItemStatusOptions, settlementStatusOptions, profitCostTypeOptions, reportingDocumentTypeOptions, reportingStatusOptions , partnerTypeOptions, shipmentStatusOptions, purchaseInvoiceNoticeStatusOptions, sampleFeeTypeOptions} from '../../../shared/formOptions'
-import { formatDate, formatDateTime, formatMoney, formatFinanceAmount, formatPercent, nullableText, todayInputValue, pageTitle, statusTag, severityTag, partnerTypeLabel, type ModuleNavigationProps , emptyToNull} from '../appHelpers'
-import { shipmentStatusLabel, purchaseInvoiceNoticeStatusLabel, samplePaymentStatusLabel, BankReceiptFormState, ReceiptClaimFormState, ReceiptAllocationFormState, SupplierInvoiceFormState, PaymentRequestFormState, PaymentApprovalFormState, PartnerFeeInvoiceFormState, FeePaymentRequestFormState, FeePaymentApprovalFormState, VerificationDocumentFormState, CustomsReceiptFormState, VerificationRegisterFormState, TaxRefundFormState, MiscFeeItemFormState, MiscFeeAllocationFormState, FinancialSettlementFormState, ManualProfitCostFormState, initialBankReceiptForm, initialReceiptClaimForm, initialReceiptAllocationForm, bankReceiptPayload, receiptClaimPayload, receiptAllocationPayload, receiptStatusLabel, receiptStatusColor, receiptStatusTag, receiptTypeLabel, allocationTypeLabel, receivableStatusLabel, receivableStatusTag, initialSupplierInvoiceForm, initialPaymentRequestForm, initialPaymentApprovalForm, supplierInvoicePayload, paymentRequestPayload, paymentApprovalPayload, supplierInvoiceStatusLabel, supplierInvoiceStatusTag, paymentRequestStatusLabel, paymentRequestStatusTag, paymentTypeLabel, initialPartnerFeeInvoiceForm, initialFeePaymentRequestForm, initialFeePaymentApprovalForm, partnerFeeInvoicePayload, feePaymentRequestPayload, feePaymentApprovalPayload, partnerFeeInvoiceStatusLabel, partnerFeeInvoiceStatusTag, feePaymentRequestStatusLabel, feePaymentRequestStatusTag, feeTypeLabel, initialVerificationDocumentForm, initialCustomsReceiptForm, initialVerificationRegisterForm, initialTaxRefundForm, verificationDocumentPayload, customsReceiptPayload, verificationRegisterPayload, taxRefundPayload, verificationDocumentStatusLabel, verificationDocumentStatusTag, verificationReminderStatusLabel, verificationReminderStatusTag, initialMiscFeeItemForm, initialMiscFeeAllocationForm, miscFeeItemPayload, miscFeeAllocationPayload, miscFeeCategoryLabel, miscFeeAllocationMethodLabel, miscFeeItemStatusLabel, miscFeeItemStatusTag, reimbursementCategoryLabel, reimbursementStatusTag, initialFinancialSettlementForm, initialManualProfitCostForm, financialSettlementPayload, manualProfitCostPayload, settlementStatusLabel, settlementStatusTag, approvalDocumentTypeLabel, approvalDocumentTypeTag, approvalStatusTag, sourcePathTag, profitCostTypeLabel, profitCostDirectionTag } from './financeHelpers'
+import { receiptStatusOptions, receiptTypeOptions, allocationTypeOptions, supplierInvoiceStatusOptions, paymentRequestStatusOptions as _paymentRequestStatusOptions, paymentTypeOptions, partnerFeeInvoiceStatusOptions, feePaymentRequestStatusOptions as _feePaymentRequestStatusOptions, feeTypeOptions, verificationDocumentStatusOptions, verificationReminderStatusOptions, miscFeeCategoryOptions, miscFeeAllocationMethodOptions, miscFeeItemStatusOptions, settlementStatusOptions as _settlementStatusOptions, profitCostTypeOptions as _profitCostTypeOptions, reportingDocumentTypeOptions as _reportingDocumentTypeOptions, reportingStatusOptions as _reportingStatusOptions , partnerTypeOptions, shipmentStatusOptions as _shipmentStatusOptions, purchaseInvoiceNoticeStatusOptions as _purchaseInvoiceNoticeStatusOptions, sampleFeeTypeOptions as _sampleFeeTypeOptions} from '../../../shared/formOptions'
+import { formatDate, formatDateTime as _formatDateTime, formatMoney as _formatMoney, formatFinanceAmount, formatPercent, nullableText, todayInputValue as _todayInputValue, pageTitle as _pageTitle, statusTag as _statusTag, severityTag as _severityTag, partnerTypeLabel, type ModuleNavigationProps , emptyToNull as _emptyToNull} from '../appHelpers'
+import { shipmentStatusLabel, purchaseInvoiceNoticeStatusLabel, samplePaymentStatusLabel, BankReceiptFormState, ReceiptClaimFormState, ReceiptAllocationFormState, SupplierInvoiceFormState, PaymentRequestFormState, PaymentApprovalFormState, PartnerFeeInvoiceFormState, FeePaymentRequestFormState, FeePaymentApprovalFormState, VerificationDocumentFormState, CustomsReceiptFormState, VerificationRegisterFormState, TaxRefundFormState, MiscFeeItemFormState, MiscFeeAllocationFormState, FinancialSettlementFormState, ManualProfitCostFormState, initialBankReceiptForm, initialReceiptClaimForm, initialReceiptAllocationForm, bankReceiptPayload, receiptClaimPayload, receiptAllocationPayload, receiptStatusLabel, receiptStatusColor as _receiptStatusColor, receiptStatusTag, receiptTypeLabel, allocationTypeLabel, receivableStatusLabel as _receivableStatusLabel, receivableStatusTag, initialSupplierInvoiceForm, initialPaymentRequestForm, initialPaymentApprovalForm, supplierInvoicePayload, paymentRequestPayload, paymentApprovalPayload, supplierInvoiceStatusLabel, supplierInvoiceStatusTag, paymentRequestStatusLabel as _paymentRequestStatusLabel, paymentRequestStatusTag, paymentTypeLabel, initialPartnerFeeInvoiceForm, initialFeePaymentRequestForm, initialFeePaymentApprovalForm, partnerFeeInvoicePayload, feePaymentRequestPayload, feePaymentApprovalPayload, partnerFeeInvoiceStatusLabel as _partnerFeeInvoiceStatusLabel, partnerFeeInvoiceStatusTag, feePaymentRequestStatusLabel as _feePaymentRequestStatusLabel, feePaymentRequestStatusTag, feeTypeLabel, initialVerificationDocumentForm, initialCustomsReceiptForm, initialVerificationRegisterForm, initialTaxRefundForm, verificationDocumentPayload, customsReceiptPayload, verificationRegisterPayload, taxRefundPayload, verificationDocumentStatusLabel, verificationDocumentStatusTag, verificationReminderStatusLabel as _verificationReminderStatusLabel, verificationReminderStatusTag, initialMiscFeeItemForm, initialMiscFeeAllocationForm, miscFeeItemPayload, miscFeeAllocationPayload, miscFeeCategoryLabel, miscFeeAllocationMethodLabel, miscFeeItemStatusLabel, miscFeeItemStatusTag, reimbursementCategoryLabel, reimbursementStatusTag, initialFinancialSettlementForm, initialManualProfitCostForm, financialSettlementPayload, manualProfitCostPayload, settlementStatusLabel as _settlementStatusLabel, settlementStatusTag, approvalDocumentTypeLabel as _approvalDocumentTypeLabel, approvalDocumentTypeTag as _approvalDocumentTypeTag, approvalStatusTag as _approvalStatusTag, sourcePathTag as _sourcePathTag, profitCostTypeLabel, profitCostDirectionTag } from './financeHelpers'
 
 
 
@@ -26,7 +26,7 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   const detailId = view.id
   const goModule = (module: FinanceModule) => onNavigate(financeModulePathByModule[module])
   const goDetail = (module: FinanceModule, id: string) => onNavigate(financeDetailPath(module, id))
-  const goFinanceHome = () => onNavigate(financePath)
+  const _goFinanceHome = () => onNavigate(financePath)
   const [overview, setOverview] = useState<FinanceOverview | null>(null)
   const [receipts, setReceipts] = useState<BankReceipt[]>([])
   const [receivables, setReceivables] = useState<ReceivableItem[]>([])
@@ -70,7 +70,7 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   const [loadingPortBatches, setLoadingPortBatches] = useState(false)
   const [loadingCustomsRecords, setLoadingCustomsRecords] = useState(false)
   const [submittingPortBatch, setSubmittingPortBatch] = useState(false)
-  const [portBatchSourceFilter, setPortBatchSourceFilter] = useState('')
+  const [portBatchSourceFilter, _setPortBatchSourceFilter] = useState('')
   const [customsDeclarationFilter, setCustomsDeclarationFilter] = useState('')
   const [customsReceiptFilter, setCustomsReceiptFilter] = useState('')
   const [customsTradeTypeFilter, setCustomsTradeTypeFilter] = useState('')
@@ -110,8 +110,8 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   const [activeReport, setActiveReport] = useState('receipt-usage')
   const [loadingReport, setLoadingReport] = useState(false)
   const [exportingReport, setExportingReport] = useState(false)
-  const [loadingReportExplanation, setLoadingReportExplanation] = useState(false)
-  const [reportExplanation, setReportExplanation] = useState<FinanceReportExplanation | null>(null)
+  const [_loadingReportExplanation, setLoadingReportExplanation] = useState(false)
+  const [_reportExplanation, setReportExplanation] = useState<FinanceReportExplanation | null>(null)
   const [reportDrilldown, setReportDrilldown] = useState<FinanceReportDrilldown | null>(null)
   const [matchingCustomsReceipts, setMatchingCustomsReceipts] = useState(false)
   const [receiptUsageReport, setReceiptUsageReport] = useState<ReceiptUsageDetailReport | null>(null)
@@ -141,9 +141,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   const [invoiceStatusFilter, setInvoiceStatusFilter] = useState('')
   const [invoiceSupplierFilter, setInvoiceSupplierFilter] = useState('')
   const [invoiceContractFilter, setInvoiceContractFilter] = useState('')
-  const [paymentRequestSearch, setPaymentRequestSearch] = useState('')
-  const [paymentRequestStatusFilter, setPaymentRequestStatusFilter] = useState('')
-  const [paymentRequestTypeFilter, setPaymentRequestTypeFilter] = useState('')
+  const [paymentRequestSearch, _setPaymentRequestSearch] = useState('')
+  const [paymentRequestStatusFilter, _setPaymentRequestStatusFilter] = useState('')
+  const [paymentRequestTypeFilter, _setPaymentRequestTypeFilter] = useState('')
   const [payableSearch, setPayableSearch] = useState('')
   const [payableStatusFilter, setPayableStatusFilter] = useState('')
   const [payableSupplierFilter, setPayableSupplierFilter] = useState('')
@@ -153,9 +153,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   const [feeInvoiceTypeFilter, setFeeInvoiceTypeFilter] = useState('')
   const [feeInvoicePartnerFilter, setFeeInvoicePartnerFilter] = useState('')
   const [feeInvoiceShipmentFilter, setFeeInvoiceShipmentFilter] = useState('')
-  const [feePaymentRequestSearch, setFeePaymentRequestSearch] = useState('')
-  const [feePaymentRequestStatusFilter, setFeePaymentRequestStatusFilter] = useState('')
-  const [feePaymentRequestTypeFilter, setFeePaymentRequestTypeFilter] = useState('')
+  const [feePaymentRequestSearch, _setFeePaymentRequestSearch] = useState('')
+  const [feePaymentRequestStatusFilter, _setFeePaymentRequestStatusFilter] = useState('')
+  const [feePaymentRequestTypeFilter, _setFeePaymentRequestTypeFilter] = useState('')
   const [feePayableSearch, setFeePayableSearch] = useState('')
   const [feePayableStatusFilter, setFeePayableStatusFilter] = useState('')
   const [feePayableTypeFilter, setFeePayableTypeFilter] = useState('')
@@ -295,7 +295,6 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
       void loadFinanceReport(activeReport)
       void loadReportExplanation(activeReport)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeModule, activeReport])
 
   // Keep the per-module selection in sync with the detail id in the URL so that
@@ -4210,6 +4209,7 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
             </div>
             <label className="checkbox-line">
               <input
+                aria-label="启用项目"
                 type="checkbox"
                 checked={miscFeeItemForm.is_active}
                 onChange={(event) =>
@@ -4674,6 +4674,7 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
             <label>
               备注
               <textarea
+                aria-label="结算备注"
                 rows={3}
                 value={settlementForm.remark}
                 onChange={(event) => setSettlementForm({ ...settlementForm, remark: event.target.value })}
@@ -4802,6 +4803,7 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
             <label>
               备注
               <textarea
+                aria-label="手工成本备注"
                 rows={3}
                 value={manualProfitCostForm.remark}
                 onChange={(event) =>
@@ -5527,6 +5529,7 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                   <label>
                     包含已登记
                     <input
+                      aria-label="包含已登记"
                       checked={reportIncludeRegistered}
                       type="checkbox"
                       onChange={(event) => setReportIncludeRegistered(event.target.checked)}

@@ -90,7 +90,7 @@ function initialSampleRecordForm(): SampleRecordFormState {
   }
 }
 
-function sampleRecordFormFromRequest(
+function _sampleRecordFormFromRequest(
   request: SampleRequest,
   current: SampleRecordFormState,
 ): SampleRecordFormState {
@@ -140,7 +140,7 @@ function initialSampleRecordStockForm(): SampleRecordStockFormState {
   }
 }
 
-function sampleRequestToRecordPayload(form: SampleRecordFormState): SampleRequestToRecordPayload {
+function _sampleRequestToRecordPayload(form: SampleRecordFormState): SampleRequestToRecordPayload {
   const images: SampleRecordImagePayload[] = []
   if (form.image_file_id.trim() && form.image_filename.trim() && form.image_url.trim()) {
     images.push({

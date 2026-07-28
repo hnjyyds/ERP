@@ -99,7 +99,6 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
 
   useEffect(() => {
     void loadParties()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

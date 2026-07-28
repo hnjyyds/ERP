@@ -138,7 +138,12 @@ export function UserAvatarPicker({
             {activeTab === 'upload' ? (
               <div className="user-avatar-picker-upload-panel">
                 <label className="user-avatar-picker-upload">
-                  <input accept="image/*" type="file" onChange={handleFileChange} />
+                  <input
+                    accept="image/*"
+                    aria-label="选择头像图片"
+                    type="file"
+                    onChange={handleFileChange}
+                  />
                   <UploadCloud size={18} />
                   <span>选择图片</span>
                 </label>

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- this module exports a hook that returns a memoized control */
 import { Button, Dropdown, Menu, type MenuProps } from 'antd'
 import { SlidersHorizontal } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
@@ -85,10 +86,19 @@ function ColumnViewControl({ options, isVisible, onToggle, onReset }: ControlPro
       key: option.key,
       label: (
         <span
+          role="button"
+          tabIndex={option.required ? -1 : 0}
           style={{ cursor: option.required ? 'not-allowed' : 'pointer', opacity: option.required ? 0.5 : 1 }}
           onClick={(e) => {
             if (!option.required) {
               e.stopPropagation()
+              onToggle(option.key, !isVisible(option.key))
+            }
+          }}
+          onKeyDown={(event) => {
+            if (!option.required && (event.key === 'Enter' || event.key === ' ')) {
+              event.preventDefault()
+              event.stopPropagation()
               onToggle(option.key, !isVisible(option.key))
             }
           }}

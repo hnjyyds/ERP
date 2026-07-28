@@ -1,13 +1,13 @@
 import { reportingDocumentTypeOptions, reportingStatusOptions, exportContractStatusOptions } from '../../../shared/formOptions'
-import { Alert, Button, Descriptions, Input, Modal, Select, Skeleton, Table, Tag } from 'antd'
+import { Alert, Button, Descriptions as _Descriptions, Input, Modal as _Modal, Select as _Select, Skeleton as _Skeleton, Table, Tag } from 'antd'
 import { BarChart3, LayoutDashboard, Search, ShieldCheck , CheckCircle2} from 'lucide-react'
-import { useEffect, useMemo, useState , ReactNode} from 'react'
-import { getFinanceOverview, listReportingStatistics, drilldownFinanceReport, explainFinanceReport, type FinanceOverview, type ReportingStatistics, type FinanceShipmentProfit, type FinanceCurrencySummary, type FinancePartnerTypeSummary, type FinanceStatusAmount, type ReportDocumentStatistic, type StatusAmountStatistic, type SalesMonthlyShipmentStatistic, type CustomerShipmentStatistic, type MenuItem, type FinanceReportDrilldown, type FinanceReportExplanation , ApprovalDocument, ApprovalQuery, ApprovalTypeSummary, ShipmentStatisticItem, listApprovalDocuments} from '../../../api'
-import { reportingPath, type FinanceModule } from '../../routes'
+import { useEffect, useMemo as _useMemo, useState , ReactNode} from 'react'
+import { getFinanceOverview as _getFinanceOverview, listReportingStatistics, drilldownFinanceReport as _drilldownFinanceReport, explainFinanceReport as _explainFinanceReport, type FinanceOverview as _FinanceOverview, type ReportingStatistics, type FinanceShipmentProfit as _FinanceShipmentProfit, type FinanceCurrencySummary as _FinanceCurrencySummary, type FinancePartnerTypeSummary as _FinancePartnerTypeSummary, type FinanceStatusAmount as _FinanceStatusAmount, type ReportDocumentStatistic, type StatusAmountStatistic, type SalesMonthlyShipmentStatistic, type CustomerShipmentStatistic, type MenuItem, type FinanceReportDrilldown as _FinanceReportDrilldown, type FinanceReportExplanation as _FinanceReportExplanation , ApprovalDocument, ApprovalQuery, ApprovalTypeSummary, ShipmentStatisticItem, listApprovalDocuments} from '../../../api'
+import { reportingPath as _reportingPath, type FinanceModule as _FinanceModule } from '../../routes'
 import { Metric, PanelTitle , FormSelect} from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { t } from '../../App'
-import { formatDate, formatFinanceAmount, formatMoney, formatPercent, nullableText, pageTitle, statusTag, severityTag, partnerTypeLabel, type ModuleNavigationProps } from '../appHelpers'
+import { formatDate, formatFinanceAmount, formatMoney as _formatMoney, formatPercent as _formatPercent, nullableText, pageTitle as _pageTitle, statusTag as _statusTag, severityTag as _severityTag, partnerTypeLabel as _partnerTypeLabel, type ModuleNavigationProps } from '../appHelpers'
 
 type FollowupTemplateFormState = {
   name: string
@@ -111,7 +111,7 @@ export function AccessDeniedPage() {
   )
 }
 
-export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
+export function ReportingPage({ onNavigate: _onNavigate }: ModuleNavigationProps) {
   const [approvals, setApprovals] = useState<ApprovalQuery | null>(null)
   const [statistics, setStatistics] = useState<ReportingStatistics | null>(null)
   const [documentTypeFilter, setDocumentTypeFilter] = useState('')

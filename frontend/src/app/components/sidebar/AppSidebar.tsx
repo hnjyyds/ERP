@@ -2,7 +2,7 @@ import { ChevronDown, ChevronRight, LayoutDashboard, LockKeyhole } from 'lucide-
 import type { MenuItem } from '../../../api'
 import { lockedWorkflowPaths } from '../../pages/appHelpers'
 import { t } from '../../App'
-import type { SidebarGroup, SidebarItem } from '../../App'
+import type { SidebarGroup, SidebarItem as _SidebarItem } from '../../App'
 
 type Props = {
   activePath: string

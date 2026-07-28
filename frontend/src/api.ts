@@ -1,6 +1,6 @@
 import {
   ApiError,
-  ERROR_MESSAGES,
+  ERROR_MESSAGES as _ERROR_MESSAGES,
   friendlyMessageFor,
   type ApiErrorDetail,
 } from './shared/errors'

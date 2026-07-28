@@ -2,12 +2,12 @@ import { Alert, Button, Input, Modal, Table } from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search , FileText} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { addPurchaseInquiryQuotation, createPurchaseInquiry, listPurchaseInquiries, listPurchaseInquiryReferences, listPurchaseInquirySupplierSamples, sendPurchaseInquiryTemplate, updatePurchaseInquiry, type PurchaseInquiry, type PurchaseInquiryCreatePayload, type PurchaseInquiryLine, type PurchaseInquiryReference, type PurchaseInquiryTemplate, type PurchaseInquiryTemplatePayload, type SupplierQuotation, type SupplierQuotationPayload , SupplierSampleEvidence} from '../../../api'
+import { addPurchaseInquiryQuotation, createPurchaseInquiry, listPurchaseInquiries, listPurchaseInquiryReferences, listPurchaseInquirySupplierSamples, sendPurchaseInquiryTemplate, updatePurchaseInquiry, type PurchaseInquiry, type PurchaseInquiryCreatePayload, type PurchaseInquiryLine as _PurchaseInquiryLine, type PurchaseInquiryReference, type PurchaseInquiryTemplate as _PurchaseInquiryTemplate, type PurchaseInquiryTemplatePayload, type SupplierQuotation, type SupplierQuotationPayload , SupplierSampleEvidence} from '../../../api'
 import { purchaseInquiryPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { purchaseInquiryStatusOptions , sampleRecordStatusOptions} from '../../../shared/formOptions'
-import { formatDate, formatMoney, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { formatDate, formatMoney, nullableText as _nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
 
 function sampleRecordStatusLabel(value: string): string {
   return sampleRecordStatusOptions.find((item) => item.value === value)?.label ?? value
@@ -817,6 +817,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                     </div>
                     <label className="checkbox-label">
                       <input
+                        aria-label="可提供样品"
                         checked={quotationForm.sample_available}
                         type="checkbox"
                         onChange={(event) =>
@@ -988,5 +989,4 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
     </section>
   )
 }
-
 

@@ -236,7 +236,6 @@ export function TradingPartnerPage({
 
   useEffect(() => {
     void loadRows()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

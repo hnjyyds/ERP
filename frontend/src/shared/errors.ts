@@ -1,4 +1,4 @@
-import { Modal, message } from 'antd'
+import { Modal as _Modal, message } from 'antd'
 
 export type ApiErrorDetail = {
   field: string

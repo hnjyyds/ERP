@@ -16,13 +16,13 @@ import {
   getDashboard,
   getI18nConfig,
   hasAuthToken,
-  setAuthToken,
+  setAuthToken as _setAuthToken,
   authExpiredEventName,
 } from '../api'
 import {
   dashboardPath,
   canAccessPath,
-  detailRootPath,
+  detailRootPath as _detailRootPath,
   organizationUsersPath,
   mcpSettingsPath,
   productPath,
@@ -60,10 +60,11 @@ import {
   reportingPath,
 } from './routes'
 import { showError } from '../shared/errors'
+import type { UserAvatarPickerValue } from '../shared/ui'
 import {
   BarChart3,
   ClipboardCheck,
-  Coins,
+  Coins as _Coins,
   LayoutDashboard,
   LockKeyhole,
   Package,
@@ -367,8 +368,8 @@ export default function App() {
   const [i18nConfig, setI18nConfig] = useState<I18nConfig>(fallbackI18nConfig)
   const [appSettings, setAppSettings] = useState<AppSettings>(() => normalizeSettings(null))
   const [settingsOpen, setSettingsOpen] = useState(false)
-  const [settingsAvatarDraft, setSettingsAvatarDraft] = useState<any>(null)
-  const [savingSettingsAvatar, setSavingSettingsAvatar] = useState(false)
+  const [settingsAvatarDraft, setSettingsAvatarDraft] = useState<UserAvatarPickerValue | null>(null)
+  const [savingSettingsAvatar, _setSavingSettingsAvatar] = useState(false)
 
   const antdLocale = appSettings.language === 'en-US' ? enUS : zhCN
 

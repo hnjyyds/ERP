@@ -199,7 +199,7 @@ type PermissionGroupDefinition = {
   sections: PermissionSectionDefinition[]
 }
 
-const permissionModuleOrder = [
+const _permissionModuleOrder = [
   'dashboard',
   'system',
   'organization',
@@ -1242,6 +1242,7 @@ export function OrganizationUsersPage({
         <label className="organization-search">
           <Search size={17} />
           <input
+            aria-label="搜索用户、部门或角色"
             placeholder="搜索用户、部门或角色"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -1578,6 +1579,7 @@ export function OrganizationUsersPage({
                   {field.key === 'name' ? ' *' : ''}
                 </span>
                 <input
+                  aria-label={field.label}
                   value={companyForm[field.key]}
                   onChange={(event) =>
                     setCompanyForm({ ...companyForm, [field.key]: event.target.value })
@@ -1649,6 +1651,7 @@ export function OrganizationUsersPage({
                     </div>
                     <label className="organization-permission-bulk">
                       <input
+                        aria-label={`${group.label}权限全选`}
                         checked={groupFullySelected}
                         disabled={!groupItems.length}
                         type="checkbox"
@@ -1670,6 +1673,7 @@ export function OrganizationUsersPage({
                             </div>
                             <label>
                               <input
+                                aria-label={`${section.label}权限全选`}
                                 checked={sectionFullySelected}
                                 disabled={!section.items.length}
                                 type="checkbox"
@@ -1685,6 +1689,7 @@ export function OrganizationUsersPage({
                                 return (
                                   <label className={checked ? 'selected' : ''} key={permission.id}>
                                     <input
+                                      aria-label={permission.name}
                                       checked={checked}
                                       type="checkbox"
                                       onChange={() => togglePermission(permission.id)}
@@ -1738,6 +1743,7 @@ export function OrganizationUsersPage({
             <label>
               <span>用户名</span>
               <input
+                aria-label="用户名"
                 disabled={userModalMode === 'edit'}
                 placeholder="用于登录，如 sales.chen"
                 value={form.username}
@@ -1747,6 +1753,7 @@ export function OrganizationUsersPage({
             <label>
               <span>姓名</span>
               <input
+                aria-label="姓名"
                 value={form.display_name}
                 onChange={(event) => setForm({ ...form, display_name: event.target.value })}
               />
@@ -1787,6 +1794,7 @@ export function OrganizationUsersPage({
           </div>
           <label className="organization-toggle">
             <input
+              aria-label="账号启用"
               checked={form.is_active}
               type="checkbox"
               onChange={(event) => setForm({ ...form, is_active: event.target.checked })}
@@ -1821,6 +1829,7 @@ export function OrganizationUsersPage({
           <label>
             <span>部门名称</span>
             <input
+              aria-label="部门名称"
               placeholder="如 业务部、财务部"
               value={departmentForm.name}
               onChange={(event) => setDepartmentForm({ ...departmentForm, name: event.target.value })}
@@ -1844,6 +1853,7 @@ export function OrganizationUsersPage({
           <label>
             <span>排序</span>
             <input
+              aria-label="部门排序"
               min={0}
               type="number"
               value={departmentForm.sort_order}
@@ -1874,6 +1884,7 @@ export function OrganizationUsersPage({
             <label>
               <span>角色名称</span>
               <input
+                aria-label="角色名称"
                 placeholder="如 业务主管、财务"
                 value={roleForm.name}
                 onChange={(event) => setRoleForm({ ...roleForm, name: event.target.value })}
@@ -1882,6 +1893,7 @@ export function OrganizationUsersPage({
             <label>
               <span>角色编码</span>
               <input
+                aria-label="角色编码"
                 placeholder="小写字母，如 sales_manager"
                 value={roleForm.code}
                 onChange={(event) => setRoleForm({ ...roleForm, code: event.target.value })}
@@ -1931,6 +1943,7 @@ export function OrganizationUsersPage({
                               </div>
                               <label>
                                 <input
+                                  aria-label={`${section.label}权限全选`}
                                   checked={sectionFullySelected}
                                   disabled={!section.items.length}
                                   type="checkbox"
@@ -1948,6 +1961,7 @@ export function OrganizationUsersPage({
                                   return (
                                     <label className={checked ? 'selected' : ''} key={permission.id}>
                                       <input
+                                        aria-label={permission.name}
                                         checked={checked}
                                         type="checkbox"
                                         onChange={() => toggleRoleFormPermission(permission.id)}

@@ -1,4 +1,4 @@
-import { Alert, Button, Input, Modal, Skeleton, Table, Tag } from 'antd'
+import { Alert, Button, Input, Modal, Skeleton as _Skeleton, Table, Tag as _Tag } from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search, Warehouse , PackagePlus, Save, Send} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
@@ -7,7 +7,7 @@ import { warehouseOutboundPlanPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { outboundPlanStatusOptions, outboundPlanTypeOptions, outboundPlanSourceTypeOptions } from '../../../shared/formOptions'
-import { daysFromTodayInputValue, formatDate, formatMoney, formatQuantity, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull, trimDecimal} from '../appHelpers'
+import { daysFromTodayInputValue, formatDate, formatMoney as _formatMoney, formatQuantity as _formatQuantity, nullableText, todayInputValue as _todayInputValue, type RoutedDetailPageProps , emptyToNull, trimDecimal} from '../appHelpers'
 
 type OutboundPlanGenerateFormState = {
   shipment_plan_id: string
@@ -24,7 +24,7 @@ type OutboundPlanScheduleFormState = {
   operator_name: string
 }
 
-type OutboundOrderFormState = {
+type _OutboundOrderFormState = {
   plan_id: string
   code: string
   outbound_mode: string
@@ -37,7 +37,7 @@ type OutboundOrderFormState = {
   exception_reason: string
 }
 
-type OutboundOrderApprovalFormState = {
+type _OutboundOrderApprovalFormState = {
   reviewer_name: string
   approved_at: string
   allow_negative: boolean

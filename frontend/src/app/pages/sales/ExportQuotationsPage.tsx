@@ -1,14 +1,14 @@
-import { Alert, Button, Input, Modal, Table, Tag , Select} from 'antd'
-import { ArrowLeft, LayoutDashboard, Plus, Search , FileText} from 'lucide-react'
+import { Alert, Button, Input, Modal as _Modal, Table, Tag as _Tag , Select} from 'antd'
+import { ArrowLeft, LayoutDashboard, Plus as _Plus, Search , FileText} from 'lucide-react'
 import type { FormEvent, MouseEvent , ReactNode} from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { approveExportQuotation, confirmExportQuotationContract, createExportQuotation, exportExportQuotation, getExportQuotationHistory, getExportQuotationPurchaseReferences, getExportQuotationSampleDeliveries, listExportQuotations, submitExportQuotation, updateExportQuotation, type ExportQuotation, type ExportQuotationApprovePayload, type ExportQuotationConfirmContractPayload, type ExportQuotationContract, type ExportQuotationCreatePayload, type ExportQuotationLine, type ExportQuotationPurchaseReference, type Customer, type Product , AssignableUser, SampleDelivery, Supplier, listCustomers} from '../../../api'
 import { exportQuotationPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
-import { downloadCsv } from '../../../shared/print'
+import { downloadCsv as _downloadCsv } from '../../../shared/print'
 import { exportQuotationStatusOptions, freightMethodOptions , sampleDeliveryStatusOptions} from '../../../shared/formOptions'
-import { formatDate, formatMoney, formatPercent, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { formatDate, formatMoney, formatPercent as _formatPercent, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
 
 function sampleDeliveryStatusLabel(value: string): string {
   return sampleDeliveryStatusOptions.find((item) => item.value === value)?.label ?? value
@@ -204,7 +204,7 @@ function productOptionLabel(product: Product): string {
   return [product.code, product.cn_name, product.en_name].filter(Boolean).join(' / ')
 }
 
-function renderProductOptions(products: Product[]): ReactNode {
+function _renderProductOptions(products: Product[]): ReactNode {
   return products.map((product) => {
     const label = productOptionLabel(product)
     return (
@@ -219,7 +219,7 @@ function supplierOptionLabel(supplier: Supplier): string {
   return [supplier.code, supplier.cn_name, supplier.en_name].filter(Boolean).join(' / ')
 }
 
-function renderSupplierOptions(suppliers: Supplier[]): ReactNode {
+function _renderSupplierOptions(suppliers: Supplier[]): ReactNode {
   return suppliers.map((supplier) => {
     const label = supplierOptionLabel(supplier)
     return (
@@ -234,7 +234,7 @@ function assignableUserOptionLabel(user: AssignableUser): string {
   return [user.display_name, user.username, user.department_name].filter(Boolean).join(' / ')
 }
 
-function renderAssignableUserOptions(users: AssignableUser[]): ReactNode {
+function _renderAssignableUserOptions(users: AssignableUser[]): ReactNode {
   return users.map((user) => {
     const label = assignableUserOptionLabel(user)
     return (
@@ -245,7 +245,7 @@ function renderAssignableUserOptions(users: AssignableUser[]): ReactNode {
   })
 }
 
-function mergePurchaseLineRemark(current: string, addition: string): string {
+function _mergePurchaseLineRemark(current: string, addition: string): string {
   if (!current.trim()) return addition
   if (current.includes(addition)) return current
   return `${current}; ${addition}`

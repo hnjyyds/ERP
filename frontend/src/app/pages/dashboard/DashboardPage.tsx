@@ -1,9 +1,9 @@
-import { Alert, Button, Input, Modal, Skeleton, Table, Tag } from 'antd'
-import { AtSign, Bell, CalendarClock, CheckCircle2, ClipboardCheck, FileText, LayoutDashboard, Plus, Search, Trash2 } from 'lucide-react'
-import type { FormEvent, ReactNode } from 'react'
-import { Component, useEffect, useMemo, useState } from 'react'
-import type { ErrorInfo } from 'react'
-import { createAnnouncement, createScheduleEvent, createTodos, deleteScheduleEvent, getDashboard, listAssignableUsers, markNotificationRead, type AssignableUser, type Announcement, type AnnouncementCreatePayload, type AppLanguage, type AppTimeZone, type CurrentUser, type Dashboard, type I18nConfig, type MenuItem, type NotificationItem, type ScheduleCreatePayload, type ScheduleEvent, type TodoCreatePayload, type TodoTask } from '../../../api'
+import { Alert as _Alert, Button as _Button, Input as _Input, Modal, Skeleton, Table as _Table, Tag } from 'antd'
+import { AtSign, Bell, CalendarClock, CheckCircle2, ClipboardCheck, FileText, LayoutDashboard as _LayoutDashboard, Plus, Search, Trash2 } from 'lucide-react'
+import type { FormEvent, ReactNode as _ReactNode } from 'react'
+import { Component as _Component, useEffect, useMemo as _useMemo, useState } from 'react'
+import type { ErrorInfo as _ErrorInfo } from 'react'
+import { createAnnouncement, createScheduleEvent, createTodos, deleteScheduleEvent, getDashboard as _getDashboard, listAssignableUsers, markNotificationRead, type AssignableUser, type Announcement as _Announcement, type AnnouncementCreatePayload, type AppLanguage as _AppLanguage, type AppTimeZone, type CurrentUser, type Dashboard, type I18nConfig as _I18nConfig, type MenuItem as _MenuItem, type NotificationItem, type ScheduleCreatePayload, type ScheduleEvent, type TodoCreatePayload, type TodoTask } from '../../../api'
 import { dashboardAnnouncementsPath, dashboardNotificationsPath, dashboardSchedulesPath, dashboardTodosPath, followupPath, reportingPath, dashboardPath } from '../../routes'
 import { Metric, PanelTitle, UserAvatar, defaultAvatarPreset } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
@@ -51,14 +51,14 @@ function dateTimeLocalToIso(value: string, settings: AppSettings = getRuntimeSet
   return parseDateTimeLocal(value, settings)?.toISOString() ?? ''
 }
 
-function normalizeApiDateValue(value: string) {
+function _normalizeApiDateValue(value: string) {
   if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return `${value}T00:00:00Z`
   if (/[zZ]$|[+-]\d{2}:?\d{2}$/.test(value)) return value
   return `${value}Z`
 }
 
 
-function dateParts(value: string | null, settings: AppSettings = getRuntimeSettings()) {
+function _dateParts(value: string | null, settings: AppSettings = getRuntimeSettings()) {
   const date = parseApiDate(value)
   if (!date) return null
   const parts = new Intl.DateTimeFormat(settings.language, {
@@ -188,6 +188,7 @@ export function DashboardScheduleTimeline({
 
         return (
           <button
+            aria-label={event.title}
             className="dashboard-timeline-item"
             key={event.id}
             type="button"
@@ -832,6 +833,7 @@ export function DashboardPage({
           <label>
             <span>{t('dashboard.title')}</span>
             <input
+              aria-label={t('dashboard.title')}
               value={scheduleForm.title}
               onChange={(event) => setScheduleForm({ ...scheduleForm, title: event.target.value })}
             />
@@ -840,6 +842,7 @@ export function DashboardPage({
             <label>
               <span>{t('dashboard.start')}</span>
               <input
+                aria-label={t('dashboard.start')}
                 type="datetime-local"
                 value={scheduleForm.starts_at}
                 onChange={(event) => setScheduleForm({ ...scheduleForm, starts_at: event.target.value })}
@@ -848,6 +851,7 @@ export function DashboardPage({
             <label>
               <span>{t('dashboard.end')}</span>
               <input
+                aria-label={t('dashboard.end')}
                 type="datetime-local"
                 value={scheduleForm.ends_at}
                 onChange={(event) => setScheduleForm({ ...scheduleForm, ends_at: event.target.value })}
@@ -857,6 +861,7 @@ export function DashboardPage({
           <label>
             <span>{t('dashboard.note')}</span>
             <textarea
+              aria-label={t('dashboard.note')}
               rows={3}
               value={scheduleForm.description}
               onChange={(event) => setScheduleForm({ ...scheduleForm, description: event.target.value })}
@@ -885,6 +890,7 @@ export function DashboardPage({
           <label>
             <span>{t('dashboard.title')}</span>
             <input
+              aria-label={t('dashboard.title')}
               value={announcementForm.title}
               onChange={(event) => setAnnouncementForm({ ...announcementForm, title: event.target.value })}
             />
@@ -892,6 +898,7 @@ export function DashboardPage({
           <label>
             <span>{t('dashboard.content')}</span>
             <textarea
+              aria-label={t('dashboard.content')}
               rows={4}
               value={announcementForm.content}
               onChange={(event) => setAnnouncementForm({ ...announcementForm, content: event.target.value })}
@@ -1230,4 +1237,3 @@ export function DashboardAnnouncementsPage({
     </section>
   )
 }
-

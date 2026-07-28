@@ -1,13 +1,13 @@
 import { Alert, Button, Input, Modal, Table } from 'antd'
-import { ArrowLeft, FlaskConical, Images, LayoutDashboard, Plus, Search } from 'lucide-react'
+import { ArrowLeft, FlaskConical, Images as _Images, LayoutDashboard, Plus, Search } from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { createSampleRequest, addSampleProgress, addSampleFee, requestSampleFeePayment, createSampleRecordFromRequest, listSampleRequests, type SampleRequest, type SampleRequestCreatePayload, type SampleRequestLinePayload, type SampleRequestToRecordPayload, type SampleFee, type SampleFeePayload, type SampleProgress, type SampleProgressPayload, type SampleRecord, type SampleRecordCreatePayload , SampleRecordImagePayload} from '../../../api'
+import { createSampleRequest, addSampleProgress, addSampleFee, requestSampleFeePayment, createSampleRecordFromRequest, listSampleRequests, type SampleRequest, type SampleRequestCreatePayload, type SampleRequestLinePayload, type SampleRequestToRecordPayload, type SampleFee, type SampleFeePayload, type SampleProgress, type SampleProgressPayload, type SampleRecord as _SampleRecord, type SampleRecordCreatePayload as _SampleRecordCreatePayload , SampleRecordImagePayload} from '../../../api'
 import { sampleRequestPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { openSampleRequestPrint } from '../../../shared/print'
-import { sampleStatusOptions, sampleDestinationOptions, sampleProgressStageOptions, sampleFeeTypeOptions, samplePayeeTypeOptions, sampleRecordTypeOptions, sampleSourceTypeOptions } from '../../../shared/formOptions'
+import { sampleStatusOptions, sampleDestinationOptions, sampleProgressStageOptions, sampleFeeTypeOptions, samplePayeeTypeOptions, sampleRecordTypeOptions, sampleSourceTypeOptions as _sampleSourceTypeOptions } from '../../../shared/formOptions'
 import { formatDate, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
 
 type SampleRecordFormState = {

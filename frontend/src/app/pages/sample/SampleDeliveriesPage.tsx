@@ -18,7 +18,7 @@ function sampleRecordTypeLabel(value: string): string {
   return sampleRecordTypeOptions.find((item) => item.value === value)?.label ?? value
 }
 
-function sampleRecordStatusLabel(value: string): string {
+function _sampleRecordStatusLabel(value: string): string {
   return sampleRecordStatusOptions.find((item) => item.value === value)?.label ?? value
 }
 

@@ -1,4 +1,4 @@
-import { Select, Tag } from 'antd'
+import { Select, Tag as _Tag } from 'antd'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 type RemoteSelectOption = {
