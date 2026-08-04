@@ -33,6 +33,7 @@ class PurchaseContractRow:
     approval_status: str
     submitted_at: date | None
     approved_at: date | None
+    reviewer_id: str | None
     reviewer_name: str | None
     total_quantity: str
     total_amount: str
@@ -501,12 +502,20 @@ class PurchaseContractRepository:
         total = await self.session.scalar(count_statement)
         return [self._map_contract(row) for row in rows], int(total or 0)
 
-    async def submit_contract(self, contract_id: str) -> PurchaseContractRow | None:
+    async def submit_contract(
+        self,
+        contract_id: str,
+        *,
+        reviewer_id: str | None = None,
+        reviewer_name: str | None = None,
+    ) -> PurchaseContractRow | None:
         contract = await self._get_contract_model(contract_id)
         if contract is None:
             return None
         contract.approval_status = "submitted"
         contract.submitted_at = contract.contract_date
+        contract.reviewer_id = reviewer_id
+        contract.reviewer_name = reviewer_name
         await self.session.flush()
         return self._map_contract(contract)
 
@@ -514,14 +523,18 @@ class PurchaseContractRepository:
         self,
         *,
         contract_id: str,
-        reviewer_name: str,
         approved_at: date,
+        reviewer_id: str | None = None,
+        reviewer_name: str | None = None,
     ) -> PurchaseContractRow | None:
         contract = await self._get_contract_model(contract_id)
         if contract is None:
             return None
         contract.approval_status = "approved"
-        contract.reviewer_name = reviewer_name
+        if reviewer_id is not None and contract.reviewer_id is None:
+            contract.reviewer_id = reviewer_id
+        if reviewer_name is not None and contract.reviewer_name is None:
+            contract.reviewer_name = reviewer_name
         contract.approved_at = approved_at
         await self.session.flush()
         return self._map_contract(contract)
@@ -574,6 +587,7 @@ class PurchaseContractRepository:
             approval_status=contract.approval_status,
             submitted_at=contract.submitted_at,
             approved_at=contract.approved_at,
+            reviewer_id=contract.reviewer_id,
             reviewer_name=contract.reviewer_name,
             total_quantity=self._quantity(contract.total_quantity),
             total_amount=self._money(contract.total_amount),

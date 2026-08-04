@@ -142,6 +142,7 @@ async def test_sample_record_import_export_and_followup_sync(
     seeded_system: None,
 ) -> None:
     token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     headers = {"Authorization": f"Bearer {token}"}
 
     contract_response = await api_client.post(
@@ -179,11 +180,15 @@ async def test_sample_record_import_export_and_followup_sync(
     )
     assert contract_response.status_code == 201
     contract_id = contract_response.json()["data"]["id"]
-    await api_client.post(f"/api/v1/purchase/contracts/{contract_id}/submit", headers=headers)
+    await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/submit",
+        headers=headers,
+        json={"reviewer_id": "u-admin"},
+    )
     approve_response = await api_client.post(
         f"/api/v1/purchase/contracts/{contract_id}/approve",
-        headers=headers,
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-06-20"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-06-20"},
     )
     assert approve_response.status_code == 200
 

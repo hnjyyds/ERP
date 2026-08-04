@@ -14,6 +14,7 @@ from app.modules.sales.contracts.schemas import (
     ExportContractCreate,
     ExportContractLineCreate,
     ExportContractSignatureCreate,
+    ExportContractSubmit,
 )
 from app.modules.sales.contracts.services import (
     ExportContractNotFoundError,
@@ -22,6 +23,7 @@ from app.modules.sales.contracts.services import (
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.auth.seed import seed_system_demo_data
 
 
 def _make_service(session: AsyncSession) -> ExportContractService:
@@ -89,6 +91,7 @@ async def test_export_contract_service_approval_signature_payment_export_and_eve
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         repository = ExportContractRepository(session)
         service = _make_service(session)
         current_user = _user_with_permissions(
@@ -131,9 +134,15 @@ async def test_export_contract_service_approval_signature_payment_export_and_eve
         submitted = await service.submit_contract(
             current_user=current_user,
             contract_id=contract.id,
+            payload=ExportContractSubmit(reviewer_id="u-admin"),
+        )
+        reviewer = _user_with_permissions(
+            ["sales:contract:approve", "sales:contract:view"],
+            user_id="u-admin",
+            data_scope="all",
         )
         approved = await service.approve_contract(
-            current_user=current_user,
+            current_user=reviewer,
             contract_id=contract.id,
             payload=ExportContractApprove(
                 reviewer_name="演示业务主管",
@@ -199,6 +208,7 @@ async def test_export_contract_service_only_deletes_draft_contracts(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         service = _make_service(session)
         current_user = _user_with_permissions(
             ["sales:contract:edit", "sales:contract:view"],
@@ -224,6 +234,7 @@ async def test_export_contract_service_only_deletes_draft_contracts(
         await service.submit_contract(
             current_user=current_user,
             contract_id=submitted.id,
+            payload=ExportContractSubmit(reviewer_id="u-admin"),
         )
         with pytest.raises(ValueError, match="只有草稿合同可以删除"):
             await service.delete_contract(

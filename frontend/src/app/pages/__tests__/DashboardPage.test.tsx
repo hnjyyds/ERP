@@ -95,4 +95,148 @@ describe('DashboardPage', () => {
     await userEvent.click(todoMetric)
     expect(onNavigate).toHaveBeenCalled()
   })
+
+  it('navigates an assigned QC task to my quality tasks', async () => {
+    const onNavigate = vi.fn()
+    const qualityDashboard = {
+      ...emptyDashboard,
+      summary: { ...emptyDashboard.summary, todo_count: 1 },
+      todos: [
+        {
+          id: 'qc-task-1',
+          owner_user_id: 'user-1',
+          owner_user_name: 'Admin',
+          creator_user_id: 'creator-1',
+          creator_user_name: null,
+          title: 'QC 查验 QC-001',
+          content: 'PC-001 / 首期供应商',
+          source_type: 'quality_inspection',
+          source_id: 'qc-task-1',
+          due_at: '2026-08-20T09:30:00',
+          status: 'pending',
+          assignment_type: 'assigned' as const,
+        },
+      ],
+    }
+
+    render(
+      <DashboardPage
+        {...defaultProps}
+        dashboard={qualityDashboard}
+        onNavigate={onNavigate}
+      />,
+    )
+
+    expect(screen.getByText('QC 查验')).toBeInTheDocument()
+    await userEvent.click(screen.getByText('dashboard.goHandle'))
+    expect(onNavigate).toHaveBeenCalledWith('/quality/tasks')
+  })
+
+  it('navigates an assigned follow-up node to its plan', async () => {
+    const onNavigate = vi.fn()
+    const followupDashboard = {
+      ...emptyDashboard,
+      summary: { ...emptyDashboard.summary, todo_count: 1 },
+      todos: [
+        {
+          id: 'followup-node-1',
+          owner_user_id: 'user-1',
+          owner_user_name: null,
+          creator_user_id: null,
+          creator_user_name: null,
+          title: '采购跟单 PC-001 · 确认样提交',
+          content: '首期供应商',
+          source_type: 'followup_plan',
+          source_id: 'followup-plan-1',
+          due_at: '2026-08-07T09:00:00',
+          status: 'pending',
+          assignment_type: 'assigned' as const,
+        },
+      ],
+    }
+
+    render(
+      <DashboardPage
+        {...defaultProps}
+        dashboard={followupDashboard}
+        onNavigate={onNavigate}
+      />,
+    )
+
+    await userEvent.click(screen.getByText('dashboard.goHandle'))
+    expect(onNavigate).toHaveBeenCalledWith('/purchase/followup/followup-plan-1')
+  })
+
+  it('navigates an inbound approval task to the assigned order', async () => {
+    const onNavigate = vi.fn()
+    const inboundDashboard = {
+      ...emptyDashboard,
+      summary: { ...emptyDashboard.summary, todo_count: 1 },
+      todos: [
+        {
+          id: 'inbound-order-1',
+          owner_user_id: 'user-1',
+          owner_user_name: 'Admin',
+          creator_user_id: 'creator-1',
+          creator_user_name: null,
+          title: '入库审批 IO-001',
+          content: 'PC-001 / 首期供应商 / 宁波总仓',
+          source_type: 'warehouse_inbound_approval',
+          source_id: 'inbound-order-1',
+          due_at: '2026-08-20T09:30:00',
+          status: 'pending',
+          assignment_type: 'assigned' as const,
+        },
+      ],
+    }
+
+    render(
+      <DashboardPage
+        {...defaultProps}
+        dashboard={inboundDashboard}
+        onNavigate={onNavigate}
+      />,
+    )
+
+    expect(screen.getByText('入库审批')).toBeInTheDocument()
+    await userEvent.click(screen.getByText('dashboard.goHandle'))
+    expect(onNavigate).toHaveBeenCalledWith('/warehouse/inbound-orders/inbound-order-1')
+  })
+
+  it('navigates a payment approval task to its supplier invoice detail', async () => {
+    const onNavigate = vi.fn()
+    const financeDashboard = {
+      ...emptyDashboard,
+      summary: { ...emptyDashboard.summary, todo_count: 1 },
+      todos: [
+        {
+          id: 'payment-request-1',
+          owner_user_id: 'user-1',
+          owner_user_name: 'Admin',
+          creator_user_id: 'finance-user-1',
+          creator_user_name: null,
+          title: '付款审批 PR-001',
+          content: '首期供应商 / SI-001',
+          source_type: 'finance_payment_approval',
+          source_id: 'supplier-invoice-1',
+          due_at: null,
+          status: 'pending',
+          assignment_type: 'assigned' as const,
+        },
+      ],
+    }
+
+    render(
+      <DashboardPage
+        {...defaultProps}
+        dashboard={financeDashboard}
+        onNavigate={onNavigate}
+      />,
+    )
+
+    await userEvent.click(screen.getByText('dashboard.goHandle'))
+    expect(onNavigate).toHaveBeenCalledWith(
+      '/finance/payments/supplier-invoice-1/payment-request-1',
+    )
+  })
 })

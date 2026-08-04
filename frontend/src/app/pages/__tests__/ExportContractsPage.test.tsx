@@ -61,6 +61,7 @@ const api = await vi.importMock<Record<string, ReturnType<typeof vi.fn>>>('../..
 
 describe('ExportContractsPage', () => {
   const onNavigate = vi.fn()
+  const currentUser = { id: 'u-admin', username: 'admin', display_name: '管理员', department_name: '管理部', avatar_type: 'preset' as const, avatar_value: 'blue', roles: ['admin'], permissions: ['system:super_admin'] }
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -70,7 +71,7 @@ describe('ExportContractsPage', () => {
 
   it('renders without crashing (list view)', async () => {
     const { container } = render(
-      <ExportContractsPage detailId={null} onNavigate={onNavigate} />,
+      <ExportContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
     )
     expect(container).toBeTruthy()
     await waitFor(() => {
@@ -79,7 +80,7 @@ describe('ExportContractsPage', () => {
   })
 
   it('renders summary strip', async () => {
-    render(<ExportContractsPage detailId={null} onNavigate={onNavigate} />)
+    render(<ExportContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
     await waitFor(() => {
       expect(api.listExportContracts).toHaveBeenCalled()
     })
@@ -87,7 +88,7 @@ describe('ExportContractsPage', () => {
   })
 
   it('clicking search button triggers API call', async () => {
-    render(<ExportContractsPage detailId={null} onNavigate={onNavigate} />)
+    render(<ExportContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
     await waitFor(() => {
       expect(api.listExportContracts).toHaveBeenCalled()
     })

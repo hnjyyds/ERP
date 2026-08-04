@@ -10,11 +10,13 @@ from app.modules.sales.shipments.schemas import (
     ShipmentApprove,
     ShipmentContractSelection,
     ShipmentPlanGenerate,
+    ShipmentSubmit,
 )
 from app.modules.sales.shipments.services import ShipmentPlanService
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.auth.seed import seed_system_demo_data
 
 
 def _make_service(
@@ -31,12 +33,14 @@ def _make_service(
 def _user_with_permissions(
     permissions: list[str],
     user_id: str = "u-001",
+    data_scope: str = "self",
 ) -> CurrentUserResponse:
     return CurrentUserResponse(
         id=user_id,
         username="tester",
         display_name="测试用户",
         department_name="测试部",
+        data_scope=data_scope,
         roles=["测试角色"],
         permissions=permissions,
     )
@@ -119,6 +123,7 @@ async def test_shipment_service_generates_combined_plan_and_updates_contract_shi
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         contract_repository = ExportContractRepository(session)
         shipment_repository = ShipmentPlanRepository(session)
         contract_a, _line_a = await _create_contract(
@@ -157,9 +162,15 @@ async def test_shipment_service_generates_combined_plan_and_updates_contract_shi
         submitted = await service.submit_shipment(
             current_user=current_user,
             shipment_id=plan.id,
+            payload=ShipmentSubmit(reviewer_id="u-admin"),
+        )
+        reviewer = _user_with_permissions(
+            ["sales:shipment:approve", "sales:shipment:view"],
+            user_id="u-admin",
+            data_scope="all",
         )
         approved = await service.approve_shipment(
-            current_user=current_user,
+            current_user=reviewer,
             shipment_id=plan.id,
             payload=ShipmentApprove(
                 reviewer_name="演示业务主管",

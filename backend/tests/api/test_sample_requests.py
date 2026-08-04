@@ -144,6 +144,7 @@ async def test_sample_request_create_search_progress_fee_and_payment(
     payment_response = await api_client.post(
         f"/api/v1/sample/requests/{request_id}/fees/{fee['id']}/payment-request",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-finance-manager"},
     )
     assert payment_response.status_code == 200
     paid_fee = payment_response.json()["data"]

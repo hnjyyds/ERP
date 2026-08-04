@@ -95,6 +95,7 @@ async def test_sample_delivery_review_stock_fee_statistics_and_histories(
     seeded_system: None,
 ) -> None:
     token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     sample_record = await _create_sample_record(api_client, token)
 
     create_response = await api_client.post(
@@ -114,19 +115,20 @@ async def test_sample_delivery_review_stock_fee_statistics_and_histories(
     submit_response = await api_client.post(
         f"/api/v1/sample/deliveries/{delivery_id}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     assert submit_response.status_code == 200
     assert submit_response.json()["data"]["status"] == "submitted"
 
     approve_response = await api_client.post(
         f"/api/v1/sample/deliveries/{delivery_id}/approve",
-        headers={"Authorization": f"Bearer {token}"},
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-06-25"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-06-25"},
     )
     assert approve_response.status_code == 200
     approved = approve_response.json()["data"]
     assert approved["status"] == "approved"
-    assert approved["reviewer_name"] == "演示业务主管"
+    assert approved["reviewer_name"] == "演示管理员"
 
     tracking_response = await api_client.post(
         f"/api/v1/sample/deliveries/{delivery_id}/tracking",
@@ -256,6 +258,7 @@ async def test_sample_delivery_can_update_draft_before_submit(
     submit_response = await api_client.post(
         f"/api/v1/sample/deliveries/{delivery_id}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     assert submit_response.status_code == 200
 

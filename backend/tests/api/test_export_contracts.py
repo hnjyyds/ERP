@@ -84,6 +84,7 @@ async def test_export_contract_flow_signature_payment_statistics_export_and_even
     seeded_system: None,
 ) -> None:
     token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     create_response = await api_client.post(
         "/api/v1/sales/contracts",
         headers={"Authorization": f"Bearer {token}"},
@@ -146,14 +147,15 @@ async def test_export_contract_flow_signature_payment_statistics_export_and_even
     submit_response = await api_client.post(
         f"/api/v1/sales/contracts/{contract_id}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     assert submit_response.status_code == 200
     assert submit_response.json()["data"]["approval_status"] == "submitted"
 
     approve_response = await api_client.post(
         f"/api/v1/sales/contracts/{contract_id}/approve",
-        headers={"Authorization": f"Bearer {token}"},
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-07-06"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-07-06"},
     )
     assert approve_response.status_code == 200
     approved = approve_response.json()["data"]
@@ -177,6 +179,7 @@ async def test_export_quotation_confirm_creates_real_export_contract(
     seeded_system: None,
 ) -> None:
     token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     quote_no = "QT-CONTRACT-E2E-001"
     create_quote = await api_client.post(
         "/api/v1/sales/quotations",
@@ -187,11 +190,12 @@ async def test_export_quotation_confirm_creates_real_export_contract(
     await api_client.post(
         f"/api/v1/sales/quotations/{quotation_id}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     await api_client.post(
         f"/api/v1/sales/quotations/{quotation_id}/approve",
-        headers={"Authorization": f"Bearer {token}"},
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-07-02"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-07-02"},
     )
 
     contract_response = await api_client.post(

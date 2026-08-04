@@ -21,6 +21,7 @@ from app.modules.sample.records.repositories import SampleRecordRepository
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.auth.seed import seed_system_demo_data
 
 
 def _make_service(session: AsyncSession) -> QualityInspectionService:
@@ -118,6 +119,7 @@ async def test_quality_inspection_service_records_failed_result_and_blocks_forma
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         purchase_repository = PurchaseContractRepository(session)
         contract_id, line_id = await _create_approved_contract(purchase_repository)
         service = _make_service(session)
@@ -129,7 +131,7 @@ async def test_quality_inspection_service_records_failed_result_and_blocks_forma
                 purchase_contract_id=contract_id,
                 inspected_at=date(2026, 8, 19),
                 result="failed",
-                inspector_id="u-qc-001",
+                inspector_id="u-qc",
                 inspector_name="QC 张工",
                 issue_summary="外箱破损",
                 attachment_group_id="attach-qc-fail",
@@ -172,6 +174,7 @@ async def test_quality_inspection_service_passed_result_writes_back_followup_nod
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         purchase_repository = PurchaseContractRepository(session)
         contract_id, line_id = await _create_approved_contract(purchase_repository)
         followup_service = FollowupService(
@@ -203,7 +206,7 @@ async def test_quality_inspection_service_passed_result_writes_back_followup_nod
                 purchase_contract_id=contract_id,
                 inspected_at=date(2026, 8, 19),
                 result="passed",
-                inspector_id="u-qc-001",
+                inspector_id="u-qc",
                 inspector_name="QC 张工",
                 issue_summary=None,
                 attachment_group_id="attach-qc-pass",
@@ -261,21 +264,22 @@ async def test_quality_inspection_service_scopes_qc_user_to_assigned_records(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         purchase_repository = PurchaseContractRepository(session)
         contract_id, line_id = await _create_approved_contract(
             purchase_repository,
             code="PC-QC-ASSIGNEE-SVC",
-            qc_user_id="u-qc-001",
+            qc_user_id="u-qc",
             qc_user_name="QC 张工",
         )
         service = _make_service(session)
         assigned_user = _user(
             ["quality:inspection:view", "quality:inspection:edit"],
-            user_id="u-qc-001",
+            user_id="u-qc",
         )
         other_user = _user(
             ["quality:inspection:view", "quality:inspection:edit"],
-            user_id="u-qc-002",
+            user_id="u-admin",
         )
 
         inspection = await service.create_inspection(
@@ -285,7 +289,7 @@ async def test_quality_inspection_service_scopes_qc_user_to_assigned_records(
                 purchase_contract_id=contract_id,
                 inspected_at=date(2026, 8, 19),
                 result="passed",
-                inspector_id="u-worker-001",
+                inspector_id="u-qc",
                 inspector_name="现场查验员",
                 issue_summary=None,
                 attachment_group_id="attach-qc-assignee",
@@ -324,7 +328,7 @@ async def test_quality_inspection_service_scopes_qc_user_to_assigned_records(
             result=None,
             supplier_id=None,
             purchase_contract_id=None,
-            assignee_user_id="u-qc-001",
+            assignee_user_id="u-qc",
         )
         detail = await service.get_inspection(
             current_user=assigned_user,
@@ -336,7 +340,7 @@ async def test_quality_inspection_service_scopes_qc_user_to_assigned_records(
                 inspection_id=inspection.id,
             )
 
-    assert inspection.qc_user_id == "u-qc-001"
+    assert inspection.qc_user_id == "u-qc"
     assert inspection.qc_user_name == "QC 张工"
     assert assigned_list.total == 1
     assert other_list.total == 0
@@ -348,23 +352,24 @@ async def test_quality_inspection_service_preserves_owner_scope_and_my_assignee_
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         purchase_repository = PurchaseContractRepository(session)
         owner_contract_id, owner_line_id = await _create_approved_contract(
             purchase_repository,
             code="PC-QC-OWNER-SCOPE",
-            owner_user_id="u-qc-001",
+            owner_user_id="u-qc",
         )
         assigned_contract_id, assigned_line_id = await _create_approved_contract(
             purchase_repository,
             code="PC-QC-MY-SCOPE",
-            qc_user_id="u-qc-001",
+            qc_user_id="u-qc",
             qc_user_name="QC 张工",
             owner_user_id="u-other-owner",
         )
         service = _make_service(session)
         current_user = _user(
             ["quality:inspection:view", "quality:inspection:edit"],
-            user_id="u-qc-001",
+            user_id="u-qc",
         )
 
         owner_scope_inspection = await service.create_inspection(
@@ -374,7 +379,7 @@ async def test_quality_inspection_service_preserves_owner_scope_and_my_assignee_
                 purchase_contract_id=owner_contract_id,
                 inspected_at=date(2026, 8, 19),
                 result="passed",
-                inspector_id="u-worker-001",
+                inspector_id="u-qc",
                 inspector_name="现场查验员",
                 issue_summary=None,
                 attachment_group_id=None,
@@ -398,7 +403,7 @@ async def test_quality_inspection_service_preserves_owner_scope_and_my_assignee_
                 purchase_contract_id=assigned_contract_id,
                 inspected_at=date(2026, 8, 20),
                 result="passed",
-                inspector_id="u-worker-001",
+                inspector_id="u-qc",
                 inspector_name="现场查验员",
                 issue_summary=None,
                 attachment_group_id=None,
@@ -429,7 +434,7 @@ async def test_quality_inspection_service_preserves_owner_scope_and_my_assignee_
             result=None,
             supplier_id=None,
             purchase_contract_id=None,
-            assignee_user_id="u-qc-001",
+            assignee_user_id="u-qc",
         )
         owner_detail = await service.get_inspection(
             current_user=current_user,

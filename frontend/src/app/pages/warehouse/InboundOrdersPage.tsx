@@ -252,7 +252,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
   async function loadAssignableUsersForApproval() {
     setLoadingAssignableUsers(true)
     try {
-      const result = await listAssignableUsers()
+      const result = await listAssignableUsers('warehouse:inbound_order:approve')
       setAssignableUsers(result.users)
     } catch (caught) {
       showError(caught, '审批人员列表加载失败')

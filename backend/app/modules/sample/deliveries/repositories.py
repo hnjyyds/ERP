@@ -200,7 +200,13 @@ class SampleDeliveryRepository:
             return None
         return self._map_delivery(delivery)
 
-    async def submit_delivery(self, delivery_id: str) -> SampleDeliveryRow | None:
+    async def submit_delivery(
+        self,
+        delivery_id: str,
+        *,
+        reviewer_id: str | None = None,
+        reviewer_name: str | None = None,
+    ) -> SampleDeliveryRow | None:
         delivery = await self.session.scalar(
             select(SampleDelivery).where(SampleDelivery.id == delivery_id)
         )
@@ -208,6 +214,8 @@ class SampleDeliveryRepository:
             return None
         delivery.status = "submitted"
         delivery.submitted_at = date.today()
+        delivery.reviewer_id = reviewer_id
+        delivery.reviewer_name = reviewer_name
         await self.session.flush()
         return self._map_delivery(delivery)
 
@@ -215,8 +223,9 @@ class SampleDeliveryRepository:
         self,
         *,
         delivery_id: str,
-        reviewer_name: str,
         approved_at: date,
+        reviewer_id: str | None = None,
+        reviewer_name: str | None = None,
     ) -> SampleDeliveryRow | None:
         delivery = await self.session.scalar(
             select(SampleDelivery).where(SampleDelivery.id == delivery_id)
@@ -224,7 +233,10 @@ class SampleDeliveryRepository:
         if delivery is None:
             return None
         delivery.status = "approved"
-        delivery.reviewer_name = reviewer_name
+        if reviewer_id is not None and delivery.reviewer_id is None:
+            delivery.reviewer_id = reviewer_id
+        if reviewer_name is not None and delivery.reviewer_name is None:
+            delivery.reviewer_name = reviewer_name
         delivery.approved_at = approved_at
         await self.session.flush()
         return self._map_delivery(delivery)
@@ -599,6 +611,7 @@ class SampleDeliveryRepository:
             status=delivery.status,
             submitted_at=delivery.submitted_at,
             approved_at=delivery.approved_at,
+            reviewer_id=delivery.reviewer_id,
             reviewer_name=delivery.reviewer_name,
             owner_user_id=delivery.owner_user_id,
             created_at=delivery.created_at,

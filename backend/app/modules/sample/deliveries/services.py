@@ -26,10 +26,13 @@ from app.modules.sample.deliveries.schemas import (
     SampleDeliveryResponse,
     SampleDeliveryStatisticsResponse,
     SampleDeliveryStatusStatisticResponse,
+    SampleDeliverySubmit,
     SampleDeliveryTrackingUpdate,
 )
 from app.modules.sample.records.repositories import SampleRecordRepository
+from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
 
@@ -48,10 +51,14 @@ class SampleDeliveryService:
         sample_record_repository: SampleRecordRepository,
         *,
         data_scope_resolver: DataScopeResolver,
+        auth_repository: AuthRepository | None = None,
     ) -> None:
         self._repository = repository
         self._sample_record_repository = sample_record_repository
         self._data_scope_resolver = data_scope_resolver
+        self._assignee_validator = AssigneeValidator(
+            auth_repository or AuthRepository(repository.session)
+        )
 
     async def create_delivery(
         self,
@@ -175,6 +182,7 @@ class SampleDeliveryService:
         *,
         current_user: CurrentUserResponse,
         delivery_id: str,
+        payload: SampleDeliverySubmit,
     ) -> SampleDeliveryResponse:
         self._require(current_user, "sample:delivery:edit")
         delivery = await self._get_accessible_delivery(
@@ -183,8 +191,19 @@ class SampleDeliveryService:
         )
         if delivery.status != "draft":
             raise ValueError("只有草稿寄样单可以提交")
+        reviewer = await self._assignee_validator.require(
+            user_id=payload.reviewer_id,
+            required_permission="sample:delivery:approve",
+            role_name="审批人",
+            permission_error="所选员工没有寄样审批权限",
+            excluded_user_id=current_user.id,
+        )
         async with UnitOfWork(self._repository.session):
-            submitted = await self._repository.submit_delivery(delivery_id)
+            submitted = await self._repository.submit_delivery(
+                delivery_id,
+                reviewer_id=reviewer.id,
+                reviewer_name=reviewer.display_name,
+            )
             if submitted is None:
                 raise SampleDeliveryNotFoundError
         return await self._delivery_response(submitted)
@@ -203,13 +222,16 @@ class SampleDeliveryService:
         )
         if delivery.status != "submitted":
             raise ValueError("只有已提交寄样单可以审核")
+        if delivery.reviewer_id is not None and delivery.reviewer_id != current_user.id:
+            raise PermissionDeniedError
         lines = await self._repository.list_lines(delivery_id)
         await self._ensure_stock_available(lines)
         async with UnitOfWork(self._repository.session):
             approved = await self._repository.approve_delivery(
                 delivery_id=delivery_id,
-                reviewer_name=payload.reviewer_name,
                 approved_at=payload.approved_at,
+                reviewer_id=current_user.id,
+                reviewer_name=current_user.display_name,
             )
             if approved is None:
                 raise SampleDeliveryNotFoundError
@@ -544,6 +566,7 @@ class SampleDeliveryService:
             status=delivery.status,
             submitted_at=delivery.submitted_at,
             approved_at=delivery.approved_at,
+            reviewer_id=delivery.reviewer_id,
             reviewer_name=delivery.reviewer_name,
             owner_user_id=delivery.owner_user_id,
             lines=[self._line_response(line) for line in lines],

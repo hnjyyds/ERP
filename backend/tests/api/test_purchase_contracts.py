@@ -127,15 +127,17 @@ async def _create_approved_export_contract(
     )
     assert create_response.status_code == 201
     contract_id = create_response.json()["data"]["id"]
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     submit_response = await api_client.post(
         f"/api/v1/sales/contracts/{contract_id}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     assert submit_response.status_code == 200
     approve_response = await api_client.post(
         f"/api/v1/sales/contracts/{contract_id}/approve",
-        headers={"Authorization": f"Bearer {token}"},
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-08-02"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-08-02"},
     )
     assert approve_response.status_code == 200
     return contract_id
@@ -146,6 +148,7 @@ async def test_purchase_contract_flow_generate_stock_approve_and_reminders(
     seeded_system: None,
 ) -> None:
     token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "purchase", "purchase123")
     product_response = await api_client.post(
         "/api/v1/masterdata/products",
         headers={"Authorization": f"Bearer {token}"},
@@ -177,7 +180,7 @@ async def test_purchase_contract_flow_generate_stock_approve_and_reminders(
             "supplier_name": "华东包装制品厂",
             "buyer_user_id": "u-001",
             "buyer_user_name": "演示业务主管",
-            "qc_user_id": "u-finance",
+            "qc_user_id": "u-qc",
             "qc_user_name": "前端传入姓名会被后端覆盖",
             "currency": "USD",
             "delivery_date": "2026-08-30",
@@ -193,8 +196,8 @@ async def test_purchase_contract_flow_generate_stock_approve_and_reminders(
     assert generate_response.status_code == 201
     generated = generate_response.json()["data"]
     assert generated["source_type"] == "export_contract"
-    assert generated["qc_user_id"] == "u-finance"
-    assert generated["qc_user_name"] == "演示财务"
+    assert generated["qc_user_id"] == "u-qc"
+    assert generated["qc_user_name"] == "演示 QC 专员"
     assert generated["lines"][0]["product_name"] == "棉绳"
     assert generated["lines"][0]["quantity"] == "675"
     assert generated["statistics"]["total_amount"] == "81.00"
@@ -251,13 +254,14 @@ async def test_purchase_contract_flow_generate_stock_approve_and_reminders(
     submit_response = await api_client.post(
         f"/api/v1/purchase/contracts/{contract_id}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-purchase"},
     )
     assert submit_response.status_code == 200
 
     approve_response = await api_client.post(
         f"/api/v1/purchase/contracts/{contract_id}/approve",
-        headers={"Authorization": f"Bearer {token}"},
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-08-07"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-08-07"},
     )
     assert approve_response.status_code == 200
     approved = approve_response.json()["data"]
@@ -298,6 +302,49 @@ async def test_purchase_contract_endpoints_require_login(
     response = await api_client.get("/api/v1/purchase/contracts")
 
     assert response.status_code == 401
+
+
+async def test_purchase_contract_requires_designated_reviewer(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    submitter_token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {submitter_token}"}
+    create_response = await api_client.post(
+        "/api/v1/purchase/contracts",
+        headers=headers,
+        json=_stock_purchase_payload("PC-DESIGNATED-REVIEWER"),
+    )
+    assert create_response.status_code == 201
+    contract_id = create_response.json()["data"]["id"]
+
+    submit_response = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/submit",
+        headers=headers,
+        json={"reviewer_id": "u-purchase"},
+    )
+    assert submit_response.status_code == 200
+    submitted = submit_response.json()["data"]
+    assert submitted["reviewer_id"] == "u-purchase"
+    assert submitted["reviewer_name"] == "演示采购专员"
+
+    wrong_reviewer_response = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/approve",
+        headers=headers,
+        json={"approved_at": "2026-08-07"},
+    )
+    assert wrong_reviewer_response.status_code == 403
+
+    reviewer_token = await _login_token(api_client, "purchase", "purchase123")
+    approve_response = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/approve",
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-08-07"},
+    )
+    assert approve_response.status_code == 200
+    approved = approve_response.json()["data"]
+    assert approved["reviewer_id"] == "u-purchase"
+    assert approved["reviewer_name"] == "演示采购专员"
 
 
 async def test_purchase_contract_endpoints_enforce_menu_permission(

@@ -20,4 +20,5 @@ async def get_sample_request_service(
         sample_record_repository=SampleRecordRepository(session),
         fee_payment_repository=FeePaymentRepository(session),
         data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+        auth_repository=AuthRepository(session),
     )

@@ -30,6 +30,8 @@ class Reimbursement(Base):
     amount: Mapped[Decimal] = mapped_column(Numeric(14, 2), nullable=False)
     reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[str] = mapped_column(String(40), index=True, default="submitted", nullable=False)
+    reviewer_id: Mapped[str | None] = mapped_column(String(64), index=True, nullable=True)
+    reviewer_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
     approved_by_user_id: Mapped[str | None] = mapped_column(String(64), index=True, nullable=True)
     approved_by_user_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
     approval_remark: Mapped[str | None] = mapped_column(Text, nullable=True)

@@ -26,6 +26,8 @@ from app.modules.finance.fee_payments.schemas import (
 )
 from app.modules.masterdata.partners.repositories import PartnerRepository, PartnerRow
 from app.modules.sales.shipments.repositories import ShipmentPlanRepository, ShipmentPlanRow
+from app.modules.system.auth.assignees import AssigneeValidator
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
 
@@ -43,10 +45,14 @@ class FeePaymentService:
         repository: FeePaymentRepository,
         partner_repository: PartnerRepository,
         shipment_repository: ShipmentPlanRepository,
+        auth_repository: AuthRepository | None = None,
     ) -> None:
         self._repository = repository
         self._partner_repository = partner_repository
         self._shipment_repository = shipment_repository
+        self._assignee_validator = AssigneeValidator(
+            auth_repository or AuthRepository(repository.session)
+        )
 
     async def create_partner_fee_invoice(
         self,
@@ -118,6 +124,13 @@ class FeePaymentService:
         self._require_finance(current_user)
         invoice = await self._get_partner_fee_invoice(payload.partner_fee_invoice_id)
         self._validate_fee_request_amount(invoice, payload.requested_amount, payload.currency)
+        reviewer = await self._assignee_validator.require(
+            user_id=payload.reviewer_id,
+            required_permission="finance:view",
+            role_name="审批人",
+            permission_error="所选员工没有财务审批权限",
+            excluded_user_id=current_user.id,
+        )
         async with UnitOfWork(self._repository.session):
             request = await self._repository.create_fee_payment_request(
                 request_no=payload.request_no,
@@ -127,6 +140,8 @@ class FeePaymentService:
                 currency=payload.currency,
                 requester_user_id=current_user.id,
                 requester_user_name=current_user.display_name,
+                reviewer_id=reviewer.id,
+                reviewer_name=reviewer.display_name,
                 remark=payload.remark,
             )
         return self._fee_payment_request_response(request)
@@ -171,6 +186,8 @@ class FeePaymentService:
         request = await self._get_fee_payment_request(fee_payment_request_id)
         if request.requester_user_id == current_user.id:
             raise ValueError("付费申请人不能审批自己的申请")
+        if request.reviewer_id is not None and request.reviewer_id != current_user.id:
+            raise PermissionDeniedError
         invoice = await self._get_partner_fee_invoice(request.partner_fee_invoice_id)
         self._validate_fee_approval(request, invoice, payload)
         async with UnitOfWork(self._repository.session):
@@ -178,6 +195,7 @@ class FeePaymentService:
                 request_id=request.id,
                 approved_amount=payload.approved_amount,
                 approved_at=payload.approved_at,
+                reviewer_id=current_user.id,
                 reviewer_name=current_user.display_name,
                 payment_account=payload.payment_account,
                 remark=payload.remark,
@@ -369,6 +387,7 @@ class FeePaymentService:
             status=request.status,
             requester_user_id=request.requester_user_id,
             requester_user_name=request.requester_user_name,
+            reviewer_id=request.reviewer_id,
             reviewer_name=request.reviewer_name,
             approved_at=request.approved_at,
             payment_account=request.payment_account,

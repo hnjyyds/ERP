@@ -16,10 +16,12 @@ from app.modules.system.auth.repositories import AuthRepository
 def get_export_quotation_service(
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> ExportQuotationService:
+    auth_repository = AuthRepository(session)
     return ExportQuotationService(
         ExportQuotationRepository(session),
         SampleDeliveryRepository(session),
         ExportContractRepository(session),
         PurchaseInquiryRepository(session),
-        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+        data_scope_resolver=DataScopeResolver(auth_repository),
+        auth_repository=auth_repository,
     )

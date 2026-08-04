@@ -27,8 +27,11 @@ from app.modules.sales.shipments.schemas import (
     ShipmentPlanResponse,
     ShipmentReminderListResponse,
     ShipmentReminderResponse,
+    ShipmentSubmit,
 )
+from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
 
@@ -47,10 +50,14 @@ class ShipmentPlanService:
         contract_repository: ExportContractRepository,
         *,
         data_scope_resolver: DataScopeResolver,
+        auth_repository: AuthRepository | None = None,
     ) -> None:
         self._repository = repository
         self._contract_repository = contract_repository
         self._data_scope_resolver = data_scope_resolver
+        self._assignee_validator = AssigneeValidator(
+            auth_repository or AuthRepository(repository.session)
+        )
 
     async def generate_from_contracts(
         self,
@@ -148,6 +155,7 @@ class ShipmentPlanService:
         *,
         current_user: CurrentUserResponse,
         shipment_id: str,
+        payload: ShipmentSubmit,
     ) -> ShipmentPlanResponse:
         self._require(current_user, "sales:shipment:edit")
         plan = await self._get_accessible_plan(
@@ -156,8 +164,19 @@ class ShipmentPlanService:
         )
         if plan.approval_status != "draft":
             raise ValueError("只有草稿出货明细可以提交")
+        reviewer = await self._assignee_validator.require(
+            user_id=payload.reviewer_id,
+            required_permission="sales:shipment:approve",
+            role_name="审批人",
+            permission_error="所选员工没有出货审批权限",
+            excluded_user_id=current_user.id,
+        )
         async with UnitOfWork(self._repository.session):
-            submitted = await self._repository.submit_plan(plan.id)
+            submitted = await self._repository.submit_plan(
+                plan.id,
+                reviewer_id=reviewer.id,
+                reviewer_name=reviewer.display_name,
+            )
             if submitted is None:
                 raise ShipmentNotFoundError
         return await self._shipment_response(submitted)
@@ -176,6 +195,8 @@ class ShipmentPlanService:
         )
         if plan.approval_status != "submitted":
             raise ValueError("只有已提交出货明细可以审批")
+        if plan.reviewer_id is not None and plan.reviewer_id != current_user.id:
+            raise PermissionDeniedError
         async with UnitOfWork(self._repository.session):
             lines = await self._repository.list_lines(plan.id)
             await self._validate_contract_capacity(lines)
@@ -191,8 +212,9 @@ class ShipmentPlanService:
                 await self._contract_repository.refresh_statistics(contract_id)
             approved = await self._repository.approve_plan(
                 shipment_id=plan.id,
-                reviewer_name=payload.reviewer_name,
                 approved_at=payload.approved_at,
+                reviewer_id=current_user.id,
+                reviewer_name=current_user.display_name,
             )
             if approved is None:
                 raise ShipmentNotFoundError
@@ -338,6 +360,7 @@ class ShipmentPlanService:
             approval_status=plan.approval_status,
             submitted_at=plan.submitted_at,
             approved_at=plan.approved_at,
+            reviewer_id=plan.reviewer_id,
             reviewer_name=plan.reviewer_name,
             remarks=plan.remarks,
             owner_user_id=plan.owner_user_id,

@@ -8,6 +8,7 @@ from app.modules.finance.fee_payments.repositories import FeePaymentRepository
 from app.modules.finance.fee_payments.services import FeePaymentService
 from app.modules.masterdata.partners.repositories import PartnerRepository
 from app.modules.sales.shipments.repositories import ShipmentPlanRepository
+from app.modules.system.auth.repositories import AuthRepository
 
 
 def get_fee_payment_service(
@@ -17,4 +18,5 @@ def get_fee_payment_service(
         FeePaymentRepository(session),
         PartnerRepository(session),
         ShipmentPlanRepository(session),
+        AuthRepository(session),
     )

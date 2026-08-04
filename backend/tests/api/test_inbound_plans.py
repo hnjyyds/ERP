@@ -50,6 +50,7 @@ async def test_inbound_plan_api_auto_generates_on_purchase_approval_and_schedule
     seeded_system: None,
 ) -> None:
     token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     headers = {"Authorization": f"Bearer {token}"}
     create_response = await api_client.post(
         "/api/v1/purchase/contracts",
@@ -61,12 +62,13 @@ async def test_inbound_plan_api_auto_generates_on_purchase_approval_and_schedule
     submit_response = await api_client.post(
         f"/api/v1/purchase/contracts/{contract['id']}/submit",
         headers=headers,
+        json={"reviewer_id": "u-admin"},
     )
     assert submit_response.status_code == 200
     approve_response = await api_client.post(
         f"/api/v1/purchase/contracts/{contract['id']}/approve",
-        headers=headers,
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-08-05"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-08-05"},
     )
     assert approve_response.status_code == 200
 

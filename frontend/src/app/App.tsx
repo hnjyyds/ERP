@@ -390,7 +390,18 @@ export default function App() {
     clearAuthToken()
     setSession(null)
     setDashboard(null)
+    setSettingsOpen(false)
+    setSettingsAvatarDraft(null)
     if (message) setError(message)
+    replaceRoute('/login')
+  }
+
+  function logout() {
+    clearAuthToken()
+    setSession(null)
+    setDashboard(null)
+    setSettingsOpen(false)
+    setSettingsAvatarDraft(null)
     replaceRoute('/login')
   }
 
@@ -516,6 +527,8 @@ export default function App() {
           <LoginPage
             error={error}
             onLogin={(s) => {
+              setSettingsOpen(false)
+              setSettingsAvatarDraft(null)
               setSession(s)
               replaceRoute(dashboardPath)
             }}
@@ -563,12 +576,7 @@ export default function App() {
         settingsAvatarDraft={settingsAvatarDraft}
         savingSettingsAvatar={savingSettingsAvatar}
         onClose={() => setSettingsOpen(false)}
-        onLogout={() => {
-          clearAuthToken()
-          setSession(null)
-          setDashboard(null)
-          replaceRoute('/login')
-        }}
+        onLogout={logout}
         onChangeLanguage={(lang) => setAppSettings((prev) => normalizeSettings({ ...prev, language: lang }, i18nConfig))}
         onChangeAvatarDraft={setSettingsAvatarDraft}
         onSaveAvatar={() => {}}

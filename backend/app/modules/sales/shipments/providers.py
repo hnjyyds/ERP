@@ -14,8 +14,10 @@ from app.modules.system.auth.repositories import AuthRepository
 def get_shipment_plan_service(
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> ShipmentPlanService:
+    auth_repository = AuthRepository(session)
     return ShipmentPlanService(
         ShipmentPlanRepository(session),
         ExportContractRepository(session),
-        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+        data_scope_resolver=DataScopeResolver(auth_repository),
+        auth_repository=auth_repository,
     )

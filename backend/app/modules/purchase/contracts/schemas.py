@@ -4,6 +4,7 @@ from typing import Literal
 
 from pydantic import ConfigDict, Field
 
+from app.schemas.approvals import ApprovalSubmit
 from app.schemas.base import BaseModel
 
 VALID_PURCHASE_CONTRACT_STATUSES = ("draft", "submitted", "approved")
@@ -74,8 +75,16 @@ class PurchaseContractGenerateFromExportContracts(BaseModel):
 class PurchaseContractApprove(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    reviewer_name: str = Field(min_length=1, max_length=160)
+    reviewer_name: str | None = Field(
+        default=None,
+        max_length=160,
+        description="兼容旧客户端；审批人以当前登录用户为准。",
+    )
     approved_at: date
+
+
+class PurchaseContractSubmit(ApprovalSubmit):
+    """Submit a purchase contract to one designated reviewer."""
 
 
 class PurchaseContractStatisticsResponse(BaseModel):
@@ -159,7 +168,8 @@ class PurchaseContractResponse(BaseModel):
     approval_status: str
     submitted_at: date | None
     approved_at: date | None
-    reviewer_name: str | None
+    reviewer_id: str | None = None
+    reviewer_name: str | None = None
     owner_user_id: str
     statistics: PurchaseContractStatisticsResponse
     lines: list[PurchaseContractLineResponse]

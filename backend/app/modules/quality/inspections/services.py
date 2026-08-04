@@ -22,7 +22,9 @@ from app.modules.quality.inspections.schemas import (
     QualityInspectionResponse,
     QualityIssueResponse,
 )
+from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
 
@@ -46,11 +48,15 @@ class QualityInspectionService:
         purchase_contract_repository: PurchaseContractRepository,
         followup_service: FollowupService,
         data_scope_resolver: DataScopeResolver,
+        auth_repository: AuthRepository | None = None,
     ) -> None:
         self._repository = quality_repository
         self._purchase_contract_repository = purchase_contract_repository
         self._followup_service = followup_service
         self._data_scope_resolver = data_scope_resolver
+        self._assignee_validator = AssigneeValidator(
+            auth_repository or AuthRepository(quality_repository.session)
+        )
 
     async def create_inspection(
         self,
@@ -66,6 +72,12 @@ class QualityInspectionService:
         if contract.approval_status != "approved":
             raise ValueError("请先审批该采购合同，再登记 QC 查验")
         qc_user_id, qc_user_name = self._inspection_assignee_from_contract(contract)
+        inspector = await self._assignee_validator.require(
+            user_id=payload.inspector_id,
+            required_permission="quality:inspection:edit",
+            role_name="QC 负责人",
+            permission_error="所选员工没有 QC 查验权限",
+        )
         task_status = payload.status or "completed"
         if payload.inspected_at is not None:
             inspected_at = payload.inspected_at
@@ -85,8 +97,8 @@ class QualityInspectionService:
                 scheduled_at=scheduled_at,
                 inspected_at=inspected_at,
                 result=payload.result or "",
-                inspector_id=payload.inspector_id,
-                inspector_name=payload.inspector_name,
+                inspector_id=inspector.id,
+                inspector_name=inspector.display_name,
                 qc_user_id=qc_user_id,
                 qc_user_name=qc_user_name,
                 issue_summary=payload.issue_summary,
@@ -118,6 +130,12 @@ class QualityInspectionService:
             purchase_contract_id=inspection.purchase_contract_id,
         )
         qc_user_id, qc_user_name = self._inspection_assignee_from_contract(contract)
+        inspector = await self._assignee_validator.require(
+            user_id=payload.inspector_id,
+            required_permission="quality:inspection:edit",
+            role_name="QC 负责人",
+            permission_error="所选员工没有 QC 查验权限",
+        )
         if payload.inspected_at is not None:
             inspected_at = payload.inspected_at
         elif payload.scheduled_at is not None:
@@ -133,8 +151,8 @@ class QualityInspectionService:
                 scheduled_at=scheduled_at,
                 inspected_at=inspected_at,
                 result=payload.result or "",
-                inspector_id=payload.inspector_id,
-                inspector_name=payload.inspector_name,
+                inspector_id=inspector.id,
+                inspector_name=inspector.display_name,
                 qc_user_id=qc_user_id,
                 qc_user_name=qc_user_name,
                 issue_summary=payload.issue_summary,

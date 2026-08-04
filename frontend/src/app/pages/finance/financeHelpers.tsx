@@ -123,6 +123,7 @@ export type PaymentRequestFormState = {
   request_date: string
   requested_amount: string
   currency: string
+  reviewer_id: string
   remark: string
 }
 
@@ -157,6 +158,7 @@ export type FeePaymentRequestFormState = {
   request_date: string
   requested_amount: string
   currency: string
+  reviewer_id: string
   remark: string
 }
 
@@ -386,6 +388,7 @@ export function initialPaymentRequestForm(invoice?: SupplierInvoice): PaymentReq
     request_date: todayInputValue(),
     requested_amount: invoice?.unpaid_amount ?? '1200.00',
     currency: invoice?.currency ?? 'CNY',
+    reviewer_id: '',
     remark: '',
   }
 }
@@ -428,6 +431,7 @@ export function paymentRequestPayload(form: PaymentRequestFormState): PaymentReq
     request_date: form.request_date,
     requested_amount: form.requested_amount.trim(),
     currency: form.currency.trim(),
+    reviewer_id: form.reviewer_id,
     remark: emptyToNull(form.remark),
   }
 }
@@ -489,6 +493,7 @@ export function initialFeePaymentRequestForm(invoice?: PartnerFeeInvoice): FeePa
     request_date: todayInputValue(),
     requested_amount: invoice?.unpaid_amount ?? '400.00',
     currency: invoice?.currency ?? 'USD',
+    reviewer_id: '',
     remark: '',
   }
 }
@@ -532,6 +537,7 @@ export function feePaymentRequestPayload(form: FeePaymentRequestFormState): FeeP
     request_date: form.request_date,
     requested_amount: form.requested_amount.trim(),
     currency: form.currency.trim(),
+    reviewer_id: form.reviewer_id,
     remark: emptyToNull(form.remark),
   }
 }

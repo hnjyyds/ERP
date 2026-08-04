@@ -121,15 +121,17 @@ async def _create_sample_delivery_for_quote(
     )
     assert delivery_response.status_code == 201
     delivery_id = delivery_response.json()["data"]["id"]
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     submit_response = await api_client.post(
         f"/api/v1/sample/deliveries/{delivery_id}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     assert submit_response.status_code == 200
     approve_response = await api_client.post(
         f"/api/v1/sample/deliveries/{delivery_id}/approve",
-        headers={"Authorization": f"Bearer {token}"},
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-06-25"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-06-25"},
     )
     assert approve_response.status_code == 200
 
@@ -139,6 +141,7 @@ async def test_export_quotation_flow_history_references_samples_export_and_contr
     seeded_system: None,
 ) -> None:
     token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     quote_no = "QT-E2E-001"
     await _create_sample_delivery_for_quote(api_client, token, quote_no=quote_no)
 
@@ -173,14 +176,15 @@ async def test_export_quotation_flow_history_references_samples_export_and_contr
     submit_response = await api_client.post(
         f"/api/v1/sales/quotations/{quotation_id}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     assert submit_response.status_code == 200
     assert submit_response.json()["data"]["approval_status"] == "submitted"
 
     approve_response = await api_client.post(
         f"/api/v1/sales/quotations/{quotation_id}/approve",
-        headers={"Authorization": f"Bearer {token}"},
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-07-02"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-07-02"},
     )
     assert approve_response.status_code == 200
     assert approve_response.json()["data"]["approval_status"] == "approved"

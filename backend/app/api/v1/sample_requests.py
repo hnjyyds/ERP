@@ -19,6 +19,7 @@ from app.modules.sample.requests.schemas import (
 from app.modules.sample.requests.services import (
     SampleRequestService,
 )
+from app.schemas.approvals import ApprovalSubmit
 from app.schemas.responses import ApiResponse
 
 router = APIRouter(prefix="/sample/requests", tags=["sample-requests"])
@@ -133,6 +134,7 @@ async def add_sample_fee(
 async def request_sample_fee_payment(
     request_id: str,
     fee_id: str,
+    payload: ApprovalSubmit,
     user: CurrentUserDep,
     service: Annotated[SampleRequestService, Depends(get_sample_request_service)],
 ) -> ApiResponse[SampleFeeResponse]:
@@ -140,5 +142,6 @@ async def request_sample_fee_payment(
         current_user=user,
         request_id=request_id,
         fee_id=fee_id,
+        reviewer_id=payload.reviewer_id,
     )
     return ApiResponse(data=fee)

@@ -61,6 +61,7 @@ class FeePaymentRequestRow:
     status: str
     requester_user_id: str
     requester_user_name: str
+    reviewer_id: str | None
     reviewer_name: str | None
     approved_at: date | None
     payment_account: str | None
@@ -201,7 +202,9 @@ class FeePaymentRepository:
         currency: str,
         requester_user_id: str,
         requester_user_name: str,
-        remark: str | None,
+        reviewer_id: str | None = None,
+        reviewer_name: str | None = None,
+        remark: str | None = None,
     ) -> FeePaymentRequestRow:
         request = FeePaymentRequest(
             request_no=request_no,
@@ -223,6 +226,8 @@ class FeePaymentRepository:
             status="submitted",
             requester_user_id=requester_user_id,
             requester_user_name=requester_user_name,
+            reviewer_id=reviewer_id,
+            reviewer_name=reviewer_name,
             remark=remark,
         )
         self.session.add(request)
@@ -293,6 +298,7 @@ class FeePaymentRepository:
         approved_amount: Decimal | str,
         approved_at: date,
         reviewer_name: str,
+        reviewer_id: str | None = None,
         payment_account: str | None,
         remark: str | None,
     ) -> FeePaymentRequestRow | None:
@@ -303,6 +309,8 @@ class FeePaymentRepository:
         request.approved_amount = amount
         request.paid_amount = amount
         request.status = "approved"
+        if reviewer_id is not None and request.reviewer_id is None:
+            request.reviewer_id = reviewer_id
         request.reviewer_name = reviewer_name
         request.approved_at = approved_at
         request.payment_account = payment_account
@@ -507,6 +515,7 @@ class FeePaymentRepository:
             status=request.status,
             requester_user_id=request.requester_user_id,
             requester_user_name=request.requester_user_name,
+            reviewer_id=request.reviewer_id,
             reviewer_name=request.reviewer_name,
             approved_at=request.approved_at,
             payment_account=request.payment_account,

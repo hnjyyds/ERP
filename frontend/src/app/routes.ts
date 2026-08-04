@@ -146,21 +146,27 @@ export function isFinancePath(path: string) {
   return path === financePath || path.startsWith(`${financePath}/`)
 }
 
-export type FinanceView = { module: FinanceModule; id: string | null }
+export type FinanceView = {
+  module: FinanceModule
+  id: string | null
+  itemId?: string | null
+}
 
 export function parseFinanceView(path: string): FinanceView {
   if (!isFinancePath(path)) return { module: 'home', id: null }
-  const segments = path.split('/').filter(Boolean) // ['finance', module?, id?]
+  const segments = path.split('/').filter(Boolean) // ['finance', module?, id?, itemId?]
   if (segments.length <= 1) return { module: 'home', id: null }
   const basePath = `/${segments[0]}/${segments[1]}`
   const module = financeModuleByBasePath[basePath]
   if (!module) return { module: 'home', id: null }
   const id = segments[2] ? decodeURIComponent(segments[2]) : null
-  return { module, id }
+  const itemId = segments[3] ? decodeURIComponent(segments[3]) : null
+  return { module, id, itemId }
 }
 
-export function financeDetailPath(module: FinanceModule, id: string) {
-  return `${financeModulePathByModule[module]}/${encodeURIComponent(id)}`
+export function financeDetailPath(module: FinanceModule, id: string, itemId?: string) {
+  const detailPath = `${financeModulePathByModule[module]}/${encodeURIComponent(id)}`
+  return itemId ? `${detailPath}/${encodeURIComponent(itemId)}` : detailPath
 }
 
 export function canAccessPath(path: string, menuPaths: readonly string[]): boolean {

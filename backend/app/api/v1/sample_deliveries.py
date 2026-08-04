@@ -13,6 +13,7 @@ from app.modules.sample.deliveries.schemas import (
     SampleDeliveryListResponse,
     SampleDeliveryResponse,
     SampleDeliveryStatisticsResponse,
+    SampleDeliverySubmit,
     SampleDeliveryTrackingUpdate,
 )
 from app.modules.sample.deliveries.services import (
@@ -176,10 +177,15 @@ async def get_sample_delivery(
 @router.post("/{delivery_id}/submit", response_model=ApiResponse[SampleDeliveryResponse])
 async def submit_sample_delivery(
     delivery_id: str,
+    payload: SampleDeliverySubmit,
     user: CurrentUserDep,
     service: Annotated[SampleDeliveryService, Depends(get_sample_delivery_service)],
 ) -> ApiResponse[SampleDeliveryResponse]:
-    delivery = await service.submit_delivery(current_user=user, delivery_id=delivery_id)
+    delivery = await service.submit_delivery(
+        current_user=user,
+        delivery_id=delivery_id,
+        payload=payload,
+    )
     return ApiResponse(data=delivery)
 
 

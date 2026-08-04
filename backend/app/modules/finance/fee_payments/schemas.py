@@ -37,6 +37,11 @@ class FeePaymentRequestCreate(BaseModel):
     request_date: date
     requested_amount: Decimal = Field(gt=0)
     currency: str = Field(min_length=1, max_length=10)
+    reviewer_id: str = Field(
+        min_length=1,
+        max_length=64,
+        description="被指定审批人的用户 ID。",
+    )
     remark: str | None = Field(default=None, max_length=2000)
 
 
@@ -84,6 +89,7 @@ class FeePaymentRequestResponse(BaseModel):
     status: str
     requester_user_id: str
     requester_user_name: str
+    reviewer_id: str | None
     reviewer_name: str | None
     approved_at: date | None
     payment_account: str | None

@@ -9,6 +9,7 @@ from app.modules.sample.deliveries.schemas import (
     SampleDeliveryCreate,
     SampleDeliveryFeeCreate,
     SampleDeliveryLineCreate,
+    SampleDeliverySubmit,
     SampleDeliveryTrackingUpdate,
 )
 from app.modules.sample.deliveries.services import SampleDeliveryService
@@ -18,6 +19,7 @@ from app.modules.sample.records.services import SampleRecordService
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.auth.seed import seed_system_demo_data
 
 
 def _make_record_service(session: AsyncSession) -> SampleRecordService:
@@ -38,12 +40,14 @@ def _make_service(session: AsyncSession) -> SampleDeliveryService:
 def _user_with_permissions(
     permissions: list[str],
     user_id: str = "u-test",
+    data_scope: str = "self",
 ) -> CurrentUserResponse:
     return CurrentUserResponse(
         id=user_id,
         username="tester",
         display_name="测试用户",
         department_name="测试部",
+        data_scope=data_scope,
         roles=["测试角色"],
         permissions=permissions,
     )
@@ -124,6 +128,7 @@ async def test_sample_delivery_service_review_updates_sample_stock_and_statistic
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         record_service = _make_record_service(session)
         delivery_service = _make_service(session)
         current_user = _user_with_permissions(
@@ -145,9 +150,15 @@ async def test_sample_delivery_service_review_updates_sample_stock_and_statistic
         submitted = await delivery_service.submit_delivery(
             current_user=current_user,
             delivery_id=delivery.id,
+            payload=SampleDeliverySubmit(reviewer_id="u-admin"),
+        )
+        reviewer = _user_with_permissions(
+            ["sample:delivery:approve", "sample:delivery:view"],
+            user_id="u-admin",
+            data_scope="all",
         )
         approved = await delivery_service.approve_delivery(
-            current_user=current_user,
+            current_user=reviewer,
             delivery_id=delivery.id,
             payload=SampleDeliveryApprove(
                 reviewer_name="演示业务主管",
@@ -215,6 +226,7 @@ async def test_sample_delivery_service_updates_draft_and_rejects_submitted_edit(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         record_service = _make_record_service(session)
         delivery_service = _make_service(session)
         current_user = _user_with_permissions(
@@ -243,6 +255,7 @@ async def test_sample_delivery_service_updates_draft_and_rejects_submitted_edit(
         submitted = await delivery_service.submit_delivery(
             current_user=current_user,
             delivery_id=delivery.id,
+            payload=SampleDeliverySubmit(reviewer_id="u-admin"),
         )
 
         with pytest.raises(ValueError):
@@ -262,6 +275,7 @@ async def test_sample_delivery_service_rejects_approve_when_stock_is_insufficien
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         record_service = _make_record_service(session)
         delivery_service = _make_service(session)
         current_user = _user_with_permissions(
@@ -280,11 +294,20 @@ async def test_sample_delivery_service_rejects_approve_when_stock_is_insufficien
             current_user=current_user,
             payload=payload,
         )
-        await delivery_service.submit_delivery(current_user=current_user, delivery_id=delivery.id)
+        await delivery_service.submit_delivery(
+            current_user=current_user,
+            delivery_id=delivery.id,
+            payload=SampleDeliverySubmit(reviewer_id="u-admin"),
+        )
+        reviewer = _user_with_permissions(
+            ["sample:delivery:approve", "sample:delivery:view"],
+            user_id="u-admin",
+            data_scope="all",
+        )
 
         with pytest.raises(ValueError):
             await delivery_service.approve_delivery(
-                current_user=current_user,
+                current_user=reviewer,
                 delivery_id=delivery.id,
                 payload=SampleDeliveryApprove(
                     reviewer_name="演示业务主管",

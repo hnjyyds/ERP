@@ -30,7 +30,9 @@ from app.modules.sample.requests.schemas import (
     SampleRequestResponse,
     SampleRequestToRecordCreate,
 )
+from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
 
@@ -58,11 +60,15 @@ class SampleRequestService:
         sample_record_repository: SampleRecordRepository,
         fee_payment_repository: FeePaymentRepository,
         data_scope_resolver: DataScopeResolver,
+        auth_repository: AuthRepository | None = None,
     ) -> None:
         self._repository = repository
         self._sample_record_repository = sample_record_repository
         self._fee_payment_repository = fee_payment_repository
         self._data_scope_resolver = data_scope_resolver
+        self._assignee_validator = AssigneeValidator(
+            auth_repository or AuthRepository(repository.session)
+        )
 
     async def create_request(
         self,
@@ -196,6 +202,7 @@ class SampleRequestService:
         current_user: CurrentUserResponse,
         request_id: str,
         fee_id: str,
+        reviewer_id: str,
     ) -> SampleFeeResponse:
         self._require(current_user, "sample:request:fee:edit")
         await self._get_accessible_request(current_user=current_user, request_id=request_id)
@@ -205,6 +212,13 @@ class SampleRequestService:
         sample_request = await self._get_accessible_request(
             current_user=current_user,
             request_id=request_id,
+        )
+        reviewer = await self._assignee_validator.require(
+            user_id=reviewer_id,
+            required_permission="finance:view",
+            role_name="审批人",
+            permission_error="审批人缺少财务权限",
+            excluded_user_id=current_user.id,
         )
         invoice_no = self._fee_invoice_no()
         payment_request_no = self._payment_request_no()
@@ -235,6 +249,8 @@ class SampleRequestService:
                 currency=fee.currency,
                 requester_user_id=current_user.id,
                 requester_user_name=current_user.display_name,
+                reviewer_id=reviewer.id,
+                reviewer_name=reviewer.display_name,
                 remark=fee.remark or f"打样费用付款申请：{sample_request.code}",
             )
             requested_fee = await self._repository.request_fee_payment(

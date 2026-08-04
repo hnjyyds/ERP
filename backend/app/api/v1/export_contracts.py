@@ -13,6 +13,7 @@ from app.modules.sales.contracts.schemas import (
     ExportContractListResponse,
     ExportContractResponse,
     ExportContractSignatureCreate,
+    ExportContractSubmit,
 )
 from app.modules.sales.contracts.services import (
     ExportContractService,
@@ -81,12 +82,14 @@ async def update_export_contract(
 @router.post("/{contract_id}/submit", response_model=ApiResponse[ExportContractResponse])
 async def submit_export_contract(
     contract_id: str,
+    payload: ExportContractSubmit,
     user: CurrentUserDep,
     service: Annotated[ExportContractService, Depends(get_export_contract_service)],
 ) -> ApiResponse[ExportContractResponse]:
     contract = await service.submit_contract(
         current_user=user,
         contract_id=contract_id,
+        payload=payload,
     )
     return ApiResponse(data=contract)
 

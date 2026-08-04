@@ -24,6 +24,7 @@ def _reimbursement_payload(
         "category": "travel",
         "currency": "CNY",
         "amount": "300.00",
+        "reviewer_id": "u-finance-manager",
         "reason": "出差客户拜访",
         "remark": "差旅报销",
         "items": [
@@ -38,6 +39,7 @@ async def test_finance_reimbursement_full_flow(
     seeded_system: None,
 ) -> None:
     finance_token = await _login_token(api_client, "finance", "finance123")
+    reviewer_token = await _login_token(api_client, "finance_manager", "finance-manager123")
     headers = {"Authorization": f"Bearer {finance_token}"}
 
     create_response = await api_client.post(
@@ -64,7 +66,7 @@ async def test_finance_reimbursement_full_flow(
 
     approve_response = await api_client.post(
         f"/api/v1/finance/reimbursements/{reimbursement['id']}/approve",
-        headers=headers,
+        headers={"Authorization": f"Bearer {reviewer_token}"},
         json={"approved": True, "approval_remark": "同意报销"},
     )
     assert approve_response.status_code == 200
@@ -89,6 +91,7 @@ async def test_finance_reimbursement_permissions_and_invalid_transitions(
 ) -> None:
     business_token = await _login_token(api_client)
     finance_token = await _login_token(api_client, "finance", "finance123")
+    reviewer_token = await _login_token(api_client, "finance_manager", "finance-manager123")
     finance_headers = {"Authorization": f"Bearer {finance_token}"}
 
     unauthorized_response = await api_client.get("/api/v1/finance/reimbursements")
@@ -112,14 +115,14 @@ async def test_finance_reimbursement_permissions_and_invalid_transitions(
     # 未审批不能直接付款
     early_pay_response = await api_client.post(
         f"/api/v1/finance/reimbursements/{reimbursement['id']}/pay",
-        headers=finance_headers,
+        headers={"Authorization": f"Bearer {reviewer_token}"},
         json={"payment_method": "cash"},
     )
     assert early_pay_response.status_code == 422
 
     reject_response = await api_client.post(
         f"/api/v1/finance/reimbursements/{reimbursement['id']}/approve",
-        headers=finance_headers,
+        headers={"Authorization": f"Bearer {reviewer_token}"},
         json={"approved": False, "approval_remark": "票据不全"},
     )
     assert reject_response.status_code == 200
@@ -128,7 +131,7 @@ async def test_finance_reimbursement_permissions_and_invalid_transitions(
     # 已拒绝不能再次审批
     reapprove_response = await api_client.post(
         f"/api/v1/finance/reimbursements/{reimbursement['id']}/approve",
-        headers=finance_headers,
+        headers={"Authorization": f"Bearer {reviewer_token}"},
         json={"approved": True},
     )
     assert reapprove_response.status_code == 422

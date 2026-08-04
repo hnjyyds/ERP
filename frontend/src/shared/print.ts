@@ -52,14 +52,14 @@ export function downloadBase64File(
   contentBase64: string,
   contentType: string,
 ): void {
-  // Decode base64 → raw bytes, handling UTF-8 multi-byte sequences safely
+  // Keep the payload as raw bytes. Excel-compatible files are binary and must
+  // never pass through TextDecoder/TextEncoder, which replaces invalid UTF-8.
   const binaryString = window.atob(contentBase64)
   const bytes = new Uint8Array(binaryString.length)
   for (let index = 0; index < binaryString.length; index += 1) {
     bytes[index] = binaryString.charCodeAt(index)
   }
-  const text = new TextDecoder().decode(bytes)
-  downloadBlob(filename, new Blob([text], { type: contentType }))
+  downloadBlob(filename, new Blob([bytes], { type: contentType }))
 }
 
 function downloadBlob(filename: string, blob: Blob): void {

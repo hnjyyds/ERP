@@ -1,5 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from app.modules.system.dashboard.business_task_repositories import (
+    DashboardBusinessTaskRepository,
+)
 from app.modules.system.dashboard.repositories import DashboardRepository
 from app.modules.system.dashboard.seed import seed_dashboard_demo_data
 from app.modules.system.dashboard.services import DashboardService
@@ -11,7 +14,10 @@ async def test_dashboard_service_filters_by_current_user(
     async with session_factory() as session:
         await seed_dashboard_demo_data(session, user_id="u-001")
         await seed_dashboard_demo_data(session, user_id="u-002")
-        service = DashboardService(DashboardRepository(session))
+        service = DashboardService(
+            DashboardRepository(session),
+            DashboardBusinessTaskRepository(session),
+        )
 
         dashboard = await service.get_dashboard(user_id="u-001")
 

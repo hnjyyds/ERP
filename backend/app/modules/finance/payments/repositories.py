@@ -56,6 +56,7 @@ class PaymentRequestRow:
     status: str
     requester_user_id: str
     requester_user_name: str
+    reviewer_id: str | None
     reviewer_name: str | None
     approved_at: date | None
     payment_account: str | None
@@ -187,7 +188,9 @@ class PaymentRepository:
         currency: str,
         requester_user_id: str,
         requester_user_name: str,
-        remark: str | None,
+        reviewer_id: str | None = None,
+        reviewer_name: str | None = None,
+        remark: str | None = None,
     ) -> PaymentRequestRow:
         request = PaymentRequest(
             request_no=request_no,
@@ -206,6 +209,8 @@ class PaymentRepository:
             status="submitted",
             requester_user_id=requester_user_id,
             requester_user_name=requester_user_name,
+            reviewer_id=reviewer_id,
+            reviewer_name=reviewer_name,
             remark=remark,
         )
         self.session.add(request)
@@ -266,6 +271,7 @@ class PaymentRepository:
         approved_amount: Decimal | str,
         approved_at: date,
         reviewer_name: str,
+        reviewer_id: str | None = None,
         payment_account: str | None,
         remark: str | None,
     ) -> PaymentRequestRow | None:
@@ -276,6 +282,8 @@ class PaymentRepository:
         payment_request.approved_amount = amount
         payment_request.paid_amount = amount
         payment_request.status = "approved"
+        if reviewer_id is not None and payment_request.reviewer_id is None:
+            payment_request.reviewer_id = reviewer_id
         payment_request.reviewer_name = reviewer_name
         payment_request.approved_at = approved_at
         payment_request.payment_account = payment_account
@@ -465,6 +473,7 @@ class PaymentRepository:
             status=request.status,
             requester_user_id=request.requester_user_id,
             requester_user_name=request.requester_user_name,
+            reviewer_id=request.reviewer_id,
             reviewer_name=request.reviewer_name,
             approved_at=request.approved_at,
             payment_account=request.payment_account,

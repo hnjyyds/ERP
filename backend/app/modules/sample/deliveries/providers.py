@@ -14,8 +14,10 @@ from app.modules.system.auth.repositories import AuthRepository
 async def get_sample_delivery_service(
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> SampleDeliveryService:
+    auth_repository = AuthRepository(session)
     return SampleDeliveryService(
         SampleDeliveryRepository(session),
         SampleRecordRepository(session),
-        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+        data_scope_resolver=DataScopeResolver(auth_repository),
+        auth_repository=auth_repository,
     )

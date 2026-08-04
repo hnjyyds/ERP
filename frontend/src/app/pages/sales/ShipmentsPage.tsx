@@ -2,12 +2,13 @@ import { Alert, Button, Input, Modal as _Modal, Skeleton as _Skeleton, Table, Ta
 import { ArrowLeft, LayoutDashboard, Plus as _Plus, Search, Ship } from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { approveShipment, generateShipmentFromContracts, listShipmentReminders, listShipments, submitShipment, type ShipmentPlan, type ShipmentApprovePayload, type ShipmentPlanGeneratePayload, type ShipmentReminder, type ShipmentStatisticItem as _ShipmentStatisticItem , ExportContractPurchaseStatus, ExportContractShipmentStatus, ShipmentLine} from '../../../api'
+import { approveShipment, generateShipmentFromContracts, listShipmentReminders, listShipments, submitShipment, type CurrentUser, type ShipmentPlan, type ShipmentApprovePayload, type ShipmentPlanGeneratePayload, type ShipmentReminder, type ShipmentStatisticItem as _ShipmentStatisticItem , ExportContractPurchaseStatus, ExportContractShipmentStatus, ShipmentLine} from '../../../api'
 import { shipmentPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { shipmentStatusOptions, freightMethodOptions } from '../../../shared/formOptions'
-import { formatDate, formatMoney, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { canApproveAssignedRecord, formatDate, formatMoney, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
 
 function freightMethodLabel(value: string): string {
   return freightMethodOptions.find((item) => item.value === value)?.label ?? value
@@ -131,7 +132,9 @@ function formatPercent(value?: string | null): string {
 }
 
 
-export function ShipmentsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
+type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
+
+export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
   const [shipments, setShipments] = useState<ShipmentPlan[]>([])
   const [reminders, setReminders] = useState<ShipmentReminder[]>([])
   const [selectedShipmentId, setSelectedShipmentId] = useState<string | null>(null)
@@ -144,6 +147,7 @@ export function ShipmentsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [form, setForm] = useState<ShipmentFormState>(() => initialShipmentForm())
+  const [reviewerId, setReviewerId] = useState('')
   const [approveForm, setApproveForm] = useState<ShipmentApproveFormState>(() =>
     initialShipmentApproveForm(),
   )
@@ -166,6 +170,7 @@ export function ShipmentsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
       reviewer_name: selectedShipment?.reviewer_name ?? '演示业务主管',
       approved_at: selectedShipment?.approved_at ?? todayInputValue(),
     })
+    setReviewerId(selectedShipment?.reviewer_id ?? '')
   }, [selectedShipment?.id, selectedShipment?.approval_status])
 
   useEffect(() => {
@@ -247,11 +252,15 @@ export function ShipmentsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
 
   async function submitShipmentForApproval() {
     if (!selectedShipment) return
+    if (!reviewerId) {
+      showError(new Error('请选择审批人'))
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
     try {
-      const submitted = await submitShipment(selectedShipment.id)
+      const submitted = await submitShipment(selectedShipment.id, { reviewer_id: reviewerId })
       setMessage(`已提交出货明细 ${submitted.code}`)
       upsertShipment(submitted)
       await Promise.all([loadShipments(submitted.id), loadReminders()])
@@ -265,6 +274,10 @@ export function ShipmentsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   async function approveSelectedShipment(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!selectedShipment) return
+    if (!canApproveAssignedRecord(currentUser, selectedShipment.reviewer_id, 'sales:shipment:approve')) {
+      showError(new Error(`该出货单应由 ${selectedShipment.reviewer_name ?? '指定审批人'} 审批`))
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
@@ -657,8 +670,16 @@ export function ShipmentsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
               </div>
 
               <div className="delivery-action-row">
+                {selectedShipment.approval_status === 'draft' ? (
+                  <ApprovalAssigneeSelect
+                    currentUserId={currentUser.id}
+                    onChange={setReviewerId}
+                    requiredPermission="sales:shipment:approve"
+                    value={reviewerId}
+                  />
+                ) : null}
                 <Button
-                  disabled={selectedShipment.approval_status !== 'draft'}
+                  disabled={selectedShipment.approval_status !== 'draft' || !reviewerId}
                   loading={submitting}
                   onClick={() => void submitShipmentForApproval()}
                 >
@@ -671,12 +692,7 @@ export function ShipmentsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                 <div className="form-pair two">
                   <label>
                     审批人
-                    <Input
-                      value={approveForm.reviewer_name}
-                      onChange={(event) =>
-                        setApproveForm({ ...approveForm, reviewer_name: event.target.value })
-                      }
-                    />
+                    <Input disabled value={selectedShipment.reviewer_name ?? ''} />
                   </label>
                   <label>
                     审批日期
@@ -690,13 +706,23 @@ export function ShipmentsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
                   </label>
                 </div>
                 <Button
-                  disabled={selectedShipment.approval_status !== 'submitted'}
+                  disabled={
+                    selectedShipment.approval_status !== 'submitted' ||
+                    !canApproveAssignedRecord(currentUser, selectedShipment.reviewer_id, 'sales:shipment:approve')
+                  }
                   htmlType="submit"
                   loading={submitting}
                   type="primary"
                 >
                   审批通过
                 </Button>
+                {selectedShipment.approval_status === 'submitted' && !canApproveAssignedRecord(currentUser, selectedShipment.reviewer_id, 'sales:shipment:approve') ? (
+                  <Alert
+                    message={`等待 ${selectedShipment.reviewer_name ?? '指定审批人'} 审批`}
+                    showIcon
+                    type="info"
+                  />
+                ) : null}
               </form>
 
               <div className="transaction-box">
@@ -822,5 +848,3 @@ export function ShipmentsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
     </section>
   )
 }
-
-

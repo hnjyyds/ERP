@@ -10,6 +10,7 @@ from app.modules.sales.shipments.schemas import (
     ShipmentPlanListResponse,
     ShipmentPlanResponse,
     ShipmentReminderListResponse,
+    ShipmentSubmit,
 )
 from app.modules.sales.shipments.services import (
     ShipmentPlanService,
@@ -77,12 +78,14 @@ async def get_shipment(
 @router.post("/{shipment_id}/submit", response_model=ApiResponse[ShipmentPlanResponse])
 async def submit_shipment(
     shipment_id: str,
+    payload: ShipmentSubmit,
     user: CurrentUserDep,
     service: Annotated[ShipmentPlanService, Depends(get_shipment_plan_service)],
 ) -> ApiResponse[ShipmentPlanResponse]:
     shipment = await service.submit_shipment(
         current_user=user,
         shipment_id=shipment_id,
+        payload=payload,
     )
     return ApiResponse(data=shipment)
 

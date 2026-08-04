@@ -50,6 +50,7 @@ async def test_inbound_order_api_formal_inbound_posts_inventory_and_supplier_rec
     seeded_system: None,
 ) -> None:
     token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     headers = {"Authorization": f"Bearer {token}"}
     create_response = await api_client.post(
         "/api/v1/purchase/contracts",
@@ -58,11 +59,15 @@ async def test_inbound_order_api_formal_inbound_posts_inventory_and_supplier_rec
     )
     assert create_response.status_code == 201
     contract = create_response.json()["data"]
-    await api_client.post(f"/api/v1/purchase/contracts/{contract['id']}/submit", headers=headers)
+    await api_client.post(
+        f"/api/v1/purchase/contracts/{contract['id']}/submit",
+        headers=headers,
+        json={"reviewer_id": "u-admin"},
+    )
     approve_response = await api_client.post(
         f"/api/v1/purchase/contracts/{contract['id']}/approve",
-        headers=headers,
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-08-05"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-08-05"},
     )
     assert approve_response.status_code == 200
     plans_response = await api_client.get(
@@ -79,7 +84,7 @@ async def test_inbound_order_api_formal_inbound_posts_inventory_and_supplier_rec
             "purchase_contract_id": contract["id"],
             "inspected_at": "2026-08-19",
             "result": "passed",
-            "inspector_id": "u-qc-001",
+            "inspector_id": "u-qc",
             "inspector_name": "QC 张工",
             "issue_summary": None,
             "attachment_group_id": "attach-qc-api",

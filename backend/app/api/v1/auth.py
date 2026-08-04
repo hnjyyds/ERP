@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 
 from app.api.auth_dependencies import CurrentUserDep, CurrentUserSessionDep
 from app.modules.system.auth.providers import get_auth_service
@@ -52,6 +52,10 @@ async def update_me_avatar(
 async def list_assignable_users(
     _current_user: CurrentUserDep,
     service: Annotated[AuthService, Depends(get_auth_service)],
+    required_permission: Annotated[
+        str | None,
+        Query(max_length=160, description="只返回拥有该权限的在职员工。"),
+    ] = None,
 ) -> ApiResponse[AssignableUserListResponse]:
-    users = await service.list_assignable_users()
+    users = await service.list_assignable_users(required_permission)
     return ApiResponse(data=users)

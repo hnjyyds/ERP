@@ -94,6 +94,7 @@ async def _submitted_export_contract(
     submit_response = await api_client.post(
         f"/api/v1/sales/contracts/{contract['id']}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     assert submit_response.status_code == 200
     return submit_response.json()["data"]
@@ -114,6 +115,7 @@ async def _submitted_purchase_contract(
     submit_response = await api_client.post(
         f"/api/v1/purchase/contracts/{contract['id']}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     assert submit_response.status_code == 200
     return submit_response.json()["data"]
@@ -169,8 +171,8 @@ async def test_reporting_approval_query_filters_approved_documents_and_permissio
     )
     approve_response = await api_client.post(
         f"/api/v1/sales/contracts/{submitted['id']}/approve",
-        headers={"Authorization": f"Bearer {manager_token}"},
-        json={"reviewer_name": "演示业务主管", "approved_at": "2027-02-06"},
+        headers={"Authorization": f"Bearer {await _login_token(api_client, 'admin', 'admin123')}"},
+        json={"approved_at": "2027-02-06"},
     )
     assert approve_response.status_code == 200
 

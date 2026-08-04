@@ -87,6 +87,7 @@ class PaymentRequest(Base):
     status: Mapped[str] = mapped_column(String(40), index=True, default="submitted", nullable=False)
     requester_user_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
     requester_user_name: Mapped[str] = mapped_column(String(120), nullable=False)
+    reviewer_id: Mapped[str | None] = mapped_column(String(64), index=True, nullable=True)
     reviewer_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
     approved_at: Mapped[date | None] = mapped_column(Date, nullable=True)
     payment_account: Mapped[str | None] = mapped_column(String(160), nullable=True)

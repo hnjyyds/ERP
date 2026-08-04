@@ -2,13 +2,14 @@ import { Alert, Button, Descriptions as _Descriptions, Input, Modal, Table, Tag 
 import { ArrowLeft, LayoutDashboard, Plus, Search , FileStack} from 'lucide-react'
 import type { FormEvent, MouseEvent , ReactNode} from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { addExportContractAdvancePayment, approveExportContract, createExportContract, exportExportContract, listExportContracts, registerExportContractSignature, submitExportContract, updateExportContract, type ExportContract, type ExportContractAdvancePayment, type ExportContractAdvancePaymentPayload, type ExportContractApprovePayload, type ExportContractCreatePayload, type ExportContractLine, type ExportContractSignature, type ExportContractSignaturePayload, type Customer, type Product , ExportContractPurchaseStatus, ExportContractShipmentStatus, ExportQuotation, listCustomers, listProducts, getExportQuotationHistory} from '../../../api'
+import { addExportContractAdvancePayment, approveExportContract, createExportContract, exportExportContract, listExportContracts, registerExportContractSignature, submitExportContract, updateExportContract, type CurrentUser, type ExportContract, type ExportContractAdvancePayment, type ExportContractAdvancePaymentPayload, type ExportContractApprovePayload, type ExportContractCreatePayload, type ExportContractLine, type ExportContractSignature, type ExportContractSignaturePayload, type Customer, type Product , ExportContractPurchaseStatus, ExportContractShipmentStatus, ExportQuotation, listCustomers, listProducts, getExportQuotationHistory} from '../../../api'
 import { exportContractPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError, showWarningDialog } from '../../../shared/errors'
 import { downloadCsv as _downloadCsv, openExportContractPrint } from '../../../shared/print'
 import { exportContractStatusOptions } from '../../../shared/formOptions'
-import { formatDate, formatMoney, formatPercent as _formatPercent, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { canApproveAssignedRecord, formatDate, formatMoney, formatPercent as _formatPercent, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
 
 function customerDisplayName(customer: Customer): string {
   return customer.cn_name || customer.en_name || customer.code
@@ -272,7 +273,9 @@ function signatureStatusLabel(value: string): string {
 }
 
 
-export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
+type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
+
+export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props) {
   const [contracts, setContracts] = useState<ExportContract[]>([])
   const [products, setProducts] = useState<Product[]>([])
   const [selectedContractId, setSelectedContractId] = useState<string | null>(null)
@@ -291,6 +294,7 @@ export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPagePr
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [editingContractId, setEditingContractId] = useState<string | null>(null)
   const [form, setForm] = useState<ExportContractFormState>(() => initialExportContractForm())
+  const [reviewerId, setReviewerId] = useState('')
   const [approveForm, setApproveForm] = useState<ExportContractApproveFormState>(() =>
     initialExportContractApproveForm(),
   )
@@ -320,6 +324,7 @@ export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPagePr
       return
     }
     syncExportContractActionForms(selectedContract)
+    setReviewerId(selectedContract?.reviewer_id ?? '')
     void loadSelectedContractHistory(selectedContract)
   }, [detailId, selectedContract?.id, selectedContract?.approval_status, selectedContract?.signature_status])
 
@@ -503,11 +508,15 @@ export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPagePr
 
   async function submitContractForApproval() {
     if (!selectedContract) return
+    if (!reviewerId) {
+      showError(new Error('请选择审批人'))
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
     try {
-      const submitted = await submitExportContract(selectedContract.id)
+      const submitted = await submitExportContract(selectedContract.id, { reviewer_id: reviewerId })
       setMessage(`已提交出口合同 ${submitted.code}`)
       upsertContract(submitted)
       await loadContracts(submitted.id)
@@ -520,6 +529,10 @@ export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPagePr
 
   async function approveContract() {
     if (!selectedContract) return
+    if (!canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'sales:contract:approve')) {
+      showError(new Error(`该出口合同应由 ${selectedContract.reviewer_name ?? '指定审批人'} 审批`))
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
@@ -1001,15 +1014,26 @@ export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPagePr
                 >
                   载入编辑
                 </Button>
+                {selectedContract.approval_status === 'draft' ? (
+                  <ApprovalAssigneeSelect
+                    currentUserId={currentUser.id}
+                    onChange={setReviewerId}
+                    requiredPermission="sales:contract:approve"
+                    value={reviewerId}
+                  />
+                ) : null}
                 <Button
-                  disabled={selectedContract.approval_status !== 'draft'}
+                  disabled={selectedContract.approval_status !== 'draft' || !reviewerId}
                   loading={submitting}
                   onClick={() => void submitContractForApproval()}
                 >
                   提交审批
                 </Button>
                 <Button
-                  disabled={selectedContract.approval_status !== 'submitted'}
+                  disabled={
+                    selectedContract.approval_status !== 'submitted' ||
+                    !canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'sales:contract:approve')
+                  }
                   loading={submitting}
                   type="primary"
                   onClick={() => void approveContract()}
@@ -1023,6 +1047,13 @@ export function ExportContractsPage({ detailId, onNavigate }: RoutedDetailPagePr
                   打印单据
                 </Button>
               </div>
+              {selectedContract.approval_status === 'submitted' && !canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'sales:contract:approve') ? (
+                <Alert
+                  message={`等待 ${selectedContract.reviewer_name ?? '指定审批人'} 审批`}
+                  showIcon
+                  type="info"
+                />
+              ) : null}
 
               {exportPreview ? (
                 <div className="transaction-box export-preview">

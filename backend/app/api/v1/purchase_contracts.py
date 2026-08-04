@@ -11,6 +11,7 @@ from app.modules.purchase.contracts.schemas import (
     PurchaseContractListResponse,
     PurchaseContractReminderListResponse,
     PurchaseContractResponse,
+    PurchaseContractSubmit,
 )
 from app.modules.purchase.contracts.services import (
     PurchaseContractService,
@@ -110,10 +111,15 @@ async def update_purchase_contract(
 @router.post("/{contract_id}/submit", response_model=ApiResponse[PurchaseContractResponse])
 async def submit_purchase_contract(
     contract_id: str,
+    payload: PurchaseContractSubmit,
     user: CurrentUserDep,
     service: Annotated[PurchaseContractService, Depends(get_purchase_contract_service)],
 ) -> ApiResponse[PurchaseContractResponse]:
-    contract = await service.submit_contract(current_user=user, contract_id=contract_id)
+    contract = await service.submit_contract(
+        current_user=user,
+        contract_id=contract_id,
+        payload=payload,
+    )
     return ApiResponse(data=contract)
 
 

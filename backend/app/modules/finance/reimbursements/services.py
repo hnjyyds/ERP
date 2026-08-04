@@ -17,6 +17,8 @@ from app.modules.finance.reimbursements.schemas import (
     ReimbursementPay,
     ReimbursementResponse,
 )
+from app.modules.system.auth.assignees import AssigneeValidator
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
 
@@ -29,8 +31,15 @@ class ReimbursementNotFoundError(Exception):
 
 
 class ReimbursementService:
-    def __init__(self, repository: ReimbursementRepository) -> None:
+    def __init__(
+        self,
+        repository: ReimbursementRepository,
+        auth_repository: AuthRepository | None = None,
+    ) -> None:
         self._repository = repository
+        self._assignee_validator = AssigneeValidator(
+            auth_repository or AuthRepository(repository.session)
+        )
 
     async def create_reimbursement(
         self,
@@ -41,6 +50,13 @@ class ReimbursementService:
         self._require_finance(current_user)
         self._validate_category(payload.category)
         self._validate_items_total(payload)
+        reviewer = await self._assignee_validator.require(
+            user_id=payload.reviewer_id,
+            required_permission="finance:view",
+            role_name="审批人",
+            permission_error="所选员工没有财务审批权限",
+            excluded_user_id=current_user.id,
+        )
         async with UnitOfWork(self._repository.session):
             reimbursement = await self._repository.create(
                 reimbursement_no=payload.reimbursement_no,
@@ -50,6 +66,8 @@ class ReimbursementService:
                 category=payload.category,
                 currency=payload.currency,
                 amount=payload.amount,
+                reviewer_id=reviewer.id,
+                reviewer_name=reviewer.display_name,
                 reason=payload.reason,
                 remark=payload.remark,
                 items=payload.items,
@@ -95,6 +113,8 @@ class ReimbursementService:
         existing = await self._get(reimbursement_id)
         if existing.status != "submitted":
             raise ValueError("只有已提交的报销单可以审批")
+        if existing.reviewer_id is not None and existing.reviewer_id != current_user.id:
+            raise PermissionDeniedError
         async with UnitOfWork(self._repository.session):
             reimbursement = await self._repository.approve(
                 reimbursement_id=reimbursement_id,
@@ -166,6 +186,8 @@ class ReimbursementService:
             amount=row.amount,
             reason=row.reason,
             status=row.status,
+            reviewer_id=row.reviewer_id,
+            reviewer_name=row.reviewer_name,
             approved_by_user_id=row.approved_by_user_id,
             approved_by_user_name=row.approved_by_user_name,
             approval_remark=row.approval_remark,

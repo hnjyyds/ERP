@@ -2,13 +2,14 @@ import { Alert, Button, Input, Modal as _Modal, Table, Tag as _Tag , Select} fro
 import { ArrowLeft, LayoutDashboard, Plus as _Plus, Search , FileText} from 'lucide-react'
 import type { FormEvent, MouseEvent , ReactNode} from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { approveExportQuotation, confirmExportQuotationContract, createExportQuotation, exportExportQuotation, getExportQuotationHistory, getExportQuotationPurchaseReferences, getExportQuotationSampleDeliveries, listExportQuotations, submitExportQuotation, updateExportQuotation, type ExportQuotation, type ExportQuotationApprovePayload, type ExportQuotationConfirmContractPayload, type ExportQuotationContract, type ExportQuotationCreatePayload, type ExportQuotationLine, type ExportQuotationPurchaseReference, type Customer, type Product , AssignableUser, SampleDelivery, Supplier, listCustomers} from '../../../api'
+import { approveExportQuotation, confirmExportQuotationContract, createExportQuotation, exportExportQuotation, getExportQuotationHistory, getExportQuotationPurchaseReferences, getExportQuotationSampleDeliveries, listExportQuotations, submitExportQuotation, updateExportQuotation, type CurrentUser, type ExportQuotation, type ExportQuotationApprovePayload, type ExportQuotationConfirmContractPayload, type ExportQuotationContract, type ExportQuotationCreatePayload, type ExportQuotationLine, type ExportQuotationPurchaseReference, type Customer, type Product , AssignableUser, SampleDelivery, Supplier, listCustomers} from '../../../api'
 import { exportQuotationPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { downloadCsv as _downloadCsv } from '../../../shared/print'
 import { exportQuotationStatusOptions, freightMethodOptions , sampleDeliveryStatusOptions} from '../../../shared/formOptions'
-import { formatDate, formatMoney, formatPercent as _formatPercent, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { canApproveAssignedRecord, formatDate, formatMoney, formatPercent as _formatPercent, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
 
 function sampleDeliveryStatusLabel(value: string): string {
   return sampleDeliveryStatusOptions.find((item) => item.value === value)?.label ?? value
@@ -252,7 +253,9 @@ function _mergePurchaseLineRemark(current: string, addition: string): string {
 }
 
 
-export function ExportQuotationsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
+type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
+
+export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Props) {
   const [quotations, setQuotations] = useState<ExportQuotation[]>([])
   const [selectedQuotationId, setSelectedQuotationId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
@@ -270,6 +273,7 @@ export function ExportQuotationsPage({ detailId, onNavigate }: RoutedDetailPageP
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [form, setForm] = useState<ExportQuotationFormState>(() => initialExportQuotationForm())
+  const [reviewerId, setReviewerId] = useState('')
   const [approveForm, setApproveForm] = useState<ExportQuotationApproveFormState>(() =>
     initialExportQuotationApproveForm(),
   )
@@ -298,6 +302,7 @@ export function ExportQuotationsPage({ detailId, onNavigate }: RoutedDetailPageP
       return
     }
     syncExportQuotationActionForms(selectedQuotation)
+    setReviewerId(selectedQuotation?.reviewer_id ?? '')
     void loadSelectedQuotationReferences(selectedQuotation)
   }, [detailId, selectedQuotation?.id, selectedQuotation?.approval_status])
 
@@ -457,11 +462,15 @@ export function ExportQuotationsPage({ detailId, onNavigate }: RoutedDetailPageP
 
   async function submitQuotationForApproval() {
     if (!selectedQuotation) return
+    if (!reviewerId) {
+      showError(new Error('请选择审批人'))
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
     try {
-      const submitted = await submitExportQuotation(selectedQuotation.id)
+      const submitted = await submitExportQuotation(selectedQuotation.id, { reviewer_id: reviewerId })
       setMessage(`已提交出口报价 ${submitted.code}`)
       upsertQuotation(submitted)
       await loadQuotations(submitted.id)
@@ -474,6 +483,10 @@ export function ExportQuotationsPage({ detailId, onNavigate }: RoutedDetailPageP
 
   async function approveQuotation() {
     if (!selectedQuotation) return
+    if (!canApproveAssignedRecord(currentUser, selectedQuotation.reviewer_id, 'sales:quotation:approve')) {
+      showError(new Error(`该报价单应由 ${selectedQuotation.reviewer_name ?? '指定审批人'} 审批`))
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
@@ -923,15 +936,26 @@ export function ExportQuotationsPage({ detailId, onNavigate }: RoutedDetailPageP
                 >
                   载入编辑
                 </Button>
+                {selectedQuotation.approval_status === 'draft' ? (
+                  <ApprovalAssigneeSelect
+                    currentUserId={currentUser.id}
+                    onChange={setReviewerId}
+                    requiredPermission="sales:quotation:approve"
+                    value={reviewerId}
+                  />
+                ) : null}
                 <Button
-                  disabled={selectedQuotation.approval_status !== 'draft'}
+                  disabled={selectedQuotation.approval_status !== 'draft' || !reviewerId}
                   loading={submitting}
                   onClick={() => void submitQuotationForApproval()}
                 >
                   提交审批
                 </Button>
                 <Button
-                  disabled={selectedQuotation.approval_status !== 'submitted'}
+                  disabled={
+                    selectedQuotation.approval_status !== 'submitted' ||
+                    !canApproveAssignedRecord(currentUser, selectedQuotation.reviewer_id, 'sales:quotation:approve')
+                  }
                   loading={submitting}
                   type="primary"
                   onClick={() => void approveQuotation()}
@@ -942,6 +966,13 @@ export function ExportQuotationsPage({ detailId, onNavigate }: RoutedDetailPageP
                   导出 PDF
                 </Button>
               </div>
+              {selectedQuotation.approval_status === 'submitted' && !canApproveAssignedRecord(currentUser, selectedQuotation.reviewer_id, 'sales:quotation:approve') ? (
+                <Alert
+                  message={`等待 ${selectedQuotation.reviewer_name ?? '指定审批人'} 审批`}
+                  showIcon
+                  type="info"
+                />
+              ) : null}
 
               <form className="record-form accessory-form" onSubmit={confirmContract}>
                 <div className="form-divider">报价确认生成出口合同</div>
@@ -1096,5 +1127,3 @@ export function ExportQuotationsPage({ detailId, onNavigate }: RoutedDetailPageP
     </section>
   )
 }
-
-

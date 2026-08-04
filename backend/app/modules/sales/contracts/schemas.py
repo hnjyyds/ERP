@@ -4,6 +4,7 @@ from typing import Self
 
 from pydantic import ConfigDict, Field, model_validator
 
+from app.schemas.approvals import ApprovalSubmit
 from app.schemas.base import BaseModel
 
 VALID_CONTRACT_STATUSES = ("draft", "submitted", "approved", "rejected")
@@ -183,8 +184,12 @@ class ExportContractCreate(BaseModel):
 class ExportContractApprove(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    reviewer_name: str = Field(min_length=1, max_length=160)
+    reviewer_name: str | None = Field(default=None, max_length=160)
     approved_at: date
+
+
+class ExportContractSubmit(ApprovalSubmit):
+    """Submit an export contract to one designated reviewer."""
 
 
 class ExportContractSignatureCreate(BaseModel):
@@ -336,7 +341,8 @@ class ExportContractResponse(BaseModel):
     )
     submitted_at: date | None = Field(description="提交审批日期。")
     approved_at: date | None = Field(description="审批通过日期。")
-    reviewer_name: str | None = Field(description="审批人姓名。")
+    reviewer_id: str | None = Field(default=None, description="被指定审批人的用户 ID。")
+    reviewer_name: str | None = Field(default=None, description="审批人姓名。")
     signature_status: str = Field(description="客户签章状态。")
     customer_signed_at: date | None = Field(description="客户签章日期。")
     owner_user_id: str = Field(description="订单归属业务员的用户 ID。")

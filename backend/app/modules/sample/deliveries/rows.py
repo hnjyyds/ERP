@@ -27,6 +27,7 @@ class SampleDeliveryRow:
     status: str
     submitted_at: date | None
     approved_at: date | None
+    reviewer_id: str | None
     reviewer_name: str | None
     owner_user_id: str
     created_at: datetime

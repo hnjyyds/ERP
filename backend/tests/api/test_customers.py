@@ -224,6 +224,7 @@ async def test_customer_transactions_close_sales_chain_from_quotation_to_shipmen
     seeded_system: None,
 ) -> None:
     token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     customer_response = await api_client.post(
         "/api/v1/masterdata/customers",
         headers={"Authorization": f"Bearer {token}"},
@@ -272,11 +273,12 @@ async def test_customer_transactions_close_sales_chain_from_quotation_to_shipmen
     await api_client.post(
         f"/api/v1/sales/quotations/{quotation_id}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     approve_quotation_response = await api_client.post(
         f"/api/v1/sales/quotations/{quotation_id}/approve",
-        headers={"Authorization": f"Bearer {token}"},
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-07-02"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-07-02"},
     )
     assert approve_quotation_response.status_code == 200
     contract_response = await api_client.post(
@@ -290,12 +292,13 @@ async def test_customer_transactions_close_sales_chain_from_quotation_to_shipmen
     submit_contract_response = await api_client.post(
         f"/api/v1/sales/contracts/{contract_id}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     assert submit_contract_response.status_code == 200
     approve_contract_response = await api_client.post(
         f"/api/v1/sales/contracts/{contract_id}/approve",
-        headers={"Authorization": f"Bearer {token}"},
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-07-06"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-07-06"},
     )
     assert approve_contract_response.status_code == 200
 
@@ -323,11 +326,12 @@ async def test_customer_transactions_close_sales_chain_from_quotation_to_shipmen
     await api_client.post(
         f"/api/v1/sales/shipments/{shipment_id}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     approve_shipment_response = await api_client.post(
         f"/api/v1/sales/shipments/{shipment_id}/approve",
-        headers={"Authorization": f"Bearer {token}"},
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-08-19"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-08-19"},
     )
     assert approve_shipment_response.status_code == 200
 

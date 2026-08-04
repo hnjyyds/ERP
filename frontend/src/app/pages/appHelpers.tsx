@@ -71,6 +71,18 @@ export function canCreateAnnouncement(user: CurrentUser) {
   return user.permissions.includes(superAdminPermission)
 }
 
+export function canApproveAssignedRecord(
+  currentUser: CurrentUser,
+  reviewerId: string | null | undefined,
+  approvalPermission: string,
+) {
+  if (reviewerId) return reviewerId === currentUser.id
+  return (
+    currentUser.permissions.includes(approvalPermission) ||
+    currentUser.permissions.includes(superAdminPermission)
+  )
+}
+
 // ── Settings (shared mutable state) ──────────────────────────────────
 export type AppSettings = {
   language: AppLanguage
@@ -272,15 +284,24 @@ export function pageTitle(
 }
 
 export function statusTag(value: string) {
-  const color = value === 'done' || value === 'completed' ? 'green' : 'gold'
+  const color =
+    value === 'done' || value === 'completed'
+      ? 'green'
+      : value === 'overdue'
+        ? 'red'
+        : 'gold'
+  const label =
+    value === 'completed' || value === 'done'
+      ? '已完成'
+      : value === 'pending'
+        ? '待处理'
+        : value === 'in_progress'
+          ? '处理中'
+          : value === 'overdue'
+            ? '已逾期'
+            : value
   return (
-    <Tag color={color}>
-      {value === 'completed' || value === 'done'
-        ? '已完成'
-        : value === 'pending'
-          ? '待处理'
-          : value}
-    </Tag>
+    <Tag color={color}>{label}</Tag>
   )
 }
 

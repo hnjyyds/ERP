@@ -121,6 +121,7 @@ async def test_finance_payment_flow_invoice_request_approve_and_payables(
             "request_date": "2026-09-10",
             "requested_amount": "1200.00",
             "currency": "CNY",
+            "reviewer_id": "u-finance-manager",
             "remark": "首笔货款",
         },
     )
@@ -130,6 +131,8 @@ async def test_finance_payment_flow_invoice_request_approve_and_payables(
     assert payment_request["approved_amount"] == "0.00"
     assert payment_request["paid_amount"] == "0.00"
     assert payment_request["supplier_invoice_no"] == "SI-PAY-API-001"
+    assert payment_request["reviewer_id"] == "u-finance-manager"
+    assert payment_request["reviewer_name"] == "演示财务主管"
 
     self_approve_response = await api_client.post(
         f"/api/v1/finance/payment-requests/{payment_request['id']}/approve",
@@ -197,6 +200,7 @@ async def test_finance_payment_flow_invoice_request_approve_and_payables(
             "request_date": "2026-09-12",
             "requested_amount": "2000.00",
             "currency": "CNY",
+            "reviewer_id": "u-finance-manager",
             "remark": "尾款",
         },
     )
@@ -262,6 +266,7 @@ async def test_finance_payment_rejects_excess_amount_and_permissions(
             "request_date": "2026-09-10",
             "requested_amount": "100.00",
             "currency": "CNY",
+            "reviewer_id": "u-finance-manager",
             "remark": None,
         },
     )
@@ -277,6 +282,7 @@ async def test_finance_payment_rejects_excess_amount_and_permissions(
             "request_date": "2026-09-10",
             "requested_amount": "4000.00",
             "currency": "CNY",
+            "reviewer_id": "u-finance",
             "remark": "超额付款",
         },
     )

@@ -35,6 +35,7 @@ class ShipmentPlanRow:
     approval_status: str
     submitted_at: date | None
     approved_at: date | None
+    reviewer_id: str | None
     reviewer_name: str | None
     remarks: str | None
     owner_user_id: str
@@ -259,12 +260,20 @@ class ShipmentPlanRepository:
         total = await self.session.scalar(count_statement)
         return [self._map_plan(row) for row in rows], int(total or 0)
 
-    async def submit_plan(self, shipment_id: str) -> ShipmentPlanRow | None:
+    async def submit_plan(
+        self,
+        shipment_id: str,
+        *,
+        reviewer_id: str | None = None,
+        reviewer_name: str | None = None,
+    ) -> ShipmentPlanRow | None:
         plan = await self.session.scalar(select(ShipmentPlan).where(ShipmentPlan.id == shipment_id))
         if plan is None:
             return None
         plan.approval_status = "submitted"
         plan.submitted_at = plan.shipment_date
+        plan.reviewer_id = reviewer_id
+        plan.reviewer_name = reviewer_name
         await self.session.flush()
         return self._map_plan(plan)
 
@@ -272,14 +281,18 @@ class ShipmentPlanRepository:
         self,
         *,
         shipment_id: str,
-        reviewer_name: str,
         approved_at: date,
+        reviewer_id: str | None = None,
+        reviewer_name: str | None = None,
     ) -> ShipmentPlanRow | None:
         plan = await self.session.scalar(select(ShipmentPlan).where(ShipmentPlan.id == shipment_id))
         if plan is None:
             return None
         plan.approval_status = "approved"
-        plan.reviewer_name = reviewer_name
+        if reviewer_id is not None and plan.reviewer_id is None:
+            plan.reviewer_id = reviewer_id
+        if reviewer_name is not None and plan.reviewer_name is None:
+            plan.reviewer_name = reviewer_name
         plan.approved_at = approved_at
         plan.reminder_status = "done"
         await self.session.flush()
@@ -327,6 +340,7 @@ class ShipmentPlanRepository:
             approval_status=plan.approval_status,
             submitted_at=plan.submitted_at,
             approved_at=plan.approved_at,
+            reviewer_id=plan.reviewer_id,
             reviewer_name=plan.reviewer_name,
             remarks=plan.remarks,
             owner_user_id=plan.owner_user_id,

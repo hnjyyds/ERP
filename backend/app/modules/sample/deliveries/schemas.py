@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from pydantic import ConfigDict, Field
 
+from app.schemas.approvals import ApprovalSubmit
 from app.schemas.base import BaseModel
 
 VALID_SAMPLE_DELIVERY_STATUSES = ("draft", "submitted", "approved", "rejected", "shipped")
@@ -58,8 +59,12 @@ class SampleDeliveryCreate(BaseModel):
 class SampleDeliveryApprove(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    reviewer_name: str = Field(min_length=1, max_length=160)
+    reviewer_name: str | None = Field(default=None, max_length=160)
     approved_at: date
+
+
+class SampleDeliverySubmit(ApprovalSubmit):
+    """Submit a delivery to one designated reviewer."""
 
 
 class SampleDeliveryTrackingUpdate(BaseModel):
@@ -121,7 +126,8 @@ class SampleDeliveryResponse(BaseModel):
     status: str
     submitted_at: date | None
     approved_at: date | None
-    reviewer_name: str | None
+    reviewer_id: str | None = None
+    reviewer_name: str | None = None
     owner_user_id: str
     lines: list[SampleDeliveryLineResponse]
     fees: list[SampleDeliveryFeeResponse]

@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from pydantic import ConfigDict, Field
 
+from app.schemas.approvals import ApprovalSubmit
 from app.schemas.base import BaseModel
 
 VALID_QUOTATION_STATUSES = (
@@ -52,8 +53,12 @@ class ExportQuotationCreate(BaseModel):
 class ExportQuotationApprove(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    reviewer_name: str = Field(min_length=1, max_length=160)
+    reviewer_name: str | None = Field(default=None, max_length=160)
     approved_at: date
+
+
+class ExportQuotationSubmit(ApprovalSubmit):
+    """Submit a quotation to one designated reviewer."""
 
 
 class ExportQuotationConfirmContract(BaseModel):
@@ -102,7 +107,8 @@ class ExportQuotationResponse(BaseModel):
     approval_status: str
     submitted_at: date | None
     approved_at: date | None
-    reviewer_name: str | None
+    reviewer_id: str | None = None
+    reviewer_name: str | None = None
     confirmed_at: date | None
     generated_contract_id: str | None
     generated_contract_no: str | None

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from sqlalchemy import delete, func, select
+from sqlalchemy import delete, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.system.auth.data_scope_rules import widest_data_scope
@@ -135,13 +135,36 @@ class AuthRepository:
             for item in rows
         ]
 
-    async def list_active_users(self) -> list[AssignableUserRow]:
-        rows = await self.session.execute(
+    async def list_active_users(
+        self,
+        required_permission: str | None = None,
+    ) -> list[AssignableUserRow]:
+        statement = (
             select(User, Department)
             .join(Department, Department.id == User.department_id, isouter=True)
             .where(User.is_active.is_(True))
             .order_by(Department.sort_order.asc().nulls_last(), User.display_name.asc())
         )
+        if required_permission is not None:
+            permitted_user_ids = (
+                select(UserRole.user_id)
+                .join(RolePermission, RolePermission.role_id == UserRole.role_id)
+                .join(Permission, Permission.id == RolePermission.permission_id)
+                .where(Permission.code == required_permission)
+            )
+            super_admin_user_ids = (
+                select(UserRole.user_id)
+                .join(RolePermission, RolePermission.role_id == UserRole.role_id)
+                .join(Permission, Permission.id == RolePermission.permission_id)
+                .where(Permission.code == "system:super_admin")
+            )
+            statement = statement.where(
+                or_(
+                    User.id.in_(permitted_user_ids),
+                    User.id.in_(super_admin_user_ids),
+                )
+            )
+        rows = await self.session.execute(statement)
         return [
             AssignableUserRow(
                 id=user.id,
@@ -527,6 +550,11 @@ class AuthRepository:
                 role_scopes.append(role_scope)
             if permission_code not in permissions:
                 permissions.append(permission_code)
+
+        if "system:super_admin" in permissions:
+            permissions = list(
+                await self.session.scalars(select(Permission.code).order_by(Permission.code.asc()))
+            )
 
         return UserIdentityRow(
             id=user.id,

@@ -28,6 +28,8 @@ from app.modules.purchase.invoice_notices.repositories import (
     PurchaseInvoiceNoticeRepository,
     PurchaseInvoiceNoticeRow,
 )
+from app.modules.system.auth.assignees import AssigneeValidator
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
 
@@ -44,9 +46,13 @@ class PaymentService:
         self,
         repository: PaymentRepository,
         invoice_notice_repository: PurchaseInvoiceNoticeRepository,
+        auth_repository: AuthRepository | None = None,
     ) -> None:
         self._repository = repository
         self._invoice_notice_repository = invoice_notice_repository
+        self._assignee_validator = AssigneeValidator(
+            auth_repository or AuthRepository(repository.session)
+        )
 
     async def create_supplier_invoice(
         self,
@@ -111,6 +117,13 @@ class PaymentService:
         self._validate_payment_type(payload.payment_type)
         invoice = await self._get_supplier_invoice(payload.supplier_invoice_id)
         self._validate_payment_request_amount(invoice, payload.requested_amount, payload.currency)
+        reviewer = await self._assignee_validator.require(
+            user_id=payload.reviewer_id,
+            required_permission="finance:view",
+            role_name="审批人",
+            permission_error="所选员工没有财务审批权限",
+            excluded_user_id=current_user.id,
+        )
         async with UnitOfWork(self._repository.session):
             payment_request = await self._repository.create_payment_request(
                 request_no=payload.request_no,
@@ -121,6 +134,8 @@ class PaymentService:
                 currency=payload.currency,
                 requester_user_id=current_user.id,
                 requester_user_name=current_user.display_name,
+                reviewer_id=reviewer.id,
+                reviewer_name=reviewer.display_name,
                 remark=payload.remark,
             )
         return self._payment_request_response(payment_request)
@@ -161,6 +176,11 @@ class PaymentService:
         payment_request = await self._get_payment_request(payment_request_id)
         if payment_request.requester_user_id == current_user.id:
             raise ValueError("付款申请人不能审批自己的申请")
+        if (
+            payment_request.reviewer_id is not None
+            and payment_request.reviewer_id != current_user.id
+        ):
+            raise PermissionDeniedError
         invoice = await self._get_supplier_invoice(payment_request.supplier_invoice_id)
         self._validate_payment_approval(payment_request, invoice, payload)
         async with UnitOfWork(self._repository.session):
@@ -168,6 +188,7 @@ class PaymentService:
                 request_id=payment_request.id,
                 approved_amount=payload.approved_amount,
                 approved_at=payload.approved_at,
+                reviewer_id=current_user.id,
                 reviewer_name=current_user.display_name,
                 payment_account=payload.payment_account,
                 remark=payload.remark,
@@ -338,6 +359,7 @@ class PaymentService:
             status=payment_request.status,
             requester_user_id=payment_request.requester_user_id,
             requester_user_name=payment_request.requester_user_name,
+            reviewer_id=payment_request.reviewer_id,
             reviewer_name=payment_request.reviewer_name,
             approved_at=payment_request.approved_at,
             payment_account=payment_request.payment_account,

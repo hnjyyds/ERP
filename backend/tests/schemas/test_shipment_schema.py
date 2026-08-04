@@ -5,6 +5,7 @@ from app.modules.sales.shipments.schemas import (
     ShipmentApprove,
     ShipmentContractSelection,
     ShipmentPlanGenerate,
+    ShipmentSubmit,
 )
 
 
@@ -64,11 +65,12 @@ def test_shipment_plan_generate_rejects_invalid_amounts() -> None:
         )
 
 
-def test_shipment_approve_requires_reviewer() -> None:
-    payload = ShipmentApprove(reviewer_name="演示业务主管", approved_at="2026-08-19")
+def test_shipment_submit_requires_reviewer_and_approve_requires_date() -> None:
+    submit_payload = ShipmentSubmit(reviewer_id="u-reviewer")
+    payload = ShipmentApprove(approved_at="2026-08-19")
 
-    assert payload.reviewer_name == "演示业务主管"
+    assert submit_payload.reviewer_id == "u-reviewer"
     assert payload.approved_at.isoformat() == "2026-08-19"
 
     with pytest.raises(ValidationError):
-        ShipmentApprove(reviewer_name="", approved_at="2026-08-19")
+        ShipmentSubmit(reviewer_id="")

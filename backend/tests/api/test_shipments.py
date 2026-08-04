@@ -68,14 +68,16 @@ async def _approved_contract(
     )
     assert create_response.status_code == 201
     contract = create_response.json()["data"]
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     await api_client.post(
         f"/api/v1/sales/contracts/{contract['id']}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     approve_response = await api_client.post(
         f"/api/v1/sales/contracts/{contract['id']}/approve",
-        headers={"Authorization": f"Bearer {token}"},
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-07-06"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-07-06"},
     )
     assert approve_response.status_code == 200
     return approve_response.json()["data"]
@@ -86,6 +88,7 @@ async def test_shipment_flow_from_contracts_approval_reminder_and_contract_write
     seeded_system: None,
 ) -> None:
     token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     contract_a = await _approved_contract(
         api_client,
         token,
@@ -148,14 +151,15 @@ async def test_shipment_flow_from_contracts_approval_reminder_and_contract_write
     submit_response = await api_client.post(
         f"/api/v1/sales/shipments/{shipment_id}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     assert submit_response.status_code == 200
     assert submit_response.json()["data"]["approval_status"] == "submitted"
 
     approve_response = await api_client.post(
         f"/api/v1/sales/shipments/{shipment_id}/approve",
-        headers={"Authorization": f"Bearer {token}"},
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-08-19"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-08-19"},
     )
     assert approve_response.status_code == 200
     approved = approve_response.json()["data"]

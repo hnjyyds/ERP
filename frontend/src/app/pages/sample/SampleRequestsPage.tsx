@@ -2,13 +2,14 @@ import { Alert, Button, Input, Modal, Table } from 'antd'
 import { ArrowLeft, FlaskConical, Images as _Images, LayoutDashboard, Plus, Search } from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { createSampleRequest, addSampleProgress, addSampleFee, requestSampleFeePayment, createSampleRecordFromRequest, listSampleRequests, type SampleRequest, type SampleRequestCreatePayload, type SampleRequestLinePayload, type SampleRequestToRecordPayload, type SampleFee, type SampleFeePayload, type SampleProgress, type SampleProgressPayload, type SampleRecord as _SampleRecord, type SampleRecordCreatePayload as _SampleRecordCreatePayload , SampleRecordImagePayload} from '../../../api'
+import { createSampleRequest, addSampleProgress, addSampleFee, requestSampleFeePayment, createSampleRecordFromRequest, listSampleRequests, type CurrentUser, type SampleRequest, type SampleRequestCreatePayload, type SampleRequestLinePayload, type SampleRequestToRecordPayload, type SampleFee, type SampleFeePayload, type SampleProgress, type SampleProgressPayload, type SampleRecord as _SampleRecord, type SampleRecordCreatePayload as _SampleRecordCreatePayload , SampleRecordImagePayload} from '../../../api'
 import { sampleRequestPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { openSampleRequestPrint } from '../../../shared/print'
 import { sampleStatusOptions, sampleDestinationOptions, sampleProgressStageOptions, sampleFeeTypeOptions, samplePayeeTypeOptions, sampleRecordTypeOptions, sampleSourceTypeOptions as _sampleSourceTypeOptions } from '../../../shared/formOptions'
 import { formatDate, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
 
 type SampleRecordFormState = {
   code: string
@@ -294,7 +295,9 @@ function samplePaymentStatusLabel(value: string): string {
 }
 
 
-export function SampleRequestsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
+type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
+
+export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props) {
   const [requests, setRequests] = useState<SampleRequest[]>([])
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
@@ -312,6 +315,7 @@ export function SampleRequestsPage({ detailId, onNavigate }: RoutedDetailPagePro
     initialSampleProgressForm(),
   )
   const [feeForm, setFeeForm] = useState<SampleFeeFormState>(() => initialSampleFeeForm())
+  const [paymentReviewerId, setPaymentReviewerId] = useState('')
   const [recordForm, setRecordForm] = useState<SampleRecordFormState>(() =>
     initialSampleRecordForm(),
   )
@@ -444,11 +448,17 @@ export function SampleRequestsPage({ detailId, onNavigate }: RoutedDetailPagePro
 
   async function submitPaymentRequest(fee: SampleFee) {
     if (!selectedRequest) return
+    if (!paymentReviewerId) {
+      showError(new Error('请选择付费审批人'))
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
     try {
-      const updatedFee = await requestSampleFeePayment(selectedRequest.id, fee.id)
+      const updatedFee = await requestSampleFeePayment(selectedRequest.id, fee.id, {
+        reviewer_id: paymentReviewerId,
+      })
       setRequests((current) =>
         current.map((item) =>
           item.id === selectedRequest.id
@@ -990,6 +1000,16 @@ export function SampleRequestsPage({ detailId, onNavigate }: RoutedDetailPagePro
                 </Button>
               </form>
 
+              {selectedRequest.fees.some((fee) => !fee.payment_request_no) ? (
+                <ApprovalAssigneeSelect
+                  currentUserId={currentUser.id}
+                  label="付费审批人"
+                  onChange={setPaymentReviewerId}
+                  requiredPermission="finance:view"
+                  value={paymentReviewerId}
+                />
+              ) : null}
+
               <Table<SampleFee>
                 className="compact-section"
                 columns={[
@@ -1008,7 +1028,7 @@ export function SampleRequestsPage({ detailId, onNavigate }: RoutedDetailPagePro
                     width: 120,
                     render: (_, record) => (
                       <Button
-                        disabled={Boolean(record.payment_request_no)}
+                        disabled={Boolean(record.payment_request_no) || !paymentReviewerId}
                         loading={submitting}
                         size="small"
                         onClick={() => void submitPaymentRequest(record)}
@@ -1151,5 +1171,4 @@ export function SampleRequestsPage({ detailId, onNavigate }: RoutedDetailPagePro
     </section>
   )
 }
-
 

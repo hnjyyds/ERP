@@ -61,7 +61,7 @@ async def test_outbound_order_repository_records_order_deducts_stock_and_ledger(
             unit="pcs",
         )
         submitted = await repository.submit_order(order.id)
-        approved = await repository.approve_order(order.id, "业务主管", date(2026, 9, 30))
+        approved = await repository.approve_order(order.id, date(2026, 9, 30), "业务主管")
         balance = await repository.decrease_available_balance(
             warehouse_id="wh-ningbo",
             warehouse_name="宁波总仓",

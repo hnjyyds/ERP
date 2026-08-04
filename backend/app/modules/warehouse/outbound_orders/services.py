@@ -6,7 +6,9 @@ from app.db.uow import UnitOfWork
 from app.modules.followup.services import FollowupService
 from app.modules.purchase.contracts.repositories import PurchaseContractRepository
 from app.modules.sales.shipments.repositories import ShipmentPlanRepository
+from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.warehouse.inbound_orders.repositories import InboundOrderRepository
 from app.modules.warehouse.outbound_orders.repositories import (
@@ -23,6 +25,7 @@ from app.modules.warehouse.outbound_orders.schemas import (
     OutboundOrderLineShip,
     OutboundOrderListResponse,
     OutboundOrderResponse,
+    OutboundOrderSubmit,
 )
 from app.modules.warehouse.outbound_plans.repositories import (
     OutboundPlanLineRow,
@@ -65,6 +68,7 @@ class OutboundOrderService:
         purchase_contract_repository: PurchaseContractRepository,
         followup_service: FollowupService,
         data_scope_resolver: DataScopeResolver,
+        auth_repository: AuthRepository | None = None,
     ) -> None:
         self._repository = outbound_order_repository
         self._outbound_plan_repository = outbound_plan_repository
@@ -73,6 +77,9 @@ class OutboundOrderService:
         self._purchase_contract_repository = purchase_contract_repository
         self._followup_service = followup_service
         self._data_scope_resolver = data_scope_resolver
+        self._assignee_validator = AssigneeValidator(
+            auth_repository or AuthRepository(outbound_order_repository.session)
+        )
 
     async def generate_from_plan(
         self,
@@ -130,13 +137,25 @@ class OutboundOrderService:
         *,
         current_user: CurrentUserResponse,
         order_id: str,
+        payload: OutboundOrderSubmit,
     ) -> OutboundOrderResponse:
         self._require(current_user, "warehouse:outbound_order:edit")
         order = await self._get_accessible_order(current_user=current_user, order_id=order_id)
         if order.status != "draft":
             raise ValueError("只有草稿出库单可以提交")
+        reviewer = await self._assignee_validator.require(
+            user_id=payload.reviewer_id,
+            required_permission="warehouse:outbound_order:approve",
+            role_name="审批人",
+            permission_error="所选员工没有出库审批权限",
+            excluded_user_id=current_user.id,
+        )
         async with UnitOfWork(self._repository.session):
-            submitted = await self._repository.submit_order(order.id)
+            submitted = await self._repository.submit_order(
+                order.id,
+                reviewer_id=reviewer.id,
+                reviewer_name=reviewer.display_name,
+            )
             if submitted is None:
                 raise OutboundOrderNotFoundError
         return await self._order_response(submitted)
@@ -154,6 +173,8 @@ class OutboundOrderService:
         order = await self._get_accessible_order(current_user=current_user, order_id=order_id)
         if order.status != "submitted":
             raise ValueError("只有已提交出库单可以审批")
+        if order.reviewer_id is not None and order.reviewer_id != current_user.id:
+            raise PermissionDeniedError
         lines = await self._repository.list_lines(order.id)
         if not lines:
             raise ValueError("出库单没有明细")
@@ -162,8 +183,9 @@ class OutboundOrderService:
         async with UnitOfWork(self._repository.session):
             approved = await self._repository.approve_order(
                 order.id,
-                payload.reviewer_name,
                 payload.approved_at,
+                reviewer_id=current_user.id,
+                reviewer_name=current_user.display_name,
             )
             if approved is None:
                 raise OutboundOrderNotFoundError
@@ -427,6 +449,7 @@ class OutboundOrderService:
             exception_reason=order.exception_reason,
             submitted_at=order.submitted_at,
             approved_at=order.approved_at,
+            reviewer_id=order.reviewer_id,
             reviewer_name=order.reviewer_name,
             owner_user_id=order.owner_user_id,
             lines=[self._line_response(line) for line in lines],

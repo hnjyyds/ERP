@@ -11,6 +11,7 @@ from app.modules.purchase.contracts.schemas import (
     PurchaseContractGenerateFromExportContracts,
     PurchaseContractLineCreate,
     PurchaseContractSourceSelection,
+    PurchaseContractSubmit,
 )
 from app.modules.purchase.contracts.services import (
     PermissionDeniedError,
@@ -37,12 +38,14 @@ def _make_service(session: AsyncSession) -> PurchaseContractService:
 def _user_with_permissions(
     permissions: list[str],
     user_id: str = "u-001",
+    data_scope: str = "self",
 ) -> CurrentUserResponse:
     return CurrentUserResponse(
         id=user_id,
         username="tester",
         display_name="测试用户",
         department_name="测试部",
+        data_scope=data_scope,
         roles=["测试角色"],
         permissions=permissions,
     )
@@ -208,9 +211,15 @@ async def test_purchase_contract_service_generates_from_export_contracts_and_app
         submitted = await service.submit_contract(
             current_user=current_user,
             contract_id=generated.id,
+            payload=PurchaseContractSubmit(reviewer_id="u-admin"),
+        )
+        reviewer = _user_with_permissions(
+            ["purchase:contract:approve", "purchase:contract:view"],
+            user_id="u-admin",
+            data_scope="all",
         )
         approved = await service.approve_contract(
-            current_user=current_user,
+            current_user=reviewer,
             contract_id=generated.id,
             payload=PurchaseContractApprove(
                 reviewer_name="演示业务主管",
@@ -233,6 +242,62 @@ async def test_purchase_contract_service_generates_from_export_contracts_and_app
     assert export_a.purchased_quantity == "1000"
     assert export_a_lines[0].id == export_a_line_id
     assert export_a_lines[0].purchased_quantity == 1000
+
+
+async def test_purchase_contract_service_claims_legacy_unassigned_approval(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        repository = PurchaseContractRepository(session)
+        contract = await repository.create_contract(
+            code="PC-SVC-LEGACY-APPROVAL",
+            contract_date=date(2026, 8, 4),
+            supplier_id="supplier-pack-a",
+            supplier_name="华东包装制品厂",
+            buyer_user_id="u-001",
+            buyer_user_name="演示业务主管",
+            currency="USD",
+            delivery_date=date(2026, 8, 30),
+            payment_terms="30% 预付，70% 出货前",
+            source_type="stock_purchase",
+            remarks="兼容历史审批数据",
+            approval_status="submitted",
+            owner_user_id="u-001",
+        )
+        await repository.add_line(
+            contract_id=contract.id,
+            product_id="accessory-cotton-rope",
+            product_code="ACC-ROPE",
+            product_name="棉绳",
+            specification="5mm",
+            model="ROPE-5",
+            quantity="10",
+            unit="m",
+            unit_price="0.12",
+            amount="1.20",
+            source_export_contract_id=None,
+            source_export_contract_no=None,
+            source_export_contract_line_id=None,
+            remark="历史审批明细",
+        )
+        await repository.refresh_statistics(contract.id)
+        service = _make_service(session)
+        reviewer = _user_with_permissions(
+            ["purchase:contract:approve", "purchase:contract:view"],
+            user_id="u-admin",
+            data_scope="all",
+        )
+
+        approved = await service.approve_contract(
+            current_user=reviewer,
+            contract_id=contract.id,
+            payload=PurchaseContractApprove(approved_at=date(2026, 8, 4)),
+        )
+
+    assert approved.approval_status == "approved"
+    assert approved.reviewer_id == "u-admin"
+    assert approved.reviewer_name == "测试用户"
 
 
 async def test_purchase_generation_resolves_legacy_export_product_by_code(

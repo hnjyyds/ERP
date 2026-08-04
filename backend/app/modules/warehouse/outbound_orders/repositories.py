@@ -36,6 +36,7 @@ class OutboundOrderRow:
     exception_reason: str | None
     submitted_at: date | None
     approved_at: date | None
+    reviewer_id: str | None
     reviewer_name: str | None
     owner_user_id: str
     created_at: datetime
@@ -219,26 +220,38 @@ class OutboundOrderRepository:
         total = await self.session.scalar(count_statement)
         return [self._map_order(row) for row in rows], int(total or 0)
 
-    async def submit_order(self, order_id: str) -> OutboundOrderRow | None:
+    async def submit_order(
+        self,
+        order_id: str,
+        *,
+        reviewer_id: str | None = None,
+        reviewer_name: str | None = None,
+    ) -> OutboundOrderRow | None:
         order = await self.session.get(OutboundOrder, order_id)
         if order is None:
             return None
         order.status = "submitted"
         order.submitted_at = order.outbound_at
+        order.reviewer_id = reviewer_id
+        order.reviewer_name = reviewer_name
         await self.session.flush()
         return self._map_order(order)
 
     async def approve_order(
         self,
         order_id: str,
-        reviewer_name: str,
         approved_at: date,
+        reviewer_id: str | None = None,
+        reviewer_name: str | None = None,
     ) -> OutboundOrderRow | None:
         order = await self.session.get(OutboundOrder, order_id)
         if order is None:
             return None
         order.status = "approved"
-        order.reviewer_name = reviewer_name
+        if reviewer_id is not None and order.reviewer_id is None:
+            order.reviewer_id = reviewer_id
+        if reviewer_name is not None and order.reviewer_name is None:
+            order.reviewer_name = reviewer_name
         order.approved_at = approved_at
         await self.session.flush()
         return self._map_order(order)
@@ -365,6 +378,7 @@ class OutboundOrderRepository:
             exception_reason=order.exception_reason,
             submitted_at=order.submitted_at,
             approved_at=order.approved_at,
+            reviewer_id=order.reviewer_id,
             reviewer_name=order.reviewer_name,
             owner_user_id=order.owner_user_id,
             created_at=order.created_at,

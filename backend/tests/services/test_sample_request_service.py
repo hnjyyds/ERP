@@ -16,6 +16,7 @@ from app.modules.sample.requests.services import SampleRequestService
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.auth.seed import seed_system_demo_data
 
 
 def _make_service(session: AsyncSession) -> SampleRequestService:
@@ -110,6 +111,7 @@ async def test_sample_request_service_generates_payment_request_for_fee(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         service = _make_service(session)
         current_user = _user_with_permissions(
             ["sample:request:edit", "sample:request:view", "sample:request:fee:edit"],
@@ -135,6 +137,7 @@ async def test_sample_request_service_generates_payment_request_for_fee(
             current_user=current_user,
             request_id=sample_request.id,
             fee_id=fee.id,
+            reviewer_id="u-finance-manager",
         )
 
     assert fee.payment_status == "not_requested"

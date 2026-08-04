@@ -32,6 +32,8 @@ class ReimbursementRow:
     amount: str
     reason: str | None
     status: str
+    reviewer_id: str | None
+    reviewer_name: str | None
     approved_by_user_id: str | None
     approved_by_user_name: str | None
     approval_remark: str | None
@@ -59,6 +61,8 @@ class ReimbursementRepository:
         category: str,
         currency: str,
         amount: Decimal | str,
+        reviewer_id: str,
+        reviewer_name: str,
         reason: str | None,
         remark: str | None,
         items: list[ReimbursementItemCreate],
@@ -75,6 +79,8 @@ class ReimbursementRepository:
             amount=Decimal(str(amount)),
             reason=reason,
             status="submitted",
+            reviewer_id=reviewer_id,
+            reviewer_name=reviewer_name,
             remark=remark,
             created_by_user_id=created_by_user_id,
             created_by_user_name=created_by_user_name,
@@ -146,6 +152,9 @@ class ReimbursementRepository:
         if reimbursement is None:
             return None
         reimbursement.status = "approved" if approved else "rejected"
+        if reimbursement.reviewer_id is None:
+            reimbursement.reviewer_id = approved_by_user_id
+            reimbursement.reviewer_name = approved_by_user_name
         reimbursement.approved_by_user_id = approved_by_user_id
         reimbursement.approved_by_user_name = approved_by_user_name
         reimbursement.approval_remark = approval_remark
@@ -233,6 +242,8 @@ class ReimbursementRepository:
             amount=self._decimal(reimbursement.amount),
             reason=reimbursement.reason,
             status=reimbursement.status,
+            reviewer_id=reimbursement.reviewer_id,
+            reviewer_name=reimbursement.reviewer_name,
             approved_by_user_id=reimbursement.approved_by_user_id,
             approved_by_user_name=reimbursement.approved_by_user_name,
             approval_remark=reimbursement.approval_remark,

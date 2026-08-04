@@ -29,8 +29,11 @@ from app.modules.sales.contracts.schemas import (
     ExportContractSignatureCreate,
     ExportContractSignatureResponse,
     ExportContractStatisticsResponse,
+    ExportContractSubmit,
 )
+from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
 
@@ -49,10 +52,14 @@ class ExportContractService:
         *,
         data_scope_resolver: DataScopeResolver,
         reference_repository: ExportContractReferenceRepository,
+        auth_repository: AuthRepository | None = None,
     ) -> None:
         self._repository = repository
         self._data_scope_resolver = data_scope_resolver
         self._reference_repository = reference_repository
+        self._assignee_validator = AssigneeValidator(
+            auth_repository or AuthRepository(repository.session)
+        )
 
     async def create_contract(
         self,
@@ -191,6 +198,7 @@ class ExportContractService:
         *,
         current_user: CurrentUserResponse,
         contract_id: str,
+        payload: ExportContractSubmit,
     ) -> ExportContractResponse:
         self._require(current_user, "sales:contract:edit")
         contract = await self._get_accessible_contract(
@@ -199,8 +207,19 @@ class ExportContractService:
         )
         if contract.approval_status != "draft":
             raise ValueError("只有草稿合同可以提交")
+        reviewer = await self._assignee_validator.require(
+            user_id=payload.reviewer_id,
+            required_permission="sales:contract:approve",
+            role_name="审批人",
+            permission_error="所选员工没有出口合同审批权限",
+            excluded_user_id=current_user.id,
+        )
         async with UnitOfWork(self._repository.session):
-            submitted = await self._repository.submit_contract(contract.id)
+            submitted = await self._repository.submit_contract(
+                contract.id,
+                reviewer_id=reviewer.id,
+                reviewer_name=reviewer.display_name,
+            )
             if submitted is None:
                 raise ExportContractNotFoundError
         return await self._contract_response(submitted)
@@ -219,11 +238,14 @@ class ExportContractService:
         )
         if contract.approval_status != "submitted":
             raise ValueError("只有已提交合同可以审批")
+        if contract.reviewer_id is not None and contract.reviewer_id != current_user.id:
+            raise PermissionDeniedError
         async with UnitOfWork(self._repository.session):
             approved = await self._repository.approve_contract(
                 contract_id=contract.id,
-                reviewer_name=payload.reviewer_name,
                 approved_at=payload.approved_at,
+                reviewer_id=current_user.id,
+                reviewer_name=current_user.display_name,
             )
             if approved is None:
                 raise ExportContractNotFoundError
@@ -407,6 +429,7 @@ class ExportContractService:
             approval_status=contract.approval_status,
             submitted_at=contract.submitted_at,
             approved_at=contract.approved_at,
+            reviewer_id=contract.reviewer_id,
             reviewer_name=contract.reviewer_name,
             signature_status=contract.signature_status,
             customer_signed_at=contract.customer_signed_at,

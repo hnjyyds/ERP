@@ -146,8 +146,11 @@ class AuthService:
             menus=[self._menu_response(row) for row in menus],
         )
 
-    async def list_assignable_users(self) -> AssignableUserListResponse:
-        rows = await self._repository.list_active_users()
+    async def list_assignable_users(
+        self,
+        required_permission: str | None = None,
+    ) -> AssignableUserListResponse:
+        rows = await self._repository.list_active_users(required_permission)
         return AssignableUserListResponse(
             users=[self._assignable_user_response(row) for row in rows]
         )

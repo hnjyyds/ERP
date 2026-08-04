@@ -2,12 +2,13 @@ import { Alert, Button, Descriptions as _Descriptions, Input, Modal, Skeleton as
 import { ArrowLeft, LayoutDashboard, Plus, Search, Warehouse , CheckCircle2, Package, PackagePlus, Send} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { approveOutboundOrder, generateOutboundOrderFromPlan, listOutboundOrders, submitOutboundOrder, type OutboundOrder, type OutboundOrderApprovePayload, type OutboundOrderGeneratePayload , InventoryBalance, InventoryLedger, OutboundPlan, listOutboundPlans, listInventoryBalances, listInventoryLedgers} from '../../../api'
+import { approveOutboundOrder, generateOutboundOrderFromPlan, listOutboundOrders, submitOutboundOrder, type CurrentUser, type OutboundOrder, type OutboundOrderApprovePayload, type OutboundOrderGeneratePayload , InventoryBalance, InventoryLedger, OutboundPlan, listOutboundPlans, listInventoryBalances, listInventoryLedgers} from '../../../api'
 import { warehouseOutboundOrderPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { outboundOrderStatusOptions, outboundOrderModeOptions , outboundPlanTypeOptions, outboundPlanStatusOptions, outboundPlanSourceTypeOptions} from '../../../shared/formOptions'
-import { formatDate, formatMoney as _formatMoney, formatQuantity as _formatQuantity, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull, trimDecimal} from '../appHelpers'
+import { canApproveAssignedRecord, formatDate, formatMoney as _formatMoney, formatQuantity as _formatQuantity, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull, trimDecimal} from '../appHelpers'
+import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
 
 function outboundPlanStatusLabel(value: string): string {
   return outboundPlanStatusOptions.find((item) => item.value === value)?.label ?? value
@@ -147,7 +148,9 @@ function outboundOrderTotalQuantity(order: OutboundOrder): number {
 }
 
 
-export function OutboundOrdersPage({ detailId, onNavigate }: RoutedDetailPageProps) {
+type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
+
+export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props) {
   const [orders, setOrders] = useState<OutboundOrder[]>([])
   const [outboundPlans, setOutboundPlans] = useState<OutboundPlan[]>([])
   const [inventoryBalances, setInventoryBalances] = useState<InventoryBalance[]>([])
@@ -161,6 +164,7 @@ export function OutboundOrdersPage({ detailId, onNavigate }: RoutedDetailPagePro
   const [sourceIdFilter, setSourceIdFilter] = useState('')
   const [inventorySearch, setInventorySearch] = useState('')
   const [form, setForm] = useState<OutboundOrderFormState>(() => initialOutboundOrderForm())
+  const [reviewerId, setReviewerId] = useState('')
   const [approvalForm, setApprovalForm] = useState<OutboundOrderApprovalFormState>(() =>
     initialOutboundOrderApprovalForm(),
   )
@@ -190,6 +194,7 @@ export function OutboundOrdersPage({ detailId, onNavigate }: RoutedDetailPagePro
       reviewer_name: selectedOrder.reviewer_name ?? '演示业务主管',
       approved_at: selectedOrder.approved_at ?? selectedOrder.outbound_at,
     }))
+    setReviewerId(selectedOrder.reviewer_id ?? '')
   }, [selectedOrder?.id, selectedOrder?.status])
 
   useEffect(() => {
@@ -335,11 +340,15 @@ export function OutboundOrdersPage({ detailId, onNavigate }: RoutedDetailPagePro
 
   async function submitSelectedOutboundOrder() {
     if (!selectedOrder) return
+    if (!reviewerId) {
+      showError(new Error('请选择审批人'))
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
     try {
-      const order = await submitOutboundOrder(selectedOrder.id)
+      const order = await submitOutboundOrder(selectedOrder.id, { reviewer_id: reviewerId })
       const inventoryQuery = order.lines[0]?.product_code ?? order.lines[0]?.product_name ?? ''
       upsertOutboundOrder(order)
       await loadOutboundOrders(order.id, order, inventoryQuery)
@@ -355,6 +364,10 @@ export function OutboundOrdersPage({ detailId, onNavigate }: RoutedDetailPagePro
     event.preventDefault()
     if (!selectedOrder) return
     if (selectedOrder.status !== 'submitted') return
+    if (!canApproveAssignedRecord(currentUser, selectedOrder.reviewer_id, 'warehouse:outbound_order:approve')) {
+      showError(new Error(`该出库单应由 ${selectedOrder.reviewer_name ?? '指定审批人'} 审批`))
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
@@ -674,8 +687,16 @@ export function OutboundOrdersPage({ detailId, onNavigate }: RoutedDetailPagePro
 
           <form className="record-form accessory-form generation-form" onSubmit={approveSelectedOutboundOrder}>
             <div className="form-divider">提交和审批</div>
+            {selectedOrder?.status === 'draft' ? (
+              <ApprovalAssigneeSelect
+                currentUserId={currentUser.id}
+                onChange={setReviewerId}
+                requiredPermission="warehouse:outbound_order:approve"
+                value={reviewerId}
+              />
+            ) : null}
             <Button
-              disabled={!selectedOrder || selectedOrder.status !== 'draft'}
+              disabled={!selectedOrder || selectedOrder.status !== 'draft' || !reviewerId}
               htmlType="button"
               icon={<Send size={16} />}
               loading={submitting}
@@ -688,11 +709,8 @@ export function OutboundOrdersPage({ detailId, onNavigate }: RoutedDetailPagePro
                 审批人
                 <Input
                   id="outbound-reviewer-name"
-                  required
-                  value={approvalForm.reviewer_name}
-                  onChange={(event) =>
-                    setApprovalForm({ ...approvalForm, reviewer_name: event.target.value })
-                  }
+                  disabled
+                  value={selectedOrder?.reviewer_name ?? ''}
                 />
               </label>
               <label htmlFor="outbound-approved-at">
@@ -721,7 +739,11 @@ export function OutboundOrdersPage({ detailId, onNavigate }: RoutedDetailPagePro
               授权负库存出库
             </label>
             <Button
-              disabled={!selectedOrder || selectedOrder.status !== 'submitted'}
+              disabled={
+                !selectedOrder ||
+                selectedOrder.status !== 'submitted' ||
+                !canApproveAssignedRecord(currentUser, selectedOrder.reviewer_id, 'warehouse:outbound_order:approve')
+              }
               htmlType="submit"
               icon={<CheckCircle2 size={16} />}
               loading={submitting}
@@ -729,6 +751,13 @@ export function OutboundOrdersPage({ detailId, onNavigate }: RoutedDetailPagePro
             >
               审批出库
             </Button>
+            {selectedOrder?.status === 'submitted' && !canApproveAssignedRecord(currentUser, selectedOrder.reviewer_id, 'warehouse:outbound_order:approve') ? (
+              <Alert
+                message={`等待 ${selectedOrder.reviewer_name ?? '指定审批人'} 审批`}
+                showIcon
+                type="info"
+              />
+            ) : null}
           </form>
           </div>
         </Modal>

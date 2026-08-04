@@ -9,6 +9,7 @@ from app.modules.warehouse.outbound_orders.schemas import (
     OutboundOrderGenerateFromPlan,
     OutboundOrderListResponse,
     OutboundOrderResponse,
+    OutboundOrderSubmit,
 )
 from app.modules.warehouse.outbound_orders.services import (
     OutboundOrderService,
@@ -68,10 +69,15 @@ async def get_outbound_order(
 @router.post("/{order_id}/submit", response_model=ApiResponse[OutboundOrderResponse])
 async def submit_outbound_order(
     order_id: str,
+    payload: OutboundOrderSubmit,
     user: CurrentUserDep,
     service: Annotated[OutboundOrderService, Depends(get_outbound_order_service)],
 ) -> ApiResponse[OutboundOrderResponse]:
-    order = await service.submit_order(current_user=user, order_id=order_id)
+    order = await service.submit_order(
+        current_user=user,
+        order_id=order_id,
+        payload=payload,
+    )
     return ApiResponse(data=order)
 
 

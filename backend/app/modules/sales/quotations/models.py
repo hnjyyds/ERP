@@ -35,6 +35,7 @@ class ExportQuotation(Base):
     )
     submitted_at: Mapped[date | None] = mapped_column(Date, index=True, nullable=True)
     approved_at: Mapped[date | None] = mapped_column(Date, index=True, nullable=True)
+    reviewer_id: Mapped[str | None] = mapped_column(String(64), index=True, nullable=True)
     reviewer_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
     confirmed_at: Mapped[date | None] = mapped_column(Date, index=True, nullable=True)
     generated_contract_id: Mapped[str | None] = mapped_column(String(36), index=True, nullable=True)

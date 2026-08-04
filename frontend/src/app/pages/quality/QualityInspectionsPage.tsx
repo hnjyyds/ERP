@@ -299,7 +299,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
   async function loadAssignableUsersForTask() {
     setLoadingAssignableUsers(true)
     try {
-      const result = await listAssignableUsers()
+      const result = await listAssignableUsers('quality:inspection:edit')
       setAssignableUsers(result.users)
     } catch (caught) {
       showError(caught, '负责人列表加载失败')

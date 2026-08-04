@@ -13,6 +13,7 @@ from app.modules.sales.quotations.schemas import (
     ExportQuotationListResponse,
     ExportQuotationPurchaseReferenceListResponse,
     ExportQuotationResponse,
+    ExportQuotationSubmit,
 )
 from app.modules.sales.quotations.services import (
     ExportQuotationService,
@@ -113,12 +114,14 @@ async def update_export_quotation(
 @router.post("/{quotation_id}/submit", response_model=ApiResponse[ExportQuotationResponse])
 async def submit_export_quotation(
     quotation_id: str,
+    payload: ExportQuotationSubmit,
     user: CurrentUserDep,
     service: Annotated[ExportQuotationService, Depends(get_export_quotation_service)],
 ) -> ApiResponse[ExportQuotationResponse]:
     quotation = await service.submit_quotation(
         current_user=user,
         quotation_id=quotation_id,
+        payload=payload,
     )
     return ApiResponse(data=quotation)
 

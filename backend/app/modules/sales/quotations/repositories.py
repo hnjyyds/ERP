@@ -27,6 +27,7 @@ class ExportQuotationRow:
     approval_status: str
     submitted_at: date | None
     approved_at: date | None
+    reviewer_id: str | None
     reviewer_name: str | None
     confirmed_at: date | None
     generated_contract_id: str | None
@@ -274,7 +275,13 @@ class ExportQuotationRepository:
         total = await self.session.scalar(count_statement)
         return [self._map_quotation(row) for row in rows], int(total or 0)
 
-    async def submit_quotation(self, quotation_id: str) -> ExportQuotationRow | None:
+    async def submit_quotation(
+        self,
+        quotation_id: str,
+        *,
+        reviewer_id: str | None = None,
+        reviewer_name: str | None = None,
+    ) -> ExportQuotationRow | None:
         quotation = await self.session.scalar(
             select(ExportQuotation).where(ExportQuotation.id == quotation_id)
         )
@@ -282,6 +289,8 @@ class ExportQuotationRepository:
             return None
         quotation.approval_status = "submitted"
         quotation.submitted_at = quotation.quote_date
+        quotation.reviewer_id = reviewer_id
+        quotation.reviewer_name = reviewer_name
         await self.session.flush()
         return self._map_quotation(quotation)
 
@@ -289,8 +298,9 @@ class ExportQuotationRepository:
         self,
         *,
         quotation_id: str,
-        reviewer_name: str,
         approved_at: date,
+        reviewer_id: str | None = None,
+        reviewer_name: str | None = None,
     ) -> ExportQuotationRow | None:
         quotation = await self.session.scalar(
             select(ExportQuotation).where(ExportQuotation.id == quotation_id)
@@ -298,7 +308,10 @@ class ExportQuotationRepository:
         if quotation is None:
             return None
         quotation.approval_status = "approved"
-        quotation.reviewer_name = reviewer_name
+        if reviewer_id is not None and quotation.reviewer_id is None:
+            quotation.reviewer_id = reviewer_id
+        if reviewer_name is not None and quotation.reviewer_name is None:
+            quotation.reviewer_name = reviewer_name
         quotation.approved_at = approved_at
         await self.session.flush()
         return self._map_quotation(quotation)
@@ -404,6 +417,7 @@ class ExportQuotationRepository:
             approval_status=quotation.approval_status,
             submitted_at=quotation.submitted_at,
             approved_at=quotation.approved_at,
+            reviewer_id=quotation.reviewer_id,
             reviewer_name=quotation.reviewer_name,
             confirmed_at=quotation.confirmed_at,
             generated_contract_id=quotation.generated_contract_id,

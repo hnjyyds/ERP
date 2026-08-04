@@ -17,6 +17,7 @@ from app.modules.system.auth.repositories import AuthRepository
 def get_quality_inspection_service(
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> QualityInspectionService:
+    auth_repository = AuthRepository(session)
     purchase_contract_repository = PurchaseContractRepository(session)
     return QualityInspectionService(
         quality_repository=QualityInspectionRepository(session),
@@ -25,7 +26,8 @@ def get_quality_inspection_service(
             followup_repository=FollowupRepository(session),
             purchase_contract_repository=purchase_contract_repository,
             sample_record_repository=SampleRecordRepository(session),
-            data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+            data_scope_resolver=DataScopeResolver(auth_repository),
         ),
-        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+        data_scope_resolver=DataScopeResolver(auth_repository),
+        auth_repository=auth_repository,
     )

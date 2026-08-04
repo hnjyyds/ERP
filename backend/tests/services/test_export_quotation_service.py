@@ -9,12 +9,14 @@ from app.modules.sales.quotations.schemas import (
     ExportQuotationConfirmContract,
     ExportQuotationCreate,
     ExportQuotationLineCreate,
+    ExportQuotationSubmit,
 )
 from app.modules.sales.quotations.services import ExportQuotationService
 from app.modules.sample.deliveries.repositories import SampleDeliveryRepository
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.auth.seed import seed_system_demo_data
 
 
 def _make_service(session: AsyncSession) -> ExportQuotationService:
@@ -28,12 +30,14 @@ def _make_service(session: AsyncSession) -> ExportQuotationService:
 def _user_with_permissions(
     permissions: list[str],
     user_id: str = "u-test",
+    data_scope: str = "self",
 ) -> CurrentUserResponse:
     return CurrentUserResponse(
         id=user_id,
         username="tester",
         display_name="测试用户",
         department_name="测试部",
+        data_scope=data_scope,
         roles=["测试角色"],
         permissions=permissions,
     )
@@ -75,6 +79,7 @@ async def test_export_quotation_service_approval_contract_export_and_history(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         service = _make_service(session)
         current_user = _user_with_permissions(
             [
@@ -93,9 +98,15 @@ async def test_export_quotation_service_approval_contract_export_and_history(
         submitted = await service.submit_quotation(
             current_user=current_user,
             quotation_id=quotation.id,
+            payload=ExportQuotationSubmit(reviewer_id="u-admin"),
+        )
+        reviewer = _user_with_permissions(
+            ["sales:quotation:approve", "sales:quotation:view"],
+            user_id="u-admin",
+            data_scope="all",
         )
         approved = await service.approve_quotation(
-            current_user=current_user,
+            current_user=reviewer,
             quotation_id=quotation.id,
             payload=ExportQuotationApprove(
                 reviewer_name="演示业务主管",

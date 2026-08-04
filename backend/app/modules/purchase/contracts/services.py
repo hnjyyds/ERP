@@ -19,12 +19,14 @@ from app.modules.purchase.contracts.schemas import (
     PurchaseContractListResponse,
     PurchaseContractReminderListResponse,
     PurchaseContractResponse,
+    PurchaseContractSubmit,
 )
 from app.modules.sales.contracts.repositories import (
     ExportContractLineRow,
     ExportContractRepository,
     ExportContractRow,
 )
+from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
@@ -76,6 +78,7 @@ class PurchaseContractService:
         self._product_repository = product_repository
         self._data_scope_resolver = data_scope_resolver
         self._auth_repository = auth_repository
+        self._assignee_validator = AssigneeValidator(auth_repository)
         self._response_builder = PurchaseContractResponseBuilder(purchase_repository)
 
     async def create_contract(
@@ -258,6 +261,7 @@ class PurchaseContractService:
         *,
         current_user: CurrentUserResponse,
         contract_id: str,
+        payload: PurchaseContractSubmit,
     ) -> PurchaseContractResponse:
         self._require(current_user, "purchase:contract:edit")
         contract = await self._get_accessible_contract(
@@ -266,8 +270,19 @@ class PurchaseContractService:
         )
         if contract.approval_status != "draft":
             raise ValueError("只有草稿采购合同可以提交")
+        reviewer = await self._assignee_validator.require(
+            user_id=payload.reviewer_id,
+            required_permission="purchase:contract:approve",
+            role_name="审批人",
+            permission_error="所选员工没有采购合同审批权限",
+            excluded_user_id=current_user.id,
+        )
         async with UnitOfWork(self._repository.session):
-            submitted = await self._repository.submit_contract(contract.id)
+            submitted = await self._repository.submit_contract(
+                contract.id,
+                reviewer_id=reviewer.id,
+                reviewer_name=reviewer.display_name,
+            )
             if submitted is None:
                 raise PurchaseContractNotFoundError
         return await self._response_builder.build(submitted)
@@ -286,11 +301,14 @@ class PurchaseContractService:
         )
         if contract.approval_status != "submitted":
             raise ValueError("只有已提交采购合同可以审批")
+        if contract.reviewer_id is not None and contract.reviewer_id != current_user.id:
+            raise PermissionDeniedError
         async with UnitOfWork(self._repository.session):
             approved = await self._repository.approve_contract(
                 contract_id=contract.id,
-                reviewer_name=payload.reviewer_name,
                 approved_at=payload.approved_at,
+                reviewer_id=current_user.id,
+                reviewer_name=current_user.display_name,
             )
             if approved is None:
                 raise PurchaseContractNotFoundError
@@ -579,10 +597,12 @@ class PurchaseContractService:
     ) -> tuple[str | None, str | None]:
         if qc_user_id is None or not qc_user_id.strip():
             return None, None
-        users = await self._auth_repository.list_active_users_by_ids([qc_user_id.strip()])
-        if not users:
-            raise ValueError("QC 负责人不存在")
-        user = users[0]
+        user = await self._assignee_validator.require(
+            user_id=qc_user_id.strip(),
+            required_permission="quality:inspection:edit",
+            role_name="QC 负责人",
+            permission_error="所选员工没有 QC 查验权限",
+        )
         return user.id, user.display_name
 
     async def _get_accessible_contract(

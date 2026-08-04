@@ -8,8 +8,9 @@ import { financePath, financeOverviewPath as _financeOverviewPath, financeReceip
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { receiptStatusOptions, receiptTypeOptions, allocationTypeOptions, supplierInvoiceStatusOptions, paymentRequestStatusOptions as _paymentRequestStatusOptions, paymentTypeOptions, partnerFeeInvoiceStatusOptions, feePaymentRequestStatusOptions as _feePaymentRequestStatusOptions, feeTypeOptions, verificationDocumentStatusOptions, verificationReminderStatusOptions, miscFeeCategoryOptions, miscFeeAllocationMethodOptions, miscFeeItemStatusOptions, settlementStatusOptions as _settlementStatusOptions, profitCostTypeOptions as _profitCostTypeOptions, reportingDocumentTypeOptions as _reportingDocumentTypeOptions, reportingStatusOptions as _reportingStatusOptions , partnerTypeOptions, shipmentStatusOptions as _shipmentStatusOptions, purchaseInvoiceNoticeStatusOptions as _purchaseInvoiceNoticeStatusOptions, sampleFeeTypeOptions as _sampleFeeTypeOptions} from '../../../shared/formOptions'
-import { formatDate, formatDateTime as _formatDateTime, formatMoney as _formatMoney, formatFinanceAmount, formatPercent, nullableText, todayInputValue as _todayInputValue, pageTitle as _pageTitle, statusTag as _statusTag, severityTag as _severityTag, partnerTypeLabel, type ModuleNavigationProps , emptyToNull as _emptyToNull} from '../appHelpers'
+import { canApproveAssignedRecord, formatDate, formatDateTime as _formatDateTime, formatMoney as _formatMoney, formatFinanceAmount, formatPercent, nullableText, todayInputValue as _todayInputValue, pageTitle as _pageTitle, statusTag as _statusTag, severityTag as _severityTag, partnerTypeLabel, type ModuleNavigationProps , emptyToNull as _emptyToNull} from '../appHelpers'
 import { shipmentStatusLabel, purchaseInvoiceNoticeStatusLabel, samplePaymentStatusLabel, BankReceiptFormState, ReceiptClaimFormState, ReceiptAllocationFormState, SupplierInvoiceFormState, PaymentRequestFormState, PaymentApprovalFormState, PartnerFeeInvoiceFormState, FeePaymentRequestFormState, FeePaymentApprovalFormState, VerificationDocumentFormState, CustomsReceiptFormState, VerificationRegisterFormState, TaxRefundFormState, MiscFeeItemFormState, MiscFeeAllocationFormState, FinancialSettlementFormState, ManualProfitCostFormState, initialBankReceiptForm, initialReceiptClaimForm, initialReceiptAllocationForm, bankReceiptPayload, receiptClaimPayload, receiptAllocationPayload, receiptStatusLabel, receiptStatusColor as _receiptStatusColor, receiptStatusTag, receiptTypeLabel, allocationTypeLabel, receivableStatusLabel as _receivableStatusLabel, receivableStatusTag, initialSupplierInvoiceForm, initialPaymentRequestForm, initialPaymentApprovalForm, supplierInvoicePayload, paymentRequestPayload, paymentApprovalPayload, supplierInvoiceStatusLabel, supplierInvoiceStatusTag, paymentRequestStatusLabel as _paymentRequestStatusLabel, paymentRequestStatusTag, paymentTypeLabel, initialPartnerFeeInvoiceForm, initialFeePaymentRequestForm, initialFeePaymentApprovalForm, partnerFeeInvoicePayload, feePaymentRequestPayload, feePaymentApprovalPayload, partnerFeeInvoiceStatusLabel as _partnerFeeInvoiceStatusLabel, partnerFeeInvoiceStatusTag, feePaymentRequestStatusLabel as _feePaymentRequestStatusLabel, feePaymentRequestStatusTag, feeTypeLabel, initialVerificationDocumentForm, initialCustomsReceiptForm, initialVerificationRegisterForm, initialTaxRefundForm, verificationDocumentPayload, customsReceiptPayload, verificationRegisterPayload, taxRefundPayload, verificationDocumentStatusLabel, verificationDocumentStatusTag, verificationReminderStatusLabel as _verificationReminderStatusLabel, verificationReminderStatusTag, initialMiscFeeItemForm, initialMiscFeeAllocationForm, miscFeeItemPayload, miscFeeAllocationPayload, miscFeeCategoryLabel, miscFeeAllocationMethodLabel, miscFeeItemStatusLabel, miscFeeItemStatusTag, reimbursementCategoryLabel, reimbursementStatusTag, initialFinancialSettlementForm, initialManualProfitCostForm, financialSettlementPayload, manualProfitCostPayload, settlementStatusLabel as _settlementStatusLabel, settlementStatusTag, approvalDocumentTypeLabel as _approvalDocumentTypeLabel, approvalDocumentTypeTag as _approvalDocumentTypeTag, approvalStatusTag as _approvalStatusTag, sourcePathTag as _sourcePathTag, profitCostTypeLabel, profitCostDirectionTag } from './financeHelpers'
+import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
 
 
 
@@ -24,6 +25,7 @@ type FinancePageProps = ModuleNavigationProps & {
 export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps) {
   const activeModule = view.module
   const detailId = view.id
+  const itemId = view.itemId
   const goModule = (module: FinanceModule) => onNavigate(financeModulePathByModule[module])
   const goDetail = (module: FinanceModule, id: string) => onNavigate(financeDetailPath(module, id))
   const _goFinanceHome = () => onNavigate(financePath)
@@ -63,6 +65,7 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
     category: 'travel',
     currency: 'CNY',
     amount: '',
+    reviewer_id: '',
     reason: '',
     remark: '',
   })
@@ -273,10 +276,10 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
     void loadReceipts()
     void loadReceivables()
     void loadSupplierInvoices()
-    void loadPaymentRequests()
+    void loadPaymentRequests(activeModule === 'payments' ? itemId ?? undefined : undefined)
     void loadPayables()
     void loadPartnerFeeInvoices()
-    void loadFeePaymentRequests()
+    void loadFeePaymentRequests(activeModule === 'fees' ? itemId ?? undefined : undefined)
     void loadFeePayables()
     void loadVerificationDocuments()
     void loadVerificationUsage()
@@ -376,6 +379,10 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
 
   useEffect(() => {
     if (!selectedSupplierInvoice) return
+    const requestForInvoice =
+      selectedPaymentRequest?.supplier_invoice_id === selectedSupplierInvoice.id
+        ? selectedPaymentRequest
+        : null
     setPaymentRequestForm((current) => ({
       ...current,
       supplier_invoice_id: selectedSupplierInvoice.id,
@@ -384,12 +391,23 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
     }))
     setPaymentApprovalForm((current) => ({
       ...current,
-      approved_amount: selectedSupplierInvoice.unpaid_amount,
+      approved_amount: requestForInvoice?.requested_amount ?? selectedSupplierInvoice.unpaid_amount,
     }))
-  }, [selectedSupplierInvoice?.id, selectedSupplierInvoice?.unpaid_amount, selectedSupplierInvoice?.currency])
+  }, [
+    selectedSupplierInvoice?.id,
+    selectedSupplierInvoice?.unpaid_amount,
+    selectedSupplierInvoice?.currency,
+    selectedPaymentRequest?.id,
+    selectedPaymentRequest?.supplier_invoice_id,
+    selectedPaymentRequest?.requested_amount,
+  ])
 
   useEffect(() => {
     if (!selectedPartnerFeeInvoice) return
+    const requestForInvoice =
+      selectedFeePaymentRequest?.partner_fee_invoice_id === selectedPartnerFeeInvoice.id
+        ? selectedFeePaymentRequest
+        : null
     setFeePaymentRequestForm((current) => ({
       ...current,
       partner_fee_invoice_id: selectedPartnerFeeInvoice.id,
@@ -398,12 +416,15 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
     }))
     setFeePaymentApprovalForm((current) => ({
       ...current,
-      approved_amount: selectedPartnerFeeInvoice.unpaid_amount,
+      approved_amount: requestForInvoice?.requested_amount ?? selectedPartnerFeeInvoice.unpaid_amount,
     }))
   }, [
     selectedPartnerFeeInvoice?.id,
     selectedPartnerFeeInvoice?.unpaid_amount,
     selectedPartnerFeeInvoice?.currency,
+    selectedFeePaymentRequest?.id,
+    selectedFeePaymentRequest?.partner_fee_invoice_id,
+    selectedFeePaymentRequest?.requested_amount,
   ])
 
   useEffect(() => {
@@ -468,6 +489,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
       setReceipts(result.items)
       const nextReceiptId =
         preferredId ??
+        (activeModule === 'receipts' && result.items.some((item) => item.id === detailId)
+          ? detailId
+          : null) ??
         (result.items.some((item) => item.id === selectedReceiptId) ? selectedReceiptId : null) ??
         result.items[0]?.id ??
         null
@@ -509,6 +533,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
       setSupplierInvoices(result.items)
       const nextInvoiceId =
         preferredId ??
+        (activeModule === 'payments' && result.items.some((item) => item.id === detailId)
+          ? detailId
+          : null) ??
         (result.items.some((item) => item.id === selectedSupplierInvoiceId) ? selectedSupplierInvoiceId : null) ??
         result.items[0]?.id ??
         null
@@ -576,6 +603,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
       setPartnerFeeInvoices(result.items)
       const nextInvoiceId =
         preferredId ??
+        (activeModule === 'fees' && result.items.some((item) => item.id === detailId)
+          ? detailId
+          : null) ??
         (result.items.some((item) => item.id === selectedPartnerFeeInvoiceId)
           ? selectedPartnerFeeInvoiceId
           : null) ??
@@ -649,6 +679,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
       setVerificationDocuments(result.items)
       const nextDocumentId =
         preferredId ??
+        (activeModule === 'tax' && result.items.some((item) => item.id === detailId)
+          ? detailId
+          : null) ??
         (result.items.some((item) => item.id === selectedVerificationDocumentId)
           ? selectedVerificationDocumentId
           : null) ??
@@ -692,6 +725,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
       setMiscFeeItems(result.items)
       const nextItemId =
         preferredId ??
+        (activeModule === 'misc' && result.items.some((item) => item.id === detailId)
+          ? detailId
+          : null) ??
         (result.items.some((item) => item.id === selectedMiscFeeItemId) ? selectedMiscFeeItemId : null) ??
         result.items[0]?.id ??
         null
@@ -749,6 +785,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
       setFinancialSettlements(result.items)
       const nextSettlementId =
         preferredId ??
+        (activeModule === 'settlement' && result.items.some((item) => item.id === detailId)
+          ? detailId
+          : null) ??
         (result.items.some((item) => item.id === selectedFinancialSettlementId)
           ? selectedFinancialSettlementId
           : null) ??
@@ -791,6 +830,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
       setReimbursementsTotalAmount(result.total_amount)
       const nextId =
         preferredId ??
+        (activeModule === 'reimbursements' && result.items.some((item) => item.id === detailId)
+          ? detailId
+          : null) ??
         (result.items.some((item) => item.id === selectedReimbursementId)
           ? selectedReimbursementId
           : null) ??
@@ -818,11 +860,13 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
         category: reimbursementForm.category,
         currency: reimbursementForm.currency.trim(),
         amount: reimbursementForm.amount.trim(),
+        reviewer_id: reimbursementForm.reviewer_id,
         reason: reimbursementForm.reason.trim() || undefined,
         remark: reimbursementForm.remark.trim() || undefined,
       }
       const created = await createReimbursement(payload)
       setMessage(`已登记报销单 ${created.reimbursement_no}`)
+      setReimbursementModalOpen(false)
       setReimbursementForm({
         reimbursement_no: '',
         applicant_user_id: '',
@@ -831,6 +875,7 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
         category: 'travel',
         currency: 'CNY',
         amount: '',
+        reviewer_id: '',
         reason: '',
         remark: '',
       })
@@ -844,6 +889,11 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
 
   async function handleReimbursementApprove(approved: boolean) {
     if (!selectedReimbursementId) return
+    const reimbursement = reimbursements.find((item) => item.id === selectedReimbursementId)
+    if (!reimbursement || !canApproveAssignedRecord(currentUser, reimbursement.reviewer_id, 'finance:view')) {
+      showError(new Error(`该报销单应由 ${reimbursement?.reviewer_name ?? '指定审批人'} 审批`))
+      return
+    }
     setSubmittingReimbursementAction(true)
     setMessage('')
     setError('')
@@ -1173,6 +1223,10 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
 
   async function submitPaymentRequest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (!paymentRequestForm.reviewer_id) {
+      showError(new Error('请选择审批人'))
+      return
+    }
     setSubmittingPaymentRequest(true)
     setMessage('')
     setError('')
@@ -1191,6 +1245,13 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   async function submitPaymentApproval(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!selectedPaymentRequest) return
+    if (
+      !canApproveAssignedRecord(currentUser, selectedPaymentRequest.reviewer_id, 'finance:view') ||
+      selectedPaymentRequest.requester_user_id === currentUser.id
+    ) {
+      showError(new Error(`该付款申请应由 ${selectedPaymentRequest.reviewer_name ?? '指定审批人'} 审批`))
+      return
+    }
     setSubmittingPaymentApproval(true)
     setMessage('')
     setError('')
@@ -1231,6 +1292,10 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
 
   async function submitFeePaymentRequest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (!feePaymentRequestForm.reviewer_id) {
+      showError(new Error('请选择审批人'))
+      return
+    }
     setSubmittingFeePaymentRequest(true)
     setMessage('')
     setError('')
@@ -1249,6 +1314,13 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   async function submitFeePaymentApproval(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!selectedFeePaymentRequest) return
+    if (
+      !canApproveAssignedRecord(currentUser, selectedFeePaymentRequest.reviewer_id, 'finance:view') ||
+      selectedFeePaymentRequest.requester_user_id === currentUser.id
+    ) {
+      showError(new Error(`该付费申请应由 ${selectedFeePaymentRequest.reviewer_name ?? '指定审批人'} 审批`))
+      return
+    }
     setSubmittingFeePaymentApproval(true)
     setMessage('')
     setError('')
@@ -1448,9 +1520,11 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
     : false
   const selectedPaymentRequestCanApprove =
     selectedPaymentRequest?.status === 'submitted' &&
+    canApproveAssignedRecord(currentUser, selectedPaymentRequest.reviewer_id, 'finance:view') &&
     selectedPaymentRequest.requester_user_id !== currentUser.id
   const selectedFeePaymentRequestCanApprove =
     selectedFeePaymentRequest?.status === 'submitted' &&
+    canApproveAssignedRecord(currentUser, selectedFeePaymentRequest.reviewer_id, 'finance:view') &&
     selectedFeePaymentRequest.requester_user_id !== currentUser.id
   const selectedVerificationCanRegisterCustoms =
     selectedVerificationDocument?.status === 'issued' ||
@@ -2553,7 +2627,7 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
           <div className="finance-receipt-actions">
             <form className="record-form compact-section" onSubmit={submitPaymentRequest}>
               <div className="form-divider">付款申请新增</div>
-              <div className="form-pair two">
+              <div className="finance-payment-fields">
                 <label>
                   付款申请号
                   <Input
@@ -2575,8 +2649,6 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                     }
                   />
                 </label>
-              </div>
-              <div className="form-pair three">
                 <label>
                   付款类别
                   <FormSelect
@@ -2611,8 +2683,6 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                     }
                   />
                 </label>
-              </div>
-              <div className="form-pair two">
                 <label>
                   币种
                   <Input
@@ -2631,19 +2701,27 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                     }
                   />
                 </label>
+                <ApprovalAssigneeSelect
+                  currentUserId={currentUser.id}
+                  onChange={(reviewer_id) =>
+                    setPaymentRequestForm({ ...paymentRequestForm, reviewer_id })
+                  }
+                  requiredPermission="finance:view"
+                  value={paymentRequestForm.reviewer_id}
+                />
               </div>
               <Button
                 htmlType="submit"
                 icon={<Save size={16} />}
                 loading={submittingPaymentRequest}
-                disabled={!selectedSupplierInvoice}
+                disabled={!selectedSupplierInvoice || !paymentRequestForm.reviewer_id}
               >
                 新增付款申请
               </Button>
             </form>
             <form className="record-form compact-section" onSubmit={submitPaymentApproval}>
               <div className="form-divider">付款审批</div>
-              <div className="form-pair two">
+              <div className="finance-payment-fields">
                 <label>
                   审批金额
                   <Input
@@ -2663,13 +2741,11 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                     }
                   />
                 </label>
-              </div>
-              <div className="form-pair two">
                 <label>
                   审批人
                   <Input
                     disabled
-                    value={paymentApprovalForm.reviewer_name}
+                    value={selectedPaymentRequest?.reviewer_name ?? ''}
                   />
                 </label>
                 <label>
@@ -2681,16 +2757,16 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                     }
                   />
                 </label>
+                <label>
+                  审批备注
+                  <Input
+                    value={paymentApprovalForm.remark}
+                    onChange={(event) =>
+                      setPaymentApprovalForm({ ...paymentApprovalForm, remark: event.target.value })
+                    }
+                  />
+                </label>
               </div>
-              <label>
-                审批备注
-                <Input
-                  value={paymentApprovalForm.remark}
-                  onChange={(event) =>
-                    setPaymentApprovalForm({ ...paymentApprovalForm, remark: event.target.value })
-                  }
-                />
-              </label>
               <Button
                 htmlType="submit"
                 icon={<CheckCircle2 size={16} />}
@@ -2699,8 +2775,12 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
               >
                 审批付款
               </Button>
-              {selectedPaymentRequest?.requester_user_id === currentUser.id ? (
-                <Alert showIcon type="info" message="申请人不能审批自己的付款申请" />
+              {selectedPaymentRequest?.status === 'submitted' && !selectedPaymentRequestCanApprove ? (
+                <Alert
+                  showIcon
+                  type="info"
+                  message={`等待 ${selectedPaymentRequest.reviewer_name ?? '指定审批人'} 审批`}
+                />
               ) : null}
             </form>
           </div>
@@ -3163,7 +3243,7 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
           <div className="finance-receipt-actions">
             <form className="record-form compact-section" onSubmit={submitFeePaymentRequest}>
               <div className="form-divider">付费申请新增</div>
-              <div className="form-pair two">
+              <div className="finance-payment-fields">
                 <label>
                   付费申请号
                   <Input
@@ -3185,8 +3265,6 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                     }
                   />
                 </label>
-              </div>
-              <div className="form-pair three">
                 <label>
                   申请日期
                   <Input
@@ -3215,28 +3293,36 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                     }
                   />
                 </label>
-              </div>
-              <label>
-                申请备注
-                <Input
-                  value={feePaymentRequestForm.remark}
-                  onChange={(event) =>
-                    setFeePaymentRequestForm({ ...feePaymentRequestForm, remark: event.target.value })
+                <label>
+                  申请备注
+                  <Input
+                    value={feePaymentRequestForm.remark}
+                    onChange={(event) =>
+                      setFeePaymentRequestForm({ ...feePaymentRequestForm, remark: event.target.value })
+                    }
+                  />
+                </label>
+                <ApprovalAssigneeSelect
+                  currentUserId={currentUser.id}
+                  onChange={(reviewer_id) =>
+                    setFeePaymentRequestForm({ ...feePaymentRequestForm, reviewer_id })
                   }
+                  requiredPermission="finance:view"
+                  value={feePaymentRequestForm.reviewer_id}
                 />
-              </label>
+              </div>
               <Button
                 htmlType="submit"
                 icon={<Save size={16} />}
                 loading={submittingFeePaymentRequest}
-                disabled={!selectedPartnerFeeInvoice}
+                disabled={!selectedPartnerFeeInvoice || !feePaymentRequestForm.reviewer_id}
               >
                 新增付费申请
               </Button>
             </form>
             <form className="record-form compact-section" onSubmit={submitFeePaymentApproval}>
               <div className="form-divider">付费审批</div>
-              <div className="form-pair two">
+              <div className="finance-payment-fields">
                 <label>
                   审批金额
                   <Input
@@ -3256,13 +3342,11 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                     }
                   />
                 </label>
-              </div>
-              <div className="form-pair two">
                 <label>
                   审批人
                   <Input
                     disabled
-                    value={feePaymentApprovalForm.reviewer_name}
+                    value={selectedFeePaymentRequest?.reviewer_name ?? ''}
                   />
                 </label>
                 <label>
@@ -3277,16 +3361,16 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                     }
                   />
                 </label>
+                <label>
+                  审批备注
+                  <Input
+                    value={feePaymentApprovalForm.remark}
+                    onChange={(event) =>
+                      setFeePaymentApprovalForm({ ...feePaymentApprovalForm, remark: event.target.value })
+                    }
+                  />
+                </label>
               </div>
-              <label>
-                审批备注
-                <Input
-                  value={feePaymentApprovalForm.remark}
-                  onChange={(event) =>
-                    setFeePaymentApprovalForm({ ...feePaymentApprovalForm, remark: event.target.value })
-                  }
-                />
-              </label>
               <Button
                 htmlType="submit"
                 icon={<CheckCircle2 size={16} />}
@@ -3295,8 +3379,12 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
               >
                 审批付费
               </Button>
-              {selectedFeePaymentRequest?.requester_user_id === currentUser.id ? (
-                <Alert showIcon type="info" message="申请人不能审批自己的付费申请" />
+              {selectedFeePaymentRequest?.status === 'submitted' && !selectedFeePaymentRequestCanApprove ? (
+                <Alert
+                  showIcon
+                  type="info"
+                  message={`等待 ${selectedFeePaymentRequest.reviewer_name ?? '指定审批人'} 审批`}
+                />
               ) : null}
             </form>
           </div>
@@ -5033,7 +5121,7 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
               width={720}
               onCancel={() => setReimbursementModalOpen(false)}
             >
-              <form className="record-form" onSubmit={(e) => { submitReimbursement(e); setReimbursementModalOpen(false) }}>
+              <form className="record-form" onSubmit={submitReimbursement}>
               <label>
                 报销单号
                 <Input
@@ -5120,7 +5208,21 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                   }
                 />
               </label>
-              <Button htmlType="submit" type="primary" loading={submittingReimbursement} icon={<Save size={16} />}>
+              <ApprovalAssigneeSelect
+                currentUserId={currentUser.id}
+                onChange={(reviewer_id) =>
+                  setReimbursementForm((previous) => ({ ...previous, reviewer_id }))
+                }
+                requiredPermission="finance:view"
+                value={reimbursementForm.reviewer_id}
+              />
+              <Button
+                disabled={!reimbursementForm.reviewer_id}
+                htmlType="submit"
+                type="primary"
+                loading={submittingReimbursement}
+                icon={<Save size={16} />}
+              >
                 登记报销单
               </Button>
               </form>
@@ -5139,10 +5241,16 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                   <Descriptions.Item label="金额">
                     {formatFinanceAmount(selectedReimbursement.amount, selectedReimbursement.currency)}
                   </Descriptions.Item>
+                  <Descriptions.Item label="审批人">
+                    {selectedReimbursement.reviewer_name ?? '未指定'}
+                  </Descriptions.Item>
                 </Descriptions>
                 <div className="finance-action-row">
                   <Button
-                    disabled={selectedReimbursement.status !== 'submitted'}
+                    disabled={
+                      selectedReimbursement.status !== 'submitted' ||
+                      !canApproveAssignedRecord(currentUser, selectedReimbursement.reviewer_id, 'finance:view')
+                    }
                     loading={submittingReimbursementAction}
                     type="primary"
                     onClick={() => void handleReimbursementApprove(true)}
@@ -5150,7 +5258,10 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                     审批通过
                   </Button>
                   <Button
-                    disabled={selectedReimbursement.status !== 'submitted'}
+                    disabled={
+                      selectedReimbursement.status !== 'submitted' ||
+                      !canApproveAssignedRecord(currentUser, selectedReimbursement.reviewer_id, 'finance:view')
+                    }
                     loading={submittingReimbursementAction}
                     danger
                     onClick={() => void handleReimbursementApprove(false)}
@@ -5158,6 +5269,13 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                     驳回
                   </Button>
                 </div>
+                {selectedReimbursement.status === 'submitted' && !canApproveAssignedRecord(currentUser, selectedReimbursement.reviewer_id, 'finance:view') ? (
+                  <Alert
+                    message={`等待 ${selectedReimbursement.reviewer_name ?? '指定审批人'} 审批`}
+                    showIcon
+                    type="info"
+                  />
+                ) : null}
                 <div className="finance-action-row">
                   <FormSelect
                     value={reimbursementPayMethod}

@@ -84,6 +84,7 @@ async def _approved_export_contract(
     token: str,
     code: str,
 ) -> dict[str, object]:
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     create_response = await api_client.post(
         "/api/v1/sales/contracts",
         headers={"Authorization": f"Bearer {token}"},
@@ -94,12 +95,13 @@ async def _approved_export_contract(
     submit_response = await api_client.post(
         f"/api/v1/sales/contracts/{contract['id']}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     assert submit_response.status_code == 200
     approve_response = await api_client.post(
         f"/api/v1/sales/contracts/{contract['id']}/approve",
-        headers={"Authorization": f"Bearer {token}"},
-        json={"reviewer_name": "演示业务主管", "approved_at": "2027-03-03"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2027-03-03"},
     )
     assert approve_response.status_code == 200
     return approve_response.json()["data"]
@@ -110,6 +112,7 @@ async def _approved_purchase_contract(
     token: str,
     code: str,
 ) -> dict[str, object]:
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     create_response = await api_client.post(
         "/api/v1/purchase/contracts",
         headers={"Authorization": f"Bearer {token}"},
@@ -120,12 +123,13 @@ async def _approved_purchase_contract(
     submit_response = await api_client.post(
         f"/api/v1/purchase/contracts/{contract['id']}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     assert submit_response.status_code == 200
     approve_response = await api_client.post(
         f"/api/v1/purchase/contracts/{contract['id']}/approve",
-        headers={"Authorization": f"Bearer {token}"},
-        json={"reviewer_name": "演示业务主管", "approved_at": "2027-03-04"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2027-03-04"},
     )
     assert approve_response.status_code == 200
     return approve_response.json()["data"]
@@ -136,6 +140,7 @@ async def _approved_shipment(
     token: str,
     contract: dict[str, object],
 ) -> dict[str, object]:
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     create_response = await api_client.post(
         "/api/v1/sales/shipments/from-contracts",
         headers={"Authorization": f"Bearer {token}"},
@@ -160,12 +165,13 @@ async def _approved_shipment(
     submit_response = await api_client.post(
         f"/api/v1/sales/shipments/{shipment['id']}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     assert submit_response.status_code == 200
     approve_response = await api_client.post(
         f"/api/v1/sales/shipments/{shipment['id']}/approve",
-        headers={"Authorization": f"Bearer {token}"},
-        json={"reviewer_name": "演示业务主管", "approved_at": "2027-03-16"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2027-03-16"},
     )
     assert approve_response.status_code == 200
     return approve_response.json()["data"]

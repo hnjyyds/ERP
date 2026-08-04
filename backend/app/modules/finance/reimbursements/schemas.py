@@ -51,6 +51,11 @@ class ReimbursementCreate(BaseModel):
     category: str = Field(min_length=1, max_length=40)
     currency: str = Field(min_length=1, max_length=10)
     amount: Decimal = Field(gt=0)
+    reviewer_id: str = Field(
+        min_length=1,
+        max_length=64,
+        description="被指定审批人的用户 ID。",
+    )
     reason: str | None = Field(default=None, max_length=2000)
     remark: str | None = Field(default=None, max_length=2000)
     items: list[ReimbursementItemCreate] = Field(default_factory=list)
@@ -83,6 +88,8 @@ class ReimbursementResponse(BaseModel):
     amount: str
     reason: str | None
     status: str
+    reviewer_id: str | None
+    reviewer_name: str | None
     approved_by_user_id: str | None
     approved_by_user_name: str | None
     approval_remark: str | None

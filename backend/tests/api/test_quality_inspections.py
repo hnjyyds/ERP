@@ -60,6 +60,7 @@ async def test_quality_inspection_api_creates_record_and_updates_followup(
     seeded_system: None,
 ) -> None:
     token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "purchase", "purchase123")
     headers = {"Authorization": f"Bearer {token}"}
     create_response = await api_client.post(
         "/api/v1/purchase/contracts",
@@ -71,12 +72,13 @@ async def test_quality_inspection_api_creates_record_and_updates_followup(
     submit_response = await api_client.post(
         f"/api/v1/purchase/contracts/{contract['id']}/submit",
         headers=headers,
+        json={"reviewer_id": "u-purchase"},
     )
     assert submit_response.status_code == 200
     approve_response = await api_client.post(
         f"/api/v1/purchase/contracts/{contract['id']}/approve",
-        headers=headers,
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-08-05"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-08-05"},
     )
     assert approve_response.status_code == 200
 
@@ -88,7 +90,7 @@ async def test_quality_inspection_api_creates_record_and_updates_followup(
             "purchase_contract_id": contract["id"],
             "inspected_at": "2026-08-19",
             "result": "passed",
-            "inspector_id": "u-qc-001",
+            "inspector_id": "u-qc",
             "inspector_name": "QC 张工",
             "issue_summary": None,
             "attachment_group_id": "attach-qc-api",
@@ -152,6 +154,7 @@ async def test_quality_inspection_api_creates_a_scheduled_pending_task_without_r
     seeded_system: None,
 ) -> None:
     token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "purchase", "purchase123")
     headers = {"Authorization": f"Bearer {token}"}
     create_response = await api_client.post(
         "/api/v1/purchase/contracts",
@@ -164,13 +167,14 @@ async def test_quality_inspection_api_creates_a_scheduled_pending_task_without_r
         await api_client.post(
             f"/api/v1/purchase/contracts/{contract['id']}/submit",
             headers=headers,
+            json={"reviewer_id": "u-purchase"},
         )
     ).status_code == 200
     assert (
         await api_client.post(
             f"/api/v1/purchase/contracts/{contract['id']}/approve",
-            headers=headers,
-            json={"reviewer_name": "演示业务主管", "approved_at": "2026-08-05"},
+            headers={"Authorization": f"Bearer {reviewer_token}"},
+            json={"approved_at": "2026-08-05"},
         )
     ).status_code == 200
 
@@ -182,7 +186,7 @@ async def test_quality_inspection_api_creates_a_scheduled_pending_task_without_r
             "purchase_contract_id": contract["id"],
             "scheduled_at": "2026-08-20T09:30:00",
             "status": "pending",
-            "inspector_id": "u-qc-001",
+            "inspector_id": "u-qc",
             "inspector_name": "QC 张工",
             "issue_summary": "宁波仓验货",
             "attachment_group_id": None,
@@ -198,12 +202,11 @@ async def test_quality_inspection_api_creates_a_scheduled_pending_task_without_r
     assert task["inspected_at"] is None
     assert task["result"] is None
     assert task["lines"] == []
-
     list_response = await api_client.get(
         "/api/v1/quality/inspections",
         headers=headers,
         params={
-            "inspector_user_id": "u-qc-001",
+            "inspector_user_id": "u-qc",
             "status": "pending",
             "q": "QC-TASK-API-001",
         },
@@ -298,18 +301,64 @@ async def test_quality_inspection_api_creates_a_scheduled_pending_task_without_r
     assert completed_qc_node["source_record_id"] == task["id"]
 
 
+async def test_quality_inspection_rejects_assignee_without_quality_permission(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "purchase", "purchase123")
+    headers = {"Authorization": f"Bearer {token}"}
+    create_response = await api_client.post(
+        "/api/v1/purchase/contracts",
+        headers=headers,
+        json=_purchase_contract_payload("PC-QC-INVALID-ASSIGNEE"),
+    )
+    contract = create_response.json()["data"]
+    submit_response = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract['id']}/submit",
+        headers=headers,
+        json={"reviewer_id": "u-purchase"},
+    )
+    assert submit_response.status_code == 200
+    approve_response = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract['id']}/approve",
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"reviewer_name": "演示采购专员", "approved_at": "2026-08-05"},
+    )
+    assert approve_response.status_code == 200
+
+    response = await api_client.post(
+        "/api/v1/quality/inspections",
+        headers=headers,
+        json={
+            "code": "QC-INVALID-ASSIGNEE",
+            "purchase_contract_id": contract["id"],
+            "scheduled_at": "2026-08-20T09:30:00",
+            "status": "pending",
+            "inspector_id": "u-warehouse",
+            "inspector_name": "伪造姓名",
+            "lines": [],
+            "issues": [],
+        },
+    )
+
+    assert response.status_code == 422
+    assert response.json()["message"] == "所选员工没有 QC 查验权限"
+
+
 async def test_quality_inspection_api_inherits_contract_qc_assignee_and_filters(
     api_client: AsyncClient,
     seeded_system: None,
 ) -> None:
     token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "purchase", "purchase123")
     headers = {"Authorization": f"Bearer {token}"}
     create_response = await api_client.post(
         "/api/v1/purchase/contracts",
         headers=headers,
         json=_purchase_contract_payload(
             "PC-QC-ASSIGNED",
-            qc_user_id="u-finance",
+            qc_user_id="u-qc",
             qc_user_name="前端传入姓名会被后端覆盖",
         ),
     )
@@ -318,12 +367,13 @@ async def test_quality_inspection_api_inherits_contract_qc_assignee_and_filters(
     submit_response = await api_client.post(
         f"/api/v1/purchase/contracts/{contract['id']}/submit",
         headers=headers,
+        json={"reviewer_id": "u-purchase"},
     )
     assert submit_response.status_code == 200
     approve_response = await api_client.post(
         f"/api/v1/purchase/contracts/{contract['id']}/approve",
-        headers=headers,
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-08-05"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-08-05"},
     )
     assert approve_response.status_code == 200
 
@@ -335,8 +385,8 @@ async def test_quality_inspection_api_inherits_contract_qc_assignee_and_filters(
             "purchase_contract_id": contract["id"],
             "inspected_at": "2026-08-19",
             "result": "passed",
-            "inspector_id": "u-worker-001",
-            "inspector_name": "现场查验员",
+            "inspector_id": "u-qc",
+            "inspector_name": "前端伪造姓名",
             "issue_summary": None,
             "attachment_group_id": "attach-qc-assigned",
             "lines": [
@@ -354,13 +404,13 @@ async def test_quality_inspection_api_inherits_contract_qc_assignee_and_filters(
     )
     assert inspection_response.status_code == 201
     inspection = inspection_response.json()["data"]
-    assert inspection["qc_user_id"] == "u-finance"
-    assert inspection["qc_user_name"] == "演示财务"
+    assert inspection["qc_user_id"] == "u-qc"
+    assert inspection["qc_user_name"] == "演示 QC 专员"
 
     assigned_response = await api_client.get(
         "/api/v1/quality/inspections",
         headers=headers,
-        params={"assignee_user_id": "u-finance", "q": "QC-API-ASSIGNED"},
+        params={"assignee_user_id": "u-qc", "q": "QC-API-ASSIGNED"},
     )
     assert assigned_response.status_code == 200
     assert assigned_response.json()["data"]["total"] == 1
@@ -411,7 +461,7 @@ async def test_quality_inspection_api_rejects_unapproved_contract(
             "purchase_contract_id": contract["id"],
             "inspected_at": "2026-08-19",
             "result": "passed",
-            "inspector_id": "u-qc-001",
+            "inspector_id": "u-qc",
             "inspector_name": "QC 张工",
             "issue_summary": None,
             "attachment_group_id": "attach-qc-unapproved",

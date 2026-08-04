@@ -4,7 +4,7 @@ import type { FormEvent, ReactNode as _ReactNode } from 'react'
 import { Component as _Component, useEffect, useMemo as _useMemo, useState } from 'react'
 import type { ErrorInfo as _ErrorInfo } from 'react'
 import { createAnnouncement, createScheduleEvent, createTodos, deleteScheduleEvent, getDashboard as _getDashboard, listAssignableUsers, markNotificationRead, type AssignableUser, type Announcement as _Announcement, type AnnouncementCreatePayload, type AppLanguage as _AppLanguage, type AppTimeZone, type CurrentUser, type Dashboard, type I18nConfig as _I18nConfig, type MenuItem as _MenuItem, type NotificationItem, type ScheduleCreatePayload, type ScheduleEvent, type TodoCreatePayload, type TodoTask } from '../../../api'
-import { dashboardAnnouncementsPath, dashboardNotificationsPath, dashboardSchedulesPath, dashboardTodosPath, followupPath, reportingPath, dashboardPath } from '../../routes'
+import { dashboardAnnouncementsPath, dashboardNotificationsPath, dashboardSchedulesPath, dashboardTodosPath, exportContractPath, exportQuotationPath, financeDetailPath, followupPath, moduleDetailPath, myQualityTasksPath, purchaseContractPath, reportingPath, sampleDeliveryPath, shipmentPath, dashboardPath, warehouseInboundOrderPath, warehouseOutboundOrderPath } from '../../routes'
 import { Metric, PanelTitle, UserAvatar, defaultAvatarPreset } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { t } from '../../App'
@@ -106,7 +106,39 @@ function initialDashboardTodoForm(currentUser?: CurrentUser): DashboardTodoFormS
 
 function todoTargetPath(todo: TodoTask) {
   if (todo.source_type === 'followup') return followupPath
+  if (todo.source_type === 'followup_plan' && todo.source_id) {
+    return moduleDetailPath(followupPath, todo.source_id)
+  }
   if (todo.source_type === 'approval') return reportingPath
+  if (todo.source_type === 'quality_inspection') return myQualityTasksPath
+  if (todo.source_type === 'warehouse_inbound_approval' && todo.source_id) {
+    return moduleDetailPath(warehouseInboundOrderPath, todo.source_id)
+  }
+  const modulePaths: Record<string, string> = {
+    sample_delivery_approval: sampleDeliveryPath,
+    sales_quotation_approval: exportQuotationPath,
+    sales_contract_approval: exportContractPath,
+    purchase_contract_approval: purchaseContractPath,
+    sales_shipment_approval: shipmentPath,
+    warehouse_outbound_approval: warehouseOutboundOrderPath,
+  }
+  if (todo.source_id && modulePaths[todo.source_type]) {
+    return moduleDetailPath(modulePaths[todo.source_type], todo.source_id)
+  }
+  const financeModules = {
+    finance_payment_approval: 'payments',
+    finance_fee_payment_approval: 'fees',
+    finance_reimbursement_approval: 'reimbursements',
+  } as const
+  const financeModule = financeModules[todo.source_type as keyof typeof financeModules]
+  if (todo.source_id && financeModule) {
+    const requestId =
+      todo.source_type === 'finance_payment_approval' ||
+      todo.source_type === 'finance_fee_payment_approval'
+        ? todo.id
+        : undefined
+    return financeDetailPath(financeModule, todo.source_id, requestId)
+  }
   return dashboardPath
 }
 
@@ -114,8 +146,20 @@ function todoSourceLabel(value: string) {
   const labels: Record<string, string> = {
     approval: t('todo.approval'),
     followup: t('todo.followup'),
+    followup_plan: t('todo.followup'),
     manual: t('todo.manual'),
+    quality_inspection: 'QC 查验',
     system: t('todo.system'),
+    warehouse_inbound_approval: '入库审批',
+    sample_delivery_approval: '寄样审批',
+    sales_quotation_approval: '报价审批',
+    sales_contract_approval: '出口合同审批',
+    purchase_contract_approval: '采购合同审批',
+    sales_shipment_approval: '出货审批',
+    warehouse_outbound_approval: '出库审批',
+    finance_payment_approval: '付款审批',
+    finance_fee_payment_approval: '付费审批',
+    finance_reimbursement_approval: '报销审批',
   }
   return labels[value] ?? value
 }

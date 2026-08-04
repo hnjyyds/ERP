@@ -7,6 +7,7 @@ from app.modules.sales.contracts.schemas import (
     ExportContractPurchaseStatusResponse,
     ExportContractShipmentStatusResponse,
 )
+from app.schemas.approvals import ApprovalSubmit
 from app.schemas.base import BaseModel
 
 VALID_SHIPMENT_STATUSES = ("draft", "submitted", "approved", "rejected")
@@ -40,8 +41,12 @@ class ShipmentPlanGenerate(BaseModel):
 class ShipmentApprove(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    reviewer_name: str = Field(min_length=1, max_length=160)
+    reviewer_name: str | None = Field(default=None, max_length=160)
     approved_at: date
+
+
+class ShipmentSubmit(ApprovalSubmit):
+    """Submit a shipment plan to one designated reviewer."""
 
 
 class ShipmentLineResponse(BaseModel):
@@ -113,7 +118,8 @@ class ShipmentPlanResponse(BaseModel):
     approval_status: str
     submitted_at: date | None
     approved_at: date | None
-    reviewer_name: str | None
+    reviewer_id: str | None = None
+    reviewer_name: str | None = None
     remarks: str | None
     owner_user_id: str
     finance_overview: ShipmentFinanceOverviewResponse

@@ -53,6 +53,10 @@ export interface AssignableUser {
   avatar_value: string
 }
 
+export interface ApprovalSubmitPayload {
+  reviewer_id: string
+}
+
 export interface OrganizationDepartment {
   id: string
   name: string
@@ -610,6 +614,7 @@ export interface SupplierPaymentRequest {
   status: string
   requester_user_id: string
   requester_user_name: string
+  reviewer_id: string | null
   reviewer_name: string | null
   approved_at: string | null
   payment_account: string | null
@@ -666,6 +671,7 @@ export interface PaymentRequestCreatePayload {
   request_date: string
   requested_amount: string
   currency: string
+  reviewer_id: string
   remark?: string | null
 }
 
@@ -735,6 +741,7 @@ export interface FeePaymentRequest {
   status: string
   requester_user_id: string
   requester_user_name: string
+  reviewer_id: string | null
   reviewer_name: string | null
   approved_at: string | null
   payment_account: string | null
@@ -794,6 +801,7 @@ export interface FeePaymentRequestCreatePayload {
   request_date: string
   requested_amount: string
   currency: string
+  reviewer_id: string
   remark?: string | null
 }
 
@@ -1032,6 +1040,8 @@ export interface Reimbursement {
   amount: string
   reason: string | null
   status: string
+  reviewer_id: string | null
+  reviewer_name: string | null
   approved_by_user_id: string | null
   approved_by_user_name: string | null
   approval_remark: string | null
@@ -1062,6 +1072,7 @@ export interface ReimbursementCreatePayload {
   category: string
   currency: string
   amount: string
+  reviewer_id: string
   reason?: string | null
   remark?: string | null
   items?: ReimbursementItemCreatePayload[]
@@ -2194,6 +2205,7 @@ export interface SampleDelivery {
   status: string
   submitted_at: string | null
   approved_at: string | null
+  reviewer_id: string | null
   reviewer_name: string | null
   owner_user_id: string
   lines: SampleDeliveryLine[]
@@ -2248,7 +2260,7 @@ export interface SampleDeliveryCreatePayload {
 }
 
 export interface SampleDeliveryApprovePayload {
-  reviewer_name: string
+  reviewer_name?: string
   approved_at: string
 }
 
@@ -2335,6 +2347,7 @@ export interface ExportQuotation {
   approval_status: string
   submitted_at: string | null
   approved_at: string | null
+  reviewer_id: string | null
   reviewer_name: string | null
   confirmed_at: string | null
   generated_contract_id: string | null
@@ -2379,7 +2392,7 @@ export interface ExportQuotationCreatePayload {
 }
 
 export interface ExportQuotationApprovePayload {
-  reviewer_name: string
+  reviewer_name?: string
   approved_at: string
 }
 
@@ -2521,6 +2534,7 @@ export interface ExportContract {
   approval_status: string
   submitted_at: string | null
   approved_at: string | null
+  reviewer_id: string | null
   reviewer_name: string | null
   signature_status: string
   customer_signed_at: string | null
@@ -2571,7 +2585,7 @@ export interface ExportContractCreatePayload {
 }
 
 export interface ExportContractApprovePayload {
-  reviewer_name: string
+  reviewer_name?: string
   approved_at: string
 }
 
@@ -2657,6 +2671,7 @@ export interface ShipmentPlan {
   approval_status: string
   submitted_at: string | null
   approved_at: string | null
+  reviewer_id: string | null
   reviewer_name: string | null
   remarks: string | null
   owner_user_id: string
@@ -2698,7 +2713,7 @@ export interface ShipmentPlanGeneratePayload {
 }
 
 export interface ShipmentApprovePayload {
-  reviewer_name: string
+  reviewer_name?: string
   approved_at: string
 }
 
@@ -2773,6 +2788,7 @@ export interface PurchaseContract {
   approval_status: string
   submitted_at: string | null
   approved_at: string | null
+  reviewer_id: string | null
   reviewer_name: string | null
   owner_user_id: string
   statistics: PurchaseContractStatistics
@@ -3016,6 +3032,7 @@ export interface OutboundOrder {
   exception_reason: string | null
   submitted_at: string | null
   approved_at: string | null
+  reviewer_id: string | null
   reviewer_name: string | null
   owner_user_id: string
   lines: OutboundOrderLine[]
@@ -3051,7 +3068,7 @@ export interface OutboundOrderGeneratePayload {
 }
 
 export interface OutboundOrderApprovePayload {
-  reviewer_name: string
+  reviewer_name?: string
   approved_at: string
   allow_negative?: boolean
 }
@@ -3151,7 +3168,7 @@ export interface PurchaseContractGeneratePayload {
 }
 
 export interface PurchaseContractApprovePayload {
-  reviewer_name: string
+  reviewer_name?: string
   approved_at: string
 }
 
@@ -3729,8 +3746,13 @@ export function updateCurrentUserAvatar(
   })
 }
 
-export function listAssignableUsers(): Promise<{ users: AssignableUser[] }> {
-  return request<{ users: AssignableUser[] }>('/auth/users')
+export function listAssignableUsers(
+  requiredPermission?: string,
+): Promise<{ users: AssignableUser[] }> {
+  const params = new URLSearchParams()
+  if (requiredPermission) params.set('required_permission', requiredPermission)
+  const query = params.toString()
+  return request<{ users: AssignableUser[] }>(`/auth/users${query ? `?${query}` : ''}`)
 }
 
 export function getOrganizationOptions(): Promise<OrganizationOptions> {
@@ -4987,9 +5009,11 @@ export function addSampleFee(requestId: string, payload: SampleFeePayload): Prom
 export function requestSampleFeePayment(
   requestId: string,
   feeId: string,
+  payload: ApprovalSubmitPayload,
 ): Promise<SampleFee> {
   return request<SampleFee>(`/sample/requests/${requestId}/fees/${feeId}/payment-request`, {
     method: 'POST',
+    body: JSON.stringify(payload),
   })
 }
 
@@ -5111,9 +5135,13 @@ export function updateSampleDelivery(
   })
 }
 
-export function submitSampleDelivery(deliveryId: string): Promise<SampleDelivery> {
+export function submitSampleDelivery(
+  deliveryId: string,
+  payload: ApprovalSubmitPayload,
+): Promise<SampleDelivery> {
   return request<SampleDelivery>(`/sample/deliveries/${deliveryId}/submit`, {
     method: 'POST',
+    body: JSON.stringify(payload),
   })
 }
 
@@ -5231,9 +5259,13 @@ export function updateExportQuotation(
   })
 }
 
-export function submitExportQuotation(quotationId: string): Promise<ExportQuotation> {
+export function submitExportQuotation(
+  quotationId: string,
+  payload: ApprovalSubmitPayload,
+): Promise<ExportQuotation> {
   return request<ExportQuotation>(`/sales/quotations/${quotationId}/submit`, {
     method: 'POST',
+    body: JSON.stringify(payload),
   })
 }
 
@@ -5324,9 +5356,13 @@ export function updateExportContract(
   })
 }
 
-export function submitExportContract(contractId: string): Promise<ExportContract> {
+export function submitExportContract(
+  contractId: string,
+  payload: ApprovalSubmitPayload,
+): Promise<ExportContract> {
   return request<ExportContract>(`/sales/contracts/${contractId}/submit`, {
     method: 'POST',
+    body: JSON.stringify(payload),
   })
 }
 
@@ -5391,9 +5427,13 @@ export function generateShipmentFromContracts(
   })
 }
 
-export function submitShipment(shipmentId: string): Promise<ShipmentPlan> {
+export function submitShipment(
+  shipmentId: string,
+  payload: ApprovalSubmitPayload,
+): Promise<ShipmentPlan> {
   return request<ShipmentPlan>(`/sales/shipments/${shipmentId}/submit`, {
     method: 'POST',
+    body: JSON.stringify(payload),
   })
 }
 
@@ -5477,9 +5517,13 @@ export function generateOutboundOrderFromPlan(
   })
 }
 
-export function submitOutboundOrder(orderId: string): Promise<OutboundOrder> {
+export function submitOutboundOrder(
+  orderId: string,
+  payload: ApprovalSubmitPayload,
+): Promise<OutboundOrder> {
   return request<OutboundOrder>(`/warehouse/outbound-orders/${orderId}/submit`, {
     method: 'POST',
+    body: JSON.stringify(payload),
   })
 }
 
@@ -5536,9 +5580,13 @@ export function generatePurchaseContractFromExportContracts(
   })
 }
 
-export function submitPurchaseContract(contractId: string): Promise<PurchaseContract> {
+export function submitPurchaseContract(
+  contractId: string,
+  payload: ApprovalSubmitPayload,
+): Promise<PurchaseContract> {
   return request<PurchaseContract>(`/purchase/contracts/${contractId}/submit`, {
     method: 'POST',
+    body: JSON.stringify(payload),
   })
 }
 

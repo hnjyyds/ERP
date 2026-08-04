@@ -228,6 +228,37 @@ async def test_assignable_users_require_authentication(
     assert unauthorized_response.json()["code"] == "MISSING_CREDENTIALS"
 
 
+async def test_assignable_users_can_be_filtered_by_required_permission(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    login_response = await api_client.post(
+        "/api/v1/auth/login",
+        json={"username": "demo", "password": "demo123"},
+    )
+    token = login_response.json()["data"]["access_token"]
+
+    response = await api_client.get(
+        "/api/v1/auth/users",
+        headers={"Authorization": f"Bearer {token}"},
+        params={"required_permission": "quality:inspection:view"},
+    )
+
+    assert response.status_code == 200
+    users = response.json()["data"]["users"]
+    assert {item["id"] for item in users} == {"u-admin", "u-001", "u-qc"}
+
+    edit_response = await api_client.get(
+        "/api/v1/auth/users",
+        headers={"Authorization": f"Bearer {token}"},
+        params={"required_permission": "quality:inspection:edit"},
+    )
+
+    assert edit_response.status_code == 200
+    edit_users = edit_response.json()["data"]["users"]
+    assert {item["id"] for item in edit_users} == {"u-admin", "u-001", "u-qc"}
+
+
 async def test_current_user_can_update_own_avatar(
     api_client: AsyncClient,
     seeded_system: None,

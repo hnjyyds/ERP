@@ -11,12 +11,14 @@ from app.modules.sample.records.repositories import SampleRecordRepository
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.auth.seed import seed_system_demo_data
 from app.modules.warehouse.inbound_orders.repositories import InboundOrderRepository
 from app.modules.warehouse.outbound_orders.repositories import OutboundOrderRepository
 from app.modules.warehouse.outbound_orders.schemas import (
     OutboundOrderApprove,
     OutboundOrderGenerateFromPlan,
     OutboundOrderLineShip,
+    OutboundOrderSubmit,
 )
 from app.modules.warehouse.outbound_orders.services import (
     OutboundOrderService,
@@ -31,12 +33,14 @@ def _user(
     permissions: list[str],
     *,
     user_id: str = "u-001",
+    data_scope: str = "self",
 ) -> CurrentUserResponse:
     return CurrentUserResponse(
         id=user_id,
         username=user_id,
         display_name="演示业务主管",
         department_name="业务部",
+        data_scope=data_scope,
         roles=["业务主管"],
         permissions=permissions,
     )
@@ -53,6 +57,14 @@ def _warehouse_user() -> CurrentUserResponse:
             "warehouse:outbound_plan:edit",
             "warehouse:outbound_plan:view_all",
         ]
+    )
+
+
+def _outbound_reviewer() -> CurrentUserResponse:
+    return _user(
+        ["warehouse:outbound_order:view", "warehouse:outbound_order:approve"],
+        user_id="u-admin",
+        data_scope="all",
     )
 
 
@@ -242,6 +254,7 @@ async def test_outbound_order_service_formal_outbound_deducts_stock_and_followup
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         purchase_contract_id = await _prepare_followup_contract(session)
         plan_id, _ = await _prepare_scheduled_outbound_plan(session)
         await _add_available_stock(session, quantity="300")
@@ -250,9 +263,13 @@ async def test_outbound_order_service_formal_outbound_deducts_stock_and_followup
             current_user=_warehouse_user(),
             payload=_payload(plan_id),
         )
-        submitted = await service.submit_order(current_user=_warehouse_user(), order_id=order.id)
-        approved = await service.approve_order(
+        submitted = await service.submit_order(
             current_user=_warehouse_user(),
+            order_id=order.id,
+            payload=OutboundOrderSubmit(reviewer_id="u-admin"),
+        )
+        approved = await service.approve_order(
+            current_user=_outbound_reviewer(),
             order_id=submitted.id,
             payload=OutboundOrderApprove(
                 reviewer_name="业务主管",
@@ -290,6 +307,7 @@ async def test_outbound_order_service_exception_outbound_records_reason(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         await _prepare_followup_contract(session)
         plan_id, _ = await _prepare_scheduled_outbound_plan(session)
         await _add_available_stock(session, quantity="300")
@@ -320,9 +338,13 @@ async def test_outbound_order_service_exception_outbound_records_reason(
                 ],
             ),
         )
-        await service.submit_order(current_user=_warehouse_user(), order_id=order.id)
-        approved = await service.approve_order(
+        await service.submit_order(
             current_user=_warehouse_user(),
+            order_id=order.id,
+            payload=OutboundOrderSubmit(reviewer_id="u-admin"),
+        )
+        approved = await service.approve_order(
+            current_user=_outbound_reviewer(),
             order_id=order.id,
             payload=OutboundOrderApprove(
                 reviewer_name="业务主管",
@@ -342,6 +364,7 @@ async def test_outbound_order_service_rejects_unauthorized_negative_stock(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         await _prepare_followup_contract(session)
         plan_id, _ = await _prepare_scheduled_outbound_plan(session)
         await _add_available_stock(session, quantity="20")
@@ -350,11 +373,15 @@ async def test_outbound_order_service_rejects_unauthorized_negative_stock(
             current_user=_warehouse_user(),
             payload=_payload(plan_id),
         )
-        await service.submit_order(current_user=_warehouse_user(), order_id=order.id)
+        await service.submit_order(
+            current_user=_warehouse_user(),
+            order_id=order.id,
+            payload=OutboundOrderSubmit(reviewer_id="u-admin"),
+        )
 
         with pytest.raises(ValueError):
             await service.approve_order(
-                current_user=_warehouse_user(),
+                current_user=_outbound_reviewer(),
                 order_id=order.id,
                 payload=OutboundOrderApprove(
                     reviewer_name="业务主管",

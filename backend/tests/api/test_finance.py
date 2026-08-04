@@ -51,15 +51,17 @@ async def _approved_export_contract(api_client: AsyncClient, token: str) -> dict
     )
     assert create_response.status_code == 201
     contract = create_response.json()["data"]
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     submit_response = await api_client.post(
         f"/api/v1/sales/contracts/{contract['id']}/submit",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
     )
     assert submit_response.status_code == 200
     approve_response = await api_client.post(
         f"/api/v1/sales/contracts/{contract['id']}/approve",
-        headers={"Authorization": f"Bearer {token}"},
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-07-06"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-07-06"},
     )
     assert approve_response.status_code == 200
     return approve_response.json()["data"]
@@ -182,6 +184,7 @@ async def _sample_fee(api_client: AsyncClient, token: str) -> dict[str, object]:
     payment_response = await api_client.post(
         f"/api/v1/sample/requests/{request_id}/fees/{fee['id']}/payment-request",
         headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-finance-manager"},
     )
     assert payment_response.status_code == 200
     return payment_response.json()["data"]

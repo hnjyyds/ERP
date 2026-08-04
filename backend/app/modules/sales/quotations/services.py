@@ -28,6 +28,7 @@ from app.modules.sales.quotations.schemas import (
     ExportQuotationPurchaseReferenceListResponse,
     ExportQuotationPurchaseReferenceResponse,
     ExportQuotationResponse,
+    ExportQuotationSubmit,
 )
 from app.modules.sample.deliveries.repositories import (
     SampleDeliveryFeeRow,
@@ -41,7 +42,9 @@ from app.modules.sample.deliveries.schemas import (
     SampleDeliveryListResponse,
     SampleDeliveryResponse,
 )
+from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
 
@@ -62,12 +65,16 @@ class ExportQuotationService:
         purchase_inquiry_repository: PurchaseInquiryRepository | None = None,
         *,
         data_scope_resolver: DataScopeResolver,
+        auth_repository: AuthRepository | None = None,
     ) -> None:
         self._repository = repository
         self._sample_delivery_repository = sample_delivery_repository
         self._export_contract_repository = export_contract_repository
         self._purchase_inquiry_repository = purchase_inquiry_repository
         self._data_scope_resolver = data_scope_resolver
+        self._assignee_validator = AssigneeValidator(
+            auth_repository or AuthRepository(repository.session)
+        )
 
     async def create_quotation(
         self,
@@ -181,6 +188,7 @@ class ExportQuotationService:
         *,
         current_user: CurrentUserResponse,
         quotation_id: str,
+        payload: ExportQuotationSubmit,
     ) -> ExportQuotationResponse:
         self._require(current_user, "sales:quotation:edit")
         quotation = await self._get_accessible_quotation(
@@ -189,8 +197,19 @@ class ExportQuotationService:
         )
         if quotation.approval_status != "draft":
             raise ValueError("只有草稿报价可以提交")
+        reviewer = await self._assignee_validator.require(
+            user_id=payload.reviewer_id,
+            required_permission="sales:quotation:approve",
+            role_name="审批人",
+            permission_error="所选员工没有报价审批权限",
+            excluded_user_id=current_user.id,
+        )
         async with UnitOfWork(self._repository.session):
-            submitted = await self._repository.submit_quotation(quotation.id)
+            submitted = await self._repository.submit_quotation(
+                quotation.id,
+                reviewer_id=reviewer.id,
+                reviewer_name=reviewer.display_name,
+            )
             if submitted is None:
                 raise ExportQuotationNotFoundError
         return await self._quotation_response(submitted)
@@ -209,11 +228,14 @@ class ExportQuotationService:
         )
         if quotation.approval_status != "submitted":
             raise ValueError("只有已提交报价可以审批")
+        if quotation.reviewer_id is not None and quotation.reviewer_id != current_user.id:
+            raise PermissionDeniedError
         async with UnitOfWork(self._repository.session):
             approved = await self._repository.approve_quotation(
                 quotation_id=quotation.id,
-                reviewer_name=payload.reviewer_name,
                 approved_at=payload.approved_at,
+                reviewer_id=current_user.id,
+                reviewer_name=current_user.display_name,
             )
             if approved is None:
                 raise ExportQuotationNotFoundError
@@ -463,6 +485,7 @@ class ExportQuotationService:
             approval_status=quotation.approval_status,
             submitted_at=quotation.submitted_at,
             approved_at=quotation.approved_at,
+            reviewer_id=quotation.reviewer_id,
             reviewer_name=quotation.reviewer_name,
             confirmed_at=quotation.confirmed_at,
             generated_contract_id=quotation.generated_contract_id,

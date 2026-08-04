@@ -20,8 +20,9 @@ from app.modules.warehouse.outbound_plans.repositories import OutboundPlanReposi
 def get_outbound_order_service(
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> OutboundOrderService:
+    auth_repository = AuthRepository(session)
     purchase_contract_repository = PurchaseContractRepository(session)
-    data_scope_resolver = DataScopeResolver(AuthRepository(session))
+    data_scope_resolver = DataScopeResolver(auth_repository)
     return OutboundOrderService(
         outbound_order_repository=OutboundOrderRepository(session),
         outbound_plan_repository=OutboundPlanRepository(session),
@@ -35,4 +36,5 @@ def get_outbound_order_service(
             data_scope_resolver=data_scope_resolver,
         ),
         data_scope_resolver=data_scope_resolver,
+        auth_repository=auth_repository,
     )

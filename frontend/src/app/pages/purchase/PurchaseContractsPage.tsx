@@ -3,12 +3,13 @@ import { Alert, Button, Descriptions as _Descriptions, Input, Modal, Table, Tag 
 import { ArrowLeft, LayoutDashboard, Plus, Search , FileSpreadsheet, FileStack} from 'lucide-react'
 import type { FormEvent, MouseEvent , ReactNode} from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { approvePurchaseContract, createPurchaseContract, generatePurchaseContractFromExportContracts, generatePurchaseContractTemplate, listPurchaseContractReminders, listPurchaseContracts, submitPurchaseContract, updatePurchaseContract, type PurchaseContract, type PurchaseContractApprovePayload, type PurchaseContractCreatePayload, type PurchaseContractGeneratePayload, type PurchaseContractLine as _PurchaseContractLine, type PurchaseContractReminder, type PurchaseContractSourceLink as _PurchaseContractSourceLink, type Supplier , AssignableUser, Product, listAssignableUsers, listProducts, listSuppliers} from '../../../api'
+import { approvePurchaseContract, createPurchaseContract, generatePurchaseContractFromExportContracts, generatePurchaseContractTemplate, listPurchaseContractReminders, listPurchaseContracts, submitPurchaseContract, updatePurchaseContract, type CurrentUser, type PurchaseContract, type PurchaseContractApprovePayload, type PurchaseContractCreatePayload, type PurchaseContractGeneratePayload, type PurchaseContractLine as _PurchaseContractLine, type PurchaseContractReminder, type PurchaseContractSourceLink as _PurchaseContractSourceLink, type Supplier , AssignableUser, Product, listAssignableUsers, listProducts, listSuppliers} from '../../../api'
 import { purchaseContractPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError, showWarningDialog } from '../../../shared/errors'
 import { purchaseContractStatusOptions, purchaseContractSourceTypeOptions } from '../../../shared/formOptions'
-import { formatDate, formatMoney, nullableText as _nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { canApproveAssignedRecord, formatDate, formatMoney, nullableText as _nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
 
 function supplierOptionLabel(supplier: Supplier): string {
   return [supplier.code, supplier.cn_name, supplier.en_name].filter(Boolean).join(' / ')
@@ -292,7 +293,9 @@ function purchaseReminderStatusLabel(value: string): string {
 }
 
 
-export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
+type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
+
+export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Props) {
   const [contracts, setContracts] = useState<PurchaseContract[]>([])
   const [reminders, setReminders] = useState<PurchaseContractReminder[]>([])
   const [products, setProducts] = useState<Product[]>([])
@@ -315,6 +318,7 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [form, setForm] = useState<PurchaseContractFormState>(() => initialPurchaseContractForm())
+  const [reviewerId, setReviewerId] = useState('')
   const [generateForm, setGenerateForm] = useState<PurchaseContractGenerateFormState>(() =>
     initialPurchaseContractGenerateForm(),
   )
@@ -343,6 +347,7 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
       reviewer_name: selectedContract?.reviewer_name ?? '演示业务主管',
       approved_at: selectedContract?.approved_at ?? selectedContract?.contract_date ?? todayInputValue(),
     })
+    setReviewerId(selectedContract?.reviewer_id ?? '')
     if (selectedContract) {
       setGenerateForm((current) => ({
         ...current,
@@ -431,7 +436,7 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
   async function loadAssignableUsersForContract() {
     setLoadingAssignableUsers(true)
     try {
-      const result = await listAssignableUsers()
+      const result = await listAssignableUsers('quality:inspection:edit')
       setAssignableUsers(result.users)
     } catch (caught) {
       showError(caught, '人员列表加载失败')
@@ -574,11 +579,15 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
 
   async function submitSelectedContract() {
     if (!selectedContract) return
+    if (!reviewerId) {
+      showError(new Error('请选择审批人'))
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
     try {
-      const submitted = await submitPurchaseContract(selectedContract.id)
+      const submitted = await submitPurchaseContract(selectedContract.id, { reviewer_id: reviewerId })
       setMessage(`已提交采购合同 ${submitted.code}`)
       upsertContract(submitted)
       await Promise.all([loadContracts(submitted.id, submitted), loadContractReminders()])
@@ -592,6 +601,10 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
   async function approveSelectedContract(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!selectedContract) return
+    if (!canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'purchase:contract:approve')) {
+      showError(new Error(`该采购合同应由 ${selectedContract.reviewer_name ?? '指定审批人'} 审批`))
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
@@ -1198,50 +1211,96 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
           <section className="workspace-panel detail-panel product-detail-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<LayoutDashboard size={18} />} title="采购合同明细" />
+            {selectedContract ? <span className="panel-kicker contract-code-label">{selectedContract.code}</span> : null}
             <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(purchaseContractPath)}>
               返回列表
             </Button>
           </div>
           {selectedContract ? (
             <>
-              <dl className="detail-list">
-                <div>
-                  <dt>状态/合同日</dt>
-                  <dd>{purchaseContractStatusLabel(selectedContract.approval_status)} / {formatDate(selectedContract.contract_date)}</dd>
-                </div>
-                <div>
-                  <dt>来源</dt>
-                  <dd>{purchaseContractSourceTypeLabel(selectedContract.source_type)}</dd>
-                </div>
-                <div>
-                  <dt>供应商</dt>
-                  <dd>{selectedContract.supplier_name}</dd>
-                </div>
-                <div>
-                  <dt>采购员</dt>
-                  <dd>{selectedContract.buyer_user_name ?? '未指定'}</dd>
-                </div>
-                <div>
-                  <dt>QC 负责人</dt>
-                  <dd>{selectedContract.qc_user_name ?? '未指定'}</dd>
-                </div>
-                <div>
-                  <dt>交货日期</dt>
-                  <dd>{formatDate(selectedContract.delivery_date)}</dd>
-                </div>
-                <div>
-                  <dt>合同金额</dt>
-                  <dd>{formatMoney(selectedContract.statistics.total_amount, selectedContract.currency)}</dd>
-                </div>
-                <div>
-                  <dt>未付金额</dt>
-                  <dd>{formatMoney(selectedContract.statistics.unpaid_amount, selectedContract.currency)}</dd>
-                </div>
-                <div>
-                  <dt>审批人</dt>
-                  <dd>{selectedContract.reviewer_name ?? '未审批'}</dd>
-                </div>
-              </dl>
+              <div className="contract-summary-intro">
+                <strong>合同摘要</strong>
+                <span>快速确认合同来源、执行节点、责任人和付款进度。</span>
+              </div>
+
+              <div className="contract-summary-sections">
+                <section className="contract-summary-section">
+                  <div className="contract-summary-section-heading">
+                    <div>
+                      <h3>合同概况</h3>
+                      <p>合同从哪里生成，以及当前处于哪个审批阶段</p>
+                    </div>
+                  </div>
+                  <dl className="contract-summary-grid">
+                    <div>
+                      <dt>合同状态</dt>
+                      <dd>
+                        <span className="contract-status-chip" data-status={selectedContract.approval_status}>
+                          {purchaseContractStatusLabel(selectedContract.approval_status)}
+                        </span>
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>合同日期</dt>
+                      <dd>{formatDate(selectedContract.contract_date)}</dd>
+                    </div>
+                    <div>
+                      <dt>合同来源</dt>
+                      <dd>{purchaseContractSourceTypeLabel(selectedContract.source_type)}</dd>
+                    </div>
+                    <div>
+                      <dt>供应商</dt>
+                      <dd>{selectedContract.supplier_name}</dd>
+                    </div>
+                  </dl>
+                </section>
+
+                <section className="contract-summary-section">
+                  <div className="contract-summary-section-heading">
+                    <div>
+                      <h3>履约安排</h3>
+                      <p>负责采购与查验的人员，以及计划交货时间</p>
+                    </div>
+                  </div>
+                  <dl className="contract-summary-grid">
+                    <div>
+                      <dt>采购负责人</dt>
+                      <dd>{selectedContract.buyer_user_name ?? '未指定'}</dd>
+                    </div>
+                    <div>
+                      <dt>QC 负责人</dt>
+                      <dd>{selectedContract.qc_user_name ?? '未指定'}</dd>
+                    </div>
+                    <div>
+                      <dt>预计交货日期</dt>
+                      <dd>{formatDate(selectedContract.delivery_date)}</dd>
+                    </div>
+                  </dl>
+                </section>
+
+                <section className="contract-summary-section">
+                  <div className="contract-summary-section-heading">
+                    <div>
+                      <h3>金额与审批</h3>
+                      <p>金额均按合同币种显示，待付款金额为尚未支付的部分</p>
+                    </div>
+                  </div>
+                  <dl className="contract-summary-grid">
+                    <div>
+                      <dt>合同金额</dt>
+                      <dd>{formatMoney(selectedContract.statistics.total_amount, selectedContract.currency)}</dd>
+                    </div>
+                    <div>
+                      <dt>待付款金额</dt>
+                      <dd>{formatMoney(selectedContract.statistics.unpaid_amount, selectedContract.currency)}</dd>
+                    </div>
+                    <div>
+                      <dt>审批人</dt>
+                      <dd>{selectedContract.reviewer_name ?? '未审批'}</dd>
+                    </div>
+                  </dl>
+                </section>
+              </div>
 
               <div className="transaction-box">
                 <strong>付款条款</strong>
@@ -1259,15 +1318,26 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
                 >
                   编辑合同
                 </Button>
+                {selectedContract.approval_status === 'draft' ? (
+                  <ApprovalAssigneeSelect
+                    currentUserId={currentUser.id}
+                    onChange={setReviewerId}
+                    requiredPermission="purchase:contract:approve"
+                    value={reviewerId}
+                  />
+                ) : null}
                 <Button
-                  disabled={selectedContract.approval_status !== 'draft'}
+                  disabled={selectedContract.approval_status !== 'draft' || !reviewerId}
                   loading={submitting}
                   onClick={() => void submitSelectedContract()}
                 >
                   提交采购合同
                 </Button>
                 <Button
-                  disabled={selectedContract.approval_status !== 'submitted'}
+                  disabled={
+                    selectedContract.approval_status !== 'submitted' ||
+                    !canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'purchase:contract:approve')
+                  }
                   onClick={() => setContractApprovalModalOpen(true)}
                 >
                   审批采购合同
@@ -1280,6 +1350,13 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
                   用合同模板生成
                 </Button>
               </div>
+              {selectedContract.approval_status === 'submitted' && !canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'purchase:contract:approve') ? (
+                <Alert
+                  message={`等待 ${selectedContract.reviewer_name ?? '指定审批人'} 审批`}
+                  showIcon
+                  type="info"
+                />
+              ) : null}
 
               <Modal
                 centered
@@ -1295,12 +1372,7 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
                     <div className="form-pair two">
                       <label>
                         审批人
-                        <Input
-                          value={approveForm.reviewer_name}
-                          onChange={(event) =>
-                            setApproveForm({ ...approveForm, reviewer_name: event.target.value })
-                          }
-                        />
+                        <Input disabled value={selectedContract.reviewer_name ?? ''} />
                       </label>
                       <label>
                         审批日期
@@ -1314,7 +1386,10 @@ export function PurchaseContractsPage({ detailId, onNavigate }: RoutedDetailPage
                       </label>
                     </div>
                     <Button
-                      disabled={selectedContract.approval_status !== 'submitted'}
+                      disabled={
+                        selectedContract.approval_status !== 'submitted' ||
+                        !canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'purchase:contract:approve')
+                      }
                       htmlType="submit"
                       loading={submitting}
                       type="primary"

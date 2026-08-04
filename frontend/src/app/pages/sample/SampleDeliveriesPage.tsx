@@ -2,13 +2,14 @@ import { Alert, Button, Input, Modal, Table } from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search , Send} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { approveSampleDelivery, createSampleDelivery, exportSampleDeliveries, getSampleDeliveryFeeStatistics, getSampleDeliveryQuoteHistory, getSampleDeliverySampleHistory, getSampleDeliveryStatistics, listSampleDeliveries, submitSampleDelivery, updateSampleDelivery, updateSampleDeliveryTracking, type SampleDelivery, type SampleDeliveryApprovePayload, type SampleDeliveryCreatePayload, type SampleDeliveryFeeStatistic, type SampleDeliveryFeeStatistics, type SampleDeliveryStatistics, type SampleDeliveryTrackingPayload , SampleDeliveryCustomerStatistic, SampleDeliveryExpressStatistic, SampleDeliveryFee, SampleDeliveryLine, SampleDeliveryStatusStatistic} from '../../../api'
+import { approveSampleDelivery, createSampleDelivery, exportSampleDeliveries, getSampleDeliveryFeeStatistics, getSampleDeliveryQuoteHistory, getSampleDeliverySampleHistory, getSampleDeliveryStatistics, listSampleDeliveries, submitSampleDelivery, updateSampleDelivery, updateSampleDeliveryTracking, type CurrentUser, type SampleDelivery, type SampleDeliveryApprovePayload, type SampleDeliveryCreatePayload, type SampleDeliveryFeeStatistic, type SampleDeliveryFeeStatistics, type SampleDeliveryStatistics, type SampleDeliveryTrackingPayload , SampleDeliveryCustomerStatistic, SampleDeliveryExpressStatistic, SampleDeliveryFee, SampleDeliveryLine, SampleDeliveryStatusStatistic} from '../../../api'
 import { sampleDeliveryPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { downloadCsv } from '../../../shared/print'
 import { sampleDeliveryStatusOptions, sampleDeliveryFeeTypeOptions, sampleDeliveryPayerTypeOptions, sampleDeliveryTrackingStatusOptions, sampleRecordTypeOptions, sampleRecordStatusOptions } from '../../../shared/formOptions'
-import { formatDate, formatMoney, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { canApproveAssignedRecord, formatDate, formatMoney, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
 
 function sampleDeliveryFeeTypeLabel(value: string): string {
   return sampleDeliveryFeeTypeOptions.find((item) => item.value === value)?.label ?? value
@@ -244,7 +245,9 @@ function sampleDeliveryPayerTypeLabel(value: string): string {
 }
 
 
-export function SampleDeliveriesPage({ detailId, onNavigate }: RoutedDetailPageProps) {
+type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
+
+export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Props) {
   const [deliveries, setDeliveries] = useState<SampleDelivery[]>([])
   const [selectedDeliveryId, setSelectedDeliveryId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
@@ -267,6 +270,7 @@ export function SampleDeliveriesPage({ detailId, onNavigate }: RoutedDetailPageP
   const [error, setError] = useState('')
   const [form, setForm] = useState<SampleDeliveryFormState>(() => initialSampleDeliveryForm())
   const [deliveryModalMode, setDeliveryModalMode] = useState<'create' | 'edit' | null>(null)
+  const [reviewerId, setReviewerId] = useState('')
   const [approveForm, setApproveForm] = useState<SampleDeliveryApproveFormState>(() =>
     initialSampleDeliveryApproveForm(),
   )
@@ -294,6 +298,7 @@ export function SampleDeliveriesPage({ detailId, onNavigate }: RoutedDetailPageP
 
   useEffect(() => {
     syncDeliveryActionForms(selectedDelivery)
+    setReviewerId(selectedDelivery?.reviewer_id ?? '')
     void loadSelectedDeliveryHistories(selectedDelivery)
   }, [selectedDelivery?.id, selectedDelivery?.status, selectedDelivery?.tracking_no])
 
@@ -442,11 +447,15 @@ export function SampleDeliveriesPage({ detailId, onNavigate }: RoutedDetailPageP
 
   async function submitDeliveryForReview() {
     if (!selectedDelivery) return
+    if (!reviewerId) {
+      showError(new Error('请选择审批人'))
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
     try {
-      const submitted = await submitSampleDelivery(selectedDelivery.id)
+      const submitted = await submitSampleDelivery(selectedDelivery.id, { reviewer_id: reviewerId })
       setMessage(`已提交寄样单 ${submitted.code}`)
       upsertDelivery(submitted)
       await loadDeliveries(submitted.id)
@@ -459,6 +468,10 @@ export function SampleDeliveriesPage({ detailId, onNavigate }: RoutedDetailPageP
 
   async function approveDelivery() {
     if (!selectedDelivery) return
+    if (!canApproveAssignedRecord(currentUser, selectedDelivery.reviewer_id, 'sample:delivery:approve')) {
+      showError(new Error(`该寄样单应由 ${selectedDelivery.reviewer_name ?? '指定审批人'} 审批`))
+      return
+    }
     setSubmitting(true)
     setMessage('')
     setError('')
@@ -994,15 +1007,26 @@ export function SampleDeliveriesPage({ detailId, onNavigate }: RoutedDetailPageP
                 >
                   编辑草稿
                 </Button>
+                {selectedDelivery.status === 'draft' ? (
+                  <ApprovalAssigneeSelect
+                    currentUserId={currentUser.id}
+                    onChange={setReviewerId}
+                    requiredPermission="sample:delivery:approve"
+                    value={reviewerId}
+                  />
+                ) : null}
                 <Button
-                  disabled={selectedDelivery.status !== 'draft'}
+                  disabled={selectedDelivery.status !== 'draft' || !reviewerId}
                   loading={submitting}
                   onClick={() => void submitDeliveryForReview()}
                 >
                   提交审核
                 </Button>
                 <Button
-                  disabled={selectedDelivery.status !== 'submitted'}
+                  disabled={
+                    selectedDelivery.status !== 'submitted' ||
+                    !canApproveAssignedRecord(currentUser, selectedDelivery.reviewer_id, 'sample:delivery:approve')
+                  }
                   loading={submitting}
                   type="primary"
                   onClick={() => void approveDelivery()}
@@ -1010,6 +1034,13 @@ export function SampleDeliveriesPage({ detailId, onNavigate }: RoutedDetailPageP
                   审核通过
                 </Button>
               </div>
+              {selectedDelivery.status === 'submitted' && !canApproveAssignedRecord(currentUser, selectedDelivery.reviewer_id, 'sample:delivery:approve') ? (
+                <Alert
+                  message={`等待 ${selectedDelivery.reviewer_name ?? '指定审批人'} 审批`}
+                  showIcon
+                  type="info"
+                />
+              ) : null}
 
               <form className="record-form accessory-form" onSubmit={submitTracking}>
                 <div className="form-divider">物流跟踪</div>
@@ -1208,5 +1239,3 @@ export function SampleDeliveriesPage({ detailId, onNavigate }: RoutedDetailPageP
     </section>
   )
 }
-
-

@@ -50,6 +50,9 @@ from app.modules.sales.shipments import models as shipment_models  # noqa: F401
 from app.modules.sample.deliveries import models as sample_delivery_models  # noqa: F401
 from app.modules.sample.records import models as sample_record_models  # noqa: F401
 from app.modules.sample.requests import models as sample_request_models  # noqa: F401
+from app.modules.system.approval_assignments.migrations import (
+    ensure_approval_assignment_schema,
+)
 from app.modules.system.auth import models as auth_models  # noqa: F401
 from app.modules.system.auth.migrations import ensure_auth_schema
 from app.modules.system.auth.seed import seed_system_demo_data
@@ -77,6 +80,7 @@ async def initialize_database_schema() -> None:
             async with engine.begin() as connection:
                 await connection.run_sync(Base.metadata.create_all)
                 await connection.run_sync(ensure_auth_schema)
+                await connection.run_sync(ensure_approval_assignment_schema)
                 await connection.run_sync(ensure_dashboard_schema)
                 await connection.run_sync(ensure_product_schema)
                 await connection.run_sync(ensure_company_schema)

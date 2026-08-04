@@ -247,6 +247,7 @@ export function AppRouter({
           />
         ) : isDetailPathFor(sampleRequestPath, activePath) ? (
           <SampleRequestsPage
+            currentUser={session.user}
             detailId={moduleDetailId(sampleRequestPath, activePath)}
             onNavigate={onNavigate}
           />
@@ -257,21 +258,25 @@ export function AppRouter({
           />
         ) : isDetailPathFor(sampleDeliveryPath, activePath) ? (
           <SampleDeliveriesPage
+            currentUser={session.user}
             detailId={moduleDetailId(sampleDeliveryPath, activePath)}
             onNavigate={onNavigate}
           />
         ) : isDetailPathFor(exportQuotationPath, activePath) ? (
           <ExportQuotationsPage
+            currentUser={session.user}
             detailId={moduleDetailId(exportQuotationPath, activePath)}
             onNavigate={onNavigate}
           />
         ) : isDetailPathFor(exportContractPath, activePath) ? (
           <ExportContractsPage
+            currentUser={session.user}
             detailId={moduleDetailId(exportContractPath, activePath)}
             onNavigate={onNavigate}
           />
         ) : isDetailPathFor(shipmentPath, activePath) ? (
           <ShipmentsPage
+            currentUser={session.user}
             detailId={moduleDetailId(shipmentPath, activePath)}
             onNavigate={onNavigate}
           />
@@ -282,6 +287,7 @@ export function AppRouter({
           />
         ) : isDetailPathFor(purchaseContractPath, activePath) ? (
           <PurchaseContractsPage
+            currentUser={session.user}
             detailId={moduleDetailId(purchaseContractPath, activePath)}
             onNavigate={onNavigate}
           />
@@ -321,6 +327,7 @@ export function AppRouter({
           />
         ) : isDetailPathFor(warehouseOutboundOrderPath, activePath) ? (
           <OutboundOrdersPage
+            currentUser={session.user}
             detailId={moduleDetailId(warehouseOutboundOrderPath, activePath)}
             onNavigate={onNavigate}
           />

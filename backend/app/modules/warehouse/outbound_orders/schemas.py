@@ -4,6 +4,7 @@ from typing import Literal
 
 from pydantic import ConfigDict, Field
 
+from app.schemas.approvals import ApprovalSubmit
 from app.schemas.base import BaseModel
 
 VALID_OUTBOUND_ORDER_MODES = ("formal", "exception")
@@ -42,9 +43,13 @@ class OutboundOrderGenerateFromPlan(BaseModel):
 class OutboundOrderApprove(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    reviewer_name: str = Field(min_length=1, max_length=160)
+    reviewer_name: str | None = Field(default=None, max_length=160)
     approved_at: date
     allow_negative: bool = False
+
+
+class OutboundOrderSubmit(ApprovalSubmit):
+    """Submit an outbound order to one designated reviewer."""
 
 
 class OutboundOrderLineResponse(BaseModel):
@@ -88,7 +93,8 @@ class OutboundOrderResponse(BaseModel):
     exception_reason: str | None
     submitted_at: date | None
     approved_at: date | None
-    reviewer_name: str | None
+    reviewer_id: str | None = None
+    reviewer_name: str | None = None
     owner_user_id: str
     lines: list[OutboundOrderLineResponse]
 

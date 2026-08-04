@@ -326,6 +326,7 @@ async def test_product_transactions_collect_sales_purchase_and_shipment(
     seeded_system: None,
 ) -> None:
     token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     headers = {"Authorization": f"Bearer {token}"}
 
     product_response = await api_client.post(
@@ -412,11 +413,12 @@ async def test_product_transactions_collect_sales_purchase_and_shipment(
     await api_client.post(
         f"/api/v1/sales/contracts/{contract_id}/submit",
         headers=headers,
+        json={"reviewer_id": "u-admin"},
     )
     approve_contract_response = await api_client.post(
         f"/api/v1/sales/contracts/{contract_id}/approve",
-        headers=headers,
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-07-06"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-07-06"},
     )
     assert approve_contract_response.status_code == 200
 
@@ -522,6 +524,7 @@ async def test_product_transactions_include_inventory_ledger_after_inbound_appro
     seeded_system: None,
 ) -> None:
     token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     headers = {"Authorization": f"Bearer {token}"}
 
     product_response = await api_client.post(
@@ -569,11 +572,15 @@ async def test_product_transactions_include_inventory_ledger_after_inbound_appro
     assert purchase_contract_response.status_code == 201
     purchase_contract = purchase_contract_response.json()["data"]
     contract_id = purchase_contract["id"]
-    await api_client.post(f"/api/v1/purchase/contracts/{contract_id}/submit", headers=headers)
+    await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/submit",
+        headers=headers,
+        json={"reviewer_id": "u-admin"},
+    )
     approve_contract_response = await api_client.post(
         f"/api/v1/purchase/contracts/{contract_id}/approve",
-        headers=headers,
-        json={"reviewer_name": "演示业务主管", "approved_at": "2026-08-05"},
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-08-05"},
     )
     assert approve_contract_response.status_code == 200
 
@@ -593,7 +600,7 @@ async def test_product_transactions_include_inventory_ledger_after_inbound_appro
             "purchase_contract_id": contract_id,
             "inspected_at": "2026-08-19",
             "result": "passed",
-            "inspector_id": "u-qc-001",
+            "inspector_id": "u-qc",
             "inspector_name": "QC 张工",
             "issue_summary": None,
             "attachment_group_id": "attach-inv-txn",
