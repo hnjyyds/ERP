@@ -32,6 +32,8 @@ class PurchaseContract(Base):
     approval_status: Mapped[str] = mapped_column(String(40), index=True, nullable=False)
     submitted_at: Mapped[date | None] = mapped_column(Date, nullable=True)
     approved_at: Mapped[date | None] = mapped_column(Date, nullable=True)
+    rejected_at: Mapped[date | None] = mapped_column(Date, nullable=True)
+    rejection_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     reviewer_id: Mapped[str | None] = mapped_column(String(64), index=True, nullable=True)
     reviewer_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
     total_quantity: Mapped[Decimal] = mapped_column(Numeric(14, 4), default=0, nullable=False)

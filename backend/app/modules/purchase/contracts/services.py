@@ -131,8 +131,8 @@ class PurchaseContractService:
             current_user=current_user,
             contract_id=contract_id,
         )
-        if contract.approval_status != "draft":
-            raise ValueError("只有草稿采购合同可以编辑")
+        if contract.approval_status not in {"draft", "rejected"}:
+            raise ValueError("只有草稿或已驳回采购合同可以编辑")
         qc_user_id, qc_user_name = await self._resolve_qc_assignee(payload.qc_user_id)
         async with UnitOfWork(self._repository.session):
             updated = await self._repository.update_contract(
@@ -304,18 +304,21 @@ class PurchaseContractService:
         if contract.reviewer_id is not None and contract.reviewer_id != current_user.id:
             raise PermissionDeniedError
         async with UnitOfWork(self._repository.session):
-            approved = await self._repository.approve_contract(
+            reviewed = await self._repository.review_contract(
                 contract_id=contract.id,
-                approved_at=payload.approved_at,
+                decision=payload.decision,
+                reviewed_at=payload.approved_at,
+                rejection_reason=(payload.rejection_reason or "").strip() or None,
                 reviewer_id=current_user.id,
                 reviewer_name=current_user.display_name,
             )
-            if approved is None:
+            if reviewed is None:
                 raise PurchaseContractNotFoundError
-            await self._write_back_export_purchase_progress(approved.id)
-            await self._ensure_followup_plan(approved)
-            await self._ensure_inbound_plan(approved)
-        return await self._response_builder.build(approved)
+            if payload.decision == "approved":
+                await self._write_back_export_purchase_progress(reviewed.id)
+                await self._ensure_followup_plan(reviewed)
+                await self._ensure_inbound_plan(reviewed)
+        return await self._response_builder.build(reviewed)
 
     async def list_reminders(
         self,

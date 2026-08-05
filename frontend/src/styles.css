@@ -6722,6 +6722,11 @@ h2 {
   color: #596273;
 }
 
+.contract-status-chip[data-status="rejected"] {
+  background: #FDECEC;
+  color: #B42318;
+}
+
 .sample-record-grid {
   grid-template-columns: minmax(0, 1fr);
 }
@@ -7221,6 +7226,26 @@ h2 {
   border-radius: 8px;
   background: var(--erp-surface-soft);
   padding: 14px;
+}
+
+.approval-rejection-reason {
+  display: grid;
+  gap: 7px;
+}
+
+.approval-rejection-reason i {
+  color: #D92D20;
+  font-style: normal;
+}
+
+.approval-action-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.purchase-contract-rejection-alert {
+  margin-top: 14px;
 }
 
 .sample-record-actions {
@@ -7981,6 +8006,56 @@ h2 {
 .task-schedule-overdue {
   color: var(--color-danger, #d4380d);
   font-weight: 600;
+}
+
+.quality-line-editor-list {
+  display: grid;
+  gap: 12px;
+}
+
+.quality-line-editor {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--erp-border);
+  border-radius: 6px;
+  background: var(--erp-surface-soft);
+}
+
+.quality-file-upload {
+  display: grid;
+  gap: 6px;
+}
+
+.quality-file-upload input[type='file'] {
+  min-height: 38px;
+  padding: 7px 10px;
+  border: 1px solid var(--erp-border);
+  border-radius: 6px;
+  background: var(--erp-surface);
+}
+
+.quality-attachment-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  min-height: 32px;
+  color: var(--erp-muted);
+}
+
+.quality-attachment-list a {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.detail-action-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 12px 0;
+  color: var(--erp-muted);
 }
 
 .quality-form-validation-summary {

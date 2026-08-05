@@ -2788,6 +2788,8 @@ export interface PurchaseContract {
   approval_status: string
   submitted_at: string | null
   approved_at: string | null
+  rejected_at: string | null
+  rejection_reason: string | null
   reviewer_id: string | null
   reviewer_name: string | null
   owner_user_id: string
@@ -3168,8 +3170,10 @@ export interface PurchaseContractGeneratePayload {
 }
 
 export interface PurchaseContractApprovePayload {
+  decision: 'approved' | 'rejected'
   reviewer_name?: string
   approved_at: string
+  rejection_reason?: string | null
 }
 
 export interface PurchaseInvoiceNoticeLine {
@@ -3399,6 +3403,41 @@ export interface QualityIssue {
   corrective_action: string | null
   status: string
   attachment_group_id: string | null
+  resolution_note?: string | null
+  resolved_at?: string | null
+  resolved_by_id?: string | null
+  resolved_by_name?: string | null
+  attachments?: QualityAttachment[]
+}
+
+export interface QualityAttachment {
+  id: string
+  inspection_id: string
+  issue_id: string | null
+  category: 'inspection' | 'resolution'
+  filename: string
+  url: string
+  uploaded_by_id: string
+  uploaded_by_name: string
+  created_at: string
+}
+
+export interface QualityInspectionEvent {
+  id: string
+  inspection_id: string
+  event_type: string
+  from_status: string | null
+  to_status: string | null
+  notes: string | null
+  actor_user_id: string
+  actor_user_name: string
+  created_at: string
+}
+
+export interface QualityAttachmentPayload {
+  filename: string
+  url: string
+  category: 'inspection' | 'resolution'
 }
 
 export type QualityInspectionStatus = 'pending' | 'in_progress' | 'completed' | 'cancelled'
@@ -3420,9 +3459,14 @@ export interface QualityInspection {
   qc_user_name: string | null
   issue_summary: string | null
   attachment_group_id: string | null
+  parent_inspection_id?: string | null
+  reinspection_no?: number
+  cancel_reason?: string | null
   owner_user_id: string
   lines: QualityInspectionLine[]
   issues: QualityIssue[]
+  attachments?: QualityAttachment[]
+  events?: QualityInspectionEvent[]
 }
 
 export interface QualityInspectionList {
@@ -3443,11 +3487,12 @@ export interface QualityInspectionLinePayload {
 }
 
 export interface QualityIssuePayload {
+  purchase_contract_line_id?: string | null
   issue_type: string
   severity: string
   description: string
   corrective_action?: string | null
-  status: string
+  status: 'open'
   attachment_group_id?: string | null
 }
 
@@ -3464,12 +3509,14 @@ export interface QualityInspectionPayload {
   attachment_group_id?: string | null
   lines: QualityInspectionLinePayload[]
   issues: QualityIssuePayload[]
+  attachments?: QualityAttachmentPayload[]
 }
 
 export interface QualityInspectionInboundEligibility {
   purchase_contract_id: string
   eligible: boolean
   latest_inspection_id: string | null
+  latest_status?: QualityInspectionStatus | null
   latest_result: string | null
   inspected_at: string | null
   reason: string
@@ -5874,6 +5921,50 @@ export function updateQualityInspection(
 ): Promise<QualityInspection> {
   return request<QualityInspection>(`/quality/inspections/${inspectionId}`, {
     method: 'PUT',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function rescheduleQualityInspection(
+  inspectionId: string,
+  payload: { scheduled_at: string; reason: string },
+): Promise<QualityInspection> {
+  return request<QualityInspection>(`/quality/inspections/${inspectionId}/schedule`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function cancelQualityInspection(
+  inspectionId: string,
+  reason: string,
+): Promise<QualityInspection> {
+  return request<QualityInspection>(`/quality/inspections/${inspectionId}/cancel`, {
+    method: 'POST',
+    body: JSON.stringify({ reason }),
+  })
+}
+
+export function resolveQualityIssue(
+  inspectionId: string,
+  issueId: string,
+  payload: { resolution_note: string; attachments: QualityAttachmentPayload[] },
+): Promise<QualityInspection> {
+  return request<QualityInspection>(
+    `/quality/inspections/${inspectionId}/issues/${issueId}/resolve`,
+    {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    },
+  )
+}
+
+export function createQualityReinspection(
+  inspectionId: string,
+  payload: { code: string; scheduled_at: string; inspector_id: string; reason: string },
+): Promise<QualityInspection> {
+  return request<QualityInspection>(`/quality/inspections/${inspectionId}/reinspection`, {
+    method: 'POST',
     body: JSON.stringify(payload),
   })
 }

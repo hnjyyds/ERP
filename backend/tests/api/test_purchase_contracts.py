@@ -347,6 +347,100 @@ async def test_purchase_contract_requires_designated_reviewer(
     assert approved["reviewer_name"] == "演示采购专员"
 
 
+async def test_purchase_contract_can_be_rejected_edited_and_resubmitted(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    submitter_token = await _login_token(api_client)
+    submitter_headers = {"Authorization": f"Bearer {submitter_token}"}
+    payload = _stock_purchase_payload("PC-REJECT-AND-RESUBMIT")
+    create_response = await api_client.post(
+        "/api/v1/purchase/contracts",
+        headers=submitter_headers,
+        json=payload,
+    )
+    assert create_response.status_code == 201
+    contract_id = create_response.json()["data"]["id"]
+
+    submit_response = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/submit",
+        headers=submitter_headers,
+        json={"reviewer_id": "u-purchase"},
+    )
+    assert submit_response.status_code == 200
+
+    reviewer_token = await _login_token(api_client, "purchase", "purchase123")
+    reviewer_headers = {"Authorization": f"Bearer {reviewer_token}"}
+    reject_response = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/approve",
+        headers=reviewer_headers,
+        json={
+            "decision": "rejected",
+            "approved_at": "2026-08-08",
+            "rejection_reason": "付款条款与报价单不一致",
+        },
+    )
+    assert reject_response.status_code == 200
+    rejected = reject_response.json()["data"]
+    assert rejected["approval_status"] == "rejected"
+    assert rejected["approved_at"] is None
+    assert rejected["rejected_at"] == "2026-08-08"
+    assert rejected["rejection_reason"] == "付款条款与报价单不一致"
+    assert rejected["reviewer_id"] == "u-purchase"
+
+    payload["payment_terms"] = "30% 预付，70% 出货前；已与报价单核对"
+    update_response = await api_client.put(
+        f"/api/v1/purchase/contracts/{contract_id}",
+        headers=submitter_headers,
+        json=payload,
+    )
+    assert update_response.status_code == 200
+    updated = update_response.json()["data"]
+    assert updated["approval_status"] == "draft"
+    assert updated["rejected_at"] is None
+    assert updated["rejection_reason"] is None
+
+    resubmit_response = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/submit",
+        headers=submitter_headers,
+        json={"reviewer_id": "u-purchase"},
+    )
+    assert resubmit_response.status_code == 200
+    assert resubmit_response.json()["data"]["approval_status"] == "submitted"
+
+
+async def test_purchase_contract_rejection_requires_reason(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    submitter_token = await _login_token(api_client)
+    submitter_headers = {"Authorization": f"Bearer {submitter_token}"}
+    create_response = await api_client.post(
+        "/api/v1/purchase/contracts",
+        headers=submitter_headers,
+        json=_stock_purchase_payload("PC-REJECT-WITHOUT-REASON"),
+    )
+    contract_id = create_response.json()["data"]["id"]
+    await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/submit",
+        headers=submitter_headers,
+        json={"reviewer_id": "u-purchase"},
+    )
+
+    reviewer_token = await _login_token(api_client, "purchase", "purchase123")
+    response = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/approve",
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={
+            "decision": "rejected",
+            "approved_at": "2026-08-08",
+            "rejection_reason": "",
+        },
+    )
+
+    assert response.status_code == 422
+
+
 async def test_purchase_contract_endpoints_enforce_menu_permission(
     api_client: AsyncClient,
     seeded_system: None,

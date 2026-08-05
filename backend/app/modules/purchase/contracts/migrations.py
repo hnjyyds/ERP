@@ -10,6 +10,8 @@ def ensure_purchase_contract_schema(connection: Connection) -> None:
     statements = {
         "qc_user_id": "ALTER TABLE purchase_contracts ADD COLUMN qc_user_id VARCHAR(36)",
         "qc_user_name": "ALTER TABLE purchase_contracts ADD COLUMN qc_user_name VARCHAR(160)",
+        "rejected_at": "ALTER TABLE purchase_contracts ADD COLUMN rejected_at DATE",
+        "rejection_reason": "ALTER TABLE purchase_contracts ADD COLUMN rejection_reason TEXT",
     }
     for column_name, statement in statements.items():
         if column_name not in columns:

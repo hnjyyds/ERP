@@ -33,6 +33,8 @@ class PurchaseContractRow:
     approval_status: str
     submitted_at: date | None
     approved_at: date | None
+    rejected_at: date | None
+    rejection_reason: str | None
     reviewer_id: str | None
     reviewer_name: str | None
     total_quantity: str
@@ -182,6 +184,13 @@ class PurchaseContractRepository:
         contract.payment_terms = payment_terms
         contract.source_type = source_type
         contract.remarks = remarks
+        if contract.approval_status == "rejected":
+            contract.approval_status = "draft"
+            contract.submitted_at = None
+            contract.rejected_at = None
+            contract.rejection_reason = None
+            contract.reviewer_id = None
+            contract.reviewer_name = None
         await self.session.flush()
         return self._map_contract(contract)
 
@@ -514,8 +523,40 @@ class PurchaseContractRepository:
             return None
         contract.approval_status = "submitted"
         contract.submitted_at = contract.contract_date
+        contract.approved_at = None
+        contract.rejected_at = None
+        contract.rejection_reason = None
         contract.reviewer_id = reviewer_id
         contract.reviewer_name = reviewer_name
+        await self.session.flush()
+        return self._map_contract(contract)
+
+    async def review_contract(
+        self,
+        *,
+        contract_id: str,
+        decision: str,
+        reviewed_at: date,
+        rejection_reason: str | None = None,
+        reviewer_id: str | None = None,
+        reviewer_name: str | None = None,
+    ) -> PurchaseContractRow | None:
+        contract = await self._get_contract_model(contract_id)
+        if contract is None:
+            return None
+        contract.approval_status = decision
+        if reviewer_id is not None and contract.reviewer_id is None:
+            contract.reviewer_id = reviewer_id
+        if reviewer_name is not None and contract.reviewer_name is None:
+            contract.reviewer_name = reviewer_name
+        if decision == "approved":
+            contract.approved_at = reviewed_at
+            contract.rejected_at = None
+            contract.rejection_reason = None
+        else:
+            contract.approved_at = None
+            contract.rejected_at = reviewed_at
+            contract.rejection_reason = rejection_reason
         await self.session.flush()
         return self._map_contract(contract)
 
@@ -527,17 +568,14 @@ class PurchaseContractRepository:
         reviewer_id: str | None = None,
         reviewer_name: str | None = None,
     ) -> PurchaseContractRow | None:
-        contract = await self._get_contract_model(contract_id)
-        if contract is None:
-            return None
-        contract.approval_status = "approved"
-        if reviewer_id is not None and contract.reviewer_id is None:
-            contract.reviewer_id = reviewer_id
-        if reviewer_name is not None and contract.reviewer_name is None:
-            contract.reviewer_name = reviewer_name
-        contract.approved_at = approved_at
-        await self.session.flush()
-        return self._map_contract(contract)
+        """Keep the legacy approval-only repository contract for internal callers."""
+        return await self.review_contract(
+            contract_id=contract_id,
+            decision="approved",
+            reviewed_at=approved_at,
+            reviewer_id=reviewer_id,
+            reviewer_name=reviewer_name,
+        )
 
     async def has_other_approved_purchase_for_source_line(
         self,
@@ -587,6 +625,8 @@ class PurchaseContractRepository:
             approval_status=contract.approval_status,
             submitted_at=contract.submitted_at,
             approved_at=contract.approved_at,
+            rejected_at=contract.rejected_at,
+            rejection_reason=contract.rejection_reason,
             reviewer_id=contract.reviewer_id,
             reviewer_name=contract.reviewer_name,
             total_quantity=self._quantity(contract.total_quantity),

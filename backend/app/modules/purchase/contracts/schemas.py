@@ -1,13 +1,13 @@
 from datetime import date
 from decimal import Decimal
-from typing import Literal
+from typing import Literal, Self
 
-from pydantic import ConfigDict, Field
+from pydantic import ConfigDict, Field, model_validator
 
 from app.schemas.approvals import ApprovalSubmit
 from app.schemas.base import BaseModel
 
-VALID_PURCHASE_CONTRACT_STATUSES = ("draft", "submitted", "approved")
+VALID_PURCHASE_CONTRACT_STATUSES = ("draft", "submitted", "approved", "rejected")
 VALID_PURCHASE_CONTRACT_SOURCE_TYPES = ("export_contract", "stock_purchase", "manual")
 
 
@@ -75,12 +75,27 @@ class PurchaseContractGenerateFromExportContracts(BaseModel):
 class PurchaseContractApprove(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
+    decision: Literal["approved", "rejected"] = Field(
+        default="approved",
+        description="审批决定：approved 为通过，rejected 为驳回。",
+    )
     reviewer_name: str | None = Field(
         default=None,
         max_length=160,
         description="兼容旧客户端；审批人以当前登录用户为准。",
     )
-    approved_at: date
+    approved_at: date = Field(description="审批决定日期。")
+    rejection_reason: str | None = Field(
+        default=None,
+        max_length=2000,
+        description="驳回原因；decision 为 rejected 时必填。",
+    )
+
+    @model_validator(mode="after")
+    def validate_rejection_reason(self) -> Self:
+        if self.decision == "rejected" and not (self.rejection_reason or "").strip():
+            raise ValueError("驳回采购合同时必须填写驳回原因")
+        return self
 
 
 class PurchaseContractSubmit(ApprovalSubmit):
@@ -168,6 +183,8 @@ class PurchaseContractResponse(BaseModel):
     approval_status: str
     submitted_at: date | None
     approved_at: date | None
+    rejected_at: date | None
+    rejection_reason: str | None
     reviewer_id: str | None = None
     reviewer_name: str | None = None
     owner_user_id: str

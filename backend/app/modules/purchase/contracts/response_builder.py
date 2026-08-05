@@ -74,6 +74,8 @@ class PurchaseContractResponseBuilder:
             approval_status=contract.approval_status,
             submitted_at=contract.submitted_at,
             approved_at=contract.approved_at,
+            rejected_at=contract.rejected_at,
+            rejection_reason=contract.rejection_reason,
             reviewer_id=contract.reviewer_id,
             reviewer_name=contract.reviewer_name,
             owner_user_id=contract.owner_user_id,

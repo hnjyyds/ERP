@@ -112,6 +112,7 @@ type PurchaseContractGenerateFormState = {
 type PurchaseContractApproveFormState = {
   reviewer_name: string
   approved_at: string
+  rejection_reason: string
 }
 
 
@@ -169,6 +170,7 @@ function initialPurchaseContractApproveForm(): PurchaseContractApproveFormState 
   return {
     reviewer_name: '演示业务主管',
     approved_at: todayInputValue(),
+    rejection_reason: '',
   }
 }
 
@@ -265,10 +267,13 @@ function purchaseContractGeneratePayload(
 
 function purchaseContractApprovePayload(
   form: PurchaseContractApproveFormState,
+  decision: PurchaseContractApprovePayload['decision'],
 ): PurchaseContractApprovePayload {
   return {
+    decision,
     reviewer_name: form.reviewer_name.trim(),
     approved_at: form.approved_at,
+    rejection_reason: decision === 'rejected' ? form.rejection_reason.trim() : null,
   }
 }
 
@@ -346,6 +351,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
     setApproveForm({
       reviewer_name: selectedContract?.reviewer_name ?? '演示业务主管',
       approved_at: selectedContract?.approved_at ?? selectedContract?.contract_date ?? todayInputValue(),
+      rejection_reason: selectedContract?.rejection_reason ?? '',
     })
     setReviewerId(selectedContract?.reviewer_id ?? '')
     if (selectedContract) {
@@ -598,30 +604,53 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
     }
   }
 
-  async function approveSelectedContract(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
+  async function reviewSelectedContract(decision: PurchaseContractApprovePayload['decision']) {
     if (!selectedContract) return
     if (!canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'purchase:contract:approve')) {
       showError(new Error(`该采购合同应由 ${selectedContract.reviewer_name ?? '指定审批人'} 审批`))
+      return
+    }
+    if (decision === 'rejected' && !approveForm.rejection_reason.trim()) {
+      showWarningDialog('请填写驳回原因')
       return
     }
     setSubmitting(true)
     setMessage('')
     setError('')
     try {
-      const approved = await approvePurchaseContract(
+      const reviewed = await approvePurchaseContract(
         selectedContract.id,
-        purchaseContractApprovePayload(approveForm),
+        purchaseContractApprovePayload(approveForm, decision),
       )
-      setMessage(`已审批采购合同 ${approved.code}`)
+      setMessage(
+        decision === 'approved'
+          ? `已通过采购合同 ${reviewed.code}`
+          : `已驳回采购合同 ${reviewed.code}`,
+      )
       setContractApprovalModalOpen(false)
-      upsertContract(approved)
-      await Promise.all([loadContracts(approved.id, approved), loadContractReminders()])
+      upsertContract(reviewed)
+      await Promise.all([loadContracts(reviewed.id, reviewed), loadContractReminders()])
     } catch (caught) {
       showError(caught, '采购合同审批失败')
     } finally {
       setSubmitting(false)
     }
+  }
+
+  function confirmRejectSelectedContract() {
+    if (!approveForm.rejection_reason.trim()) {
+      showWarningDialog('请填写驳回原因')
+      return
+    }
+    Modal.confirm({
+      centered: true,
+      title: '确认驳回采购合同？',
+      content: '驳回后，申请人可以根据驳回原因修改合同并重新提交。',
+      okText: '确认驳回',
+      cancelText: '取消',
+      okButtonProps: { danger: true },
+      onOk: () => reviewSelectedContract('rejected'),
+    })
   }
 
   async function generateSelectedContractTemplate() {
@@ -1311,9 +1340,19 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                 <p>{selectedContract.remarks ?? '未填写'}</p>
               </div>
 
+              {selectedContract.approval_status === 'rejected' ? (
+                <Alert
+                  className="purchase-contract-rejection-alert"
+                  description={selectedContract.rejection_reason ?? '未记录驳回原因'}
+                  showIcon
+                  title={`合同已于 ${formatDate(selectedContract.rejected_at)} 驳回`}
+                  type="error"
+                />
+              ) : null}
+
               <div className="delivery-action-row">
                 <Button
-                  disabled={selectedContract.approval_status !== 'draft'}
+                  disabled={!['draft', 'rejected'].includes(selectedContract.approval_status)}
                   onClick={loadSelectedContractForEdit}
                 >
                   编辑合同
@@ -1367,7 +1406,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                 onCancel={() => setContractApprovalModalOpen(false)}
               >
                 <div className="workflow-modal-content entity-modal-form">
-                  <form className="record-form accessory-form approval-form" onSubmit={approveSelectedContract}>
+                  <div className="record-form accessory-form approval-form">
                     <div className="form-divider">采购合同审批</div>
                     <div className="form-pair two">
                       <label>
@@ -1385,18 +1424,45 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                         />
                       </label>
                     </div>
-                    <Button
-                      disabled={
-                        selectedContract.approval_status !== 'submitted' ||
-                        !canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'purchase:contract:approve')
-                      }
-                      htmlType="submit"
-                      loading={submitting}
-                      type="primary"
-                    >
-                      审批采购合同
-                    </Button>
-                  </form>
+                    <label className="approval-rejection-reason">
+                      <span>驳回原因 <i aria-hidden="true">*</i></span>
+                      <Input.TextArea
+                        aria-label="驳回原因"
+                        maxLength={2000}
+                        placeholder="请说明需要修改的合同内容"
+                        required
+                        rows={3}
+                        value={approveForm.rejection_reason}
+                        onChange={(event) =>
+                          setApproveForm({ ...approveForm, rejection_reason: event.currentTarget.value })
+                        }
+                      />
+                    </label>
+                    <div className="approval-action-row">
+                      <Button
+                        danger
+                        disabled={
+                          selectedContract.approval_status !== 'submitted' ||
+                          !canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'purchase:contract:approve')
+                        }
+                        loading={submitting}
+                        onClick={confirmRejectSelectedContract}
+                      >
+                        驳回合同
+                      </Button>
+                      <Button
+                        disabled={
+                          selectedContract.approval_status !== 'submitted' ||
+                          !canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'purchase:contract:approve')
+                        }
+                        loading={submitting}
+                        type="primary"
+                        onClick={() => void reviewSelectedContract('approved')}
+                      >
+                        通过审批
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </Modal>
 
