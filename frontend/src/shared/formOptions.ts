@@ -237,6 +237,7 @@ export const purchaseContractStatusOptions = [
   { value: 'draft', label: '草稿' },
   { value: 'submitted', label: '待审批' },
   { value: 'approved', label: '已审批' },
+  { value: 'rejected', label: '已驳回' },
 ]
 
 export const purchaseContractSourceTypeOptions = [
@@ -296,6 +297,7 @@ export const qualityIssueSeverityOptions = [
 export const qualityIssueStatusOptions = [
   { value: 'open', label: '待处理' },
   { value: 'processing', label: '处理中' },
+  { value: 'resolved', label: '已关闭' },
   { value: 'closed', label: '已关闭' },
 ]
 

@@ -175,3 +175,13 @@ def test_quality_inspection_line_schema_rejects_blank_text_and_invalid_quantitie
             unit="pcs",
             result="failed",
         )
+
+
+def test_quality_issue_schema_only_allows_open_status_on_creation() -> None:
+    with pytest.raises(ValidationError):
+        QualityInspectionIssueCreate(
+            issue_type="包装破损",
+            severity="major",
+            description="供应商尚未提交整改证明",
+            status="resolved",
+        )

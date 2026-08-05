@@ -1,5 +1,6 @@
 from datetime import date, datetime
 from decimal import Decimal
+from typing import Literal
 
 from pydantic import ConfigDict, Field, field_validator, model_validator
 
@@ -18,7 +19,32 @@ VALID_QUALITY_INSPECTION_STATUSES = (
     "cancelled",
 )
 VALID_QUALITY_ISSUE_SEVERITIES = ("minor", "major", "critical")
-VALID_QUALITY_ISSUE_STATUSES = ("open", "resolved")
+VALID_QUALITY_ATTACHMENT_CATEGORIES = ("inspection", "resolution")
+
+
+class QualityAttachmentCreate(BaseModel):
+    """Reference to an uploaded QC evidence file."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    filename: str = Field(min_length=1, max_length=240, description="附件原始文件名")
+    url: str = Field(min_length=1, max_length=2000, description="附件访问地址")
+    category: str = Field(description="附件用途：查验凭证或整改凭证")
+
+    @field_validator("filename", "url")
+    @classmethod
+    def validate_required_text(cls, value: str) -> str:
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("不能为空")
+        return normalized
+
+    @field_validator("category")
+    @classmethod
+    def validate_category(cls, value: str) -> str:
+        if value not in VALID_QUALITY_ATTACHMENT_CATEGORIES:
+            raise ValueError("QC 附件类型无效")
+        return value
 
 
 class QualityInspectionLineCreate(BaseModel):
@@ -59,11 +85,16 @@ class QualityInspectionLineCreate(BaseModel):
 class QualityInspectionIssueCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
+    purchase_contract_line_id: str | None = Field(
+        default=None,
+        max_length=36,
+        description="异常对应的采购合同明细标识",
+    )
     issue_type: str = Field(min_length=1, max_length=120)
     severity: str = Field(default="major", min_length=1, max_length=40)
     description: str = Field(min_length=1, max_length=4000)
     corrective_action: str | None = Field(default=None, max_length=4000)
-    status: str = Field(default="open", min_length=1, max_length=40)
+    status: Literal["open"] = Field(default="open", description="新建异常的初始状态")
     attachment_group_id: str | None = Field(default=None, max_length=80)
 
     @field_validator("severity")
@@ -81,14 +112,6 @@ class QualityInspectionIssueCreate(BaseModel):
             raise ValueError("不能为空")
         return normalized
 
-    @field_validator("status")
-    @classmethod
-    def validate_status(cls, value: str) -> str:
-        if value not in VALID_QUALITY_ISSUE_STATUSES:
-            raise ValueError("QC 异常状态无效")
-        return value
-
-
 class QualityInspectionCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -104,6 +127,10 @@ class QualityInspectionCreate(BaseModel):
     attachment_group_id: str | None = Field(default=None, max_length=80)
     lines: list[QualityInspectionLineCreate] = Field(default_factory=list)
     issues: list[QualityInspectionIssueCreate] = Field(default_factory=list)
+    attachments: list[QualityAttachmentCreate] = Field(
+        default_factory=list,
+        description="本次查验的现场凭证",
+    )
 
     @field_validator("result")
     @classmethod
@@ -145,7 +172,84 @@ class QualityInspectionCreate(BaseModel):
             self.inspected_at is None or self.result is None or not self.lines
         ):
             raise ValueError("已完成的 QC 任务必须填写查验日期、结果和明细")
+        if self.status != "completed" and (
+            self.inspected_at is not None or self.result is not None or self.lines or self.issues
+        ):
+            raise ValueError("未完成的 QC 任务不能填写查验结果")
+        if self.status == "completed" and self.result == "passed":
+            if any(line.failed_quantity > 0 for line in self.lines):
+                raise ValueError("QC 通过时不良数量必须为 0")
+            if any(line.result != "passed" for line in self.lines):
+                raise ValueError("QC 通过时所有明细必须通过")
+            if any(issue.status == "open" for issue in self.issues):
+                raise ValueError("QC 通过时不能存在未关闭异常")
+        if self.status == "completed" and self.result != "passed" and not self.issues:
+            raise ValueError("QC 未通过时至少登记一项异常")
         return self
+
+
+class QualityScheduleUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    scheduled_at: datetime = Field(description="新的 QC 排期时间")
+    reason: str = Field(min_length=1, max_length=1000, description="调整排期原因")
+
+    @field_validator("reason")
+    @classmethod
+    def validate_reason(cls, value: str) -> str:
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("调整排期原因不能为空")
+        return normalized
+
+
+class QualityCancelRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    reason: str = Field(min_length=1, max_length=1000, description="取消任务原因")
+
+    @field_validator("reason")
+    @classmethod
+    def validate_reason(cls, value: str) -> str:
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("取消原因不能为空")
+        return normalized
+
+
+class QualityIssueResolveRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    resolution_note: str = Field(min_length=1, max_length=4000, description="异常关闭说明")
+    attachments: list[QualityAttachmentCreate] = Field(
+        default_factory=list,
+        description="整改凭证",
+    )
+
+    @field_validator("resolution_note")
+    @classmethod
+    def validate_resolution_note(cls, value: str) -> str:
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("异常关闭说明不能为空")
+        return normalized
+
+
+class QualityReinspectionCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    code: str = Field(min_length=1, max_length=80, description="复检任务编号")
+    scheduled_at: datetime = Field(description="复检排期时间")
+    inspector_id: str = Field(min_length=1, max_length=36, description="复检负责人标识")
+    reason: str = Field(min_length=1, max_length=1000, description="创建复检原因")
+
+    @field_validator("code", "inspector_id", "reason")
+    @classmethod
+    def validate_required_text(cls, value: str) -> str:
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("不能为空")
+        return normalized
 
 
 class QualityInspectionLineResponse(BaseModel):
@@ -164,6 +268,20 @@ class QualityInspectionLineResponse(BaseModel):
     remark: str | None
 
 
+class QualityAttachmentResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str
+    inspection_id: str
+    issue_id: str | None
+    category: str
+    filename: str
+    url: str
+    uploaded_by_id: str
+    uploaded_by_name: str
+    created_at: datetime
+
+
 class QualityIssueResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -176,6 +294,25 @@ class QualityIssueResponse(BaseModel):
     corrective_action: str | None
     status: str
     attachment_group_id: str | None
+    resolution_note: str | None
+    resolved_at: datetime | None
+    resolved_by_id: str | None
+    resolved_by_name: str | None
+    attachments: list[QualityAttachmentResponse]
+
+
+class QualityInspectionEventResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str
+    inspection_id: str
+    event_type: str
+    from_status: str | None
+    to_status: str | None
+    notes: str | None
+    actor_user_id: str
+    actor_user_name: str
+    created_at: datetime
 
 
 class QualityInspectionResponse(BaseModel):
@@ -197,9 +334,14 @@ class QualityInspectionResponse(BaseModel):
     qc_user_name: str | None
     issue_summary: str | None
     attachment_group_id: str | None
+    parent_inspection_id: str | None
+    reinspection_no: int
+    cancel_reason: str | None
     owner_user_id: str
     lines: list[QualityInspectionLineResponse]
     issues: list[QualityIssueResponse]
+    attachments: list[QualityAttachmentResponse]
+    events: list[QualityInspectionEventResponse]
 
 
 class QualityInspectionListResponse(BaseModel):
@@ -215,6 +357,7 @@ class QualityInspectionInboundEligibilityResponse(BaseModel):
     purchase_contract_id: str
     eligible: bool
     latest_inspection_id: str | None
+    latest_status: str | None
     latest_result: str | None
     inspected_at: date | None
     reason: str

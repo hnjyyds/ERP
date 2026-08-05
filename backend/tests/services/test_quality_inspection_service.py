@@ -1,6 +1,7 @@
 from datetime import date
 
 import pytest
+from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.modules.followup.repositories import FollowupRepository
@@ -62,6 +63,53 @@ def _quality_user() -> CurrentUserResponse:
             "quality:inspection:view_all",
         ]
     )
+
+
+async def test_quality_inspection_list_loads_aggregate_relations_in_fixed_queries(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        repository = QualityInspectionRepository(session)
+        for index in range(2):
+            await repository.create_inspection(
+                code=f"QC-LIST-BATCH-{index}",
+                purchase_contract_id=f"pc-batch-{index}",
+                purchase_contract_no=f"PC-BATCH-{index}",
+                supplier_id="supplier-pack-a",
+                supplier_name="华东包装制品厂",
+                inspected_at=date(2026, 8, 19 + index),
+                result="passed",
+                inspector_id="u-qc",
+                inspector_name="演示 QC 专员",
+                issue_summary=None,
+                attachment_group_id=None,
+                owner_user_id="u-001",
+            )
+        await session.commit()
+        service = _make_service(session)
+        query_count = 0
+
+        def count_selects(*args: object) -> None:
+            nonlocal query_count
+            if str(args[2]).lstrip().upper().startswith("SELECT"):
+                query_count += 1
+
+        assert session.bind is not None
+        event.listen(session.bind.sync_engine, "before_cursor_execute", count_selects)
+        try:
+            result = await service.list_inspections(
+                current_user=_quality_user(),
+                q="QC-LIST-BATCH",
+                result=None,
+                supplier_id=None,
+                purchase_contract_id=None,
+                assignee_user_id=None,
+            )
+        finally:
+            event.remove(session.bind.sync_engine, "before_cursor_execute", count_selects)
+
+    assert result.total == 2
+    assert query_count == 6
 
 
 async def _create_approved_contract(

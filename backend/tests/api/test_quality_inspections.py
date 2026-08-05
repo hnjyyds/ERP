@@ -1,3 +1,4 @@
+import pytest
 from httpx import AsyncClient
 
 
@@ -222,8 +223,10 @@ async def test_quality_inspection_api_creates_a_scheduled_pending_task_without_r
     assert eligibility_response.status_code == 200
     eligibility = eligibility_response.json()["data"]
     assert eligibility["eligible"] is False
-    assert eligibility["latest_inspection_id"] is None
+    assert eligibility["latest_inspection_id"] == task["id"]
+    assert eligibility["latest_status"] == "pending"
     assert eligibility["latest_result"] is None
+    assert eligibility["reason"] == "最新 QC 任务尚未完成"
 
     followup_response = await api_client.get(
         "/api/v1/followup/plans",
@@ -524,3 +527,388 @@ async def test_quality_inspection_api_returns_field_level_validation_details(
         "inspector_name",
     }
     assert all(detail["message"] == "不能为空" for detail in details)
+
+
+@pytest.mark.parametrize(
+    ("result", "failed_quantity", "line_result", "issues", "expected_message"),
+    [
+        ("passed", "1", "passed", [], "QC 通过时不良数量必须为 0"),
+        ("passed", "0", "failed", [], "QC 通过时所有明细必须通过"),
+        (
+            "passed",
+            "0",
+            "passed",
+            [
+                {
+                    "issue_type": "包装破损",
+                    "severity": "major",
+                    "description": "仍有未关闭异常",
+                    "status": "open",
+                }
+            ],
+            "QC 通过时不能存在未关闭异常",
+        ),
+    ],
+)
+async def test_quality_inspection_rejects_inconsistent_completed_result(
+    api_client: AsyncClient,
+    seeded_system: None,
+    result: str,
+    failed_quantity: str,
+    line_result: str,
+    issues: list[dict[str, object]],
+    expected_message: str,
+) -> None:
+    token = await _login_token(api_client)
+    response = await api_client.post(
+        "/api/v1/quality/inspections",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "code": "QC-INCONSISTENT",
+            "purchase_contract_id": "contract-does-not-matter",
+            "status": "completed",
+            "inspected_at": "2026-08-20",
+            "result": result,
+            "inspector_id": "u-qc",
+            "inspector_name": "演示 QC 专员",
+            "lines": [
+                {
+                    "product_name": "Eco Shopping Bag",
+                    "inspected_quantity": "100",
+                    "failed_quantity": failed_quantity,
+                    "unit": "pcs",
+                    "result": line_result,
+                }
+            ],
+            "issues": issues,
+        },
+    )
+
+    assert response.status_code == 422
+    messages = [detail["message"] for detail in response.json()["error"]["details"]]
+    assert expected_message in messages
+
+
+async def test_quality_inspection_persists_all_contract_lines_attachments_and_audit(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "purchase", "purchase123")
+    headers = {"Authorization": f"Bearer {token}"}
+    contract_payload = _purchase_contract_payload("PC-QC-MULTI")
+    contract_lines = contract_payload["lines"]
+    assert isinstance(contract_lines, list)
+    contract_lines.append(
+        {
+            "product_id": "product-rope",
+            "product_code": "ROPE-10",
+            "product_name": "Cotton Rope",
+            "specification": "10mm",
+            "model": "ROPE-10",
+            "quantity": "500",
+            "unit": "m",
+            "unit_price": "0.4",
+            "source_export_contract_id": None,
+            "source_export_contract_no": None,
+            "source_export_contract_line_id": None,
+            "remark": "第二条商品",
+        }
+    )
+    create_response = await api_client.post(
+        "/api/v1/purchase/contracts",
+        headers=headers,
+        json=contract_payload,
+    )
+    contract = create_response.json()["data"]
+    await api_client.post(
+        f"/api/v1/purchase/contracts/{contract['id']}/submit",
+        headers=headers,
+        json={"reviewer_id": "u-purchase"},
+    )
+    assert (
+        await api_client.post(
+            f"/api/v1/purchase/contracts/{contract['id']}/approve",
+            headers={"Authorization": f"Bearer {reviewer_token}"},
+            json={"approved_at": "2026-08-05"},
+        )
+    ).status_code == 200
+
+    response = await api_client.post(
+        "/api/v1/quality/inspections",
+        headers=headers,
+        json={
+            "code": "QC-MULTI-001",
+            "purchase_contract_id": contract["id"],
+            "status": "completed",
+            "inspected_at": "2026-08-20",
+            "result": "passed",
+            "inspector_id": "u-qc",
+            "inspector_name": "演示 QC 专员",
+            "lines": [
+                {
+                    "purchase_contract_line_id": line["id"],
+                    "product_id": line["product_id"],
+                    "product_code": line["product_code"],
+                    "product_name": line["product_name"],
+                    "inspected_quantity": line["quantity"],
+                    "failed_quantity": "0",
+                    "unit": line["unit"],
+                    "result": "passed",
+                }
+                for line in contract["lines"]
+            ],
+            "issues": [],
+            "attachments": [
+                {
+                    "filename": "qc-evidence.png",
+                    "url": "/uploads/qc-evidence.png",
+                    "category": "inspection",
+                }
+            ],
+        },
+    )
+
+    assert response.status_code == 201
+    inspection = response.json()["data"]
+    assert len(inspection["lines"]) == 2
+    assert inspection["attachments"][0]["filename"] == "qc-evidence.png"
+    assert inspection["events"][0]["event_type"] == "created"
+    assert inspection["events"][0]["actor_user_id"] == "u-001"
+
+
+async def test_quality_issue_resolution_and_reinspection_close_the_failed_flow(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "purchase", "purchase123")
+    headers = {"Authorization": f"Bearer {token}"}
+    contract_response = await api_client.post(
+        "/api/v1/purchase/contracts",
+        headers=headers,
+        json=_purchase_contract_payload("PC-QC-RECHECK", qc_user_id="u-qc"),
+    )
+    contract = contract_response.json()["data"]
+    await api_client.post(
+        f"/api/v1/purchase/contracts/{contract['id']}/submit",
+        headers=headers,
+        json={"reviewer_id": "u-purchase"},
+    )
+    await api_client.post(
+        f"/api/v1/purchase/contracts/{contract['id']}/approve",
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-08-05"},
+    )
+    failed_response = await api_client.post(
+        "/api/v1/quality/inspections",
+        headers=headers,
+        json={
+            "code": "QC-RECHECK-001",
+            "purchase_contract_id": contract["id"],
+            "status": "completed",
+            "inspected_at": "2026-08-20",
+            "result": "failed",
+            "inspector_id": "u-qc",
+            "inspector_name": "演示 QC 专员",
+            "lines": [
+                {
+                    "purchase_contract_line_id": contract["lines"][0]["id"],
+                    "product_name": "Eco Shopping Bag",
+                    "inspected_quantity": "1000",
+                    "failed_quantity": "35",
+                    "unit": "pcs",
+                    "result": "failed",
+                }
+            ],
+            "issues": [
+                {
+                    "purchase_contract_line_id": contract["lines"][0]["id"],
+                    "issue_type": "包装破损",
+                    "severity": "major",
+                    "description": "35 件包装破损",
+                    "corrective_action": "更换包装后复检",
+                    "status": "open",
+                }
+            ],
+            "attachments": [],
+        },
+    )
+    assert failed_response.status_code == 201
+    failed = failed_response.json()["data"]
+    issue = failed["issues"][0]
+    assert issue["line_id"] == failed["lines"][0]["id"]
+
+    premature_recheck = await api_client.post(
+        f"/api/v1/quality/inspections/{failed['id']}/reinspection",
+        headers=headers,
+        json={
+            "code": "QC-RECHECK-002",
+            "scheduled_at": "2026-08-22T09:00:00",
+            "inspector_id": "u-qc",
+            "reason": "包装返工后复检",
+        },
+    )
+    assert premature_recheck.status_code == 422
+    assert premature_recheck.json()["message"] == "请先关闭全部 QC 异常，再创建复检任务"
+
+    resolve_response = await api_client.post(
+        f"/api/v1/quality/inspections/{failed['id']}/issues/{issue['id']}/resolve",
+        headers=headers,
+        json={
+            "resolution_note": "供应商已完成换包并提交照片",
+            "attachments": [
+                {
+                    "filename": "rectification.png",
+                    "url": "/uploads/rectification.png",
+                    "category": "resolution",
+                }
+            ],
+        },
+    )
+    assert resolve_response.status_code == 200
+    resolved = resolve_response.json()["data"]
+    assert resolved["issues"][0]["status"] == "resolved"
+    assert resolved["issues"][0]["resolution_note"] == "供应商已完成换包并提交照片"
+    assert resolved["issues"][0]["attachments"][0]["filename"] == "rectification.png"
+
+    recheck_response = await api_client.post(
+        f"/api/v1/quality/inspections/{failed['id']}/reinspection",
+        headers=headers,
+        json={
+            "code": "QC-RECHECK-002",
+            "scheduled_at": "2026-08-22T09:00:00",
+            "inspector_id": "u-qc",
+            "reason": "包装返工后复检",
+        },
+    )
+    assert recheck_response.status_code == 201
+    recheck = recheck_response.json()["data"]
+    assert recheck["parent_inspection_id"] == failed["id"]
+    assert recheck["reinspection_no"] == 1
+    assert recheck["status"] == "pending"
+
+    eligibility_response = await api_client.get(
+        "/api/v1/quality/inspections/inbound-eligibility",
+        headers=headers,
+        params={"purchase_contract_id": contract["id"]},
+    )
+    eligibility = eligibility_response.json()["data"]
+    assert eligibility["eligible"] is False
+    assert eligibility["latest_inspection_id"] == recheck["id"]
+    assert eligibility["latest_status"] == "pending"
+    assert eligibility["reason"] == "最新 QC 复检任务尚未完成"
+
+    completed_recheck_response = await api_client.put(
+        f"/api/v1/quality/inspections/{recheck['id']}",
+        headers=headers,
+        json={
+            "code": recheck["code"],
+            "purchase_contract_id": contract["id"],
+            "status": "completed",
+            "scheduled_at": recheck["scheduled_at"],
+            "inspected_at": "2026-08-22",
+            "result": "passed",
+            "inspector_id": "u-qc",
+            "inspector_name": "演示 QC 专员",
+            "lines": [
+                {
+                    "purchase_contract_line_id": contract["lines"][0]["id"],
+                    "product_name": "Eco Shopping Bag",
+                    "inspected_quantity": "1000",
+                    "failed_quantity": "0",
+                    "unit": "pcs",
+                    "result": "passed",
+                }
+            ],
+            "issues": [],
+            "attachments": [],
+        },
+    )
+    assert completed_recheck_response.status_code == 200
+
+    stale_recheck_response = await api_client.post(
+        f"/api/v1/quality/inspections/{failed['id']}/reinspection",
+        headers=headers,
+        json={
+            "code": "QC-RECHECK-003",
+            "scheduled_at": "2026-08-24T09:00:00",
+            "inspector_id": "u-qc",
+            "reason": "从旧任务重复发起复检",
+        },
+    )
+    assert stale_recheck_response.status_code == 422
+    assert stale_recheck_response.json()["message"] == "仅最新一笔未通过的 QC 任务可以创建复检"
+
+
+async def test_quality_task_reschedule_and_cancel_require_reasons_and_write_audit(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "purchase", "purchase123")
+    headers = {"Authorization": f"Bearer {token}"}
+    contract_response = await api_client.post(
+        "/api/v1/purchase/contracts",
+        headers=headers,
+        json=_purchase_contract_payload("PC-QC-SCHEDULE"),
+    )
+    contract = contract_response.json()["data"]
+    await api_client.post(
+        f"/api/v1/purchase/contracts/{contract['id']}/submit",
+        headers=headers,
+        json={"reviewer_id": "u-purchase"},
+    )
+    await api_client.post(
+        f"/api/v1/purchase/contracts/{contract['id']}/approve",
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-08-05"},
+    )
+    task_response = await api_client.post(
+        "/api/v1/quality/inspections",
+        headers=headers,
+        json={
+            "code": "QC-SCHEDULE-001",
+            "purchase_contract_id": contract["id"],
+            "status": "pending",
+            "scheduled_at": "2026-08-20T09:00:00",
+            "inspector_id": "u-qc",
+            "inspector_name": "演示 QC 专员",
+            "lines": [],
+            "issues": [],
+            "attachments": [],
+        },
+    )
+    task = task_response.json()["data"]
+
+    reschedule_response = await api_client.patch(
+        f"/api/v1/quality/inspections/{task['id']}/schedule",
+        headers=headers,
+        json={
+            "scheduled_at": "2026-08-21T14:30:00",
+            "reason": "供应商延迟备货",
+        },
+    )
+    assert reschedule_response.status_code == 200
+    rescheduled = reschedule_response.json()["data"]
+    assert rescheduled["scheduled_at"] == "2026-08-21T14:30:00"
+    assert rescheduled["events"][-1]["event_type"] == "rescheduled"
+    assert rescheduled["events"][-1]["notes"] == "供应商延迟备货"
+
+    missing_reason = await api_client.post(
+        f"/api/v1/quality/inspections/{task['id']}/cancel",
+        headers=headers,
+        json={"reason": ""},
+    )
+    assert missing_reason.status_code == 422
+
+    cancel_response = await api_client.post(
+        f"/api/v1/quality/inspections/{task['id']}/cancel",
+        headers=headers,
+        json={"reason": "采购合同已终止"},
+    )
+    assert cancel_response.status_code == 200
+    cancelled = cancel_response.json()["data"]
+    assert cancelled["status"] == "cancelled"
+    assert cancelled["cancel_reason"] == "采购合同已终止"
+    assert cancelled["events"][-1]["event_type"] == "cancelled"

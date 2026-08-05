@@ -2,7 +2,7 @@ from datetime import UTC, date, datetime
 from decimal import Decimal
 from uuid import uuid4
 
-from sqlalchemy import Date, DateTime, ForeignKey, Numeric, String, Text
+from sqlalchemy import Date, DateTime, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -40,10 +40,23 @@ class QualityInspection(Base):
     qc_user_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
     issue_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
     attachment_group_id: Mapped[str | None] = mapped_column(String(80), index=True, nullable=True)
+    parent_inspection_id: Mapped[str | None] = mapped_column(
+        ForeignKey("quality_inspections.id"),
+        index=True,
+        nullable=True,
+    )
+    reinspection_no: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    cancel_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     owner_user_id: Mapped[str] = mapped_column(String(36), index=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC),
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
         nullable=False,
     )
 
@@ -97,6 +110,58 @@ class QualityIssue(Base):
     corrective_action: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[str] = mapped_column(String(40), index=True, default="open", nullable=False)
     attachment_group_id: Mapped[str | None] = mapped_column(String(80), index=True, nullable=True)
+    resolution_note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    resolved_by_id: Mapped[str | None] = mapped_column(String(36), index=True, nullable=True)
+    resolved_by_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+        nullable=False,
+    )
+
+
+class QualityInspectionAttachment(Base):
+    __tablename__ = "quality_inspection_attachments"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_new_id)
+    inspection_id: Mapped[str] = mapped_column(
+        ForeignKey("quality_inspections.id"),
+        index=True,
+        nullable=False,
+    )
+    issue_id: Mapped[str | None] = mapped_column(
+        ForeignKey("quality_issues.id"),
+        index=True,
+        nullable=True,
+    )
+    category: Mapped[str] = mapped_column(String(40), index=True, nullable=False)
+    filename: Mapped[str] = mapped_column(String(240), nullable=False)
+    url: Mapped[str] = mapped_column(Text, nullable=False)
+    uploaded_by_id: Mapped[str] = mapped_column(String(36), index=True, nullable=False)
+    uploaded_by_name: Mapped[str] = mapped_column(String(160), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+        nullable=False,
+    )
+
+
+class QualityInspectionEvent(Base):
+    __tablename__ = "quality_inspection_events"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_new_id)
+    inspection_id: Mapped[str] = mapped_column(
+        ForeignKey("quality_inspections.id"),
+        index=True,
+        nullable=False,
+    )
+    event_type: Mapped[str] = mapped_column(String(40), index=True, nullable=False)
+    from_status: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    to_status: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    actor_user_id: Mapped[str] = mapped_column(String(36), index=True, nullable=False)
+    actor_user_name: Mapped[str] = mapped_column(String(160), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC),

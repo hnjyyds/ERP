@@ -34,6 +34,12 @@ vi.mock('../../../api', async (importOriginal) => {
       items: [pendingTask],
       total: 1,
     }),
+    cancelQualityInspection: vi.fn().mockResolvedValue({
+      ...pendingTask,
+      status: 'cancelled',
+      cancel_reason: '供应商取消备货',
+    }),
+    rescheduleQualityInspection: vi.fn(),
     listPurchaseContracts: vi.fn().mockResolvedValue({
       items: [
         {
@@ -60,7 +66,12 @@ vi.mock('../../../api', async (importOriginal) => {
   }
 })
 
-import { listQualityInspections, updateQualityInspection } from '../../../api'
+import {
+  cancelQualityInspection,
+  listPurchaseContracts,
+  listQualityInspections,
+  updateQualityInspection,
+} from '../../../api'
 import { MyQualityTasksPage } from '../quality/MyQualityTasksPage'
 
 describe('MyQualityTasksPage', () => {
@@ -117,5 +128,70 @@ describe('MyQualityTasksPage', () => {
     expect(await screen.findByRole('textbox', { name: '商品名称' })).toHaveValue('Eco Shopping Bag')
     expect(screen.getByRole('spinbutton', { name: '查验数量' })).toHaveValue(120)
     expect(screen.getByRole('textbox', { name: '单位' })).toHaveValue('pcs')
+  })
+
+  it('submits every purchase contract line when completing a QC task', async () => {
+    const user = userEvent.setup()
+    vi.mocked(listQualityInspections).mockResolvedValueOnce({
+      items: [{ ...pendingTask, status: 'in_progress' }],
+      total: 1,
+    })
+    vi.mocked(listPurchaseContracts).mockResolvedValueOnce({
+      items: [
+        {
+          id: 'pc-001',
+          code: 'PC-QC-001',
+          lines: [
+            {
+              id: 'pc-line-001',
+              product_id: 'product-001',
+              product_code: 'BAG-40',
+              product_name: 'Eco Shopping Bag',
+              quantity: '120',
+              unit: 'pcs',
+            },
+            {
+              id: 'pc-line-002',
+              product_id: 'product-002',
+              product_code: 'ROPE-10',
+              product_name: 'Cotton Rope',
+              quantity: '500',
+              unit: 'm',
+            },
+          ],
+        },
+      ],
+      total: 1,
+    } as never)
+    render(<MyQualityTasksPage currentUser={currentUser} />)
+
+    await user.click(await screen.findByRole('button', { name: '登记结果' }))
+    expect(await screen.findByDisplayValue('Cotton Rope')).toBeTruthy()
+    await user.click(screen.getByRole('button', { name: '完成 QC 查验' }))
+
+    await waitFor(() => {
+      expect(updateQualityInspection).toHaveBeenCalledWith(
+        'qc-task-001',
+        expect.objectContaining({
+          lines: [
+            expect.objectContaining({ purchase_contract_line_id: 'pc-line-001' }),
+            expect.objectContaining({ purchase_contract_line_id: 'pc-line-002' }),
+          ],
+        }),
+      )
+    })
+  })
+
+  it('requires and submits a cancellation reason through the dedicated action', async () => {
+    const user = userEvent.setup()
+    render(<MyQualityTasksPage currentUser={currentUser} />)
+
+    await user.click(await screen.findByRole('button', { name: '取消' }))
+    await user.type(screen.getByRole('textbox', { name: '取消原因' }), '供应商取消备货')
+    await user.click(screen.getByRole('button', { name: '确认取消' }))
+
+    await waitFor(() => {
+      expect(cancelQualityInspection).toHaveBeenCalledWith('qc-task-001', '供应商取消备货')
+    })
   })
 })

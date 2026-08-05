@@ -1,14 +1,26 @@
 import { Alert, Button, Input, Modal, Select, Table, Tag } from 'antd'
-import { ArrowLeft, LayoutDashboard, Plus, Search, ShieldCheck } from 'lucide-react'
-import type { FormEvent, MouseEvent, ReactNode } from 'react'
+import {
+  ArrowLeft,
+  CheckCheck,
+  LayoutDashboard,
+  Paperclip,
+  Plus,
+  RotateCcw,
+  Search,
+  ShieldCheck,
+} from 'lucide-react'
+import type { ChangeEvent, FormEvent, MouseEvent, ReactNode } from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import {
   createQualityInspection,
+  createQualityReinspection,
   getQualityInboundEligibility,
   listAssignableUsers,
   listPurchaseContracts,
   listQualityInspections,
+  resolveQualityIssue,
+  uploadImage,
   type AssignableUser,
   type CurrentUser,
   type QualityInspection,
@@ -203,6 +215,20 @@ function issueStatusLabel(value: string): string {
   return qualityIssueStatusOptions.find((option) => option.value === value)?.label ?? value
 }
 
+function qualityEventLabel(value: string): string {
+  const labels: Record<string, string> = {
+    created: '创建任务',
+    started: '开始查验',
+    completed: '完成查验',
+    updated: '更新任务',
+    rescheduled: '调整排期',
+    cancelled: '取消任务',
+    issue_resolved: '关闭异常',
+    reinspection_created: '发起复检',
+  }
+  return labels[value] ?? value
+}
+
 function inboundReason(inspection: QualityInspection): string {
   if (inspection.status !== 'completed') return 'QC 任务尚未完成，暂不能入库'
   if (inspection.result === 'passed') return 'QC 已通过'
@@ -231,6 +257,16 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
+  const [resolvingIssueId, setResolvingIssueId] = useState<string | null>(null)
+  const [resolutionNote, setResolutionNote] = useState('')
+  const [resolutionAttachments, setResolutionAttachments] = useState<
+    Array<{ filename: string; url: string; category: 'resolution' }>
+  >([])
+  const [reinspectionOpen, setReinspectionOpen] = useState(false)
+  const [reinspectionCode, setReinspectionCode] = useState('')
+  const [reinspectionSchedule, setReinspectionSchedule] = useState(defaultScheduledAt())
+  const [reinspectionReason, setReinspectionReason] = useState('')
+  const [uploadingEvidence, setUploadingEvidence] = useState(false)
 
   const fetchContractOptions = useCallback(async (query: string) => {
     const result = await listPurchaseContracts({
@@ -407,6 +443,101 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
     event.stopPropagation()
     setSelectedInspectionId(inspection.id)
     onNavigate(moduleDetailPath(qualityInspectionPath, inspection.id))
+  }
+
+  function replaceInspection(updated: QualityInspection) {
+    setInspections((current) =>
+      current.map((inspection) => (inspection.id === updated.id ? updated : inspection)),
+    )
+  }
+
+  function openIssueResolution(issueId: string) {
+    setResolvingIssueId(issueId)
+    setResolutionNote('')
+    setResolutionAttachments([])
+  }
+
+  async function uploadResolutionEvidence(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      showWarningDialog('整改凭证目前仅支持图片')
+      return
+    }
+    setUploadingEvidence(true)
+    try {
+      const uploaded = await uploadImage(file.name, await readFileAsDataUrl(file))
+      setResolutionAttachments((current) => [
+        ...current,
+        { filename: uploaded.filename, url: uploaded.url, category: 'resolution' },
+      ])
+    } catch (caught) {
+      showError(caught, '整改凭证上传失败')
+    } finally {
+      setUploadingEvidence(false)
+    }
+  }
+
+  async function submitIssueResolution(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!selectedInspection || !resolvingIssueId || !resolutionNote.trim()) {
+      showWarningDialog('请填写异常关闭说明')
+      return
+    }
+    setSubmitting(true)
+    try {
+      const updated = await resolveQualityIssue(selectedInspection.id, resolvingIssueId, {
+        resolution_note: resolutionNote.trim(),
+        attachments: resolutionAttachments,
+      })
+      replaceInspection(updated)
+      setResolvingIssueId(null)
+      setMessage('QC 异常已关闭，可以在全部异常关闭后发起复检')
+    } catch (caught) {
+      showError(caught, 'QC 异常关闭失败')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  function openReinspection() {
+    if (
+      !selectedInspection ||
+      eligibility?.latest_inspection_id !== selectedInspection.id
+    ) {
+      showWarningDialog('仅合同最新的未通过 QC 任务可以发起复检')
+      return
+    }
+    setReinspectionCode(`QC-R-${Date.now().toString().slice(-6)}`)
+    setReinspectionSchedule(defaultScheduledAt())
+    setReinspectionReason('整改完成后复检')
+    setReinspectionOpen(true)
+  }
+
+  async function submitReinspection(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!selectedInspection || !reinspectionCode.trim() || !reinspectionReason.trim()) {
+      showWarningDialog('请完整填写复检编号、排期和原因')
+      return
+    }
+    setSubmitting(true)
+    try {
+      const reinspection = await createQualityReinspection(selectedInspection.id, {
+        code: reinspectionCode.trim(),
+        scheduled_at: reinspectionSchedule,
+        inspector_id: selectedInspection.inspector_id ?? currentUser.id,
+        reason: reinspectionReason.trim(),
+      })
+      setInspections((current) => [reinspection, ...current])
+      setReinspectionOpen(false)
+      setMessage(`${reinspection.code} 已创建并进入负责人待查验列表`)
+      onNavigate(moduleDetailPath(qualityInspectionPath, reinspection.id))
+    } catch (caught) {
+      showError(caught, '复检任务创建失败')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const pendingCount = inspections.filter((item) => item.status === 'pending').length
@@ -680,9 +811,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                     status={fieldErrors.scheduled_at ? 'error' : undefined}
                     type="datetime-local"
                     value={form.scheduled_at}
-                    onInput={(event) =>
-                      updateFormField('scheduled_at', event.currentTarget.value)
-                    }
+                    onInput={(event) => updateFormField('scheduled_at', event.currentTarget.value)}
                   />
                   <FieldError field="scheduled_at" message={fieldErrors.scheduled_at} />
                 </label>
@@ -787,6 +916,41 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                     查验结果：{resultLabel(selectedInspection.result)}
                   </span>
                 </div>
+                {selectedInspection.status === 'completed' &&
+                selectedInspection.result !== 'passed' ? (
+                  eligibility === null ? null : (
+                    <div className="detail-action-bar">
+                      {eligibility.latest_inspection_id === selectedInspection.id ? (
+                        <>
+                          <Button
+                            disabled={selectedInspection.issues.some(
+                              (issue) => issue.status !== 'resolved',
+                            )}
+                            icon={<RotateCcw size={16} />}
+                            title={
+                              selectedInspection.issues.some(
+                                (issue) => issue.status !== 'resolved',
+                              )
+                                ? '请先关闭全部异常'
+                                : '创建新的复检任务'
+                            }
+                            type="primary"
+                            onClick={openReinspection}
+                          >
+                            发起复检
+                          </Button>
+                          {selectedInspection.issues.some(
+                            (issue) => issue.status !== 'resolved',
+                          ) ? (
+                            <span>关闭全部异常后才能发起复检</span>
+                          ) : null}
+                        </>
+                      ) : (
+                        <span>该任务不是合同最新 QC，不能重复发起复检</span>
+                      )}
+                    </div>
+                  )
+                ) : null}
 
                 <dl className="detail-list">
                   <div>
@@ -833,6 +997,18 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                     <dt>附件组</dt>
                     <dd>{nullableText(selectedInspection.attachment_group_id)}</dd>
                   </div>
+                  {selectedInspection.parent_inspection_id ? (
+                    <div>
+                      <dt>复检来源</dt>
+                      <dd>第 {selectedInspection.reinspection_no ?? 1} 次复检</dd>
+                    </div>
+                  ) : null}
+                  {selectedInspection.cancel_reason ? (
+                    <div>
+                      <dt>取消原因</dt>
+                      <dd>{selectedInspection.cancel_reason}</dd>
+                    </div>
+                  ) : null}
                 </dl>
 
                 <div className="accessory-heading">
@@ -883,6 +1059,8 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                       <th>描述</th>
                       <th>整改</th>
                       <th>状态</th>
+                      <th>关闭说明</th>
+                      <th>操作</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -893,12 +1071,75 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                         <td>{issue.description}</td>
                         <td>{nullableText(issue.corrective_action)}</td>
                         <td>{issueStatusLabel(issue.status)}</td>
+                        <td>{nullableText(issue.resolution_note ?? null)}</td>
+                        <td>
+                          {issue.status === 'open' ? (
+                            <Button
+                              icon={<CheckCheck size={14} />}
+                              size="small"
+                              onClick={() => openIssueResolution(issue.id)}
+                            >
+                              关闭异常
+                            </Button>
+                          ) : (
+                            <span>{issue.resolved_by_name ?? '已关闭'}</span>
+                          )}
+                        </td>
                       </tr>
                     ))}
                     {selectedInspection.issues.length === 0 ? (
                       <tr>
-                        <td className="empty-cell" colSpan={5}>
+                        <td className="empty-cell" colSpan={7}>
                           暂无异常问题
+                        </td>
+                      </tr>
+                    ) : null}
+                  </tbody>
+                </table>
+
+                <div className="accessory-heading">
+                  <strong>凭证附件</strong>
+                  <span>{selectedInspection.attachments?.length ?? 0} 个</span>
+                </div>
+                <div className="quality-attachment-list">
+                  {(selectedInspection.attachments ?? []).map((attachment) => (
+                    <a href={attachment.url} key={attachment.id} rel="noreferrer" target="_blank">
+                      <Paperclip size={14} />
+                      {attachment.filename}
+                      <Tag>{attachment.category === 'resolution' ? '整改' : '查验'}</Tag>
+                    </a>
+                  ))}
+                  {(selectedInspection.attachments?.length ?? 0) === 0 ? (
+                    <span>暂无凭证附件</span>
+                  ) : null}
+                </div>
+
+                <div className="accessory-heading">
+                  <strong>任务审计记录</strong>
+                  <span>{selectedInspection.events?.length ?? 0} 条</span>
+                </div>
+                <table className="data-table compact-table">
+                  <thead>
+                    <tr>
+                      <th>时间</th>
+                      <th>动作</th>
+                      <th>操作人</th>
+                      <th>说明</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(selectedInspection.events ?? []).map((event) => (
+                      <tr key={event.id}>
+                        <td>{formatScheduledAt(event.created_at)}</td>
+                        <td>{qualityEventLabel(event.event_type)}</td>
+                        <td>{event.actor_user_name}</td>
+                        <td>{nullableText(event.notes)}</td>
+                      </tr>
+                    ))}
+                    {(selectedInspection.events?.length ?? 0) === 0 ? (
+                      <tr>
+                        <td className="empty-cell" colSpan={4}>
+                          暂无审计记录
                         </td>
                       </tr>
                     ) : null}
@@ -915,6 +1156,105 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
           </section>
         ) : null}
       </section>
+
+      <Modal
+        centered
+        footer={null}
+        open={Boolean(resolvingIssueId)}
+        title="关闭 QC 异常"
+        width={620}
+        onCancel={() => setResolvingIssueId(null)}
+      >
+        <form className="record-form" onSubmit={submitIssueResolution}>
+          <Alert showIcon title="请确认整改已经完成，并填写可追溯的关闭说明" type="warning" />
+          <label htmlFor="quality-resolution-note">
+            <RequiredFieldLabel>关闭说明</RequiredFieldLabel>
+            <Input.TextArea
+              id="quality-resolution-note"
+              required
+              rows={4}
+              value={resolutionNote}
+              onChange={(event) => setResolutionNote(event.target.value)}
+            />
+          </label>
+          <label className="quality-file-upload" htmlFor="quality-resolution-evidence">
+            整改图片
+            <input
+              accept="image/*"
+              aria-label="上传整改图片"
+              id="quality-resolution-evidence"
+              type="file"
+              onChange={(event) => void uploadResolutionEvidence(event)}
+            />
+          </label>
+          <div className="quality-attachment-list">
+            {resolutionAttachments.map((attachment) => (
+              <a href={attachment.url} key={attachment.url} rel="noreferrer" target="_blank">
+                <Paperclip size={14} />
+                {attachment.filename}
+              </a>
+            ))}
+            {uploadingEvidence ? <span>正在上传整改凭证...</span> : null}
+          </div>
+          <Button htmlType="submit" loading={submitting} type="primary">
+            确认关闭异常
+          </Button>
+        </form>
+      </Modal>
+
+      <Modal
+        centered
+        footer={null}
+        open={reinspectionOpen}
+        title="发起 QC 复检"
+        width={620}
+        onCancel={() => setReinspectionOpen(false)}
+      >
+        <form className="record-form" onSubmit={submitReinspection}>
+          <Alert showIcon title="复检会生成一个新的待执行 QC 任务" type="info" />
+          <label htmlFor="quality-reinspection-code">
+            <RequiredFieldLabel>复检任务单号</RequiredFieldLabel>
+            <Input
+              id="quality-reinspection-code"
+              required
+              value={reinspectionCode}
+              onChange={(event) => setReinspectionCode(event.target.value)}
+            />
+          </label>
+          <label htmlFor="quality-reinspection-schedule">
+            <RequiredFieldLabel>复检排期</RequiredFieldLabel>
+            <Input
+              id="quality-reinspection-schedule"
+              required
+              type="datetime-local"
+              value={reinspectionSchedule}
+              onChange={(event) => setReinspectionSchedule(event.target.value)}
+            />
+          </label>
+          <label htmlFor="quality-reinspection-reason">
+            <RequiredFieldLabel>复检原因</RequiredFieldLabel>
+            <Input.TextArea
+              id="quality-reinspection-reason"
+              required
+              rows={3}
+              value={reinspectionReason}
+              onChange={(event) => setReinspectionReason(event.target.value)}
+            />
+          </label>
+          <Button htmlType="submit" loading={submitting} type="primary">
+            创建复检任务
+          </Button>
+        </form>
+      </Modal>
     </section>
   )
+}
+
+async function readFileAsDataUrl(file: File): Promise<string> {
+  return await new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(String(reader.result))
+    reader.onerror = () => reject(reader.error ?? new Error('文件读取失败'))
+    reader.readAsDataURL(file)
+  })
 }

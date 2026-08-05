@@ -380,7 +380,7 @@ class InboundOrderService:
 
     async def _ensure_latest_qc_passed(self, purchase_contract_id: str) -> None:
         latest = await self._quality_repository.get_latest_for_contract(purchase_contract_id)
-        if latest is None or latest.result != "passed":
+        if latest is None or latest.status != "completed" or latest.result != "passed":
             raise ValueError("货物检验全部通过后才能正式入库")
 
     async def _validate_formal_order_matches_plan(self, lines: list[InboundOrderLineRow]) -> None:
