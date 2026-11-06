@@ -13,9 +13,10 @@ import {
   getDashboard,
   getI18nConfig,
   hasAuthToken,
+  updateCurrentUserAvatar,
 } from '../api'
 import { canAccessPath, dashboardPath, loginPath } from './routes'
-import { showError } from '../shared/errors'
+import { showError, showSuccess } from '../shared/errors'
 import type { UserAvatarPickerValue } from '../shared/ui'
 import { fallbackI18nConfig, normalizeSettings } from './appI18n'
 import { setRuntimeSettings, type AppSettings } from './pages/appHelpers'
@@ -63,7 +64,7 @@ export default function App() {
   appSettingsRef.current = appSettings
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [settingsAvatarDraft, setSettingsAvatarDraft] = useState<UserAvatarPickerValue | null>(null)
-  const [savingSettingsAvatar] = useState(false)
+  const [savingSettingsAvatar, setSavingSettingsAvatar] = useState(false)
 
   const antdLocale = appSettings.language === 'en-US' ? enUS : zhCN
 
@@ -191,6 +192,27 @@ export default function App() {
     }
   }
 
+  async function saveSettingsAvatar() {
+    if (!settingsAvatarDraft || savingSettingsAvatar) return
+    setSavingSettingsAvatar(true)
+    try {
+      const res = await updateCurrentUserAvatar({
+        avatar_type: settingsAvatarDraft.avatar_type,
+        avatar_value: settingsAvatarDraft.avatar_value,
+      })
+      setSession((prev) => (prev ? { ...prev, user: res.user, menus: res.menus } : prev))
+      setSettingsAvatarDraft({
+        avatar_type: res.user.avatar_type,
+        avatar_value: res.user.avatar_value,
+      })
+      showSuccess('头像已保存')
+    } catch (e) {
+      showError(e, '头像保存失败')
+    } finally {
+      setSavingSettingsAvatar(false)
+    }
+  }
+
   // ── derived ──────────────────────────────────────────────────────────────
 
   const sidebarMenuGroups = useMemo(
@@ -264,7 +286,13 @@ export default function App() {
         onRefreshDashboard={async () => {
           await loadDashboard()
         }}
-        onOpenSettings={() => setSettingsOpen(true)}
+        onOpenSettings={() => {
+          setSettingsAvatarDraft({
+            avatar_type: session.user.avatar_type,
+            avatar_value: session.user.avatar_value,
+          })
+          setSettingsOpen(true)
+        }}
         settings={{
           open: settingsOpen,
           session,
@@ -280,7 +308,9 @@ export default function App() {
             setAppSettings(next)
           },
           onChangeAvatarDraft: setSettingsAvatarDraft,
-          onSaveAvatar: () => {},
+          onSaveAvatar: () => {
+            void saveSettingsAvatar()
+          },
         }}
       />
     </ConfigProvider>
