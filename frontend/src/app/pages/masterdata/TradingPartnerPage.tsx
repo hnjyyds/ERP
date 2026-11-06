@@ -1,10 +1,12 @@
-import { Alert, Button, Checkbox, Input, Modal, Select, Table, Tag } from 'antd'
+import { Alert, Button, Checkbox, Input, Modal, Select, Table, Tag, Tooltip } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import {
   ArrowLeft,
   FilePenLine,
+  Funnel,
   History,
   Plus,
+  RotateCcw,
   Search,
   Trash2,
   UserRound,
@@ -64,12 +66,7 @@ export type TradingPartnerPageProps = {
   listPath: string
   detailPath: (id: string) => string
   onNavigate: (path: string) => void
-  listEntity: (filters?: {
-    q?: string
-    country?: string
-    credit_grade?: string
-    partner_type?: string
-  }) => Promise<PartnerListResult>
+  listEntity: (filters?: PartnerListFilters) => Promise<PartnerListResult>
   createEntity: (payload: PartnerCreatePayload) => Promise<PartnerEntity>
   updateEntity: (id: string, payload: PartnerUpdatePayload) => Promise<PartnerEntity>
   deactivateEntity: (id: string) => Promise<PartnerEntity>
@@ -81,6 +78,13 @@ export type TradingPartnerPageProps = {
   ) => Promise<PartnerContact>
   deleteContact: (id: string, contactId: string) => Promise<PartnerContact>
   listTransactions: (id: string) => Promise<TransactionListResult>
+}
+
+type PartnerListFilters = {
+  q?: string
+  country?: string
+  credit_grade?: string
+  partner_type?: string
 }
 
 export function TradingPartnerPage({
@@ -111,6 +115,7 @@ export function TradingPartnerPage({
   const [creditGrade, setCreditGrade] = useState('')
   const [partnerType, setPartnerType] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
+  const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [transactionLoading, setTransactionLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -133,6 +138,11 @@ export function TradingPartnerPage({
     columnOptions,
   )
   const showCreditFields = kind !== 'partner'
+  const activeAdvancedFilterCount = [
+    country.trim(),
+    kind === 'partner' ? partnerType : creditGrade,
+    statusFilter,
+  ].filter(Boolean).length
 
   const openDetail = useCallback(
     (record: PartnerEntity) => {
@@ -266,16 +276,18 @@ export function TradingPartnerPage({
     }
   }, [detailId, listPath, onNavigate, rows])
 
-  async function loadRows() {
+  async function loadRows(filterOverride?: PartnerListFilters) {
     setLoading(true)
     setError('')
     try {
-      const result = await listEntity({
-        q: search.trim() || undefined,
-        country: country.trim() || undefined,
-        credit_grade: showCreditFields ? creditGrade || undefined : undefined,
-        partner_type: kind === 'partner' ? partnerType || undefined : undefined,
-      })
+      const result = await listEntity(
+        filterOverride ?? {
+          q: search.trim() || undefined,
+          country: country.trim() || undefined,
+          credit_grade: showCreditFields ? creditGrade || undefined : undefined,
+          partner_type: kind === 'partner' ? partnerType || undefined : undefined,
+        },
+      )
       setRows(result.items)
       setSelectedId((current) => {
         if (current && result.items.some((item) => item.id === current)) return current
@@ -286,6 +298,14 @@ export function TradingPartnerPage({
     } finally {
       setLoading(false)
     }
+  }
+
+  function resetAdvancedFilters() {
+    setCountry('')
+    setCreditGrade('')
+    setPartnerType('')
+    setStatusFilter('')
+    void loadRows({ q: search.trim() || undefined })
   }
 
   function openCreate() {
@@ -445,7 +465,7 @@ export function TradingPartnerPage({
                 void loadRows()
               }}
             >
-              <div className="inline-filter-fields">
+              <div className="partner-filter-toolbar">
                 <label className="inline-filter-search">
                   搜索
                   <Input
@@ -454,48 +474,103 @@ export function TradingPartnerPage({
                     onChange={(event) => setSearch(event.target.value)}
                   />
                 </label>
-                <label>
-                  国家/地区
-                  <Input
-                    value={country}
-                    placeholder="国家/地区"
-                    onChange={(event) => setCountry(event.target.value)}
-                  />
-                </label>
-                {kind === 'partner' ? (
+                <div className="partner-filter-actions">
+                  <Tooltip title={`查询${entityLabel}`}>
+                    <Button
+                      aria-label={`查询${entityLabel}`}
+                      className="toolbar-icon-button"
+                      htmlType="submit"
+                      icon={<Search size={16} />}
+                    />
+                  </Tooltip>
+                  <Button
+                    htmlType="button"
+                    type="primary"
+                    icon={<Plus size={16} />}
+                    onClick={openCreate}
+                  >
+                    新增{entityLabel}
+                  </Button>
+                  <Tooltip
+                    title={
+                      activeAdvancedFilterCount > 0
+                        ? `高级筛选，已启用 ${activeAdvancedFilterCount} 项`
+                        : '高级筛选'
+                    }
+                  >
+                    <Button
+                      aria-label={
+                        activeAdvancedFilterCount > 0
+                          ? `高级筛选，已启用 ${activeAdvancedFilterCount} 项`
+                          : '高级筛选'
+                      }
+                      aria-expanded={advancedFiltersOpen}
+                      aria-pressed={advancedFiltersOpen}
+                      className="toolbar-icon-button advanced-filter-toggle"
+                      htmlType="button"
+                      icon={<Funnel size={16} />}
+                      onClick={() => setAdvancedFiltersOpen((current) => !current)}
+                    >
+                      {activeAdvancedFilterCount > 0 ? (
+                        <span aria-hidden="true" className="advanced-filter-count">
+                          {activeAdvancedFilterCount}
+                        </span>
+                      ) : null}
+                    </Button>
+                  </Tooltip>
+                  {columnViewControl}
+                </div>
+              </div>
+
+              {advancedFiltersOpen ? (
+                <div className="partner-advanced-filters" aria-label={`${entityLabel}高级筛选`}>
                   <label>
-                    类型
-                    <Select
-                      options={[{ value: '', label: '全部类型' }, ...partnerTypeOptions]}
-                      value={partnerType}
-                      onChange={setPartnerType}
+                    国家/地区
+                    <Input
+                      value={country}
+                      placeholder="国家/地区"
+                      onChange={(event) => setCountry(event.target.value)}
                     />
                   </label>
-                ) : (
                   <label>
-                    信用
-                    <Select options={creditGradeOptions} value={creditGrade} onChange={setCreditGrade} />
+                    {kind === 'partner' ? '类型' : '信用'}
+                    {kind === 'partner' ? (
+                      <Select
+                        aria-label="类型"
+                        options={[{ value: '', label: '全部类型' }, ...partnerTypeOptions]}
+                        value={partnerType}
+                        onChange={setPartnerType}
+                      />
+                    ) : (
+                      <Select
+                        aria-label="信用"
+                        options={creditGradeOptions}
+                        value={creditGrade}
+                        onChange={setCreditGrade}
+                      />
+                    )}
                   </label>
-                )}
-                <label>
-                  状态
-                  <Select options={statusOptions} value={statusFilter} onChange={setStatusFilter} />
-                </label>
-              </div>
-              <div className="inline-filter-actions">
-                <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
-                </Button>
-                <Button
-                  
-                  htmlType="button"
-                  icon={<Plus size={16} />}
-                  onClick={openCreate}
-                >
-                  新增{entityLabel}
-                </Button>
-                {columnViewControl}
-              </div>
+                  <label>
+                    状态
+                    <Select
+                      aria-label="状态"
+                      options={statusOptions}
+                      value={statusFilter}
+                      onChange={setStatusFilter}
+                    />
+                  </label>
+                  <Tooltip title="重置高级筛选">
+                    <Button
+                      aria-label="重置高级筛选"
+                      className="toolbar-icon-button advanced-filter-reset"
+                      disabled={activeAdvancedFilterCount === 0}
+                      htmlType="button"
+                      icon={<RotateCcw size={16} />}
+                      onClick={resetAdvancedFilters}
+                    />
+                  </Tooltip>
+                </div>
+              ) : null}
             </form>
           </div>
 

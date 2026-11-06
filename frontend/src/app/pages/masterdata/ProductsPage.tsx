@@ -1,11 +1,11 @@
-import { Alert, Button, Image, Input, Modal, Select, Table, Tag, Upload } from 'antd'
+import { Alert, Button, Image, Input, Modal, Select, Table, Tag, Tooltip, Upload } from 'antd'
 import {
   ArrowLeft,
+  Download,
   FilePenLine,
   ImagePlus,
   LayoutDashboard,
   Plus,
-  RefreshCw,
   Search,
   Trash2,
   Upload as UploadIcon,
@@ -438,7 +438,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
             <div className="panel-heading toolbar-heading">
               <PanelTitle icon={<Search size={18} />} title="商品列表" />
               <form
-                className="inline-filters"
+                className="inline-filters product-list-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
                   void loadProducts()
@@ -452,25 +452,39 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
                     onChange={(event) => setSearch(event.target.value)}
                   />
                 </label>
-                <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
-                </Button>
-                <Button icon={<Plus size={16} />} onClick={openCreateProduct}>
-                  新增商品
-                </Button>
-                <Button
-                  icon={<UploadIcon size={16} />}
-                  onClick={() => {
-                    setImportResult(null)
-                    setImportModalOpen(true)
-                  }}
-                >
-                  导入
-                </Button>
-                <Button icon={<RefreshCw size={16} />} onClick={exportSelectedCsv}>
-                  {selectedRowKeys.length > 0 ? `导出 (${selectedRowKeys.length})` : '导出全部'}
-                </Button>
-                {columnViewControl}
+                <div className="product-filter-actions">
+                  <Tooltip title="查询商品">
+                    <Button
+                      aria-label="查询商品"
+                      className="toolbar-icon-button"
+                      htmlType="submit"
+                      icon={<Search size={16} />}
+                    />
+                  </Tooltip>
+                  <Button type="primary" icon={<Plus size={16} />} onClick={openCreateProduct}>
+                    新增商品
+                  </Button>
+                  <Tooltip title="导入商品">
+                    <Button
+                      aria-label="导入商品"
+                      className="toolbar-icon-button"
+                      icon={<UploadIcon size={16} />}
+                      onClick={() => {
+                        setImportResult(null)
+                        setImportModalOpen(true)
+                      }}
+                    />
+                  </Tooltip>
+                  <Tooltip title={selectedRowKeys.length > 0 ? `导出已选 ${selectedRowKeys.length} 条商品` : '导出全部商品'}>
+                    <Button
+                      aria-label={selectedRowKeys.length > 0 ? `导出已选 ${selectedRowKeys.length} 条商品` : '导出全部商品'}
+                      className="toolbar-icon-button"
+                      icon={<Download size={16} />}
+                      onClick={exportSelectedCsv}
+                    />
+                  </Tooltip>
+                  {columnViewControl}
+                </div>
               </form>
             </div>
 

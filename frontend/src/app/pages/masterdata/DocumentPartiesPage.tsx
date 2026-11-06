@@ -246,7 +246,7 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
-              <Button icon={<Plus size={16} />} onClick={openCreate}>
+              <Button type="primary" icon={<Plus size={16} />} onClick={openCreate}>
                 新增单证资料
               </Button>
             </form>
