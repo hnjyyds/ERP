@@ -88,7 +88,7 @@ export function TaxView({ model, shell }: Props) {
         <div className="finance-subnav">
           <button className="finance-back-button" type="button" onClick={() => goModule('tax')}>
             <ArrowLeft size={16} />
-            核销退税
+            {t('finance.tax.title')}
           </button>
         </div>
       ) : (
@@ -97,14 +97,17 @@ export function TaxView({ model, shell }: Props) {
       {moduleAlerts}
       <section
         className={detailId ? 'finance-detail-grid' : 'finance-tax-grid'}
-        aria-label="核销退税"
+        aria-label={t('finance.tax.title')}
       >
         {!detailId ? (
           <section className="workspace-panel finance-tax-list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<ShieldCheck size={18} />} title="核销单列表" />
+              <PanelTitle
+                icon={<ShieldCheck size={18} />}
+                title={t('finance.tax.panel.documentList')}
+              />
               <form
-                aria-label="核销单筛选"
+                aria-label={t('finance.tax.filter.formAria')}
                 className="inline-filters single-line-filter-toolbar"
                 onSubmit={(event) => {
                   event.preventDefault()
@@ -112,19 +115,19 @@ export function TaxView({ model, shell }: Props) {
                 }}
               >
                 <label>
-                  核销单搜索
+                  {t('finance.tax.filter.documentSearch')}
                   <Input
                     value={verificationSearch}
                     onChange={(event) => setVerificationSearch(event.target.value)}
                   />
                 </label>
                 <label>
-                  进度状态
+                  {t('finance.tax.filter.progressStatus')}
                   <FormSelect
                     value={verificationStatusFilter}
                     onChange={(event) => setVerificationStatusFilter(event.target.value)}
                   >
-                    <option value="">全部状态</option>
+                    <option value="">{t('finance.tax.filter.allStatuses')}</option>
                     {verificationDocumentStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
                         {t(item.labelKey)}
@@ -133,12 +136,12 @@ export function TaxView({ model, shell }: Props) {
                   </FormSelect>
                 </label>
                 <label>
-                  提醒状态
+                  {t('finance.tax.filter.reminderStatus')}
                   <FormSelect
                     value={verificationReminderFilter}
                     onChange={(event) => setVerificationReminderFilter(event.target.value)}
                   >
-                    <option value="">全部提醒</option>
+                    <option value="">{t('finance.tax.filter.allReminders')}</option>
                     {verificationReminderStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
                         {t(item.labelKey)}
@@ -147,35 +150,35 @@ export function TaxView({ model, shell }: Props) {
                   </FormSelect>
                 </label>
                 <label>
-                  业务员标识
+                  {t('finance.tax.field.ownerUserId')}
                   <Input
                     value={verificationOwnerFilter}
                     onChange={(event) => setVerificationOwnerFilter(event.target.value)}
                   />
                 </label>
                 <label>
-                  出运单号
+                  {t('finance.tax.field.shipmentNo')}
                   <Input
                     value={verificationShipmentFilter}
                     onChange={(event) => setVerificationShipmentFilter(event.target.value)}
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('finance.tax.action.search')}
                 </Button>
                 <Button
                   type="primary"
                   icon={<Plus size={16} />}
                   onClick={() => setTaxDocumentModalOpen(true)}
                 >
-                  领用核销单
+                  {t('finance.tax.action.issueDocument')}
                 </Button>
               </form>
             </div>
             <Table<VerificationDocument>
               columns={[
                 {
-                  title: '核销单',
+                  title: t('finance.tax.table.document'),
                   dataIndex: 'document_no',
                   render: (value: string) => (
                     <button className="row-button" type="button">
@@ -183,21 +186,33 @@ export function TaxView({ model, shell }: Props) {
                     </button>
                   ),
                 },
-                { title: '状态', dataIndex: 'status', render: verificationDocumentStatusTag },
                 {
-                  title: '提醒',
+                  title: t('finance.field.status'),
+                  dataIndex: 'status',
+                  render: verificationDocumentStatusTag,
+                },
+                {
+                  title: t('finance.tax.table.reminder'),
                   dataIndex: 'reminder_status',
                   render: verificationReminderStatusTag,
                 },
-                { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
-                { title: '有效期', dataIndex: 'valid_until', render: formatDate },
                 {
-                  title: '可退税',
+                  title: t('finance.tax.table.shipment'),
+                  dataIndex: 'shipment_no',
+                  render: nullableText,
+                },
+                {
+                  title: t('finance.tax.table.validUntil'),
+                  dataIndex: 'valid_until',
+                  render: formatDate,
+                },
+                {
+                  title: t('finance.tax.table.refundable'),
                   dataIndex: 'refundable_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '已退税',
+                  title: t('finance.tax.table.refunded'),
                   dataIndex: 'refunded_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
@@ -226,7 +241,7 @@ export function TaxView({ model, shell }: Props) {
             centered
             footer={null}
             open={taxDocumentModalOpen}
-            title="核销单领用"
+            title={t('finance.tax.modal.issueTitle')}
             width={760}
             onCancel={() => setTaxDocumentModalOpen(false)}
           >
@@ -239,7 +254,7 @@ export function TaxView({ model, shell }: Props) {
             >
               <div className="form-pair two">
                 <label>
-                  核销单号
+                  {t('finance.tax.field.documentNo')}
                   <Input
                     value={verificationDocumentForm.document_no}
                     onChange={(event) =>
@@ -251,7 +266,7 @@ export function TaxView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  领用日期
+                  {t('finance.tax.field.receivedAt')}
                   <Input
                     type="date"
                     value={verificationDocumentForm.received_at}
@@ -266,7 +281,7 @@ export function TaxView({ model, shell }: Props) {
               </div>
               <div className="form-pair two">
                 <label>
-                  出运单标识
+                  {t('finance.tax.field.shipmentPlanId')}
                   <Input
                     value={verificationDocumentForm.shipment_plan_id}
                     onChange={(event) =>
@@ -278,7 +293,7 @@ export function TaxView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  出运单号
+                  {t('finance.tax.field.shipmentNo')}
                   <Input
                     value={verificationDocumentForm.shipment_no}
                     onChange={(event) =>
@@ -292,7 +307,7 @@ export function TaxView({ model, shell }: Props) {
               </div>
               <div className="form-pair two">
                 <label>
-                  业务员标识
+                  {t('finance.tax.field.ownerUserId')}
                   <Input
                     value={verificationDocumentForm.owner_user_id}
                     onChange={(event) =>
@@ -304,7 +319,7 @@ export function TaxView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  业务员姓名
+                  {t('finance.tax.field.ownerUserName')}
                   <Input
                     value={verificationDocumentForm.owner_user_name}
                     onChange={(event) =>
@@ -318,7 +333,7 @@ export function TaxView({ model, shell }: Props) {
               </div>
               <div className="form-pair two">
                 <label>
-                  客户名称
+                  {t('finance.tax.field.customerName')}
                   <Input
                     value={verificationDocumentForm.customer_name}
                     onChange={(event) =>
@@ -330,7 +345,7 @@ export function TaxView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  有效期至
+                  {t('finance.tax.field.validUntil')}
                   <Input
                     type="date"
                     value={verificationDocumentForm.valid_until}
@@ -345,7 +360,7 @@ export function TaxView({ model, shell }: Props) {
               </div>
               <div className="form-pair two">
                 <label>
-                  可退税金额
+                  {t('finance.tax.field.refundableAmount')}
                   <Input
                     value={verificationDocumentForm.refundable_amount}
                     onChange={(event) =>
@@ -357,7 +372,7 @@ export function TaxView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  币种
+                  {t('finance.field.currency')}
                   <Input
                     value={verificationDocumentForm.currency}
                     onChange={(event) =>
@@ -370,7 +385,7 @@ export function TaxView({ model, shell }: Props) {
                 </label>
               </div>
               <label>
-                备注
+                {t('finance.tax.field.remark')}
                 <Input
                   value={verificationDocumentForm.remark}
                   onChange={(event) =>
@@ -387,14 +402,14 @@ export function TaxView({ model, shell }: Props) {
                   type="button"
                   onClick={() => setTaxDocumentModalOpen(false)}
                 >
-                  取消
+                  {t('finance.tax.action.cancel')}
                 </button>
                 <button
                   className="inline-submit"
                   disabled={submittingVerificationDocument}
                   type="submit"
                 >
-                  领用核销单
+                  {t('finance.tax.action.issueDocument')}
                 </button>
               </div>
             </form>
@@ -403,19 +418,19 @@ export function TaxView({ model, shell }: Props) {
 
         {detailId ? (
           <section className="workspace-panel finance-tax-process-panel">
-            <PanelTitle icon={<CheckCircle2 size={18} />} title="回单、核销和退税登记" />
+            <PanelTitle icon={<CheckCircle2 size={18} />} title={t('finance.tax.panel.process')} />
             {selectedVerificationDocument ? (
               <dl className="detail-list finance-tax-detail-list">
                 <div>
-                  <dt>当前核销单</dt>
+                  <dt>{t('finance.tax.field.currentDocument')}</dt>
                   <dd>{selectedVerificationDocument.document_no}</dd>
                 </div>
                 <div>
-                  <dt>状态</dt>
+                  <dt>{t('finance.field.status')}</dt>
                   <dd>{verificationDocumentStatusLabel(selectedVerificationDocument.status)}</dd>
                 </div>
                 <div>
-                  <dt>未退税</dt>
+                  <dt>{t('finance.tax.field.unrefunded')}</dt>
                   <dd>
                     {formatFinanceAmount(
                       selectedVerificationDocument.unrefunded_amount,
@@ -424,19 +439,19 @@ export function TaxView({ model, shell }: Props) {
                   </dd>
                 </div>
                 <div>
-                  <dt>提醒日</dt>
+                  <dt>{t('finance.tax.field.reminderDate')}</dt>
                   <dd>{formatDate(selectedVerificationDocument.reminder_date)}</dd>
                 </div>
               </dl>
             ) : (
-              <div className="module-state">暂无核销单</div>
+              <div className="module-state">{t('finance.tax.message.noDocument')}</div>
             )}
             <div className="finance-tax-actions">
               <form className="record-form compact-section" onSubmit={submitCustomsReceipt}>
-                <div className="form-divider">报关回单登记</div>
+                <div className="form-divider">{t('finance.tax.panel.customsReceiptForm')}</div>
                 <div className="form-pair two">
                   <label>
-                    报关单号
+                    {t('finance.tax.field.customsDeclarationNo')}
                     <Input
                       value={customsReceiptForm.customs_declaration_no}
                       onChange={(event) =>
@@ -448,7 +463,7 @@ export function TaxView({ model, shell }: Props) {
                     />
                   </label>
                   <label>
-                    回单号
+                    {t('finance.tax.field.customsReceiptNo')}
                     <Input
                       value={customsReceiptForm.customs_receipt_no}
                       onChange={(event) =>
@@ -462,7 +477,7 @@ export function TaxView({ model, shell }: Props) {
                 </div>
                 <div className="form-pair two">
                   <label>
-                    回单日期
+                    {t('finance.tax.field.receiptDate')}
                     <Input
                       type="date"
                       value={customsReceiptForm.received_at}
@@ -475,7 +490,7 @@ export function TaxView({ model, shell }: Props) {
                     />
                   </label>
                   <label>
-                    回单备注
+                    {t('finance.tax.field.receiptRemark')}
                     <Input
                       value={customsReceiptForm.remark}
                       onChange={(event) =>
@@ -493,15 +508,15 @@ export function TaxView({ model, shell }: Props) {
                   loading={submittingCustomsReceipt}
                   disabled={!selectedVerificationCanRegisterCustoms}
                 >
-                  登记回单
+                  {t('finance.tax.action.registerReceipt')}
                 </Button>
               </form>
 
               <form className="record-form compact-section" onSubmit={submitVerificationRegister}>
-                <div className="form-divider">核销登记</div>
+                <div className="form-divider">{t('finance.tax.panel.verificationForm')}</div>
                 <div className="form-pair two">
                   <label>
-                    核销编号
+                    {t('finance.tax.field.verificationNo')}
                     <Input
                       value={verificationRegisterForm.verification_no}
                       onChange={(event) =>
@@ -513,7 +528,7 @@ export function TaxView({ model, shell }: Props) {
                     />
                   </label>
                   <label>
-                    核销日期
+                    {t('finance.tax.field.verifiedAt')}
                     <Input
                       type="date"
                       value={verificationRegisterForm.verified_at}
@@ -527,7 +542,7 @@ export function TaxView({ model, shell }: Props) {
                   </label>
                 </div>
                 <label>
-                  核销备注
+                  {t('finance.tax.field.verificationRemark')}
                   <Input
                     value={verificationRegisterForm.remark}
                     onChange={(event) =>
@@ -544,15 +559,15 @@ export function TaxView({ model, shell }: Props) {
                   loading={submittingVerificationRegister}
                   disabled={!selectedVerificationCanVerify}
                 >
-                  登记核销
+                  {t('finance.tax.action.registerVerification')}
                 </Button>
               </form>
 
               <form className="record-form compact-section" onSubmit={submitTaxRefund}>
-                <div className="form-divider">退税登记</div>
+                <div className="form-divider">{t('finance.tax.panel.refundForm')}</div>
                 <div className="form-pair two">
                   <label>
-                    退税编号
+                    {t('finance.tax.field.refundNo')}
                     <Input
                       value={taxRefundForm.refund_no}
                       onChange={(event) =>
@@ -561,7 +576,7 @@ export function TaxView({ model, shell }: Props) {
                     />
                   </label>
                   <label>
-                    退税日期
+                    {t('finance.tax.field.refundedAt')}
                     <Input
                       type="date"
                       value={taxRefundForm.refunded_at}
@@ -573,7 +588,7 @@ export function TaxView({ model, shell }: Props) {
                 </div>
                 <div className="form-pair three">
                   <label>
-                    退税金额
+                    {t('finance.tax.field.refundAmount')}
                     <Input
                       value={taxRefundForm.amount}
                       onChange={(event) =>
@@ -582,7 +597,7 @@ export function TaxView({ model, shell }: Props) {
                     />
                   </label>
                   <label>
-                    币种
+                    {t('finance.field.currency')}
                     <Input
                       value={taxRefundForm.currency}
                       onChange={(event) =>
@@ -591,7 +606,7 @@ export function TaxView({ model, shell }: Props) {
                     />
                   </label>
                   <label>
-                    银行水单号
+                    {t('finance.tax.field.bankReceiptNo')}
                     <Input
                       value={taxRefundForm.bank_receipt_no}
                       onChange={(event) =>
@@ -604,7 +619,7 @@ export function TaxView({ model, shell }: Props) {
                   </label>
                 </div>
                 <label>
-                  退税备注
+                  {t('finance.tax.field.refundRemark')}
                   <Input
                     value={taxRefundForm.remark}
                     onChange={(event) =>
@@ -618,7 +633,7 @@ export function TaxView({ model, shell }: Props) {
                   loading={submittingTaxRefund}
                   disabled={!selectedVerificationCanRefund}
                 >
-                  登记退税
+                  {t('finance.tax.action.registerRefund')}
                 </Button>
               </form>
             </div>
@@ -628,7 +643,10 @@ export function TaxView({ model, shell }: Props) {
         {!detailId ? (
           <section className="workspace-panel finance-tax-usage-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<LayoutDashboard size={18} />} title="核销单使用情况查询" />
+              <PanelTitle
+                icon={<LayoutDashboard size={18} />}
+                title={t('finance.tax.panel.usage')}
+              />
               <form
                 className="inline-filters"
                 onSubmit={(event) => {
@@ -637,19 +655,19 @@ export function TaxView({ model, shell }: Props) {
                 }}
               >
                 <label>
-                  使用情况搜索
+                  {t('finance.tax.filter.usageSearch')}
                   <Input
                     value={verificationUsageSearch}
                     onChange={(event) => setVerificationUsageSearch(event.target.value)}
                   />
                 </label>
                 <label>
-                  进度状态
+                  {t('finance.tax.filter.progressStatus')}
                   <FormSelect
                     value={verificationUsageStatusFilter}
                     onChange={(event) => setVerificationUsageStatusFilter(event.target.value)}
                   >
-                    <option value="">全部状态</option>
+                    <option value="">{t('finance.tax.filter.allStatuses')}</option>
                     {verificationDocumentStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
                         {t(item.labelKey)}
@@ -658,12 +676,12 @@ export function TaxView({ model, shell }: Props) {
                   </FormSelect>
                 </label>
                 <label>
-                  提醒状态
+                  {t('finance.tax.filter.reminderStatus')}
                   <FormSelect
                     value={verificationUsageReminderFilter}
                     onChange={(event) => setVerificationUsageReminderFilter(event.target.value)}
                   >
-                    <option value="">全部提醒</option>
+                    <option value="">{t('finance.tax.filter.allReminders')}</option>
                     {verificationReminderStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
                         {t(item.labelKey)}
@@ -672,44 +690,64 @@ export function TaxView({ model, shell }: Props) {
                   </FormSelect>
                 </label>
                 <label>
-                  出运单号
+                  {t('finance.tax.field.shipmentNo')}
                   <Input
                     value={verificationUsageShipmentFilter}
                     onChange={(event) => setVerificationUsageShipmentFilter(event.target.value)}
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('finance.tax.action.search')}
                 </Button>
               </form>
             </div>
             <Table<VerificationUsageItem>
               columns={[
                 {
-                  title: '核销单',
+                  title: t('finance.tax.table.document'),
                   dataIndex: 'document_no',
                   render: (value: string) => <strong>{value}</strong>,
                 },
-                { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
-                { title: '业务员', dataIndex: 'owner_user_name', render: nullableText },
-                { title: '状态', dataIndex: 'status', render: verificationDocumentStatusTag },
                 {
-                  title: '提醒',
+                  title: t('finance.tax.table.shipment'),
+                  dataIndex: 'shipment_no',
+                  render: nullableText,
+                },
+                {
+                  title: t('finance.tax.table.salesUser'),
+                  dataIndex: 'owner_user_name',
+                  render: nullableText,
+                },
+                {
+                  title: t('finance.field.status'),
+                  dataIndex: 'status',
+                  render: verificationDocumentStatusTag,
+                },
+                {
+                  title: t('finance.tax.table.reminder'),
                   dataIndex: 'reminder_status',
                   render: verificationReminderStatusTag,
                 },
                 {
-                  title: '可退税',
+                  title: t('finance.tax.table.refundable'),
                   dataIndex: 'refundable_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '已退税',
+                  title: t('finance.tax.table.refunded'),
                   dataIndex: 'refunded_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
-                { title: '回单号', dataIndex: 'customs_receipt_no', render: nullableText },
-                { title: '核销编号', dataIndex: 'verification_no', render: nullableText },
+                {
+                  title: t('finance.tax.field.customsReceiptNo'),
+                  dataIndex: 'customs_receipt_no',
+                  render: nullableText,
+                },
+                {
+                  title: t('finance.tax.field.verificationNo'),
+                  dataIndex: 'verification_no',
+                  render: nullableText,
+                },
               ]}
               dataSource={verificationUsage}
               loading={loadingVerificationUsage}

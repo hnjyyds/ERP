@@ -72,7 +72,7 @@ export function MiscView({ model, shell }: Props) {
         <div className="finance-subnav">
           <button className="finance-back-button" type="button" onClick={() => goModule('misc')}>
             <ArrowLeft size={16} />
-            杂费管理
+            {t('finance.misc.title')}
           </button>
         </div>
       ) : (
@@ -81,12 +81,15 @@ export function MiscView({ model, shell }: Props) {
       {moduleAlerts}
       <section
         className={detailId ? 'finance-detail-grid' : 'finance-misc-grid'}
-        aria-label="杂费管理"
+        aria-label={t('finance.misc.title')}
       >
         {!detailId ? (
           <section className="workspace-panel finance-misc-list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<ShieldCheck size={18} />} title="杂费项目配置" />
+              <PanelTitle
+                icon={<ShieldCheck size={18} />}
+                title={t('finance.misc.panel.itemConfig')}
+              />
               <form
                 className="inline-filters"
                 onSubmit={(event) => {
@@ -95,19 +98,19 @@ export function MiscView({ model, shell }: Props) {
                 }}
               >
                 <label>
-                  项目搜索
+                  {t('finance.misc.filter.itemSearch')}
                   <Input
                     value={miscFeeItemSearch}
                     onChange={(event) => setMiscFeeItemSearch(event.target.value)}
                   />
                 </label>
                 <label>
-                  项目分类
+                  {t('finance.misc.filter.itemCategory')}
                   <FormSelect
                     value={miscFeeItemCategoryFilter}
                     onChange={(event) => setMiscFeeItemCategoryFilter(event.target.value)}
                   >
-                    <option value="">全部分类</option>
+                    <option value="">{t('finance.misc.filter.allCategories')}</option>
                     {miscFeeCategoryOptions.map((item) => (
                       <option key={item.value} value={item.value}>
                         {t(item.labelKey)}
@@ -116,12 +119,12 @@ export function MiscView({ model, shell }: Props) {
                   </FormSelect>
                 </label>
                 <label>
-                  启停状态
+                  {t('finance.misc.filter.status')}
                   <FormSelect
                     value={miscFeeItemStatusFilter}
                     onChange={(event) => setMiscFeeItemStatusFilter(event.target.value)}
                   >
-                    <option value="">全部状态</option>
+                    <option value="">{t('finance.misc.filter.allStatuses')}</option>
                     {miscFeeItemStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
                         {t(item.labelKey)}
@@ -130,21 +133,21 @@ export function MiscView({ model, shell }: Props) {
                   </FormSelect>
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('finance.misc.action.search')}
                 </Button>
                 <Button
                   type="primary"
                   icon={<Plus size={16} />}
                   onClick={() => setMiscItemModalOpen(true)}
                 >
-                  新增杂费
+                  {t('finance.misc.action.createMisc')}
                 </Button>
               </form>
             </div>
             <Table<MiscFeeItem>
               columns={[
                 {
-                  title: '项目编码',
+                  title: t('finance.misc.table.code'),
                   dataIndex: 'code',
                   render: (value: string) => (
                     <button className="row-button" type="button">
@@ -152,14 +155,22 @@ export function MiscView({ model, shell }: Props) {
                     </button>
                   ),
                 },
-                { title: '项目名称', dataIndex: 'name' },
-                { title: '分类', dataIndex: 'category', render: miscFeeCategoryLabel },
+                { title: t('finance.misc.table.name'), dataIndex: 'name' },
                 {
-                  title: '默认分摊',
+                  title: t('finance.misc.table.category'),
+                  dataIndex: 'category',
+                  render: miscFeeCategoryLabel,
+                },
+                {
+                  title: t('finance.misc.table.defaultAllocation'),
                   dataIndex: 'default_allocation_method',
                   render: miscFeeAllocationMethodLabel,
                 },
-                { title: '状态', dataIndex: 'status', render: miscFeeItemStatusTag },
+                {
+                  title: t('finance.field.status'),
+                  dataIndex: 'status',
+                  render: miscFeeItemStatusTag,
+                },
               ]}
               dataSource={miscFeeItems}
               loading={loadingMiscFeeItems}
@@ -185,7 +196,7 @@ export function MiscView({ model, shell }: Props) {
             centered
             footer={null}
             open={miscItemModalOpen}
-            title="新增杂费项目"
+            title={t('finance.misc.modal.createTitle')}
             width={640}
             onCancel={() => setMiscItemModalOpen(false)}
           >
@@ -198,7 +209,7 @@ export function MiscView({ model, shell }: Props) {
             >
               <div className="form-pair two">
                 <label>
-                  项目编码
+                  {t('finance.misc.field.code')}
                   <Input
                     value={miscFeeItemForm.code}
                     onChange={(event) =>
@@ -207,7 +218,7 @@ export function MiscView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  项目名称
+                  {t('finance.misc.field.name')}
                   <Input
                     value={miscFeeItemForm.name}
                     onChange={(event) =>
@@ -218,7 +229,7 @@ export function MiscView({ model, shell }: Props) {
               </div>
               <div className="form-pair two">
                 <label>
-                  项目分类
+                  {t('finance.misc.field.category')}
                   <FormSelect
                     value={miscFeeItemForm.category}
                     onChange={(event) =>
@@ -233,7 +244,7 @@ export function MiscView({ model, shell }: Props) {
                   </FormSelect>
                 </label>
                 <label>
-                  默认分摊方式
+                  {t('finance.misc.field.defaultAllocationMethod')}
                   <FormSelect
                     value={miscFeeItemForm.default_allocation_method}
                     onChange={(event) =>
@@ -253,17 +264,17 @@ export function MiscView({ model, shell }: Props) {
               </div>
               <label className="checkbox-line">
                 <input
-                  aria-label="启用项目"
+                  aria-label={t('finance.misc.field.enableItem')}
                   type="checkbox"
                   checked={miscFeeItemForm.is_active}
                   onChange={(event) =>
                     setMiscFeeItemForm({ ...miscFeeItemForm, is_active: event.target.checked })
                   }
                 />
-                启用项目
+                {t('finance.misc.field.enableItem')}
               </label>
               <label>
-                备注
+                {t('finance.misc.field.remark')}
                 <Input
                   value={miscFeeItemForm.remark}
                   onChange={(event) =>
@@ -277,10 +288,10 @@ export function MiscView({ model, shell }: Props) {
                   type="button"
                   onClick={() => setMiscItemModalOpen(false)}
                 >
-                  取消
+                  {t('finance.misc.action.cancel')}
                 </button>
                 <button className="inline-submit" disabled={submittingMiscFeeItem} type="submit">
-                  保存项目
+                  {t('finance.misc.action.saveItem')}
                 </button>
               </div>
             </form>
@@ -289,35 +300,38 @@ export function MiscView({ model, shell }: Props) {
 
         {detailId ? (
           <section className="workspace-panel finance-misc-allocation-panel">
-            <PanelTitle icon={<Wallet size={18} />} title="单票杂费分摊" />
+            <PanelTitle
+              icon={<Wallet size={18} />}
+              title={t('finance.misc.panel.allocation')}
+            />
             {selectedMiscFeeItem ? (
               <dl className="detail-list finance-misc-detail-list">
                 <div>
-                  <dt>当前项目</dt>
+                  <dt>{t('finance.misc.field.currentItem')}</dt>
                   <dd>{selectedMiscFeeItem.name}</dd>
                 </div>
                 <div>
-                  <dt>分类</dt>
+                  <dt>{t('finance.misc.field.category')}</dt>
                   <dd>{miscFeeCategoryLabel(selectedMiscFeeItem.category)}</dd>
                 </div>
                 <div>
-                  <dt>默认方式</dt>
+                  <dt>{t('finance.misc.field.defaultMethod')}</dt>
                   <dd>
                     {miscFeeAllocationMethodLabel(selectedMiscFeeItem.default_allocation_method)}
                   </dd>
                 </div>
                 <div>
-                  <dt>状态</dt>
+                  <dt>{t('finance.field.status')}</dt>
                   <dd>{miscFeeItemStatusLabel(selectedMiscFeeItem.status)}</dd>
                 </div>
               </dl>
             ) : (
-              <div className="module-state">暂无杂费项目</div>
+              <div className="module-state">{t('finance.misc.message.noItem')}</div>
             )}
             <form className="record-form" onSubmit={submitMiscFeeAllocation}>
               <div className="form-pair two">
                 <label>
-                  分摊单号
+                  {t('finance.misc.field.allocationNo')}
                   <Input
                     value={miscFeeAllocationForm.allocation_no}
                     onChange={(event) =>
@@ -329,7 +343,7 @@ export function MiscView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  项目标识
+                  {t('finance.misc.field.itemId')}
                   <Input
                     value={miscFeeAllocationForm.item_id}
                     onChange={(event) =>
@@ -343,7 +357,7 @@ export function MiscView({ model, shell }: Props) {
               </div>
               <div className="form-pair two">
                 <label>
-                  出运单标识
+                  {t('finance.misc.field.shipmentPlanId')}
                   <Input
                     value={miscFeeAllocationForm.shipment_plan_id}
                     onChange={(event) =>
@@ -355,7 +369,7 @@ export function MiscView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  出运单号
+                  {t('finance.misc.field.shipmentNo')}
                   <Input
                     value={miscFeeAllocationForm.shipment_no}
                     onChange={(event) =>
@@ -369,7 +383,7 @@ export function MiscView({ model, shell }: Props) {
               </div>
               <div className="form-pair two">
                 <label>
-                  业务员标识
+                  {t('finance.misc.field.salesUserId')}
                   <Input
                     value={miscFeeAllocationForm.sales_user_id}
                     onChange={(event) =>
@@ -381,7 +395,7 @@ export function MiscView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  业务员姓名
+                  {t('finance.misc.field.salesUserName')}
                   <Input
                     value={miscFeeAllocationForm.sales_user_name}
                     onChange={(event) =>
@@ -395,7 +409,7 @@ export function MiscView({ model, shell }: Props) {
               </div>
               <div className="form-pair three">
                 <label>
-                  分摊日期
+                  {t('finance.misc.field.allocatedAt')}
                   <Input
                     type="date"
                     value={miscFeeAllocationForm.allocated_at}
@@ -408,7 +422,7 @@ export function MiscView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  金额
+                  {t('finance.field.amount')}
                   <Input
                     value={miscFeeAllocationForm.amount}
                     onChange={(event) =>
@@ -420,7 +434,7 @@ export function MiscView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  币种
+                  {t('finance.field.currency')}
                   <Input
                     value={miscFeeAllocationForm.currency}
                     onChange={(event) =>
@@ -433,7 +447,7 @@ export function MiscView({ model, shell }: Props) {
                 </label>
               </div>
               <label>
-                分摊方式
+                {t('finance.misc.field.allocationMethod')}
                 <FormSelect
                   value={miscFeeAllocationForm.allocation_method}
                   onChange={(event) =>
@@ -451,7 +465,7 @@ export function MiscView({ model, shell }: Props) {
                 </FormSelect>
               </label>
               <label>
-                分摊依据
+                {t('finance.misc.field.basis')}
                 <Input
                   value={miscFeeAllocationForm.basis}
                   onChange={(event) =>
@@ -463,7 +477,7 @@ export function MiscView({ model, shell }: Props) {
                 />
               </label>
               <label>
-                备注
+                {t('finance.misc.field.remark')}
                 <Input
                   value={miscFeeAllocationForm.remark}
                   onChange={(event) =>
@@ -480,7 +494,7 @@ export function MiscView({ model, shell }: Props) {
                 loading={submittingMiscFeeAllocation}
                 disabled={!selectedMiscFeeItem}
               >
-                保存分摊
+                {t('finance.misc.action.saveAllocation')}
               </Button>
             </form>
           </section>
@@ -489,7 +503,10 @@ export function MiscView({ model, shell }: Props) {
         {!detailId ? (
           <section className="workspace-panel finance-misc-summary-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<LayoutDashboard size={18} />} title="杂费分摊查询" />
+              <PanelTitle
+                icon={<LayoutDashboard size={18} />}
+                title={t('finance.misc.panel.allocationQuery')}
+              />
               <form
                 className="inline-filters"
                 onSubmit={(event) => {
@@ -499,14 +516,14 @@ export function MiscView({ model, shell }: Props) {
                 }}
               >
                 <label>
-                  分摊搜索
+                  {t('finance.misc.filter.allocationSearch')}
                   <Input
                     value={miscFeeAllocationSearch}
                     onChange={(event) => setMiscFeeAllocationSearch(event.target.value)}
                   />
                 </label>
                 <label>
-                  分类
+                  {t('finance.misc.filter.category')}
                   <FormSelect
                     value={miscFeeAllocationCategoryFilter}
                     onChange={(event) => {
@@ -514,7 +531,7 @@ export function MiscView({ model, shell }: Props) {
                       setMiscFeeSummaryCategoryFilter(event.target.value)
                     }}
                   >
-                    <option value="">全部分类</option>
+                    <option value="">{t('finance.misc.filter.allCategories')}</option>
                     {miscFeeCategoryOptions.map((item) => (
                       <option key={item.value} value={item.value}>
                         {t(item.labelKey)}
@@ -523,7 +540,7 @@ export function MiscView({ model, shell }: Props) {
                   </FormSelect>
                 </label>
                 <label>
-                  出运单号
+                  {t('finance.misc.filter.shipmentNo')}
                   <Input
                     value={miscFeeAllocationShipmentFilter}
                     onChange={(event) => {
@@ -533,47 +550,61 @@ export function MiscView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  业务员标识
+                  {t('finance.misc.filter.salesUserId')}
                   <Input
                     value={miscFeeAllocationSalesFilter}
                     onChange={(event) => setMiscFeeAllocationSalesFilter(event.target.value)}
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('finance.misc.action.search')}
                 </Button>
               </form>
             </div>
             <div className="finance-receipt-strip">
-              <span>分摊记录 {miscFeeAllocations.length} 条</span>
+              <span>
+                {t('finance.misc.metric.allocationCount', { count: miscFeeAllocations.length })}
+              </span>
               <strong>
                 {formatFinanceAmount(
                   totalMiscFeeAmount.toFixed(2),
                   miscFeeAllocations[0]?.currency ?? 'USD',
                 )}
               </strong>
-              <span>已进入单票利润成本</span>
+              <span>{t('finance.misc.metric.allocationHint')}</span>
             </div>
             <Table<MiscFeeAllocation>
               columns={[
                 {
-                  title: '分摊单号',
+                  title: t('finance.misc.table.allocationNo'),
                   dataIndex: 'allocation_no',
                   render: (value: string) => <strong>{value}</strong>,
                 },
-                { title: '杂费项目', dataIndex: 'item_name' },
-                { title: '分类', dataIndex: 'item_category', render: miscFeeCategoryLabel },
-                { title: '出运单', dataIndex: 'shipment_no' },
-                { title: '客户', dataIndex: 'customer_name' },
-                { title: '业务员', dataIndex: 'sales_user_name', render: nullableText },
-                { title: '分摊日', dataIndex: 'allocated_at', render: formatDate },
+                { title: t('finance.misc.table.miscItem'), dataIndex: 'item_name' },
                 {
-                  title: '金额',
+                  title: t('finance.misc.table.category'),
+                  dataIndex: 'item_category',
+                  render: miscFeeCategoryLabel,
+                },
+                { title: t('finance.misc.table.shipment'), dataIndex: 'shipment_no' },
+                { title: t('finance.misc.table.customer'), dataIndex: 'customer_name' },
+                {
+                  title: t('finance.misc.table.salesUser'),
+                  dataIndex: 'sales_user_name',
+                  render: nullableText,
+                },
+                {
+                  title: t('finance.misc.table.allocatedAt'),
+                  dataIndex: 'allocated_at',
+                  render: formatDate,
+                },
+                {
+                  title: t('finance.field.amount'),
                   dataIndex: 'amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '方式',
+                  title: t('finance.misc.table.method'),
                   dataIndex: 'allocation_method',
                   render: miscFeeAllocationMethodLabel,
                 },

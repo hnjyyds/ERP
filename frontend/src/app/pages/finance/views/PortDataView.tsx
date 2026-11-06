@@ -3,6 +3,7 @@ import { FileText, Plus, Search, RefreshCw, Save, Ship } from 'lucide-react'
 import { type PortImportBatch, type CustomsDeclarationRecord } from '../../../../api'
 import { FormSelect, PanelTitle } from '../../../../shared/ui'
 import { formatFinanceAmount, nullableText } from '../../appHelpers'
+import { t } from '../../../appI18n'
 import type { PortDataModel } from '../hooks/usePortDataModule'
 import type { FinanceViewShell } from '../financePageTypes'
 
@@ -39,10 +40,10 @@ export function PortDataView({ model, shell }: Props) {
     <section className="finance-page">
       {moduleHeader}
       {moduleAlerts}
-      <section className="finance-settlement-grid" aria-label="口岸数据导入">
+      <section className="finance-settlement-grid" aria-label={t('finance.portData.pageAria')}>
         <section className="workspace-panel">
           <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Ship size={18} />} title="进出口报关数据查询" />
+            <PanelTitle icon={<Ship size={18} />} title={t('finance.portData.panel.query')} />
             <form
               className="inline-filters"
               onSubmit={(event) => {
@@ -51,32 +52,32 @@ export function PortDataView({ model, shell }: Props) {
               }}
             >
               <label>
-                报关单号
+                {t('finance.portData.filter.declarationNo')}
                 <Input
                   value={customsDeclarationFilter}
                   onChange={(event) => setCustomsDeclarationFilter(event.target.value)}
                 />
               </label>
               <label>
-                报关回单号
+                {t('finance.portData.filter.customsReceiptNo')}
                 <Input
                   value={customsReceiptFilter}
                   onChange={(event) => setCustomsReceiptFilter(event.target.value)}
                 />
               </label>
               <label>
-                进出口
+                {t('finance.portData.filter.tradeType')}
                 <FormSelect
                   value={customsTradeTypeFilter}
                   onChange={(event) => setCustomsTradeTypeFilter(event.target.value)}
                 >
-                  <option value="">全部</option>
-                  <option value="export">出口</option>
-                  <option value="import">进口</option>
+                  <option value="">{t('finance.portData.filter.all')}</option>
+                  <option value="export">{t('finance.portData.tradeType.export')}</option>
+                  <option value="import">{t('finance.portData.tradeType.import')}</option>
                 </FormSelect>
               </label>
               <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
+                {t('finance.portData.action.search')}
               </Button>
               <Button
                 htmlType="button"
@@ -84,30 +85,49 @@ export function PortDataView({ model, shell }: Props) {
                 loading={matchingCustomsReceipts}
                 onClick={() => void autoMatchPortCustomsReceipts()}
               >
-                自动匹配回单
+                {t('finance.portData.action.autoMatch')}
               </Button>
             </form>
           </div>
           <Table<CustomsDeclarationRecord>
             columns={[
-              { title: '报关单号', dataIndex: 'declaration_no' },
-              { title: '回单号', dataIndex: 'customs_receipt_no', render: nullableText },
+              { title: t('finance.portData.table.declarationNo'), dataIndex: 'declaration_no' },
               {
-                title: '进出口',
-                dataIndex: 'trade_type',
-                render: (value: string) => (value === 'import' ? '进口' : '出口'),
+                title: t('finance.portData.table.receiptNo'),
+                dataIndex: 'customs_receipt_no',
+                render: nullableText,
               },
-              { title: '商品', dataIndex: 'product_name' },
               {
-                title: '匹配',
+                title: t('finance.portData.table.tradeType'),
+                dataIndex: 'trade_type',
+                render: (value: string) =>
+                  value === 'import'
+                    ? t('finance.portData.tradeType.import')
+                    : t('finance.portData.tradeType.export'),
+              },
+              { title: t('finance.portData.table.product'), dataIndex: 'product_name' },
+              {
+                title: t('finance.portData.table.match'),
                 dataIndex: 'match_status',
                 render: (value: string) =>
-                  value === 'matched' ? <Tag color="green">已匹配</Tag> : <Tag>未匹配</Tag>,
+                  value === 'matched' ? (
+                    <Tag color="green">{t('finance.portData.match.matched')}</Tag>
+                  ) : (
+                    <Tag>{t('finance.portData.match.unmatched')}</Tag>
+                  ),
               },
-              { title: '核销单', dataIndex: 'verification_document_no', render: nullableText },
-              { title: '报关日期', dataIndex: 'customs_date', render: nullableText },
               {
-                title: '金额',
+                title: t('finance.portData.table.verificationDocument'),
+                dataIndex: 'verification_document_no',
+                render: nullableText,
+              },
+              {
+                title: t('finance.portData.table.customsDate'),
+                dataIndex: 'customs_date',
+                render: nullableText,
+              },
+              {
+                title: t('finance.field.amount'),
                 dataIndex: 'amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
@@ -119,19 +139,22 @@ export function PortDataView({ model, shell }: Props) {
             size="small"
           />
           <div className="finance-receipt-strip">
-            <span>报关数据 {customsRecords.length} 条</span>
+            <span>{t('finance.portData.metric.count', { count: customsRecords.length })}</span>
           </div>
 
           <div className="panel-heading">
-            <PanelTitle icon={<FileText size={18} />} title="导入批次记录" />
+            <PanelTitle
+              icon={<FileText size={18} />}
+              title={t('finance.portData.panel.batches')}
+            />
           </div>
           <Table<PortImportBatch>
             columns={[
-              { title: '批次号', dataIndex: 'batch_no' },
-              { title: '来源', dataIndex: 'source' },
-              { title: '导入日期', dataIndex: 'imported_at' },
-              { title: '记录数', dataIndex: 'record_count' },
-              { title: '状态', dataIndex: 'status' },
+              { title: t('finance.portData.table.batchNo'), dataIndex: 'batch_no' },
+              { title: t('finance.portData.table.source'), dataIndex: 'source' },
+              { title: t('finance.portData.table.importedAt'), dataIndex: 'imported_at' },
+              { title: t('finance.portData.table.recordCount'), dataIndex: 'record_count' },
+              { title: t('finance.field.status'), dataIndex: 'status' },
             ]}
             dataSource={portImportBatches}
             loading={loadingPortBatches}
@@ -143,11 +166,11 @@ export function PortDataView({ model, shell }: Props) {
 
         <section className="workspace-panel">
           <div className="panel-heading">
-            <PanelTitle icon={<Plus size={18} />} title="导入口岸数据" />
+            <PanelTitle icon={<Plus size={18} />} title={t('finance.portData.panel.import')} />
           </div>
           <form className="record-form" onSubmit={submitPortBatch}>
             <label>
-              批次号
+              {t('finance.portData.field.batchNo')}
               <Input
                 value={portBatchForm.batch_no}
                 onChange={(event) =>
@@ -157,10 +180,10 @@ export function PortDataView({ model, shell }: Props) {
               />
             </label>
             <label>
-              数据来源
+              {t('finance.portData.field.dataSource')}
               <Input
                 value={portBatchForm.source}
-                placeholder="如：电子口岸 / 海关"
+                placeholder={t('finance.portData.field.sourcePlaceholder')}
                 onChange={(event) =>
                   setPortBatchForm((prev) => ({ ...prev, source: event.target.value }))
                 }
@@ -168,7 +191,7 @@ export function PortDataView({ model, shell }: Props) {
               />
             </label>
             <label>
-              导入日期
+              {t('finance.portData.field.importedAt')}
               <Input
                 type="date"
                 value={portBatchForm.imported_at}
@@ -178,9 +201,9 @@ export function PortDataView({ model, shell }: Props) {
                 required
               />
             </label>
-            <div className="form-divider">报关数据明细</div>
+            <div className="form-divider">{t('finance.portData.panel.recordDetails')}</div>
             <label>
-              报关单号
+              {t('finance.portData.field.declarationNo')}
               <Input
                 value={portRecordForm.declaration_no}
                 onChange={(event) =>
@@ -190,7 +213,7 @@ export function PortDataView({ model, shell }: Props) {
               />
             </label>
             <label>
-              报关回单号
+              {t('finance.portData.field.customsReceiptNo')}
               <Input
                 value={portRecordForm.customs_receipt_no}
                 onChange={(event) =>
@@ -202,19 +225,19 @@ export function PortDataView({ model, shell }: Props) {
               />
             </label>
             <label>
-              进出口类型
+              {t('finance.portData.field.tradeType')}
               <FormSelect
                 value={portRecordForm.trade_type}
                 onChange={(event) =>
                   setPortRecordForm((prev) => ({ ...prev, trade_type: event.target.value }))
                 }
               >
-                <option value="export">出口</option>
-                <option value="import">进口</option>
+                <option value="export">{t('finance.portData.tradeType.export')}</option>
+                <option value="import">{t('finance.portData.tradeType.import')}</option>
               </FormSelect>
             </label>
             <label>
-              商品名称
+              {t('finance.portData.field.productName')}
               <Input
                 value={portRecordForm.product_name}
                 onChange={(event) =>
@@ -224,7 +247,7 @@ export function PortDataView({ model, shell }: Props) {
               />
             </label>
             <label>
-              报关金额
+              {t('finance.portData.field.customsAmount')}
               <Input
                 value={portRecordForm.amount}
                 onChange={(event) =>
@@ -234,7 +257,7 @@ export function PortDataView({ model, shell }: Props) {
               />
             </label>
             <label>
-              币种
+              {t('finance.field.currency')}
               <Input
                 value={portRecordForm.currency}
                 onChange={(event) =>
@@ -249,7 +272,7 @@ export function PortDataView({ model, shell }: Props) {
               loading={submittingPortBatch}
               icon={<Save size={16} />}
             >
-              导入数据
+              {t('finance.portData.action.importData')}
             </Button>
           </form>
         </section>

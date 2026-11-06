@@ -614,7 +614,7 @@ export function initialVerificationRegisterForm(): VerificationRegisterFormState
   }
 }
 
-export function initialTaxRefundForm(currency = 'USD', amount = '96.00'): TaxRefundFormState {
+export function initialTaxRefundForm(currency = 'USD', amount = ''): TaxRefundFormState {
   return {
     refund_no: `TR-${Date.now().toString().slice(-6)}`,
     refunded_at: todayInputValue(),

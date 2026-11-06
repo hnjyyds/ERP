@@ -8,6 +8,7 @@ import {
   type FinancialSettlement,
 } from '../../../../api'
 import { showError } from '../../../../shared/errors'
+import { t } from '../../../appI18n'
 import {
   FinancialSettlementFormState,
   ManualProfitCostFormState,
@@ -99,7 +100,7 @@ export function useSettlementModule(env: FinanceModuleEnv) {
         null
       setSelectedFinancialSettlementId(nextSettlementId)
     } catch (caught) {
-      showError(caught, '财务结算加载失败')
+      showError(caught, t('finance.settlement.message.loadSettlementsFailed'))
     } finally {
       setLoadingFinancialSettlements(false)
     }
@@ -115,7 +116,7 @@ export function useSettlementModule(env: FinanceModuleEnv) {
       })
       setProfitCalculations(result.items)
     } catch (caught) {
-      showError(caught, '利润核算加载失败')
+      showError(caught, t('finance.settlement.message.loadProfitFailed'))
     } finally {
       setLoadingProfitCalculations(false)
     }
@@ -128,13 +129,13 @@ export function useSettlementModule(env: FinanceModuleEnv) {
     setError('')
     try {
       const created = await createFinancialSettlement(financialSettlementPayload(settlementForm))
-      setMessage(`已锁定财务结算 ${created.settlement_no}`)
+      setMessage(t('finance.settlement.message.settlementLocked', { code: created.settlement_no }))
       setSettlementForm(initialFinancialSettlementForm())
       await loadFinancialSettlements(created.id)
       await loadProfitCalculations()
       await loadOverview()
     } catch (caught) {
-      showError(caught, '财务结算锁定失败')
+      showError(caught, t('finance.settlement.message.settlementLockFailed'))
     } finally {
       setSubmittingSettlement(false)
     }
@@ -151,14 +152,16 @@ export function useSettlementModule(env: FinanceModuleEnv) {
         selectedFinancialSettlement.id,
         manualProfitCostPayload(manualProfitCostForm),
       )
-      setMessage(`已关联手工成本 ${manualProfitCostForm.cost_no}`)
+      setMessage(
+        t('finance.settlement.message.manualCostLinked', { code: manualProfitCostForm.cost_no }),
+      )
       setManualProfitCostForm(
         initialManualProfitCostForm(updated.currency, updated.settlement_date),
       )
       await loadFinancialSettlements(updated.id)
       await loadProfitCalculations()
     } catch (caught) {
-      showError(caught, '手工成本关联失败')
+      showError(caught, t('finance.settlement.message.manualCostLinkFailed'))
     } finally {
       setSubmittingManualProfitCost(false)
     }

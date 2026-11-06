@@ -25,6 +25,7 @@ import {
   explainFinanceReport,
 } from '../../../../api'
 import { showError } from '../../../../shared/errors'
+import { t } from '../../../appI18n'
 
 import type { FinanceModuleEnv } from '../financePageTypes'
 
@@ -153,7 +154,7 @@ export function useReportsModule(env: FinanceModuleEnv) {
         setTaxRefundStatisticsReport(await getTaxRefundStatisticsReport(filters))
       }
     } catch (caught) {
-      showError(caught, '财务报表加载失败')
+      showError(caught, t('finance.report.message.loadFailed'))
     } finally {
       setLoadingReport(false)
     }
@@ -178,9 +179,9 @@ export function useReportsModule(env: FinanceModuleEnv) {
                   ? await exportCustomsReceiptCollectionReport(filters)
                   : await exportTaxRefundStatisticsReport(filters)
       downloadCsv(exported.filename, exported.content)
-      setMessage(`已导出 ${exported.total} 行财务报表`)
+      setMessage(t('finance.report.message.exported', { count: exported.total }))
     } catch (caught) {
-      showError(caught, '财务报表导出失败')
+      showError(caught, t('finance.report.message.exportFailed'))
     } finally {
       setExportingReport(false)
     }
@@ -192,7 +193,7 @@ export function useReportsModule(env: FinanceModuleEnv) {
     try {
       setReportExplanation(await explainFinanceReport(report))
     } catch (caught) {
-      showError(caught, '报表口径加载失败')
+      showError(caught, t('finance.report.message.explanationLoadFailed'))
     } finally {
       setLoadingReportExplanation(false)
     }
@@ -203,7 +204,7 @@ export function useReportsModule(env: FinanceModuleEnv) {
     try {
       setReportDrilldown(await drilldownFinanceReport(report, sourceNo))
     } catch (caught) {
-      showError(caught, '报表下钻失败')
+      showError(caught, t('finance.report.message.drilldownFailed'))
     }
   }
 

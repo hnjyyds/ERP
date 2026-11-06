@@ -9,6 +9,7 @@ import {
   profitCostTypeLabel,
   profitCostDirectionTag,
 } from '../financeHelpers'
+import { t } from '../../../appI18n'
 import type { SettlementModel } from '../hooks/useSettlementModule'
 import type { FinanceViewShell } from '../financePageTypes'
 
@@ -61,7 +62,7 @@ export function SettlementView({ model, shell }: Props) {
             onClick={() => goModule('settlement')}
           >
             <ArrowLeft size={16} />
-            结算核算
+            {t('finance.settlement.title')}
           </button>
         </div>
       ) : (
@@ -70,12 +71,15 @@ export function SettlementView({ model, shell }: Props) {
       {moduleAlerts}
       <section
         className={detailId ? 'finance-detail-grid' : 'finance-settlement-grid'}
-        aria-label="财务结算和利润核算"
+        aria-label={t('finance.settlement.pageAria')}
       >
         {!detailId ? (
           <section className="workspace-panel finance-settlement-list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Wallet size={18} />} title="财务结算列表" />
+              <PanelTitle
+                icon={<Wallet size={18} />}
+                title={t('finance.settlement.panel.settlementList')}
+              />
             </div>
             <form
               className="inline-filters"
@@ -85,33 +89,35 @@ export function SettlementView({ model, shell }: Props) {
               }}
             >
               <label>
-                结算搜索
+                {t('finance.settlement.filter.settlementSearch')}
                 <Input
                   value={settlementSearch}
-                  placeholder="结算单 / 出运单 / 客户"
+                  placeholder={t('finance.settlement.filter.searchPlaceholder')}
                   onChange={(event) => setSettlementSearch(event.target.value)}
                 />
               </label>
               <label>
-                出运单号
+                {t('finance.settlement.field.shipmentNo')}
                 <Input
                   value={settlementShipmentFilter}
                   onChange={(event) => setSettlementShipmentFilter(event.target.value)}
                 />
               </label>
               <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
+                {t('finance.settlement.action.search')}
               </Button>
               <Button
                 type="primary"
                 icon={<Plus size={16} />}
                 onClick={() => setSettlementModalOpen(true)}
               >
-                新增结算
+                {t('finance.settlement.action.createSettlement')}
               </Button>
             </form>
             <div className="finance-receipt-strip">
-              <span>锁定结算 {financialSettlements.length} 单</span>
+              <span>
+                {t('finance.settlement.metric.lockedCount', { count: financialSettlements.length })}
+              </span>
               <strong>
                 {formatFinanceAmount(
                   totalSettlementSalesIncome.toFixed(2),
@@ -119,7 +125,7 @@ export function SettlementView({ model, shell }: Props) {
                 )}
               </strong>
               <span>
-                毛利{' '}
+                {t('finance.settlement.field.grossProfit')}{' '}
                 {formatFinanceAmount(
                   totalSettlementGrossProfit.toFixed(2),
                   financialSettlements[0]?.currency ?? 'USD',
@@ -129,45 +135,57 @@ export function SettlementView({ model, shell }: Props) {
             <Table<FinancialSettlement>
               columns={[
                 {
-                  title: '结算单',
+                  title: t('finance.settlement.table.settlementNo'),
                   dataIndex: 'settlement_no',
                   render: (value: string) => <strong>{value}</strong>,
                 },
-                { title: '出运单', dataIndex: 'shipment_no' },
-                { title: '客户', dataIndex: 'customer_name' },
-                { title: '结算日', dataIndex: 'settlement_date', render: formatDate },
+                { title: t('finance.settlement.table.shipmentNo'), dataIndex: 'shipment_no' },
+                { title: t('finance.settlement.table.customer'), dataIndex: 'customer_name' },
                 {
-                  title: '收入',
+                  title: t('finance.settlement.table.settlementDate'),
+                  dataIndex: 'settlement_date',
+                  render: formatDate,
+                },
+                {
+                  title: t('finance.settlement.table.salesIncome'),
                   dataIndex: 'sales_income',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '成本',
+                  title: t('finance.settlement.table.cost'),
                   dataIndex: 'purchase_cost_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '退税',
+                  title: t('finance.settlement.table.taxRefund'),
                   dataIndex: 'tax_refund_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '杂费',
+                  title: t('finance.settlement.table.miscFee'),
                   dataIndex: 'misc_fee_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '手工成本',
+                  title: t('finance.settlement.table.manualCost'),
                   dataIndex: 'manual_cost_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '毛利',
+                  title: t('finance.settlement.table.grossProfit'),
                   dataIndex: 'gross_profit',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
-                { title: '毛利率', dataIndex: 'gross_profit_rate', render: formatPercent },
-                { title: '状态', dataIndex: 'status', render: settlementStatusTag },
+                {
+                  title: t('finance.settlement.table.grossProfitRate'),
+                  dataIndex: 'gross_profit_rate',
+                  render: formatPercent,
+                },
+                {
+                  title: t('finance.field.status'),
+                  dataIndex: 'status',
+                  render: settlementStatusTag,
+                },
               ]}
               dataSource={financialSettlements}
               loading={loadingFinancialSettlements}
@@ -195,7 +213,7 @@ export function SettlementView({ model, shell }: Props) {
             centered
             footer={null}
             open={settlementModalOpen}
-            title="单票结算锁定"
+            title={t('finance.settlement.modal.lockTitle')}
             width={640}
             onCancel={() => setSettlementModalOpen(false)}
           >
@@ -207,7 +225,7 @@ export function SettlementView({ model, shell }: Props) {
               }}
             >
               <label>
-                结算单号
+                {t('finance.settlement.field.settlementNo')}
                 <Input
                   required
                   value={settlementForm.settlement_no}
@@ -217,7 +235,7 @@ export function SettlementView({ model, shell }: Props) {
                 />
               </label>
               <label>
-                出运单 ID
+                {t('finance.settlement.field.shipmentPlanId')}
                 <Input
                   required
                   value={settlementForm.shipment_plan_id}
@@ -227,7 +245,7 @@ export function SettlementView({ model, shell }: Props) {
                 />
               </label>
               <label>
-                出运单号
+                {t('finance.settlement.field.shipmentNo')}
                 <Input
                   value={settlementForm.shipment_no}
                   onChange={(event) =>
@@ -236,7 +254,7 @@ export function SettlementView({ model, shell }: Props) {
                 />
               </label>
               <label>
-                结算日期
+                {t('finance.settlement.field.settlementDate')}
                 <Input
                   required
                   type="date"
@@ -247,9 +265,9 @@ export function SettlementView({ model, shell }: Props) {
                 />
               </label>
               <label>
-                备注
+                {t('finance.settlement.field.remark')}
                 <textarea
-                  aria-label="结算备注"
+                  aria-label={t('finance.settlement.field.settlementRemark')}
                   rows={3}
                   value={settlementForm.remark}
                   onChange={(event) =>
@@ -263,10 +281,10 @@ export function SettlementView({ model, shell }: Props) {
                   type="button"
                   onClick={() => setSettlementModalOpen(false)}
                 >
-                  取消
+                  {t('finance.settlement.action.cancel')}
                 </button>
                 <button className="inline-submit" disabled={submittingSettlement} type="submit">
-                  锁定结算
+                  {t('finance.settlement.action.lock')}
                 </button>
               </div>
             </form>
@@ -275,7 +293,10 @@ export function SettlementView({ model, shell }: Props) {
 
         {detailId ? (
           <section className="workspace-panel finance-manual-cost-panel">
-            <PanelTitle icon={<PackagePlus size={18} />} title="手工成本关联" />
+            <PanelTitle
+              icon={<PackagePlus size={18} />}
+              title={t('finance.settlement.panel.manualCostLink')}
+            />
             {selectedFinancialSettlement ? (
               <Descriptions
                 bordered
@@ -284,17 +305,17 @@ export function SettlementView({ model, shell }: Props) {
                 items={[
                   {
                     key: 'settlement_no',
-                    label: '结算单',
+                    label: t('finance.settlement.field.settlementNo'),
                     children: selectedFinancialSettlement.settlement_no,
                   },
                   {
                     key: 'shipment_no',
-                    label: '出运单',
+                    label: t('finance.settlement.field.shipmentNo'),
                     children: selectedFinancialSettlement.shipment_no,
                   },
                   {
                     key: 'gross_profit',
-                    label: '当前毛利',
+                    label: t('finance.settlement.field.currentGrossProfit'),
                     children: formatFinanceAmount(
                       selectedFinancialSettlement.gross_profit,
                       selectedFinancialSettlement.currency,
@@ -302,7 +323,7 @@ export function SettlementView({ model, shell }: Props) {
                   },
                   {
                     key: 'manual_cost_amount',
-                    label: '手工成本',
+                    label: t('finance.settlement.field.manualCost'),
                     children: formatFinanceAmount(
                       selectedFinancialSettlement.manual_cost_amount,
                       selectedFinancialSettlement.currency,
@@ -312,11 +333,11 @@ export function SettlementView({ model, shell }: Props) {
                 size="small"
               />
             ) : (
-              <div className="module-state">暂无可关联结算单</div>
+              <div className="module-state">{t('finance.settlement.message.noSettlement')}</div>
             )}
             <form className="record-form compact-section" onSubmit={submitManualProfitCost}>
               <label>
-                成本单号
+                {t('finance.settlement.field.costNo')}
                 <Input
                   required
                   value={manualProfitCostForm.cost_no}
@@ -329,7 +350,7 @@ export function SettlementView({ model, shell }: Props) {
                 />
               </label>
               <label>
-                成本类型
+                {t('finance.settlement.field.costType')}
                 <FormSelect
                   value={manualProfitCostForm.cost_type}
                   onChange={(event) =>
@@ -339,11 +360,11 @@ export function SettlementView({ model, shell }: Props) {
                     })
                   }
                 >
-                  <option value="other_cost">其他成本</option>
+                  <option value="other_cost">{t('finance.report.costType.otherCost')}</option>
                 </FormSelect>
               </label>
               <label>
-                成本日期
+                {t('finance.settlement.field.costDate')}
                 <Input
                   required
                   type="date"
@@ -358,7 +379,7 @@ export function SettlementView({ model, shell }: Props) {
               </label>
               <div className="form-pair two">
                 <label>
-                  金额
+                  {t('finance.field.amount')}
                   <Input
                     required
                     min="0"
@@ -374,7 +395,7 @@ export function SettlementView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  币种
+                  {t('finance.field.currency')}
                   <Input
                     required
                     value={manualProfitCostForm.currency}
@@ -388,7 +409,7 @@ export function SettlementView({ model, shell }: Props) {
                 </label>
               </div>
               <label>
-                来源单号
+                {t('finance.settlement.field.sourceNo')}
                 <Input
                   value={manualProfitCostForm.source_no}
                   onChange={(event) =>
@@ -400,7 +421,7 @@ export function SettlementView({ model, shell }: Props) {
                 />
               </label>
               <label>
-                原因
+                {t('finance.settlement.field.reason')}
                 <Input
                   required
                   value={manualProfitCostForm.reason}
@@ -413,9 +434,9 @@ export function SettlementView({ model, shell }: Props) {
                 />
               </label>
               <label>
-                备注
+                {t('finance.settlement.field.remark')}
                 <textarea
-                  aria-label="手工成本备注"
+                  aria-label={t('finance.settlement.field.manualCostRemark')}
                   rows={3}
                   value={manualProfitCostForm.remark}
                   onChange={(event) =>
@@ -432,7 +453,7 @@ export function SettlementView({ model, shell }: Props) {
                 loading={submittingManualProfitCost}
                 disabled={!selectedFinancialSettlement}
               >
-                关联成本
+                {t('finance.settlement.action.linkCost')}
               </Button>
             </form>
           </section>
@@ -441,7 +462,10 @@ export function SettlementView({ model, shell }: Props) {
         {!detailId ? (
           <section className="workspace-panel finance-profit-calculation-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<CheckCircle2 size={18} />} title="利润核算表" />
+              <PanelTitle
+                icon={<CheckCircle2 size={18} />}
+                title={t('finance.settlement.panel.profitCalculation')}
+              />
             </div>
             <form
               className="inline-filters"
@@ -451,50 +475,52 @@ export function SettlementView({ model, shell }: Props) {
               }}
             >
               <label>
-                核算搜索
+                {t('finance.settlement.filter.profitSearch')}
                 <Input
                   value={profitCalculationSearch}
-                  placeholder="结算单 / 出运单 / 客户"
+                  placeholder={t('finance.settlement.filter.searchPlaceholder')}
                   onChange={(event) => setProfitCalculationSearch(event.target.value)}
                 />
               </label>
               <label>
-                出运单号
+                {t('finance.settlement.field.shipmentNo')}
                 <Input
                   value={profitCalculationShipmentFilter}
                   onChange={(event) => setProfitCalculationShipmentFilter(event.target.value)}
                 />
               </label>
               <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
+                {t('finance.settlement.action.search')}
               </Button>
             </form>
             <div className="finance-receipt-strip">
-              <span>核算单票 {profitCalculations.length} 单</span>
+              <span>
+                {t('finance.settlement.metric.profitCount', { count: profitCalculations.length })}
+              </span>
               <strong>
                 {formatFinanceAmount(
                   totalProfitCalculationGrossProfit.toFixed(2),
                   profitCalculations[0]?.currency ?? 'USD',
                 )}
               </strong>
-              <span>按结算锁定口径展开成本明细</span>
+              <span>{t('finance.settlement.metric.profitHint')}</span>
             </div>
             <Table<FinancialSettlement>
               columns={[
                 {
-                  title: '结算单',
+                  title: t('finance.settlement.table.settlementNo'),
                   dataIndex: 'settlement_no',
                   render: (value: string) => <strong>{value}</strong>,
                 },
-                { title: '出运单', dataIndex: 'shipment_no' },
-                { title: '客户', dataIndex: 'customer_name' },
+                { title: t('finance.settlement.table.shipmentNo'), dataIndex: 'shipment_no' },
+                { title: t('finance.settlement.table.customer'), dataIndex: 'customer_name' },
                 {
-                  title: '收入',
+                  title: t('finance.settlement.table.salesIncome'),
                   dataIndex: 'sales_income',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '总成本',
+                  title: t('finance.settlement.table.totalCost'),
                   render: (_, record) =>
                     formatFinanceAmount(
                       (
@@ -507,32 +533,56 @@ export function SettlementView({ model, shell }: Props) {
                     ),
                 },
                 {
-                  title: '退税',
+                  title: t('finance.settlement.table.taxRefund'),
                   dataIndex: 'tax_refund_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '毛利',
+                  title: t('finance.settlement.table.grossProfit'),
                   dataIndex: 'gross_profit',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
-                { title: '毛利率', dataIndex: 'gross_profit_rate', render: formatPercent },
+                {
+                  title: t('finance.settlement.table.grossProfitRate'),
+                  dataIndex: 'gross_profit_rate',
+                  render: formatPercent,
+                },
               ]}
               dataSource={profitCalculations}
               expandable={{
                 expandedRowRender: (record) => (
                   <Table<ProfitCostItem>
                     columns={[
-                      { title: '类型', dataIndex: 'cost_type', render: profitCostTypeLabel },
-                      { title: '方向', dataIndex: 'direction', render: profitCostDirectionTag },
-                      { title: '来源', dataIndex: 'source_no', render: nullableText },
-                      { title: '日期', dataIndex: 'cost_date', render: formatDate },
                       {
-                        title: '金额',
+                        title: t('finance.settlement.table.costType'),
+                        dataIndex: 'cost_type',
+                        render: profitCostTypeLabel,
+                      },
+                      {
+                        title: t('finance.settlement.table.direction'),
+                        dataIndex: 'direction',
+                        render: profitCostDirectionTag,
+                      },
+                      {
+                        title: t('finance.settlement.table.source'),
+                        dataIndex: 'source_no',
+                        render: nullableText,
+                      },
+                      {
+                        title: t('finance.settlement.table.date'),
+                        dataIndex: 'cost_date',
+                        render: formatDate,
+                      },
+                      {
+                        title: t('finance.field.amount'),
                         dataIndex: 'amount',
                         render: (value: string, item) => formatFinanceAmount(value, item.currency),
                       },
-                      { title: '原因', dataIndex: 'reason', render: nullableText },
+                      {
+                        title: t('finance.settlement.table.reason'),
+                        dataIndex: 'reason',
+                        render: nullableText,
+                      },
                     ]}
                     dataSource={record.cost_items}
                     pagination={false}

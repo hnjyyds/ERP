@@ -2262,6 +2262,84 @@
       }
     },
     "tax": {
+      "title": "核销退税",
+      "panel": {
+        "documentList": "核销单列表",
+        "process": "回单、核销和退税登记",
+        "customsReceiptForm": "报关回单登记",
+        "verificationForm": "核销登记",
+        "refundForm": "退税登记",
+        "usage": "核销单使用情况查询"
+      },
+      "field": {
+        "documentNo": "核销单号",
+        "receivedAt": "领用日期",
+        "shipmentPlanId": "出运单标识",
+        "shipmentNo": "出运单号",
+        "ownerUserId": "业务员标识",
+        "ownerUserName": "业务员姓名",
+        "customerName": "客户名称",
+        "validUntil": "有效期至",
+        "refundableAmount": "可退税金额",
+        "remark": "备注",
+        "currentDocument": "当前核销单",
+        "unrefunded": "未退税",
+        "reminderDate": "提醒日",
+        "customsDeclarationNo": "报关单号",
+        "customsReceiptNo": "回单号",
+        "receiptDate": "回单日期",
+        "receiptRemark": "回单备注",
+        "verificationNo": "核销编号",
+        "verifiedAt": "核销日期",
+        "verificationRemark": "核销备注",
+        "refundNo": "退税编号",
+        "refundedAt": "退税日期",
+        "refundAmount": "退税金额",
+        "bankReceiptNo": "银行水单号",
+        "refundRemark": "退税备注"
+      },
+      "filter": {
+        "formAria": "核销单筛选",
+        "documentSearch": "核销单搜索",
+        "progressStatus": "进度状态",
+        "reminderStatus": "提醒状态",
+        "allStatuses": "全部状态",
+        "allReminders": "全部提醒",
+        "usageSearch": "使用情况搜索"
+      },
+      "action": {
+        "search": "查询",
+        "issueDocument": "领用核销单",
+        "cancel": "取消",
+        "registerReceipt": "登记回单",
+        "registerVerification": "登记核销",
+        "registerRefund": "登记退税"
+      },
+      "table": {
+        "document": "核销单",
+        "reminder": "提醒",
+        "shipment": "出运单",
+        "validUntil": "有效期",
+        "refundable": "可退税",
+        "refunded": "已退税",
+        "salesUser": "业务员"
+      },
+      "modal": {
+        "issueTitle": "核销单领用"
+      },
+      "message": {
+        "loadDocumentsFailed": "核销单加载失败",
+        "loadUsageFailed": "核销单使用情况加载失败",
+        "documentIssued": "已领用核销单 {code}",
+        "documentIssueFailed": "核销单领用失败",
+        "customsReceiptRegistered": "已登记报关回单 {code}",
+        "customsReceiptRegisterFailed": "报关回单登记失败",
+        "verificationRegistered": "已核销 {code}",
+        "verificationRegisterFailed": "核销登记失败",
+        "refundRegistered": "已登记退税 {code}",
+        "refundRegisterFailed": "退税登记失败",
+        "noDocument": "暂无核销单"
+      },
       "verificationDocument": {
         "status": {
           "issued": "已领用",
@@ -2279,6 +2357,7 @@
       }
     },
     "misc": {
+      "title": "杂费管理",
       "category": {
         "office": "办公费用",
         "capitalInterest": "资金占用利息",
@@ -2290,11 +2369,158 @@
         "ratio": "按比例分摊",
         "amount": "按金额分摊",
         "quantity": "按数量分摊"
+      },
+      "panel": {
+        "itemConfig": "杂费项目配置",
+        "allocation": "单票杂费分摊",
+        "allocationQuery": "杂费分摊查询"
+      },
+      "field": {
+        "code": "项目编码",
+        "name": "项目名称",
+        "category": "分类",
+        "defaultAllocationMethod": "默认分摊方式",
+        "enableItem": "启用项目",
+        "remark": "备注",
+        "currentItem": "当前项目",
+        "defaultMethod": "默认方式",
+        "allocationNo": "分摊单号",
+        "itemId": "项目标识",
+        "shipmentPlanId": "出运单标识",
+        "shipmentNo": "出运单号",
+        "salesUserId": "业务员标识",
+        "salesUserName": "业务员姓名",
+        "allocatedAt": "分摊日期",
+        "allocationMethod": "分摊方式",
+        "basis": "分摊依据"
+      },
+      "filter": {
+        "itemSearch": "项目搜索",
+        "itemCategory": "项目分类",
+        "allCategories": "全部分类",
+        "status": "启停状态",
+        "allStatuses": "全部状态",
+        "allocationSearch": "分摊搜索",
+        "category": "分类",
+        "shipmentNo": "出运单号",
+        "salesUserId": "业务员标识"
+      },
+      "action": {
+        "search": "查询",
+        "createMisc": "新增杂费",
+        "cancel": "取消",
+        "saveItem": "保存项目",
+        "saveAllocation": "保存分摊"
+      },
+      "table": {
+        "code": "项目编码",
+        "name": "项目名称",
+        "category": "分类",
+        "defaultAllocation": "默认分摊",
+        "allocationNo": "分摊单号",
+        "miscItem": "杂费项目",
+        "shipment": "出运单",
+        "customer": "客户",
+        "salesUser": "业务员",
+        "allocatedAt": "分摊日",
+        "method": "方式"
+      },
+      "modal": {
+        "createTitle": "新增杂费项目"
+      },
+      "metric": {
+        "allocationCount_one": "分摊记录 {count} 条",
+        "allocationCount_other": "分摊记录 {count} 条",
+        "allocationHint": "已进入单票利润成本"
+      },
+      "message": {
+        "loadItemsFailed": "杂费项目加载失败",
+        "loadAllocationsFailed": "杂费分摊加载失败",
+        "loadSummaryFailed": "杂费分摊汇总加载失败",
+        "itemCreated": "已配置杂费项目 {name}",
+        "itemCreateFailed": "杂费项目配置失败",
+        "allocationCreated": "已分摊杂费 {code}",
+        "allocationCreateFailed": "杂费分摊失败",
+        "noItem": "暂无杂费项目"
       }
     },
     "settlement": {
+      "title": "结算核算",
+      "pageAria": "财务结算和利润核算",
       "status": {
         "locked": "已锁定"
+      },
+      "panel": {
+        "settlementList": "财务结算列表",
+        "manualCostLink": "手工成本关联",
+        "profitCalculation": "利润核算表"
+      },
+      "field": {
+        "settlementNo": "结算单号",
+        "shipmentPlanId": "出运单 ID",
+        "shipmentNo": "出运单号",
+        "settlementDate": "结算日期",
+        "remark": "备注",
+        "settlementRemark": "结算备注",
+        "grossProfit": "毛利",
+        "currentGrossProfit": "当前毛利",
+        "manualCost": "手工成本",
+        "costNo": "成本单号",
+        "costType": "成本类型",
+        "costDate": "成本日期",
+        "sourceNo": "来源单号",
+        "reason": "原因",
+        "manualCostRemark": "手工成本备注"
+      },
+      "filter": {
+        "settlementSearch": "结算搜索",
+        "profitSearch": "核算搜索",
+        "searchPlaceholder": "结算单 / 出运单 / 客户"
+      },
+      "action": {
+        "search": "查询",
+        "createSettlement": "新增结算",
+        "cancel": "取消",
+        "lock": "锁定结算",
+        "linkCost": "关联成本"
+      },
+      "table": {
+        "settlementNo": "结算单",
+        "shipmentNo": "出运单",
+        "customer": "客户",
+        "settlementDate": "结算日",
+        "salesIncome": "收入",
+        "cost": "成本",
+        "taxRefund": "退税",
+        "miscFee": "杂费",
+        "manualCost": "手工成本",
+        "grossProfit": "毛利",
+        "grossProfitRate": "毛利率",
+        "totalCost": "总成本",
+        "costType": "类型",
+        "direction": "方向",
+        "source": "来源",
+        "date": "日期",
+        "reason": "原因"
+      },
+      "modal": {
+        "lockTitle": "单票结算锁定"
+      },
+      "metric": {
+        "lockedCount_one": "锁定结算 {count} 单",
+        "lockedCount_other": "锁定结算 {count} 单",
+        "profitCount_one": "核算单票 {count} 单",
+        "profitCount_other": "核算单票 {count} 单",
+        "profitHint": "按结算锁定口径展开成本明细"
+      },
+      "message": {
+        "loadSettlementsFailed": "财务结算加载失败",
+        "loadProfitFailed": "利润核算加载失败",
+        "settlementLocked": "已锁定财务结算 {code}",
+        "settlementLockFailed": "财务结算锁定失败",
+        "manualCostLinked": "已关联手工成本 {code}",
+        "manualCostLinkFailed": "手工成本关联失败",
+        "noSettlement": "暂无可关联结算单"
       }
     },
     "receivable": {
@@ -2305,6 +2531,70 @@
       }
     },
     "reimbursement": {
+      "pageAria": "报销管理",
+      "panel": {
+        "list": "报销单列表",
+        "approval": "审批与付款"
+      },
+      "field": {
+        "reimbursementNo": "报销单号",
+        "applicantUserId": "申请人工号",
+        "applicantUserName": "申请人姓名",
+        "department": "部门",
+        "category": "分类",
+        "reason": "事由",
+        "currentStatus": "当前状态",
+        "approver": "审批人",
+        "unassigned": "未指定",
+        "assignedApprover": "指定审批人"
+      },
+      "filter": {
+        "search": "搜索",
+        "searchPlaceholder": "单号 / 申请人 / 部门",
+        "status": "状态",
+        "allStatuses": "全部状态",
+        "category": "分类",
+        "allCategories": "全部分类"
+      },
+      "action": {
+        "search": "查询",
+        "create": "新增报销",
+        "submit": "登记报销单",
+        "approve": "审批通过",
+        "reject": "驳回",
+        "confirmPayment": "确认付款"
+      },
+      "table": {
+        "reimbursementNo": "报销单号",
+        "applicant": "申请人",
+        "department": "部门",
+        "category": "分类"
+      },
+      "modal": {
+        "createTitle": "新增报销单"
+      },
+      "metric": {
+        "count_one": "报销单 {count} 条",
+        "count_other": "报销单 {count} 条"
+      },
+      "message": {
+        "loadFailed": "报销单加载失败",
+        "createSuccess": "已登记报销单 {code}",
+        "createFailed": "报销单登记失败",
+        "invalidApprover": "该报销单应由 {name} 审批",
+        "approved": "报销单 {code} 已审批通过",
+        "rejected": "报销单 {code} 已驳回",
+        "approveFailed": "报销单审批失败",
+        "paid": "报销单 {code} 已付款",
+        "payFailed": "报销单付款失败",
+        "pendingApproval": "等待 {name} 审批"
+      },
+      "payMethod": {
+        "bankTransfer": "银行转账",
+        "cash": "现金",
+        "cheque": "支票",
+        "other": "其他"
+      },
       "category": {
         "travel": "差旅",
         "office": "办公",
@@ -2318,7 +2608,160 @@
         "paid": "已付款"
       }
     },
+    "portData": {
+      "pageAria": "口岸数据导入",
+      "panel": {
+        "query": "进出口报关数据查询",
+        "batches": "导入批次记录",
+        "import": "导入口岸数据",
+        "recordDetails": "报关数据明细"
+      },
+      "field": {
+        "batchNo": "批次号",
+        "dataSource": "数据来源",
+        "sourcePlaceholder": "如：电子口岸 / 海关",
+        "importedAt": "导入日期",
+        "declarationNo": "报关单号",
+        "customsReceiptNo": "报关回单号",
+        "tradeType": "进出口类型",
+        "productName": "商品名称",
+        "customsAmount": "报关金额"
+      },
+      "filter": {
+        "declarationNo": "报关单号",
+        "customsReceiptNo": "报关回单号",
+        "tradeType": "进出口",
+        "all": "全部"
+      },
+      "action": {
+        "search": "查询",
+        "autoMatch": "自动匹配回单",
+        "importData": "导入数据"
+      },
+      "table": {
+        "declarationNo": "报关单号",
+        "receiptNo": "回单号",
+        "tradeType": "进出口",
+        "product": "商品",
+        "match": "匹配",
+        "verificationDocument": "核销单",
+        "customsDate": "报关日期",
+        "batchNo": "批次号",
+        "source": "来源",
+        "importedAt": "导入日期",
+        "recordCount": "记录数"
+      },
+      "tradeType": {
+        "export": "出口",
+        "import": "进口"
+      },
+      "match": {
+        "matched": "已匹配",
+        "unmatched": "未匹配"
+      },
+      "metric": {
+        "count_one": "报关数据 {count} 条",
+        "count_other": "报关数据 {count} 条"
+      },
+      "message": {
+        "loadBatchesFailed": "口岸导入批次加载失败",
+        "loadCustomsFailed": "进出口报关数据加载失败",
+        "importSuccess": "已导入口岸数据批次 {code}",
+        "importFailed": "口岸数据导入失败",
+        "autoMatched_one": "已自动匹配 {count} 条报关回单",
+        "autoMatched_other": "已自动匹配 {count} 条报关回单",
+        "autoMatchFailed": "报关回单自动匹配失败"
+      }
+    },
     "report": {
+      "title": "财务统计报表",
+      "pageAria": "财务统计报表",
+      "tab": {
+        "aria": "报表切换",
+        "receiptUsage": "水单使用明细",
+        "bankReceiptSummary": "银行水单汇总",
+        "goodsPayment": "货款支付情况",
+        "feePayment": "费用支付情况",
+        "customsReceiptCollection": "报关回单催收",
+        "taxRefundStatistics": "申报退税统计"
+      },
+      "filter": {
+        "formAria": "财务报表筛选",
+        "dateFrom": "起始日期",
+        "dateTo": "结束日期",
+        "currency": "币种",
+        "currencyPlaceholder": "如 USD",
+        "receiptNo": "水单号",
+        "receiptType": "收款性质",
+        "receiptTypeAdvance": "预收",
+        "receiptTypeNormal": "普通",
+        "receiptTypeTaxRefund": "退税",
+        "all": "全部",
+        "supplier": "供应商",
+        "partner": "合作伙伴",
+        "feeType": "费用类型",
+        "salesperson": "业务员",
+        "reminderStatus": "催收状态",
+        "reminderPending": "待处理",
+        "includeRegistered": "包含已登记"
+      },
+      "action": {
+        "search": "查询",
+        "exportCsv": "导出 CSV",
+        "source": "来源"
+      },
+      "table": {
+        "receiptNo": "水单号",
+        "receivedAt": "收款日期",
+        "issuedAt": "领用日期",
+        "payerName": "付款方",
+        "allocationType": "分摊类型",
+        "contractNo": "合同号",
+        "invoiceNo": "发票号",
+        "allocatedAmount": "分摊金额",
+        "receiptCount": "水单数",
+        "totalAmount": "合计金额",
+        "allocated": "已分摊",
+        "unallocated": "未分摊",
+        "paymentRequestNo": "付款单号",
+        "date": "日期",
+        "supplier": "供应商",
+        "requestedAmount": "申请金额",
+        "paid": "已付",
+        "unpaid": "未付",
+        "feeRequestNo": "付费单号",
+        "partner": "合作伙伴",
+        "feeType": "费用类型",
+        "shipmentNo": "出运单",
+        "documentNo": "核销单号",
+        "salesperson": "业务员",
+        "customsDeclarationNo": "报关单号",
+        "reminderDate": "提醒日期",
+        "reminderStatus": "催收状态",
+        "refundableAmount": "可退税额",
+        "documentCount": "核销单数",
+        "refundedAmount": "已退税额",
+        "pendingRefundAmount": "待退税额",
+        "drilldown": "下钻"
+      },
+      "empty": {
+        "drilldownSource": "未找到可下钻来源"
+      },
+      "message": {
+        "loadFailed": "财务报表加载失败",
+        "exportFailed": "财务报表导出失败",
+        "exported_one": "已导出 {count} 行财务报表",
+        "exported_other": "已导出 {count} 行财务报表",
+        "explanationLoadFailed": "报表口径加载失败",
+        "drilldownFailed": "报表下钻失败"
+      },
+      "drilldown": {
+        "aria": "报表下钻",
+        "title": "来源下钻",
+        "sourceNo": "来源编号",
+        "sourceType": "来源类型",
+        "entry": "入口"
+      },
       "documentType": {
         "exportContract": "出口合同",
         "purchaseContract": "采购合同"

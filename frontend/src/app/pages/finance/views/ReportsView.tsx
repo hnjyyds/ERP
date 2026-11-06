@@ -10,6 +10,7 @@ import {
 } from '../../../../api'
 import { FormSelect, PanelTitle } from '../../../../shared/ui'
 import { formatFinanceAmount, nullableText } from '../../appHelpers'
+import { t, type TranslationKey } from '../../../appI18n'
 import type { ReportsModel } from '../hooks/useReportsModule'
 import type { FinanceViewShell } from '../financePageTypes'
 
@@ -63,23 +64,26 @@ export function ReportsView({ model, shell }: Props) {
   } = model
   const { moduleAlerts, moduleHeader } = shell
 
-  const reportTabs: { key: string; label: string }[] = [
-    { key: 'receipt-usage', label: '水单使用明细' },
-    { key: 'bank-receipt-summary', label: '银行水单汇总' },
-    { key: 'goods-payment', label: '货款支付情况' },
-    { key: 'fee-payment', label: '费用支付情况' },
-    { key: 'customs-receipt-collection', label: '报关回单催收' },
-    { key: 'tax-refund-statistics', label: '申报退税统计' },
+  const reportTabs: { key: string; labelKey: TranslationKey }[] = [
+    { key: 'receipt-usage', labelKey: 'finance.report.tab.receiptUsage' },
+    { key: 'bank-receipt-summary', labelKey: 'finance.report.tab.bankReceiptSummary' },
+    { key: 'goods-payment', labelKey: 'finance.report.tab.goodsPayment' },
+    { key: 'fee-payment', labelKey: 'finance.report.tab.feePayment' },
+    { key: 'customs-receipt-collection', labelKey: 'finance.report.tab.customsReceiptCollection' },
+    { key: 'tax-refund-statistics', labelKey: 'finance.report.tab.taxRefundStatistics' },
   ]
   return (
     <section className="finance-page">
       {moduleHeader}
       {moduleAlerts}
-      <section className="workspace-panel" aria-label="财务统计报表">
+      <section className="workspace-panel" aria-label={t('finance.report.pageAria')}>
         <div className="panel-heading toolbar-heading">
-          <PanelTitle icon={<FileSpreadsheet size={18} />} title="财务统计报表" />
+          <PanelTitle
+            icon={<FileSpreadsheet size={18} />}
+            title={t('finance.report.title')}
+          />
           <form
-            aria-label="财务报表筛选"
+            aria-label={t('finance.report.filter.formAria')}
             className="inline-filters single-line-filter-toolbar"
             onSubmit={(event) => {
               event.preventDefault()
@@ -87,7 +91,7 @@ export function ReportsView({ model, shell }: Props) {
             }}
           >
             <label>
-              起始日期
+              {t('finance.report.filter.dateFrom')}
               <Input
                 type="date"
                 value={reportDateFrom}
@@ -95,7 +99,7 @@ export function ReportsView({ model, shell }: Props) {
               />
             </label>
             <label>
-              结束日期
+              {t('finance.report.filter.dateTo')}
               <Input
                 type="date"
                 value={reportDateTo}
@@ -103,16 +107,16 @@ export function ReportsView({ model, shell }: Props) {
               />
             </label>
             <label>
-              币种
+              {t('finance.report.filter.currency')}
               <Input
                 value={reportCurrency}
-                placeholder="如 USD"
+                placeholder={t('finance.report.filter.currencyPlaceholder')}
                 onChange={(event) => setReportCurrency(event.target.value)}
               />
             </label>
             {activeReport === 'receipt-usage' ? (
               <label>
-                水单号
+                {t('finance.report.filter.receiptNo')}
                 <Input
                   value={reportReceiptNo}
                   onChange={(event) => setReportReceiptNo(event.target.value)}
@@ -121,21 +125,21 @@ export function ReportsView({ model, shell }: Props) {
             ) : null}
             {activeReport === 'bank-receipt-summary' ? (
               <label>
-                收款性质
+                {t('finance.report.filter.receiptType')}
                 <FormSelect
                   value={reportReceiptType}
                   onChange={(event) => setReportReceiptType(event.target.value)}
                 >
-                  <option value="">全部</option>
-                  <option value="advance">预收</option>
-                  <option value="normal">普通</option>
-                  <option value="tax_refund">退税</option>
+                  <option value="">{t('finance.report.filter.all')}</option>
+                  <option value="advance">{t('finance.report.filter.receiptTypeAdvance')}</option>
+                  <option value="normal">{t('finance.report.filter.receiptTypeNormal')}</option>
+                  <option value="tax_refund">{t('finance.report.filter.receiptTypeTaxRefund')}</option>
                 </FormSelect>
               </label>
             ) : null}
             {activeReport === 'goods-payment' ? (
               <label>
-                供应商
+                {t('finance.report.filter.supplier')}
                 <Input
                   value={reportSupplierName}
                   onChange={(event) => setReportSupplierName(event.target.value)}
@@ -145,21 +149,21 @@ export function ReportsView({ model, shell }: Props) {
             {activeReport === 'fee-payment' ? (
               <>
                 <label>
-                  合作伙伴
+                  {t('finance.report.filter.partner')}
                   <Input
                     value={reportPartnerName}
                     onChange={(event) => setReportPartnerName(event.target.value)}
                   />
                 </label>
                 <label>
-                  费用类型
+                  {t('finance.report.filter.feeType')}
                   <Input
                     value={reportFeeType}
                     onChange={(event) => setReportFeeType(event.target.value)}
                   />
                 </label>
                 <label>
-                  业务员
+                  {t('finance.report.filter.salesperson')}
                   <Input
                     value={reportSalesUserId}
                     onChange={(event) => setReportSalesUserId(event.target.value)}
@@ -170,28 +174,32 @@ export function ReportsView({ model, shell }: Props) {
             {activeReport === 'customs-receipt-collection' ? (
               <>
                 <label>
-                  业务员
+                  {t('finance.report.filter.salesperson')}
                   <Input
                     value={reportOwnerUserId}
                     onChange={(event) => setReportOwnerUserId(event.target.value)}
                   />
                 </label>
                 <label>
-                  催收状态
+                  {t('finance.report.filter.reminderStatus')}
                   <FormSelect
                     value={reportReminderStatus}
                     onChange={(event) => setReportReminderStatus(event.target.value)}
                   >
-                    <option value="">全部</option>
-                    <option value="pending">待处理</option>
-                    <option value="done">已完成</option>
-                    <option value="overdue">已逾期</option>
+                    <option value="">{t('finance.report.filter.all')}</option>
+                    <option value="pending">{t('finance.report.filter.reminderPending')}</option>
+                    <option value="done">
+                      {t('finance.tax.verificationReminder.status.done')}
+                    </option>
+                    <option value="overdue">
+                      {t('finance.tax.verificationReminder.status.overdue')}
+                    </option>
                   </FormSelect>
                 </label>
                 <label>
-                  包含已登记
+                  {t('finance.report.filter.includeRegistered')}
                   <input
-                    aria-label="包含已登记"
+                    aria-label={t('finance.report.filter.includeRegistered')}
                     checked={reportIncludeRegistered}
                     type="checkbox"
                     onChange={(event) => setReportIncludeRegistered(event.target.checked)}
@@ -201,7 +209,7 @@ export function ReportsView({ model, shell }: Props) {
             ) : null}
             {['goods-payment', 'fee-payment', 'tax-refund-statistics'].includes(activeReport) ? (
               <label>
-                状态
+                {t('finance.field.status')}
                 <Input
                   value={reportStatus}
                   onChange={(event) => setReportStatus(event.target.value)}
@@ -209,7 +217,7 @@ export function ReportsView({ model, shell }: Props) {
               </label>
             ) : null}
             <Button htmlType="submit" icon={<Search size={16} />} loading={loadingReport}>
-              查询
+              {t('finance.report.action.search')}
             </Button>
             <Button
               htmlType="button"
@@ -217,12 +225,12 @@ export function ReportsView({ model, shell }: Props) {
               loading={exportingReport}
               onClick={() => void exportFinanceReport(activeReport)}
             >
-              导出 CSV
+              {t('finance.report.action.exportCsv')}
             </Button>
           </form>
         </div>
 
-        <nav className="finance-tab-rail" aria-label="报表切换">
+        <nav className="finance-tab-rail" aria-label={t('finance.report.tab.aria')}>
           {reportTabs.map((tab) => (
             <button
               key={tab.key}
@@ -231,7 +239,7 @@ export function ReportsView({ model, shell }: Props) {
               type="button"
               onClick={() => setActiveReport(tab.key)}
             >
-              {tab.label}
+              {t(tab.labelKey)}
             </button>
           ))}
         </nav>
@@ -239,25 +247,33 @@ export function ReportsView({ model, shell }: Props) {
         {activeReport === 'receipt-usage' ? (
           <Table<ReceiptUsageDetailRow>
             columns={[
-              { title: '水单号', dataIndex: 'receipt_no' },
-              { title: '收款日期', dataIndex: 'received_at' },
-              { title: '付款方', dataIndex: 'payer_name' },
-              { title: '分摊类型', dataIndex: 'allocation_type' },
-              { title: '合同号', dataIndex: 'contract_no', render: nullableText },
-              { title: '发票号', dataIndex: 'invoice_no', render: nullableText },
+              { title: t('finance.report.table.receiptNo'), dataIndex: 'receipt_no' },
+              { title: t('finance.report.table.receivedAt'), dataIndex: 'received_at' },
+              { title: t('finance.report.table.payerName'), dataIndex: 'payer_name' },
+              { title: t('finance.report.table.allocationType'), dataIndex: 'allocation_type' },
               {
-                title: '分摊金额',
+                title: t('finance.report.table.contractNo'),
+                dataIndex: 'contract_no',
+                render: nullableText,
+              },
+              {
+                title: t('finance.report.table.invoiceNo'),
+                dataIndex: 'invoice_no',
+                render: nullableText,
+              },
+              {
+                title: t('finance.report.table.allocatedAmount'),
                 dataIndex: 'amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
               {
-                title: '下钻',
+                title: t('finance.report.table.drilldown'),
                 render: (_, record) => (
                   <Button
                     size="small"
                     onClick={() => void openFinanceReportDrilldown(activeReport, record.receipt_no)}
                   >
-                    来源
+                    {t('finance.report.action.source')}
                   </Button>
                 ),
               },
@@ -275,20 +291,20 @@ export function ReportsView({ model, shell }: Props) {
         {activeReport === 'bank-receipt-summary' ? (
           <Table<BankReceiptCurrencySummary>
             columns={[
-              { title: '币种', dataIndex: 'currency' },
-              { title: '水单数', dataIndex: 'receipt_count' },
+              { title: t('finance.field.currency'), dataIndex: 'currency' },
+              { title: t('finance.report.table.receiptCount'), dataIndex: 'receipt_count' },
               {
-                title: '合计金额',
+                title: t('finance.report.table.totalAmount'),
                 dataIndex: 'total_amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
               {
-                title: '已分摊',
+                title: t('finance.report.table.allocated'),
                 dataIndex: 'allocated_amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
               {
-                title: '未分摊',
+                title: t('finance.report.table.unallocated'),
                 dataIndex: 'unallocated_amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
@@ -304,34 +320,34 @@ export function ReportsView({ model, shell }: Props) {
         {activeReport === 'goods-payment' ? (
           <Table<GoodsPaymentQueryRow>
             columns={[
-              { title: '付款单号', dataIndex: 'request_no' },
-              { title: '日期', dataIndex: 'request_date' },
-              { title: '供应商', dataIndex: 'supplier_name' },
-              { title: '发票号', dataIndex: 'supplier_invoice_no' },
+              { title: t('finance.report.table.paymentRequestNo'), dataIndex: 'request_no' },
+              { title: t('finance.report.table.date'), dataIndex: 'request_date' },
+              { title: t('finance.report.table.supplier'), dataIndex: 'supplier_name' },
+              { title: t('finance.report.table.invoiceNo'), dataIndex: 'supplier_invoice_no' },
               {
-                title: '申请金额',
+                title: t('finance.report.table.requestedAmount'),
                 dataIndex: 'requested_amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
               {
-                title: '已付',
+                title: t('finance.report.table.paid'),
                 dataIndex: 'paid_amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
               {
-                title: '未付',
+                title: t('finance.report.table.unpaid'),
                 dataIndex: 'outstanding_amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
-              { title: '状态', dataIndex: 'status' },
+              { title: t('finance.field.status'), dataIndex: 'status' },
               {
-                title: '下钻',
+                title: t('finance.report.table.drilldown'),
                 render: (_, record) => (
                   <Button
                     size="small"
                     onClick={() => void openFinanceReportDrilldown(activeReport, record.request_no)}
                   >
-                    来源
+                    {t('finance.report.action.source')}
                   </Button>
                 ),
               },
@@ -347,30 +363,34 @@ export function ReportsView({ model, shell }: Props) {
         {activeReport === 'fee-payment' ? (
           <Table<FeePaymentQueryRow>
             columns={[
-              { title: '付费单号', dataIndex: 'request_no' },
-              { title: '日期', dataIndex: 'request_date' },
-              { title: '合作伙伴', dataIndex: 'partner_name' },
-              { title: '费用类型', dataIndex: 'fee_type' },
-              { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
+              { title: t('finance.report.table.feeRequestNo'), dataIndex: 'request_no' },
+              { title: t('finance.report.table.date'), dataIndex: 'request_date' },
+              { title: t('finance.report.table.partner'), dataIndex: 'partner_name' },
+              { title: t('finance.report.table.feeType'), dataIndex: 'fee_type' },
               {
-                title: '申请金额',
+                title: t('finance.report.table.shipmentNo'),
+                dataIndex: 'shipment_no',
+                render: nullableText,
+              },
+              {
+                title: t('finance.report.table.requestedAmount'),
                 dataIndex: 'requested_amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
               {
-                title: '未付',
+                title: t('finance.report.table.unpaid'),
                 dataIndex: 'outstanding_amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
-              { title: '状态', dataIndex: 'status' },
+              { title: t('finance.field.status'), dataIndex: 'status' },
               {
-                title: '下钻',
+                title: t('finance.report.table.drilldown'),
                 render: (_, record) => (
                   <Button
                     size="small"
                     onClick={() => void openFinanceReportDrilldown(activeReport, record.request_no)}
                   >
-                    来源
+                    {t('finance.report.action.source')}
                   </Button>
                 ),
               },
@@ -386,20 +406,32 @@ export function ReportsView({ model, shell }: Props) {
         {activeReport === 'customs-receipt-collection' ? (
           <Table<CustomsReceiptCollectionRow>
             columns={[
-              { title: '核销单号', dataIndex: 'document_no' },
-              { title: '领用日期', dataIndex: 'received_at' },
-              { title: '业务员', dataIndex: 'owner_user_name', render: nullableText },
-              { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
-              { title: '报关单号', dataIndex: 'customs_declaration_no', render: nullableText },
-              { title: '提醒日期', dataIndex: 'reminder_date' },
-              { title: '催收状态', dataIndex: 'reminder_status' },
+              { title: t('finance.report.table.documentNo'), dataIndex: 'document_no' },
+              { title: t('finance.report.table.issuedAt'), dataIndex: 'received_at' },
               {
-                title: '可退税额',
+                title: t('finance.report.table.salesperson'),
+                dataIndex: 'owner_user_name',
+                render: nullableText,
+              },
+              {
+                title: t('finance.report.table.shipmentNo'),
+                dataIndex: 'shipment_no',
+                render: nullableText,
+              },
+              {
+                title: t('finance.report.table.customsDeclarationNo'),
+                dataIndex: 'customs_declaration_no',
+                render: nullableText,
+              },
+              { title: t('finance.report.table.reminderDate'), dataIndex: 'reminder_date' },
+              { title: t('finance.report.table.reminderStatus'), dataIndex: 'reminder_status' },
+              {
+                title: t('finance.report.table.refundableAmount'),
                 dataIndex: 'refundable_amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
               {
-                title: '下钻',
+                title: t('finance.report.table.drilldown'),
                 render: (_, record) => (
                   <Button
                     size="small"
@@ -407,7 +439,7 @@ export function ReportsView({ model, shell }: Props) {
                       void openFinanceReportDrilldown(activeReport, record.document_no)
                     }
                   >
-                    来源
+                    {t('finance.report.action.source')}
                   </Button>
                 ),
               },
@@ -423,20 +455,20 @@ export function ReportsView({ model, shell }: Props) {
         {activeReport === 'tax-refund-statistics' ? (
           <Table<TaxRefundCurrencyTotal>
             columns={[
-              { title: '币种', dataIndex: 'currency' },
-              { title: '核销单数', dataIndex: 'document_count' },
+              { title: t('finance.field.currency'), dataIndex: 'currency' },
+              { title: t('finance.report.table.documentCount'), dataIndex: 'document_count' },
               {
-                title: '可退税额',
+                title: t('finance.report.table.refundableAmount'),
                 dataIndex: 'refundable_amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
               {
-                title: '已退税额',
+                title: t('finance.report.table.refundedAmount'),
                 dataIndex: 'refunded_amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
               {
-                title: '待退税额',
+                title: t('finance.report.table.pendingRefundAmount'),
                 dataIndex: 'outstanding_amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
@@ -450,17 +482,24 @@ export function ReportsView({ model, shell }: Props) {
         ) : null}
 
         {reportDrilldown ? (
-          <section className="finance-action-block" aria-label="报表下钻">
-            <PanelTitle icon={<ChevronRight size={18} />} title="来源下钻" />
+          <section className="finance-action-block" aria-label={t('finance.report.drilldown.aria')}>
+            <PanelTitle
+              icon={<ChevronRight size={18} />}
+              title={t('finance.report.drilldown.title')}
+            />
             <Descriptions column={1} size="small">
-              <Descriptions.Item label="来源编号">{reportDrilldown.source_no}</Descriptions.Item>
-              <Descriptions.Item label="来源类型">{reportDrilldown.source_type}</Descriptions.Item>
-              <Descriptions.Item label="入口">
+              <Descriptions.Item label={t('finance.report.drilldown.sourceNo')}>
+                {reportDrilldown.source_no}
+              </Descriptions.Item>
+              <Descriptions.Item label={t('finance.report.drilldown.sourceType')}>
+                {reportDrilldown.source_type}
+              </Descriptions.Item>
+              <Descriptions.Item label={t('finance.report.drilldown.entry')}>
                 {reportDrilldown.items.length > 0
                   ? reportDrilldown.items
                       .map((item) => `${item.label}: ${item.value ?? ''} ${item.target_path ?? ''}`)
-                      .join('；')
-                  : '未找到可下钻来源'}
+                      .join('; ')
+                  : t('finance.report.empty.drilldownSource')}
               </Descriptions.Item>
             </Descriptions>
           </section>

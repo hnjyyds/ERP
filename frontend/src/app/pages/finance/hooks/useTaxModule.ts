@@ -11,6 +11,7 @@ import {
   type VerificationUsageItem,
 } from '../../../../api'
 import { showError } from '../../../../shared/errors'
+import { t } from '../../../appI18n'
 import {
   VerificationDocumentFormState,
   CustomsReceiptFormState,
@@ -130,7 +131,7 @@ export function useTaxModule(env: FinanceModuleEnv) {
         null
       setSelectedVerificationDocumentId(nextDocumentId)
     } catch (caught) {
-      showError(caught, '核销单加载失败')
+      showError(caught, t('finance.tax.message.loadDocumentsFailed'))
     } finally {
       setLoadingVerificationDocuments(false)
     }
@@ -148,7 +149,7 @@ export function useTaxModule(env: FinanceModuleEnv) {
       })
       setVerificationUsage(result.items)
     } catch (caught) {
-      showError(caught, '核销单使用情况加载失败')
+      showError(caught, t('finance.tax.message.loadUsageFailed'))
     } finally {
       setLoadingVerificationUsage(false)
     }
@@ -163,12 +164,12 @@ export function useTaxModule(env: FinanceModuleEnv) {
       const created = await createVerificationDocument(
         verificationDocumentPayload(verificationDocumentForm),
       )
-      setMessage(`已领用核销单 ${created.document_no}`)
+      setMessage(t('finance.tax.message.documentIssued', { code: created.document_no }))
       setVerificationDocumentForm(initialVerificationDocumentForm())
       await loadVerificationDocuments(created.id)
       await loadVerificationUsage()
     } catch (caught) {
-      showError(caught, '核销单领用失败')
+      showError(caught, t('finance.tax.message.documentIssueFailed'))
     } finally {
       setSubmittingVerificationDocument(false)
     }
@@ -185,12 +186,16 @@ export function useTaxModule(env: FinanceModuleEnv) {
         selectedVerificationDocument.id,
         customsReceiptPayload(customsReceiptForm),
       )
-      setMessage(`已登记报关回单 ${updated.customs_receipt_no ?? updated.document_no}`)
+      setMessage(
+        t('finance.tax.message.customsReceiptRegistered', {
+          code: updated.customs_receipt_no ?? updated.document_no,
+        }),
+      )
       setCustomsReceiptForm(initialCustomsReceiptForm())
       await loadVerificationDocuments(updated.id)
       await loadVerificationUsage()
     } catch (caught) {
-      showError(caught, '报关回单登记失败')
+      showError(caught, t('finance.tax.message.customsReceiptRegisterFailed'))
     } finally {
       setSubmittingCustomsReceipt(false)
     }
@@ -207,12 +212,12 @@ export function useTaxModule(env: FinanceModuleEnv) {
         selectedVerificationDocument.id,
         verificationRegisterPayload(verificationRegisterForm),
       )
-      setMessage(`已核销 ${updated.document_no}`)
+      setMessage(t('finance.tax.message.verificationRegistered', { code: updated.document_no }))
       setVerificationRegisterForm(initialVerificationRegisterForm())
       await loadVerificationDocuments(updated.id)
       await loadVerificationUsage()
     } catch (caught) {
-      showError(caught, '核销登记失败')
+      showError(caught, t('finance.tax.message.verificationRegisterFailed'))
     } finally {
       setSubmittingVerificationRegister(false)
     }
@@ -229,13 +234,13 @@ export function useTaxModule(env: FinanceModuleEnv) {
         selectedVerificationDocument.id,
         taxRefundPayload(taxRefundForm),
       )
-      setMessage(`已登记退税 ${updated.document_no}`)
+      setMessage(t('finance.tax.message.refundRegistered', { code: updated.document_no }))
       setTaxRefundForm(initialTaxRefundForm(updated.currency, updated.unrefunded_amount))
       await loadVerificationDocuments(updated.id)
       await loadVerificationUsage()
       await loadOverview()
     } catch (caught) {
-      showError(caught, '退税登记失败')
+      showError(caught, t('finance.tax.message.refundRegisterFailed'))
     } finally {
       setSubmittingTaxRefund(false)
     }

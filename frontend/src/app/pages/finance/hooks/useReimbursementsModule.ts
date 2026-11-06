@@ -10,6 +10,7 @@ import {
 } from '../../../../api'
 import { showError } from '../../../../shared/errors'
 import { canApproveAssignedRecord } from '../../appHelpers'
+import { t } from '../../../appI18n'
 
 import type { FinanceModuleEnv } from '../financePageTypes'
 
@@ -75,7 +76,7 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
         null
       setSelectedReimbursementId(nextId)
     } catch (caught) {
-      showError(caught, '报销单加载失败')
+      showError(caught, t('finance.reimbursement.message.loadFailed'))
     } finally {
       setLoadingReimbursements(false)
     }
@@ -100,7 +101,9 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
         remark: reimbursementForm.remark.trim() || undefined,
       }
       const created = await createReimbursement(payload)
-      setMessage(`已登记报销单 ${created.reimbursement_no}`)
+      setMessage(
+        t('finance.reimbursement.message.createSuccess', { code: created.reimbursement_no }),
+      )
       setReimbursementModalOpen(false)
       setReimbursementForm({
         reimbursement_no: '',
@@ -116,7 +119,7 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
       })
       await loadReimbursements(created.id)
     } catch (caught) {
-      showError(caught, '报销单登记失败')
+      showError(caught, t('finance.reimbursement.message.createFailed'))
     } finally {
       setSubmittingReimbursement(false)
     }
@@ -129,7 +132,14 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
       !reimbursement ||
       !canApproveAssignedRecord(currentUser, reimbursement.reviewer_id, 'finance:view')
     ) {
-      showError(new Error(`该报销单应由 ${reimbursement?.reviewer_name ?? '指定审批人'} 审批`))
+      showError(
+        new Error(
+          t('finance.reimbursement.message.invalidApprover', {
+            name:
+              reimbursement?.reviewer_name ?? t('finance.reimbursement.field.assignedApprover'),
+          }),
+        ),
+      )
       return
     }
     setSubmittingReimbursementAction(true)
@@ -137,10 +147,14 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
     setError('')
     try {
       const updated = await approveReimbursement(selectedReimbursementId, { approved })
-      setMessage(`报销单 ${updated.reimbursement_no} 已${approved ? '审批通过' : '驳回'}`)
+      setMessage(
+        approved
+          ? t('finance.reimbursement.message.approved', { code: updated.reimbursement_no })
+          : t('finance.reimbursement.message.rejected', { code: updated.reimbursement_no }),
+      )
       await loadReimbursements(updated.id)
     } catch (caught) {
-      showError(caught, '报销单审批失败')
+      showError(caught, t('finance.reimbursement.message.approveFailed'))
     } finally {
       setSubmittingReimbursementAction(false)
     }
@@ -155,10 +169,10 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
       const updated = await payReimbursement(selectedReimbursementId, {
         payment_method: reimbursementPayMethod,
       })
-      setMessage(`报销单 ${updated.reimbursement_no} 已付款`)
+      setMessage(t('finance.reimbursement.message.paid', { code: updated.reimbursement_no }))
       await loadReimbursements(updated.id)
     } catch (caught) {
-      showError(caught, '报销单付款失败')
+      showError(caught, t('finance.reimbursement.message.payFailed'))
     } finally {
       setSubmittingReimbursementAction(false)
     }

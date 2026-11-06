@@ -10,6 +10,7 @@ import {
   type MiscFeeItem,
 } from '../../../../api'
 import { showError } from '../../../../shared/errors'
+import { t } from '../../../appI18n'
 import {
   MiscFeeItemFormState,
   MiscFeeAllocationFormState,
@@ -106,7 +107,7 @@ export function useMiscModule(env: FinanceModuleEnv) {
         null
       setSelectedMiscFeeItemId(nextItemId)
     } catch (caught) {
-      showError(caught, '杂费项目加载失败')
+      showError(caught, t('finance.misc.message.loadItemsFailed'))
     } finally {
       setLoadingMiscFeeItems(false)
     }
@@ -124,7 +125,7 @@ export function useMiscModule(env: FinanceModuleEnv) {
       })
       setMiscFeeAllocations(result.items)
     } catch (caught) {
-      showError(caught, '杂费分摊加载失败')
+      showError(caught, t('finance.misc.message.loadAllocationsFailed'))
     } finally {
       setLoadingMiscFeeAllocations(false)
     }
@@ -140,7 +141,7 @@ export function useMiscModule(env: FinanceModuleEnv) {
       })
       setMiscFeeAllocationSummary(result.items)
     } catch (caught) {
-      showError(caught, '杂费分摊汇总加载失败')
+      showError(caught, t('finance.misc.message.loadSummaryFailed'))
     } finally {
       setLoadingMiscFeeSummary(false)
     }
@@ -153,11 +154,11 @@ export function useMiscModule(env: FinanceModuleEnv) {
     setError('')
     try {
       const created = await createMiscFeeItem(miscFeeItemPayload(miscFeeItemForm))
-      setMessage(`已配置杂费项目 ${created.name}`)
+      setMessage(t('finance.misc.message.itemCreated', { name: created.name }))
       setMiscFeeItemForm(initialMiscFeeItemForm())
       await loadMiscFeeItems(created.id)
     } catch (caught) {
-      showError(caught, '杂费项目配置失败')
+      showError(caught, t('finance.misc.message.itemCreateFailed'))
     } finally {
       setSubmittingMiscFeeItem(false)
     }
@@ -172,13 +173,13 @@ export function useMiscModule(env: FinanceModuleEnv) {
       const created = await createMiscFeeAllocation(
         miscFeeAllocationPayload(miscFeeAllocationForm, selectedMiscFeeItem),
       )
-      setMessage(`已分摊杂费 ${created.allocation_no}`)
+      setMessage(t('finance.misc.message.allocationCreated', { code: created.allocation_no }))
       setMiscFeeAllocationForm(initialMiscFeeAllocationForm(selectedMiscFeeItem ?? undefined))
       await loadMiscFeeAllocations()
       await loadMiscFeeAllocationSummary()
       await loadOverview()
     } catch (caught) {
-      showError(caught, '杂费分摊失败')
+      showError(caught, t('finance.misc.message.allocationCreateFailed'))
     } finally {
       setSubmittingMiscFeeAllocation(false)
     }

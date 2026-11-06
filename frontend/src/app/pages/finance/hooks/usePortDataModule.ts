@@ -11,6 +11,7 @@ import {
   CustomsDeclarationRecordCreatePayload,
 } from '../../../../api'
 import { showError } from '../../../../shared/errors'
+import { t } from '../../../appI18n'
 
 import type { FinanceModuleEnv } from '../financePageTypes'
 
@@ -71,7 +72,7 @@ export function usePortDataModule(
       })
       setPortImportBatches(result.items)
     } catch (caught) {
-      showError(caught, '口岸导入批次加载失败')
+      showError(caught, t('finance.portData.message.loadBatchesFailed'))
     } finally {
       setLoadingPortBatches(false)
     }
@@ -88,7 +89,7 @@ export function usePortDataModule(
       })
       setCustomsRecords(result.items)
     } catch (caught) {
-      showError(caught, '进出口报关数据加载失败')
+      showError(caught, t('finance.portData.message.loadCustomsFailed'))
     } finally {
       setLoadingCustomsRecords(false)
     }
@@ -123,7 +124,7 @@ export function usePortDataModule(
         records: [record],
       }
       const created = await createPortImportBatch(payload)
-      setMessage(`已导入口岸数据批次 ${created.batch_no}`)
+      setMessage(t('finance.portData.message.importSuccess', { code: created.batch_no }))
       setPortBatchForm({ batch_no: '', source: '', imported_at: '', remark: '' })
       setPortRecordForm({
         declaration_no: '',
@@ -142,7 +143,7 @@ export function usePortDataModule(
       await loadPortImportBatches()
       await loadCustomsRecords()
     } catch (caught) {
-      showError(caught, '口岸数据导入失败')
+      showError(caught, t('finance.portData.message.importFailed'))
     } finally {
       setSubmittingPortBatch(false)
     }
@@ -154,11 +155,13 @@ export function usePortDataModule(
     setError('')
     try {
       const result = await autoMatchCustomsReceipts()
-      setMessage(`已自动匹配 ${result.matched_count} 条报关回单`)
+      setMessage(
+        t('finance.portData.message.autoMatched', { count: result.matched_count }),
+      )
       await loadCustomsRecords()
       await loadFinanceReport('customs-receipt-collection')
     } catch (caught) {
-      showError(caught, '报关回单自动匹配失败')
+      showError(caught, t('finance.portData.message.autoMatchFailed'))
     } finally {
       setMatchingCustomsReceipts(false)
     }

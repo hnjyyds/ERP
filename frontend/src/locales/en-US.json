@@ -2262,6 +2262,84 @@
       }
     },
     "tax": {
+      "title": "Tax Verification & Refund",
+      "panel": {
+        "documentList": "Verification Documents",
+        "process": "Customs Receipt, Verification & Refund Registration",
+        "customsReceiptForm": "Customs Receipt Registration",
+        "verificationForm": "Verification Registration",
+        "refundForm": "Tax Refund Registration",
+        "usage": "Verification Document Usage"
+      },
+      "field": {
+        "documentNo": "Verification Doc No.",
+        "receivedAt": "Issue Date",
+        "shipmentPlanId": "Shipment ID",
+        "shipmentNo": "Shipment No.",
+        "ownerUserId": "Salesperson ID",
+        "ownerUserName": "Salesperson Name",
+        "customerName": "Customer Name",
+        "validUntil": "Valid Until",
+        "refundableAmount": "Refundable Amount",
+        "remark": "Remark",
+        "currentDocument": "Current Verification Doc",
+        "unrefunded": "Unrefunded",
+        "reminderDate": "Reminder Date",
+        "customsDeclarationNo": "Customs Declaration No.",
+        "customsReceiptNo": "Receipt No.",
+        "receiptDate": "Receipt Date",
+        "receiptRemark": "Receipt Remark",
+        "verificationNo": "Verification No.",
+        "verifiedAt": "Verification Date",
+        "verificationRemark": "Verification Remark",
+        "refundNo": "Refund No.",
+        "refundedAt": "Refund Date",
+        "refundAmount": "Refund Amount",
+        "bankReceiptNo": "Bank Receipt No.",
+        "refundRemark": "Refund Remark"
+      },
+      "filter": {
+        "formAria": "Verification document filters",
+        "documentSearch": "Verification Doc Search",
+        "progressStatus": "Progress Status",
+        "reminderStatus": "Reminder Status",
+        "allStatuses": "All Statuses",
+        "allReminders": "All Reminders",
+        "usageSearch": "Usage Search"
+      },
+      "action": {
+        "search": "Search",
+        "issueDocument": "Issue Verification Doc",
+        "cancel": "Cancel",
+        "registerReceipt": "Register Receipt",
+        "registerVerification": "Register Verification",
+        "registerRefund": "Register Refund"
+      },
+      "table": {
+        "document": "Verification Doc",
+        "reminder": "Reminder",
+        "shipment": "Shipment",
+        "validUntil": "Validity",
+        "refundable": "Refundable",
+        "refunded": "Refunded",
+        "salesUser": "Salesperson"
+      },
+      "modal": {
+        "issueTitle": "Issue Verification Doc"
+      },
+      "message": {
+        "loadDocumentsFailed": "Failed to load verification documents",
+        "loadUsageFailed": "Failed to load verification document usage",
+        "documentIssued": "Verification doc {code} issued",
+        "documentIssueFailed": "Failed to issue verification doc",
+        "customsReceiptRegistered": "Customs receipt registered for {code}",
+        "customsReceiptRegisterFailed": "Failed to register customs receipt",
+        "verificationRegistered": "Verification registered for {code}",
+        "verificationRegisterFailed": "Failed to register verification",
+        "refundRegistered": "Tax refund registered for {code}",
+        "refundRegisterFailed": "Failed to register tax refund",
+        "noDocument": "No verification documents"
+      },
       "verificationDocument": {
         "status": {
           "issued": "Issued",
@@ -2279,6 +2357,7 @@
       }
     },
     "misc": {
+      "title": "Misc. Fee Management",
       "category": {
         "office": "Office Expenses",
         "capitalInterest": "Capital Occupation Interest",
@@ -2290,11 +2369,158 @@
         "ratio": "By Ratio",
         "amount": "By Amount",
         "quantity": "By Quantity"
+      },
+      "panel": {
+        "itemConfig": "Misc. Fee Item Setup",
+        "allocation": "Per-Shipment Misc. Fee Allocation",
+        "allocationQuery": "Misc. Fee Allocation Lookup"
+      },
+      "field": {
+        "code": "Item Code",
+        "name": "Item Name",
+        "category": "Category",
+        "defaultAllocationMethod": "Default Allocation Method",
+        "enableItem": "Enable Item",
+        "remark": "Remark",
+        "currentItem": "Current Item",
+        "defaultMethod": "Default Method",
+        "allocationNo": "Allocation No.",
+        "itemId": "Item ID",
+        "shipmentPlanId": "Shipment ID",
+        "shipmentNo": "Shipment No.",
+        "salesUserId": "Salesperson ID",
+        "salesUserName": "Salesperson Name",
+        "allocatedAt": "Allocation Date",
+        "allocationMethod": "Allocation Method",
+        "basis": "Allocation Basis"
+      },
+      "filter": {
+        "itemSearch": "Item Search",
+        "itemCategory": "Item Category",
+        "allCategories": "All Categories",
+        "status": "Status",
+        "allStatuses": "All Statuses",
+        "allocationSearch": "Allocation Search",
+        "category": "Category",
+        "shipmentNo": "Shipment No.",
+        "salesUserId": "Salesperson ID"
+      },
+      "action": {
+        "search": "Search",
+        "createMisc": "New Misc. Fee",
+        "cancel": "Cancel",
+        "saveItem": "Save Item",
+        "saveAllocation": "Save Allocation"
+      },
+      "table": {
+        "code": "Item Code",
+        "name": "Item Name",
+        "category": "Category",
+        "defaultAllocation": "Default Allocation",
+        "allocationNo": "Allocation No.",
+        "miscItem": "Misc. Fee Item",
+        "shipment": "Shipment",
+        "customer": "Customer",
+        "salesUser": "Salesperson",
+        "allocatedAt": "Allocation Date",
+        "method": "Method"
+      },
+      "modal": {
+        "createTitle": "New Misc. Fee Item"
+      },
+      "metric": {
+        "allocationCount_one": "{count} allocation record",
+        "allocationCount_other": "{count} allocation records",
+        "allocationHint": "Included in per-shipment profit cost"
+      },
+      "message": {
+        "loadItemsFailed": "Failed to load misc. fee items",
+        "loadAllocationsFailed": "Failed to load misc. fee allocations",
+        "loadSummaryFailed": "Failed to load misc. fee allocation summary",
+        "itemCreated": "Misc. fee item created {name}",
+        "itemCreateFailed": "Failed to create misc. fee item",
+        "allocationCreated": "Misc. fee allocated {code}",
+        "allocationCreateFailed": "Failed to allocate misc. fee",
+        "noItem": "No misc. fee items"
       }
     },
     "settlement": {
+      "title": "Settlement & Costing",
+      "pageAria": "Financial settlements and profit calculation",
       "status": {
         "locked": "Locked"
+      },
+      "panel": {
+        "settlementList": "Settlement List",
+        "manualCostLink": "Manual Cost Linkage",
+        "profitCalculation": "Profit Calculation"
+      },
+      "field": {
+        "settlementNo": "Settlement No.",
+        "shipmentPlanId": "Shipment ID",
+        "shipmentNo": "Shipment No.",
+        "settlementDate": "Settlement Date",
+        "remark": "Remark",
+        "settlementRemark": "Settlement Remark",
+        "grossProfit": "Gross Profit",
+        "currentGrossProfit": "Current Gross Profit",
+        "manualCost": "Manual Cost",
+        "costNo": "Cost No.",
+        "costType": "Cost Type",
+        "costDate": "Cost Date",
+        "sourceNo": "Source No.",
+        "reason": "Reason",
+        "manualCostRemark": "Manual Cost Remark"
+      },
+      "filter": {
+        "settlementSearch": "Settlement Search",
+        "profitSearch": "Calculation Search",
+        "searchPlaceholder": "Settlement / Shipment / Customer"
+      },
+      "action": {
+        "search": "Search",
+        "createSettlement": "New Settlement",
+        "cancel": "Cancel",
+        "lock": "Lock Settlement",
+        "linkCost": "Link Cost"
+      },
+      "table": {
+        "settlementNo": "Settlement No.",
+        "shipmentNo": "Shipment No.",
+        "customer": "Customer",
+        "settlementDate": "Settlement Date",
+        "salesIncome": "Income",
+        "cost": "Cost",
+        "taxRefund": "Tax Refund",
+        "miscFee": "Misc. Fee",
+        "manualCost": "Manual Cost",
+        "grossProfit": "Gross Profit",
+        "grossProfitRate": "Gross Margin",
+        "totalCost": "Total Cost",
+        "costType": "Type",
+        "direction": "Direction",
+        "source": "Source",
+        "date": "Date",
+        "reason": "Reason"
+      },
+      "modal": {
+        "lockTitle": "Lock Shipment Settlement"
+      },
+      "metric": {
+        "lockedCount_one": "{count} locked settlement",
+        "lockedCount_other": "{count} locked settlements",
+        "profitCount_one": "{count} settlement calculated",
+        "profitCount_other": "{count} settlements calculated",
+        "profitHint": "Cost details expanded on the locked settlement basis"
+      },
+      "message": {
+        "loadSettlementsFailed": "Failed to load financial settlements",
+        "loadProfitFailed": "Failed to load profit calculations",
+        "settlementLocked": "Locked financial settlement {code}",
+        "settlementLockFailed": "Failed to lock financial settlement",
+        "manualCostLinked": "Linked manual cost {code}",
+        "manualCostLinkFailed": "Failed to link manual cost",
+        "noSettlement": "No settlement available for linkage"
       }
     },
     "receivable": {
@@ -2305,6 +2531,70 @@
       }
     },
     "reimbursement": {
+      "pageAria": "Reimbursement Management",
+      "panel": {
+        "list": "Reimbursement List",
+        "approval": "Approval & Payment"
+      },
+      "field": {
+        "reimbursementNo": "Reimbursement No.",
+        "applicantUserId": "Applicant ID",
+        "applicantUserName": "Applicant Name",
+        "department": "Department",
+        "category": "Category",
+        "reason": "Reason",
+        "currentStatus": "Current Status",
+        "approver": "Approver",
+        "unassigned": "Unassigned",
+        "assignedApprover": "Assigned Approver"
+      },
+      "filter": {
+        "search": "Search",
+        "searchPlaceholder": "No. / Applicant / Department",
+        "status": "Status",
+        "allStatuses": "All Statuses",
+        "category": "Category",
+        "allCategories": "All Categories"
+      },
+      "action": {
+        "search": "Search",
+        "create": "New Reimbursement",
+        "submit": "Register Reimbursement",
+        "approve": "Approve",
+        "reject": "Reject",
+        "confirmPayment": "Confirm Payment"
+      },
+      "table": {
+        "reimbursementNo": "Reimbursement No.",
+        "applicant": "Applicant",
+        "department": "Department",
+        "category": "Category"
+      },
+      "modal": {
+        "createTitle": "New Reimbursement"
+      },
+      "metric": {
+        "count_one": "{count} reimbursement",
+        "count_other": "{count} reimbursements"
+      },
+      "message": {
+        "loadFailed": "Failed to load reimbursements",
+        "createSuccess": "Reimbursement {code} registered",
+        "createFailed": "Failed to register reimbursement",
+        "invalidApprover": "This reimbursement must be approved by {name}",
+        "approved": "Reimbursement {code} approved",
+        "rejected": "Reimbursement {code} rejected",
+        "approveFailed": "Failed to approve reimbursement",
+        "paid": "Reimbursement {code} paid",
+        "payFailed": "Failed to pay reimbursement",
+        "pendingApproval": "Waiting for {name} to approve"
+      },
+      "payMethod": {
+        "bankTransfer": "Bank Transfer",
+        "cash": "Cash",
+        "cheque": "Cheque",
+        "other": "Other"
+      },
       "category": {
         "travel": "Travel",
         "office": "Office",
@@ -2318,7 +2608,160 @@
         "paid": "Paid"
       }
     },
+    "portData": {
+      "pageAria": "Port Data Import",
+      "panel": {
+        "query": "Import/Export Customs Declaration Query",
+        "batches": "Import Batch Records",
+        "import": "Import Port Data",
+        "recordDetails": "Customs Declaration Details"
+      },
+      "field": {
+        "batchNo": "Batch No.",
+        "dataSource": "Data Source",
+        "sourcePlaceholder": "e.g. e-Port / Customs",
+        "importedAt": "Import Date",
+        "declarationNo": "Declaration No.",
+        "customsReceiptNo": "Customs Receipt No.",
+        "tradeType": "Trade Type",
+        "productName": "Product Name",
+        "customsAmount": "Customs Amount"
+      },
+      "filter": {
+        "declarationNo": "Declaration No.",
+        "customsReceiptNo": "Customs Receipt No.",
+        "tradeType": "Trade Type",
+        "all": "All"
+      },
+      "action": {
+        "search": "Search",
+        "autoMatch": "Auto Match Receipts",
+        "importData": "Import Data"
+      },
+      "table": {
+        "declarationNo": "Declaration No.",
+        "receiptNo": "Receipt No.",
+        "tradeType": "Trade Type",
+        "product": "Product",
+        "match": "Match",
+        "verificationDocument": "Verification Doc",
+        "customsDate": "Customs Date",
+        "batchNo": "Batch No.",
+        "source": "Source",
+        "importedAt": "Import Date",
+        "recordCount": "Record Count"
+      },
+      "tradeType": {
+        "export": "Export",
+        "import": "Import"
+      },
+      "match": {
+        "matched": "Matched",
+        "unmatched": "Unmatched"
+      },
+      "metric": {
+        "count_one": "{count} customs record",
+        "count_other": "{count} customs records"
+      },
+      "message": {
+        "loadBatchesFailed": "Failed to load port import batches",
+        "loadCustomsFailed": "Failed to load customs declaration records",
+        "importSuccess": "Port data batch {code} imported",
+        "importFailed": "Failed to import port data",
+        "autoMatched_one": "Matched {count} customs receipt",
+        "autoMatched_other": "Matched {count} customs receipts",
+        "autoMatchFailed": "Failed to auto match customs receipts"
+      }
+    },
     "report": {
+      "title": "Financial Report",
+      "pageAria": "Financial statistics reports",
+      "tab": {
+        "aria": "Report tabs",
+        "receiptUsage": "Receipt Usage Details",
+        "bankReceiptSummary": "Bank Receipt Summary",
+        "goodsPayment": "Goods Payment Status",
+        "feePayment": "Fee Payment Status",
+        "customsReceiptCollection": "Customs Receipt Collection",
+        "taxRefundStatistics": "Tax Refund Statistics"
+      },
+      "filter": {
+        "formAria": "Financial report filters",
+        "dateFrom": "Start Date",
+        "dateTo": "End Date",
+        "currency": "Currency",
+        "currencyPlaceholder": "e.g. USD",
+        "receiptNo": "Receipt No.",
+        "receiptType": "Receipt Type",
+        "receiptTypeAdvance": "Advance",
+        "receiptTypeNormal": "Normal",
+        "receiptTypeTaxRefund": "Tax Refund",
+        "all": "All",
+        "supplier": "Supplier",
+        "partner": "Partner",
+        "feeType": "Fee Type",
+        "salesperson": "Salesperson",
+        "reminderStatus": "Collection Status",
+        "reminderPending": "Pending",
+        "includeRegistered": "Include Registered"
+      },
+      "action": {
+        "search": "Search",
+        "exportCsv": "Export CSV",
+        "source": "Source"
+      },
+      "table": {
+        "receiptNo": "Receipt No.",
+        "receivedAt": "Receipt Date",
+        "issuedAt": "Issue Date",
+        "payerName": "Payer",
+        "allocationType": "Allocation Type",
+        "contractNo": "Contract No.",
+        "invoiceNo": "Invoice No.",
+        "allocatedAmount": "Allocated Amount",
+        "receiptCount": "Receipt Count",
+        "totalAmount": "Total Amount",
+        "allocated": "Allocated",
+        "unallocated": "Unallocated",
+        "paymentRequestNo": "Payment Request No.",
+        "date": "Date",
+        "supplier": "Supplier",
+        "requestedAmount": "Requested Amount",
+        "paid": "Paid",
+        "unpaid": "Unpaid",
+        "feeRequestNo": "Fee Request No.",
+        "partner": "Partner",
+        "feeType": "Fee Type",
+        "shipmentNo": "Shipment No.",
+        "documentNo": "Verification Doc No.",
+        "salesperson": "Salesperson",
+        "customsDeclarationNo": "Customs Declaration No.",
+        "reminderDate": "Reminder Date",
+        "reminderStatus": "Collection Status",
+        "refundableAmount": "Refundable Amount",
+        "documentCount": "Verification Doc Count",
+        "refundedAmount": "Refunded Amount",
+        "pendingRefundAmount": "Pending Refund Amount",
+        "drilldown": "Drilldown"
+      },
+      "empty": {
+        "drilldownSource": "No drilldown source found"
+      },
+      "message": {
+        "loadFailed": "Failed to load financial report",
+        "exportFailed": "Failed to export financial report",
+        "exported_one": "Exported {count} financial report row",
+        "exported_other": "Exported {count} financial report rows",
+        "explanationLoadFailed": "Failed to load report explanation",
+        "drilldownFailed": "Failed to drill down report"
+      },
+      "drilldown": {
+        "aria": "Report drilldown",
+        "title": "Source Drilldown",
+        "sourceNo": "Source No.",
+        "sourceType": "Source Type",
+        "entry": "Entry"
+      },
       "documentType": {
         "exportContract": "Export Contract",
         "purchaseContract": "Purchase Contract"

@@ -5,6 +5,7 @@ import { FormSelect, PanelTitle } from '../../../../shared/ui'
 import { canApproveAssignedRecord, formatFinanceAmount } from '../../appHelpers'
 import { reimbursementCategoryLabel, reimbursementStatusTag } from '../financeHelpers'
 import { ApprovalAssigneeSelect } from '../../../components/ApprovalAssigneeSelect'
+import { t } from '../../../appI18n'
 import type { ReimbursementsModel } from '../hooks/useReimbursementsModule'
 import type { FinanceViewShell } from '../financePageTypes'
 
@@ -47,10 +48,13 @@ export function ReimbursementsView({ model, shell }: Props) {
     <section className="finance-page">
       {moduleHeader}
       {moduleAlerts}
-      <section className="finance-settlement-grid" aria-label="报销管理">
+      <section className="finance-settlement-grid" aria-label={t('finance.reimbursement.pageAria')}>
         <section className="workspace-panel">
           <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Receipt size={18} />} title="报销单列表" />
+            <PanelTitle
+              icon={<Receipt size={18} />}
+              title={t('finance.reimbursement.panel.list')}
+            />
             <form
               className="inline-filters"
               onSubmit={(event) => {
@@ -59,63 +63,81 @@ export function ReimbursementsView({ model, shell }: Props) {
               }}
             >
               <label>
-                搜索
+                {t('finance.reimbursement.filter.search')}
                 <Input
                   value={reimbursementSearch}
-                  placeholder="单号 / 申请人 / 部门"
+                  placeholder={t('finance.reimbursement.filter.searchPlaceholder')}
                   onChange={(event) => setReimbursementSearch(event.target.value)}
                 />
               </label>
               <label>
-                状态
+                {t('finance.reimbursement.filter.status')}
                 <FormSelect
                   value={reimbursementStatusFilter}
                   onChange={(event) => setReimbursementStatusFilter(event.target.value)}
                 >
-                  <option value="">全部状态</option>
-                  <option value="submitted">待审批</option>
-                  <option value="approved">已审批</option>
-                  <option value="rejected">已驳回</option>
-                  <option value="paid">已付款</option>
+                  <option value="">{t('finance.reimbursement.filter.allStatuses')}</option>
+                  <option value="submitted">
+                    {t('finance.reimbursement.status.submitted')}
+                  </option>
+                  <option value="approved">{t('finance.reimbursement.status.approved')}</option>
+                  <option value="rejected">{t('finance.reimbursement.status.rejected')}</option>
+                  <option value="paid">{t('finance.reimbursement.status.paid')}</option>
                 </FormSelect>
               </label>
               <label>
-                分类
+                {t('finance.reimbursement.filter.category')}
                 <FormSelect
                   value={reimbursementCategoryFilter}
                   onChange={(event) => setReimbursementCategoryFilter(event.target.value)}
                 >
-                  <option value="">全部分类</option>
-                  <option value="travel">差旅</option>
-                  <option value="office">办公</option>
-                  <option value="entertainment">招待</option>
-                  <option value="other">其他</option>
+                  <option value="">{t('finance.reimbursement.filter.allCategories')}</option>
+                  <option value="travel">{t('finance.reimbursement.category.travel')}</option>
+                  <option value="office">{t('finance.reimbursement.category.office')}</option>
+                  <option value="entertainment">
+                    {t('finance.reimbursement.category.entertainment')}
+                  </option>
+                  <option value="other">{t('finance.reimbursement.category.other')}</option>
                 </FormSelect>
               </label>
               <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
+                {t('finance.reimbursement.action.search')}
               </Button>
               <Button
                 type="primary"
                 icon={<Plus size={16} />}
                 onClick={() => setReimbursementModalOpen(true)}
               >
-                新增报销
+                {t('finance.reimbursement.action.create')}
               </Button>
             </form>
           </div>
           <Table<Reimbursement>
             columns={[
-              { title: '报销单号', dataIndex: 'reimbursement_no' },
-              { title: '申请人', dataIndex: 'applicant_user_name' },
-              { title: '部门', dataIndex: 'department' },
-              { title: '分类', dataIndex: 'category', render: reimbursementCategoryLabel },
               {
-                title: '金额',
+                title: t('finance.reimbursement.table.reimbursementNo'),
+                dataIndex: 'reimbursement_no',
+              },
+              {
+                title: t('finance.reimbursement.table.applicant'),
+                dataIndex: 'applicant_user_name',
+              },
+              { title: t('finance.reimbursement.table.department'), dataIndex: 'department' },
+              {
+                title: t('finance.reimbursement.table.category'),
+                dataIndex: 'category',
+                render: reimbursementCategoryLabel,
+              },
+              {
+                title: t('finance.field.amount'),
                 dataIndex: 'amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
-              { title: '状态', dataIndex: 'status', render: reimbursementStatusTag },
+              {
+                title: t('finance.field.status'),
+                dataIndex: 'status',
+                render: reimbursementStatusTag,
+              },
             ]}
             dataSource={reimbursements}
             loading={loadingReimbursements}
@@ -130,7 +152,7 @@ export function ReimbursementsView({ model, shell }: Props) {
             })}
           />
           <div className="finance-receipt-strip">
-            <span>报销单 {reimbursements.length} 条</span>
+            <span>{t('finance.reimbursement.metric.count', { count: reimbursements.length })}</span>
             <strong>{formatFinanceAmount(reimbursementsTotalAmount, 'CNY')}</strong>
           </div>
         </section>
@@ -140,13 +162,13 @@ export function ReimbursementsView({ model, shell }: Props) {
             centered
             footer={null}
             open={reimbursementModalOpen}
-            title="新增报销单"
+            title={t('finance.reimbursement.modal.createTitle')}
             width={720}
             onCancel={() => setReimbursementModalOpen(false)}
           >
             <form className="record-form" onSubmit={submitReimbursement}>
               <label>
-                报销单号
+                {t('finance.reimbursement.field.reimbursementNo')}
                 <Input
                   value={reimbursementForm.reimbursement_no}
                   onChange={(event) =>
@@ -159,7 +181,7 @@ export function ReimbursementsView({ model, shell }: Props) {
                 />
               </label>
               <label>
-                申请人工号
+                {t('finance.reimbursement.field.applicantUserId')}
                 <Input
                   value={reimbursementForm.applicant_user_id}
                   onChange={(event) =>
@@ -172,7 +194,7 @@ export function ReimbursementsView({ model, shell }: Props) {
                 />
               </label>
               <label>
-                申请人姓名
+                {t('finance.reimbursement.field.applicantUserName')}
                 <Input
                   value={reimbursementForm.applicant_user_name}
                   onChange={(event) =>
@@ -185,7 +207,7 @@ export function ReimbursementsView({ model, shell }: Props) {
                 />
               </label>
               <label>
-                部门
+                {t('finance.reimbursement.field.department')}
                 <Input
                   value={reimbursementForm.department}
                   onChange={(event) =>
@@ -195,21 +217,23 @@ export function ReimbursementsView({ model, shell }: Props) {
                 />
               </label>
               <label>
-                分类
+                {t('finance.reimbursement.field.category')}
                 <FormSelect
                   value={reimbursementForm.category}
                   onChange={(event) =>
                     setReimbursementForm((prev) => ({ ...prev, category: event.target.value }))
                   }
                 >
-                  <option value="travel">差旅</option>
-                  <option value="office">办公</option>
-                  <option value="entertainment">招待</option>
-                  <option value="other">其他</option>
+                  <option value="travel">{t('finance.reimbursement.category.travel')}</option>
+                  <option value="office">{t('finance.reimbursement.category.office')}</option>
+                  <option value="entertainment">
+                    {t('finance.reimbursement.category.entertainment')}
+                  </option>
+                  <option value="other">{t('finance.reimbursement.category.other')}</option>
                 </FormSelect>
               </label>
               <label>
-                币种
+                {t('finance.field.currency')}
                 <Input
                   value={reimbursementForm.currency}
                   onChange={(event) =>
@@ -219,7 +243,7 @@ export function ReimbursementsView({ model, shell }: Props) {
                 />
               </label>
               <label>
-                金额
+                {t('finance.field.amount')}
                 <Input
                   value={reimbursementForm.amount}
                   onChange={(event) =>
@@ -229,7 +253,7 @@ export function ReimbursementsView({ model, shell }: Props) {
                 />
               </label>
               <label>
-                事由
+                {t('finance.reimbursement.field.reason')}
                 <Input
                   value={reimbursementForm.reason}
                   onChange={(event) =>
@@ -252,29 +276,33 @@ export function ReimbursementsView({ model, shell }: Props) {
                 loading={submittingReimbursement}
                 icon={<Save size={16} />}
               >
-                登记报销单
+                {t('finance.reimbursement.action.submit')}
               </Button>
             </form>
           </Modal>
 
           {selectedReimbursement ? (
             <div className="finance-action-block">
-              <PanelTitle icon={<ClipboardCheck size={18} />} title="审批与付款" />
+              <PanelTitle
+                icon={<ClipboardCheck size={18} />}
+                title={t('finance.reimbursement.panel.approval')}
+              />
               <Descriptions column={1} size="small">
-                <Descriptions.Item label="报销单号">
+                <Descriptions.Item label={t('finance.reimbursement.field.reimbursementNo')}>
                   {selectedReimbursement.reimbursement_no}
                 </Descriptions.Item>
-                <Descriptions.Item label="当前状态">
+                <Descriptions.Item label={t('finance.reimbursement.field.currentStatus')}>
                   {reimbursementStatusTag(selectedReimbursement.status)}
                 </Descriptions.Item>
-                <Descriptions.Item label="金额">
+                <Descriptions.Item label={t('finance.field.amount')}>
                   {formatFinanceAmount(
                     selectedReimbursement.amount,
                     selectedReimbursement.currency,
                   )}
                 </Descriptions.Item>
-                <Descriptions.Item label="审批人">
-                  {selectedReimbursement.reviewer_name ?? '未指定'}
+                <Descriptions.Item label={t('finance.reimbursement.field.approver')}>
+                  {selectedReimbursement.reviewer_name ??
+                    t('finance.reimbursement.field.unassigned')}
                 </Descriptions.Item>
               </Descriptions>
               <div className="finance-action-row">
@@ -291,7 +319,7 @@ export function ReimbursementsView({ model, shell }: Props) {
                   type="primary"
                   onClick={() => void handleReimbursementApprove(true)}
                 >
-                  审批通过
+                  {t('finance.reimbursement.action.approve')}
                 </Button>
                 <Button
                   disabled={
@@ -306,7 +334,7 @@ export function ReimbursementsView({ model, shell }: Props) {
                   danger
                   onClick={() => void handleReimbursementApprove(false)}
                 >
-                  驳回
+                  {t('finance.reimbursement.action.reject')}
                 </Button>
               </div>
               {selectedReimbursement.status === 'submitted' &&
@@ -316,7 +344,11 @@ export function ReimbursementsView({ model, shell }: Props) {
                 'finance:view',
               ) ? (
                 <Alert
-                  message={`等待 ${selectedReimbursement.reviewer_name ?? '指定审批人'} 审批`}
+                  message={t('finance.reimbursement.message.pendingApproval', {
+                    name:
+                      selectedReimbursement.reviewer_name ??
+                      t('finance.reimbursement.field.assignedApprover'),
+                  })}
                   showIcon
                   type="info"
                 />
@@ -326,10 +358,12 @@ export function ReimbursementsView({ model, shell }: Props) {
                   value={reimbursementPayMethod}
                   onChange={(event) => setReimbursementPayMethod(event.target.value)}
                 >
-                  <option value="bank_transfer">银行转账</option>
-                  <option value="cash">现金</option>
-                  <option value="cheque">支票</option>
-                  <option value="other">其他</option>
+                  <option value="bank_transfer">
+                    {t('finance.reimbursement.payMethod.bankTransfer')}
+                  </option>
+                  <option value="cash">{t('finance.reimbursement.payMethod.cash')}</option>
+                  <option value="cheque">{t('finance.reimbursement.payMethod.cheque')}</option>
+                  <option value="other">{t('finance.reimbursement.payMethod.other')}</option>
                 </FormSelect>
                 <Button
                   disabled={selectedReimbursement.status !== 'approved'}
@@ -337,7 +371,7 @@ export function ReimbursementsView({ model, shell }: Props) {
                   type="primary"
                   onClick={() => void handleReimbursementPay()}
                 >
-                  确认付款
+                  {t('finance.reimbursement.action.confirmPayment')}
                 </Button>
               </div>
             </div>
