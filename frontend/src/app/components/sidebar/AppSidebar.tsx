@@ -1,4 +1,31 @@
-import { ChevronDown, ChevronRight, LayoutDashboard, LockKeyhole } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import {
+  BarChart3,
+  CalendarClock,
+  CheckCircle,
+  ChevronDown,
+  ChevronRight,
+  ClipboardCheck,
+  Factory,
+  FilePenLine,
+  FileStack,
+  FileText,
+  FlaskConical,
+  Handshake,
+  Images,
+  LayoutDashboard,
+  LockKeyhole,
+  Menu,
+  Package,
+  Search,
+  Send,
+  Settings,
+  Users,
+  Wallet,
+  Warehouse,
+  X,
+  type LucideIcon,
+} from 'lucide-react'
 import type { MenuItem } from '../../../api'
 import { lockedWorkflowPaths } from '../../pages/appHelpers'
 import { t } from '../../App'
@@ -15,26 +42,88 @@ function isActive(menuPath: string, activePath: string) {
   return activePath === menuPath || activePath.startsWith(menuPath + '/')
 }
 
+const menuIcons: Record<string, LucideIcon> = {
+  'bar-chart-3': BarChart3,
+  'calendar-clock': CalendarClock,
+  'check-circle': CheckCircle,
+  'clipboard-check': ClipboardCheck,
+  factory: Factory,
+  'file-pen-line': FilePenLine,
+  'file-stack': FileStack,
+  'file-text': FileText,
+  'flask-conical': FlaskConical,
+  handshake: Handshake,
+  images: Images,
+  package: Package,
+  search: Search,
+  send: Send,
+  settings: Settings,
+  users: Users,
+  wallet: Wallet,
+  warehouse: Warehouse,
+}
+
+function getLockedState(groupId: string) {
+  if (groupId === 'legacyPurchase') {
+    return {
+      label: '暂缓',
+      description: '该功能已列入暂缓模块，当前暂不开放',
+    }
+  }
+  return {
+    label: '非主流程',
+    description: '该功能当前不纳入主业务流程',
+  }
+}
+
 export function AppSidebar({ activePath, dashboardMenu, sidebarMenuGroups, onNavigate }: Props) {
   const isDashboardActive = activePath === '/'
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  useEffect(() => {
+    if (!mobileOpen) return
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMobileOpen(false)
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [mobileOpen])
+
+  function navigate(path: string) {
+    setMobileOpen(false)
+    onNavigate(path)
+  }
 
   return (
-    <aside className="react-sidebar">
-      <div className="brand" aria-label={`${t('app.brandName')} ${t('app.productName')}`}>
-        <div className="brand-wordmark" aria-label="D-DUTCH">D-DUTCH</div>
-        <div>
-          <strong>{t('app.brandName')}</strong>
-          <span>{t('app.productName')}</span>
+    <aside className={mobileOpen ? 'react-sidebar is-mobile-open' : 'react-sidebar'}>
+      <div className="sidebar-header">
+        <div className="brand" aria-label={`${t('app.brandName')} ${t('app.productName')}`}>
+          <div className="brand-wordmark" aria-label="D-DUTCH">D-DUTCH</div>
+          <div>
+            <strong>{t('app.brandName')}</strong>
+            <span>{t('app.productName')}</span>
+          </div>
         </div>
+        <button
+          aria-controls="app-primary-navigation"
+          aria-expanded={mobileOpen}
+          aria-label="业务导航"
+          className="mobile-nav-toggle"
+          type="button"
+          onClick={() => setMobileOpen((open) => !open)}
+        >
+          {mobileOpen ? <X aria-hidden="true" size={18} /> : <Menu aria-hidden="true" size={18} />}
+          <span>{mobileOpen ? '收起' : '导航'}</span>
+        </button>
       </div>
 
-      <nav className="react-nav" aria-label="主导航">
+      <nav id="app-primary-navigation" className="react-nav" aria-label="主导航">
         {dashboardMenu ? (
           <a
             aria-current={isDashboardActive ? 'page' : undefined}
             className={isDashboardActive ? 'nav-link nav-dashboard active' : 'nav-link nav-dashboard'}
             href={dashboardMenu.path}
-            onClick={(e) => { e.preventDefault(); onNavigate(dashboardMenu.path) }}
+            onClick={(e) => { e.preventDefault(); navigate(dashboardMenu.path) }}
           >
             <LayoutDashboard className="nav-link-icon" size={17} strokeWidth={2} />
             <span>{dashboardMenu.label}</span>
@@ -58,15 +147,25 @@ export function AppSidebar({ activePath, dashboardMenu, sidebarMenuGroups, onNav
                     const hasChildren = item.children && item.children.length > 0
                     const active = !isLocked && isActive(item.path, activePath)
                     const childActive = hasChildren && item.children!.some((child) => isActive(child.path, activePath))
-                    const Icon = item.icon ? item.icon as unknown as React.ComponentType<{ className?: string; size?: number; strokeWidth?: number }> : LayoutDashboard
+                    const Icon = menuIcons[item.icon] ?? LayoutDashboard
 
                     if (isLocked) {
+                      const lockedState = getLockedState(group.id)
                       return (
-                        <button key={item.id} aria-disabled="true" className="nav-link nav-link-locked" title={`${item.label} 暂不进入主流程`} type="button" disabled>
+                        <span
+                          key={item.id}
+                          aria-disabled="true"
+                          aria-label={`${item.label}，${lockedState.description}`}
+                          className="nav-link nav-link-locked"
+                          role="link"
+                          tabIndex={0}
+                          title={lockedState.description}
+                        >
                           <Icon className="nav-link-icon" size={16} strokeWidth={2} />
-                          <span>{item.label}</span>
-                          <LockKeyhole className="nav-lock-icon" size={13} strokeWidth={2.2} />
-                        </button>
+                          <span className="nav-link-label">{item.label}</span>
+                          <span className="nav-state-label">{lockedState.label}</span>
+                          <LockKeyhole aria-hidden="true" className="nav-lock-icon" size={13} strokeWidth={2.2} />
+                        </span>
                       )
                     }
 
@@ -86,7 +185,7 @@ export function AppSidebar({ activePath, dashboardMenu, sidebarMenuGroups, onNav
                               // about to open — also navigate to parent (总览)
                               e.preventDefault()
                               details.open = true
-                              onNavigate(item.path)
+                              navigate(item.path)
                             }}
                           >
                             <Icon className="nav-link-icon" size={16} strokeWidth={2} />
@@ -101,7 +200,7 @@ export function AppSidebar({ activePath, dashboardMenu, sidebarMenuGroups, onNav
                                   key={child.path}
                                   className={isChildActive ? 'nav-link nav-child active' : 'nav-link nav-child'}
                                   href={child.path}
-                                  onClick={(e) => { e.preventDefault(); onNavigate(child.path) }}
+                                  onClick={(e) => { e.preventDefault(); navigate(child.path) }}
                                 >
                                   <span>{child.label}</span>
                                 </a>
@@ -113,7 +212,7 @@ export function AppSidebar({ activePath, dashboardMenu, sidebarMenuGroups, onNav
                     }
 
                     return (
-                      <a key={item.id} aria-current={active ? 'page' : undefined} className={active ? 'nav-link active' : 'nav-link'} href={item.path} onClick={(e) => { e.preventDefault(); onNavigate(item.path) }}>
+                      <a key={item.id} aria-current={active ? 'page' : undefined} className={active ? 'nav-link active' : 'nav-link'} href={item.path} onClick={(e) => { e.preventDefault(); navigate(item.path) }}>
                         <Icon className="nav-link-icon" size={16} strokeWidth={2} />
                         <span>{item.label}</span>
                       </a>

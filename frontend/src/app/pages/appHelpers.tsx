@@ -42,7 +42,7 @@ export const superAdminPermission = 'system:super_admin'
 
 export const workflowPageTitleByPath: Record<string, { 'zh-CN': string; 'en-US': string }> = {
   [mcpSettingsPath]: { 'zh-CN': 'MCP 与 AI 数据接入', 'en-US': 'MCP and AI data access' },
-  [exportContractPath]: { 'zh-CN': '订单 Workflow', 'en-US': 'Order workflow' },
+  [exportContractPath]: { 'zh-CN': '订单流程', 'en-US': 'Order workflow' },
   [purchaseContractPath]: {
     'zh-CN': '采购合同和工厂履约',
     'en-US': 'Purchase contracts and factory fulfillment',
@@ -76,11 +76,9 @@ export function canApproveAssignedRecord(
   reviewerId: string | null | undefined,
   approvalPermission: string,
 ) {
+  if (currentUser.permissions.includes(superAdminPermission)) return true
   if (reviewerId) return reviewerId === currentUser.id
-  return (
-    currentUser.permissions.includes(approvalPermission) ||
-    currentUser.permissions.includes(superAdminPermission)
-  )
+  return currentUser.permissions.includes(approvalPermission)
 }
 
 // ── Settings (shared mutable state) ──────────────────────────────────
@@ -285,11 +283,7 @@ export function pageTitle(
 
 export function statusTag(value: string) {
   const color =
-    value === 'done' || value === 'completed'
-      ? 'green'
-      : value === 'overdue'
-        ? 'red'
-        : 'gold'
+    value === 'done' || value === 'completed' ? 'green' : value === 'overdue' ? 'red' : 'gold'
   const label =
     value === 'completed' || value === 'done'
       ? '已完成'
@@ -300,15 +294,19 @@ export function statusTag(value: string) {
           : value === 'overdue'
             ? '已逾期'
             : value
-  return (
-    <Tag color={color}>{label}</Tag>
-  )
+  return <Tag color={color}>{label}</Tag>
 }
 
 export function severityTag(value: string) {
   const color =
     value === 'high' || value === 'urgent' ? 'red' : value === 'warning' ? 'gold' : 'blue'
-  return <Tag color={color}>{value}</Tag>
+  const labels: Record<string, string> = {
+    high: '高优先级',
+    urgent: '紧急',
+    warning: '提醒',
+    info: '通知',
+  }
+  return <Tag color={color}>{labels[value] ?? value}</Tag>
 }
 
 // ── Navigation types ─────────────────────────────────────────────────

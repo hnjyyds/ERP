@@ -7354,7 +7354,7 @@ onUnmounted(() => {
                 </label>
                 <label>
                   <span>客户标识</span>
-                  <input v-model="documentPartyCustomerFilter" placeholder="customer-id" />
+                  <input v-model="documentPartyCustomerFilter" placeholder="输入客户编号或名称" />
                 </label>
                 <button class="icon-button compact" type="submit">
                   <Search :size="16" />
@@ -7694,7 +7694,7 @@ onUnmounted(() => {
                 </label>
                 <label>
                   <span>客户标识</span>
-                  <input v-model="sampleCustomerFilter" placeholder="customer-id" />
+                  <input v-model="sampleCustomerFilter" placeholder="输入客户编号或名称" />
                 </label>
                 <button class="icon-button compact" type="submit">
                   <Search :size="16" />
@@ -8186,11 +8186,11 @@ onUnmounted(() => {
                 </label>
                 <label>
                   <span>客户标识</span>
-                  <input v-model="sampleRecordCustomerFilter" placeholder="customer-id" />
+                  <input v-model="sampleRecordCustomerFilter" placeholder="输入客户编号或名称" />
                 </label>
                 <label>
                   <span>采购合同</span>
-                  <input v-model="sampleRecordContractFilter" placeholder="purchase-contract-id" />
+                  <input v-model="sampleRecordContractFilter" placeholder="输入采购合同号" />
                 </label>
                 <button class="icon-button compact" type="submit">
                   <Search :size="16" />
@@ -8708,7 +8708,7 @@ onUnmounted(() => {
                 </label>
                 <label>
                   <span>客户标识</span>
-                  <input v-model="sampleDeliveryCustomerFilter" placeholder="customer-id" />
+                  <input v-model="sampleDeliveryCustomerFilter" placeholder="输入客户编号或名称" />
                 </label>
                 <label>
                   <span>快递公司</span>
@@ -9209,7 +9209,7 @@ onUnmounted(() => {
                 </label>
                 <label>
                   <span>客户标识</span>
-                  <input v-model="exportQuotationCustomerFilter" placeholder="customer-id" />
+                  <input v-model="exportQuotationCustomerFilter" placeholder="输入客户编号或名称" />
                 </label>
                 <button class="icon-button compact" type="submit">
                   <Search :size="16" />
@@ -9656,7 +9656,7 @@ onUnmounted(() => {
                 </label>
                 <label>
                   <span>客户标识</span>
-                  <input v-model="exportContractCustomerFilter" placeholder="customer-id" />
+                  <input v-model="exportContractCustomerFilter" placeholder="输入客户编号或名称" />
                 </label>
                 <button class="icon-button compact" type="submit">
                   <Search :size="16" />
@@ -10209,11 +10209,11 @@ onUnmounted(() => {
                 </label>
                 <label>
                   <span>客户标识</span>
-                  <input v-model="shipmentCustomerFilter" placeholder="customer-id" />
+                  <input v-model="shipmentCustomerFilter" placeholder="输入客户编号或名称" />
                 </label>
                 <label>
                   <span>合同标识</span>
-                  <input v-model="shipmentContractFilter" placeholder="contract-id" />
+                  <input v-model="shipmentContractFilter" placeholder="输入出口合同号" />
                 </label>
                 <button class="icon-button compact" type="submit">
                   <Search :size="16" />
@@ -10611,11 +10611,11 @@ onUnmounted(() => {
                 </label>
                 <label>
                   <span>商品标识</span>
-                  <input v-model="purchaseInquiryProductFilter" placeholder="product-id" />
+                  <input v-model="purchaseInquiryProductFilter" placeholder="输入商品编号或名称" />
                 </label>
                 <label>
                   <span>供应商标识</span>
-                  <input v-model="purchaseInquirySupplierFilter" placeholder="supplier-id" />
+                  <input v-model="purchaseInquirySupplierFilter" placeholder="输入供应商编号或名称" />
                 </label>
                 <button class="icon-button compact" type="submit">
                   <Search :size="16" />
@@ -11018,7 +11018,7 @@ onUnmounted(() => {
                 </label>
                 <label>
                   <span>供应商标识</span>
-                  <input v-model="purchaseContractSupplierFilter" placeholder="supplier-id" />
+                  <input v-model="purchaseContractSupplierFilter" placeholder="输入供应商编号或名称" />
                 </label>
                 <button class="icon-button compact" type="submit">
                   <Search :size="16" />
@@ -11517,11 +11517,11 @@ onUnmounted(() => {
                 </label>
                 <label>
                   <span>供应商标识</span>
-                  <input v-model="purchaseInvoiceNoticeSupplierFilter" placeholder="supplier-id" />
+                  <input v-model="purchaseInvoiceNoticeSupplierFilter" placeholder="输入供应商编号或名称" />
                 </label>
                 <label>
                   <span>报关单证 ID</span>
-                  <input v-model="purchaseInvoiceNoticeCustomsFilter" placeholder="customs-id" />
+                  <input v-model="purchaseInvoiceNoticeCustomsFilter" placeholder="输入报关单证编号" />
                 </label>
                 <button class="icon-button compact" type="submit">
                   <Search :size="16" />
@@ -11915,11 +11915,11 @@ onUnmounted(() => {
                 </label>
                 <label>
                   <span>供应商标识</span>
-                  <input v-model="followupSupplierFilter" placeholder="supplier-id" />
+                  <input v-model="followupSupplierFilter" placeholder="输入供应商编号或名称" />
                 </label>
                 <label>
                   <span>采购合同 ID</span>
-                  <input v-model="followupContractFilter" placeholder="purchase-contract-id" />
+                  <input v-model="followupContractFilter" placeholder="输入采购合同号" />
                 </label>
                 <button class="icon-button compact" type="submit">
                   <Search :size="16" />
@@ -12149,7 +12149,7 @@ onUnmounted(() => {
                 </button>
                 <button class="secondary-button" type="button" @click="scanFollowupOverdueNodes">
                   <AlertTriangle :size="18" />
-                  <span>扫描逾期节点</span>
+                  <span>查询逾期节点</span>
                 </button>
               </div>
 
@@ -12186,12 +12186,12 @@ onUnmounted(() => {
               </div>
               <form class="search-form inline-search" @submit.prevent="scanFollowupOverdueNodes">
                 <label>
-                  <span>扫描日期</span>
+                  <span>截至日期</span>
                   <input v-model="followupOverdueAsOf" type="date" />
                 </label>
                 <button class="icon-button compact" type="submit">
                   <Search :size="16" />
-                  <span>扫描</span>
+                  <span>查询</span>
                 </button>
               </form>
               <table class="data-table compact-table">
@@ -12256,11 +12256,11 @@ onUnmounted(() => {
                 </label>
                 <label>
                   <span>供应商标识</span>
-                  <input v-model="qualityInspectionSupplierFilter" placeholder="supplier-id" />
+                  <input v-model="qualityInspectionSupplierFilter" placeholder="输入供应商编号或名称" />
                 </label>
                 <label>
                   <span>采购合同 ID</span>
-                  <input v-model="qualityInspectionContractFilter" placeholder="purchase-contract-id" />
+                  <input v-model="qualityInspectionContractFilter" placeholder="输入采购合同号" />
                 </label>
                 <button class="icon-button compact" type="submit">
                   <Search :size="16" />
@@ -12584,11 +12584,11 @@ onUnmounted(() => {
                 </label>
                 <label>
                   <span>供应商标识</span>
-                  <input v-model="inboundPlanSupplierFilter" placeholder="supplier-id" />
+                  <input v-model="inboundPlanSupplierFilter" placeholder="输入供应商编号或名称" />
                 </label>
                 <label>
                   <span>采购合同 ID</span>
-                  <input v-model="inboundPlanContractFilter" placeholder="purchase-contract-id" />
+                  <input v-model="inboundPlanContractFilter" placeholder="输入采购合同号" />
                 </label>
                 <button class="icon-button compact" type="submit">
                   <Search :size="16" />
@@ -12813,11 +12813,11 @@ onUnmounted(() => {
                 </label>
                 <label>
                   <span>供应商标识</span>
-                  <input v-model="inboundOrderSupplierFilter" placeholder="supplier-id" />
+                  <input v-model="inboundOrderSupplierFilter" placeholder="输入供应商编号或名称" />
                 </label>
                 <label>
                   <span>采购合同 ID</span>
-                  <input v-model="inboundOrderContractFilter" placeholder="purchase-contract-id" />
+                  <input v-model="inboundOrderContractFilter" placeholder="输入采购合同号" />
                 </label>
                 <button class="icon-button compact" type="submit">
                   <Search :size="16" />
@@ -13145,7 +13145,7 @@ onUnmounted(() => {
                 </label>
                 <label>
                   <span>客户 ID</span>
-                  <input v-model="outboundPlanCustomerFilter" placeholder="customer-id" />
+                  <input v-model="outboundPlanCustomerFilter" placeholder="输入客户编号或名称" />
                 </label>
                 <label>
                   <span>来源单 ID</span>
@@ -13392,7 +13392,7 @@ onUnmounted(() => {
                 </label>
                 <label>
                   <span>客户 ID</span>
-                  <input v-model="outboundOrderCustomerFilter" placeholder="customer-id" />
+                  <input v-model="outboundOrderCustomerFilter" placeholder="输入客户编号或名称" />
                 </label>
                 <label>
                   <span>来源单 ID</span>

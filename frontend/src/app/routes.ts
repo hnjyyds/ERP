@@ -75,9 +75,23 @@ export function moduleDetailPath(rootPath: string, id: string): string {
   return `${rootPath}/${encodeURIComponent(id)}`
 }
 
+export function moduleNestedDetailPath(
+  rootPath: string,
+  parentId: string,
+  childId: string,
+): string {
+  return `${moduleDetailPath(rootPath, parentId)}/${encodeURIComponent(childId)}`
+}
+
 export function moduleDetailId(rootPath: string, path: string): string | null {
   if (!path.startsWith(`${rootPath}/`)) return null
   const id = path.slice(rootPath.length + 1).split('/')[0]
+  return id ? decodeURIComponent(id) : null
+}
+
+export function moduleNestedDetailId(rootPath: string, path: string): string | null {
+  if (!path.startsWith(`${rootPath}/`)) return null
+  const id = path.slice(rootPath.length + 1).split('/')[1]
   return id ? decodeURIComponent(id) : null
 }
 

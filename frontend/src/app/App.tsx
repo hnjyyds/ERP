@@ -20,6 +20,7 @@ import {
   authExpiredEventName,
 } from '../api'
 import {
+  loginPath,
   dashboardPath,
   canAccessPath,
   detailRootPath as _detailRootPath,
@@ -123,7 +124,12 @@ export class PageErrorBoundary extends Component<PageErrorBoundaryProps, PageErr
 const fallbackI18nConfig: I18nConfig = {
   default_language: 'zh-CN',
   supported_languages: [
-    { code: 'zh-CN', label: '中文', description: 'UTC+8 / Asia Shanghai', time_zone: 'Asia/Shanghai' },
+    {
+      code: 'zh-CN',
+      label: '中文',
+      description: 'UTC+8 / Asia Shanghai',
+      time_zone: 'Asia/Shanghai',
+    },
     { code: 'en-US', label: 'English', description: 'UTC', time_zone: 'UTC' },
   ],
   messages: { 'zh-CN': {}, 'en-US': {} },
@@ -132,98 +138,249 @@ const fallbackI18nConfig: I18nConfig = {
   sidebar_groups: {},
 }
 
-function normalizeSettings(value: Partial<AppSettings> | null, config = fallbackI18nConfig): AppSettings {
+function normalizeSettings(
+  value: Partial<AppSettings> | null,
+  config = fallbackI18nConfig,
+): AppSettings {
   const langs = new Set(config.supported_languages.map((o) => o.code))
-  const lang = (value?.language && langs.has(value.language) ? value.language : config.default_language) as AppLanguage
-  const tz = config.supported_languages.find((o) => o.code === lang)?.time_zone ?? (lang === 'en-US' ? 'UTC' : 'Asia/Shanghai')
+  const lang = (
+    value?.language && langs.has(value.language) ? value.language : config.default_language
+  ) as AppLanguage
+  const tz =
+    config.supported_languages.find((o) => o.code === lang)?.time_zone ??
+    (lang === 'en-US' ? 'UTC' : 'Asia/Shanghai')
   return { language: lang, timeZone: tz as AppTimeZone }
 }
 
 const zh: Record<string, string> = {
-  'settings.open': '系统设置', 'settings.title': '系统设置', 'settings.account': '账号',
-  'settings.language': '语言', 'settings.timeZone': '时区', 'settings.timeZoneHint': '用于展示时间与提醒',
+  'settings.open': '系统设置',
+  'settings.title': '系统设置',
+  'settings.account': '账号',
+  'settings.language': '语言',
+  'settings.timeZone': '时区',
+  'settings.timeZoneHint': '用于展示时间与提醒',
   'settings.logout': '退出登录',
-  'common.close': '关闭', 'common.create': '新建', 'common.delete': '删除', 'common.refresh': '刷新',
-  'common.viewAll': '查看全部', 'common.notSet': '未设置', 'common.none': '无',
-  'access.deniedTitle': '暂无访问权限', 'access.deniedDescription': '当前账号未开通该模块，请联系管理员。',
-  'page.businessModule': '业务模块', 'page.personalWorkbench': '个人工作台',
-  'app.brandName': '新裴贸易', 'app.productName': '业务管理系统',
-  'dashboard.aria': '工作台', 'dashboard.announcement': '公告', 'dashboard.todo': '待办',
-  'dashboard.unreadNotifications': '未读消息', 'dashboard.todaySchedule': '今日日程',
-  'dashboard.addTodo': '新增待办', 'dashboard.addSchedule': '新增日程',
-  'dashboard.publishAnnouncement': '发布公告', 'dashboard.myTodos': '我的待办',
-  'dashboard.messages': '消息', 'dashboard.mySchedule': '我的日程',
+  'common.cancel': '取消',
+  'common.close': '关闭',
+  'common.create': '新建',
+  'common.delete': '删除',
+  'common.refresh': '刷新',
+  'common.viewAll': '查看全部',
+  'common.notSet': '未设置',
+  'common.none': '无',
+  'access.deniedTitle': '暂无访问权限',
+  'access.deniedDescription': '当前账号未开通该模块，请联系管理员。',
+  'page.businessModule': '业务模块',
+  'page.personalWorkbench': '个人工作台',
+  'app.brandName': '新裴贸易',
+  'app.productName': '业务管理系统',
+  'dashboard.aria': '工作台',
+  'dashboard.announcement': '公告',
+  'dashboard.todo': '待办',
+  'dashboard.unreadNotifications': '未读消息',
+  'dashboard.todaySchedule': '今日日程',
+  'dashboard.addTodo': '新增待办',
+  'dashboard.addSchedule': '新增日程',
+  'dashboard.publishAnnouncement': '发布公告',
+  'dashboard.myTodos': '我的待办',
+  'dashboard.globalTodos': '全局待办',
+  'dashboard.messages': '消息',
+  'dashboard.mySchedule': '我的日程',
   'dashboard.companyAnnouncements': '公司公告',
-  'dashboard.noTodos': '暂无待办', 'dashboard.noNotifications': '暂无消息',
-  'dashboard.noSchedules': '暂无日程', 'dashboard.noAnnouncements': '暂无公告',
-  'dashboard.goHandle': '去处理', 'dashboard.handle': '处理', 'dashboard.read': '已读',
-  'dashboard.publish': '发布', 'dashboard.add': '新增',
-  'dashboard.title': '标题', 'dashboard.content': '内容',
-  'dashboard.start': '开始', 'dashboard.end': '结束', 'dashboard.note': '备注',
-  'dashboard.assignees': '指派人', 'dashboard.assigneeRequired': '请选择指派人',
+  'dashboard.noTodos': '暂无待办',
+  'dashboard.noNotifications': '暂无消息',
+  'dashboard.noSchedules': '暂无日程',
+  'dashboard.noAnnouncements': '暂无公告',
+  'dashboard.goHandle': '去处理',
+  'dashboard.handle': '处理',
+  'dashboard.read': '已读',
+  'dashboard.publish': '发布',
+  'dashboard.add': '新增',
+  'dashboard.title': '标题',
+  'dashboard.content': '内容',
+  'dashboard.start': '开始',
+  'dashboard.end': '结束',
+  'dashboard.note': '备注',
+  'dashboard.assignees': '指派人',
+  'dashboard.assigneeRequired': '请选择指派人',
   'dashboard.selectAssignees': '选择指派人',
-  'dashboard.todoCreated': '待办已创建', 'dashboard.todoRequired': '请填写待办标题和内容',
+  'dashboard.todoCreated': '待办已创建',
+  'dashboard.todoRequired': '请填写待办标题和内容',
   'dashboard.createdAt': '创建时间',
-  'dashboard.scheduleDetail': '日程详情', 'dashboard.deleteSchedule': '删除日程',
-  'dashboard.deleteScheduleTitle': '确认删除', 'dashboard.deleteScheduleConfirm': '确定要删除这条日程吗？',
-  'dashboard.scheduleCreated': '日程已创建', 'dashboard.scheduleDeleted': '日程已删除',
-  'dashboard.scheduleRequired': '请填写日程标题', 'dashboard.scheduleTimeInvalid': '结束时间不能早于开始时间',
-  'dashboard.announcementDeniedTitle': '权限不足', 'dashboard.announcementDenied': '仅超级管理员可以发布公告',
-  'dashboard.announcementRequired': '请填写公告标题和内容', 'dashboard.announcementCreated': '公告已发布',
-  'dashboard.notificationHandled': '消息已处理', 'dashboard.operationFailed': '操作失败',
-  'dashboard.deadline': '截止时间', 'dashboard.noNote': '无备注',
-  'dashboard.pendingConfirm': '待确认', 'dashboard.countdownPrefix': '剩余',
-  'dashboard.inProgress': '进行中', 'dashboard.ended': '已结束',
-  'dashboard.minutes': '分钟', 'dashboard.hours': '小时', 'dashboard.days': '天',
-  'dashboard.minutesShort': '分', 'dashboard.hoursShort': '时',
-  'dashboard.daysShort': '天', 'dashboard.secondsShort': '秒',
-  'status.completed': '已完成', 'status.pending': '待处理',
-  'severity.high': '高', 'severity.urgent': '紧急', 'severity.warning': '警告',
-  'todo.approval': '审批', 'todo.followup': '跟单', 'todo.manual': '手动',
-  'todo.system': '系统', 'todo.assignedToMe': '别人给我的', 'todo.selfCreated': '我创建的',
+  'dashboard.scheduleDetail': '日程详情',
+  'dashboard.deleteSchedule': '删除日程',
+  'dashboard.deleteScheduleTitle': '确认删除',
+  'dashboard.deleteScheduleConfirm': '确定要删除这条日程吗？',
+  'dashboard.scheduleCreated': '日程已创建',
+  'dashboard.scheduleDeleted': '日程已删除',
+  'dashboard.scheduleRequired': '请填写日程标题',
+  'dashboard.scheduleTimeInvalid': '结束时间不能早于开始时间',
+  'dashboard.announcementDeniedTitle': '权限不足',
+  'dashboard.announcementDenied': '仅超级管理员可以发布公告',
+  'dashboard.announcementRequired': '请填写公告标题和内容',
+  'dashboard.announcementCreated': '公告已发布',
+  'dashboard.notificationHandled': '消息已处理',
+  'dashboard.operationFailed': '操作失败',
+  'dashboard.deadline': '截止时间',
+  'dashboard.noNote': '无备注',
+  'dashboard.todoScope': '待办范围',
+  'dashboard.todoSearchPlaceholder': '搜索任务、客户或供应商',
+  'dashboard.todoTypeFilter': '任务类型筛选',
+  'dashboard.todoDueFilter': '截止状态筛选',
+  'dashboard.allTaskTypes': '全部类型',
+  'dashboard.allDueStates': '全部时效',
+  'dashboard.overdue': '已逾期',
+  'dashboard.dueToday': '今日到期',
+  'dashboard.upcoming': '未到期',
+  'dashboard.noDeadline': '未排期',
+  'dashboard.currentResults': '当前结果',
+  'dashboard.taskColumn': '任务',
+  'dashboard.typeColumn': '类型',
+  'dashboard.ownerColumn': '负责人',
+  'dashboard.dueColumn': '截止时间',
+  'dashboard.actionColumn': '操作',
+  'dashboard.unassigned': '未分配',
+  'dashboard.noBusinessContext': '暂无业务说明',
+  'dashboard.noMatchingTodos': '没有符合当前条件的待办',
+  'dashboard.clearFilters': '清除筛选',
+  'dashboard.pendingConfirm': '待确认',
+  'dashboard.countdownPrefix': '剩余',
+  'dashboard.inProgress': '进行中',
+  'dashboard.ended': '已结束',
+  'dashboard.minutes': '分钟',
+  'dashboard.hours': '小时',
+  'dashboard.days': '天',
+  'dashboard.minutesShort': '分',
+  'dashboard.hoursShort': '时',
+  'dashboard.daysShort': '天',
+  'dashboard.secondsShort': '秒',
+  'status.completed': '已完成',
+  'status.pending': '待处理',
+  'severity.high': '高',
+  'severity.urgent': '紧急',
+  'severity.warning': '警告',
+  'todo.approval': '审批',
+  'todo.followup': '跟单',
+  'todo.manual': '手动',
+  'todo.system': '系统',
+  'todo.assignedToMe': '别人给我的',
+  'todo.globalBusiness': '全局业务待办',
+  'todo.selfCreated': '我创建的',
 }
 const en: Record<string, string> = {
-  'settings.open': 'Settings', 'settings.title': 'Settings', 'settings.account': 'Account',
-  'settings.language': 'Language', 'settings.timeZone': 'Time zone', 'settings.timeZoneHint': 'Used for reminders and display',
+  'settings.open': 'Settings',
+  'settings.title': 'Settings',
+  'settings.account': 'Account',
+  'settings.language': 'Language',
+  'settings.timeZone': 'Time zone',
+  'settings.timeZoneHint': 'Used for reminders and display',
   'settings.logout': 'Logout',
-  'common.close': 'Close', 'common.create': 'Create', 'common.delete': 'Delete', 'common.refresh': 'Refresh',
-  'common.viewAll': 'View all', 'common.notSet': 'Not set', 'common.none': 'None',
-  'access.deniedTitle': 'No access', 'access.deniedDescription': 'You do not have access to this module. Contact an admin.',
-  'page.businessModule': 'Business module', 'page.personalWorkbench': 'Personal workbench',
-  'app.brandName': 'Xinpei Trade', 'app.productName': 'Business Management',
-  'dashboard.aria': 'Dashboard', 'dashboard.announcement': 'Announcements', 'dashboard.todo': 'Tasks',
-  'dashboard.unreadNotifications': 'Unread', 'dashboard.todaySchedule': 'Today',
-  'dashboard.addTodo': 'New task', 'dashboard.addSchedule': 'New event',
-  'dashboard.publishAnnouncement': 'Publish', 'dashboard.myTodos': 'My tasks',
-  'dashboard.messages': 'Messages', 'dashboard.mySchedule': 'My schedule',
+  'common.cancel': 'Cancel',
+  'common.close': 'Close',
+  'common.create': 'Create',
+  'common.delete': 'Delete',
+  'common.refresh': 'Refresh',
+  'common.viewAll': 'View all',
+  'common.notSet': 'Not set',
+  'common.none': 'None',
+  'access.deniedTitle': 'No access',
+  'access.deniedDescription': 'You do not have access to this module. Contact an admin.',
+  'page.businessModule': 'Business module',
+  'page.personalWorkbench': 'Personal workbench',
+  'app.brandName': 'Xinpei Trade',
+  'app.productName': 'Business Management',
+  'dashboard.aria': 'Dashboard',
+  'dashboard.announcement': 'Announcements',
+  'dashboard.todo': 'Tasks',
+  'dashboard.unreadNotifications': 'Unread',
+  'dashboard.todaySchedule': 'Today',
+  'dashboard.addTodo': 'New task',
+  'dashboard.addSchedule': 'New event',
+  'dashboard.publishAnnouncement': 'Publish',
+  'dashboard.myTodos': 'My tasks',
+  'dashboard.globalTodos': 'Global tasks',
+  'dashboard.messages': 'Messages',
+  'dashboard.mySchedule': 'My schedule',
   'dashboard.companyAnnouncements': 'Announcements',
-  'dashboard.noTodos': 'No tasks', 'dashboard.noNotifications': 'No messages',
-  'dashboard.noSchedules': 'No events', 'dashboard.noAnnouncements': 'No announcements',
-  'dashboard.goHandle': 'Handle', 'dashboard.handle': 'Handle', 'dashboard.read': 'Read',
-  'dashboard.publish': 'Publish', 'dashboard.add': 'Add',
-  'dashboard.title': 'Title', 'dashboard.content': 'Content',
-  'dashboard.start': 'Start', 'dashboard.end': 'End', 'dashboard.note': 'Note',
-  'dashboard.assignees': 'Assignees', 'dashboard.assigneeRequired': 'Select at least one assignee',
+  'dashboard.noTodos': 'No tasks',
+  'dashboard.noNotifications': 'No messages',
+  'dashboard.noSchedules': 'No events',
+  'dashboard.noAnnouncements': 'No announcements',
+  'dashboard.goHandle': 'Handle',
+  'dashboard.handle': 'Handle',
+  'dashboard.read': 'Read',
+  'dashboard.publish': 'Publish',
+  'dashboard.add': 'Add',
+  'dashboard.title': 'Title',
+  'dashboard.content': 'Content',
+  'dashboard.start': 'Start',
+  'dashboard.end': 'End',
+  'dashboard.note': 'Note',
+  'dashboard.assignees': 'Assignees',
+  'dashboard.assigneeRequired': 'Select at least one assignee',
   'dashboard.selectAssignees': 'Select assignees',
-  'dashboard.todoCreated': 'Task created', 'dashboard.todoRequired': 'Enter a task title and content',
+  'dashboard.todoCreated': 'Task created',
+  'dashboard.todoRequired': 'Enter a task title and content',
   'dashboard.createdAt': 'Created at',
-  'dashboard.scheduleDetail': 'Event detail', 'dashboard.deleteSchedule': 'Delete event',
-  'dashboard.deleteScheduleTitle': 'Confirm delete', 'dashboard.deleteScheduleConfirm': 'Delete this event?',
-  'dashboard.scheduleCreated': 'Event created', 'dashboard.scheduleDeleted': 'Event deleted',
-  'dashboard.scheduleRequired': 'Enter an event title', 'dashboard.scheduleTimeInvalid': 'End time must be after start time',
-  'dashboard.announcementDeniedTitle': 'Permission denied', 'dashboard.announcementDenied': 'Only super admins can publish announcements',
-  'dashboard.announcementRequired': 'Enter an announcement title and content', 'dashboard.announcementCreated': 'Announcement published',
-  'dashboard.notificationHandled': 'Message handled', 'dashboard.operationFailed': 'Operation failed',
-  'dashboard.deadline': 'Deadline', 'dashboard.noNote': 'No note',
-  'dashboard.pendingConfirm': 'Pending', 'dashboard.countdownPrefix': '',
-  'dashboard.inProgress': 'In progress', 'dashboard.ended': 'Ended',
-  'dashboard.minutes': 'minutes', 'dashboard.hours': 'hours', 'dashboard.days': 'days',
-  'dashboard.minutesShort': 'm', 'dashboard.hoursShort': 'h',
-  'dashboard.daysShort': 'd', 'dashboard.secondsShort': 's',
-  'status.completed': 'Completed', 'status.pending': 'Pending',
-  'severity.high': 'High', 'severity.urgent': 'Urgent', 'severity.warning': 'Warning',
-  'todo.approval': 'Approval', 'todo.followup': 'Follow-up', 'todo.manual': 'Manual',
-  'todo.system': 'System', 'todo.assignedToMe': 'Assigned to me', 'todo.selfCreated': 'Created by me',
+  'dashboard.scheduleDetail': 'Event detail',
+  'dashboard.deleteSchedule': 'Delete event',
+  'dashboard.deleteScheduleTitle': 'Confirm delete',
+  'dashboard.deleteScheduleConfirm': 'Delete this event?',
+  'dashboard.scheduleCreated': 'Event created',
+  'dashboard.scheduleDeleted': 'Event deleted',
+  'dashboard.scheduleRequired': 'Enter an event title',
+  'dashboard.scheduleTimeInvalid': 'End time must be after start time',
+  'dashboard.announcementDeniedTitle': 'Permission denied',
+  'dashboard.announcementDenied': 'Only super admins can publish announcements',
+  'dashboard.announcementRequired': 'Enter an announcement title and content',
+  'dashboard.announcementCreated': 'Announcement published',
+  'dashboard.notificationHandled': 'Message handled',
+  'dashboard.operationFailed': 'Operation failed',
+  'dashboard.deadline': 'Deadline',
+  'dashboard.noNote': 'No note',
+  'dashboard.todoScope': 'Task scope',
+  'dashboard.todoSearchPlaceholder': 'Search tasks, customers, or suppliers',
+  'dashboard.todoTypeFilter': 'Filter by type',
+  'dashboard.todoDueFilter': 'Filter by deadline',
+  'dashboard.allTaskTypes': 'All types',
+  'dashboard.allDueStates': 'All deadlines',
+  'dashboard.overdue': 'Overdue',
+  'dashboard.dueToday': 'Due today',
+  'dashboard.upcoming': 'Upcoming',
+  'dashboard.noDeadline': 'Not scheduled',
+  'dashboard.currentResults': 'Results',
+  'dashboard.taskColumn': 'Task',
+  'dashboard.typeColumn': 'Type',
+  'dashboard.ownerColumn': 'Owner',
+  'dashboard.dueColumn': 'Deadline',
+  'dashboard.actionColumn': 'Action',
+  'dashboard.unassigned': 'Unassigned',
+  'dashboard.noBusinessContext': 'No business context',
+  'dashboard.noMatchingTodos': 'No tasks match these filters',
+  'dashboard.clearFilters': 'Clear filters',
+  'dashboard.pendingConfirm': 'Pending',
+  'dashboard.countdownPrefix': '',
+  'dashboard.inProgress': 'In progress',
+  'dashboard.ended': 'Ended',
+  'dashboard.minutes': 'minutes',
+  'dashboard.hours': 'hours',
+  'dashboard.days': 'days',
+  'dashboard.minutesShort': 'm',
+  'dashboard.hoursShort': 'h',
+  'dashboard.daysShort': 'd',
+  'dashboard.secondsShort': 's',
+  'status.completed': 'Completed',
+  'status.pending': 'Pending',
+  'severity.high': 'High',
+  'severity.urgent': 'Urgent',
+  'severity.warning': 'Warning',
+  'todo.approval': 'Approval',
+  'todo.followup': 'Follow-up',
+  'todo.manual': 'Manual',
+  'todo.system': 'System',
+  'todo.assignedToMe': 'Assigned to me',
+  'todo.globalBusiness': 'Global business tasks',
+  'todo.selfCreated': 'Created by me',
 }
 
 export function t(key: string, settings: AppSettings = normalizeSettings(null)) {
@@ -232,7 +389,9 @@ export function t(key: string, settings: AppSettings = normalizeSettings(null)) 
 
 // ─── Lazy Login ──────────────────────────────────────────────────────────────
 
-const LoginPage = React.lazy(() => import('./pages/auth/LoginPage').then(m => ({ default: m.LoginPage })))
+const LoginPage = React.lazy(() =>
+  import('./pages/auth/LoginPage').then((m) => ({ default: m.LoginPage })),
+)
 
 // ─── App ─────────────────────────────────────────────────────────────────────
 
@@ -251,7 +410,7 @@ const sidebarNavGroups: Array<{
   },
   {
     id: 'workflow',
-    label: '订单 Workflow',
+    label: '订单流程',
     icon: ClipboardCheck,
     paths: [exportContractPath, purchaseContractPath, exportQuotationPath, shipmentPath],
   },
@@ -345,7 +504,9 @@ function getSidebarMenuGroups(menus: MenuItem[]): SidebarGroup[] {
       return { ...group, items }
     })
     .filter((group) => group.items.length > 0)
-  const otherItems = menus.filter((item) => item.path !== dashboardPath && !groupedPaths.has(item.path))
+  const otherItems = menus.filter(
+    (item) => item.path !== dashboardPath && !groupedPaths.has(item.path),
+  )
   if (otherItems.length === 0) return groups
   return [
     ...groups,
@@ -361,7 +522,9 @@ function getSidebarMenuGroups(menus: MenuItem[]): SidebarGroup[] {
 export default function App() {
   const [session, setSession] = useState<AuthSession | null>(null)
   const [dashboard, setDashboard] = useState<Dashboard | null>(null)
-  const [activePath, setActivePath] = useState<string>(() => window.location.pathname || dashboardPath)
+  const [activePath, setActivePath] = useState<string>(
+    () => window.location.pathname || dashboardPath,
+  )
   const [booting, setBooting] = useState(true)
   const [loadingDashboard, setLoadingDashboard] = useState(false)
   const [error, setError] = useState('')
@@ -392,7 +555,7 @@ export default function App() {
     setDashboard(null)
     setSettingsOpen(false)
     setSettingsAvatarDraft(null)
-    if (message) setError(message)
+    setError(message ?? '')
     replaceRoute('/login')
   }
 
@@ -402,6 +565,7 @@ export default function App() {
     setDashboard(null)
     setSettingsOpen(false)
     setSettingsAvatarDraft(null)
+    setError('')
     replaceRoute('/login')
   }
 
@@ -417,7 +581,9 @@ export default function App() {
         if (cancelled) return
         setI18nConfig(cfg)
         setAppSettings((cur) => normalizeSettings(cur, cfg))
-      } catch { /* use fallback */ }
+      } catch {
+        /* use fallback */
+      }
 
       // 2. no token → login
       if (!hasAuthToken()) {
@@ -445,7 +611,9 @@ export default function App() {
     }
 
     void bootstrap()
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   // ── auth expired listener ────────────────────────────────────────────────
@@ -463,6 +631,10 @@ export default function App() {
     window.addEventListener('popstate', onPop)
     return () => window.removeEventListener('popstate', onPop)
   }, [])
+
+  useEffect(() => {
+    if (session && activePath === loginPath) replaceRoute(dashboardPath)
+  }, [activePath, session])
 
   // ── load dashboard on navigation ─────────────────────────────────────────
 
@@ -484,7 +656,10 @@ export default function App() {
 
   // ── derived ──────────────────────────────────────────────────────────────
 
-  const sidebarMenuGroups = useMemo(() => getSidebarMenuGroups(session?.menus ?? []), [session?.menus])
+  const sidebarMenuGroups = useMemo(
+    () => getSidebarMenuGroups(session?.menus ?? []),
+    [session?.menus],
+  )
 
   const activeMenu = useMemo(() => {
     return (
@@ -499,10 +674,7 @@ export default function App() {
   }, [session, activePath])
 
   const canNavigatePath = (path: string) =>
-    canAccessPath(
-      path,
-      session?.menus.map((menu) => menu.path) ?? [],
-    )
+    canAccessPath(path, session?.menus.map((menu) => menu.path) ?? [])
 
   // ── renders ──────────────────────────────────────────────────────────────
 
@@ -529,6 +701,7 @@ export default function App() {
             onLogin={(s) => {
               setSettingsOpen(false)
               setSettingsAvatarDraft(null)
+              setError('')
               setSession(s)
               replaceRoute(dashboardPath)
             }}
@@ -541,7 +714,9 @@ export default function App() {
   // 3. logged in → shell
   return (
     <ConfigProvider locale={antdLocale}>
-      <main className={activePath === dashboardPath ? 'react-shell react-shell-home' : 'react-shell'}>
+      <main
+        className={activePath === dashboardPath ? 'react-shell react-shell-home' : 'react-shell'}
+      >
         <AppSidebar
           activePath={activePath}
           dashboardMenu={session.menus.find((m) => m.path === dashboardPath) ?? null}
@@ -562,7 +737,9 @@ export default function App() {
             loadingDashboard={loadingDashboard}
             activeMenu={activeMenu}
             onNavigate={navigate}
-            onRefreshDashboard={async () => { await loadDashboard() }}
+            onRefreshDashboard={async () => {
+              await loadDashboard()
+            }}
             canNavigatePath={canNavigatePath}
           />
         </section>
@@ -577,7 +754,9 @@ export default function App() {
         savingSettingsAvatar={savingSettingsAvatar}
         onClose={() => setSettingsOpen(false)}
         onLogout={logout}
-        onChangeLanguage={(lang) => setAppSettings((prev) => normalizeSettings({ ...prev, language: lang }, i18nConfig))}
+        onChangeLanguage={(lang) =>
+          setAppSettings((prev) => normalizeSettings({ ...prev, language: lang }, i18nConfig))
+        }
         onChangeAvatarDraft={setSettingsAvatarDraft}
         onSaveAvatar={() => {}}
       />

@@ -259,12 +259,25 @@ export const followupStatusOptions = [
   { value: 'completed', label: '已完成' },
 ]
 
+export const followupNodeLabels: Record<string, string> = {
+  contract_confirmed: '下单日期',
+  confirm_sample_submitted: '确认样提交日期',
+  bulk_sample_submitted: '大货样提交日期',
+  quality_inspection: 'QC查验日期',
+  inbound_completed: '入库日期',
+  outbound_completed: '出库日期',
+}
+
+export function getFollowupNodeLabel(value: string, fallback = value): string {
+  return followupNodeLabels[value] ?? fallback
+}
+
 export const followupNodeOptions = [
-  { value: 'confirm_sample_submitted', label: '确认样提交' },
-  { value: 'bulk_sample_submitted', label: '大货样提交' },
-  { value: 'quality_inspection', label: 'QC 查验' },
-  { value: 'inbound_completed', label: '入库' },
-  { value: 'outbound_completed', label: '出库' },
+  { value: 'confirm_sample_submitted', label: followupNodeLabels.confirm_sample_submitted },
+  { value: 'bulk_sample_submitted', label: followupNodeLabels.bulk_sample_submitted },
+  { value: 'quality_inspection', label: followupNodeLabels.quality_inspection },
+  { value: 'inbound_completed', label: followupNodeLabels.inbound_completed },
+  { value: 'outbound_completed', label: followupNodeLabels.outbound_completed },
 ]
 
 export const followupSourceTypeOptions = [

@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components -- this module exports a hook that returns a memoized control */
-import { Button, Dropdown, Menu, type MenuProps } from 'antd'
+import { Button, Dropdown, Menu, Tooltip, type MenuProps } from 'antd'
 import { SlidersHorizontal } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
 
@@ -118,8 +118,14 @@ function ColumnViewControl({ options, isVisible, onToggle, onReset }: ControlPro
   ]
 
   return (
-    <Dropdown dropdownRender={() => <Menu selectable={false} items={menuItems} />} trigger={['click']}>
-      <Button icon={<SlidersHorizontal size={16} />}>视图</Button>
-    </Dropdown>
+    <Tooltip title="设置列视图">
+      <Dropdown dropdownRender={() => <Menu selectable={false} items={menuItems} />} trigger={['click']}>
+        <Button
+          aria-label="设置列视图"
+          className="toolbar-icon-button"
+          icon={<SlidersHorizontal size={16} />}
+        />
+      </Dropdown>
+    </Tooltip>
   )
 }

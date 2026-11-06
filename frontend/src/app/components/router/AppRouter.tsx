@@ -4,6 +4,7 @@ import type { AuthSession, Dashboard, MenuItem } from '../../../api'
 import {
   isDetailPathFor,
   moduleDetailId,
+  moduleNestedDetailId,
   dashboardPath,
   dashboardTodosPath,
   dashboardSchedulesPath,
@@ -200,6 +201,7 @@ export function AppRouter({
           />
         ) : activePath === dashboardTodosPath ? (
           <DashboardTodosPage
+            currentUser={session.user}
             dashboard={dashboard}
             loading={loadingDashboard}
             canNavigatePath={canNavigatePath}
@@ -299,6 +301,7 @@ export function AppRouter({
         ) : isDetailPathFor(followupPath, activePath) ? (
           <FollowupPage
             detailId={moduleDetailId(followupPath, activePath)}
+            targetNodeId={moduleNestedDetailId(followupPath, activePath)}
             onNavigate={onNavigate}
           />
         ) : activePath === myQualityTasksPath ? (
