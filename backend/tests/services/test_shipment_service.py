@@ -165,8 +165,8 @@ async def test_shipment_service_generates_combined_plan_and_updates_contract_shi
             payload=ShipmentSubmit(reviewer_id="u-admin"),
         )
         reviewer = _user_with_permissions(
-            ["sales:shipment:approve", "sales:shipment:view"],
-            user_id="u-admin",
+            ["system:super_admin", "sales:shipment:approve", "sales:shipment:view"],
+            user_id="u-boss",
             data_scope="all",
         )
         approved = await service.approve_shipment(
@@ -190,6 +190,7 @@ async def test_shipment_service_generates_combined_plan_and_updates_contract_shi
     assert plan.contract_progresses[0].shipment_statuses[0].shipped_quantity == "250"
     assert submitted.approval_status == "submitted"
     assert approved.approval_status == "approved"
+    assert approved.reviewer_id == "u-boss"
     assert approved.contract_progresses[0].shipment_statuses[0].status == "partial"
     assert refreshed_a is not None
     assert refreshed_a.shipped_quantity == "550"

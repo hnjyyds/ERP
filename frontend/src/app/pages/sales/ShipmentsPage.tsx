@@ -1,13 +1,37 @@
-import { Alert, Button, Input, Modal as _Modal, Skeleton as _Skeleton, Table, Tag as _Tag } from 'antd'
-import { ArrowLeft, LayoutDashboard, Plus as _Plus, Search, Ship } from 'lucide-react'
+import { Alert, Button, Input, Modal, Skeleton as _Skeleton, Table, Tag as _Tag } from 'antd'
+import { ArrowLeft, LayoutDashboard, Plus, Search, Ship } from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
-import { approveShipment, generateShipmentFromContracts, listShipmentReminders, listShipments, submitShipment, type CurrentUser, type ShipmentPlan, type ShipmentApprovePayload, type ShipmentPlanGeneratePayload, type ShipmentReminder, type ShipmentStatisticItem as _ShipmentStatisticItem , ExportContractPurchaseStatus, ExportContractShipmentStatus, ShipmentLine} from '../../../api'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  approveShipment,
+  generateShipmentFromContracts,
+  listExportContracts,
+  listShipmentReminders,
+  listShipments,
+  submitShipment,
+  type CurrentUser,
+  type ShipmentPlan,
+  type ShipmentApprovePayload,
+  type ShipmentPlanGeneratePayload,
+  type ShipmentReminder,
+  type ShipmentStatisticItem as _ShipmentStatisticItem,
+  ExportContractPurchaseStatus,
+  ExportContractShipmentStatus,
+  ShipmentLine,
+} from '../../../api'
 import { shipmentPath, moduleDetailPath } from '../../routes'
-import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { FormSelect, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { shipmentStatusOptions, freightMethodOptions } from '../../../shared/formOptions'
-import { canApproveAssignedRecord, formatDate, formatMoney, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import {
+  canApproveAssignedRecord,
+  formatDate,
+  formatMoney,
+  nullableText,
+  todayInputValue,
+  type RoutedDetailPageProps,
+  emptyToNull,
+} from '../appHelpers'
 import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
 
 function freightMethodLabel(value: string): string {
@@ -20,7 +44,6 @@ function contractProgressStatusLabel(value: string): string {
   if (value === 'pending') return '未开始'
   return value
 }
-
 
 type ShipmentFormState = {
   code: string
@@ -45,7 +68,6 @@ type ShipmentApproveFormState = {
   reviewer_name: string
   approved_at: string
 }
-
 
 function initialShipmentForm(): ShipmentFormState {
   return {
@@ -131,7 +153,6 @@ function formatPercent(value?: string | null): string {
   return `${numeric.toFixed(2)}%`
 }
 
-
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 
 export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
@@ -147,18 +168,28 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [form, setForm] = useState<ShipmentFormState>(() => initialShipmentForm())
+  const [formOpen, setFormOpen] = useState(false)
   const [reviewerId, setReviewerId] = useState('')
   const [approveForm, setApproveForm] = useState<ShipmentApproveFormState>(() =>
     initialShipmentApproveForm(),
   )
 
-  const selectedShipment = useMemo(
-    () => {
-      if (detailId) return shipments.find((item) => item.id === detailId) ?? null
-      return shipments.find((item) => item.id === selectedShipmentId) ?? shipments[0] ?? null
-    },
-    [detailId, shipments, selectedShipmentId],
-  )
+  const fetchExportContractOptions = useCallback(async (query: string) => {
+    const result = await listExportContracts({
+      q: query.trim() || undefined,
+      approval_status: 'approved',
+    })
+    return result.items.slice(0, 20).map((contract) => ({
+      value: contract.id,
+      label: `${contract.code} / ${contract.customer_name}`,
+      description: `出运 ${formatDate(contract.planned_ship_date)}  ${formatMoney(contract.statistics.total_amount, contract.currency)}`,
+    }))
+  }, [])
+
+  const selectedShipment = useMemo(() => {
+    if (detailId) return shipments.find((item) => item.id === detailId) ?? null
+    return shipments.find((item) => item.id === selectedShipmentId) ?? shipments[0] ?? null
+  }, [detailId, shipments, selectedShipmentId])
 
   useEffect(() => {
     void loadShipments()
@@ -243,6 +274,7 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
       setForm(initialShipmentForm())
       upsertShipment(created)
       await Promise.all([loadShipments(created.id), loadReminders()])
+      setFormOpen(false)
     } catch (caught) {
       showError(caught, '出货明细生成失败')
     } finally {
@@ -274,7 +306,9 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
   async function approveSelectedShipment(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!selectedShipment) return
-    if (!canApproveAssignedRecord(currentUser, selectedShipment.reviewer_id, 'sales:shipment:approve')) {
+    if (
+      !canApproveAssignedRecord(currentUser, selectedShipment.reviewer_id, 'sales:shipment:approve')
+    ) {
       showError(new Error(`该出货单应由 ${selectedShipment.reviewer_name ?? '指定审批人'} 审批`))
       return
     }
@@ -305,543 +339,627 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
     0,
   )
   const currency = shipments[0]?.currency ?? 'USD'
-  const selectedShipmentRows = selectedShipment?.contract_progresses.flatMap((progress) =>
-    progress.shipment_statuses.map((status) => ({
-      ...status,
-      contract_id: progress.contract_id,
-      contract_no: progress.contract_no,
-    })),
-  ) ?? []
-  const selectedPurchaseRows = selectedShipment?.contract_progresses.flatMap((progress) =>
-    progress.purchase_statuses.map((status) => ({
-      ...status,
-      contract_id: progress.contract_id,
-      contract_no: progress.contract_no,
-    })),
-  ) ?? []
+  const selectedShipmentRows =
+    selectedShipment?.contract_progresses.flatMap((progress) =>
+      progress.shipment_statuses.map((status) => ({
+        ...status,
+        contract_id: progress.contract_id,
+        contract_no: progress.contract_no,
+      })),
+    ) ?? []
+  const selectedPurchaseRows =
+    selectedShipment?.contract_progresses.flatMap((progress) =>
+      progress.purchase_statuses.map((status) => ({
+        ...status,
+        contract_id: progress.contract_id,
+        contract_no: progress.contract_no,
+      })),
+    ) ?? []
 
   return (
     <section className="shipment-page">
-<div className="summary-strip" aria-label="出货明细概览">
+      <div className="summary-strip" aria-label="出货明细概览">
         <Metric label="出货单" value={shipments.length} />
-        <Metric label="待审批" value={shipments.filter((item) => item.approval_status === 'submitted').length} />
-        <Metric label="已审批" value={shipments.filter((item) => item.approval_status === 'approved').length} />
+        <Metric
+          label="待审批"
+          value={shipments.filter((item) => item.approval_status === 'submitted').length}
+        />
+        <Metric
+          label="已审批"
+          value={shipments.filter((item) => item.approval_status === 'approved').length}
+        />
         <Metric label="应收金额" value={formatMoney(totalReceivable.toFixed(2), currency)} />
         <Metric label="预计利润" value={formatMoney(totalProfit.toFixed(2), currency)} />
       </div>
 
-      {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
+      {message ? (
+        <Alert className="workspace-alert" title={message} type="success" showIcon />
+      ) : null}
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid shipment-grid">
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="出货计划列表" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadShipments()
-              }}
-            >
-              <label>
-                出货搜索
-                <Input
-                  value={search}
-                  placeholder="出货单 / 客户 / 合同 / 港口"
-                  onChange={(event) => setSearch(event.target.value)}
-                />
-              </label>
-              <label>
-                审批状态
-              <FormSelect
-                value={statusFilter}
-                onChange={(event) => setStatusFilter(event.target.value)}
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<Search size={18} />} title="出货计划列表" />
+              <form
+                className="inline-filters"
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  void loadShipments()
+                }}
               >
-                <option value="">全部状态</option>
-                {shipmentStatusOptions.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </FormSelect>
-              </label>
-              <label>
-                客户标识
-                <Input
-                  value={customerFilter}
-                  placeholder="customer-id"
-                  onChange={(event) => setCustomerFilter(event.target.value)}
-                />
-              </label>
-              <label>
-                合同标识
-                <Input
-                  value={contractFilter}
-                  placeholder="contract-id"
-                  onChange={(event) => setContractFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-            </form>
-          </div>
-
-          <Table<ShipmentPlan>
-            columns={[
-              {
-                title: '出货单号',
-                dataIndex: 'code',
-                render: (value: string, record: ShipmentPlan) => (
-                  <button
-                    className="row-button"
-                    type="button"
-                    onClick={(event) => stopAndOpenShipmentDetail(event, record)}
+                <label>
+                  出货搜索
+                  <Input
+                    value={search}
+                    placeholder="出货单 / 客户 / 合同 / 港口"
+                    onChange={(event) => setSearch(event.target.value)}
+                  />
+                </label>
+                <label>
+                  审批状态
+                  <FormSelect
+                    value={statusFilter}
+                    onChange={(event) => setStatusFilter(event.target.value)}
                   >
-                    {value}
-                  </button>
-                ),
-              },
-              { title: '状态', dataIndex: 'approval_status', render: shipmentStatusLabel },
-              { title: '客户', dataIndex: 'customer_name' },
-              { title: '出货日期', dataIndex: 'shipment_date', render: formatDate },
-              { title: '计划出运日', dataIndex: 'planned_ship_date', render: formatDate },
-              {
-                title: '应收',
-                dataIndex: 'finance_overview',
-                render: (_, shipment) =>
-                  formatMoney(shipment.finance_overview.receivable_amount, shipment.finance_overview.currency),
-              },
-              {
-                title: '入口',
-                key: 'detail',
-                width: 110,
-                render: (_: unknown, record: ShipmentPlan) => (
-                  <Button size="small" onClick={(event) => stopAndOpenShipmentDetail(event, record)}>
-                    查看详情
-                  </Button>
-                ),
-              },
-            ]}
-            dataSource={shipments}
-            loading={loading}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedShipment?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => setSelectedShipmentId(record.id),
-            })}
-          />
+                    <option value="">全部状态</option>
+                    {shipmentStatusOptions.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </FormSelect>
+                </label>
+                <label>
+                  客户编号
+                  <Input
+                    value={customerFilter}
+                    placeholder="输入客户编号"
+                    onChange={(event) => setCustomerFilter(event.target.value)}
+                  />
+                </label>
+                <label>
+                  出口合同编号
+                  <Input
+                    value={contractFilter}
+                    placeholder="输入出口合同编号"
+                    onChange={(event) => setContractFilter(event.target.value)}
+                  />
+                </label>
+                <Button htmlType="submit" icon={<Search size={16} />}>
+                  查询
+                </Button>
+                <Button
+                  icon={<Plus size={16} />}
+                  type="primary"
+                  onClick={() => {
+                    setForm(initialShipmentForm())
+                    setFormOpen(true)
+                  }}
+                >
+                  生成出货明细
+                </Button>
+              </form>
+            </div>
+
+            <Table<ShipmentPlan>
+              columns={[
+                {
+                  title: '出货单号',
+                  dataIndex: 'code',
+                  render: (value: string, record: ShipmentPlan) => (
+                    <button
+                      className="row-button"
+                      type="button"
+                      onClick={(event) => stopAndOpenShipmentDetail(event, record)}
+                    >
+                      {value}
+                    </button>
+                  ),
+                },
+                { title: '状态', dataIndex: 'approval_status', render: shipmentStatusLabel },
+                { title: '客户', dataIndex: 'customer_name' },
+                { title: '出货日期', dataIndex: 'shipment_date', render: formatDate },
+                { title: '计划出运日', dataIndex: 'planned_ship_date', render: formatDate },
+                {
+                  title: '应收',
+                  dataIndex: 'finance_overview',
+                  render: (_, shipment) =>
+                    formatMoney(
+                      shipment.finance_overview.receivable_amount,
+                      shipment.finance_overview.currency,
+                    ),
+                },
+                {
+                  title: '入口',
+                  key: 'detail',
+                  width: 110,
+                  render: (_: unknown, record: ShipmentPlan) => (
+                    <Button
+                      size="small"
+                      onClick={(event) => stopAndOpenShipmentDetail(event, record)}
+                    >
+                      查看详情
+                    </Button>
+                  ),
+                },
+              ]}
+              dataSource={shipments}
+              loading={loading}
+              pagination={false}
+              rowClassName={(record) => (record.id === selectedShipment?.id ? 'selected-row' : '')}
+              rowKey="id"
+              size="small"
+              onRow={(record) => ({
+                onClick: () => setSelectedShipmentId(record.id),
+              })}
+            />
           </section>
         ) : null}
 
         {!detailId ? (
-          <section className="workspace-panel form-panel product-form-panel">
-          <PanelTitle icon={<LayoutDashboard size={18} />} title="从出口合同生成出货明细" />
-          <form className="record-form" onSubmit={submitGeneratedShipment}>
-            <div className="form-pair two">
+          <Modal
+            destroyOnHidden
+            footer={null}
+            open={formOpen}
+            title="从出口合同生成出货明细"
+            width={880}
+            onCancel={() => setFormOpen(false)}
+          >
+            <form className="record-form modal-record-form" onSubmit={submitGeneratedShipment}>
+              <div className="form-pair two">
+                <label>
+                  出货单号
+                  <Input
+                    value={form.code}
+                    onChange={(event) => setForm({ ...form, code: event.target.value })}
+                  />
+                </label>
+                <label>
+                  出货日期
+                  <Input
+                    type="date"
+                    value={form.shipment_date}
+                    onChange={(event) => setForm({ ...form, shipment_date: event.target.value })}
+                  />
+                </label>
+              </div>
+              <div className="form-pair two">
+                <label>
+                  计划出运日
+                  <Input
+                    type="date"
+                    value={form.planned_ship_date}
+                    onChange={(event) =>
+                      setForm({ ...form, planned_ship_date: event.target.value })
+                    }
+                  />
+                </label>
+                <label>
+                  运输方式
+                  <FormSelect
+                    value={form.shipping_method}
+                    onChange={(event) => setForm({ ...form, shipping_method: event.target.value })}
+                  >
+                    {freightMethodOptions.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </FormSelect>
+                </label>
+              </div>
+              <div className="form-divider">出口合同选择</div>
+              <div className="form-pair two">
+                <label htmlFor="shipment-contract-a">
+                  出口合同 A
+                  <RemoteSelect
+                    ariaLabel="出口合同 A"
+                    fetchOptions={fetchExportContractOptions}
+                    id="shipment-contract-a"
+                    placeholder="输入合同号或客户搜索"
+                    required
+                    value={form.contract_id_a || null}
+                    onChange={(value) => setForm({ ...form, contract_id_a: value })}
+                  />
+                </label>
+                <label>
+                  合同 A 出货数量
+                  <Input
+                    type="number"
+                    min="0.0001"
+                    step="0.0001"
+                    value={form.contract_quantity_a}
+                    onChange={(event) =>
+                      setForm({ ...form, contract_quantity_a: event.target.value })
+                    }
+                  />
+                </label>
+              </div>
+              <div className="form-pair two">
+                <label htmlFor="shipment-contract-b">
+                  出口合同 B（可选）
+                  <RemoteSelect
+                    ariaLabel="出口合同 B（可选）"
+                    fetchOptions={fetchExportContractOptions}
+                    id="shipment-contract-b"
+                    placeholder="需要合并出货时选择第二份合同"
+                    value={form.contract_id_b || null}
+                    onChange={(value) => setForm({ ...form, contract_id_b: value })}
+                  />
+                </label>
+                <label>
+                  合同 B 出货数量
+                  <Input
+                    type="number"
+                    min="0.0001"
+                    step="0.0001"
+                    value={form.contract_quantity_b}
+                    onChange={(event) =>
+                      setForm({ ...form, contract_quantity_b: event.target.value })
+                    }
+                  />
+                </label>
+              </div>
+              <div className="form-divider">物流单证</div>
+              <div className="form-pair two">
+                <label>
+                  起运港
+                  <Input
+                    value={form.port_of_loading}
+                    onChange={(event) => setForm({ ...form, port_of_loading: event.target.value })}
+                  />
+                </label>
+                <label>
+                  目的港
+                  <Input
+                    value={form.port_of_destination}
+                    onChange={(event) =>
+                      setForm({ ...form, port_of_destination: event.target.value })
+                    }
+                  />
+                </label>
+              </div>
+              <div className="form-pair two">
+                <label>
+                  船名航次
+                  <Input
+                    value={form.vessel_name}
+                    onChange={(event) => setForm({ ...form, vessel_name: event.target.value })}
+                  />
+                </label>
+                <label>
+                  箱号
+                  <Input
+                    value={form.container_no}
+                    onChange={(event) => setForm({ ...form, container_no: event.target.value })}
+                  />
+                </label>
+              </div>
+              <div className="form-pair two">
+                <label>
+                  订舱号
+                  <Input
+                    value={form.booking_no}
+                    onChange={(event) => setForm({ ...form, booking_no: event.target.value })}
+                  />
+                </label>
+                <label>
+                  单证负责人
+                  <Input
+                    value={form.document_owner_name}
+                    onChange={(event) =>
+                      setForm({ ...form, document_owner_name: event.target.value })
+                    }
+                  />
+                </label>
+              </div>
               <label>
-                出货单号
-                <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
-              </label>
-              <label>
-                出货日期
-                <Input
-                  type="date"
-                  value={form.shipment_date}
-                  onChange={(event) => setForm({ ...form, shipment_date: event.target.value })}
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                计划出运日
-                <Input
-                  type="date"
-                  value={form.planned_ship_date}
-                  onChange={(event) => setForm({ ...form, planned_ship_date: event.target.value })}
-                />
-              </label>
-              <label>
-                运输方式
-              <FormSelect
-                value={form.shipping_method}
-                onChange={(event) => setForm({ ...form, shipping_method: event.target.value })}
-              >
-                {freightMethodOptions.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </FormSelect>
-              </label>
-            </div>
-            <div className="form-divider">出口合同选择</div>
-            <div className="form-pair two">
-              <label>
-                合同标识 A
-                <Input
-                  value={form.contract_id_a}
-                  onChange={(event) => setForm({ ...form, contract_id_a: event.target.value })}
-                />
-              </label>
-              <label>
-                合同 A 出货数量
+                预计付款成本
                 <Input
                   type="number"
-                  min="0.0001"
-                  step="0.0001"
-                  value={form.contract_quantity_a}
-                  onChange={(event) => setForm({ ...form, contract_quantity_a: event.target.value })}
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                合同标识 B
-                <Input
-                  value={form.contract_id_b}
-                  onChange={(event) => setForm({ ...form, contract_id_b: event.target.value })}
+                  min="0"
+                  step="0.01"
+                  value={form.estimated_payable_amount}
+                  onChange={(event) =>
+                    setForm({ ...form, estimated_payable_amount: event.target.value })
+                  }
                 />
               </label>
               <label>
-                合同 B 出货数量
+                出货备注
                 <Input
-                  type="number"
-                  min="0.0001"
-                  step="0.0001"
-                  value={form.contract_quantity_b}
-                  onChange={(event) => setForm({ ...form, contract_quantity_b: event.target.value })}
+                  value={form.remarks}
+                  onChange={(event) => setForm({ ...form, remarks: event.target.value })}
                 />
               </label>
-            </div>
-            <div className="form-divider">物流单证</div>
-            <div className="form-pair two">
-              <label>
-                起运港
-                <Input
-                  value={form.port_of_loading}
-                  onChange={(event) => setForm({ ...form, port_of_loading: event.target.value })}
-                />
-              </label>
-              <label>
-                目的港
-                <Input
-                  value={form.port_of_destination}
-                  onChange={(event) => setForm({ ...form, port_of_destination: event.target.value })}
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                船名航次
-                <Input
-                  value={form.vessel_name}
-                  onChange={(event) => setForm({ ...form, vessel_name: event.target.value })}
-                />
-              </label>
-              <label>
-                箱号
-                <Input
-                  value={form.container_no}
-                  onChange={(event) => setForm({ ...form, container_no: event.target.value })}
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                订舱号
-                <Input
-                  value={form.booking_no}
-                  onChange={(event) => setForm({ ...form, booking_no: event.target.value })}
-                />
-              </label>
-              <label>
-                单证负责人
-                <Input
-                  value={form.document_owner_name}
-                  onChange={(event) => setForm({ ...form, document_owner_name: event.target.value })}
-                />
-              </label>
-            </div>
-            <label>
-              预计付款成本
-              <Input
-                type="number"
-                min="0"
-                step="0.01"
-                value={form.estimated_payable_amount}
-                onChange={(event) =>
-                  setForm({ ...form, estimated_payable_amount: event.target.value })
-                }
-              />
-            </label>
-            <label>
-              出货备注
-              <Input
-                value={form.remarks}
-                onChange={(event) => setForm({ ...form, remarks: event.target.value })}
-              />
-            </label>
-            <Button htmlType="submit" loading={submitting} type="primary">
-              生成出货明细
-            </Button>
-          </form>
-          </section>
+              <div className="modal-actions">
+                <Button onClick={() => setFormOpen(false)}>取消</Button>
+                <Button htmlType="submit" loading={submitting} type="primary">
+                  生成出货明细
+                </Button>
+              </div>
+            </form>
+          </Modal>
         ) : null}
 
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="出货明细" />
-            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(shipmentPath)}>
-              返回列表
-            </Button>
-          </div>
-          {selectedShipment ? (
-            <>
-              <dl className="detail-list">
-                <div>
-                  <dt>状态/日期</dt>
-                  <dd>{shipmentStatusLabel(selectedShipment.approval_status)} / {formatDate(selectedShipment.shipment_date)}</dd>
-                </div>
-                <div>
-                  <dt>客户</dt>
-                  <dd>{selectedShipment.customer_name}</dd>
-                </div>
-                <div>
-                  <dt>运输方式</dt>
-                  <dd>{freightMethodLabel(selectedShipment.shipping_method)}</dd>
-                </div>
-                <div>
-                  <dt>出运港口</dt>
-                  <dd>{`${selectedShipment.port_of_loading} -> ${selectedShipment.port_of_destination}`}</dd>
-                </div>
-                <div>
-                  <dt>船名/箱号</dt>
-                  <dd>{selectedShipment.vessel_name ?? '未填'} / {selectedShipment.container_no ?? '未填'}</dd>
-                </div>
-                <div>
-                  <dt>订舱号</dt>
-                  <dd>{selectedShipment.booking_no ?? '未填'}</dd>
-                </div>
-                <div>
-                  <dt>单证负责人</dt>
-                  <dd>{selectedShipment.document_owner_name ?? '未填'}</dd>
-                </div>
-                <div>
-                  <dt>审批人</dt>
-                  <dd>{selectedShipment.reviewer_name ?? '未审批'}</dd>
-                </div>
-              </dl>
-
-              <div className="transaction-box">
-                <strong>收付款和利润概览</strong>
-                <div className="finance-overview-grid">
-                  <Metric
-                    label="应收金额"
-                    value={formatMoney(
-                      selectedShipment.finance_overview.receivable_amount,
-                      selectedShipment.finance_overview.currency,
-                    )}
-                  />
-                  <Metric
-                    label="预计付款"
-                    value={formatMoney(
-                      selectedShipment.finance_overview.payable_amount,
-                      selectedShipment.finance_overview.currency,
-                    )}
-                  />
-                  <Metric
-                    label="预计利润"
-                    value={formatMoney(
-                      selectedShipment.finance_overview.profit_amount,
-                      selectedShipment.finance_overview.currency,
-                    )}
-                  />
-                  <Metric
-                    label="利润率"
-                    value={formatPercent(selectedShipment.finance_overview.profit_rate)}
-                  />
-                </div>
-              </div>
-
-              <div className="delivery-action-row">
-                {selectedShipment.approval_status === 'draft' ? (
-                  <ApprovalAssigneeSelect
-                    currentUserId={currentUser.id}
-                    onChange={setReviewerId}
-                    requiredPermission="sales:shipment:approve"
-                    value={reviewerId}
-                  />
-                ) : null}
-                <Button
-                  disabled={selectedShipment.approval_status !== 'draft' || !reviewerId}
-                  loading={submitting}
-                  onClick={() => void submitShipmentForApproval()}
-                >
-                  提交审批
-                </Button>
-              </div>
-
-              <form className="record-form accessory-form approval-form" onSubmit={approveSelectedShipment}>
-                <div className="form-divider">出货审批</div>
-                <div className="form-pair two">
-                  <label>
-                    审批人
-                    <Input disabled value={selectedShipment.reviewer_name ?? ''} />
-                  </label>
-                  <label>
-                    审批日期
-                    <Input
-                      type="date"
-                      value={approveForm.approved_at}
-                      onChange={(event) =>
-                        setApproveForm({ ...approveForm, approved_at: event.target.value })
-                      }
-                    />
-                  </label>
-                </div>
-                <Button
-                  disabled={
-                    selectedShipment.approval_status !== 'submitted' ||
-                    !canApproveAssignedRecord(currentUser, selectedShipment.reviewer_id, 'sales:shipment:approve')
-                  }
-                  htmlType="submit"
-                  loading={submitting}
-                  type="primary"
-                >
-                  审批通过
-                </Button>
-                {selectedShipment.approval_status === 'submitted' && !canApproveAssignedRecord(currentUser, selectedShipment.reviewer_id, 'sales:shipment:approve') ? (
-                  <Alert
-                    message={`等待 ${selectedShipment.reviewer_name ?? '指定审批人'} 审批`}
-                    showIcon
-                    type="info"
-                  />
-                ) : null}
-              </form>
-
-              <div className="transaction-box">
-                <strong>出货提醒</strong>
-                <p>{selectedShipment.reminder.message}</p>
-              </div>
-              <Table<ShipmentReminder>
-                className="compact-section"
-                columns={[
-                  { title: '提醒日期', dataIndex: 'reminder_date', render: formatDate },
-                  { title: '出货单', dataIndex: 'shipment_no' },
-                  { title: '状态', dataIndex: 'status', render: reminderStatusLabel },
-                  { title: '提醒内容', dataIndex: 'message' },
-                ]}
-                dataSource={[selectedShipment.reminder]}
-                locale={{ emptyText: '暂无当前出货提醒' }}
-                pagination={false}
-                rowKey={(item) => `${item.shipment_id}-${item.reminder_date}`}
-                size="small"
-              />
-
-              <div className="accessory-heading">
-                <strong>出货商品明细</strong>
-                <span>{selectedShipment.lines.length} 条</span>
-              </div>
-              <Table<ShipmentLine>
-                columns={[
-                  { title: '合同号', dataIndex: 'contract_no' },
-                  { title: '商品编号', dataIndex: 'product_code', render: nullableText },
-                  { title: '商品名称', dataIndex: 'product_name' },
-                  { title: '规格', dataIndex: 'specification', render: nullableText },
-                  { title: '型号', dataIndex: 'model', render: nullableText },
-                  { title: '出货数量', dataIndex: 'quantity', render: (_, line) => `${line.quantity} ${line.unit}` },
-                  {
-                    title: '金额',
-                    dataIndex: 'amount',
-                    render: (_, line) => formatMoney(line.amount, selectedShipment.currency),
-                  },
-                  { title: '计划出运日', dataIndex: 'planned_ship_date', render: formatDate },
-                ]}
-                dataSource={selectedShipment.lines}
-                locale={{ emptyText: '暂无出货商品明细' }}
-                pagination={false}
-                rowKey="id"
-                size="small"
-              />
-
-              <div className="accessory-heading">
-                <strong>出口合同出货情况</strong>
-                <span>{selectedShipmentRows.length} 条</span>
-              </div>
-              <Table<(ExportContractShipmentStatus & { contract_id: string; contract_no: string })>
-                columns={[
-                  { title: '合同号', dataIndex: 'contract_no' },
-                  { title: '商品编号', dataIndex: 'product_code', render: nullableText },
-                  { title: '商品名称', dataIndex: 'product_name' },
-                  { title: '合同数量', dataIndex: 'total_quantity' },
-                  { title: '已出货', dataIndex: 'shipped_quantity' },
-                  { title: '未出货', dataIndex: 'unshipped_quantity' },
-                  {
-                    title: '未出货金额',
-                    dataIndex: 'unshipped_amount',
-                    render: (_, item) => formatMoney(item.unshipped_amount, selectedShipment.currency),
-                  },
-                  { title: '状态', dataIndex: 'status', render: contractProgressStatusLabel },
-                ]}
-                dataSource={selectedShipmentRows}
-                locale={{ emptyText: '暂无出口合同出货情况' }}
-                pagination={false}
-                rowKey={(item) => `${item.contract_id}-${item.product_id ?? item.product_code ?? item.product_name}-shipment`}
-                size="small"
-              />
-
-              <div className="accessory-heading">
-                <strong>出口合同采购情况</strong>
-                <span>{selectedPurchaseRows.length} 条</span>
-              </div>
-              <Table<(ExportContractPurchaseStatus & { contract_id: string; contract_no: string })>
-                columns={[
-                  { title: '合同号', dataIndex: 'contract_no' },
-                  { title: '商品编号', dataIndex: 'product_code', render: nullableText },
-                  { title: '商品名称', dataIndex: 'product_name' },
-                  { title: '合同数量', dataIndex: 'total_quantity' },
-                  { title: '已采购', dataIndex: 'purchased_quantity' },
-                  { title: '未采购', dataIndex: 'unpurchased_quantity' },
-                  { title: '状态', dataIndex: 'status', render: contractProgressStatusLabel },
-                ]}
-                dataSource={selectedPurchaseRows}
-                locale={{ emptyText: '暂无出口合同采购情况' }}
-                pagination={false}
-                rowKey={(item) => `${item.contract_id}-${item.product_id ?? item.product_code ?? item.product_name}-purchase`}
-                size="small"
-              />
-
-              <div className="accessory-heading">
-                <strong>出货提醒列表</strong>
-                <span>{reminders.length} 条</span>
-              </div>
-              <Table<ShipmentReminder>
-                columns={[
-                  { title: '提醒日期', dataIndex: 'reminder_date', render: formatDate },
-                  { title: '出货单', dataIndex: 'shipment_no' },
-                  { title: '状态', dataIndex: 'status', render: reminderStatusLabel },
-                  { title: '提醒内容', dataIndex: 'message' },
-                ]}
-                dataSource={reminders}
-                locale={{ emptyText: '暂无出货提醒' }}
-                pagination={false}
-                rowKey={(item) => `${item.shipment_id}-${item.reminder_date}`}
-                size="small"
-              />
-            </>
-          ) : (
-            <div className="module-state panel-empty-state">
-              <Ship size={28} />
-              <strong>暂无出货明细</strong>
-              <span>请返回列表选择出货记录查看详情</span>
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<LayoutDashboard size={18} />} title="出货明细" />
+              <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(shipmentPath)}>
+                返回列表
+              </Button>
             </div>
-          )}
+            {selectedShipment ? (
+              <>
+                <dl className="detail-list">
+                  <div>
+                    <dt>状态/日期</dt>
+                    <dd>
+                      {shipmentStatusLabel(selectedShipment.approval_status)} /{' '}
+                      {formatDate(selectedShipment.shipment_date)}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>客户</dt>
+                    <dd>{selectedShipment.customer_name}</dd>
+                  </div>
+                  <div>
+                    <dt>运输方式</dt>
+                    <dd>{freightMethodLabel(selectedShipment.shipping_method)}</dd>
+                  </div>
+                  <div>
+                    <dt>出运港口</dt>
+                    <dd>{`${selectedShipment.port_of_loading} -> ${selectedShipment.port_of_destination}`}</dd>
+                  </div>
+                  <div>
+                    <dt>船名/箱号</dt>
+                    <dd>
+                      {selectedShipment.vessel_name ?? '未填'} /{' '}
+                      {selectedShipment.container_no ?? '未填'}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>订舱号</dt>
+                    <dd>{selectedShipment.booking_no ?? '未填'}</dd>
+                  </div>
+                  <div>
+                    <dt>单证负责人</dt>
+                    <dd>{selectedShipment.document_owner_name ?? '未填'}</dd>
+                  </div>
+                  <div>
+                    <dt>审批人</dt>
+                    <dd>{selectedShipment.reviewer_name ?? '未审批'}</dd>
+                  </div>
+                </dl>
+
+                <div className="transaction-box">
+                  <strong>收付款和利润概览</strong>
+                  <div className="finance-overview-grid">
+                    <Metric
+                      label="应收金额"
+                      value={formatMoney(
+                        selectedShipment.finance_overview.receivable_amount,
+                        selectedShipment.finance_overview.currency,
+                      )}
+                    />
+                    <Metric
+                      label="预计付款"
+                      value={formatMoney(
+                        selectedShipment.finance_overview.payable_amount,
+                        selectedShipment.finance_overview.currency,
+                      )}
+                    />
+                    <Metric
+                      label="预计利润"
+                      value={formatMoney(
+                        selectedShipment.finance_overview.profit_amount,
+                        selectedShipment.finance_overview.currency,
+                      )}
+                    />
+                    <Metric
+                      label="利润率"
+                      value={formatPercent(selectedShipment.finance_overview.profit_rate)}
+                    />
+                  </div>
+                </div>
+
+                <div className="delivery-action-row">
+                  {selectedShipment.approval_status === 'draft' ? (
+                    <ApprovalAssigneeSelect
+                      currentUserId={currentUser.id}
+                      onChange={setReviewerId}
+                      requiredPermission="sales:shipment:approve"
+                      value={reviewerId}
+                    />
+                  ) : null}
+                  <Button
+                    disabled={selectedShipment.approval_status !== 'draft' || !reviewerId}
+                    loading={submitting}
+                    onClick={() => void submitShipmentForApproval()}
+                  >
+                    提交审批
+                  </Button>
+                </div>
+
+                <form
+                  className="record-form accessory-form approval-form"
+                  onSubmit={approveSelectedShipment}
+                >
+                  <div className="form-divider">出货审批</div>
+                  <div className="form-pair two">
+                    <label>
+                      审批人
+                      <Input disabled value={selectedShipment.reviewer_name ?? ''} />
+                    </label>
+                    <label>
+                      审批日期
+                      <Input
+                        type="date"
+                        value={approveForm.approved_at}
+                        onChange={(event) =>
+                          setApproveForm({ ...approveForm, approved_at: event.target.value })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <Button
+                    disabled={
+                      selectedShipment.approval_status !== 'submitted' ||
+                      !canApproveAssignedRecord(
+                        currentUser,
+                        selectedShipment.reviewer_id,
+                        'sales:shipment:approve',
+                      )
+                    }
+                    htmlType="submit"
+                    loading={submitting}
+                    type="primary"
+                  >
+                    审批通过
+                  </Button>
+                  {selectedShipment.approval_status === 'submitted' &&
+                  !canApproveAssignedRecord(
+                    currentUser,
+                    selectedShipment.reviewer_id,
+                    'sales:shipment:approve',
+                  ) ? (
+                    <Alert
+                      message={`等待 ${selectedShipment.reviewer_name ?? '指定审批人'} 审批`}
+                      showIcon
+                      type="info"
+                    />
+                  ) : null}
+                </form>
+
+                <div className="transaction-box">
+                  <strong>出货提醒</strong>
+                  <p>{selectedShipment.reminder.message}</p>
+                </div>
+                <Table<ShipmentReminder>
+                  className="compact-section"
+                  columns={[
+                    { title: '提醒日期', dataIndex: 'reminder_date', render: formatDate },
+                    { title: '出货单', dataIndex: 'shipment_no' },
+                    { title: '状态', dataIndex: 'status', render: reminderStatusLabel },
+                    { title: '提醒内容', dataIndex: 'message' },
+                  ]}
+                  dataSource={[selectedShipment.reminder]}
+                  locale={{ emptyText: '暂无当前出货提醒' }}
+                  pagination={false}
+                  rowKey={(item) => `${item.shipment_id}-${item.reminder_date}`}
+                  size="small"
+                />
+
+                <div className="accessory-heading">
+                  <strong>出货商品明细</strong>
+                  <span>{selectedShipment.lines.length} 条</span>
+                </div>
+                <Table<ShipmentLine>
+                  columns={[
+                    { title: '合同号', dataIndex: 'contract_no' },
+                    { title: '商品编号', dataIndex: 'product_code', render: nullableText },
+                    { title: '商品名称', dataIndex: 'product_name' },
+                    { title: '规格', dataIndex: 'specification', render: nullableText },
+                    { title: '型号', dataIndex: 'model', render: nullableText },
+                    {
+                      title: '出货数量',
+                      dataIndex: 'quantity',
+                      render: (_, line) => `${line.quantity} ${line.unit}`,
+                    },
+                    {
+                      title: '金额',
+                      dataIndex: 'amount',
+                      render: (_, line) => formatMoney(line.amount, selectedShipment.currency),
+                    },
+                    { title: '计划出运日', dataIndex: 'planned_ship_date', render: formatDate },
+                  ]}
+                  dataSource={selectedShipment.lines}
+                  locale={{ emptyText: '暂无出货商品明细' }}
+                  pagination={false}
+                  rowKey="id"
+                  size="small"
+                />
+
+                <div className="accessory-heading">
+                  <strong>出口合同出货情况</strong>
+                  <span>{selectedShipmentRows.length} 条</span>
+                </div>
+                <Table<ExportContractShipmentStatus & { contract_id: string; contract_no: string }>
+                  columns={[
+                    { title: '合同号', dataIndex: 'contract_no' },
+                    { title: '商品编号', dataIndex: 'product_code', render: nullableText },
+                    { title: '商品名称', dataIndex: 'product_name' },
+                    { title: '合同数量', dataIndex: 'total_quantity' },
+                    { title: '已出货', dataIndex: 'shipped_quantity' },
+                    { title: '未出货', dataIndex: 'unshipped_quantity' },
+                    {
+                      title: '未出货金额',
+                      dataIndex: 'unshipped_amount',
+                      render: (_, item) =>
+                        formatMoney(item.unshipped_amount, selectedShipment.currency),
+                    },
+                    { title: '状态', dataIndex: 'status', render: contractProgressStatusLabel },
+                  ]}
+                  dataSource={selectedShipmentRows}
+                  locale={{ emptyText: '暂无出口合同出货情况' }}
+                  pagination={false}
+                  rowKey={(item) =>
+                    `${item.contract_id}-${item.product_id ?? item.product_code ?? item.product_name}-shipment`
+                  }
+                  size="small"
+                />
+
+                <div className="accessory-heading">
+                  <strong>出口合同采购情况</strong>
+                  <span>{selectedPurchaseRows.length} 条</span>
+                </div>
+                <Table<ExportContractPurchaseStatus & { contract_id: string; contract_no: string }>
+                  columns={[
+                    { title: '合同号', dataIndex: 'contract_no' },
+                    { title: '商品编号', dataIndex: 'product_code', render: nullableText },
+                    { title: '商品名称', dataIndex: 'product_name' },
+                    { title: '合同数量', dataIndex: 'total_quantity' },
+                    { title: '已采购', dataIndex: 'purchased_quantity' },
+                    { title: '未采购', dataIndex: 'unpurchased_quantity' },
+                    { title: '状态', dataIndex: 'status', render: contractProgressStatusLabel },
+                  ]}
+                  dataSource={selectedPurchaseRows}
+                  locale={{ emptyText: '暂无出口合同采购情况' }}
+                  pagination={false}
+                  rowKey={(item) =>
+                    `${item.contract_id}-${item.product_id ?? item.product_code ?? item.product_name}-purchase`
+                  }
+                  size="small"
+                />
+
+                <div className="accessory-heading">
+                  <strong>出货提醒列表</strong>
+                  <span>{reminders.length} 条</span>
+                </div>
+                <Table<ShipmentReminder>
+                  columns={[
+                    { title: '提醒日期', dataIndex: 'reminder_date', render: formatDate },
+                    { title: '出货单', dataIndex: 'shipment_no' },
+                    { title: '状态', dataIndex: 'status', render: reminderStatusLabel },
+                    { title: '提醒内容', dataIndex: 'message' },
+                  ]}
+                  dataSource={reminders}
+                  locale={{ emptyText: '暂无出货提醒' }}
+                  pagination={false}
+                  rowKey={(item) => `${item.shipment_id}-${item.reminder_date}`}
+                  size="small"
+                />
+              </>
+            ) : (
+              <div className="module-state panel-empty-state">
+                <Ship size={28} />
+                <strong>暂无出货明细</strong>
+                <span>请返回列表选择出货记录查看详情</span>
+              </div>
+            )}
           </section>
         ) : null}
       </section>

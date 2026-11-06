@@ -289,9 +289,9 @@ class ShipmentPlanRepository:
         if plan is None:
             return None
         plan.approval_status = "approved"
-        if reviewer_id is not None and plan.reviewer_id is None:
+        if reviewer_id is not None:
             plan.reviewer_id = reviewer_id
-        if reviewer_name is not None and plan.reviewer_name is None:
+        if reviewer_name is not None:
             plan.reviewer_name = reviewer_name
         plan.approved_at = approved_at
         plan.reminder_status = "done"
