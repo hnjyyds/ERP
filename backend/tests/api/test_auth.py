@@ -27,7 +27,6 @@ async def test_login_returns_token_user_and_permission_menus(
         "dashboard:view",
         "followup:plan:edit",
         "followup:plan:view",
-        "followup:plan:view_all",
         "followup:template:edit",
         "followup:template:view",
         "masterdata:customer:credit:edit",

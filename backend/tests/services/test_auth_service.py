@@ -158,7 +158,6 @@ async def test_seed_system_demo_data_deduplicates_role_permissions_by_role_and_p
         "followup:template:edit",
         "followup:plan:view",
         "followup:plan:edit",
-        "followup:plan:view_all",
         "quality:inspection:view",
         "quality:inspection:edit",
         "quality:inspection:view_all",
@@ -178,3 +177,4 @@ async def test_seed_system_demo_data_deduplicates_role_permissions_by_role_and_p
         "warehouse:outbound_order:view_all",
         "warehouse:outbound_order:allow_negative",
     }.issubset(permission_codes)
+    assert "followup:plan:view_all" not in permission_codes

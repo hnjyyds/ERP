@@ -1,8 +1,4 @@
-import {
-  Banner as SemiBanner,
-  Button as SemiButton,
-  Input as SemiInput,
-} from '@douyinfe/semi-ui'
+import { Banner as SemiBanner, Button as SemiButton, Input as SemiInput } from '@douyinfe/semi-ui'
 import { KeyRound, LayoutDashboard, UserRound } from 'lucide-react'
 import type { FormEvent } from 'react'
 import { useState } from 'react'
@@ -81,7 +77,7 @@ export function LoginPage({
         <section className="login-panel">
           <div className="login-panel-heading">
             <p className="eyebrow">账号登录</p>
-            <h2>登陆</h2>
+            <h2>登录</h2>
           </div>
 
           {formError ? (

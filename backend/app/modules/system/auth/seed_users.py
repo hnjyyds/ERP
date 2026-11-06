@@ -470,11 +470,6 @@ def demo_role_permissions() -> list[RolePermission]:
             permission_id="perm-followup-plan-edit",
         ),
         RolePermission(
-            id="rp-followup-plan-view-all",
-            role_id="role-sales-manager",
-            permission_id="perm-followup-plan-view-all",
-        ),
-        RolePermission(
             id="rp-quality-inspection-view",
             role_id="role-sales-manager",
             permission_id="perm-quality-inspection-view",
@@ -613,7 +608,6 @@ def demo_role_permissions() -> list[RolePermission]:
                 "perm-followup-template-view",
                 "perm-followup-plan-view",
                 "perm-followup-plan-edit",
-                "perm-followup-plan-view-all",
             ],
         )
     )

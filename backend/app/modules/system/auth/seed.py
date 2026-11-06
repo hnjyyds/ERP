@@ -76,6 +76,18 @@ async def seed_system_demo_data(session: AsyncSession) -> None:
     users = demo_users()
     user_roles = demo_user_roles()
     role_permissions = demo_role_permissions()
+    # 普通业务与采购角色的跟单权限默认仅覆盖本人；查看全部必须单独授权。
+    stale_followup_view_all = list(
+        await session.scalars(
+            select(RolePermission).where(
+                RolePermission.role_id.in_(["role-sales-manager", "role-purchase"]),
+                RolePermission.permission_id == "perm-followup-plan-view-all",
+            )
+        )
+    )
+    for item in stale_followup_view_all:
+        await session.delete(item)
+    await session.flush()
     existing_user_ids = set((await session.scalars(select(User.id))).all())
     existing_user_role_ids = set((await session.scalars(select(UserRole.id))).all())
     existing_role_permission_ids = set((await session.scalars(select(RolePermission.id))).all())
