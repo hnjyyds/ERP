@@ -4,6 +4,7 @@ import json
 import logging
 from collections.abc import AsyncIterator
 
+import pytest
 from fastapi import FastAPI, HTTPException
 from httpx import ASGITransport, AsyncClient
 
@@ -27,7 +28,7 @@ async def _client_for(app: FastAPI) -> AsyncIterator[AsyncClient]:
 
 
 async def test_request_id_is_returned_and_written_to_structured_log(
-    caplog: logging.LogCaptureFixture,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     app = FastAPI()
     app.add_middleware(RequestLoggingMiddleware, log_health_requests=True)
@@ -51,7 +52,7 @@ async def test_request_id_is_returned_and_written_to_structured_log(
 
 
 async def test_invalid_request_id_is_replaced_and_context_is_cleared_between_requests(
-    caplog: logging.LogCaptureFixture,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     app = FastAPI()
     app.add_middleware(RequestLoggingMiddleware, log_health_requests=True)
@@ -84,7 +85,7 @@ async def test_invalid_request_id_is_replaced_and_context_is_cleared_between_req
 
 
 async def test_client_error_is_logged_as_warning(
-    caplog: logging.LogCaptureFixture,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     app = FastAPI()
     app.add_middleware(RequestLoggingMiddleware, log_health_requests=True)
@@ -104,7 +105,7 @@ async def test_client_error_is_logged_as_warning(
 
 
 async def test_business_error_log_contains_specific_reason(
-    caplog: logging.LogCaptureFixture,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     app = FastAPI()
     app.add_middleware(RequestLoggingMiddleware, log_health_requests=True)
@@ -156,7 +157,7 @@ async def test_domain_exceptions_are_translated_at_the_global_http_boundary() ->
 
 
 async def test_unhandled_error_returns_traceable_response_and_logs_stack(
-    caplog: logging.LogCaptureFixture,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     app = FastAPI()
     app.add_middleware(RequestLoggingMiddleware, log_health_requests=True)
@@ -182,7 +183,7 @@ async def test_unhandled_error_returns_traceable_response_and_logs_stack(
 async def test_authenticated_request_log_contains_current_user_id(
     api_client: AsyncClient,
     seeded_system: None,
-    caplog: logging.LogCaptureFixture,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     login_response = await api_client.post(
         "/api/v1/auth/login",

@@ -5,6 +5,7 @@ description = "FastAPI backend for Xinpei foreign trade management system"
 requires-python = ">=3.12"
 dependencies = [
     "aiosqlite>=0.20.0",
+    "alembic>=1.20.1",
     "fastapi>=0.115.0",
     "greenlet>=3.1.0",
     "mcp>=1.25.0,<2.0.0",
