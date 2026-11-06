@@ -7,7 +7,7 @@ import { createAnnouncement, createScheduleEvent, createTodos, deleteScheduleEve
 import { dashboardAnnouncementsPath, dashboardNotificationsPath, dashboardSchedulesPath, dashboardTodosPath, exportContractPath, exportQuotationPath, financeDetailPath, followupPath, moduleDetailPath, moduleNestedDetailPath, myQualityTasksPath, purchaseContractPath, reportingPath, sampleDeliveryPath, shipmentPath, dashboardPath, warehouseInboundOrderPath, warehouseOutboundOrderPath } from '../../routes'
 import { Metric, PanelTitle, UserAvatar, defaultAvatarPreset } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
-import { t } from '../../App'
+import { t } from '../../appI18n'
 import { formatDate, formatDateTime, formatTime, parseApiDate, getRuntimeSettings, severityTag, canCreateAnnouncement, type AppSettings } from '../appHelpers'
 
 type DashboardScheduleFormState = {

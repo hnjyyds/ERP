@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { AppSidebar } from './AppSidebar'
 
-vi.mock('../../App', () => ({
+vi.mock('../../appI18n', () => ({
   t: (key: string) => key,
 }))
 

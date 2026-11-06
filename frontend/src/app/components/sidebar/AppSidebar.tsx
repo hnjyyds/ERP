@@ -28,8 +28,8 @@ import {
 } from 'lucide-react'
 import type { MenuItem } from '../../../api'
 import { lockedWorkflowPaths } from '../../pages/appHelpers'
-import { t } from '../../App'
-import type { SidebarGroup, SidebarItem as _SidebarItem } from '../../App'
+import { t } from '../../appI18n'
+import type { SidebarGroup, SidebarItem as _SidebarItem } from './sidebarNavigation'
 
 type Props = {
   activePath: string

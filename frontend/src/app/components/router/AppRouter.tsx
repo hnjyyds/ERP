@@ -39,7 +39,7 @@ import {
   isFinancePath,
   parseFinanceView,
 } from '../../routes'
-import { PageErrorBoundary } from '../../App'
+import { PageErrorBoundary } from '../PageErrorBoundary'
 
 // Lazy pages
 const DashboardPage = React.lazy(() =>

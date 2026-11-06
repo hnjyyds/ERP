@@ -2,7 +2,7 @@ import { Modal } from 'antd'
 import { LogOut } from 'lucide-react'
 import type { AppLanguage, AppTimeZone, I18nConfig, AuthSession } from '../../../api'
 import { UserAvatar, UserAvatarPicker, type UserAvatarPickerValue } from '../../../shared/ui'
-import { t } from '../../App'
+import { t } from '../../appI18n'
 
 type Props = {
   open: boolean

@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ApprovalDocument, ApprovalQuery, ReportingStatistics } from '../../../api'
 
-vi.mock('../../App', () => ({
+vi.mock('../../appI18n', () => ({
   t: (key: string, opts?: Record<string, unknown>) =>
     opts?.count != null ? `${key}${opts.count}` : key,
 }))

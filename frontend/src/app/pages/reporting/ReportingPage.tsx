@@ -29,7 +29,7 @@ import {
   ShieldCheck,
 } from 'lucide-react'
 import { type ReactNode, useEffect, useState } from 'react'
-import { t } from '../../App'
+import { t } from '../../appI18n'
 import { exportContractPath, moduleDetailPath, purchaseContractPath } from '../../routes'
 import {
   formatDate,

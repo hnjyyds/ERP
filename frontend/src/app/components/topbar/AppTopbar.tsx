@@ -2,7 +2,7 @@ import { Alert } from 'antd'
 import { Settings } from 'lucide-react'
 import type { MenuItem } from '../../../api'
 import { pageTitle } from '../../pages/appHelpers'
-import { t } from '../../App'
+import { t } from '../../appI18n'
 
 type Props = {
   activePath: string
