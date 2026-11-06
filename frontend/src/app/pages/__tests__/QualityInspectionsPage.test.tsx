@@ -26,6 +26,7 @@ vi.mock('../../../api', async (importOriginal) => {
         {
           id: 'pc-001',
           code: 'PC-QC-001',
+          supplier_id: 'supplier-001',
           supplier_name: '华东包装制品厂',
           contract_date: '2026-08-05',
           delivery_date: '2026-08-30',
@@ -93,8 +94,45 @@ describe('QualityInspectionsPage', () => {
       <QualityInspectionsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
     )
     expect(screen.getByPlaceholderText('QC 单号 / 合同 / 供应商')).toBeTruthy()
-    expect(screen.getByPlaceholderText('supplier-id')).toBeTruthy()
-    expect(screen.getByPlaceholderText('purchase-contract-id')).toBeTruthy()
+    const supplierSelect = screen.getByRole('combobox', { name: '供应商筛选' })
+    const contractSelect = screen.getByRole('combobox', { name: '采购合同筛选' })
+    expect(supplierSelect.closest('label')).toHaveClass('entity-search-filter')
+    expect(contractSelect.closest('label')).toHaveClass('entity-search-filter')
+    expect(listPurchaseContracts).toHaveBeenCalledWith(
+      expect.objectContaining({ approval_status: 'approved' }),
+    )
+    expect(screen.getByRole('button', { name: '重置筛选' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: '刷新列表' })).toBeTruthy()
+  })
+
+  it('refreshes with current filters and resets to the full task list', async () => {
+    const user = userEvent.setup()
+    render(
+      <QualityInspectionsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+    await waitFor(() => expect(listQualityInspections).toHaveBeenCalled())
+
+    const searchInput = screen.getByPlaceholderText('QC 单号 / 合同 / 供应商')
+    await user.type(searchInput, 'QC-TEST')
+    await user.click(screen.getByRole('button', { name: '刷新列表' }))
+    await waitFor(() => {
+      expect(listQualityInspections).toHaveBeenLastCalledWith(
+        expect.objectContaining({ q: 'QC-TEST' }),
+      )
+    })
+
+    await user.click(screen.getByRole('button', { name: '重置筛选' }))
+    expect(searchInput).toHaveValue('')
+    await waitFor(() => {
+      expect(listQualityInspections).toHaveBeenLastCalledWith({
+        q: undefined,
+        status: undefined,
+        result: undefined,
+        supplier_id: undefined,
+        purchase_contract_id: undefined,
+        inspector_user_id: undefined,
+      })
+    })
   })
 
   it('opens a task-only modal without inspection result fields', async () => {
@@ -352,9 +390,7 @@ describe('QualityInspectionsPage', () => {
       />,
     )
 
-    expect(
-      await screen.findByText('该任务不是合同最新 QC，不能重复发起复检'),
-    ).toBeTruthy()
+    expect(await screen.findByText('该任务不是合同最新 QC，不能重复发起复检')).toBeTruthy()
     expect(screen.queryByRole('button', { name: '发起复检' })).toBeNull()
   })
 })

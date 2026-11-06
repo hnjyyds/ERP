@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   Paperclip,
   Plus,
+  RefreshCw,
   RotateCcw,
   Search,
   ShieldCheck,
@@ -41,6 +42,14 @@ import { emptyToNull, formatDate, nullableText, type RoutedDetailPageProps } fro
 
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 type QualityInspectionAssigneeFilter = 'all' | 'mine'
+type QualityInspectionListFilters = {
+  search: string
+  status: string
+  result: string
+  supplier: string
+  contract: string
+  assignee: QualityInspectionAssigneeFilter
+}
 
 type QualityTaskFormState = {
   code: string
@@ -238,6 +247,36 @@ function inboundReason(inspection: QualityInspection): string {
   return '等待 QC 判定'
 }
 
+function isInspectionOverdue(inspection: QualityInspection, now = Date.now()): boolean {
+  if (inspection.status === 'completed' || inspection.status === 'cancelled') return false
+  const scheduledAt = new Date(inspection.scheduled_at).getTime()
+  return !Number.isNaN(scheduledAt) && scheduledAt < now
+}
+
+function hasOpenIssue(inspection: QualityInspection): boolean {
+  return inspection.issues.some((issue) => issue.status !== 'resolved')
+}
+
+function nextAction(inspection: QualityInspection): { label: string; color?: string } {
+  if (isInspectionOverdue(inspection)) return { label: '已逾期，尽快查验', color: 'error' }
+  if (hasOpenIssue(inspection)) return { label: '关闭异常', color: 'error' }
+  if (inspection.result === 'recheck_required') return { label: '整改后复检', color: 'processing' }
+  if (inspection.result === 'failed') return { label: '跟进整改', color: 'warning' }
+  if (inspection.status === 'pending') return { label: '开始查验', color: 'warning' }
+  if (inspection.status === 'in_progress') return { label: '完成查验', color: 'processing' }
+  if (inspection.status === 'completed') return { label: '查看结果', color: 'success' }
+  return { label: '查看记录' }
+}
+
+function taskPriority(inspection: QualityInspection): number {
+  if (isInspectionOverdue(inspection)) return 0
+  if (hasOpenIssue(inspection)) return 1
+  if (inspection.result === 'recheck_required' || inspection.result === 'failed') return 2
+  if (inspection.status === 'pending') return 3
+  if (inspection.status === 'in_progress') return 4
+  return 5
+}
+
 export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Props) {
   const [inspections, setInspections] = useState<QualityInspection[]>([])
   const [selectedInspectionId, setSelectedInspectionId] = useState<string | null>(null)
@@ -280,6 +319,39 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
     }))
   }, [])
 
+  const fetchSupplierOptions = useCallback(async (query: string) => {
+    const result = await listPurchaseContracts({
+      q: query.trim() || undefined,
+      approval_status: 'approved',
+    })
+    const suppliers = new Map<string, { value: string; label: string; description: string }>()
+    result.items.forEach((item) => {
+      if (!item.supplier_id || suppliers.has(item.supplier_id)) return
+      suppliers.set(item.supplier_id, {
+        value: item.supplier_id,
+        label: item.supplier_name,
+        description: `关联已审批合同 ${item.code}`,
+      })
+    })
+    return [...suppliers.values()].slice(0, 20)
+  }, [])
+
+  const fetchFilterContractOptions = useCallback(
+    async (query: string) => {
+      const result = await listPurchaseContracts({
+        q: query.trim() || undefined,
+        approval_status: 'approved',
+        supplier_id: supplierFilter || undefined,
+      })
+      return result.items.slice(0, 20).map((item) => ({
+        value: item.id,
+        label: `${item.code} / ${item.supplier_name}`,
+        description: `下单 ${item.contract_date}  交货 ${item.delivery_date}`,
+      }))
+    },
+    [supplierFilter],
+  )
+
   const selectedInspection = useMemo(() => {
     if (detailId) return inspections.find((item) => item.id === detailId) ?? null
     return inspections.find((item) => item.id === selectedInspectionId) ?? inspections[0] ?? null
@@ -308,16 +380,27 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
     }
   }, [detailId, inspections, onNavigate, selectedInspection])
 
-  async function loadQualityInspections(preferredInspectionId?: string) {
+  async function loadQualityInspections(
+    preferredInspectionId?: string,
+    filters?: QualityInspectionListFilters,
+  ) {
+    const activeFilters = filters ?? {
+      search,
+      status: statusFilter,
+      result: resultFilter,
+      supplier: supplierFilter,
+      contract: contractFilter,
+      assignee: assigneeFilter,
+    }
     setLoading(true)
     try {
       const result = await listQualityInspections({
-        q: search.trim() || undefined,
-        status: statusFilter || undefined,
-        result: resultFilter || undefined,
-        supplier_id: supplierFilter.trim() || undefined,
-        purchase_contract_id: contractFilter.trim() || undefined,
-        inspector_user_id: assigneeFilter === 'mine' ? currentUser.id : undefined,
+        q: activeFilters.search.trim() || undefined,
+        status: activeFilters.status || undefined,
+        result: activeFilters.result || undefined,
+        supplier_id: activeFilters.supplier.trim() || undefined,
+        purchase_contract_id: activeFilters.contract.trim() || undefined,
+        inspector_user_id: activeFilters.assignee === 'mine' ? currentUser.id : undefined,
       })
       setInspections(result.items)
       setSelectedInspectionId((current) => {
@@ -330,6 +413,25 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
     } finally {
       setLoading(false)
     }
+  }
+
+  function resetQualityInspectionFilters() {
+    const resetFilters: QualityInspectionListFilters = {
+      search: '',
+      status: '',
+      result: '',
+      supplier: '',
+      contract: '',
+      assignee: 'all',
+    }
+    setSearch(resetFilters.search)
+    setStatusFilter(resetFilters.status)
+    setResultFilter(resetFilters.result)
+    setSupplierFilter(resetFilters.supplier)
+    setContractFilter(resetFilters.contract)
+    setAssigneeFilter(resetFilters.assignee)
+    setMessage('')
+    void loadQualityInspections(undefined, resetFilters)
   }
 
   async function loadAssignableUsersForTask() {
@@ -502,10 +604,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
   }
 
   function openReinspection() {
-    if (
-      !selectedInspection ||
-      eligibility?.latest_inspection_id !== selectedInspection.id
-    ) {
+    if (!selectedInspection || eligibility?.latest_inspection_id !== selectedInspection.id) {
       showWarningDialog('仅合同最新的未通过 QC 任务可以发起复检')
       return
     }
@@ -542,8 +641,23 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
 
   const pendingCount = inspections.filter((item) => item.status === 'pending').length
   const inProgressCount = inspections.filter((item) => item.status === 'in_progress').length
-  const completedCount = inspections.filter((item) => item.status === 'completed').length
-  const cancelledCount = inspections.filter((item) => item.status === 'cancelled').length
+  const myActionCount = inspections.filter(
+    (item) =>
+      item.inspector_id === currentUser.id &&
+      (item.status === 'pending' || item.status === 'in_progress'),
+  ).length
+  const overdueCount = inspections.filter((item) => isInspectionOverdue(item)).length
+  const openIssueCount = inspections.reduce(
+    (count, item) => count + item.issues.filter((issue) => issue.status !== 'resolved').length,
+    0,
+  )
+  const prioritizedInspections = inspections
+    .map((inspection, index) => ({ inspection, index }))
+    .sort(
+      (left, right) =>
+        taskPriority(left.inspection) - taskPriority(right.inspection) || left.index - right.index,
+    )
+    .map(({ inspection }) => inspection)
   const validationEntries = validationOrder.flatMap((field) => {
     const error = fieldErrors[field]
     return error ? [{ field, message: error }] : []
@@ -552,15 +666,23 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
   return (
     <section className="quality-inspection-page">
       <div className="summary-strip" aria-label="QC 任务概览">
-        <Metric label="QC 任务" value={inspections.length} />
+        <Metric
+          label="我的待处理"
+          value={myActionCount}
+          intent={myActionCount ? 'warning' : 'normal'}
+        />
         <Metric label="待查验" value={pendingCount} intent={pendingCount ? 'warning' : 'normal'} />
         <Metric
           label="查验中"
           value={inProgressCount}
           intent={inProgressCount ? 'warning' : 'normal'}
         />
-        <Metric label="已完成" value={completedCount} />
-        <Metric label="已取消" value={cancelledCount} />
+        <Metric label="已逾期" value={overdueCount} intent={overdueCount ? 'danger' : 'normal'} />
+        <Metric
+          label="异常待关闭"
+          value={openIssueCount}
+          intent={openIssueCount ? 'danger' : 'normal'}
+        />
       </div>
 
       {message ? (
@@ -574,7 +696,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
               <PanelTitle icon={<Search size={18} />} title="QC 任务列表" />
             </div>
             <form
-              className="inline-filters"
+              className="inline-filters single-line-filter-toolbar"
               onSubmit={(event) => {
                 event.preventDefault()
                 void loadQualityInspections()
@@ -616,20 +738,27 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                   ))}
                 </FormSelect>
               </label>
-              <label>
-                供应商标识
-                <Input
-                  value={supplierFilter}
-                  placeholder="supplier-id"
-                  onChange={(event) => setSupplierFilter(event.target.value)}
+              <label className="entity-search-filter">
+                供应商
+                <RemoteSelect
+                  ariaLabel="供应商筛选"
+                  fetchOptions={fetchSupplierOptions}
+                  placeholder="输入供应商编号或名称"
+                  value={supplierFilter || null}
+                  onChange={(value) => {
+                    setSupplierFilter(value)
+                    setContractFilter('')
+                  }}
                 />
               </label>
-              <label>
-                采购合同 ID
-                <Input
-                  value={contractFilter}
-                  placeholder="purchase-contract-id"
-                  onChange={(event) => setContractFilter(event.target.value)}
+              <label className="entity-search-filter">
+                采购合同
+                <RemoteSelect
+                  ariaLabel="采购合同筛选"
+                  fetchOptions={fetchFilterContractOptions}
+                  placeholder="输入合同号或供应商"
+                  value={contractFilter || null}
+                  onChange={setContractFilter}
                 />
               </label>
               <label>
@@ -644,18 +773,29 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                   <option value="mine">只看我的</option>
                 </FormSelect>
               </label>
-              <label>
-                <span>&nbsp;</span>
+              <div className="filter-actions">
                 <Button htmlType="submit" icon={<Search size={16} />}>
                   查询
                 </Button>
-              </label>
-              <label>
-                <span>&nbsp;</span>
+                <Button
+                  aria-label="重置筛选"
+                  htmlType="button"
+                  icon={<RotateCcw size={16} />}
+                  title="重置筛选"
+                  onClick={resetQualityInspectionFilters}
+                />
+                <Button
+                  aria-label="刷新列表"
+                  htmlType="button"
+                  icon={<RefreshCw size={16} />}
+                  loading={loading}
+                  title="刷新列表"
+                  onClick={() => void loadQualityInspections()}
+                />
                 <Button type="primary" icon={<Plus size={16} />} onClick={startNewTask}>
                   新增 QC 单
                 </Button>
-              </label>
+              </div>
             </form>
 
             <Table<QualityInspection>
@@ -696,6 +836,14 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                   render: formatScheduledAt,
                 },
                 {
+                  title: '下一步',
+                  key: 'next-action',
+                  render: (_: unknown, record) => {
+                    const action = nextAction(record)
+                    return <Tag color={action.color}>{action.label}</Tag>
+                  },
+                },
+                {
                   title: '入口',
                   key: 'detail',
                   width: 110,
@@ -706,7 +854,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                   ),
                 },
               ]}
-              dataSource={inspections}
+              dataSource={prioritizedInspections}
               loading={loading}
               pagination={false}
               rowKey="id"
@@ -928,9 +1076,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                             )}
                             icon={<RotateCcw size={16} />}
                             title={
-                              selectedInspection.issues.some(
-                                (issue) => issue.status !== 'resolved',
-                              )
+                              selectedInspection.issues.some((issue) => issue.status !== 'resolved')
                                 ? '请先关闭全部异常'
                                 : '创建新的复检任务'
                             }
