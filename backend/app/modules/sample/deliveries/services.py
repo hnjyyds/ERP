@@ -3,6 +3,7 @@ from datetime import date
 from decimal import Decimal
 from io import StringIO
 
+from app.core.messages import localize_labels
 from app.db.uow import UnitOfWork
 from app.modules.sample.deliveries.repositories import (
     SampleDeliveryFeeRow,
@@ -435,22 +436,24 @@ class SampleDeliveryService:
         output = StringIO()
         writer = csv.writer(output)
         writer.writerow(
-            [
-                "寄样单号",
-                "寄样日期",
-                "状态",
-                "客户",
-                "收件方",
-                "快递公司",
-                "快递单号",
-                "报价单",
-                "样品编号",
-                "产品",
-                "数量",
-                "单位",
-                "费用合计",
-                "备注",
-            ]
+            localize_labels(
+                [
+                    "寄样单号",
+                    "寄样日期",
+                    "状态",
+                    "客户",
+                    "收件方",
+                    "快递公司",
+                    "快递单号",
+                    "报价单",
+                    "样品编号",
+                    "产品",
+                    "数量",
+                    "单位",
+                    "费用合计",
+                    "备注",
+                ]
+            )
         )
         for delivery in deliveries:
             response = await self._delivery_response(delivery)

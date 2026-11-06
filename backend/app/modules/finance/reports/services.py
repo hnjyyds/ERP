@@ -6,6 +6,8 @@ read-only repository rows into response schemas.
 
 from datetime import date
 
+from app.core.language import DEFAULT_LANGUAGE, get_current_language
+from app.core.messages import localize_message
 from app.modules.finance.reports.report_definitions import (
     REPORT_EXPLANATIONS,
     REPORT_SOURCE_TYPES,
@@ -298,7 +300,7 @@ class ReportsService(ReportsServiceSupport):
         )
         rows = [
             [
-                "币种汇总",
+                localize_message("币种汇总"),
                 item.currency,
                 "",
                 item.receipt_count,
@@ -310,7 +312,7 @@ class ReportsService(ReportsServiceSupport):
         ]
         rows.extend(
             [
-                "经办人汇总",
+                localize_message("经办人汇总"),
                 item.currency,
                 item.operator_name,
                 item.receipt_count,
@@ -518,7 +520,7 @@ class ReportsService(ReportsServiceSupport):
         )
         rows = [
             [
-                "状态汇总",
+                localize_message("状态汇总"),
                 item.status,
                 item.currency,
                 item.document_count,
@@ -530,7 +532,7 @@ class ReportsService(ReportsServiceSupport):
         ]
         rows.extend(
             [
-                "币种汇总",
+                localize_message("币种汇总"),
                 "",
                 item.currency,
                 item.document_count,
@@ -554,9 +556,21 @@ class ReportsService(ReportsServiceSupport):
     ) -> FinanceReportExplanationResponse:
         self._require_finance(current_user)
         try:
-            return REPORT_EXPLANATIONS[report_key]
+            explanation = REPORT_EXPLANATIONS[report_key]
         except KeyError as exc:
             raise ValueError("财务报表不存在") from exc
+        if get_current_language() == DEFAULT_LANGUAGE:
+            return explanation
+        return explanation.model_copy(
+            update={
+                "title": localize_message(explanation.title),
+                "metric_rules": [localize_message(rule) for rule in explanation.metric_rules],
+                "fields": [
+                    field.model_copy(update={"label": localize_message(field.label)})
+                    for field in explanation.fields
+                ],
+            }
+        )
 
     async def drilldown_report(
         self,

@@ -1,6 +1,8 @@
 import asyncio
 import base64
 
+from app.core.language import DEFAULT_LANGUAGE, get_current_language
+from app.core.messages import localize_message
 from app.modules.masterdata.customers.repositories import CustomerRepository
 from app.modules.masterdata.products.repositories import ProductRepository
 from app.modules.masterdata.suppliers.repositories import SupplierRepository
@@ -102,7 +104,7 @@ class PrintingService:
                 for line in lines
             ],
         )
-        html = render_contract(data)
+        html = render_contract(data, get_current_language())
         return DocumentPrintResponse(
             document_type="export_contract",
             document_code=contract.code,
@@ -127,7 +129,10 @@ class PrintingService:
             customer_name=sample_request.customer_name,
             product_name=sample_request.product_name or "",
             supplier_name=sample_request.supplier_name or "",
-            destination=self._sample_destination_label(sample_request.destination),
+            destination=self._sample_destination_label(
+                sample_request.destination,
+                get_current_language(),
+            ),
             due_date=sample_request.due_date.isoformat() if sample_request.due_date else "",
             requirements=sample_request.requirements,
             sales_user_name=sample_request.sales_user_name or "",
@@ -147,7 +152,7 @@ class PrintingService:
             document_type="sample_request",
             document_code=sample_request.code,
             content_type="text/html",
-            html=render_sample_request(data),
+            html=render_sample_request(data, get_current_language()),
         )
 
     async def generate_purchase_contract_template(
@@ -188,11 +193,12 @@ class PrintingService:
                 for line in lines[:PURCHASE_CONTRACT_MAX_TEMPLATE_LINES]
             ],
         )
-        content = await asyncio.to_thread(render_purchase_contract_template, data)
+        language = get_current_language()
+        content = await asyncio.to_thread(render_purchase_contract_template, data, language)
         return DocumentFileResponse(
             document_type="purchase_contract_template",
             document_code=contract.code,
-            filename=purchase_contract_template_filename(contract.code),
+            filename=purchase_contract_template_filename(contract.code, language),
             content_type=PURCHASE_CONTRACT_CONTENT_TYPE,
             content_base64=base64.b64encode(content).decode("ascii"),
         )
@@ -217,8 +223,9 @@ class PrintingService:
         if permission not in current_user.permissions:
             raise PermissionDeniedError
 
-    def _sample_destination_label(self, value: str) -> str:
-        return {"in_house": "内部打样", "factory": "外发工厂"}.get(value, value)
+    def _sample_destination_label(self, value: str, language: str) -> str:
+        source = {"in_house": "内部打样", "factory": "外发工厂"}.get(value)
+        return localize_message(source, language) if source else value
 
     def _purchase_template_company(
         self,
@@ -264,6 +271,8 @@ class PrintingService:
                 image_url = product.image_url or ""
                 if product.package_info and "包装" not in remark:
                     package_note = f"包装: {product.package_info}"
+                    if get_current_language() != DEFAULT_LANGUAGE:
+                        package_note = f"Packaging: {product.package_info}"
                     remark = f"{remark}; {package_note}" if remark else package_note
         return PurchaseContractTemplateLine(
             product_code=line.product_code or "",

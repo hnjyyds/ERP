@@ -17,6 +17,9 @@ from xlwt.Style import XFStyle  # type: ignore[import-untyped]
 from xlwt.Workbook import Workbook  # type: ignore[import-untyped]
 from xlwt.Worksheet import Worksheet  # type: ignore[import-untyped]
 
+from app.core.language import DEFAULT_LANGUAGE, get_current_language
+from app.core.messages import localize_message
+
 PURCHASE_CONTRACT_TEMPLATE_PATH = Path(__file__).with_name("templates") / "purchase_contract.xls"
 PURCHASE_CONTRACT_UPLOAD_DIR = Path(__file__).parents[4] / ".data" / "uploads"
 PURCHASE_CONTRACT_CONTENT_TYPE = "application/vnd.ms-excel"
@@ -120,7 +123,9 @@ class _TemplateWriter:
         row: int,
         column: int,
         company: PurchaseContractTemplateCompany,
+        language: str | None = None,
     ) -> None:
+        resolved = language or get_current_language()
         style_index = self._style_index_for(row, column)
         default_font = self._font_for_cell(row, column)
         company_name_font = self._font_for_cell(row, column)
@@ -132,7 +137,7 @@ class _TemplateWriter:
             column,
             [
                 (company.name, company_name_font),
-                _company_details_block(company),
+                _company_details_block(company, resolved),
             ],
             style,
             style_index=style_index,
@@ -165,27 +170,38 @@ class _TemplateWriter:
         return font
 
 
-def render_purchase_contract_template(data: PurchaseContractTemplateData) -> bytes:
+def render_purchase_contract_template(
+    data: PurchaseContractTemplateData,
+    language: str | None = None,
+) -> bytes:
+    resolved = language or get_current_language()
+    is_english = resolved != DEFAULT_LANGUAGE
     writer = _TemplateWriter(PURCHASE_CONTRACT_TEMPLATE_PATH)
     _clear_purchase_contract_fields(writer)
     writer.write(13, 2, data.code)
     writer.write(13, 5, data.supplier_name)
-    writer.write_company_block(13, 8, data.company)
+    writer.write_company_block(13, 8, data.company, resolved)
     writer.write(14, 2, data.contract_date)
     writer.write(14, 5, data.buyer_user_name)
     writer.write(15, 2, data.delivery_date)
     writer.write(15, 5, data.supplier_phone)
-    writer.write(16, 2, _transport_label(data.remarks))
+    writer.write(16, 2, _transport_label(data.remarks, resolved))
     writer.write(16, 5, data.supplier_address)
     writer.write(17, 2, data.buyer_user_name)
     writer.write(17, 5, data.supplier_email)
-    writer.write(19, 6, f"单价             （{data.currency}）")
+    unit_price_header = (
+        f"Unit price             ({data.currency})"
+        if is_english
+        else f"单价             （{data.currency}）"
+    )
+    writer.write(19, 6, unit_price_header)
     writer.write(23, 0, "TOTAL")
     writer.write(23, 8, _number_or_text(data.total_quantity))
     writer.write(23, 9, _number_or_text(data.total_amount))
-    writer.write(28, 0, _warehouse_receiving_hours_note())
-    writer.write(29, 0, f"3.付款方式: {data.payment_terms}")
-    writer.write(30, 0, _quality_note(data.remarks))
+    writer.write(28, 0, _warehouse_receiving_hours_note(resolved))
+    payment_prefix = "3. Payment terms: " if is_english else "3.付款方式: "
+    writer.write(29, 0, f"{payment_prefix}{data.payment_terms}")
+    writer.write(30, 0, _quality_note(resolved))
 
     display_lines = _display_lines(data.lines)
     for offset, display_line in enumerate(display_lines[:PURCHASE_CONTRACT_MAX_TEMPLATE_LINES]):
@@ -211,19 +227,24 @@ def render_purchase_contract_template(data: PurchaseContractTemplateData) -> byt
     return writer.save()
 
 
-def purchase_contract_template_filename(code: str) -> str:
+def purchase_contract_template_filename(code: str, language: str | None = None) -> str:
     safe_code = "".join(char if char.isalnum() or char in ("-", "_") else "-" for char in code)
-    return f"{safe_code or 'purchase-contract'}-采购合同.xls"
+    suffix = localize_message("采购合同", language)
+    return f"{safe_code or 'purchase-contract'}-{suffix}.xls"
 
 
-def _company_details_block(company: PurchaseContractTemplateCompany) -> str:
+def _company_details_block(
+    company: PurchaseContractTemplateCompany,
+    language: str,
+) -> str:
+    separator = "：" if language == DEFAULT_LANGUAGE else ": "
     rows: list[str] = []
     if company.address:
-        rows.append(f"地 址：{company.address}")
+        rows.append(f"{localize_message('地 址', language)}{separator}{company.address}")
     if company.phone:
-        rows.append(f"电 话: {company.phone}")
+        rows.append(f"{localize_message('电 话', language)}{separator}{company.phone}")
     if company.email:
-        rows.append(f"邮 箱: {company.email}")
+        rows.append(f"{localize_message('邮 箱', language)}{separator}{company.email}")
     return "\n" + "\n".join(row for row in rows if row) if rows else ""
 
 
@@ -235,21 +256,28 @@ def _product_description(line: PurchaseContractTemplateLine) -> str:
     return "\n\n".join(parts)
 
 
-def _quality_note(_remarks: str) -> str:
+def _quality_note(language: str) -> str:
+    if language != DEFAULT_LANGUAGE:
+        return (
+            "4. The supplier must strictly follow the quality requirements of the order, "
+            "ensure good quality and correct packaging."
+        )
     return "4.供应商应严格按照订单要求的品质生产,确保品质良好,包装无误."
 
 
-def _warehouse_receiving_hours_note() -> str:
+def _warehouse_receiving_hours_note(language: str) -> str:
+    if language != DEFAULT_LANGUAGE:
+        return "2. Warehouse receiving hours: 9:00-11:30  13:30-17:30 (Mon-Sat)"
     return "2.仓库收货时间：9:00-11:30   13:30-17:30（周一至周六）"
 
 
-def _transport_label(remarks: str) -> str:
+def _transport_label(remarks: str, language: str) -> str:
     lowered = remarks.lower()
     if "空运" in remarks or "air" in lowered:
-        return "空运"
+        return localize_message("空运", language)
     if "快递" in remarks or "express" in lowered:
-        return "快递"
-    return "海运"
+        return localize_message("快递", language)
+    return localize_message("海运", language)
 
 
 def _material_from(specification: str) -> str:

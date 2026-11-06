@@ -7,6 +7,9 @@ PDF §1.5.2.2/§1.5.2.3：主联系人信息默认自动调入单据打印格式
 from dataclasses import dataclass
 from html import escape
 
+from app.core.language import DEFAULT_LANGUAGE, get_current_language
+from app.core.messages import localize_message
+
 
 @dataclass(frozen=True)
 class PrintContact:
@@ -81,7 +84,16 @@ th { background: #f5f7fa; }
 """
 
 
-def render_contract(data: ContractPrintData) -> str:
+def render_contract(data: ContractPrintData, language: str | None = None) -> str:
+    resolved = language or get_current_language()
+    is_english = resolved != DEFAULT_LANGUAGE
+    separator = ": " if is_english else "："
+    meta_separator = " | " if is_english else " ｜ "
+    spacing = "  " if is_english else "　"
+
+    def label(text: str) -> str:
+        return localize_message(text, resolved)
+
     rows = "".join(
         f"<tr><td>{escape(line.product_code)}</td>"
         f"<td>{escape(line.product_name)}</td>"
@@ -92,46 +104,59 @@ def render_contract(data: ContractPrintData) -> str:
         for line in data.lines
     )
     if not rows:
-        rows = '<tr><td colspan="6">无商品明细</td></tr>'
-    contact_html = _render_contact(data.primary_contact)
+        rows = f'<tr><td colspan="6">{label("无商品明细")}</td></tr>'
+    contact_html = _render_contact(data.primary_contact, resolved)
     return f"""<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="{'en' if is_english else 'zh-CN'}">
 <head>
 <meta charset="utf-8" />
-<title>出口合同 {escape(data.code)}</title>
+<title>{label("出口合同")} {escape(data.code)}</title>
 <style>{_STYLE}</style>
 </head>
 <body>
-<h1>出口销售合同 SALES CONTRACT</h1>
-<div class="meta">合同号 {escape(data.code)} ｜ 签订日期 {escape(data.contract_date)}</div>
+<h1>{label("出口销售合同") if is_english else "出口销售合同 SALES CONTRACT"}</h1>
+<div class="meta">{label("合同号")} {escape(data.code)}{meta_separator}
+{label("签订日期")} {escape(data.contract_date)}</div>
 
-<div class="section-title">客户与联系人</div>
-<div>客户：{escape(data.customer_name)}</div>
+<div class="section-title">{label("客户与联系人")}</div>
+<div>{label("客户")}{separator}{escape(data.customer_name)}</div>
 {contact_html}
 
-<div class="section-title">合同条款</div>
+<div class="section-title">{label("合同条款")}</div>
 <table>
-  <tr><th>币种</th><td>{escape(data.currency)}</td>
-      <th>贸易条款</th><td>{escape(data.trade_term)}</td></tr>
-  <tr><th>预计出运</th><td>{escape(data.planned_ship_date)}</td>
-      <th>付款方式</th><td>{escape(data.payment_terms)}</td></tr>
+  <tr><th>{label("币种")}</th><td>{escape(data.currency)}</td>
+      <th>{label("贸易条款")}</th><td>{escape(data.trade_term)}</td></tr>
+  <tr><th>{label("预计出运")}</th><td>{escape(data.planned_ship_date)}</td>
+      <th>{label("付款方式")}</th><td>{escape(data.payment_terms)}</td></tr>
 </table>
 
-<div class="section-title">商品明细</div>
+<div class="section-title">{label("商品明细")}</div>
 <table>
   <thead>
-    <tr><th>商品编号</th><th>品名</th><th>规格</th><th>数量</th><th>单价</th><th>金额</th></tr>
+    <tr><th>{label("商品编号")}</th><th>{label("品名")}</th><th>{label("规格")}</th>
+        <th>{label("数量")}</th><th>{label("单价")}</th><th>{label("金额")}</th></tr>
   </thead>
   <tbody>{rows}</tbody>
 </table>
 
-<div class="totals">总数量：{escape(data.total_quantity)}　总金额：
+<div class="totals">{label("总数量")}{separator}{escape(data.total_quantity)}{spacing}
+{label("总金额")}{separator}
 {escape(data.currency)} {escape(data.total_amount)}</div>
 </body>
 </html>"""
 
 
-def render_sample_request(data: SampleRequestPrintData) -> str:
+def render_sample_request(
+    data: SampleRequestPrintData,
+    language: str | None = None,
+) -> str:
+    resolved = language or get_current_language()
+    is_english = resolved != DEFAULT_LANGUAGE
+    meta_separator = " | " if is_english else " ｜ "
+
+    def label(text: str) -> str:
+        return localize_message(text, resolved)
+
     rows = "".join(
         f"<tr><td>{escape(line.product_code)}</td>"
         f"<td>{escape(line.product_name)}</td>"
@@ -141,35 +166,37 @@ def render_sample_request(data: SampleRequestPrintData) -> str:
         for line in data.lines
     )
     if not rows:
-        rows = '<tr><td colspan="6">无打样明细</td></tr>'
+        rows = f'<tr><td colspan="6">{label("无打样明细")}</td></tr>'
     return f"""<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="{'en' if is_english else 'zh-CN'}">
 <head>
 <meta charset="utf-8" />
-<title>内部打样单 {escape(data.code)}</title>
+<title>{label("内部打样单")} {escape(data.code)}</title>
 <style>{_STYLE}</style>
 </head>
 <body>
-<h1>内部打样单 SAMPLE REQUEST</h1>
-<div class="meta">打样单号 {escape(data.code)} ｜ 打样日期 {escape(data.request_date)}</div>
+<h1>{label("内部打样单") if is_english else "内部打样单 SAMPLE REQUEST"}</h1>
+<div class="meta">{label("打样单号")} {escape(data.code)}{meta_separator}
+{label("打样日期")} {escape(data.request_date)}</div>
 
-<div class="section-title">打样信息</div>
+<div class="section-title">{label("打样信息")}</div>
 <table>
-  <tr><th>客户</th><td>{escape(data.customer_name)}</td>
-      <th>产品</th><td>{escape(data.product_name)}</td></tr>
-  <tr><th>供应商/打样方</th><td>{escape(data.supplier_name)}</td>
-      <th>打样去向</th><td>{escape(data.destination)}</td></tr>
-  <tr><th>要求完成</th><td>{escape(data.due_date)}</td>
-      <th>业务员</th><td>{escape(data.sales_user_name)}</td></tr>
+  <tr><th>{label("客户")}</th><td>{escape(data.customer_name)}</td>
+      <th>{label("产品")}</th><td>{escape(data.product_name)}</td></tr>
+  <tr><th>{label("供应商/打样方")}</th><td>{escape(data.supplier_name)}</td>
+      <th>{label("打样去向")}</th><td>{escape(data.destination)}</td></tr>
+  <tr><th>{label("要求完成")}</th><td>{escape(data.due_date)}</td>
+      <th>{label("业务员")}</th><td>{escape(data.sales_user_name)}</td></tr>
 </table>
 
-<div class="section-title">客户打样要求</div>
+<div class="section-title">{label("客户打样要求")}</div>
 <div class="contact-box">{escape(data.requirements)}</div>
 
-<div class="section-title">内部打样单明细</div>
+<div class="section-title">{label("内部打样单明细")}</div>
 <table>
   <thead>
-    <tr><th>商品编号</th><th>品名</th><th>规格</th><th>数量</th><th colspan="2">要求</th></tr>
+    <tr><th>{label("商品编号")}</th><th>{label("品名")}</th><th>{label("规格")}</th>
+        <th>{label("数量")}</th><th colspan="2">{label("要求")}</th></tr>
   </thead>
   <tbody>{rows}</tbody>
 </table>
@@ -177,14 +204,20 @@ def render_sample_request(data: SampleRequestPrintData) -> str:
 </html>"""
 
 
-def _render_contact(contact: PrintContact | None) -> str:
+def _render_contact(contact: PrintContact | None, language: str | None = None) -> str:
+    resolved = language or get_current_language()
+    separator = ": " if resolved != DEFAULT_LANGUAGE else "："
+
+    def label(text: str) -> str:
+        return localize_message(text, resolved)
+
     if contact is None:
-        return '<div class="contact-box">未维护主联系人</div>'
+        return f'<div class="contact-box">{label("未维护主联系人")}</div>'
     parts = [f"<strong>{escape(contact.name)}</strong>"]
     if contact.title:
-        parts.append(f"职务：{escape(contact.title)}")
+        parts.append(f"{label('职务')}{separator}{escape(contact.title)}")
     if contact.phone:
-        parts.append(f"电话：{escape(contact.phone)}")
+        parts.append(f"{label('电话')}{separator}{escape(contact.phone)}")
     if contact.email:
-        parts.append(f"邮箱：{escape(contact.email)}")
+        parts.append(f"{label('邮箱')}{separator}{escape(contact.email)}")
     return '<div class="contact-box">' + "<br/>".join(parts) + "</div>"

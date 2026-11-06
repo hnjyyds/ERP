@@ -213,6 +213,12 @@ def status_message_key(code: str) -> str:
     return f"status.{code}"
 
 
+def localize_labels(labels: list[str], language: str | None = None) -> list[str]:
+    """批量渲染导出/打印表头，保持顺序不变。"""
+    resolved = language or get_current_language()
+    return [localize_message(label, resolved) for label in labels]
+
+
 def localize_message(text: str, language: str | None = None) -> str:
     """把业务域中文源文案渲染为目标语言；无译文时原样返回。"""
     resolved = language or get_current_language()

@@ -4,6 +4,7 @@ import csv
 from collections.abc import Sequence
 from io import StringIO
 
+from app.core.messages import localize_labels, localize_message
 from app.modules.finance.reports.repositories import ReportsRepository
 from app.modules.finance.reports.row_data import (
     BankReceiptCurrencySummaryData,
@@ -238,7 +239,7 @@ class ReportsServiceSupport:
     ) -> str:
         output = StringIO()
         writer = csv.writer(output)
-        writer.writerow(headers)
+        writer.writerow(localize_labels(headers))
         writer.writerows(rows)
         return output.getvalue()
 
@@ -260,7 +261,7 @@ class ReportsServiceSupport:
         }
         return [
             FinanceReportDrilldownItem(
-                label="来源单据",
+                label=localize_message("来源单据"),
                 value=source_no,
                 target_path=route_by_report.get(report_key),
             )
