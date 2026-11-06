@@ -1,7 +1,4 @@
-import csv
-from datetime import UTC, datetime
 from decimal import Decimal
-from io import StringIO
 
 from app.db.uow import UnitOfWork
 from app.modules.purchase.inquiries.repositories import (
@@ -9,6 +6,11 @@ from app.modules.purchase.inquiries.repositories import (
     PurchaseInquiryRepository,
 )
 from app.modules.sales.contracts.repositories import ExportContractRepository, ExportContractRow
+from app.modules.sales.quotations.exporters import (
+    format_quantity,
+    render_csv_export,
+    render_text_export,
+)
 from app.modules.sales.quotations.repositories import (
     ExportQuotationLineRow,
     ExportQuotationPurchaseReferenceRow,
@@ -406,7 +408,7 @@ class ExportQuotationService:
         )
         lines = await self._repository.list_lines(quotation.id)
         if export_format == "pdf":
-            content = self._render_text_export(quotation, lines)
+            content = render_text_export(quotation, lines)
             return ExportQuotationExportResponse(
                 filename=f"{quotation.code}.pdf",
                 content_type="application/pdf",
@@ -415,7 +417,7 @@ class ExportQuotationService:
         return ExportQuotationExportResponse(
             filename=f"{quotation.code}.csv",
             content_type="text/csv",
-            content=self._render_csv_export(quotation, lines),
+            content=render_csv_export(quotation, lines),
         )
 
     async def _replace_lines(
@@ -629,73 +631,8 @@ class ExportQuotationService:
             remark=fee.remark,
         )
 
-    def _render_text_export(
-        self,
-        quotation: ExportQuotationRow,
-        lines: list[ExportQuotationLineRow],
-    ) -> str:
-        details = "\n".join(
-            f"{line.product_code or ''} {line.product_name} {self._quantity(line.quantity)}"
-            f" {line.unit} x {self._quantity(line.unit_price)}"
-            for line in lines
-        )
-        return (
-            f"EXPORT QUOTATION\n"
-            f"Quotation No: {quotation.code}\n"
-            f"Customer: {quotation.customer_name}\n"
-            f"Trade Term: {quotation.trade_term}\n"
-            f"Total: {quotation.currency} {quotation.total_amount}\n"
-            f"Generated At: {datetime.now(UTC).isoformat()}\n"
-            f"{details}\n"
-        )
-
-    def _render_csv_export(
-        self,
-        quotation: ExportQuotationRow,
-        lines: list[ExportQuotationLineRow],
-    ) -> str:
-        output = StringIO()
-        writer = csv.writer(output)
-        writer.writerow(["quotation_no", quotation.code])
-        writer.writerow(["customer", quotation.customer_name])
-        writer.writerow(["currency", quotation.currency])
-        writer.writerow(["trade_term", quotation.trade_term])
-        writer.writerow([])
-        writer.writerow(
-            [
-                "product_code",
-                "product_name",
-                "specification",
-                "model",
-                "quantity",
-                "unit",
-                "unit_price",
-                "amount",
-                "freight_method",
-                "freight_amount",
-            ]
-        )
-        for line in lines:
-            writer.writerow(
-                [
-                    line.product_code or "",
-                    line.product_name,
-                    line.specification or "",
-                    line.model or "",
-                    self._quantity(line.quantity),
-                    line.unit,
-                    self._quantity(line.unit_price),
-                    line.amount,
-                    line.freight_method,
-                    line.freight_amount,
-                ]
-            )
-        writer.writerow([])
-        writer.writerow(["total", quotation.total_amount])
-        return output.getvalue()
-
     def _money(self, value: Decimal) -> str:
         return f"{value:.2f}"
 
     def _quantity(self, value: Decimal) -> str:
-        return f"{value:.4f}".rstrip("0").rstrip(".")
+        return format_quantity(value)
