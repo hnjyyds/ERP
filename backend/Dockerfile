@@ -15,6 +15,8 @@ RUN python -m pip install --no-cache-dir --upgrade pip \
     && python -m pip install --no-cache-dir .
 
 COPY app ./app
+COPY alembic.ini ./
+COPY migrations ./migrations
 
 RUN mkdir -p /app/.data
 
