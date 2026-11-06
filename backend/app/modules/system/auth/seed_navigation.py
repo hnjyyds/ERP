@@ -23,6 +23,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-dashboard",
             label="工作台",
+            label_en="Dashboard",
             path="/",
             icon="calendar-clock",
             required_permission="dashboard:view",
@@ -32,6 +33,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-organization-users",
             label="组织管理",
+            label_en="Organization",
             path="/organization/users",
             icon="users",
             required_permission="system:super_admin",
@@ -41,6 +43,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-mcp-settings",
             label="MCP 接入",
+            label_en="MCP",
             path="/system/mcp",
             icon="settings",
             required_permission="system:super_admin",
@@ -50,6 +53,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-products",
             label="产品资料",
+            label_en="Products",
             path="/masterdata/products",
             icon="package",
             required_permission="masterdata:product:view",
@@ -59,6 +63,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-customers",
             label="客户资料",
+            label_en="Customers",
             path="/masterdata/customers",
             icon="users",
             required_permission="masterdata:customer:view",
@@ -68,6 +73,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-suppliers",
             label="工厂资料",
+            label_en="Suppliers",
             path="/masterdata/suppliers",
             icon="factory",
             required_permission="masterdata:supplier:view",
@@ -77,6 +83,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-partners",
             label="合作伙伴",
+            label_en="Partners",
             path="/masterdata/partners",
             icon="handshake",
             required_permission="masterdata:partner:view",
@@ -86,6 +93,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-document-parties",
             label="单证资料",
+            label_en="Document Parties",
             path="/masterdata/document-parties",
             icon="file-stack",
             required_permission="masterdata:document_party:view",
@@ -95,6 +103,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-sample-requests",
             label="打样管理",
+            label_en="Sampling",
             path="/sample/requests",
             icon="flask-conical",
             required_permission="sample:request:view",
@@ -104,6 +113,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-sample-records",
             label="样品登记",
+            label_en="Sample Records",
             path="/sample/records",
             icon="images",
             required_permission="sample:record:view",
@@ -113,6 +123,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-sample-deliveries",
             label="寄样管理",
+            label_en="Sample Deliveries",
             path="/sample/deliveries",
             icon="send",
             required_permission="sample:delivery:view",
@@ -122,6 +133,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-sales-quotations",
             label="出口报价",
+            label_en="Export Quotations",
             path="/sales/quotations",
             icon="file-pen-line",
             required_permission="sales:quotation:view",
@@ -131,6 +143,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-sales-contracts",
             label="订单中心",
+            label_en="Order Center",
             path="/sales/contracts",
             icon="file-text",
             required_permission="sales:contract:view",
@@ -140,6 +153,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-sales-shipments",
             label="出货明细",
+            label_en="Shipments",
             path="/sales/shipments",
             icon="send",
             required_permission="sales:shipment:view",
@@ -149,6 +163,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-purchase-inquiries",
             label="采购询价",
+            label_en="Purchase Inquiries",
             path="/purchase/inquiries",
             icon="search",
             required_permission="purchase:inquiry:view",
@@ -158,6 +173,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-purchase-contracts",
             label="采购合同",
+            label_en="Purchase Contracts",
             path="/purchase/contracts",
             icon="file-text",
             required_permission="purchase:contract:view",
@@ -167,6 +183,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-purchase-invoice-notices",
             label="开票通知",
+            label_en="Invoice Notices",
             path="/purchase/invoice-notices",
             icon="file-pen-line",
             required_permission="purchase:invoice_notice:view",
@@ -176,6 +193,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-purchase-followup",
             label="跟单中心",
+            label_en="Follow-up Center",
             path="/purchase/followup",
             icon="check-circle",
             required_permission="followup:plan:view",
@@ -185,6 +203,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-quality-inspections",
             label="QC 中心",
+            label_en="QC Center",
             path="/quality/inspections",
             icon="clipboard-check",
             required_permission="quality:inspection:view",
@@ -194,6 +213,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-quality-tasks",
             label="我的 QC 任务",
+            label_en="My QC Tasks",
             path="/quality/tasks",
             icon="clipboard-check",
             required_permission="quality:inspection:view",
@@ -203,6 +223,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-warehouse-inbound-plans",
             label="入库计划",
+            label_en="Inbound Plans",
             path="/warehouse/inbound-plans",
             icon="warehouse",
             required_permission="warehouse:inbound_plan:view",
@@ -212,6 +233,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-warehouse-inbound-orders",
             label="入仓",
+            label_en="Inbound Receipts",
             path="/warehouse/inbound-orders",
             icon="warehouse",
             required_permission="warehouse:inbound_order:view",
@@ -221,6 +243,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-warehouse-outbound-plans",
             label="出库计划",
+            label_en="Outbound Plans",
             path="/warehouse/outbound-plans",
             icon="send",
             required_permission="warehouse:outbound_plan:view",
@@ -230,6 +253,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-warehouse-outbound-orders",
             label="货物出库",
+            label_en="Outbound",
             path="/warehouse/outbound-orders",
             icon="send",
             required_permission="warehouse:outbound_order:view",
@@ -239,6 +263,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-finance",
             label="财务摘要",
+            label_en="Finance Summary",
             path="/finance",
             icon="wallet",
             required_permission="finance:view",
@@ -248,6 +273,7 @@ def system_menus() -> list[MenuItem]:
         MenuItem(
             id="menu-reporting",
             label="老板看板",
+            label_en="Executive Dashboard",
             path="/reporting",
             icon="bar-chart-3",
             required_permission="reporting:view",

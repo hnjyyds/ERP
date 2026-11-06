@@ -4,6 +4,7 @@ import hmac
 import time
 from dataclasses import dataclass
 
+from app.core.language import DEFAULT_LANGUAGE, get_current_language
 from app.db.uow import UnitOfWork
 from app.modules.system.auth.passwords import verify_password
 from app.modules.system.auth.repositories import (
@@ -177,9 +178,13 @@ class AuthService:
         )
 
     def _menu_response(self, row: MenuItemRow) -> MenuItemResponse:
+        language = get_current_language()
+        label = row.label
+        if language != DEFAULT_LANGUAGE and row.label_en:
+            label = row.label_en
         return MenuItemResponse(
             id=row.id,
-            label=row.label,
+            label=label,
             path=row.path,
             icon=row.icon,
             required_permission=row.required_permission,

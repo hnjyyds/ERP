@@ -20,6 +20,7 @@ from app.modules.system.auth.models import (
 class MenuItemRow:
     id: str
     label: str
+    label_en: str | None
     path: str
     icon: str
     required_permission: str
@@ -127,6 +128,7 @@ class AuthRepository:
             MenuItemRow(
                 id=item.id,
                 label=item.label,
+                label_en=item.label_en,
                 path=item.path,
                 icon=item.icon,
                 required_permission=item.required_permission,

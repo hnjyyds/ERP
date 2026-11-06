@@ -73,6 +73,7 @@ class MenuItem(Base):
 
     id: Mapped[str] = mapped_column(String(80), primary_key=True)
     label: Mapped[str] = mapped_column(String(120), nullable=False)
+    label_en: Mapped[str | None] = mapped_column(String(120), nullable=True)
     path: Mapped[str] = mapped_column(String(200), nullable=False)
     icon: Mapped[str] = mapped_column(String(80), nullable=False)
     required_permission: Mapped[str] = mapped_column(String(120), nullable=False)
