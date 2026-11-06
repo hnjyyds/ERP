@@ -1,14 +1,16 @@
 import { Component } from 'react'
 import type { ErrorInfo, ReactNode } from 'react'
 
+import { t } from '../appI18n'
+
 type PageErrorBoundaryProps = { children: ReactNode; pageKey: string }
-type PageErrorBoundaryState = { message: string }
+type PageErrorBoundaryState = { failed: boolean; message: string }
 
 export class PageErrorBoundary extends Component<PageErrorBoundaryProps, PageErrorBoundaryState> {
-  state: PageErrorBoundaryState = { message: '' }
+  state: PageErrorBoundaryState = { failed: false, message: '' }
 
   static getDerivedStateFromError(error: unknown): PageErrorBoundaryState {
-    return { message: error instanceof Error ? error.message : '页面渲染失败' }
+    return { failed: true, message: error instanceof Error ? error.message : '' }
   }
 
   componentDidCatch(error: unknown, errorInfo: ErrorInfo) {
@@ -16,16 +18,18 @@ export class PageErrorBoundary extends Component<PageErrorBoundaryProps, PageErr
   }
 
   componentDidUpdate(prev: PageErrorBoundaryProps) {
-    if (prev.pageKey !== this.props.pageKey && this.state.message) {
-      this.setState({ message: '' })
+    if (prev.pageKey !== this.props.pageKey && this.state.failed) {
+      this.setState({ failed: false, message: '' })
     }
   }
 
   render() {
-    if (this.state.message) {
+    if (this.state.failed) {
       return (
         <section className="dashboard-feedback error" role="alert">
-          页面加载失败：{this.state.message}
+          {t('app.errorBoundary.loadFailed', {
+            message: this.state.message || t('app.errorBoundary.renderFailed'),
+          })}
         </section>
       )
     }

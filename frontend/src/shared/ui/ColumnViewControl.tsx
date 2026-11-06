@@ -3,6 +3,8 @@ import { Button, Dropdown, Menu, Tooltip, type MenuProps } from 'antd'
 import { SlidersHorizontal } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
 
+import { t } from '../../app/appI18n'
+
 const STORAGE_PREFIX = 'xinpei_view_columns:'
 
 export type ColumnOption = {
@@ -112,16 +114,16 @@ function ColumnViewControl({ options, isVisible, onToggle, onReset }: ControlPro
     { type: 'divider' },
     {
       key: '__reset__',
-      label: '恢复默认',
+      label: t('common.columnView.reset'),
       onClick: () => onReset(),
     },
   ]
 
   return (
-    <Tooltip title="设置列视图">
+    <Tooltip title={t('common.columnView.settings')}>
       <Dropdown dropdownRender={() => <Menu selectable={false} items={menuItems} />} trigger={['click']}>
         <Button
-          aria-label="设置列视图"
+          aria-label={t('common.columnView.settings')}
           className="toolbar-icon-button"
           icon={<SlidersHorizontal size={16} />}
         />

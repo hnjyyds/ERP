@@ -148,18 +148,18 @@ function todoSourceLabel(value: string) {
     followup: t('todo.followup'),
     followup_plan: t('todo.followup'),
     manual: t('todo.manual'),
-    quality_inspection: 'QC 查验',
+    quality_inspection: t('dashboard.source.qualityInspection'),
     system: t('todo.system'),
-    warehouse_inbound_approval: '入库审批',
-    sample_delivery_approval: '寄样审批',
-    sales_quotation_approval: '报价审批',
-    sales_contract_approval: '出口合同审批',
-    purchase_contract_approval: '采购合同审批',
-    sales_shipment_approval: '出货审批',
-    warehouse_outbound_approval: '出库审批',
-    finance_payment_approval: '付款审批',
-    finance_fee_payment_approval: '付费审批',
-    finance_reimbursement_approval: '报销审批',
+    warehouse_inbound_approval: t('dashboard.source.warehouseInboundApproval'),
+    sample_delivery_approval: t('dashboard.source.sampleDeliveryApproval'),
+    sales_quotation_approval: t('dashboard.source.salesQuotationApproval'),
+    sales_contract_approval: t('dashboard.source.salesContractApproval'),
+    purchase_contract_approval: t('dashboard.source.purchaseContractApproval'),
+    sales_shipment_approval: t('dashboard.source.salesShipmentApproval'),
+    warehouse_outbound_approval: t('dashboard.source.warehouseOutboundApproval'),
+    finance_payment_approval: t('dashboard.source.financePaymentApproval'),
+    finance_fee_payment_approval: t('dashboard.source.financeFeePaymentApproval'),
+    finance_reimbursement_approval: t('dashboard.source.financeReimbursementApproval'),
   }
   return labels[value] ?? value
 }
@@ -315,7 +315,7 @@ export function DashboardScheduleTimeline({
             <span className="dashboard-timeline-content">
               <span className="dashboard-timeline-title">{event.title}</span>
               <span className="dashboard-timeline-note">
-                {event.description?.trim() || `${formatTime(event.starts_at)} 至 ${formatTime(event.ends_at)}`}
+                {event.description?.trim() || t('dashboard.timeRange', { start: formatTime(event.starts_at), end: formatTime(event.ends_at) })}
               </span>
             </span>
           </button>
@@ -631,16 +631,16 @@ export function DashboardPage({
           <div className="dashboard-panel-heading">
             <PanelTitle
               icon={<ClipboardCheck size={18} />}
-              title="今日优先处理"
+              title={t('dashboard.todayPriority')}
             />
             <div className="dashboard-panel-actions">
               <span className="dashboard-priority-scope">
                 {t(isSuperAdmin ? 'dashboard.globalTodos' : 'dashboard.myTodos')}
               </span>
-              <div className="dashboard-priority-summary" aria-label="待办时效概览">
-                {overdueTodoCount ? <span className="is-overdue">逾期 {overdueTodoCount}</span> : null}
-                {dueTodayTodoCount ? <span className="is-today">今日到期 {dueTodayTodoCount}</span> : null}
-                {!overdueTodoCount && !dueTodayTodoCount ? <span>暂无紧急待办</span> : null}
+              <div className="dashboard-priority-summary" aria-label={t('dashboard.priorityOverview')}>
+                {overdueTodoCount ? <span className="is-overdue">{t('dashboard.overdueCount', { count: overdueTodoCount })}</span> : null}
+                {dueTodayTodoCount ? <span className="is-today">{t('dashboard.dueTodayCount', { count: dueTodayTodoCount })}</span> : null}
+                {!overdueTodoCount && !dueTodayTodoCount ? <span>{t('dashboard.noUrgentTodos')}</span> : null}
               </div>
               <button
                 aria-label={t('dashboard.addTodo')}
@@ -676,9 +676,9 @@ export function DashboardPage({
                       </div>
                       {todo.content ? <p className="dashboard-task-content">{todo.content}</p> : null}
                       <div className="dashboard-task-meta">
-                        <span>来源：<span>{todoSourceLabel(todo.source_type)}</span></span>
-                        {isSuperAdmin && todo.owner_user_name ? <span>负责人：{todo.owner_user_name}</span> : null}
-                        <span>截止：{todo.due_at ? formatDateTime(todo.due_at) : t('dashboard.noDeadline')}</span>
+                        <span>{t('dashboard.sourcePrefix')}<span>{todoSourceLabel(todo.source_type)}</span></span>
+                        {isSuperAdmin && todo.owner_user_name ? <span>{t('dashboard.ownerPrefix')}{todo.owner_user_name}</span> : null}
+                        <span>{t('dashboard.deadlinePrefix')}{todo.due_at ? formatDateTime(todo.due_at) : t('dashboard.noDeadline')}</span>
                       </div>
                     </div>
                     {canNavigatePath(targetPath) ? (
@@ -825,7 +825,7 @@ export function DashboardPage({
             <header className="dashboard-detail-heading">
               <strong>{selectedSchedule.title}</strong>
               <span>
-                {formatDateTime(selectedSchedule.starts_at)} 至 {formatDateTime(selectedSchedule.ends_at)}
+                {t('dashboard.timeRange', { start: formatDateTime(selectedSchedule.starts_at), end: formatDateTime(selectedSchedule.ends_at) })}
               </span>
             </header>
             <dl className="dashboard-detail-list">
@@ -1349,7 +1349,7 @@ export function DashboardSchedulesPage({
             <header className="dashboard-detail-heading">
               <strong>{selectedSchedule.title}</strong>
               <span>
-                {formatDateTime(selectedSchedule.starts_at)} 至 {formatDateTime(selectedSchedule.ends_at)}
+                {t('dashboard.timeRange', { start: formatDateTime(selectedSchedule.starts_at), end: formatDateTime(selectedSchedule.ends_at) })}
               </span>
             </header>
             <dl className="dashboard-detail-list">

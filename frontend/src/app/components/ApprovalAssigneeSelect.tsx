@@ -2,6 +2,7 @@ import { Alert, Select } from 'antd'
 import { useEffect, useMemo, useState } from 'react'
 
 import { listAssignableUsers, type AssignableUser } from '../../api'
+import { t } from '../appI18n'
 
 type Props = {
   currentUserId: string
@@ -16,7 +17,7 @@ export function ApprovalAssigneeSelect({
   onChange,
   requiredPermission,
   value,
-  label = '审批人',
+  label = t('common.approvalAssignee.defaultLabel'),
 }: Props) {
   const [users, setUsers] = useState<AssignableUser[]>([])
   const [loading, setLoading] = useState(true)
@@ -32,7 +33,9 @@ export function ApprovalAssigneeSelect({
       })
       .catch((reason: unknown) => {
         if (active) {
-          setError(reason instanceof Error ? reason.message : '审批人加载失败')
+          setError(
+            reason instanceof Error ? reason.message : t('common.approvalAssignee.loadFailed'),
+          )
         }
       })
       .finally(() => {
@@ -60,7 +63,7 @@ export function ApprovalAssigneeSelect({
         loading={loading}
         onChange={onChange}
         options={options}
-        placeholder={`选择${label}`}
+        placeholder={t('common.approvalAssignee.selectPlaceholder', { label })}
         showSearch
         value={value || undefined}
         optionFilterProp="label"

@@ -1,5 +1,8 @@
 import { Modal as _Modal, message } from 'antd'
 
+import { getRuntimeSettings } from '../app/pages/appHelpers'
+import { translate, type TranslationKey } from '../locales'
+
 export type ApiErrorDetail = {
   field: string
   message: string
@@ -36,20 +39,24 @@ export class ApiError extends Error {
   }
 }
 
-/** 错误码 → 用户友好文案（覆盖后端泛化/技术文案） */
-export const ERROR_MESSAGES: Record<string, string> = {
-  VALIDATION_ERROR: '信息填写不完整或格式有误，请检查后重试',
-  BAD_REQUEST: '请求有误，请检查填写内容后重试',
-  CONFLICT: '该记录已存在或状态冲突，请刷新后重试',
-  PERMISSION_DENIED: '您没有权限执行该操作',
-  NOT_FOUND: '未找到相关记录，可能已被删除',
-  TOKEN_EXPIRED: '登录已过期，请重新登录',
-  UNAUTHORIZED: '请先登录后再操作',
-  TOO_MANY_REQUESTS: '操作过于频繁，请稍后再试',
-  SERVER_ERROR: '系统繁忙，请稍后重试',
-  SERVICE_UNAVAILABLE: '服务暂不可用，请稍后重试',
-  GATEWAY_TIMEOUT: '网络超时，请稍后重试',
-  NETWORK_ERROR: '网络连接异常，请检查网络后重试',
+/** 错误码 → 用户友好文案 key（覆盖后端泛化/技术文案） */
+const ERROR_MESSAGE_KEYS: Record<string, TranslationKey> = {
+  VALIDATION_ERROR: 'common.error.validation',
+  BAD_REQUEST: 'common.error.badRequest',
+  CONFLICT: 'common.error.conflict',
+  PERMISSION_DENIED: 'common.error.permissionDenied',
+  NOT_FOUND: 'common.error.notFound',
+  TOKEN_EXPIRED: 'common.error.tokenExpired',
+  UNAUTHORIZED: 'common.error.unauthorized',
+  TOO_MANY_REQUESTS: 'common.error.tooManyRequests',
+  SERVER_ERROR: 'common.error.server',
+  SERVICE_UNAVAILABLE: 'common.error.serviceUnavailable',
+  GATEWAY_TIMEOUT: 'common.error.gatewayTimeout',
+  NETWORK_ERROR: 'common.error.network',
+}
+
+function tr(key: TranslationKey) {
+  return translate(getRuntimeSettings().language, key)
 }
 
 /** 这些错误码的后端 message 通常是友好的业务文案，优先透传 */
@@ -59,9 +66,9 @@ const PREFER_BACKEND_MESSAGE = new Set(['BUSINESS_ERROR', 'CONFLICT'])
 export function friendlyMessageFor(code: string, backendMessage: string): string {
   const trimmed = backendMessage?.trim() ?? ''
   if (PREFER_BACKEND_MESSAGE.has(code) && trimmed) return trimmed
-  if (ERROR_MESSAGES[code]) return ERROR_MESSAGES[code]
+  if (ERROR_MESSAGE_KEYS[code]) return tr(ERROR_MESSAGE_KEYS[code])
   if (trimmed) return trimmed
-  return ERROR_MESSAGES.SERVER_ERROR
+  return tr('common.error.server')
 }
 
 /** 从任意捕获到的异常中取出可展示的友好文案 */
@@ -72,12 +79,12 @@ function resolveContent(error: unknown, fallback: string): string {
 }
 
 /** 错误 toast 提示（3 秒自动消失） */
-export function showErrorDialog(error: unknown, fallback = '操作未成功，请稍后重试'): void {
+export function showErrorDialog(error: unknown, fallback = tr('common.error.actionFailed')): void {
   message.error(resolveContent(error, fallback), 3)
 }
 
 /** 警告 toast 提示（3 秒自动消失） */
-export function showWarningDialog(content: string, _title = '请完善信息'): void {
+export function showWarningDialog(content: string, _title?: string): void {
   message.warning(content, 3)
 }
 

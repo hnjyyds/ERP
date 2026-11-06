@@ -3,6 +3,7 @@ import type { ChangeEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 
 import type { UserAvatarType } from '../../api'
+import { t, type TranslationKey } from '../../app/appI18n'
 import { UserAvatar, avatarPresets, resolveAvatarPreset, type AvatarPreset } from './UserAvatar'
 
 export type UserAvatarPickerValue = {
@@ -21,10 +22,10 @@ type AvatarPickerTab = 'person' | 'emoji' | 'upload'
 
 const maxAvatarBytes = 900_000
 
-const avatarTabs: Array<{ key: AvatarPickerTab; label: string }> = [
-  { key: 'person', label: '人物头像' },
-  { key: 'emoji', label: '表情' },
-  { key: 'upload', label: '自定义上传' },
+const avatarTabs: Array<{ key: AvatarPickerTab; labelKey: TranslationKey }> = [
+  { key: 'person', labelKey: 'common.avatar.picker.person' },
+  { key: 'emoji', labelKey: 'common.avatar.picker.emoji' },
+  { key: 'upload', labelKey: 'common.avatar.picker.upload' },
 ]
 
 function tabFromValue(value: UserAvatarPickerValue): AvatarPickerTab {
@@ -33,20 +34,20 @@ function tabFromValue(value: UserAvatarPickerValue): AvatarPickerTab {
 }
 
 function groupPresets(presets: AvatarPreset[]) {
-  return presets.reduce<Array<{ title: string; items: AvatarPreset[] }>>((groups, preset) => {
-    const group = groups.find((item) => item.title === preset.group)
+  return presets.reduce<Array<{ titleKey: TranslationKey; items: AvatarPreset[] }>>((groups, preset) => {
+    const group = groups.find((item) => item.titleKey === preset.groupKey)
     if (group) {
       group.items.push(preset)
       return groups
     }
 
-    groups.push({ title: preset.group, items: [preset] })
+    groups.push({ titleKey: preset.groupKey, items: [preset] })
     return groups
   }, [])
 }
 
 export function UserAvatarPicker({
-  description = '保存后会同步到用户资料、用户列表和可指派人员。',
+  description = t('common.avatar.picker.description'),
   label,
   onChange,
   value,
@@ -74,30 +75,30 @@ export function UserAvatarPicker({
     const file = event.target.files?.[0]
     if (!file) return
     if (!file.type.startsWith('image/')) {
-      setError('请选择图片文件')
+      setError(t('common.avatar.picker.chooseImageFile'))
       return
     }
     if (file.size > maxAvatarBytes) {
-      setError('头像图片需小于 900KB')
+      setError(t('common.avatar.picker.imageTooLarge'))
       return
     }
 
     const reader = new FileReader()
     reader.onload = () => {
       if (typeof reader.result !== 'string') {
-        setError('头像读取失败')
+        setError(t('common.avatar.picker.readFailed'))
         return
       }
       setError('')
       onChange({ avatar_type: 'upload', avatar_value: reader.result })
       setPickerOpen(false)
     }
-    reader.onerror = () => setError('头像读取失败')
+    reader.onerror = () => setError(t('common.avatar.picker.readFailed'))
     reader.readAsDataURL(file)
   }
 
   return (
-    <section className="user-avatar-picker" aria-label="用户头像">
+    <section className="user-avatar-picker" aria-label={t('common.avatar.picker.userAvatar')}>
       <button
         aria-expanded={pickerOpen}
         className="user-avatar-picker-current"
@@ -107,19 +108,25 @@ export function UserAvatarPicker({
         <UserAvatar
           avatarType={value.avatar_type}
           avatarValue={value.avatar_value}
-          label={label || '用户'}
+          label={label || t('common.avatar.picker.userPlaceholder')}
           size="lg"
         />
         <div>
-          <span>头像</span>
-          <strong>{value.avatar_type === 'upload' ? '自定义上传' : currentPreset.label}</strong>
+          <span>{t('common.avatar.picker.avatar')}</span>
+          <strong>
+            {value.avatar_type === 'upload' ? t('common.avatar.picker.upload') : t(currentPreset.labelKey)}
+          </strong>
         </div>
         <ChevronDown className={pickerOpen ? 'user-avatar-picker-toggle open' : 'user-avatar-picker-toggle'} size={20} />
       </button>
 
       {pickerOpen ? (
         <>
-          <div className="user-avatar-picker-tabs" role="tablist" aria-label="头像类型">
+          <div
+            className="user-avatar-picker-tabs"
+            role="tablist"
+            aria-label={t('common.avatar.picker.avatarType')}
+          >
             {avatarTabs.map((tab) => (
               <button
                 aria-selected={activeTab === tab.key}
@@ -129,7 +136,7 @@ export function UserAvatarPicker({
                 type="button"
                 onClick={() => setActiveTab(tab.key)}
               >
-                {tab.label}
+                {t(tab.labelKey)}
               </button>
             ))}
           </div>
@@ -140,47 +147,53 @@ export function UserAvatarPicker({
                 <label className="user-avatar-picker-upload">
                   <input
                     accept="image/*"
-                    aria-label="选择头像图片"
+                    aria-label={t('common.avatar.picker.selectAvatarImage')}
                     type="file"
                     onChange={handleFileChange}
                   />
                   <UploadCloud size={18} />
-                  <span>选择图片</span>
+                  <span>{t('common.avatar.picker.selectImage')}</span>
                 </label>
                 <p>
                   <ImagePlus size={16} />
-                  <span>{description} 支持 PNG、JPG，图片需小于 900KB。</span>
+                  <span>
+                    {description} {t('common.avatar.picker.imageHint')}
+                  </span>
                 </p>
               </div>
             ) : (
               <div className="user-avatar-picker-sections">
-                {groupedAvatarPresets.map((group) => (
-                  <section className="user-avatar-picker-section" key={group.title}>
-                    <h4>{group.title}</h4>
-                    <div
-                      className={`user-avatar-picker-icon-grid user-avatar-picker-icon-grid-${activeTab}`}
-                      aria-label={group.title}
-                    >
-                      {group.items.map((preset) => {
-                        const selected = value.avatar_type === 'preset' && currentPreset.id === preset.id
-                        return (
-                          <button
-                            aria-label={`选择${preset.label}`}
-                            aria-pressed={selected}
-                            className={selected ? 'selected' : ''}
-                            key={preset.id}
-                            title={preset.label}
-                            type="button"
-                            onClick={() => selectPreset(preset.id)}
-                          >
-                            <UserAvatar avatarType="preset" avatarValue={preset.id} label={preset.label} size="md" />
-                            <span className="visually-hidden">{preset.label}</span>
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </section>
-                ))}
+                {groupedAvatarPresets.map((group) => {
+                  const groupTitle = t(group.titleKey)
+                  return (
+                    <section className="user-avatar-picker-section" key={group.titleKey}>
+                      <h4>{groupTitle}</h4>
+                      <div
+                        className={`user-avatar-picker-icon-grid user-avatar-picker-icon-grid-${activeTab}`}
+                        aria-label={groupTitle}
+                      >
+                        {group.items.map((preset) => {
+                          const selected = value.avatar_type === 'preset' && currentPreset.id === preset.id
+                          const presetLabel = t(preset.labelKey)
+                          return (
+                            <button
+                              aria-label={t('common.avatar.picker.selectPreset', { preset: presetLabel })}
+                              aria-pressed={selected}
+                              className={selected ? 'selected' : ''}
+                              key={preset.id}
+                              title={presetLabel}
+                              type="button"
+                              onClick={() => selectPreset(preset.id)}
+                            >
+                              <UserAvatar avatarType="preset" avatarValue={preset.id} label={presetLabel} size="md" />
+                              <span className="visually-hidden">{presetLabel}</span>
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </section>
+                  )
+                })}
               </div>
             )}
           </div>

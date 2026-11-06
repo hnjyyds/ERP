@@ -1,6 +1,8 @@
 import { Select, Tag as _Tag } from 'antd'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import { t } from '../../app/appI18n'
+
 type RemoteSelectOption = {
   label: string
   value: string
@@ -31,7 +33,7 @@ export function RemoteSelect({
   fetchOptions,
   id,
   onChange,
-  placeholder = '输入关键词搜索',
+  placeholder = t('common.remoteSelect.placeholder'),
   required,
   status,
   value,
@@ -79,7 +81,9 @@ export function RemoteSelect({
       filterOption={false}
       id={id}
       loading={loading}
-      notFoundContent={loading ? '搜索中...' : '无匹配结果'}
+      notFoundContent={
+        loading ? t('common.remoteSelect.searching') : t('common.remoteSelect.noResults')
+      }
       onChange={(nextValue) => onChange?.(nextValue ?? '')}
       onSearch={(query) => void loadOptions(query)}
       optionLabelProp="label"

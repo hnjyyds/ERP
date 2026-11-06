@@ -1,4 +1,65 @@
 {
+  "nav": {
+    "group": {
+      "masterdata": "基础资料",
+      "workflow": "订单流程",
+      "taskCenter": "QC / 跟单",
+      "warehouse": "仓库",
+      "finance": "财务经营",
+      "system": "系统设置",
+      "legacyPurchase": "暂缓模块",
+      "other": "其他"
+    },
+    "item": {
+      "financeOverview": "经营总览",
+      "financeReceipts": "收款管理",
+      "financePayments": "付款管理",
+      "financeFees": "付费管理",
+      "financeTax": "核销退税",
+      "financeMisc": "杂费管理",
+      "financeSettlement": "结算核算",
+      "financeReimbursements": "报销管理",
+      "financePortData": "口岸数据",
+      "financeReports": "财务报表"
+    },
+    "page": {
+      "businessModule": "业务模块",
+      "finance": "财务摘要和订单利润",
+      "financeOverview": "经营总览",
+      "financeReceipts": "收款管理",
+      "financePayments": "付款管理",
+      "financeFees": "付费管理",
+      "financeTax": "核销退税",
+      "financeMisc": "杂费管理",
+      "financeSettlement": "结算核算",
+      "financeReimbursements": "报销管理",
+      "financePortData": "口岸数据",
+      "financeReports": "财务报表",
+      "reporting": "老板看板和经营分析",
+      "exportContracts": "订单流程",
+      "purchaseContracts": "采购合同和工厂履约",
+      "qualityInspections": "QC 任务中心",
+      "myQualityTasks": "我的 QC 任务",
+      "followup": "跟单任务中心",
+      "suppliers": "工厂资料和验货地址",
+      "products": "产品资料、价格和质量要求",
+      "customers": "客户资料和订单要求",
+      "warehouseInboundOrders": "入仓和库存确认",
+      "mcpSettings": "MCP 与 AI 数据接入"
+    },
+    "locked": {
+      "deferredLabel": "暂缓",
+      "deferredDescription": "该功能已列入暂缓模块，当前暂不开放",
+      "nonPrimaryLabel": "非主流程",
+      "nonPrimaryDescription": "该功能当前不纳入主业务流程"
+    },
+    "aria": {
+      "businessNavigation": "业务导航",
+      "collapse": "收起",
+      "navigation": "导航",
+      "mainNavigation": "主导航"
+    }
+  },
   "settings": {
     "open": "系统设置",
     "title": "系统设置",
@@ -6,6 +67,8 @@
     "language": "语言",
     "timeZone": "时区",
     "timeZoneHint": "用于展示时间与提醒",
+    "avatarDescription": "保存后会同步到当前账号和待办指派列表。",
+    "saveAvatar": "保存头像",
     "logout": "退出登录"
   },
   "common": {
@@ -17,7 +80,111 @@
     "refresh": "刷新",
     "viewAll": "查看全部",
     "notSet": "未设置",
-    "none": "无"
+    "none": "无",
+    "approvalAssignee": {
+      "defaultLabel": "审批人",
+      "selectPlaceholder": "选择{label}",
+      "loadFailed": "审批人加载失败"
+    },
+    "print": {
+      "popupBlocked": "浏览器拦截了打印窗口",
+      "allowPopups": "请允许弹出窗口后重试",
+      "exportContractFailed": "生成打印单据失败",
+      "sampleRequestFailed": "生成内部打样单失败"
+    },
+    "error": {
+      "validation": "信息填写不完整或格式有误，请检查后重试",
+      "badRequest": "请求有误，请检查填写内容后重试",
+      "conflict": "该记录已存在或状态冲突，请刷新后重试",
+      "permissionDenied": "您没有权限执行该操作",
+      "notFound": "未找到相关记录，可能已被删除",
+      "tokenExpired": "登录已过期，请重新登录",
+      "unauthorized": "请先登录后再操作",
+      "tooManyRequests": "操作过于频繁，请稍后再试",
+      "server": "系统繁忙，请稍后重试",
+      "serviceUnavailable": "服务暂不可用，请稍后重试",
+      "gatewayTimeout": "网络超时，请稍后重试",
+      "network": "网络连接异常，请检查网络后重试",
+      "actionFailed": "操作未成功，请稍后重试"
+    },
+    "workflowStatus": {
+      "completed": "已完成",
+      "pending": "待处理",
+      "inProgress": "处理中",
+      "overdue": "已逾期"
+    },
+    "severity": {
+      "high": "高优先级",
+      "urgent": "紧急",
+      "warning": "提醒",
+      "info": "通知"
+    },
+    "avatar": {
+      "ariaLabel": "{name} 的头像",
+      "preset": {
+        "personTech01": "短发眼镜",
+        "personTech02": "圆框顾问",
+        "personTech03": "侧分工程师",
+        "personTech04": "产品经理",
+        "personTech05": "络腮开发",
+        "personTech06": "棒球帽",
+        "personTech07": "衬衫专员",
+        "personTech08": "耳机支持",
+        "personTech09": "系统顾问",
+        "personTech10": "技术主管",
+        "personTech11": "运营支持",
+        "personTech12": "审核专员",
+        "personTech13": "客服顾问",
+        "personTech14": "质检工程师",
+        "personBusiness01": "业务专员",
+        "personBusiness02": "采购专员",
+        "personBusiness03": "单证专员",
+        "personBusiness04": "跟单客服",
+        "personBusiness05": "财务审核",
+        "personBusiness06": "仓库主管",
+        "personBusiness07": "经理角色",
+        "personBusiness08": "管理员",
+        "emojiSmile": "微笑",
+        "emojiWave": "招手",
+        "emojiFocus": "专注",
+        "emojiStar": "星标",
+        "emojiCheck": "确认",
+        "emojiCoffee": "咖啡",
+        "emojiRocket": "推进",
+        "emojiSun": "晴朗"
+      },
+      "group": {
+        "tech": "科技类",
+        "business": "商务类",
+        "emoji": "表情"
+      },
+      "picker": {
+        "person": "人物头像",
+        "emoji": "表情",
+        "upload": "自定义上传",
+        "userPlaceholder": "用户",
+        "avatar": "头像",
+        "userAvatar": "用户头像",
+        "avatarType": "头像类型",
+        "selectImage": "选择图片",
+        "selectAvatarImage": "选择头像图片",
+        "selectPreset": "选择{preset}",
+        "description": "保存后会同步到用户资料、用户列表和可指派人员。",
+        "imageHint": "支持 PNG、JPG，图片需小于 900KB。",
+        "chooseImageFile": "请选择图片文件",
+        "imageTooLarge": "头像图片需小于 900KB",
+        "readFailed": "头像读取失败"
+      }
+    },
+    "columnView": {
+      "reset": "恢复默认",
+      "settings": "设置列视图"
+    },
+    "remoteSelect": {
+      "placeholder": "输入关键词搜索",
+      "searching": "搜索中...",
+      "noResults": "无匹配结果"
+    }
   },
   "access": {
     "deniedTitle": "暂无访问权限",
@@ -29,7 +196,45 @@
   },
   "app": {
     "brandName": "新裴贸易",
-    "productName": "业务管理系统"
+    "productName": "业务管理系统",
+    "message": {
+      "sessionExpired": "登录状态已失效",
+      "loadFailed": "加载失败",
+      "avatarSaved": "头像已保存",
+      "avatarSaveFailed": "头像保存失败"
+    },
+    "errorBoundary": {
+      "renderFailed": "页面渲染失败",
+      "loadFailed": "页面加载失败：{message}"
+    }
+  },
+  "auth": {
+    "title": "登录",
+    "subtitle": "账号登录",
+    "stageLabel": "新裴贸易业务管理系统登录",
+    "heroImageAlt": "D-DUTCH 样品展示空间",
+    "footerTitle": "外贸业务管理后台",
+    "footerDescription": "样品、销售、采购、仓库、财务与审批统一协作",
+    "errorTitle": "登录未完成",
+    "field": {
+      "username": "用户名",
+      "password": "密码"
+    },
+    "action": {
+      "login": "登录"
+    },
+    "message": {
+      "loginFailed": "登录失败"
+    },
+    "error": {
+      "invalidCredentials": "用户名或密码错误",
+      "requestFailed": "登录失败，请稍后重试"
+    },
+    "validation": {
+      "credentialsRequired": "请填写用户名和密码",
+      "usernameRequired": "请填写用户名",
+      "passwordRequired": "请填写密码"
+    }
   },
   "dashboard": {
     "aria": "工作台",
@@ -111,18 +316,35 @@
     "minutesShort": "分",
     "hoursShort": "时",
     "daysShort": "天",
-    "secondsShort": "秒"
+    "secondsShort": "秒",
+    "todayPriority": "今日优先处理",
+    "priorityOverview": "待办时效概览",
+    "overdueCount_one": "逾期 {count}",
+    "overdueCount_other": "逾期 {count}",
+    "dueTodayCount_one": "今日到期 {count}",
+    "dueTodayCount_other": "今日到期 {count}",
+    "noUrgentTodos": "暂无紧急待办",
+    "sourcePrefix": "来源：",
+    "ownerPrefix": "负责人：",
+    "deadlinePrefix": "截止：",
+    "timeRange": "{start} 至 {end}",
+    "source": {
+      "qualityInspection": "QC 查验",
+      "warehouseInboundApproval": "入库审批",
+      "sampleDeliveryApproval": "寄样审批",
+      "salesQuotationApproval": "报价审批",
+      "salesContractApproval": "出口合同审批",
+      "purchaseContractApproval": "采购合同审批",
+      "salesShipmentApproval": "出货审批",
+      "warehouseOutboundApproval": "出库审批",
+      "financePaymentApproval": "付款审批",
+      "financeFeePaymentApproval": "付费审批",
+      "financeReimbursementApproval": "报销审批"
+    }
   },
   "status": {
     "active": "启用",
-    "inactive": "停用",
-    "completed": "已完成",
-    "pending": "待处理"
-  },
-  "severity": {
-    "high": "高",
-    "urgent": "紧急",
-    "warning": "警告"
+    "inactive": "停用"
   },
   "todo": {
     "approval": "审批",
@@ -691,6 +913,10 @@
       "mode": {
         "formal": "正式入库",
         "pendingInspection": "待检入库"
+      },
+      "warehouseOption": {
+        "factory": "工厂",
+        "company": "公司仓库"
       },
       "metric": {
         "overviewAria": "货物入库概览",
@@ -1383,7 +1609,8 @@
         "approveFailed": "采购合同审批失败",
         "templateGenerated": "已用合同模板生成 {filename}",
         "templateFailed": "采购合同模板生成失败",
-        "editing": "正在编辑采购合同 {code}"
+        "editing": "正在编辑采购合同 {code}",
+        "packageRemark": "包装: {info}"
       }
     },
     "invoiceNotice": {

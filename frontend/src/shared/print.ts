@@ -1,5 +1,11 @@
 import { printExportContract, printSampleRequest } from '../api'
+import { getRuntimeSettings } from '../app/pages/appHelpers'
+import { translate, type TranslationKey } from '../locales'
 import { showError } from './errors'
+
+function tr(key: TranslationKey) {
+  return translate(getRuntimeSettings().language, key)
+}
 
 /**
  * 打开出口合同打印视图：调用后端渲染含主联系人的 HTML，
@@ -10,7 +16,7 @@ export async function openExportContractPrint(contractId: string): Promise<void>
     const document_ = await printExportContract(contractId)
     const printWindow = window.open('', '_blank')
     if (!printWindow) {
-      showError(new Error('浏览器拦截了打印窗口'), '请允许弹出窗口后重试')
+      showError(new Error(tr('common.print.popupBlocked')), tr('common.print.allowPopups'))
       return
     }
     printWindow.document.open()
@@ -20,7 +26,7 @@ export async function openExportContractPrint(contractId: string): Promise<void>
     // 等待样式与内容渲染后触发打印。
     printWindow.setTimeout(() => printWindow.print(), 300)
   } catch (caught) {
-    showError(caught, '生成打印单据失败')
+    showError(caught, tr('common.print.exportContractFailed'))
   }
 }
 
@@ -29,7 +35,7 @@ export async function openSampleRequestPrint(requestId: string): Promise<void> {
     const document_ = await printSampleRequest(requestId)
     const printWindow = window.open('', '_blank')
     if (!printWindow) {
-      showError(new Error('浏览器拦截了打印窗口'), '请允许弹出窗口后重试')
+      showError(new Error(tr('common.print.popupBlocked')), tr('common.print.allowPopups'))
       return
     }
     printWindow.document.open()
@@ -38,7 +44,7 @@ export async function openSampleRequestPrint(requestId: string): Promise<void> {
     printWindow.focus()
     printWindow.setTimeout(() => printWindow.print(), 300)
   } catch (caught) {
-    showError(caught, '生成内部打样单失败')
+    showError(caught, tr('common.print.sampleRequestFailed'))
   }
 }
 

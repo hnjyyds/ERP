@@ -12,6 +12,8 @@ import {
 } from 'lucide-react'
 
 import { type MenuItem } from '../../../api'
+import { translate, type TranslationKey } from '../../../locales'
+import { getRuntimeSettings } from '../../pages/appHelpers'
 import {
   customerPath,
   dashboardPath,
@@ -53,26 +55,26 @@ import {
 
 const sidebarNavGroups: Array<{
   id: string
-  label: string
+  labelKey: TranslationKey
   icon: LucideIcon
   paths: string[]
-  children?: { path: string; label: string }[]
+  children?: { path: string; labelKey: TranslationKey }[]
 }> = [
   {
     id: 'masterdata',
-    label: '基础资料',
+    labelKey: 'nav.group.masterdata',
     icon: Package,
     paths: [productPath, supplierPath, customerPath, partnerPath, documentPartyPath],
   },
   {
     id: 'workflow',
-    label: '订单流程',
+    labelKey: 'nav.group.workflow',
     icon: ClipboardCheck,
     paths: [exportContractPath, purchaseContractPath, exportQuotationPath, shipmentPath],
   },
   {
     id: 'taskCenter',
-    label: 'QC / 跟单',
+    labelKey: 'nav.group.taskCenter',
     icon: ShieldCheck,
     paths: [
       qualityInspectionPath,
@@ -85,7 +87,7 @@ const sidebarNavGroups: Array<{
   },
   {
     id: 'warehouse',
-    label: '仓库',
+    labelKey: 'nav.group.warehouse',
     icon: Warehouse,
     paths: [
       warehouseInboundOrderPath,
@@ -96,31 +98,31 @@ const sidebarNavGroups: Array<{
   },
   {
     id: 'finance',
-    label: '财务经营',
+    labelKey: 'nav.group.finance',
     icon: BarChart3,
     paths: [financePath, reportingPath],
     children: [
-      { path: financeOverviewPath, label: '经营总览' },
-      { path: financeReceiptsPath, label: '收款管理' },
-      { path: financePaymentsPath, label: '付款管理' },
-      { path: financeFeesPath, label: '付费管理' },
-      { path: financeTaxPath, label: '核销退税' },
-      { path: financeMiscPath, label: '杂费管理' },
-      { path: financeSettlementPath, label: '结算核算' },
-      { path: financeReimbursementsPath, label: '报销管理' },
-      { path: financePortDataPath, label: '口岸数据' },
-      { path: financeReportsPath, label: '财务报表' },
+      { path: financeOverviewPath, labelKey: 'nav.item.financeOverview' },
+      { path: financeReceiptsPath, labelKey: 'nav.item.financeReceipts' },
+      { path: financePaymentsPath, labelKey: 'nav.item.financePayments' },
+      { path: financeFeesPath, labelKey: 'nav.item.financeFees' },
+      { path: financeTaxPath, labelKey: 'nav.item.financeTax' },
+      { path: financeMiscPath, labelKey: 'nav.item.financeMisc' },
+      { path: financeSettlementPath, labelKey: 'nav.item.financeSettlement' },
+      { path: financeReimbursementsPath, labelKey: 'nav.item.financeReimbursements' },
+      { path: financePortDataPath, labelKey: 'nav.item.financePortData' },
+      { path: financeReportsPath, labelKey: 'nav.item.financeReports' },
     ],
   },
   {
     id: 'system',
-    label: '系统设置',
+    labelKey: 'nav.group.system',
     icon: Settings,
     paths: [organizationUsersPath, mcpSettingsPath],
   },
   {
     id: 'legacyPurchase',
-    label: '暂缓模块',
+    labelKey: 'nav.group.legacyPurchase',
     icon: LockKeyhole,
     paths: [purchaseInquiryPath, purchaseInvoiceNoticePath],
   },
@@ -136,6 +138,7 @@ export type SidebarGroup = {
 }
 
 export function getSidebarMenuGroups(menus: MenuItem[]): SidebarGroup[] {
+  const language = getRuntimeSettings().language
   const menuByPath = new Map(menus.map((item) => [item.path, item]))
   const groupedPaths = new Set<string>()
   const groups = sidebarNavGroups
@@ -144,12 +147,12 @@ export function getSidebarMenuGroups(menus: MenuItem[]): SidebarGroup[] {
         .map((path) => menuByPath.get(path))
         .filter((item): item is MenuItem => Boolean(item))
         .map((menu) => {
-          const groupDef = sidebarNavGroups.find((g) => g.id === group.id)
-          if (groupDef?.children && menu.path === groupDef.paths[0]) {
+          if (group.children && menu.path === group.paths[0]) {
             return {
               ...menu,
-              children: groupDef.children.map((child) => ({
-                ...child,
+              children: group.children.map((child) => ({
+                path: child.path,
+                label: menuByPath.get(child.path)?.label ?? translate(language, child.labelKey),
                 active: false,
               })),
             }
@@ -157,7 +160,7 @@ export function getSidebarMenuGroups(menus: MenuItem[]): SidebarGroup[] {
           return menu
         })
       items.forEach((item) => groupedPaths.add(item.path))
-      return { ...group, items }
+      return { ...group, label: translate(language, group.labelKey), items }
     })
     .filter((group) => group.items.length > 0)
   const otherItems = menus.filter(
@@ -168,7 +171,7 @@ export function getSidebarMenuGroups(menus: MenuItem[]): SidebarGroup[] {
     ...groups,
     {
       id: 'other',
-      label: '其他',
+      label: translate(language, 'nav.group.other'),
       icon: LayoutDashboard,
       items: otherItems,
     },

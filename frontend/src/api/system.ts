@@ -1,5 +1,11 @@
+import { getRuntimeSettings } from '../app/pages/appHelpers'
+import { translate, type TranslationKey } from '../locales'
 import { apiBaseUrl, readApiError, request } from './core'
 import type { ApiResponse } from './core'
+
+function tr(key: TranslationKey) {
+  return translate(getRuntimeSettings().language, key)
+}
 
 export interface MenuItem {
   id: string
@@ -230,7 +236,7 @@ export interface I18nConfig {
 export async function login(username: string, password: string): Promise<AuthSession> {
   const nextUsername = username.trim()
   if (!nextUsername || !password) {
-    throw new Error('请填写用户名和密码')
+    throw new Error(tr('auth.validation.credentialsRequired'))
   }
 
   const response = await fetch(`${apiBaseUrl}/auth/login`, {
@@ -241,14 +247,14 @@ export async function login(username: string, password: string): Promise<AuthSes
 
   if (!response.ok) {
     const { message } = await readApiError(response)
-    if (response.status === 401) throw new Error(message || '用户名或密码错误')
-    if (response.status === 422) throw new Error('请填写用户名和密码')
-    throw new Error(message || '登录失败，请稍后重试')
+    if (response.status === 401) throw new Error(message || tr('auth.error.invalidCredentials'))
+    if (response.status === 422) throw new Error(tr('auth.validation.credentialsRequired'))
+    throw new Error(message || tr('auth.error.requestFailed'))
   }
 
   const body = (await response.json()) as ApiResponse<AuthSession>
   if (!body.success || body.error) {
-    throw new Error(body.error?.message ?? '用户名或密码错误')
+    throw new Error(body.error?.message ?? tr('auth.error.invalidCredentials'))
   }
   return body.data
 }

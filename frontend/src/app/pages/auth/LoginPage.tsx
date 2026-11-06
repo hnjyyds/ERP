@@ -4,6 +4,7 @@ import type { FormEvent } from 'react'
 import { useState } from 'react'
 
 import { login, setAuthToken, type AuthSession } from '../../../api'
+import { t } from '../../appI18n'
 
 export function LoginPage({
   error,
@@ -12,7 +13,7 @@ export function LoginPage({
   error: string
   onLogin: (session: AuthSession) => void
 }) {
-  const [username, setUsername] = useState('superadmin')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [formError, setFormError] = useState(error)
@@ -21,11 +22,11 @@ export function LoginPage({
   const missingPassword = password.length === 0
   const requiredMessage =
     missingUsername && missingPassword
-      ? '请填写用户名和密码'
+      ? t('auth.validation.credentialsRequired')
       : missingUsername
-        ? '请填写用户名'
+        ? t('auth.validation.usernameRequired')
         : missingPassword
-          ? '请填写密码'
+          ? t('auth.validation.passwordRequired')
           : ''
   const canSubmit = !requiredMessage && !submitting
 
@@ -42,7 +43,7 @@ export function LoginPage({
       setAuthToken(nextSession.access_token)
       onLogin(nextSession)
     } catch (caught) {
-      setFormError(caught instanceof Error ? caught.message : '登录失败')
+      setFormError(caught instanceof Error ? caught.message : t('auth.message.loginFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -50,14 +51,14 @@ export function LoginPage({
 
   return (
     <main className="login-shell">
-      <section className="login-stage" aria-label="新裴贸易业务管理系统登录">
+      <section className="login-stage" aria-label={t('auth.stageLabel')}>
         <div className="login-intro">
           <div className="login-editorial-brand" aria-label="D-DUTCH">
             D-DUTCH
           </div>
 
           <figure className="login-editorial-hero">
-            <img src="/brand/d-dutch-studio.jpg" alt="D-DUTCH 样品展示空间" />
+            <img src="/brand/d-dutch-studio.jpg" alt={t('auth.heroImageAlt')} />
             <figcaption>
               <span>YOUR SOURCING</span>
               <span>PRODUCTION</span>
@@ -68,16 +69,16 @@ export function LoginPage({
           <div className="login-editorial-footer">
             <span>BUSINESS ERP</span>
             <div>
-              <strong>外贸业务管理后台</strong>
-              <p>样品、销售、采购、仓库、财务与审批统一协作</p>
+              <strong>{t('auth.footerTitle')}</strong>
+              <p>{t('auth.footerDescription')}</p>
             </div>
           </div>
         </div>
 
         <section className="login-panel">
           <div className="login-panel-heading">
-            <p className="eyebrow">账号登录</p>
-            <h2>登录</h2>
+            <p className="eyebrow">{t('auth.subtitle')}</p>
+            <h2>{t('auth.title')}</h2>
           </div>
 
           {formError ? (
@@ -85,14 +86,14 @@ export function LoginPage({
               bordered
               className="login-error"
               description={formError}
-              title="登录未完成"
+              title={t('auth.errorTitle')}
               type="danger"
             />
           ) : null}
 
           <form className="login-form" onSubmit={submit}>
             <label htmlFor="login-username">
-              用户名
+              {t('auth.field.username')}
               <SemiInput
                 id="login-username"
                 autoComplete="username"
@@ -107,7 +108,7 @@ export function LoginPage({
               />
             </label>
             <label htmlFor="login-password">
-              密码
+              {t('auth.field.password')}
               <SemiInput
                 id="login-password"
                 autoComplete="current-password"
@@ -133,7 +134,7 @@ export function LoginPage({
               theme="solid"
               type="primary"
             >
-              登录
+              {t('auth.action.login')}
             </SemiButton>
           </form>
         </section>

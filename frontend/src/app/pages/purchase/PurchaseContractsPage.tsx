@@ -549,7 +549,10 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
       model: product.model ?? '',
       unit: product.unit,
       line_remark: product.package_info
-        ? mergePurchaseLineRemark(current.line_remark, `包装: ${product.package_info}`)
+        ? mergePurchaseLineRemark(
+            current.line_remark,
+            t('purchase.contract.message.packageRemark', { info: product.package_info }),
+          )
         : current.line_remark,
     }))
   }

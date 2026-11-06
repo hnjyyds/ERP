@@ -2,7 +2,7 @@ import { Tag } from 'antd'
 import { LockKeyhole as _LockKeyhole } from 'lucide-react'
 import type { ReactNode as _ReactNode } from 'react'
 import type { AppLanguage, AppTimeZone, CurrentUser, MenuItem } from '../../api'
-import { translate } from '../../locales'
+import { translate, type TranslationKey } from '../../locales'
 import { partnerTypeOptions } from '../../shared/formOptions'
 import {
   customerPath,
@@ -41,31 +41,33 @@ import {
 
 export const superAdminPermission = 'system:super_admin'
 
-export const workflowPageTitleByPath: Record<string, { 'zh-CN': string; 'en-US': string }> = {
-  [mcpSettingsPath]: { 'zh-CN': 'MCP 与 AI 数据接入', 'en-US': 'MCP and AI data access' },
-  [exportContractPath]: { 'zh-CN': '订单流程', 'en-US': 'Order workflow' },
-  [purchaseContractPath]: {
-    'zh-CN': '采购合同和工厂履约',
-    'en-US': 'Purchase contracts and factory fulfillment',
-  },
-  [qualityInspectionPath]: { 'zh-CN': 'QC 任务中心', 'en-US': 'QC task center' },
-  [myQualityTasksPath]: { 'zh-CN': '我的 QC 任务', 'en-US': 'My QC tasks' },
-  [followupPath]: { 'zh-CN': '跟单任务中心', 'en-US': 'Follow-up task center' },
-  [supplierPath]: { 'zh-CN': '工厂资料和验货地址', 'en-US': 'Factories and inspection addresses' },
-  [productPath]: {
-    'zh-CN': '产品资料、价格和质量要求',
-    'en-US': 'Products, prices, and quality requirements',
-  },
-  [customerPath]: { 'zh-CN': '客户资料和订单要求', 'en-US': 'Customers and order requirements' },
-  [warehouseInboundOrderPath]: {
-    'zh-CN': '入仓和库存确认',
-    'en-US': 'Inbound and inventory confirmation',
-  },
-  [financePath]: { 'zh-CN': '财务摘要和订单利润', 'en-US': 'Finance summary and order profit' },
-  [reportingPath]: {
-    'zh-CN': '老板看板和经营分析',
-    'en-US': 'Executive board and business analysis',
-  },
+const workflowPageTitleKeyByPath: Record<string, TranslationKey> = {
+  [mcpSettingsPath]: 'nav.page.mcpSettings',
+  [exportContractPath]: 'nav.page.exportContracts',
+  [purchaseContractPath]: 'nav.page.purchaseContracts',
+  [qualityInspectionPath]: 'nav.page.qualityInspections',
+  [myQualityTasksPath]: 'nav.page.myQualityTasks',
+  [followupPath]: 'nav.page.followup',
+  [supplierPath]: 'nav.page.suppliers',
+  [productPath]: 'nav.page.products',
+  [customerPath]: 'nav.page.customers',
+  [warehouseInboundOrderPath]: 'nav.page.warehouseInboundOrders',
+  [financePath]: 'nav.page.finance',
+  [reportingPath]: 'nav.page.reporting',
+}
+
+const financePageTitleKeys: Record<FinanceModule, TranslationKey> = {
+  home: 'nav.page.finance',
+  overview: 'nav.page.financeOverview',
+  receipts: 'nav.page.financeReceipts',
+  payments: 'nav.page.financePayments',
+  fees: 'nav.page.financeFees',
+  tax: 'nav.page.financeTax',
+  misc: 'nav.page.financeMisc',
+  settlement: 'nav.page.financeSettlement',
+  reimbursements: 'nav.page.financeReimbursements',
+  portData: 'nav.page.financePortData',
+  reports: 'nav.page.financeReports',
 }
 
 export function canCreateAnnouncement(user: CurrentUser) {
@@ -169,7 +171,7 @@ export function formatTime(value: string | null) {
 }
 
 export function formatMoney(value?: string | null, currency?: string | null): string {
-  if (!value) return '未设置'
+  if (!value) return translate(getRuntimeSettings().language, 'common.notSet')
   const numeric = Number(value)
   const amount = Number.isFinite(numeric)
     ? numeric.toLocaleString('en-US', {
@@ -245,7 +247,8 @@ export function workflowPageTitle(
   fallback: string,
   settings: AppSettings = runtimeSettings,
 ): string {
-  return workflowPageTitleByPath[path]?.[settings.language] ?? fallback
+  const key = workflowPageTitleKeyByPath[path]
+  return key ? translate(settings.language, key) : fallback
 }
 
 export function pageTitle(
@@ -255,60 +258,45 @@ export function pageTitle(
 ): string {
   if (isFinancePath(path)) {
     const { module } = parseFinanceView(path)
-    if (module !== 'home') {
-      const titles: Record<FinanceModule, string> = {
-        home: '财务管理',
-        overview: '经营总览',
-        receipts: '收款管理',
-        payments: '付款管理',
-        fees: '付费管理',
-        tax: '核销退税',
-        misc: '杂费管理',
-        settlement: '结算核算',
-        reimbursements: '报销管理',
-        portData: '口岸数据',
-        reports: '财务报表',
-      }
-      return titles[module]
-    }
-    return workflowPageTitleByPath[financePath]?.[settings.language] ?? '财务管理'
+    return translate(settings.language, financePageTitleKeys[module])
   }
   if (path === reportingPath) {
-    return workflowPageTitleByPath[reportingPath]?.[settings.language] ?? '老板看板'
+    return translate(settings.language, 'nav.page.reporting')
   }
   const rootPath = detailRootPath(path)
-  if (workflowPageTitleByPath[rootPath]) {
-    return workflowPageTitleByPath[rootPath][settings.language]
+  const rootKey = workflowPageTitleKeyByPath[rootPath]
+  if (rootKey) {
+    return translate(settings.language, rootKey)
   }
-  return menu?.label ?? '业务模块'
+  return menu?.label ?? translate(settings.language, 'nav.page.businessModule')
 }
 
 export function statusTag(value: string) {
   const color =
     value === 'done' || value === 'completed' ? 'green' : value === 'overdue' ? 'red' : 'gold'
-  const label =
-    value === 'completed' || value === 'done'
-      ? '已完成'
-      : value === 'pending'
-        ? '待处理'
-        : value === 'in_progress'
-          ? '处理中'
-          : value === 'overdue'
-            ? '已逾期'
-            : value
+  const labelKeys: Record<string, TranslationKey> = {
+    completed: 'common.workflowStatus.completed',
+    done: 'common.workflowStatus.completed',
+    pending: 'common.workflowStatus.pending',
+    in_progress: 'common.workflowStatus.inProgress',
+    overdue: 'common.workflowStatus.overdue',
+  }
+  const key = labelKeys[value]
+  const label = key ? translate(getRuntimeSettings().language, key) : value
   return <Tag color={color}>{label}</Tag>
 }
 
 export function severityTag(value: string) {
   const color =
     value === 'high' || value === 'urgent' ? 'red' : value === 'warning' ? 'gold' : 'blue'
-  const labels: Record<string, string> = {
-    high: '高优先级',
-    urgent: '紧急',
-    warning: '提醒',
-    info: '通知',
+  const labelKeys: Record<string, TranslationKey> = {
+    high: 'common.severity.high',
+    urgent: 'common.severity.urgent',
+    warning: 'common.severity.warning',
+    info: 'common.severity.info',
   }
-  return <Tag color={color}>{labels[value] ?? value}</Tag>
+  const key = labelKeys[value]
+  return <Tag color={color}>{key ? translate(getRuntimeSettings().language, key) : value}</Tag>
 }
 
 // ── Navigation types ─────────────────────────────────────────────────

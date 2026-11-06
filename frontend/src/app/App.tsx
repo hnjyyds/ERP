@@ -18,7 +18,7 @@ import {
 import { canAccessPath, dashboardPath, loginPath } from './routes'
 import { showError, showSuccess } from '../shared/errors'
 import type { UserAvatarPickerValue } from '../shared/ui'
-import { fallbackI18nConfig, normalizeSettings } from './appI18n'
+import { fallbackI18nConfig, normalizeSettings, t } from './appI18n'
 import { setRuntimeSettings, type AppSettings } from './pages/appHelpers'
 import { AppShell } from './components/shell/AppShell'
 import { getSidebarMenuGroups } from './components/sidebar/sidebarNavigation'
@@ -142,7 +142,7 @@ export default function App() {
         }
         setSession(s)
       } catch (e) {
-        if (!cancelled) redirectToLogin(e instanceof Error ? e.message : '登录状态已失效')
+        if (!cancelled) redirectToLogin(e instanceof Error ? e.message : t('app.message.sessionExpired'))
       } finally {
         if (!cancelled) setBooting(false)
       }
@@ -157,7 +157,7 @@ export default function App() {
   // ── auth expired listener ────────────────────────────────────────────────
 
   useEffect(() => {
-    const handler = () => redirectToLogin('登录状态已失效')
+    const handler = () => redirectToLogin(t('app.message.sessionExpired'))
     window.addEventListener(authExpiredEventName, handler)
     return () => window.removeEventListener(authExpiredEventName, handler)
   }, [])
@@ -186,7 +186,7 @@ export default function App() {
     try {
       setDashboard(await getDashboard())
     } catch (e) {
-      showError(e, '加载失败')
+      showError(e, t('app.message.loadFailed'))
     } finally {
       setLoadingDashboard(false)
     }
@@ -205,9 +205,9 @@ export default function App() {
         avatar_type: res.user.avatar_type,
         avatar_value: res.user.avatar_value,
       })
-      showSuccess('头像已保存')
+      showSuccess(t('app.message.avatarSaved'))
     } catch (e) {
-      showError(e, '头像保存失败')
+      showError(e, t('app.message.avatarSaveFailed'))
     } finally {
       setSavingSettingsAvatar(false)
     }

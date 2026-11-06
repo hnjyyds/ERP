@@ -43,8 +43,8 @@ export function SettingsModal(props: Props) {
 
         {settingsAvatarDraft ? (
           <div className="settings-avatar-editor">
-            <UserAvatarPicker description="保存后会同步到当前账号和待办指派列表。" label={session.user.display_name} value={settingsAvatarDraft} onChange={onChangeAvatarDraft} />
-            <button className="secondary-inline" disabled={savingSettingsAvatar} type="button" onClick={onSaveAvatar}>保存头像</button>
+            <UserAvatarPicker description={t('settings.avatarDescription')} label={session.user.display_name} value={settingsAvatarDraft} onChange={onChangeAvatarDraft} />
+            <button className="secondary-inline" disabled={savingSettingsAvatar} type="button" onClick={onSaveAvatar}>{t('settings.saveAvatar')}</button>
           </div>
         ) : null}
 

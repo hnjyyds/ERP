@@ -36,8 +36,16 @@ type InboundOrderFormState = {
 }
 
 const inboundWarehouseOptions = [
-  { value: 'wh-factory', label: '工厂' },
-  { value: 'wh-company', label: '公司仓库' },
+  {
+    value: 'wh-factory',
+    label: '工厂',
+    labelKey: 'warehouse.inboundOrder.warehouseOption.factory',
+  },
+  {
+    value: 'wh-company',
+    label: '公司仓库',
+    labelKey: 'warehouse.inboundOrder.warehouseOption.company',
+  },
 ] as const
 
 function inboundWarehouseOption(warehouseId?: string | null, warehouseName?: string | null) {
@@ -785,7 +793,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
                 >
                   {inboundWarehouseOptions.map((item) => (
                     <option key={item.value} value={item.value}>
-                      {item.label}
+                      {t(item.labelKey)}
                     </option>
                   ))}
                 </FormSelect>

@@ -293,31 +293,31 @@ export const followupSourceTypeOptions: LocalizedOption[] = [
   { value: 'inventory_outbound', labelKey: 'purchase.followup.sourceType.inventoryOutbound' },
 ]
 
-export const qualityResultOptions = [
-  { value: 'passed', label: '通过' },
-  { value: 'failed', label: '不通过' },
-  { value: 'partial_passed', label: '部分通过' },
-  { value: 'recheck_required', label: '待复检' },
+export const qualityResultOptions: LocalizedOption[] = [
+  { value: 'passed', labelKey: 'quality.inspection.result.passed' },
+  { value: 'failed', labelKey: 'quality.inspection.result.failed' },
+  { value: 'partial_passed', labelKey: 'quality.inspection.result.partialPassed' },
+  { value: 'recheck_required', labelKey: 'quality.inspection.result.recheckRequired' },
 ]
 
-export const qualityTaskStatusOptions = [
-  { value: 'pending', label: '待查验' },
-  { value: 'in_progress', label: '查验中' },
-  { value: 'completed', label: '已完成' },
-  { value: 'cancelled', label: '已取消' },
+export const qualityTaskStatusOptions: LocalizedOption[] = [
+  { value: 'pending', labelKey: 'quality.inspection.status.pending' },
+  { value: 'in_progress', labelKey: 'quality.inspection.status.inProgress' },
+  { value: 'completed', labelKey: 'quality.inspection.status.completed' },
+  { value: 'cancelled', labelKey: 'quality.inspection.status.cancelled' },
 ]
 
-export const qualityIssueSeverityOptions = [
-  { value: 'minor', label: '轻微' },
-  { value: 'major', label: '主要' },
-  { value: 'critical', label: '严重' },
+export const qualityIssueSeverityOptions: LocalizedOption[] = [
+  { value: 'minor', labelKey: 'quality.inspection.severity.minor' },
+  { value: 'major', labelKey: 'quality.inspection.severity.major' },
+  { value: 'critical', labelKey: 'quality.inspection.severity.critical' },
 ]
 
-export const qualityIssueStatusOptions = [
-  { value: 'open', label: '待处理' },
-  { value: 'processing', label: '处理中' },
-  { value: 'resolved', label: '已关闭' },
-  { value: 'closed', label: '已关闭' },
+export const qualityIssueStatusOptions: LocalizedOption[] = [
+  { value: 'open', labelKey: 'quality.inspection.issueStatus.open' },
+  { value: 'processing', labelKey: 'quality.inspection.issueStatus.processing' },
+  { value: 'resolved', labelKey: 'quality.inspection.issueStatus.resolved' },
+  { value: 'closed', labelKey: 'quality.inspection.issueStatus.resolved' },
 ]
 
 export const inboundPlanStatusOptions: LocalizedOption[] = [

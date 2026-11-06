@@ -66,13 +66,13 @@ const menuIcons: Record<string, LucideIcon> = {
 function getLockedState(groupId: string) {
   if (groupId === 'legacyPurchase') {
     return {
-      label: '暂缓',
-      description: '该功能已列入暂缓模块，当前暂不开放',
+      label: t('nav.locked.deferredLabel'),
+      description: t('nav.locked.deferredDescription'),
     }
   }
   return {
-    label: '非主流程',
-    description: '该功能当前不纳入主业务流程',
+    label: t('nav.locked.nonPrimaryLabel'),
+    description: t('nav.locked.nonPrimaryDescription'),
   }
 }
 
@@ -107,17 +107,17 @@ export function AppSidebar({ activePath, dashboardMenu, sidebarMenuGroups, onNav
         <button
           aria-controls="app-primary-navigation"
           aria-expanded={mobileOpen}
-          aria-label="业务导航"
+          aria-label={t('nav.aria.businessNavigation')}
           className="mobile-nav-toggle"
           type="button"
           onClick={() => setMobileOpen((open) => !open)}
         >
           {mobileOpen ? <X aria-hidden="true" size={18} /> : <Menu aria-hidden="true" size={18} />}
-          <span>{mobileOpen ? '收起' : '导航'}</span>
+          <span>{mobileOpen ? t('nav.aria.collapse') : t('nav.aria.navigation')}</span>
         </button>
       </div>
 
-      <nav id="app-primary-navigation" className="react-nav" aria-label="主导航">
+      <nav id="app-primary-navigation" className="react-nav" aria-label={t('nav.aria.mainNavigation')}>
         {dashboardMenu ? (
           <a
             aria-current={isDashboardActive ? 'page' : undefined}

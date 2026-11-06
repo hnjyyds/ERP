@@ -81,7 +81,7 @@ describe('AppSidebar', () => {
       />,
     )
 
-    const toggle = screen.getByRole('button', { name: '业务导航' })
+    const toggle = screen.getByRole('button', { name: 'nav.aria.businessNavigation' })
     expect(toggle).toHaveAttribute('aria-expanded', 'false')
 
     await user.click(toggle)
@@ -101,7 +101,7 @@ describe('AppSidebar', () => {
       />,
     )
 
-    const toggle = screen.getByRole('button', { name: '业务导航' })
+    const toggle = screen.getByRole('button', { name: 'nav.aria.businessNavigation' })
     await user.click(toggle)
     await user.click(screen.getByRole('link', { name: '工作台' }))
 
@@ -121,13 +121,17 @@ describe('AppSidebar', () => {
       />,
     )
 
-    const outOfFlowItem = screen.getByRole('link', { name: '样品申请，该功能当前不纳入主业务流程' })
-    const deferredItem = screen.getByRole('link', { name: '采购询价，该功能已列入暂缓模块，当前暂不开放' })
+    const outOfFlowItem = screen.getByRole('link', {
+      name: '样品申请，nav.locked.nonPrimaryDescription',
+    })
+    const deferredItem = screen.getByRole('link', {
+      name: '采购询价，nav.locked.deferredDescription',
+    })
 
     expect(outOfFlowItem).toHaveAttribute('aria-disabled', 'true')
-    expect(outOfFlowItem).toHaveAttribute('title', '该功能当前不纳入主业务流程')
-    expect(outOfFlowItem).toHaveTextContent('非主流程')
-    expect(deferredItem).toHaveTextContent('暂缓')
+    expect(outOfFlowItem).toHaveAttribute('title', 'nav.locked.nonPrimaryDescription')
+    expect(outOfFlowItem).toHaveTextContent('nav.locked.nonPrimaryLabel')
+    expect(deferredItem).toHaveTextContent('nav.locked.deferredLabel')
 
     await user.click(outOfFlowItem)
     expect(onNavigate).not.toHaveBeenCalled()

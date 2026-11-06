@@ -1,4 +1,65 @@
 {
+  "nav": {
+    "group": {
+      "masterdata": "Master Data",
+      "workflow": "Order Workflow",
+      "taskCenter": "QC / Follow-up",
+      "warehouse": "Warehouse",
+      "finance": "Finance",
+      "system": "System Settings",
+      "legacyPurchase": "Deferred Modules",
+      "other": "Other"
+    },
+    "item": {
+      "financeOverview": "Business Overview",
+      "financeReceipts": "Receipts",
+      "financePayments": "Payments",
+      "financeFees": "Fee Payments",
+      "financeTax": "Tax Verification & Refund",
+      "financeMisc": "Misc. Fees",
+      "financeSettlement": "Settlement & Costing",
+      "financeReimbursements": "Reimbursements",
+      "financePortData": "Port Data",
+      "financeReports": "Financial Reports"
+    },
+    "page": {
+      "businessModule": "Business module",
+      "finance": "Finance summary and order profit",
+      "financeOverview": "Business Overview",
+      "financeReceipts": "Receipts",
+      "financePayments": "Payments",
+      "financeFees": "Fee Payments",
+      "financeTax": "Tax Verification & Refund",
+      "financeMisc": "Misc. Fees",
+      "financeSettlement": "Settlement & Costing",
+      "financeReimbursements": "Reimbursements",
+      "financePortData": "Port Data",
+      "financeReports": "Financial Reports",
+      "reporting": "Executive board and business analysis",
+      "exportContracts": "Order workflow",
+      "purchaseContracts": "Purchase contracts and factory fulfillment",
+      "qualityInspections": "QC task center",
+      "myQualityTasks": "My QC tasks",
+      "followup": "Follow-up task center",
+      "suppliers": "Factories and inspection addresses",
+      "products": "Products, prices, and quality requirements",
+      "customers": "Customers and order requirements",
+      "warehouseInboundOrders": "Inbound and inventory confirmation",
+      "mcpSettings": "MCP and AI data access"
+    },
+    "locked": {
+      "deferredLabel": "Deferred",
+      "deferredDescription": "This module has been deferred and is not available yet",
+      "nonPrimaryLabel": "Non-primary",
+      "nonPrimaryDescription": "This module is not part of the primary workflow"
+    },
+    "aria": {
+      "businessNavigation": "Business navigation",
+      "collapse": "Collapse",
+      "navigation": "Navigation",
+      "mainNavigation": "Main navigation"
+    }
+  },
   "settings": {
     "open": "Settings",
     "title": "Settings",
@@ -6,6 +67,8 @@
     "language": "Language",
     "timeZone": "Time zone",
     "timeZoneHint": "Used for reminders and display",
+    "avatarDescription": "Saved changes sync to this account and the task assignee list.",
+    "saveAvatar": "Save avatar",
     "logout": "Logout"
   },
   "common": {
@@ -17,7 +80,111 @@
     "refresh": "Refresh",
     "viewAll": "View all",
     "notSet": "Not set",
-    "none": "None"
+    "none": "None",
+    "approvalAssignee": {
+      "defaultLabel": "Approver",
+      "selectPlaceholder": "Select {label}",
+      "loadFailed": "Failed to load approvers"
+    },
+    "print": {
+      "popupBlocked": "The browser blocked the print window",
+      "allowPopups": "Allow pop-ups and try again",
+      "exportContractFailed": "Failed to generate the print document",
+      "sampleRequestFailed": "Failed to generate the internal sample sheet"
+    },
+    "error": {
+      "validation": "Some information is incomplete or invalid. Check it and try again.",
+      "badRequest": "The request is invalid. Check your input and try again.",
+      "conflict": "This record already exists or its status conflicts. Refresh and try again.",
+      "permissionDenied": "You do not have permission for this action.",
+      "notFound": "Record not found. It may have been deleted.",
+      "tokenExpired": "Your session has expired. Sign in again.",
+      "unauthorized": "Sign in to continue.",
+      "tooManyRequests": "Too many requests. Try again later.",
+      "server": "The system is busy. Try again later.",
+      "serviceUnavailable": "The service is temporarily unavailable. Try again later.",
+      "gatewayTimeout": "The request timed out. Try again later.",
+      "network": "Network connection error. Check your connection and try again.",
+      "actionFailed": "The action did not complete. Try again later."
+    },
+    "workflowStatus": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "inProgress": "In Progress",
+      "overdue": "Overdue"
+    },
+    "severity": {
+      "high": "High Priority",
+      "urgent": "Urgent",
+      "warning": "Warning",
+      "info": "Notice"
+    },
+    "avatar": {
+      "ariaLabel": "{name}'s avatar",
+      "preset": {
+        "personTech01": "Short Hair & Glasses",
+        "personTech02": "Round-Frame Advisor",
+        "personTech03": "Side-Part Engineer",
+        "personTech04": "Product Manager",
+        "personTech05": "Bearded Developer",
+        "personTech06": "Baseball Cap",
+        "personTech07": "Shirt Specialist",
+        "personTech08": "Headset Support",
+        "personTech09": "Systems Consultant",
+        "personTech10": "Tech Lead",
+        "personTech11": "Operations Support",
+        "personTech12": "Review Specialist",
+        "personTech13": "Support Advisor",
+        "personTech14": "QC Engineer",
+        "personBusiness01": "Business Specialist",
+        "personBusiness02": "Purchasing Specialist",
+        "personBusiness03": "Documentation Specialist",
+        "personBusiness04": "Order Follow-up",
+        "personBusiness05": "Finance Reviewer",
+        "personBusiness06": "Warehouse Supervisor",
+        "personBusiness07": "Manager",
+        "personBusiness08": "Administrator",
+        "emojiSmile": "Smile",
+        "emojiWave": "Wave",
+        "emojiFocus": "Focus",
+        "emojiStar": "Star",
+        "emojiCheck": "Check",
+        "emojiCoffee": "Coffee",
+        "emojiRocket": "Rocket",
+        "emojiSun": "Sunny"
+      },
+      "group": {
+        "tech": "Tech",
+        "business": "Business",
+        "emoji": "Emoji"
+      },
+      "picker": {
+        "person": "People",
+        "emoji": "Emoji",
+        "upload": "Custom upload",
+        "userPlaceholder": "User",
+        "avatar": "Avatar",
+        "userAvatar": "User avatar",
+        "avatarType": "Avatar type",
+        "selectImage": "Choose image",
+        "selectAvatarImage": "Choose avatar image",
+        "selectPreset": "Select {preset}",
+        "description": "Saved changes sync to the user profile, user list, and assignable people.",
+        "imageHint": "PNG and JPG supported. Image must be under 900KB.",
+        "chooseImageFile": "Please choose an image file",
+        "imageTooLarge": "Avatar image must be under 900KB",
+        "readFailed": "Failed to read the avatar image"
+      }
+    },
+    "columnView": {
+      "reset": "Reset to default",
+      "settings": "Set column view"
+    },
+    "remoteSelect": {
+      "placeholder": "Type keywords to search",
+      "searching": "Searching...",
+      "noResults": "No matching results"
+    }
   },
   "access": {
     "deniedTitle": "No access",
@@ -29,7 +196,45 @@
   },
   "app": {
     "brandName": "Xinpei Trade",
-    "productName": "Business Management"
+    "productName": "Business Management",
+    "message": {
+      "sessionExpired": "Your session has expired",
+      "loadFailed": "Failed to load",
+      "avatarSaved": "Avatar saved",
+      "avatarSaveFailed": "Failed to save avatar"
+    },
+    "errorBoundary": {
+      "renderFailed": "Page render failed",
+      "loadFailed": "Failed to load page: {message}"
+    }
+  },
+  "auth": {
+    "title": "Sign in",
+    "subtitle": "Account sign-in",
+    "stageLabel": "Xinpei Trade Business Management System sign-in",
+    "heroImageAlt": "D-DUTCH sample showroom",
+    "footerTitle": "Foreign Trade Management Console",
+    "footerDescription": "Unified collaboration for samples, sales, purchasing, warehousing, finance, and approvals",
+    "errorTitle": "Sign-in incomplete",
+    "field": {
+      "username": "Username",
+      "password": "Password"
+    },
+    "action": {
+      "login": "Sign in"
+    },
+    "message": {
+      "loginFailed": "Sign-in failed"
+    },
+    "error": {
+      "invalidCredentials": "Incorrect username or password",
+      "requestFailed": "Sign-in failed. Try again later."
+    },
+    "validation": {
+      "credentialsRequired": "Enter your username and password",
+      "usernameRequired": "Enter your username",
+      "passwordRequired": "Enter your password"
+    }
   },
   "dashboard": {
     "aria": "Dashboard",
@@ -111,18 +316,35 @@
     "minutesShort": "m",
     "hoursShort": "h",
     "daysShort": "d",
-    "secondsShort": "s"
+    "secondsShort": "s",
+    "todayPriority": "Today's priorities",
+    "priorityOverview": "Task deadline overview",
+    "overdueCount_one": "1 overdue",
+    "overdueCount_other": "{count} overdue",
+    "dueTodayCount_one": "1 due today",
+    "dueTodayCount_other": "{count} due today",
+    "noUrgentTodos": "No urgent tasks",
+    "sourcePrefix": "Source: ",
+    "ownerPrefix": "Owner: ",
+    "deadlinePrefix": "Deadline: ",
+    "timeRange": "{start} to {end}",
+    "source": {
+      "qualityInspection": "QC Inspection",
+      "warehouseInboundApproval": "Inbound approval",
+      "sampleDeliveryApproval": "Sample delivery approval",
+      "salesQuotationApproval": "Quotation approval",
+      "salesContractApproval": "Export contract approval",
+      "purchaseContractApproval": "Purchase contract approval",
+      "salesShipmentApproval": "Shipment approval",
+      "warehouseOutboundApproval": "Outbound approval",
+      "financePaymentApproval": "Payment approval",
+      "financeFeePaymentApproval": "Fee payment approval",
+      "financeReimbursementApproval": "Reimbursement approval"
+    }
   },
   "status": {
     "active": "Active",
-    "inactive": "Inactive",
-    "completed": "Completed",
-    "pending": "Pending"
-  },
-  "severity": {
-    "high": "High",
-    "urgent": "Urgent",
-    "warning": "Warning"
+    "inactive": "Inactive"
   },
   "todo": {
     "approval": "Approval",
@@ -691,6 +913,10 @@
       "mode": {
         "formal": "Formal inbound",
         "pendingInspection": "Pending inspection"
+      },
+      "warehouseOption": {
+        "factory": "Factory",
+        "company": "Company warehouse"
       },
       "metric": {
         "overviewAria": "Inbound order overview",
@@ -1383,7 +1609,8 @@
         "approveFailed": "Failed to approve purchase contract",
         "templateGenerated": "Generated {filename} from contract template",
         "templateFailed": "Failed to generate purchase contract template",
-        "editing": "Editing purchase contract {code}"
+        "editing": "Editing purchase contract {code}",
+        "packageRemark": "Packing: {info}"
       }
     },
     "invoiceNotice": {

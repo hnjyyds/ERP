@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 
 import type { UserAvatarType } from '../../api'
+import { t, type TranslationKey } from '../../app/appI18n'
 
 type PersonAvatarPresetId =
   | 'person-tech-01'
@@ -42,9 +43,9 @@ export type AvatarPresetCategory = 'person' | 'emoji'
 
 export type AvatarPreset = {
   id: AvatarPresetId
-  label: string
+  labelKey: TranslationKey
   category: AvatarPresetCategory
-  group: string
+  groupKey: TranslationKey
   variant?: number
   emoji?: string
 }
@@ -52,36 +53,36 @@ export type AvatarPreset = {
 export const defaultAvatarPreset: PersonAvatarPresetId = 'person-tech-01'
 
 export const avatarPresets: AvatarPreset[] = [
-  { id: 'person-tech-01', label: '短发眼镜', category: 'person', group: '科技类', variant: 1 },
-  { id: 'person-tech-02', label: '圆框顾问', category: 'person', group: '科技类', variant: 2 },
-  { id: 'person-tech-03', label: '侧分工程师', category: 'person', group: '科技类', variant: 3 },
-  { id: 'person-tech-04', label: '产品经理', category: 'person', group: '科技类', variant: 4 },
-  { id: 'person-tech-05', label: '络腮开发', category: 'person', group: '科技类', variant: 5 },
-  { id: 'person-tech-06', label: '棒球帽', category: 'person', group: '科技类', variant: 6 },
-  { id: 'person-tech-07', label: '衬衫专员', category: 'person', group: '科技类', variant: 7 },
-  { id: 'person-tech-08', label: '耳机支持', category: 'person', group: '科技类', variant: 8 },
-  { id: 'person-tech-09', label: '系统顾问', category: 'person', group: '科技类', variant: 9 },
-  { id: 'person-tech-10', label: '技术主管', category: 'person', group: '科技类', variant: 10 },
-  { id: 'person-tech-11', label: '运营支持', category: 'person', group: '科技类', variant: 11 },
-  { id: 'person-tech-12', label: '审核专员', category: 'person', group: '科技类', variant: 12 },
-  { id: 'person-tech-13', label: '客服顾问', category: 'person', group: '科技类', variant: 13 },
-  { id: 'person-tech-14', label: '质检工程师', category: 'person', group: '科技类', variant: 14 },
-  { id: 'person-business-01', label: '业务专员', category: 'person', group: '商务类', variant: 15 },
-  { id: 'person-business-02', label: '采购专员', category: 'person', group: '商务类', variant: 16 },
-  { id: 'person-business-03', label: '单证专员', category: 'person', group: '商务类', variant: 17 },
-  { id: 'person-business-04', label: '跟单客服', category: 'person', group: '商务类', variant: 18 },
-  { id: 'person-business-05', label: '财务审核', category: 'person', group: '商务类', variant: 19 },
-  { id: 'person-business-06', label: '仓库主管', category: 'person', group: '商务类', variant: 20 },
-  { id: 'person-business-07', label: '经理角色', category: 'person', group: '商务类', variant: 21 },
-  { id: 'person-business-08', label: '管理员', category: 'person', group: '商务类', variant: 22 },
-  { id: 'emoji-smile', label: '微笑', category: 'emoji', group: '表情', emoji: '🙂' },
-  { id: 'emoji-wave', label: '招手', category: 'emoji', group: '表情', emoji: '👋' },
-  { id: 'emoji-focus', label: '专注', category: 'emoji', group: '表情', emoji: '🧐' },
-  { id: 'emoji-star', label: '星标', category: 'emoji', group: '表情', emoji: '⭐' },
-  { id: 'emoji-check', label: '确认', category: 'emoji', group: '表情', emoji: '✅' },
-  { id: 'emoji-coffee', label: '咖啡', category: 'emoji', group: '表情', emoji: '☕' },
-  { id: 'emoji-rocket', label: '推进', category: 'emoji', group: '表情', emoji: '🚀' },
-  { id: 'emoji-sun', label: '晴朗', category: 'emoji', group: '表情', emoji: '☀️' },
+  { id: 'person-tech-01', labelKey: 'common.avatar.preset.personTech01', category: 'person', groupKey: 'common.avatar.group.tech', variant: 1 },
+  { id: 'person-tech-02', labelKey: 'common.avatar.preset.personTech02', category: 'person', groupKey: 'common.avatar.group.tech', variant: 2 },
+  { id: 'person-tech-03', labelKey: 'common.avatar.preset.personTech03', category: 'person', groupKey: 'common.avatar.group.tech', variant: 3 },
+  { id: 'person-tech-04', labelKey: 'common.avatar.preset.personTech04', category: 'person', groupKey: 'common.avatar.group.tech', variant: 4 },
+  { id: 'person-tech-05', labelKey: 'common.avatar.preset.personTech05', category: 'person', groupKey: 'common.avatar.group.tech', variant: 5 },
+  { id: 'person-tech-06', labelKey: 'common.avatar.preset.personTech06', category: 'person', groupKey: 'common.avatar.group.tech', variant: 6 },
+  { id: 'person-tech-07', labelKey: 'common.avatar.preset.personTech07', category: 'person', groupKey: 'common.avatar.group.tech', variant: 7 },
+  { id: 'person-tech-08', labelKey: 'common.avatar.preset.personTech08', category: 'person', groupKey: 'common.avatar.group.tech', variant: 8 },
+  { id: 'person-tech-09', labelKey: 'common.avatar.preset.personTech09', category: 'person', groupKey: 'common.avatar.group.tech', variant: 9 },
+  { id: 'person-tech-10', labelKey: 'common.avatar.preset.personTech10', category: 'person', groupKey: 'common.avatar.group.tech', variant: 10 },
+  { id: 'person-tech-11', labelKey: 'common.avatar.preset.personTech11', category: 'person', groupKey: 'common.avatar.group.tech', variant: 11 },
+  { id: 'person-tech-12', labelKey: 'common.avatar.preset.personTech12', category: 'person', groupKey: 'common.avatar.group.tech', variant: 12 },
+  { id: 'person-tech-13', labelKey: 'common.avatar.preset.personTech13', category: 'person', groupKey: 'common.avatar.group.tech', variant: 13 },
+  { id: 'person-tech-14', labelKey: 'common.avatar.preset.personTech14', category: 'person', groupKey: 'common.avatar.group.tech', variant: 14 },
+  { id: 'person-business-01', labelKey: 'common.avatar.preset.personBusiness01', category: 'person', groupKey: 'common.avatar.group.business', variant: 15 },
+  { id: 'person-business-02', labelKey: 'common.avatar.preset.personBusiness02', category: 'person', groupKey: 'common.avatar.group.business', variant: 16 },
+  { id: 'person-business-03', labelKey: 'common.avatar.preset.personBusiness03', category: 'person', groupKey: 'common.avatar.group.business', variant: 17 },
+  { id: 'person-business-04', labelKey: 'common.avatar.preset.personBusiness04', category: 'person', groupKey: 'common.avatar.group.business', variant: 18 },
+  { id: 'person-business-05', labelKey: 'common.avatar.preset.personBusiness05', category: 'person', groupKey: 'common.avatar.group.business', variant: 19 },
+  { id: 'person-business-06', labelKey: 'common.avatar.preset.personBusiness06', category: 'person', groupKey: 'common.avatar.group.business', variant: 20 },
+  { id: 'person-business-07', labelKey: 'common.avatar.preset.personBusiness07', category: 'person', groupKey: 'common.avatar.group.business', variant: 21 },
+  { id: 'person-business-08', labelKey: 'common.avatar.preset.personBusiness08', category: 'person', groupKey: 'common.avatar.group.business', variant: 22 },
+  { id: 'emoji-smile', labelKey: 'common.avatar.preset.emojiSmile', category: 'emoji', groupKey: 'common.avatar.group.emoji', emoji: '🙂' },
+  { id: 'emoji-wave', labelKey: 'common.avatar.preset.emojiWave', category: 'emoji', groupKey: 'common.avatar.group.emoji', emoji: '👋' },
+  { id: 'emoji-focus', labelKey: 'common.avatar.preset.emojiFocus', category: 'emoji', groupKey: 'common.avatar.group.emoji', emoji: '🧐' },
+  { id: 'emoji-star', labelKey: 'common.avatar.preset.emojiStar', category: 'emoji', groupKey: 'common.avatar.group.emoji', emoji: '⭐' },
+  { id: 'emoji-check', labelKey: 'common.avatar.preset.emojiCheck', category: 'emoji', groupKey: 'common.avatar.group.emoji', emoji: '✅' },
+  { id: 'emoji-coffee', labelKey: 'common.avatar.preset.emojiCoffee', category: 'emoji', groupKey: 'common.avatar.group.emoji', emoji: '☕' },
+  { id: 'emoji-rocket', labelKey: 'common.avatar.preset.emojiRocket', category: 'emoji', groupKey: 'common.avatar.group.emoji', emoji: '🚀' },
+  { id: 'emoji-sun', labelKey: 'common.avatar.preset.emojiSun', category: 'emoji', groupKey: 'common.avatar.group.emoji', emoji: '☀️' },
 ]
 
 type UserAvatarProps = {
@@ -220,7 +221,13 @@ export function UserAvatar({
     .join(' ')
 
   return (
-    <span aria-label={`${label || '用户'} 的头像`} className={classes} role="img">
+    <span
+      aria-label={t('common.avatar.ariaLabel', {
+        name: label || t('common.avatar.picker.userPlaceholder'),
+      })}
+      className={classes}
+      role="img"
+    >
       {shouldUseImage ? <img alt="" src={avatarValue} /> : avatarInner(preset)}
     </span>
   )

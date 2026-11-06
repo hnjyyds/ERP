@@ -254,11 +254,11 @@ describe('DashboardPage', () => {
 
     render(<DashboardPage {...defaultProps} dashboard={dashboard} />)
 
-    expect(screen.getByText('今日优先处理')).toBeInTheDocument()
+    expect(screen.getByText('dashboard.todayPriority')).toBeInTheDocument()
     expect(screen.getByText('逾期采购确认')).toBeInTheDocument()
-    expect(screen.getByText('逾期 1')).toBeInTheDocument()
+    expect(screen.getByText('dashboard.overdueCount')).toBeInTheDocument()
     expect(screen.getByText('todo.followup')).toBeInTheDocument()
-    expect(screen.getByText('负责人：采购员张敏')).toBeInTheDocument()
+    expect(screen.getByText('dashboard.ownerPrefix采购员张敏')).toBeInTheDocument()
     expect(screen.queryByText('未来任务三')).not.toBeInTheDocument()
   })
 
@@ -304,7 +304,7 @@ describe('DashboardPage', () => {
   it('orders workbench content by action priority and uses a document icon for announcements', () => {
     const { container } = render(<DashboardPage {...defaultProps} />)
     const sectionTitles = [
-      screen.getByText('今日优先处理'),
+      screen.getByText('dashboard.todayPriority'),
       screen.getByText('dashboard.mySchedule'),
       screen.getByText('dashboard.messages'),
       screen.getByText('dashboard.companyAnnouncements'),
@@ -365,7 +365,7 @@ describe('DashboardPage', () => {
       />,
     )
 
-    expect(screen.getByText('QC 查验')).toBeInTheDocument()
+    expect(screen.getByText('dashboard.source.qualityInspection')).toBeInTheDocument()
     await userEvent.click(screen.getByText('dashboard.goHandle'))
     expect(onNavigate).toHaveBeenCalledWith('/quality/tasks')
   })
@@ -438,7 +438,7 @@ describe('DashboardPage', () => {
       />,
     )
 
-    expect(screen.getByText('入库审批')).toBeInTheDocument()
+    expect(screen.getByText('dashboard.source.warehouseInboundApproval')).toBeInTheDocument()
     await userEvent.click(screen.getByText('dashboard.goHandle'))
     expect(onNavigate).toHaveBeenCalledWith('/warehouse/inbound-orders/inbound-order-1')
   })
