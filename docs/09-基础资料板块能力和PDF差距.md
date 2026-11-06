@@ -72,7 +72,7 @@
 - 后端保持 router/service/repository/schema 分层，业务规则在 service 层，数据库访问在 repository 层。
 - 基础资料按当前用户或 `view_all` 权限做数据范围控制。
 - 停用采用状态变更，不硬删除主数据，便于保留历史业务引用。
-- 主要接口都有 API 和 service 测试覆盖，前端有构建检查和 E2E 脚本。
+- 主要接口都有 API 和 service 测试覆盖，前端有构建检查。
 
 ## 和 PDF 还差哪些内容
 

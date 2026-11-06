@@ -22,9 +22,8 @@
 | React 工程可构建 | 已实现 | `npm run build` |
 | 前端技术栈文档改为 React | 已实现 | `README.md`、`docs/03-架构设计.md`、`docs/05-实现步骤.md` |
 | 迁移计划单独成文 | 已实现 | `docs/06-React前端迁移和优化计划.md` |
-| 登录页可用 | 已实现 | `node scripts/e2e-auth.mjs` 覆盖登录 |
 | 权限菜单来自后端 | 已实现 | React 调用 `/api/v1/auth/login` 和 `/api/v1/auth/me` |
-| 财务角色菜单隔离 | 已实现 | E2E 验证财务只看到工作桌面、财务管理 |
+| 财务角色菜单隔离 | 已实现 | 已验证财务只看到工作桌面、财务管理 |
 | 工作桌面可见 | 已实现 | in-app browser 验证 `工作桌面`、待办、提醒、日程、公告 |
 | 依赖安全审计 | 已实现 | `npm audit --audit-level=high` 返回 0 漏洞 |
 
@@ -32,7 +31,6 @@
 
 - 前端构建：`npm run build`
 - 前端依赖审计：`npm audit --audit-level=high`
-- 权限菜单 E2E：`node scripts/e2e-auth.mjs`
 
 ## 浏览器验证
 
@@ -43,4 +41,4 @@
 ## 后续优化
 
 - Ant Design 当前进入主 bundle，后续按模块路由拆包降低首屏 JS 体积。
-- 继续按 `docs/06-React前端迁移和优化计划.md` 迁移基础资料模块，并为每个迁移模块保留对应 E2E。
+- 继续按 `docs/06-React前端迁移和优化计划.md` 迁移基础资料模块，。
