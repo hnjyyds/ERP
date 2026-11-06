@@ -1,14 +1,14 @@
-import { Alert as _Alert, Button as _Button, Input as _Input, Modal, Skeleton, Table as _Table, Tag } from 'antd'
-import { AtSign, Bell, CalendarClock, CheckCircle2, ClipboardCheck, FileText, LayoutDashboard as _LayoutDashboard, Plus, Search, Trash2 } from 'lucide-react'
+import { Input, Modal, Segmented, Select, Skeleton, Table, Tag } from 'antd'
+import { ArrowRight, AtSign, Bell, CalendarClock, CheckCircle2, ClipboardCheck, FileText, LayoutDashboard as _LayoutDashboard, Plus, Search, Trash2 } from 'lucide-react'
 import type { FormEvent, ReactNode as _ReactNode } from 'react'
 import { Component as _Component, useEffect, useMemo as _useMemo, useState } from 'react'
 import type { ErrorInfo as _ErrorInfo } from 'react'
 import { createAnnouncement, createScheduleEvent, createTodos, deleteScheduleEvent, getDashboard as _getDashboard, listAssignableUsers, markNotificationRead, type AssignableUser, type Announcement as _Announcement, type AnnouncementCreatePayload, type AppLanguage as _AppLanguage, type AppTimeZone, type CurrentUser, type Dashboard, type I18nConfig as _I18nConfig, type MenuItem as _MenuItem, type NotificationItem, type ScheduleCreatePayload, type ScheduleEvent, type TodoCreatePayload, type TodoTask } from '../../../api'
-import { dashboardAnnouncementsPath, dashboardNotificationsPath, dashboardSchedulesPath, dashboardTodosPath, exportContractPath, exportQuotationPath, financeDetailPath, followupPath, moduleDetailPath, myQualityTasksPath, purchaseContractPath, reportingPath, sampleDeliveryPath, shipmentPath, dashboardPath, warehouseInboundOrderPath, warehouseOutboundOrderPath } from '../../routes'
+import { dashboardAnnouncementsPath, dashboardNotificationsPath, dashboardSchedulesPath, dashboardTodosPath, exportContractPath, exportQuotationPath, financeDetailPath, followupPath, moduleDetailPath, moduleNestedDetailPath, myQualityTasksPath, purchaseContractPath, reportingPath, sampleDeliveryPath, shipmentPath, dashboardPath, warehouseInboundOrderPath, warehouseOutboundOrderPath } from '../../routes'
 import { Metric, PanelTitle, UserAvatar, defaultAvatarPreset } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { t } from '../../App'
-import { formatDate, formatDateTime, formatTime, parseApiDate, getRuntimeSettings, statusTag, severityTag, canCreateAnnouncement, type AppSettings } from '../appHelpers'
+import { formatDate, formatDateTime, formatTime, parseApiDate, getRuntimeSettings, severityTag, canCreateAnnouncement, type AppSettings } from '../appHelpers'
 
 type DashboardScheduleFormState = {
   title: string
@@ -107,7 +107,7 @@ function initialDashboardTodoForm(currentUser?: CurrentUser): DashboardTodoFormS
 function todoTargetPath(todo: TodoTask) {
   if (todo.source_type === 'followup') return followupPath
   if (todo.source_type === 'followup_plan' && todo.source_id) {
-    return moduleDetailPath(followupPath, todo.source_id)
+    return moduleNestedDetailPath(followupPath, todo.source_id, todo.id)
   }
   if (todo.source_type === 'approval') return reportingPath
   if (todo.source_type === 'quality_inspection') return myQualityTasksPath
@@ -162,6 +162,58 @@ function todoSourceLabel(value: string) {
     finance_reimbursement_approval: '报销审批',
   }
   return labels[value] ?? value
+}
+
+type TodoScope = 'assigned' | 'self'
+type TodoDueState = 'all' | 'overdue' | 'today' | 'upcoming' | 'none'
+
+function dateKey(date: Date, settings: AppSettings = getRuntimeSettings()) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    day: '2-digit',
+    month: '2-digit',
+    timeZone: settings.timeZone,
+    year: 'numeric',
+  }).formatToParts(date)
+  const map = Object.fromEntries(parts.map((part) => [part.type, part.value]))
+  return `${map.year}-${map.month}-${map.day}`
+}
+
+function todoDueState(value: string | null): Exclude<TodoDueState, 'all'> {
+  const dueDate = parseApiDate(value)
+  if (!dueDate) return 'none'
+  const dueDateKey = dateKey(dueDate)
+  const todayKey = dateKey(new Date())
+  if (dueDateKey < todayKey) return 'overdue'
+  if (dueDateKey === todayKey) return 'today'
+  return 'upcoming'
+}
+
+function todoDueStateLabel(state: Exclude<TodoDueState, 'all'>) {
+  const labels = {
+    none: t('dashboard.noDeadline'),
+    overdue: t('dashboard.overdue'),
+    today: t('dashboard.dueToday'),
+    upcoming: t('dashboard.upcoming'),
+  }
+  return labels[state]
+}
+
+function todoDueSortValue(todo: TodoTask) {
+  const state = todoDueState(todo.due_at)
+  const rank = { overdue: 0, today: 1, upcoming: 2, none: 3 }[state]
+  return [rank, parseApiDate(todo.due_at)?.getTime() ?? Number.MAX_SAFE_INTEGER] as const
+}
+
+function sortTodosByUrgency(todos: TodoTask[]) {
+  return todos
+    .map((todo, index) => ({ index, todo, sortValue: todoDueSortValue(todo) }))
+    .sort((left, right) => {
+      const rankDiff = left.sortValue[0] - right.sortValue[0]
+      if (rankDiff) return rankDiff
+      const dueDiff = left.sortValue[1] - right.sortValue[1]
+      return dueDiff || left.index - right.index
+    })
+    .map(({ todo }) => todo)
 }
 
 
@@ -288,6 +340,7 @@ export function DashboardPage({
   onNavigate: (path: string) => void
   onRefresh: () => Promise<void>
 }) {
+  const isSuperAdmin = currentUser.permissions.includes('system:super_admin')
   const [scheduleForm, setScheduleForm] = useState<DashboardScheduleFormState>(() =>
     initialDashboardScheduleForm(),
   )
@@ -335,7 +388,10 @@ export function DashboardPage({
   }
 
   const summary = dashboard?.summary
-  const previewTodos = dashboard?.todos.slice(0, 2) ?? []
+  const allTodos = dashboard?.todos ?? []
+  const previewTodos = sortTodosByUrgency(allTodos).slice(0, 3)
+  const overdueTodoCount = allTodos.filter((todo) => todoDueState(todo.due_at) === 'overdue').length
+  const dueTodayTodoCount = allTodos.filter((todo) => todoDueState(todo.due_at) === 'today').length
   const previewNotifications = dashboard?.notifications.slice(0, 1) ?? []
   const previewSchedules = dashboard?.schedule_events.slice(0, 3) ?? []
   const previewAnnouncements = dashboard?.announcements.slice(0, 1) ?? []
@@ -523,17 +579,17 @@ export function DashboardPage({
     <section className="dashboard-grid dashboard-workbench">
       <div className="metric-strip" aria-label={t('dashboard.aria')}>
         <Metric
-          icon={<FileText size={17} />}
-          label={t('dashboard.announcement')}
-          value={summary?.announcement_count ?? 0}
-          onClick={() => onNavigate(dashboardAnnouncementsPath)}
-        />
-        <Metric
           icon={<ClipboardCheck size={17} />}
           label={t('dashboard.todo')}
           value={summary?.todo_count ?? 0}
           intent="warning"
           onClick={() => onNavigate(dashboardTodosPath)}
+        />
+        <Metric
+          icon={<CalendarClock size={17} />}
+          label={t('dashboard.todaySchedule')}
+          value={summary?.today_schedule_count ?? 0}
+          onClick={() => onNavigate(dashboardSchedulesPath)}
         />
         <Metric
           icon={<Bell size={17} />}
@@ -543,10 +599,10 @@ export function DashboardPage({
           onClick={() => onNavigate(dashboardNotificationsPath)}
         />
         <Metric
-          icon={<CalendarClock size={17} />}
-          label={t('dashboard.todaySchedule')}
-          value={summary?.today_schedule_count ?? 0}
-          onClick={() => onNavigate(dashboardSchedulesPath)}
+          icon={<FileText size={17} />}
+          label={t('dashboard.announcement')}
+          value={summary?.announcement_count ?? 0}
+          onClick={() => onNavigate(dashboardAnnouncementsPath)}
         />
       </div>
 
@@ -573,8 +629,19 @@ export function DashboardPage({
       <div className="dashboard-board">
         <section className="workspace-panel dashboard-panel dashboard-panel-primary">
           <div className="dashboard-panel-heading">
-            <PanelTitle icon={<ClipboardCheck size={18} />} title={t('dashboard.myTodos')} />
+            <PanelTitle
+              icon={<ClipboardCheck size={18} />}
+              title="今日优先处理"
+            />
             <div className="dashboard-panel-actions">
+              <span className="dashboard-priority-scope">
+                {t(isSuperAdmin ? 'dashboard.globalTodos' : 'dashboard.myTodos')}
+              </span>
+              <div className="dashboard-priority-summary" aria-label="待办时效概览">
+                {overdueTodoCount ? <span className="is-overdue">逾期 {overdueTodoCount}</span> : null}
+                {dueTodayTodoCount ? <span className="is-today">今日到期 {dueTodayTodoCount}</span> : null}
+                {!overdueTodoCount && !dueTodayTodoCount ? <span>暂无紧急待办</span> : null}
+              </div>
               <button
                 aria-label={t('dashboard.addTodo')}
                 className="panel-icon-button"
@@ -593,21 +660,25 @@ export function DashboardPage({
             {previewTodos.length ? (
               previewTodos.map((todo) => {
                 const targetPath = todoTargetPath(todo)
+                const dueState = todoDueState(todo.due_at)
 
                 return (
-                  <article className="dashboard-task" key={todo.id}>
+                  <article className={`dashboard-task is-${dueState}`} key={todo.id}>
                     <div className="dashboard-task-icon" aria-hidden="true">
                       <ClipboardCheck size={17} />
                     </div>
                     <div className="dashboard-task-body">
                       <div className="dashboard-task-title">
                         <strong>{todo.title}</strong>
-                        {statusTag(todo.status)}
+                        <span className={`dashboard-task-due is-${dueState}`}>
+                          {todoDueStateLabel(dueState)}
+                        </span>
                       </div>
                       {todo.content ? <p className="dashboard-task-content">{todo.content}</p> : null}
                       <div className="dashboard-task-meta">
-                        <span>{todoSourceLabel(todo.source_type)}</span>
-                        <span>{t('dashboard.deadline')} {formatDate(todo.due_at)}</span>
+                        <span>来源：<span>{todoSourceLabel(todo.source_type)}</span></span>
+                        {isSuperAdmin && todo.owner_user_name ? <span>负责人：{todo.owner_user_name}</span> : null}
+                        <span>截止：{todo.due_at ? formatDateTime(todo.due_at) : t('dashboard.noDeadline')}</span>
                       </div>
                     </div>
                     {canNavigatePath(targetPath) ? (
@@ -619,9 +690,46 @@ export function DashboardPage({
                 )
               })
             ) : (
-              <div className="dashboard-empty">{t('dashboard.noTodos')}</div>
+              <div className="dashboard-empty">
+                <span>{t('dashboard.noTodos')}</span>
+                <button className="panel-action-button panel-link-button" type="button" onClick={openTodoModal}>
+                  <Plus size={15} />
+                  {t('dashboard.addTodo')}
+                </button>
+              </div>
             )}
           </div>
+        </section>
+
+        <section className="workspace-panel dashboard-panel dashboard-panel-schedule">
+          <div className="dashboard-panel-heading">
+            <PanelTitle icon={<CalendarClock size={18} />} title={t('dashboard.mySchedule')} />
+            <button className="panel-action-button panel-link-button" type="button" onClick={() => onNavigate(dashboardSchedulesPath)}>
+              {t('common.viewAll')}
+            </button>
+          </div>
+          {previewSchedules.length ? (
+            <DashboardScheduleTimeline
+              currentTimeMs={currentTimeMs}
+              events={previewSchedules}
+              onSelect={(event) => setSelectedSchedule(event)}
+            />
+          ) : (
+            <div className="dashboard-empty">
+              <span>{t('dashboard.noSchedules')}</span>
+              <button
+                className="panel-action-button panel-link-button"
+                type="button"
+                onClick={() => {
+                  setScheduleForm(initialDashboardScheduleForm())
+                  setCreateModal('schedule')
+                }}
+              >
+                <Plus size={15} />
+                {t('dashboard.addSchedule')}
+              </button>
+            </div>
+          )}
         </section>
 
         <section className="workspace-panel dashboard-panel dashboard-panel-reminders">
@@ -657,32 +765,20 @@ export function DashboardPage({
                 </div>
               ))
             ) : (
-              <div className="dashboard-empty">{t('dashboard.noNotifications')}</div>
+              <div className="dashboard-empty">
+                <span>{t('dashboard.noNotifications')}</span>
+                <button className="panel-action-button panel-link-button" type="button" onClick={() => onNavigate(dashboardNotificationsPath)}>
+                  {t('common.viewAll')}
+                  <ArrowRight size={15} />
+                </button>
+              </div>
             )}
           </div>
         </section>
 
-        <section className="workspace-panel dashboard-panel dashboard-panel-schedule">
-          <div className="dashboard-panel-heading">
-            <PanelTitle icon={<CalendarClock size={18} />} title={t('dashboard.mySchedule')} />
-            <button className="panel-action-button panel-link-button" type="button" onClick={() => onNavigate(dashboardSchedulesPath)}>
-              {t('common.viewAll')}
-            </button>
-          </div>
-          {previewSchedules.length ? (
-            <DashboardScheduleTimeline
-              currentTimeMs={currentTimeMs}
-              events={previewSchedules}
-              onSelect={(event) => setSelectedSchedule(event)}
-            />
-          ) : (
-            <div className="dashboard-empty">{t('dashboard.noSchedules')}</div>
-          )}
-        </section>
-
         <section className="workspace-panel dashboard-panel dashboard-announcements-panel">
           <div className="dashboard-panel-heading">
-            <PanelTitle icon={<Search size={18} />} title={t('dashboard.companyAnnouncements')} />
+            <PanelTitle icon={<FileText size={18} />} title={t('dashboard.companyAnnouncements')} />
             <div className="dashboard-panel-actions">
               <button className="panel-action-button panel-link-button" type="button" onClick={() => onNavigate(dashboardAnnouncementsPath)}>
                 {t('common.viewAll')}
@@ -700,7 +796,17 @@ export function DashboardPage({
                 </article>
               ))
             ) : (
-              <div className="dashboard-empty">{t('dashboard.noAnnouncements')}</div>
+              <div className="dashboard-empty">
+                <span>{t('dashboard.noAnnouncements')}</span>
+                <button
+                  className="panel-action-button panel-link-button"
+                  type="button"
+                  onClick={canPublishAnnouncement ? openAnnouncementModal : () => onNavigate(dashboardAnnouncementsPath)}
+                >
+                  {canPublishAnnouncement ? <Plus size={15} /> : <ArrowRight size={15} />}
+                  {t(canPublishAnnouncement ? 'dashboard.publishAnnouncement' : 'common.viewAll')}
+                </button>
+              </div>
             )}
           </div>
         </section>
@@ -964,75 +1070,195 @@ export function DashboardPage({
 }
 
 export function DashboardTodosPage({
+  currentUser,
   dashboard,
   loading,
   canNavigatePath,
   onNavigate,
 }: {
+  currentUser: CurrentUser
   dashboard: Dashboard | null
   loading: boolean
   canNavigatePath: (path: string) => boolean
   onNavigate: (path: string) => void
 }) {
+  const [scope, setScope] = useState<TodoScope>('assigned')
+  const [searchValue, setSearchValue] = useState('')
+  const [sourceFilter, setSourceFilter] = useState('all')
+  const [dueFilter, setDueFilter] = useState<TodoDueState>('all')
+
   if (loading && !dashboard) {
     return <Skeleton active paragraph={{ rows: 8 }} />
   }
 
   const todos = dashboard?.todos ?? []
-  const groupedTodos = [
-    { id: 'assigned', label: t('todo.assignedToMe'), items: todos.filter((todo) => todo.assignment_type === 'assigned') },
-    { id: 'self', label: t('todo.selfCreated'), items: todos.filter((todo) => todo.assignment_type === 'self') },
-  ]
+  const isSuperAdmin = currentUser.permissions.includes('system:super_admin')
+  const assignedTodos = todos.filter((todo) => todo.assignment_type === 'assigned')
+  const selfCreatedTodos = todos.filter((todo) => todo.assignment_type === 'self')
+  const scopedTodos = scope === 'assigned' ? assignedTodos : selfCreatedTodos
+  const normalizedSearch = searchValue.trim().toLocaleLowerCase()
+  const filteredTodos = scopedTodos
+    .filter((todo) => {
+      if (sourceFilter !== 'all' && todo.source_type !== sourceFilter) return false
+      if (dueFilter !== 'all' && todoDueState(todo.due_at) !== dueFilter) return false
+      if (!normalizedSearch) return true
+      return [
+        todo.title,
+        todo.content,
+        todo.owner_user_name,
+        todo.creator_user_name,
+        todoSourceLabel(todo.source_type),
+      ].some((value) => value?.toLocaleLowerCase().includes(normalizedSearch))
+    })
+    .sort((left, right) => {
+      const [leftRank, leftTime] = todoDueSortValue(left)
+      const [rightRank, rightTime] = todoDueSortValue(right)
+      return leftRank - rightRank || leftTime - rightTime || left.title.localeCompare(right.title)
+    })
+  const sourceOptions = Array.from(new Set(todos.map((todo) => todo.source_type)))
+    .sort((left, right) => todoSourceLabel(left).localeCompare(todoSourceLabel(right)))
+    .map((value) => ({ label: todoSourceLabel(value), value }))
+  const hasActiveFilters = Boolean(normalizedSearch || sourceFilter !== 'all' || dueFilter !== 'all')
+
+  function clearFilters() {
+    setSearchValue('')
+    setSourceFilter('all')
+    setDueFilter('all')
+  }
 
   return (
     <section className="dashboard-grid dashboard-dedicated-page">
       <section className="workspace-panel dashboard-panel dashboard-full-panel">
         <div className="dashboard-panel-heading dashboard-page-heading">
-          <PanelTitle icon={<ClipboardCheck size={18} />} title={t('dashboard.myTodos')} />
-          <span className="dashboard-section-count">{todos.length}</span>
+          <PanelTitle
+            icon={<ClipboardCheck size={18} />}
+            title={t(isSuperAdmin ? 'dashboard.globalTodos' : 'dashboard.myTodos')}
+          />
         </div>
-        {todos.length ? (
-          <div className="dashboard-kanban">
-            {groupedTodos.map((group) => (
-              <section className="dashboard-kanban-column" key={group.id}>
-                <header>
-                  <strong>{group.label}</strong>
-                  <span>{group.items.length}</span>
-                </header>
-                <div className="dashboard-kanban-items">
-                  {group.items.length ? (
-                    group.items.map((todo) => {
-                      const targetPath = todoTargetPath(todo)
-
-                      return (
-                        <article className="dashboard-task-card" key={todo.id}>
-                          <div>
-                            <strong>{todo.title}</strong>
-                            <p>{todo.content || todoSourceLabel(todo.source_type)}</p>
-                            <span>
-                              {todo.creator_user_name ?? todoSourceLabel(todo.source_type)}
-                              {' / '}
-                              {t('dashboard.deadline')} {formatDate(todo.due_at)}
-                            </span>
-                          </div>
-                          {canNavigatePath(targetPath) ? (
-                            <button className="table-action" type="button" onClick={() => onNavigate(targetPath)}>
-                              {t('dashboard.goHandle')}
-                            </button>
-                          ) : null}
-                        </article>
-                      )
-                    })
-                  ) : (
-                    <div className="dashboard-empty">{t('common.none')}</div>
-                  )}
-                </div>
-              </section>
-            ))}
+        <div className="dashboard-todo-toolbar">
+          <Segmented<TodoScope>
+            aria-label={t('dashboard.todoScope')}
+            className="dashboard-todo-scope"
+            options={[
+              {
+                label: `${t(isSuperAdmin ? 'todo.globalBusiness' : 'todo.assignedToMe')} ${assignedTodos.length}`,
+                value: 'assigned',
+              },
+              { label: `${t('todo.selfCreated')} ${selfCreatedTodos.length}`, value: 'self' },
+            ]}
+            value={scope}
+            onChange={setScope}
+          />
+          <div className="dashboard-todo-filters">
+            <Input
+              allowClear
+              aria-label={t('dashboard.todoSearchPlaceholder')}
+              placeholder={t('dashboard.todoSearchPlaceholder')}
+              prefix={<Search aria-hidden="true" size={16} />}
+              value={searchValue}
+              onChange={(event) => setSearchValue(event.target.value)}
+            />
+            <Select
+              aria-label={t('dashboard.todoTypeFilter')}
+              options={[{ label: t('dashboard.allTaskTypes'), value: 'all' }, ...sourceOptions]}
+              value={sourceFilter}
+              onChange={setSourceFilter}
+            />
+            <Select<TodoDueState>
+              aria-label={t('dashboard.todoDueFilter')}
+              options={[
+                { label: t('dashboard.allDueStates'), value: 'all' },
+                { label: t('dashboard.overdue'), value: 'overdue' },
+                { label: t('dashboard.dueToday'), value: 'today' },
+                { label: t('dashboard.upcoming'), value: 'upcoming' },
+                { label: t('dashboard.noDeadline'), value: 'none' },
+              ]}
+              value={dueFilter}
+              onChange={setDueFilter}
+            />
           </div>
-        ) : (
-          <div className="dashboard-empty">{t('dashboard.noTodos')}</div>
-        )}
+        </div>
+        <div aria-live="polite" className="dashboard-todo-result-count">
+          {t('dashboard.currentResults')} <strong>{filteredTodos.length}</strong>
+        </div>
+        <Table<TodoTask>
+          className="dashboard-todo-table"
+          columns={[
+            {
+              dataIndex: 'title',
+              key: 'task',
+              title: t('dashboard.taskColumn'),
+              width: 350,
+              render: (_value, todo) => (
+                <div className="dashboard-todo-main">
+                  <strong title={todo.title}>{todo.title}</strong>
+                  <span title={todo.content || undefined}>{todo.content || t('dashboard.noBusinessContext')}</span>
+                </div>
+              ),
+            },
+            {
+              dataIndex: 'source_type',
+              key: 'type',
+              title: t('dashboard.typeColumn'),
+              width: 100,
+              render: (value: string) => <span className="dashboard-todo-type">{todoSourceLabel(value)}</span>,
+            },
+            {
+              dataIndex: 'owner_user_name',
+              key: 'owner',
+              title: t('dashboard.ownerColumn'),
+              width: 110,
+              render: (value: string | null) => value || t('dashboard.unassigned'),
+            },
+            {
+              dataIndex: 'due_at',
+              key: 'due',
+              title: t('dashboard.dueColumn'),
+              width: 170,
+              render: (value: string | null) => {
+                const state = todoDueState(value)
+                return (
+                  <div className="dashboard-todo-due">
+                    <time>{value ? formatDate(value) : t('common.notSet')}</time>
+                    <span className={`dashboard-due-status is-${state}`}>{todoDueStateLabel(state)}</span>
+                  </div>
+                )
+              },
+            },
+            {
+              align: 'right',
+              fixed: 'right',
+              key: 'action',
+              title: t('dashboard.actionColumn'),
+              width: 96,
+              render: (_value, todo) => {
+                const targetPath = todoTargetPath(todo)
+                return canNavigatePath(targetPath) ? (
+                  <button className="dashboard-todo-action" type="button" onClick={() => onNavigate(targetPath)}>
+                    <span>{t('dashboard.goHandle')}</span>
+                    <ArrowRight aria-hidden="true" size={15} />
+                  </button>
+                ) : null
+              },
+            },
+          ]}
+          dataSource={filteredTodos}
+          locale={{
+            emptyText: (
+              <div className="dashboard-table-empty">
+                <ClipboardCheck aria-hidden="true" size={24} />
+                <strong>{hasActiveFilters ? t('dashboard.noMatchingTodos') : t('dashboard.noTodos')}</strong>
+                {hasActiveFilters ? (
+                  <button type="button" onClick={clearFilters}>{t('dashboard.clearFilters')}</button>
+                ) : null}
+              </div>
+            ),
+          }}
+          pagination={{ hideOnSinglePage: true, pageSize: 10, showSizeChanger: false }}
+          rowKey="id"
+          scroll={{ x: 826 }}
+          size="middle"
+        />
       </section>
     </section>
   )

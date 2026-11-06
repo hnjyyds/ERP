@@ -12,6 +12,7 @@ from app.modules.followup.models import (
 )
 from app.modules.purchase.contracts.models import PurchaseContract
 from app.modules.quality.inspections.models import QualityInspection
+from app.modules.sales.contracts.models import ExportContract
 from app.modules.warehouse.inbound_orders.models import InboundOrder
 
 
@@ -158,6 +159,129 @@ async def test_dashboard_includes_only_active_quality_tasks_assigned_to_current_
             "assignment_type": "assigned",
         }
     ]
+
+
+async def test_super_admin_dashboard_includes_global_active_business_todos_only(
+    api_client: AsyncClient,
+    seeded_system: None,
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        session.add_all(
+            [
+                ExportContract(
+                    id="export-dashboard-global-unassigned",
+                    code="EC-DASHBOARD-GLOBAL-UNASSIGNED",
+                    contract_date=date(2026, 8, 5),
+                    customer_id="customer-dashboard",
+                    customer_name="全局待办客户",
+                    sales_user_id="u-001",
+                    sales_user_name="演示业务主管",
+                    currency="USD",
+                    trade_term="FOB Ningbo",
+                    planned_ship_date=date(2026, 8, 30),
+                    payment_terms="30% 预付，70% 出货前",
+                    source_quotation_id=None,
+                    source_quotation_no=None,
+                    remarks=None,
+                    total_quantity=Decimal("100"),
+                    total_amount=Decimal("1200"),
+                    shipped_quantity=Decimal("0"),
+                    shipped_amount=Decimal("0"),
+                    purchased_quantity=Decimal("0"),
+                    advance_payment_amount=Decimal("0"),
+                    approval_status="submitted",
+                    submitted_at=date(2026, 8, 5),
+                    approved_at=None,
+                    reviewer_id=None,
+                    reviewer_name=None,
+                    owner_user_id="u-001",
+                ),
+                InboundOrder(
+                    id="inbound-dashboard-global-unassigned",
+                    code="IO-DASHBOARD-GLOBAL-UNASSIGNED",
+                    plan_id="inbound-plan-global-unassigned",
+                    purchase_contract_id="pc-inbound-global-unassigned",
+                    purchase_contract_no="PC-INBOUND-GLOBAL-UNASSIGNED",
+                    supplier_id="supplier-dashboard",
+                    supplier_name="全局待办供应商",
+                    inbound_type="purchase",
+                    inbound_mode="formal",
+                    inbound_at=date(2026, 8, 22),
+                    warehouse_id="warehouse-ningbo",
+                    warehouse_name="宁波总仓",
+                    location_id="location-a-01",
+                    location_name="A-01",
+                    operator_name="仓库主管",
+                    status="submitted",
+                    submitted_at=date(2026, 8, 5),
+                    approved_at=None,
+                    reviewer_id=None,
+                    reviewer_name=None,
+                    owner_user_id="u-warehouse",
+                ),
+                QualityInspection(
+                    id="qc-dashboard-global-active",
+                    code="QC-DASHBOARD-GLOBAL-ACTIVE",
+                    purchase_contract_id="pc-dashboard-global-active",
+                    purchase_contract_no="PC-DASHBOARD-GLOBAL-ACTIVE",
+                    supplier_id="supplier-dashboard",
+                    supplier_name="全局待办供应商",
+                    status="pending",
+                    scheduled_at=datetime(2026, 8, 21, 9, 30),
+                    inspected_at=date(2026, 8, 21),
+                    result="",
+                    inspector_id="u-qc",
+                    inspector_name="演示 QC 专员",
+                    qc_user_id="u-qc",
+                    qc_user_name="演示 QC 专员",
+                    issue_summary=None,
+                    attachment_group_id=None,
+                    owner_user_id="u-001",
+                ),
+                QualityInspection(
+                    id="qc-dashboard-global-completed",
+                    code="QC-DASHBOARD-GLOBAL-COMPLETED",
+                    purchase_contract_id="pc-dashboard-global-completed",
+                    purchase_contract_no="PC-DASHBOARD-GLOBAL-COMPLETED",
+                    supplier_id="supplier-dashboard",
+                    supplier_name="全局待办供应商",
+                    status="completed",
+                    scheduled_at=datetime(2026, 8, 20, 9, 30),
+                    inspected_at=date(2026, 8, 20),
+                    result="passed",
+                    inspector_id="u-qc",
+                    inspector_name="演示 QC 专员",
+                    qc_user_id="u-qc",
+                    qc_user_name="演示 QC 专员",
+                    issue_summary=None,
+                    attachment_group_id=None,
+                    owner_user_id="u-001",
+                ),
+            ]
+        )
+        await session.commit()
+
+    token = await _login_token(api_client, username="admin", password="admin123")
+    response = await api_client.get(
+        "/api/v1/dashboard",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == 200
+    todos = response.json()["data"]["todos"]
+    todo_ids = {item["id"] for item in todos}
+    assert "qc-dashboard-global-active" in todo_ids
+    assert "qc-dashboard-global-completed" not in todo_ids
+    assert "export-dashboard-global-unassigned" in todo_ids
+    assert "inbound-dashboard-global-unassigned" in todo_ids
+    assert {
+        item["owner_user_id"]
+        for item in todos
+        if item["id"]
+        in {"export-dashboard-global-unassigned", "inbound-dashboard-global-unassigned"}
+    } == {"u-admin"}
+    assert "审批出口合同 XP-EC-202606-001" not in {item["title"] for item in todos}
 
 
 async def test_dashboard_includes_active_followup_nodes_owned_by_current_user(
@@ -445,9 +569,7 @@ async def test_todo_create_supports_self_and_assigned_users(
     assert {item["source_type"] for item in created["items"]} == {"manual"}
     assert {item["creator_user_id"] for item in created["items"]} == {"u-001"}
     assert {item["creator_user_name"] for item in created["items"]} == {"演示业务主管"}
-    assert {
-        (item["owner_user_id"], item["assignment_type"]) for item in created["items"]
-    } == {
+    assert {(item["owner_user_id"], item["assignment_type"]) for item in created["items"]} == {
         ("u-001", "self"),
         ("u-finance", "assigned"),
     }
@@ -457,12 +579,8 @@ async def test_todo_create_supports_self_and_assigned_users(
         headers={"Authorization": f"Bearer {token}"},
     )
     dashboard = dashboard_response.json()["data"]
-    personal_todos = [
-        item for item in dashboard["todos"] if item["assignment_type"] == "self"
-    ]
-    assigned_todos = [
-        item for item in dashboard["todos"] if item["assignment_type"] == "assigned"
-    ]
+    personal_todos = [item for item in dashboard["todos"] if item["assignment_type"] == "self"]
+    assigned_todos = [item for item in dashboard["todos"] if item["assignment_type"] == "assigned"]
     assert dashboard["summary"]["todo_count"] == 3
     assert {item["title"] for item in personal_todos} == {payload["title"]}
     assert len(assigned_todos) == 2
@@ -524,9 +642,7 @@ async def test_schedule_create_is_visible_on_dashboard(
         "/api/v1/dashboard",
         headers={"Authorization": f"Bearer {token}"},
     )
-    event_titles = {
-        item["title"] for item in dashboard_response.json()["data"]["schedule_events"]
-    }
+    event_titles = {item["title"] for item in dashboard_response.json()["data"]["schedule_events"]}
     assert "跟进采购合同节点" in event_titles
 
 
@@ -631,8 +747,7 @@ async def test_announcement_create_requires_super_admin_even_with_announcement_p
         headers={"Authorization": f"Bearer {super_admin_token}"},
     )
     permission_by_code = {
-        item["code"]: item
-        for item in options_response.json()["data"]["permissions"]
+        item["code"]: item for item in options_response.json()["data"]["permissions"]
     }
     grant_response = await api_client.patch(
         "/api/v1/organization/roles/role-finance/permissions",

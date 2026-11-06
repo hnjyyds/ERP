@@ -58,7 +58,7 @@ async def get_dashboard(
     current_user: CurrentUserDep,
     service: Annotated[DashboardService, Depends(get_dashboard_service)],
 ) -> ApiResponse[DashboardResponse]:
-    dashboard = await service.get_dashboard(user_id=current_user.id)
+    dashboard = await service.get_dashboard(current_user=current_user)
     return ApiResponse(data=dashboard)
 
 

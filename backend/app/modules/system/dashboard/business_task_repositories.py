@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from datetime import date, datetime
+from typing import Any
 
 from sqlalchemy import literal, select, union_all
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -53,7 +54,7 @@ class InboundApprovalTodoRow:
     purchase_contract_no: str
     supplier_name: str
     warehouse_name: str
-    reviewer_id: str
+    reviewer_id: str | None
     reviewer_name: str | None
     creator_user_id: str
     submitted_at: date | None
@@ -64,7 +65,7 @@ class ApprovalTodoRow:
     id: str
     source_id: str
     code: str
-    reviewer_id: str
+    reviewer_id: str | None
     reviewer_name: str | None
     creator_user_id: str | None
     content_primary: str
@@ -78,11 +79,14 @@ class DashboardBusinessTaskRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
-    async def list_active_quality_todos(self, user_id: str) -> list[QualityTodoRow]:
+    async def list_active_quality_todos(
+        self,
+        assignee_user_id: str | None,
+    ) -> list[QualityTodoRow]:
         statement = (
             select(QualityInspection)
             .where(
-                QualityInspection.inspector_id == user_id,
+                QualityInspection.inspector_id.is_not(None),
                 QualityInspection.status.in_(("pending", "in_progress")),
             )
             .order_by(
@@ -90,24 +94,33 @@ class DashboardBusinessTaskRepository:
                 QualityInspection.code.asc(),
             )
         )
+        if assignee_user_id is not None:
+            statement = statement.where(QualityInspection.inspector_id == assignee_user_id)
         rows = await self.session.scalars(statement)
-        return [
-            QualityTodoRow(
-                id=item.id,
-                code=item.code,
-                purchase_contract_no=item.purchase_contract_no,
-                supplier_name=item.supplier_name,
-                inspector_id=item.inspector_id or user_id,
-                inspector_name=item.inspector_name,
-                creator_user_id=item.owner_user_id,
-                scheduled_at=item.scheduled_at,
-                status=item.status,
-                issue_summary=item.issue_summary,
+        result: list[QualityTodoRow] = []
+        for item in rows:
+            if item.inspector_id is None:
+                continue
+            result.append(
+                QualityTodoRow(
+                    id=item.id,
+                    code=item.code,
+                    purchase_contract_no=item.purchase_contract_no,
+                    supplier_name=item.supplier_name,
+                    inspector_id=item.inspector_id,
+                    inspector_name=item.inspector_name,
+                    creator_user_id=item.owner_user_id,
+                    scheduled_at=item.scheduled_at,
+                    status=item.status,
+                    issue_summary=item.issue_summary,
+                )
             )
-            for item in rows
-        ]
+        return result
 
-    async def list_active_followup_todos(self, user_id: str) -> list[FollowupTodoRow]:
+    async def list_active_followup_todos(
+        self,
+        assignee_user_id: str | None,
+    ) -> list[FollowupTodoRow]:
         statement = (
             select(PurchaseFollowNode, PurchaseFollowPlan)
             .join(
@@ -115,7 +128,6 @@ class DashboardBusinessTaskRepository:
                 PurchaseFollowNode.follow_plan_id == PurchaseFollowPlan.id,
             )
             .where(
-                PurchaseFollowPlan.owner_user_id == user_id,
                 PurchaseFollowNode.actual_date.is_(None),
                 PurchaseFollowNode.status.in_(("pending", "in_progress", "overdue")),
             )
@@ -125,6 +137,8 @@ class DashboardBusinessTaskRepository:
                 PurchaseFollowNode.sequence_no.asc(),
             )
         )
+        if assignee_user_id is not None:
+            statement = statement.where(PurchaseFollowPlan.owner_user_id == assignee_user_id)
         rows = (await self.session.execute(statement)).all()
         return [
             FollowupTodoRow(
@@ -142,12 +156,11 @@ class DashboardBusinessTaskRepository:
 
     async def list_inbound_approval_todos(
         self,
-        user_id: str,
+        assignee_user_id: str | None,
     ) -> list[InboundApprovalTodoRow]:
         statement = (
             select(InboundOrder)
             .where(
-                InboundOrder.reviewer_id == user_id,
                 InboundOrder.status == "submitted",
             )
             .order_by(
@@ -155,6 +168,8 @@ class DashboardBusinessTaskRepository:
                 InboundOrder.code.asc(),
             )
         )
+        if assignee_user_id is not None:
+            statement = statement.where(InboundOrder.reviewer_id == assignee_user_id)
         rows = await self.session.scalars(statement)
         return [
             InboundApprovalTodoRow(
@@ -163,7 +178,7 @@ class DashboardBusinessTaskRepository:
                 purchase_contract_no=item.purchase_contract_no,
                 supplier_name=item.supplier_name,
                 warehouse_name=item.warehouse_name,
-                reviewer_id=item.reviewer_id or user_id,
+                reviewer_id=item.reviewer_id,
                 reviewer_name=item.reviewer_name,
                 creator_user_id=item.owner_user_id,
                 submitted_at=item.submitted_at,
@@ -171,8 +186,11 @@ class DashboardBusinessTaskRepository:
             for item in rows
         ]
 
-    async def list_approval_todos(self, user_id: str) -> list[ApprovalTodoRow]:
-        """Return pending approvals explicitly assigned across business modules."""
+    async def list_approval_todos(
+        self,
+        assignee_user_id: str | None,
+    ) -> list[ApprovalTodoRow]:
+        """Return pending approvals, optionally limited to one assignee."""
 
         statements = [
             self._approval_select(
@@ -183,7 +201,7 @@ class DashboardBusinessTaskRepository:
                 content_primary=SampleDelivery.customer_name,
                 content_secondary=SampleDelivery.express_company,
                 status_column=SampleDelivery.status,
-                user_id=user_id,
+                assignee_user_id=assignee_user_id,
             ),
             self._approval_select(
                 model=ExportQuotation,
@@ -193,7 +211,7 @@ class DashboardBusinessTaskRepository:
                 content_primary=ExportQuotation.customer_name,
                 content_secondary=ExportQuotation.trade_term,
                 status_column=ExportQuotation.approval_status,
-                user_id=user_id,
+                assignee_user_id=assignee_user_id,
             ),
             self._approval_select(
                 model=ExportContract,
@@ -203,7 +221,7 @@ class DashboardBusinessTaskRepository:
                 content_primary=ExportContract.customer_name,
                 content_secondary=ExportContract.trade_term,
                 status_column=ExportContract.approval_status,
-                user_id=user_id,
+                assignee_user_id=assignee_user_id,
             ),
             self._approval_select(
                 model=PurchaseContract,
@@ -213,7 +231,7 @@ class DashboardBusinessTaskRepository:
                 content_primary=PurchaseContract.supplier_name,
                 content_secondary=PurchaseContract.source_type,
                 status_column=PurchaseContract.approval_status,
-                user_id=user_id,
+                assignee_user_id=assignee_user_id,
             ),
             self._approval_select(
                 model=ShipmentPlan,
@@ -223,7 +241,7 @@ class DashboardBusinessTaskRepository:
                 content_primary=ShipmentPlan.customer_name,
                 content_secondary=ShipmentPlan.shipping_method,
                 status_column=ShipmentPlan.approval_status,
-                user_id=user_id,
+                assignee_user_id=assignee_user_id,
             ),
             self._approval_select(
                 model=OutboundOrder,
@@ -233,7 +251,7 @@ class DashboardBusinessTaskRepository:
                 content_primary=OutboundOrder.source_code,
                 content_secondary=OutboundOrder.customer_name,
                 status_column=OutboundOrder.status,
-                user_id=user_id,
+                assignee_user_id=assignee_user_id,
             ),
             self._approval_select(
                 model=PaymentRequest,
@@ -244,7 +262,7 @@ class DashboardBusinessTaskRepository:
                 content_primary=PaymentRequest.supplier_name,
                 content_secondary=PaymentRequest.supplier_invoice_no,
                 status_column=PaymentRequest.status,
-                user_id=user_id,
+                assignee_user_id=assignee_user_id,
             ),
             self._approval_select(
                 model=FeePaymentRequest,
@@ -255,7 +273,7 @@ class DashboardBusinessTaskRepository:
                 content_primary=FeePaymentRequest.partner_name,
                 content_secondary=FeePaymentRequest.partner_fee_invoice_no,
                 status_column=FeePaymentRequest.status,
-                user_id=user_id,
+                assignee_user_id=assignee_user_id,
             ),
             self._approval_select(
                 model=Reimbursement,
@@ -265,7 +283,7 @@ class DashboardBusinessTaskRepository:
                 content_primary=Reimbursement.applicant_user_name,
                 content_secondary=Reimbursement.department,
                 status_column=Reimbursement.status,
-                user_id=user_id,
+                assignee_user_id=assignee_user_id,
             ),
         ]
         rows = (await self.session.execute(union_all(*statements).order_by("code"))).all()
@@ -287,17 +305,17 @@ class DashboardBusinessTaskRepository:
     @staticmethod
     def _approval_select(
         *,
-        model: type,
+        model: Any,
         source_type: str,
-        source_id: object | None = None,
-        code: object,
-        creator_user_id: object,
-        content_primary: object,
-        content_secondary: object,
-        status_column: object,
-        user_id: str,
-    ) -> object:
-        return select(
+        source_id: Any | None = None,
+        code: Any,
+        creator_user_id: Any,
+        content_primary: Any,
+        content_secondary: Any,
+        status_column: Any,
+        assignee_user_id: str | None,
+    ) -> Any:
+        statement = select(
             model.id.label("id"),
             (source_id if source_id is not None else model.id).label("source_id"),
             code.label("code"),
@@ -307,4 +325,7 @@ class DashboardBusinessTaskRepository:
             content_primary.label("content_primary"),
             content_secondary.label("content_secondary"),
             literal(source_type).label("source_type"),
-        ).where(model.reviewer_id == user_id, status_column == "submitted")
+        ).where(status_column == "submitted")
+        if assignee_user_id is not None:
+            statement = statement.where(model.reviewer_id == assignee_user_id)
+        return statement

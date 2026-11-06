@@ -1,6 +1,7 @@
 from datetime import UTC, datetime, time
 
 from app.db.uow import UnitOfWork
+from app.modules.system.auth.permissions import SUPER_ADMIN_PERMISSION
 from app.modules.system.auth.schemas import AssignableUserResponse, CurrentUserResponse
 from app.modules.system.dashboard.business_task_repositories import (
     ApprovalTodoRow,
@@ -47,15 +48,26 @@ class DashboardService:
         self._repository = repository
         self._business_task_repository = business_task_repository
 
-    async def get_dashboard(self, *, user_id: str) -> DashboardResponse:
+    async def get_dashboard(self, *, current_user: CurrentUserResponse) -> DashboardResponse:
+        user_id = current_user.id
+        business_assignee_user_id = (
+            None if SUPER_ADMIN_PERMISSION in current_user.permissions else user_id
+        )
+        fallback_business_assignee = current_user if business_assignee_user_id is None else None
         announcements = await self._repository.list_announcements()
         todos = await self._repository.list_todos(user_id=user_id)
-        quality_todos = await self._business_task_repository.list_active_quality_todos(user_id)
-        followup_todos = await self._business_task_repository.list_active_followup_todos(user_id)
-        inbound_approval_todos = (
-            await self._business_task_repository.list_inbound_approval_todos(user_id)
+        quality_todos = await self._business_task_repository.list_active_quality_todos(
+            business_assignee_user_id
         )
-        approval_todos = await self._business_task_repository.list_approval_todos(user_id)
+        followup_todos = await self._business_task_repository.list_active_followup_todos(
+            business_assignee_user_id
+        )
+        inbound_approval_todos = await self._business_task_repository.list_inbound_approval_todos(
+            business_assignee_user_id
+        )
+        approval_todos = await self._business_task_repository.list_approval_todos(
+            business_assignee_user_id
+        )
         notifications = await self._repository.list_notifications(user_id=user_id)
         schedule_events = await self._repository.list_schedule_events(user_id=user_id)
         shortcuts = await self._repository.list_shortcuts(user_id=user_id)
@@ -63,9 +75,19 @@ class DashboardService:
         todo_responses.extend(self._quality_todo_response(row) for row in quality_todos)
         todo_responses.extend(self._followup_todo_response(row) for row in followup_todos)
         todo_responses.extend(
-            self._inbound_approval_todo_response(row) for row in inbound_approval_todos
+            self._inbound_approval_todo_response(
+                row,
+                fallback_assignee=fallback_business_assignee,
+            )
+            for row in inbound_approval_todos
         )
-        todo_responses.extend(self._approval_todo_response(row) for row in approval_todos)
+        todo_responses.extend(
+            self._approval_todo_response(
+                row,
+                fallback_assignee=fallback_business_assignee,
+            )
+            for row in approval_todos
+        )
         todo_responses.sort(
             key=lambda item: (
                 item.due_at is None,
@@ -267,7 +289,14 @@ class DashboardService:
     def _inbound_approval_todo_response(
         self,
         row: InboundApprovalTodoRow,
+        *,
+        fallback_assignee: CurrentUserResponse | None,
     ) -> TodoTaskResponse:
+        owner_user_id, owner_user_name = self._resolve_approval_assignee(
+            reviewer_id=row.reviewer_id,
+            reviewer_name=row.reviewer_name,
+            fallback_assignee=fallback_assignee,
+        )
         due_at = (
             datetime.combine(row.submitted_at, time(hour=9))
             if row.submitted_at is not None
@@ -275,14 +304,12 @@ class DashboardService:
         )
         return TodoTaskResponse(
             id=row.id,
-            owner_user_id=row.reviewer_id,
-            owner_user_name=row.reviewer_name,
+            owner_user_id=owner_user_id,
+            owner_user_name=owner_user_name,
             creator_user_id=row.creator_user_id,
             creator_user_name=None,
             title=f"入库审批 {row.code}",
-            content=" / ".join(
-                [row.purchase_contract_no, row.supplier_name, row.warehouse_name]
-            ),
+            content=" / ".join([row.purchase_contract_no, row.supplier_name, row.warehouse_name]),
             source_type="warehouse_inbound_approval",
             source_id=row.id,
             due_at=due_at,
@@ -290,7 +317,12 @@ class DashboardService:
             assignment_type="assigned",
         )
 
-    def _approval_todo_response(self, row: ApprovalTodoRow) -> TodoTaskResponse:
+    def _approval_todo_response(
+        self,
+        row: ApprovalTodoRow,
+        *,
+        fallback_assignee: CurrentUserResponse | None,
+    ) -> TodoTaskResponse:
         title_by_type = {
             "sample_delivery_approval": "寄样审批",
             "sales_quotation_approval": "报价审批",
@@ -305,10 +337,15 @@ class DashboardService:
         content = [row.content_primary]
         if row.content_secondary:
             content.append(row.content_secondary)
+        owner_user_id, owner_user_name = self._resolve_approval_assignee(
+            reviewer_id=row.reviewer_id,
+            reviewer_name=row.reviewer_name,
+            fallback_assignee=fallback_assignee,
+        )
         return TodoTaskResponse(
             id=row.id,
-            owner_user_id=row.reviewer_id,
-            owner_user_name=row.reviewer_name,
+            owner_user_id=owner_user_id,
+            owner_user_name=owner_user_name,
             creator_user_id=row.creator_user_id,
             creator_user_name=None,
             title=f"{title_by_type[row.source_type]} {row.code}",
@@ -319,6 +356,19 @@ class DashboardService:
             status="pending",
             assignment_type="assigned",
         )
+
+    @staticmethod
+    def _resolve_approval_assignee(
+        *,
+        reviewer_id: str | None,
+        reviewer_name: str | None,
+        fallback_assignee: CurrentUserResponse | None,
+    ) -> tuple[str, str | None]:
+        if reviewer_id is not None:
+            return reviewer_id, reviewer_name
+        if fallback_assignee is not None:
+            return fallback_assignee.id, fallback_assignee.display_name
+        raise ValueError("个人待办中存在未指定审批人的单据")
 
     def _notification_response(self, row: NotificationRow) -> NotificationResponse:
         return NotificationResponse(
