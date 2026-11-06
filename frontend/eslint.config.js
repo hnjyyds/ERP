@@ -12,7 +12,7 @@ const jsxA11yRecommendedWarnings = Object.fromEntries(
 
 export default tseslint.config(
   {
-    ignores: ['dist/**', 'node_modules/**', 'src/legacy/**'],
+    ignores: ['dist/**', 'node_modules/**'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

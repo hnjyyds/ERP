@@ -6,7 +6,6 @@
 - `src/app`: application shell, routing, app-level configuration, and page composition.
 - `src/shared`: reusable UI, form options, utilities, and cross-feature helpers.
 - `src/api.ts`: API client and backend contract types.
-- `src/legacy`: archived legacy code, excluded from lint and format checks.
 
 ## Commands
 
