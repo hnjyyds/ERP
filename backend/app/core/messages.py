@@ -5,6 +5,7 @@
 """
 
 from app.core.language import DEFAULT_LANGUAGE, get_current_language
+from app.core.source_messages import DYNAMIC_PATTERNS, ROLE_NAMES, SOURCE_MESSAGES
 
 MESSAGE_CATALOG: dict[str, dict[str, str]] = {
     "zh-CN": {
@@ -210,3 +211,31 @@ def translate(key: str, language: str | None = None, **params: object) -> str:
 
 def status_message_key(code: str) -> str:
     return f"status.{code}"
+
+
+def localize_message(text: str, language: str | None = None) -> str:
+    """把业务域中文源文案渲染为目标语言；无译文时原样返回。"""
+    resolved = language or get_current_language()
+    if resolved == DEFAULT_LANGUAGE or resolved not in MESSAGE_CATALOG:
+        return text
+    stripped = text.strip()
+    if not stripped:
+        return text
+
+    translated = SOURCE_MESSAGES.get(stripped)
+    if translated is not None:
+        return translated
+
+    for pattern, template in DYNAMIC_PATTERNS:
+        match = pattern.match(stripped)
+        if match is None:
+            continue
+        params = match.groupdict()
+        fields = params.get("fields")
+        if fields is not None:
+            params["fields"] = fields.replace("、", ", ")
+        role = params.get("role")
+        if role is not None:
+            params["role"] = ROLE_NAMES.get(role, role)
+        return template.format(**params)
+    return text

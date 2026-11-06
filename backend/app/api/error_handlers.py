@@ -9,7 +9,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.types import HTTPExceptionHandler
 
 from app.core.logging import get_request_id
-from app.core.messages import status_message_key, translate
+from app.core.messages import localize_message, status_message_key, translate
 from app.core.status_codes import (
     AppStatusCode,
     get_status_definition,
@@ -127,7 +127,7 @@ def _validation_message(error: ErrorDetails) -> str:
     if error_type in {"date_from_datetime_parsing", "date_type"}:
         return translate("validation.date")
     if error_type == "value_error":
-        return error["msg"].removeprefix("Value error, ")
+        return localize_message(error["msg"].removeprefix("Value error, "))
     return translate("validation.format")
 
 
@@ -188,7 +188,7 @@ def domain_exception_definition(
     if isinstance(exc, ValueError):
         return (
             AppStatusCode.VALIDATION_ERROR,
-            str(exc).strip() or translate("error.business_data_invalid"),
+            localize_message(str(exc).strip()) or translate("error.business_data_invalid"),
         )
     if not module_name.startswith(("app.modules.", "app.mcp.")) or not class_name.endswith("Error"):
         return None
@@ -220,13 +220,17 @@ def domain_exception_definition(
         code = AppStatusCode.VALIDATION_ERROR
 
     default_key = _EXCEPTION_DEFAULT_KEYS.get(class_name)
-    message = str(exc).strip() or (translate(default_key) if default_key else "")
+    message = localize_message(str(exc).strip()) or (
+        translate(default_key) if default_key else ""
+    )
     if message:
         return code, message
 
     module_parts = module_name.removeprefix("app.modules.").split(".")
-    module_key = ".".join(module_parts[:2])
-    entity_label = translate(_MODULE_ENTITY_KEYS.get(module_key, "entity.fallback"))
+    entity_key = _MODULE_ENTITY_KEYS.get(
+        ".".join(module_parts[:2]),
+    ) or _MODULE_ENTITY_KEYS.get(module_parts[0])
+    entity_label = translate(entity_key or "entity.fallback")
     if code == AppStatusCode.PERMISSION_DENIED:
         message = translate("error.permission_denied", entity=entity_label)
     elif code == AppStatusCode.NOT_FOUND:

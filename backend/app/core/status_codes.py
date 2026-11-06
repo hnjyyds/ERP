@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import StrEnum
 
-from app.core.messages import status_message_key, translate
+from app.core.messages import localize_message, status_message_key, translate
 
 
 class AppStatusCode(StrEnum):
@@ -195,5 +195,5 @@ def resolve_error_message(code: AppStatusCode, detail: object | None = None) -> 
         known_code = DETAIL_MESSAGE_CODES.get(text)
         if known_code is not None:
             return translate(status_message_key(known_code.value))
-        return text
+        return localize_message(text)
     return translate(status_message_key(code.value))
