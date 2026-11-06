@@ -12,7 +12,7 @@ from app.modules.purchase.inquiries.models import PurchaseInquiry, PurchaseInqui
 from app.modules.sales.contracts.models import ExportContract, ExportContractLine
 from app.modules.sales.quotations.models import ExportQuotation, ExportQuotationLine
 from app.modules.sales.shipments.models import ShipmentLine, ShipmentPlan
-from app.modules.warehouse.inbound_orders.models import InventoryLedger
+from app.modules.warehouse.inventory.models import InventoryLedger
 
 
 @dataclass(frozen=True)

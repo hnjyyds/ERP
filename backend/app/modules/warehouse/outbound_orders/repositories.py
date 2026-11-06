@@ -6,8 +6,8 @@ from sqlalchemy import Select, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.pagination import resolve_limit, resolve_offset
-from app.modules.warehouse.inbound_orders.models import InventoryBalance, InventoryLedger
-from app.modules.warehouse.inbound_orders.repositories import (
+from app.modules.warehouse.inventory.models import InventoryBalance, InventoryLedger
+from app.modules.warehouse.inventory.repositories import (
     InventoryBalanceRow,
     InventoryLedgerRow,
 )

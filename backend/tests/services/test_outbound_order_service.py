@@ -13,6 +13,7 @@ from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.auth.seed import seed_system_demo_data
 from app.modules.warehouse.inbound_orders.repositories import InboundOrderRepository
+from app.modules.warehouse.inventory.repositories import InventoryRepository
 from app.modules.warehouse.outbound_orders.repositories import OutboundOrderRepository
 from app.modules.warehouse.outbound_orders.schemas import (
     OutboundOrderApprove,
@@ -205,7 +206,7 @@ async def _prepare_scheduled_outbound_plan(
 
 
 async def _add_available_stock(session: AsyncSession, *, quantity: str) -> None:
-    await InboundOrderRepository(session).increase_balance(
+    await InventoryRepository(session).increase_balance(
         warehouse_id="wh-ningbo",
         warehouse_name="宁波总仓",
         location_id="loc-fg-01",
@@ -281,8 +282,8 @@ async def test_outbound_order_service_formal_outbound_deducts_stock_and_followup
                 allow_negative=False,
             ),
         )
-        balances = await InboundOrderRepository(session).list_balances(q="BAG-40")
-        ledgers = await InboundOrderRepository(session).list_ledgers(source_id=approved.id)
+        balances = await InventoryRepository(session).list_balances(q="BAG-40")
+        ledgers = await InventoryRepository(session).list_ledgers(source_id=approved.id)
         plan = await OutboundPlanRepository(session).get_plan(plan_id)
         plan_lines = await OutboundPlanRepository(session).list_lines(plan_id)
         followup_repository = FollowupRepository(session)
@@ -394,7 +395,7 @@ async def test_outbound_order_service_rejects_unauthorized_negative_stock(
                     allow_negative=False,
                 ),
             )
-        balances = await InboundOrderRepository(session).list_balances(q="BAG-40")
+        balances = await InventoryRepository(session).list_balances(q="BAG-40")
         plan_lines = await OutboundPlanRepository(session).list_lines(plan_id)
 
     assert balances[0][0].available_quantity == "20"

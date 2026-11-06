@@ -24,6 +24,8 @@ from app.modules.warehouse.inbound_orders.services import (
 )
 from app.modules.warehouse.inbound_plans.repositories import InboundPlanRepository
 from app.modules.warehouse.inbound_plans.services import InboundPlanService
+from app.modules.warehouse.inventory.repositories import InventoryRepository
+from app.modules.warehouse.inventory.services import InventoryService
 
 
 def _make_service(session: AsyncSession) -> InboundOrderService:
@@ -32,6 +34,7 @@ def _make_service(session: AsyncSession) -> InboundOrderService:
     data_scope_resolver = DataScopeResolver(auth_repository)
     return InboundOrderService(
         inbound_repository=InboundOrderRepository(session),
+        inventory_service=InventoryService(InventoryRepository(session)),
         inbound_plan_repository=InboundPlanRepository(session),
         purchase_contract_repository=purchase_contract_repository,
         quality_repository=QualityInspectionRepository(session),

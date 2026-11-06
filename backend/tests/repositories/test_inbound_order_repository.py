@@ -6,6 +6,7 @@ from app.modules.warehouse.inbound_orders.repositories import (
     InboundOrderRepository,
     InboundOrderRow,
 )
+from app.modules.warehouse.inventory.repositories import InventoryRepository
 
 
 async def test_inbound_order_repository_records_inventory_balance_and_ledger(
@@ -13,6 +14,7 @@ async def test_inbound_order_repository_records_inventory_balance_and_ledger(
 ) -> None:
     async with session_factory() as session:
         repository = InboundOrderRepository(session)
+        inventory_repository = InventoryRepository(session)
         order = await repository.create_order(
             code="IO-REPO-001",
             plan_id="plan-001",
@@ -56,7 +58,7 @@ async def test_inbound_order_repository_records_inventory_balance_and_ledger(
             "业务主管",
             date(2026, 8, 31),
         )
-        balance = await repository.increase_balance(
+        balance = await inventory_repository.increase_balance(
             warehouse_id="wh-ningbo",
             warehouse_name="宁波总仓",
             location_id="loc-a-01",
@@ -68,7 +70,7 @@ async def test_inbound_order_repository_records_inventory_balance_and_ledger(
             pending_delta="0",
             unit="pcs",
         )
-        await repository.add_ledger(
+        await inventory_repository.add_ledger(
             warehouse_id="wh-ningbo",
             warehouse_name="宁波总仓",
             location_id="loc-a-01",
@@ -97,8 +99,8 @@ async def test_inbound_order_repository_records_inventory_balance_and_ledger(
             owner_user_ids=None,
         )
         lines = await repository.list_lines(order.id)
-        balances, balance_total = await repository.list_balances(q="BAG-40")
-        ledgers, ledger_total = await repository.list_ledgers(source_id=order.id)
+        balances, balance_total = await inventory_repository.list_balances(q="BAG-40")
+        ledgers, ledger_total = await inventory_repository.list_ledgers(source_id=order.id)
 
     assert total == 1
     assert isinstance(orders[0], InboundOrderRow)

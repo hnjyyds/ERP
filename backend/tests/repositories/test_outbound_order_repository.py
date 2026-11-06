@@ -2,7 +2,7 @@ from datetime import date
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from app.modules.warehouse.inbound_orders.repositories import InboundOrderRepository
+from app.modules.warehouse.inventory.repositories import InventoryRepository
 from app.modules.warehouse.outbound_orders.repositories import (
     OutboundOrderRepository,
     OutboundOrderRow,
@@ -13,7 +13,7 @@ async def test_outbound_order_repository_records_order_deducts_stock_and_ledger(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        inbound_repository = InboundOrderRepository(session)
+        inventory_repository = InventoryRepository(session)
         repository = OutboundOrderRepository(session)
         order = await repository.create_order(
             code="OO-REPO-001",
@@ -48,7 +48,7 @@ async def test_outbound_order_repository_records_order_deducts_stock_and_ledger(
             unit="pcs",
             remark="正式出库",
         )
-        await inbound_repository.increase_balance(
+        await inventory_repository.increase_balance(
             warehouse_id="wh-ningbo",
             warehouse_name="宁波总仓",
             location_id="loc-fg-01",
@@ -104,8 +104,8 @@ async def test_outbound_order_repository_records_order_deducts_stock_and_ledger(
             owner_user_ids=None,
         )
         lines = await repository.list_lines(order.id)
-        ledgers, ledger_total = await inbound_repository.list_ledgers(source_id=order.id)
-        balances, balance_total = await inbound_repository.list_balances(q="BAG-40")
+        ledgers, ledger_total = await inventory_repository.list_ledgers(source_id=order.id)
+        balances, balance_total = await inventory_repository.list_balances(q="BAG-40")
 
     assert total == 1
     assert isinstance(orders[0], OutboundOrderRow)
@@ -126,9 +126,9 @@ async def test_outbound_order_repository_rejects_insufficient_available_stock(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        inbound_repository = InboundOrderRepository(session)
+        inventory_repository = InventoryRepository(session)
         repository = OutboundOrderRepository(session)
-        await inbound_repository.increase_balance(
+        await inventory_repository.increase_balance(
             warehouse_id="wh-ningbo",
             warehouse_name="宁波总仓",
             location_id="loc-fg-01",
@@ -153,7 +153,7 @@ async def test_outbound_order_repository_rejects_insufficient_available_stock(
             unit="pcs",
             allow_negative=False,
         )
-        balances, _ = await inbound_repository.list_balances(q="BAG-40")
+        balances, _ = await inventory_repository.list_balances(q="BAG-40")
 
     assert balance is None
     assert balances[0].available_quantity == "20"

@@ -36,5 +36,6 @@ from app.modules.system.dashboard import models as dashboard_models  # noqa: F40
 from app.modules.system.mcp_settings import models as mcp_settings_models  # noqa: F401
 from app.modules.warehouse.inbound_orders import models as inbound_order_models  # noqa: F401
 from app.modules.warehouse.inbound_plans import models as inbound_plan_models  # noqa: F401
+from app.modules.warehouse.inventory import models as inventory_models  # noqa: F401
 from app.modules.warehouse.outbound_orders import models as outbound_order_models  # noqa: F401
 from app.modules.warehouse.outbound_plans import models as outbound_plan_models  # noqa: F401

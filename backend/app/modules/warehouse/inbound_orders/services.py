@@ -13,8 +13,6 @@ from app.modules.warehouse.inbound_orders.repositories import (
     InboundOrderLineRow,
     InboundOrderRepository,
     InboundOrderRow,
-    InventoryBalanceRow,
-    InventoryLedgerRow,
 )
 from app.modules.warehouse.inbound_orders.schemas import (
     VALID_INBOUND_ORDER_MODES,
@@ -36,6 +34,11 @@ from app.modules.warehouse.inbound_plans.repositories import (
     InboundPlanRepository,
     InboundPlanRow,
 )
+from app.modules.warehouse.inventory.repositories import (
+    InventoryBalanceRow,
+    InventoryLedgerRow,
+)
+from app.modules.warehouse.inventory.services import InventoryService
 
 
 class PermissionDeniedError(Exception):
@@ -66,6 +69,7 @@ class InboundOrderService:
         self,
         *,
         inbound_repository: InboundOrderRepository,
+        inventory_service: InventoryService,
         inbound_plan_repository: InboundPlanRepository,
         purchase_contract_repository: PurchaseContractRepository,
         quality_repository: QualityInspectionRepository,
@@ -74,6 +78,7 @@ class InboundOrderService:
         auth_repository: AuthRepository,
     ) -> None:
         self._repository = inbound_repository
+        self._inventory_service = inventory_service
         self._inbound_plan_repository = inbound_plan_repository
         self._purchase_contract_repository = purchase_contract_repository
         self._quality_repository = quality_repository
@@ -264,7 +269,7 @@ class InboundOrderService:
         product_id: str | None = None,
     ) -> InventoryBalanceListResponse:
         self._require(current_user, "warehouse:inbound_order:view")
-        rows, total = await self._repository.list_balances(
+        rows, total = await self._inventory_service.list_balances(
             q=q,
             warehouse_id=warehouse_id,
             location_id=location_id,
@@ -284,7 +289,7 @@ class InboundOrderService:
         product_id: str | None = None,
     ) -> InventoryLedgerListResponse:
         self._require(current_user, "warehouse:inbound_order:view")
-        rows, total = await self._repository.list_ledgers(
+        rows, total = await self._inventory_service.list_ledgers(
             q=q,
             source_id=source_id,
             product_id=product_id,
@@ -401,7 +406,7 @@ class InboundOrderService:
     async def _post_inventory(self, *, order: InboundOrderRow, line: InboundOrderLineRow) -> None:
         available_delta = line.quantity if order.inbound_mode == "formal" else "0"
         pending_delta = line.quantity if order.inbound_mode == "pending_inspection" else "0"
-        await self._repository.increase_balance(
+        await self._inventory_service.increase_balance(
             warehouse_id=order.warehouse_id,
             warehouse_name=order.warehouse_name,
             location_id=order.location_id,
@@ -413,7 +418,7 @@ class InboundOrderService:
             pending_delta=pending_delta,
             unit=line.unit,
         )
-        await self._repository.add_ledger(
+        await self._inventory_service.add_ledger(
             warehouse_id=order.warehouse_id,
             warehouse_name=order.warehouse_name,
             location_id=order.location_id,
