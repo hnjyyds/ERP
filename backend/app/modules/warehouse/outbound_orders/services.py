@@ -8,6 +8,7 @@ from app.modules.purchase.contracts.repositories import PurchaseContractReposito
 from app.modules.sales.shipments.repositories import ShipmentPlanRepository
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.warehouse.inbound_orders.repositories import InboundOrderRepository
@@ -173,7 +174,11 @@ class OutboundOrderService:
         order = await self._get_accessible_order(current_user=current_user, order_id=order_id)
         if order.status != "submitted":
             raise ValueError("只有已提交出库单可以审批")
-        if order.reviewer_id is not None and order.reviewer_id != current_user.id:
+        if not can_approve_assigned_record(
+            current_user_id=current_user.id,
+            reviewer_id=order.reviewer_id,
+            permissions=current_user.permissions,
+        ):
             raise PermissionDeniedError
         lines = await self._repository.list_lines(order.id)
         if not lines:

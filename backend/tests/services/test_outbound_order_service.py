@@ -62,8 +62,12 @@ def _warehouse_user() -> CurrentUserResponse:
 
 def _outbound_reviewer() -> CurrentUserResponse:
     return _user(
-        ["warehouse:outbound_order:view", "warehouse:outbound_order:approve"],
-        user_id="u-admin",
+        [
+            "system:super_admin",
+            "warehouse:outbound_order:view",
+            "warehouse:outbound_order:approve",
+        ],
+        user_id="u-boss",
         data_scope="all",
     )
 
@@ -290,6 +294,7 @@ async def test_outbound_order_service_formal_outbound_deducts_stock_and_followup
         )
 
     assert approved.status == "approved"
+    assert approved.reviewer_id == "u-boss"
     assert approved.outbound_mode == "formal"
     assert balances[0][0].available_quantity == "0"
     assert ledgers[0][0].direction == "out"

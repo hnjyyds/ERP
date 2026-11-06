@@ -22,8 +22,8 @@ describe('OutboundPlansPage', () => {
   it('renders filter inputs', () => {
     render(<OutboundPlansPage detailId={null} onNavigate={onNavigate} />)
     expect(screen.getByPlaceholderText('计划号 / 来源单 / 商品')).toBeTruthy()
-    expect(screen.getByPlaceholderText('customer-id')).toBeTruthy()
-    expect(screen.getByPlaceholderText('shipment-id')).toBeTruthy()
+    expect(screen.getByPlaceholderText('输入客户编号或名称')).toBeTruthy()
+    expect(screen.getByPlaceholderText('输入出货单号')).toBeTruthy()
   })
 
   it('renders without detail view when no detailId', () => {

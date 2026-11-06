@@ -1,16 +1,23 @@
 import { Alert, Button, Descriptions as _Descriptions, Input, Modal, Select, Skeleton as _Skeleton, Table, Tag as _Tag } from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search, Warehouse , CheckCircle2, PackagePlus, Send} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
-import { approveInboundOrder, generateInboundOrderFromPlan, listAssignableUsers, listInboundOrders, submitInboundOrder, type AssignableUser, type CurrentUser, type InboundOrder, type InboundOrderApprovePayload, type InboundOrderGeneratePayload , InboundPlan, InventoryBalance, InventoryLedger, listInboundPlans, listInventoryBalances, listInventoryLedgers} from '../../../api'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { approveInboundOrder, generateInboundOrderFromPlan, listAssignableUsers, listInboundOrders, listPurchaseContracts, submitInboundOrder, type AssignableUser, type CurrentUser, type InboundOrder, type InboundOrderApprovePayload, type InboundOrderGeneratePayload , InboundPlan, InventoryBalance, InventoryLedger, listInboundPlans, listInventoryBalances, listInventoryLedgers} from '../../../api'
 import { warehouseInboundOrderPath, moduleDetailPath } from '../../routes'
-import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { FormSelect, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { inboundOrderStatusOptions, inboundOrderModeOptions , inboundPlanStatusOptions} from '../../../shared/formOptions'
 import { formatDate, formatMoney as _formatMoney, formatQuantity as _formatQuantity, nullableText as _nullableText, todayInputValue, type RoutedDetailPageProps , trimDecimal} from '../appHelpers'
 
 function inboundPlanStatusLabel(value: string): string {
   return inboundPlanStatusOptions.find((item) => item.value === value)?.label ?? value
+}
+
+function inboundPlanOptionSearchText(plan: InboundPlan): string {
+  return [plan.purchase_contract_no, plan.supplier_name, plan.code, inboundPlanStatusLabel(plan.status)]
+    .filter(Boolean)
+    .join(' ')
+    .toLocaleLowerCase()
 }
 
 
@@ -26,6 +33,17 @@ type InboundOrderFormState = {
   operator_name: string
 }
 
+const inboundWarehouseOptions = [
+  { value: 'wh-factory', label: '工厂' },
+  { value: 'wh-company', label: '公司仓库' },
+] as const
+
+function inboundWarehouseOption(warehouseId?: string | null, warehouseName?: string | null) {
+  return warehouseId === 'wh-factory' || warehouseName?.includes('工厂')
+    ? inboundWarehouseOptions[0]
+    : inboundWarehouseOptions[1]
+}
+
 type InboundOrderApprovalFormState = {
   reviewer_id: string
   reviewer_name: string
@@ -39,8 +57,8 @@ function initialInboundOrderForm(): InboundOrderFormState {
     code: `IO-${Date.now().toString().slice(-6)}`,
     inbound_mode: 'formal',
     inbound_at: todayInputValue(),
-    warehouse_id: 'wh-ningbo',
-    warehouse_name: '宁波总仓',
+    warehouse_id: 'wh-company',
+    warehouse_name: '公司仓库',
     location_id: 'loc-a-01',
     location_name: 'A-01',
     operator_name: '仓库主管',
@@ -63,12 +81,13 @@ function inboundOrderFormForPlan(
   plan: InboundPlan,
   current: InboundOrderFormState,
 ): InboundOrderFormState {
+  const warehouse = inboundWarehouseOption(plan.warehouse_id, plan.warehouse_name)
   return {
     ...current,
     plan_id: plan.id,
     inbound_at: plan.planned_date,
-    warehouse_id: plan.warehouse_id ?? 'wh-ningbo',
-    warehouse_name: plan.warehouse_name ?? '宁波总仓',
+    warehouse_id: warehouse.value,
+    warehouse_name: warehouse.label,
     location_id: plan.location_id ?? 'loc-a-01',
     location_name: plan.location_name ?? 'A-01',
     operator_name: plan.operator_name ?? '仓库主管',
@@ -76,13 +95,14 @@ function inboundOrderFormForPlan(
 }
 
 function inboundOrderToForm(order: InboundOrder): InboundOrderFormState {
+  const warehouse = inboundWarehouseOption(order.warehouse_id, order.warehouse_name)
   return {
     plan_id: order.plan_id,
     code: order.code,
     inbound_mode: order.inbound_mode,
     inbound_at: order.inbound_at,
-    warehouse_id: order.warehouse_id,
-    warehouse_name: order.warehouse_name,
+    warehouse_id: warehouse.value,
+    warehouse_name: warehouse.label,
     location_id: order.location_id,
     location_name: order.location_name,
     operator_name: order.operator_name,
@@ -162,12 +182,52 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
+  const fetchSupplierOptions = useCallback(async (query: string) => {
+    const result = await listPurchaseContracts({
+      q: query.trim() || undefined,
+      approval_status: 'approved',
+    })
+    const suppliers = new Map<string, { value: string; label: string; description: string }>()
+    result.items.forEach((item) => {
+      if (!item.supplier_id || suppliers.has(item.supplier_id)) return
+      suppliers.set(item.supplier_id, {
+        value: item.supplier_id,
+        label: item.supplier_name,
+        description: `关联已审批合同 ${item.code}`,
+      })
+    })
+    return [...suppliers.values()].slice(0, 20)
+  }, [])
+
+  const fetchContractOptions = useCallback(
+    async (query: string) => {
+      const result = await listPurchaseContracts({
+        q: query.trim() || undefined,
+        approval_status: 'approved',
+        supplier_id: supplierFilter || undefined,
+      })
+      return result.items.slice(0, 20).map((item) => ({
+        value: item.id,
+        label: item.code,
+        description: `${item.supplier_name} · 下单 ${item.contract_date} · 交货 ${item.delivery_date}`,
+      }))
+    },
+    [supplierFilter],
+  )
+
   const selectedOrder = useMemo(
     () => {
       if (detailId) return orders.find((item) => item.id === detailId) ?? null
       return orders.find((item) => item.id === selectedOrderId) ?? orders[0] ?? null
     },
     [detailId, orders, selectedOrderId],
+  )
+  const selectedInboundPlan = useMemo(
+    () => inboundPlans.find((item) => item.id === form.plan_id) ?? null,
+    [form.plan_id, inboundPlans],
+  )
+  const canGenerateFromSelectedPlan = Boolean(
+    selectedInboundPlan && !['closed', 'cancelled'].includes(selectedInboundPlan.status),
   )
 
   useEffect(() => {
@@ -308,6 +368,15 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
     setForm((current) => (plan ? inboundOrderFormForPlan(plan, current) : { ...current, plan_id: planId }))
   }
 
+  function handleInboundWarehouseChange(warehouseId: string) {
+    const warehouse = inboundWarehouseOption(warehouseId)
+    setForm((current) => ({
+      ...current,
+      warehouse_id: warehouse.value,
+      warehouse_name: warehouse.label,
+    }))
+  }
+
   function upsertInboundOrder(order: InboundOrder) {
     setOrders((current) => {
       const exists = current.some((item) => item.id === order.id)
@@ -436,7 +505,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="入库单" />
             <form
-              className="inline-filters"
+              className="inline-filters single-line-filter-toolbar"
               onSubmit={(event) => {
                 event.preventDefault()
                 void loadInboundOrders()
@@ -480,26 +549,33 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
                   ))}
                 </FormSelect>
               </label>
-              <label>
-                供应商标识
-                <Input
-                  value={supplierFilter}
-                  placeholder="supplier-id"
-                  onChange={(event) => setSupplierFilter(event.target.value)}
+              <label className="entity-search-filter">
+                供应商
+                <RemoteSelect
+                  ariaLabel="供应商筛选"
+                  fetchOptions={fetchSupplierOptions}
+                  placeholder="输入供应商编号或名称"
+                  value={supplierFilter || null}
+                  onChange={(value) => {
+                    setSupplierFilter(value)
+                    setContractFilter('')
+                  }}
                 />
               </label>
-              <label>
-                采购合同 ID
-                <Input
-                  value={contractFilter}
-                  placeholder="purchase-contract-id"
-                  onChange={(event) => setContractFilter(event.target.value)}
+              <label className="entity-search-filter">
+                采购合同
+                <RemoteSelect
+                  ariaLabel="采购合同筛选"
+                  fetchOptions={fetchContractOptions}
+                  placeholder="输入合同号或供应商"
+                  value={contractFilter || null}
+                  onChange={setContractFilter}
                 />
               </label>
               <Button htmlType="submit" icon={<Search size={16} />}>
                 查询
               </Button>
-              <Button htmlType="button" icon={<Plus size={16} />} onClick={() => setInboundOrderModalOpen(true)}>
+              <Button htmlType="button" type="primary" icon={<Plus size={16} />} onClick={() => setInboundOrderModalOpen(true)}>
                 生成/审批入库单
               </Button>
             </form>
@@ -567,20 +643,58 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
           <form className="record-form" onSubmit={generateInboundOrder}>
             <div className="form-divider">从入库计划生成</div>
             <label htmlFor="inbound-order-plan-id">
-              入库计划
-              <FormSelect
+              采购订单号
+              <Select
+                allowClear
+                aria-label="采购订单号"
                 id="inbound-order-plan-id"
-                required
-                value={form.plan_id}
-                onChange={(event) => handleInboundOrderPlanChange(event.target.value)}
+                showSearch
+                value={form.plan_id || undefined}
+                placeholder="输入采购订单号或供应商"
+                optionLabelProp="label"
+                filterOption={(input, option) => {
+                  const plan = inboundPlans.find((item) => item.id === option?.value)
+                  if (plan) return inboundPlanOptionSearchText(plan).includes(input.toLocaleLowerCase())
+                  return selectedOrder?.purchase_contract_no
+                    .toLocaleLowerCase()
+                    .includes(input.toLocaleLowerCase()) ?? false
+                }}
+                notFoundContent="暂无可用采购订单"
+                onChange={(value) => handleInboundOrderPlanChange(value ?? '')}
               >
-                <option value="">选择入库计划</option>
+                {form.plan_id &&
+                !inboundPlans.some((plan) => plan.id === form.plan_id) &&
+                selectedOrder?.plan_id === form.plan_id ? (
+                  <Select.Option
+                    key={form.plan_id}
+                    value={form.plan_id}
+                    label={selectedOrder.purchase_contract_no}
+                    disabled
+                  >
+                    <div className="remote-select-option">
+                      <span className="remote-select-option-title">
+                        {selectedOrder.purchase_contract_no}
+                      </span>
+                      <span className="remote-select-option-desc">当前入库单关联记录</span>
+                    </div>
+                  </Select.Option>
+                ) : null}
                 {inboundPlans.map((plan) => (
-                  <option key={plan.id} value={plan.id}>
-                    {plan.code} / {plan.purchase_contract_no} / {inboundPlanStatusLabel(plan.status)}
-                  </option>
+                  <Select.Option
+                    key={plan.id}
+                    value={plan.id}
+                    label={plan.purchase_contract_no}
+                    disabled={['closed', 'cancelled'].includes(plan.status)}
+                  >
+                    <div className="remote-select-option">
+                      <span className="remote-select-option-title">{plan.purchase_contract_no}</span>
+                      <span className="remote-select-option-desc">
+                        {plan.supplier_name} · 入库计划 {plan.code} · {inboundPlanStatusLabel(plan.status)}
+                      </span>
+                    </div>
+                  </Select.Option>
                 ))}
-              </FormSelect>
+              </Select>
             </label>
             <label htmlFor="inbound-order-code">
               入库单号
@@ -622,19 +736,25 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
                 仓库 ID
                 <Input
                   id="inbound-order-warehouse-id"
+                  readOnly
                   required
                   value={form.warehouse_id}
-                  onChange={(event) => setForm({ ...form, warehouse_id: event.target.value })}
                 />
               </label>
               <label htmlFor="inbound-order-warehouse-name">
                 仓库
-                <Input
+                <FormSelect
                   id="inbound-order-warehouse-name"
                   required
-                  value={form.warehouse_name}
-                  onChange={(event) => setForm({ ...form, warehouse_name: event.target.value })}
-                />
+                  value={form.warehouse_id}
+                  onChange={(event) => handleInboundWarehouseChange(event.target.value)}
+                >
+                  {inboundWarehouseOptions.map((item) => (
+                    <option key={item.value} value={item.value}>
+                      {item.label}
+                    </option>
+                  ))}
+                </FormSelect>
               </label>
             </div>
             <div className="form-pair two">
@@ -667,7 +787,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
               />
             </label>
             <Button
-              disabled={!form.plan_id}
+              disabled={!canGenerateFromSelectedPlan}
               htmlType="submit"
               icon={<PackagePlus size={16} />}
               loading={submitting}

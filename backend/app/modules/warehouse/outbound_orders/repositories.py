@@ -248,9 +248,9 @@ class OutboundOrderRepository:
         if order is None:
             return None
         order.status = "approved"
-        if reviewer_id is not None and order.reviewer_id is None:
+        if reviewer_id is not None:
             order.reviewer_id = reviewer_id
-        if reviewer_name is not None and order.reviewer_name is None:
+        if reviewer_name is not None:
             order.reviewer_name = reviewer_name
         order.approved_at = approved_at
         await self.session.flush()

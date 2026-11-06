@@ -1,13 +1,45 @@
 import { Alert, Button, Input, Modal, Skeleton as _Skeleton, Table, Tag as _Tag } from 'antd'
-import { ArrowLeft, LayoutDashboard, Plus, Search, Warehouse , PackagePlus, Save, Send} from 'lucide-react'
+import {
+  ArrowLeft,
+  LayoutDashboard,
+  Plus,
+  Search,
+  Warehouse,
+  PackagePlus,
+  Save,
+  Send,
+} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { generateOutboundPlanFromShipment, listOutboundPlans, scheduleOutboundPlan, type OutboundPlan, type OutboundPlanGeneratePayload, type OutboundPlanSchedulePayload , ShipmentPlan, listShipments} from '../../../api'
+import {
+  generateOutboundPlanFromShipment,
+  listOutboundPlans,
+  scheduleOutboundPlan,
+  type OutboundPlan,
+  type OutboundPlanGeneratePayload,
+  type OutboundPlanSchedulePayload,
+  ShipmentPlan,
+  listShipments,
+} from '../../../api'
 import { warehouseOutboundPlanPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
-import { outboundPlanStatusOptions, outboundPlanTypeOptions, outboundPlanSourceTypeOptions } from '../../../shared/formOptions'
-import { daysFromTodayInputValue, formatDate, formatMoney as _formatMoney, formatQuantity as _formatQuantity, nullableText, todayInputValue as _todayInputValue, type RoutedDetailPageProps , emptyToNull, trimDecimal} from '../appHelpers'
+import {
+  outboundPlanStatusOptions,
+  outboundPlanTypeOptions,
+  outboundPlanSourceTypeOptions,
+} from '../../../shared/formOptions'
+import {
+  daysFromTodayInputValue,
+  formatDate,
+  formatMoney as _formatMoney,
+  formatQuantity as _formatQuantity,
+  nullableText,
+  todayInputValue as _todayInputValue,
+  type RoutedDetailPageProps,
+  emptyToNull,
+  trimDecimal,
+} from '../appHelpers'
 
 type OutboundPlanGenerateFormState = {
   shipment_plan_id: string
@@ -42,7 +74,6 @@ type _OutboundOrderApprovalFormState = {
   approved_at: string
   allow_negative: boolean
 }
-
 
 function initialOutboundPlanGenerateForm(): OutboundPlanGenerateFormState {
   return {
@@ -132,7 +163,6 @@ function outboundPlanTotalQuantity(plan: OutboundPlan): number {
   return plan.lines.reduce((sum, line) => sum + Number(line.planned_quantity || 0), 0)
 }
 
-
 export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [plans, setPlans] = useState<OutboundPlan[]>([])
   const [shipments, setShipments] = useState<ShipmentPlan[]>([])
@@ -155,13 +185,10 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
-  const selectedPlan = useMemo(
-    () => {
-      if (detailId) return plans.find((item) => item.id === detailId) ?? null
-      return plans.find((item) => item.id === selectedPlanId) ?? plans[0] ?? null
-    },
-    [detailId, plans, selectedPlanId],
-  )
+  const selectedPlan = useMemo(() => {
+    if (detailId) return plans.find((item) => item.id === detailId) ?? null
+    return plans.find((item) => item.id === selectedPlanId) ?? plans[0] ?? null
+  }, [detailId, plans, selectedPlanId])
 
   useEffect(() => {
     void loadOutboundPlans()
@@ -171,7 +198,10 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
     if (!selectedPlan) return
     setGenerateForm((current) => ({
       ...current,
-      shipment_plan_id: selectedPlan.source_type === 'shipment_plan' ? selectedPlan.source_id : current.shipment_plan_id,
+      shipment_plan_id:
+        selectedPlan.source_type === 'shipment_plan'
+          ? selectedPlan.source_id
+          : current.shipment_plan_id,
       outbound_type: selectedPlan.outbound_type,
       planned_date: selectedPlan.planned_date,
     }))
@@ -211,7 +241,9 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
       setShipments(shipmentOptions)
       setSelectedPlanId(nextPlanId)
       if (!nextPlanId && shipmentOptions[0]) {
-        setGenerateForm((current) => outboundPlanGenerateFormForShipment(shipmentOptions[0], current))
+        setGenerateForm((current) =>
+          outboundPlanGenerateFormForShipment(shipmentOptions[0], current),
+        )
       }
     } catch (caught) {
       showError(caught, '出库计划加载失败')
@@ -235,14 +267,18 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
   function handleOutboundShipmentChange(shipmentId: string) {
     const shipment = shipments.find((item) => item.id === shipmentId)
     setGenerateForm((current) =>
-      shipment ? outboundPlanGenerateFormForShipment(shipment, current) : { ...current, shipment_plan_id: shipmentId },
+      shipment
+        ? outboundPlanGenerateFormForShipment(shipment, current)
+        : { ...current, shipment_plan_id: shipmentId },
     )
   }
 
   function upsertOutboundPlan(plan: OutboundPlan) {
     setPlans((current) => {
       const exists = current.some((item) => item.id === plan.id)
-      return exists ? current.map((item) => (item.id === plan.id ? plan : item)) : [plan, ...current]
+      return exists
+        ? current.map((item) => (item.id === plan.id ? plan : item))
+        : [plan, ...current]
     })
     setSelectedPlanId(plan.id)
   }
@@ -288,7 +324,10 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
     setMessage('')
     setError('')
     try {
-      const plan = await scheduleOutboundPlan(selectedPlan.id, outboundPlanSchedulePayload(scheduleForm))
+      const plan = await scheduleOutboundPlan(
+        selectedPlan.id,
+        outboundPlanSchedulePayload(scheduleForm),
+      )
       upsertOutboundPlan(plan)
       setOutboundPlanModalOpen(false)
       await loadOutboundPlans(plan.id, plan)
@@ -307,153 +346,167 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
 
   return (
     <section className="outbound-plan-page">
-<div className="summary-strip" aria-label="出库计划概览">
+      <div className="summary-strip" aria-label="出库计划概览">
         <Metric label="出库计划" value={plans.length} />
-        <Metric label="待安排" value={plannedCount} intent={plannedCount > 0 ? 'warning' : 'normal'} />
+        <Metric
+          label="待安排"
+          value={plannedCount}
+          intent={plannedCount > 0 ? 'warning' : 'normal'}
+        />
         <Metric label="已排库位" value={scheduledCount} />
         <Metric label="待出库数量" value={totalQuantity.toFixed(2)} />
         <Metric label="发货来源" value={shipmentSourceCount} />
       </div>
 
-      {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
+      {message ? (
+        <Alert className="workspace-alert" title={message} type="success" showIcon />
+      ) : null}
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid outbound-plan-grid">
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="出库计划" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadOutboundPlans()
-              }}
-            >
-              <label>
-                计划搜索
-                <Input
-                  value={search}
-                  placeholder="计划号 / 来源单 / 商品"
-                  onChange={(event) => setSearch(event.target.value)}
-                />
-              </label>
-              <label htmlFor="outbound-status-filter">
-                出库状态
-                <FormSelect
-                  id="outbound-status-filter"
-                  value={statusFilter}
-                  onChange={(event) => setStatusFilter(event.target.value)}
-                >
-                  <option value="">全部状态</option>
-                  {outboundPlanStatusOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label htmlFor="outbound-type-filter">
-                出库类型
-                <FormSelect
-                  id="outbound-type-filter"
-                  value={typeFilter}
-                  onChange={(event) => setTypeFilter(event.target.value)}
-                >
-                  <option value="">全部类型</option>
-                  {outboundPlanTypeOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label htmlFor="outbound-source-filter">
-                来源类型
-                <FormSelect
-                  id="outbound-source-filter"
-                  value={sourceFilter}
-                  onChange={(event) => setSourceFilter(event.target.value)}
-                >
-                  <option value="">全部来源</option>
-                  {outboundPlanSourceTypeOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                客户标识
-                <Input
-                  value={customerFilter}
-                  placeholder="customer-id"
-                  onChange={(event) => setCustomerFilter(event.target.value)}
-                />
-              </label>
-              <label>
-                来源单 ID
-                <Input
-                  value={sourceIdFilter}
-                  placeholder="shipment-id"
-                  onChange={(event) => setSourceIdFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-              <Button htmlType="button" icon={<Plus size={16} />} onClick={() => setOutboundPlanModalOpen(true)}>
-                生成/排库位
-              </Button>
-            </form>
-          </div>
-
-          <Table<OutboundPlan>
-            columns={[
-              {
-                title: '计划号',
-                dataIndex: 'code',
-                render: (value: string, record: OutboundPlan) => (
-                  <button
-                    className="row-button"
-                    type="button"
-                    onClick={(event) => stopAndOpenOutboundPlanDetail(event, record)}
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<Search size={18} />} title="出库计划" />
+              <form
+                className="inline-filters"
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  void loadOutboundPlans()
+                }}
+              >
+                <label>
+                  计划搜索
+                  <Input
+                    value={search}
+                    placeholder="计划号 / 来源单 / 商品"
+                    onChange={(event) => setSearch(event.target.value)}
+                  />
+                </label>
+                <label htmlFor="outbound-status-filter">
+                  出库状态
+                  <FormSelect
+                    id="outbound-status-filter"
+                    value={statusFilter}
+                    onChange={(event) => setStatusFilter(event.target.value)}
                   >
-                    {value}
-                  </button>
-                ),
-              },
-              { title: '状态', dataIndex: 'status', render: outboundPlanStatusLabel },
-              { title: '类型', dataIndex: 'outbound_type', render: outboundPlanTypeLabel },
-              { title: '来源单', dataIndex: 'source_code' },
-              { title: '客户', dataIndex: 'customer_name', render: nullableText },
-              { title: '计划出库日', dataIndex: 'planned_date', render: formatDate },
-              {
-                title: '数量',
-                dataIndex: 'lines',
-                render: (_, plan) => outboundPlanTotalQuantity(plan).toFixed(2),
-              },
-              {
-                title: '入口',
-                key: 'detail',
-                width: 110,
-                render: (_: unknown, record: OutboundPlan) => (
-                  <Button size="small" onClick={(event) => stopAndOpenOutboundPlanDetail(event, record)}>
-                    查看详情
-                  </Button>
-                ),
-              },
-            ]}
-            dataSource={plans}
-            loading={loading}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedPlan?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => setSelectedPlanId(record.id),
-            })}
-          />
+                    <option value="">全部状态</option>
+                    {outboundPlanStatusOptions.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </FormSelect>
+                </label>
+                <label htmlFor="outbound-type-filter">
+                  出库类型
+                  <FormSelect
+                    id="outbound-type-filter"
+                    value={typeFilter}
+                    onChange={(event) => setTypeFilter(event.target.value)}
+                  >
+                    <option value="">全部类型</option>
+                    {outboundPlanTypeOptions.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </FormSelect>
+                </label>
+                <label htmlFor="outbound-source-filter">
+                  来源类型
+                  <FormSelect
+                    id="outbound-source-filter"
+                    value={sourceFilter}
+                    onChange={(event) => setSourceFilter(event.target.value)}
+                  >
+                    <option value="">全部来源</option>
+                    {outboundPlanSourceTypeOptions.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </FormSelect>
+                </label>
+                <label>
+                  客户标识
+                  <Input
+                    value={customerFilter}
+                    placeholder="输入客户编号或名称"
+                    onChange={(event) => setCustomerFilter(event.target.value)}
+                  />
+                </label>
+                <label>
+                  来源单 ID
+                  <Input
+                    value={sourceIdFilter}
+                    placeholder="输入出货单号"
+                    onChange={(event) => setSourceIdFilter(event.target.value)}
+                  />
+                </label>
+                <Button htmlType="submit" icon={<Search size={16} />}>
+                  查询
+                </Button>
+                <Button
+                  htmlType="button"
+                  type="primary"
+                  icon={<Plus size={16} />}
+                  onClick={() => setOutboundPlanModalOpen(true)}
+                >
+                  生成/排库位
+                </Button>
+              </form>
+            </div>
+
+            <Table<OutboundPlan>
+              columns={[
+                {
+                  title: '计划号',
+                  dataIndex: 'code',
+                  render: (value: string, record: OutboundPlan) => (
+                    <button
+                      className="row-button"
+                      type="button"
+                      onClick={(event) => stopAndOpenOutboundPlanDetail(event, record)}
+                    >
+                      {value}
+                    </button>
+                  ),
+                },
+                { title: '状态', dataIndex: 'status', render: outboundPlanStatusLabel },
+                { title: '类型', dataIndex: 'outbound_type', render: outboundPlanTypeLabel },
+                { title: '来源单', dataIndex: 'source_code' },
+                { title: '客户', dataIndex: 'customer_name', render: nullableText },
+                { title: '计划出库日', dataIndex: 'planned_date', render: formatDate },
+                {
+                  title: '数量',
+                  dataIndex: 'lines',
+                  render: (_, plan) => outboundPlanTotalQuantity(plan).toFixed(2),
+                },
+                {
+                  title: '入口',
+                  key: 'detail',
+                  width: 110,
+                  render: (_: unknown, record: OutboundPlan) => (
+                    <Button
+                      size="small"
+                      onClick={(event) => stopAndOpenOutboundPlanDetail(event, record)}
+                    >
+                      查看详情
+                    </Button>
+                  ),
+                },
+              ]}
+              dataSource={plans}
+              loading={loading}
+              pagination={false}
+              rowClassName={(record) => (record.id === selectedPlan?.id ? 'selected-row' : '')}
+              rowKey="id"
+              size="small"
+              onRow={(record) => ({
+                onClick: () => setSelectedPlanId(record.id),
+              })}
+            />
           </section>
         ) : null}
 
@@ -466,234 +519,250 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
           onCancel={() => setOutboundPlanModalOpen(false)}
         >
           <div className="workflow-modal-content entity-modal-form">
-          <PanelTitle icon={<Warehouse size={18} />} title="计划生成和排库位" />
-          <form className="record-form" onSubmit={generateOutboundPlan}>
-            <div className="form-divider">从发货计划生成</div>
-            <label htmlFor="outbound-plan-shipment-id">
-              发货计划
-              <FormSelect
-                id="outbound-plan-shipment-id"
-                required
-                value={generateForm.shipment_plan_id}
-                onChange={(event) => handleOutboundShipmentChange(event.target.value)}
-              >
-                <option value="">选择已审批发货计划</option>
-                {shipments.map((shipment) => (
-                  <option key={shipment.id} value={shipment.id}>
-                    {shipment.code} / {shipment.customer_name ?? '未设置客户'} / {formatDate(shipment.planned_ship_date)}
-                  </option>
-                ))}
-              </FormSelect>
-            </label>
-            <div className="form-pair two">
-              <label htmlFor="outbound-plan-type">
-                出库类型
+            <PanelTitle icon={<Warehouse size={18} />} title="计划生成和排库位" />
+            <form className="record-form" onSubmit={generateOutboundPlan}>
+              <div className="form-divider">从发货计划生成</div>
+              <label htmlFor="outbound-plan-shipment-id">
+                发货计划
                 <FormSelect
-                  id="outbound-plan-type"
-                  value={generateForm.outbound_type}
-                  onChange={(event) =>
-                    setGenerateForm({ ...generateForm, outbound_type: event.target.value })
-                  }
+                  id="outbound-plan-shipment-id"
+                  required
+                  value={generateForm.shipment_plan_id}
+                  onChange={(event) => handleOutboundShipmentChange(event.target.value)}
                 >
-                  {outboundPlanTypeOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
+                  <option value="">选择已审批发货计划</option>
+                  {shipments.map((shipment) => (
+                    <option key={shipment.id} value={shipment.id}>
+                      {shipment.code} / {shipment.customer_name ?? '未设置客户'} /{' '}
+                      {formatDate(shipment.planned_ship_date)}
                     </option>
                   ))}
                 </FormSelect>
               </label>
-              <label htmlFor="outbound-plan-date">
+              <div className="form-pair two">
+                <label htmlFor="outbound-plan-type">
+                  出库类型
+                  <FormSelect
+                    id="outbound-plan-type"
+                    value={generateForm.outbound_type}
+                    onChange={(event) =>
+                      setGenerateForm({ ...generateForm, outbound_type: event.target.value })
+                    }
+                  >
+                    {outboundPlanTypeOptions.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </FormSelect>
+                </label>
+                <label htmlFor="outbound-plan-date">
+                  计划出库日
+                  <Input
+                    id="outbound-plan-date"
+                    type="date"
+                    value={generateForm.planned_date}
+                    onChange={(event) =>
+                      setGenerateForm({ ...generateForm, planned_date: event.target.value })
+                    }
+                  />
+                </label>
+              </div>
+              <Button
+                disabled={!generateForm.shipment_plan_id}
+                htmlType="submit"
+                icon={<PackagePlus size={16} />}
+                loading={submitting}
+              >
+                生成出库计划
+              </Button>
+            </form>
+
+            <form
+              className="record-form accessory-form generation-form"
+              onSubmit={scheduleSelectedOutboundPlan}
+            >
+              <div className="form-divider">库位预安排</div>
+              <label htmlFor="outbound-schedule-date">
                 计划出库日
                 <Input
-                  id="outbound-plan-date"
+                  id="outbound-schedule-date"
+                  required
                   type="date"
-                  value={generateForm.planned_date}
+                  value={scheduleForm.planned_date}
                   onChange={(event) =>
-                    setGenerateForm({ ...generateForm, planned_date: event.target.value })
+                    setScheduleForm({ ...scheduleForm, planned_date: event.target.value })
                   }
                 />
               </label>
-            </div>
-            <Button
-              disabled={!generateForm.shipment_plan_id}
-              htmlType="submit"
-              icon={<PackagePlus size={16} />}
-              loading={submitting}
-            >
-              生成出库计划
-            </Button>
-          </form>
-
-          <form className="record-form accessory-form generation-form" onSubmit={scheduleSelectedOutboundPlan}>
-            <div className="form-divider">库位预安排</div>
-            <label htmlFor="outbound-schedule-date">
-              计划出库日
-              <Input
-                id="outbound-schedule-date"
-                required
-                type="date"
-                value={scheduleForm.planned_date}
-                onChange={(event) =>
-                  setScheduleForm({ ...scheduleForm, planned_date: event.target.value })
-                }
-              />
-            </label>
-            <div className="form-pair two">
-              <label htmlFor="outbound-warehouse-id">
-                仓库 ID
+              <div className="form-pair two">
+                <label htmlFor="outbound-warehouse-id">
+                  仓库 ID
+                  <Input
+                    id="outbound-warehouse-id"
+                    required
+                    value={scheduleForm.warehouse_id}
+                    onChange={(event) =>
+                      setScheduleForm({ ...scheduleForm, warehouse_id: event.target.value })
+                    }
+                  />
+                </label>
+                <label htmlFor="outbound-warehouse-name">
+                  仓库
+                  <Input
+                    id="outbound-warehouse-name"
+                    required
+                    value={scheduleForm.warehouse_name}
+                    onChange={(event) =>
+                      setScheduleForm({ ...scheduleForm, warehouse_name: event.target.value })
+                    }
+                  />
+                </label>
+              </div>
+              <div className="form-pair two">
+                <label htmlFor="outbound-location-id">
+                  库位 ID
+                  <Input
+                    id="outbound-location-id"
+                    required
+                    value={scheduleForm.location_id}
+                    onChange={(event) =>
+                      setScheduleForm({ ...scheduleForm, location_id: event.target.value })
+                    }
+                  />
+                </label>
+                <label htmlFor="outbound-location-name">
+                  库位
+                  <Input
+                    id="outbound-location-name"
+                    required
+                    value={scheduleForm.location_name}
+                    onChange={(event) =>
+                      setScheduleForm({ ...scheduleForm, location_name: event.target.value })
+                    }
+                  />
+                </label>
+              </div>
+              <label htmlFor="outbound-operator-name">
+                经办人
                 <Input
-                  id="outbound-warehouse-id"
+                  id="outbound-operator-name"
                   required
-                  value={scheduleForm.warehouse_id}
+                  value={scheduleForm.operator_name}
                   onChange={(event) =>
-                    setScheduleForm({ ...scheduleForm, warehouse_id: event.target.value })
+                    setScheduleForm({ ...scheduleForm, operator_name: event.target.value })
                   }
                 />
               </label>
-              <label htmlFor="outbound-warehouse-name">
-                仓库
-                <Input
-                  id="outbound-warehouse-name"
-                  required
-                  value={scheduleForm.warehouse_name}
-                  onChange={(event) =>
-                    setScheduleForm({ ...scheduleForm, warehouse_name: event.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label htmlFor="outbound-location-id">
-                库位 ID
-                <Input
-                  id="outbound-location-id"
-                  required
-                  value={scheduleForm.location_id}
-                  onChange={(event) =>
-                    setScheduleForm({ ...scheduleForm, location_id: event.target.value })
-                  }
-                />
-              </label>
-              <label htmlFor="outbound-location-name">
-                库位
-                <Input
-                  id="outbound-location-name"
-                  required
-                  value={scheduleForm.location_name}
-                  onChange={(event) =>
-                    setScheduleForm({ ...scheduleForm, location_name: event.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <label htmlFor="outbound-operator-name">
-              经办人
-              <Input
-                id="outbound-operator-name"
-                required
-                value={scheduleForm.operator_name}
-                onChange={(event) =>
-                  setScheduleForm({ ...scheduleForm, operator_name: event.target.value })
-                }
-              />
-            </label>
-            <Button
-              disabled={!selectedPlan}
-              htmlType="submit"
-              icon={<Save size={16} />}
-              loading={submitting}
-              type="primary"
-            >
-              保存库位安排
-            </Button>
-          </form>
+              <Button
+                disabled={!selectedPlan}
+                htmlType="submit"
+                icon={<Save size={16} />}
+                loading={submitting}
+                type="primary"
+              >
+                保存库位安排
+              </Button>
+            </form>
           </div>
         </Modal>
 
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="待出库清单" />
-            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(warehouseOutboundPlanPath)}>
-              返回列表
-            </Button>
-          </div>
-          {selectedPlan ? (
-            <>
-              <dl className="detail-list">
-                <div>
-                  <dt>来源单据</dt>
-                  <dd>{outboundPlanSourceTypeLabel(selectedPlan.source_type)} / {selectedPlan.source_code}</dd>
-                </div>
-                <div>
-                  <dt>客户</dt>
-                  <dd>{selectedPlan.customer_name ?? '未设置客户'}</dd>
-                </div>
-                <div>
-                  <dt>出库类型</dt>
-                  <dd>{outboundPlanTypeLabel(selectedPlan.outbound_type)}</dd>
-                </div>
-                <div>
-                  <dt>计划状态</dt>
-                  <dd>{outboundPlanStatusLabel(selectedPlan.status)}</dd>
-                </div>
-                <div>
-                  <dt>计划出库日</dt>
-                  <dd>{formatDate(selectedPlan.planned_date)}</dd>
-                </div>
-                <div>
-                  <dt>库位</dt>
-                  <dd>
-                    {selectedPlan.warehouse_name ?? '未安排'} / {selectedPlan.location_name ?? '未安排'}
-                  </dd>
-                </div>
-              </dl>
-
-              <div className="accessory-heading">
-                <strong>待出库商品</strong>
-                <span>{selectedPlan.lines.length} 条</span>
-              </div>
-              <table className="data-table compact-table">
-                <thead>
-                  <tr>
-                    <th>商品</th>
-                    <th>规格</th>
-                    <th>计划数量</th>
-                    <th>已出库</th>
-                    <th>状态</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedPlan.lines.map((line) => (
-                    <tr key={line.id}>
-                      <td>{line.product_code ?? '-'} {line.product_name}</td>
-                      <td>{line.specification ?? line.model ?? '未设置'}</td>
-                      <td>{trimDecimal(line.planned_quantity)} {line.unit}</td>
-                      <td>{trimDecimal(line.outbound_quantity)} {line.unit}</td>
-                      <td>{outboundPlanLineStatusLabel(line.status)}</td>
-                    </tr>
-                  ))}
-                  {selectedPlan.lines.length === 0 ? (
-                    <tr>
-                      <td className="empty-cell" colSpan={5}>
-                        暂无待出库明细
-                      </td>
-                    </tr>
-                  ) : null}
-                </tbody>
-              </table>
-            </>
-          ) : (
-            <div className="module-state panel-empty-state">
-              <Send size={28} />
-              <strong>暂无出库计划</strong>
-              <span>请返回列表选择出库计划查看待出库清单</span>
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<LayoutDashboard size={18} />} title="待出库清单" />
+              <Button
+                icon={<ArrowLeft size={16} />}
+                onClick={() => onNavigate(warehouseOutboundPlanPath)}
+              >
+                返回列表
+              </Button>
             </div>
-          )}
+            {selectedPlan ? (
+              <>
+                <dl className="detail-list">
+                  <div>
+                    <dt>来源单据</dt>
+                    <dd>
+                      {outboundPlanSourceTypeLabel(selectedPlan.source_type)} /{' '}
+                      {selectedPlan.source_code}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>客户</dt>
+                    <dd>{selectedPlan.customer_name ?? '未设置客户'}</dd>
+                  </div>
+                  <div>
+                    <dt>出库类型</dt>
+                    <dd>{outboundPlanTypeLabel(selectedPlan.outbound_type)}</dd>
+                  </div>
+                  <div>
+                    <dt>计划状态</dt>
+                    <dd>{outboundPlanStatusLabel(selectedPlan.status)}</dd>
+                  </div>
+                  <div>
+                    <dt>计划出库日</dt>
+                    <dd>{formatDate(selectedPlan.planned_date)}</dd>
+                  </div>
+                  <div>
+                    <dt>库位</dt>
+                    <dd>
+                      {selectedPlan.warehouse_name ?? '未安排'} /{' '}
+                      {selectedPlan.location_name ?? '未安排'}
+                    </dd>
+                  </div>
+                </dl>
+
+                <div className="accessory-heading">
+                  <strong>待出库商品</strong>
+                  <span>{selectedPlan.lines.length} 条</span>
+                </div>
+                <table className="data-table compact-table">
+                  <thead>
+                    <tr>
+                      <th>商品</th>
+                      <th>规格</th>
+                      <th>计划数量</th>
+                      <th>已出库</th>
+                      <th>状态</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedPlan.lines.map((line) => (
+                      <tr key={line.id}>
+                        <td>
+                          {line.product_code ?? '-'} {line.product_name}
+                        </td>
+                        <td>{line.specification ?? line.model ?? '未设置'}</td>
+                        <td>
+                          {trimDecimal(line.planned_quantity)} {line.unit}
+                        </td>
+                        <td>
+                          {trimDecimal(line.outbound_quantity)} {line.unit}
+                        </td>
+                        <td>{outboundPlanLineStatusLabel(line.status)}</td>
+                      </tr>
+                    ))}
+                    {selectedPlan.lines.length === 0 ? (
+                      <tr>
+                        <td className="empty-cell" colSpan={5}>
+                          暂无待出库明细
+                        </td>
+                      </tr>
+                    ) : null}
+                  </tbody>
+                </table>
+              </>
+            ) : (
+              <div className="module-state panel-empty-state">
+                <Send size={28} />
+                <strong>暂无出库计划</strong>
+                <span>请返回列表选择出库计划查看待出库清单</span>
+              </div>
+            )}
           </section>
         ) : null}
       </section>
     </section>
   )
 }
-

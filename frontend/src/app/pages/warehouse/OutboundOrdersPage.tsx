@@ -1,13 +1,63 @@
-import { Alert, Button, Descriptions as _Descriptions, Input, Modal, Skeleton as _Skeleton, Table, Tag as _Tag } from 'antd'
-import { ArrowLeft, LayoutDashboard, Plus, Search, Warehouse , CheckCircle2, Package, PackagePlus, Send} from 'lucide-react'
+import {
+  Alert,
+  Button,
+  Descriptions as _Descriptions,
+  Input,
+  Modal,
+  Skeleton as _Skeleton,
+  Table,
+  Tag as _Tag,
+} from 'antd'
+import {
+  ArrowLeft,
+  LayoutDashboard,
+  Plus,
+  Search,
+  Warehouse,
+  CheckCircle2,
+  Package,
+  PackagePlus,
+  Send,
+} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { approveOutboundOrder, generateOutboundOrderFromPlan, listOutboundOrders, submitOutboundOrder, type CurrentUser, type OutboundOrder, type OutboundOrderApprovePayload, type OutboundOrderGeneratePayload , InventoryBalance, InventoryLedger, OutboundPlan, listOutboundPlans, listInventoryBalances, listInventoryLedgers} from '../../../api'
+import {
+  approveOutboundOrder,
+  generateOutboundOrderFromPlan,
+  listOutboundOrders,
+  submitOutboundOrder,
+  type CurrentUser,
+  type OutboundOrder,
+  type OutboundOrderApprovePayload,
+  type OutboundOrderGeneratePayload,
+  InventoryBalance,
+  InventoryLedger,
+  OutboundPlan,
+  listOutboundPlans,
+  listInventoryBalances,
+  listInventoryLedgers,
+} from '../../../api'
 import { warehouseOutboundOrderPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
-import { outboundOrderStatusOptions, outboundOrderModeOptions , outboundPlanTypeOptions, outboundPlanStatusOptions, outboundPlanSourceTypeOptions} from '../../../shared/formOptions'
-import { canApproveAssignedRecord, formatDate, formatMoney as _formatMoney, formatQuantity as _formatQuantity, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull, trimDecimal} from '../appHelpers'
+import {
+  outboundOrderStatusOptions,
+  outboundOrderModeOptions,
+  outboundPlanTypeOptions,
+  outboundPlanStatusOptions,
+  outboundPlanSourceTypeOptions,
+} from '../../../shared/formOptions'
+import {
+  canApproveAssignedRecord,
+  formatDate,
+  formatMoney as _formatMoney,
+  formatQuantity as _formatQuantity,
+  nullableText,
+  todayInputValue,
+  type RoutedDetailPageProps,
+  emptyToNull,
+  trimDecimal,
+} from '../appHelpers'
 import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
 
 function outboundPlanStatusLabel(value: string): string {
@@ -34,7 +84,6 @@ function inventoryDirectionLabel(value: string): string {
   return value
 }
 
-
 type OutboundOrderFormState = {
   plan_id: string
   code: string
@@ -53,7 +102,6 @@ type OutboundOrderApprovalFormState = {
   approved_at: string
   allow_negative: boolean
 }
-
 
 function initialOutboundOrderForm(): OutboundOrderFormState {
   return {
@@ -147,7 +195,6 @@ function outboundOrderTotalQuantity(order: OutboundOrder): number {
   return order.lines.reduce((sum, line) => sum + Number(line.quantity || 0), 0)
 }
 
-
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 
 export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props) {
@@ -174,13 +221,10 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
-  const selectedOrder = useMemo(
-    () => {
-      if (detailId) return orders.find((item) => item.id === detailId) ?? null
-      return orders.find((item) => item.id === selectedOrderId) ?? orders[0] ?? null
-    },
-    [detailId, orders, selectedOrderId],
-  )
+  const selectedOrder = useMemo(() => {
+    if (detailId) return orders.find((item) => item.id === detailId) ?? null
+    return orders.find((item) => item.id === selectedOrderId) ?? orders[0] ?? null
+  }, [detailId, orders, selectedOrderId])
 
   useEffect(() => {
     void loadOutboundOrders()
@@ -292,13 +336,17 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
 
   function handleOutboundOrderPlanChange(planId: string) {
     const plan = outboundPlans.find((item) => item.id === planId)
-    setForm((current) => (plan ? outboundOrderFormForPlan(plan, current) : { ...current, plan_id: planId }))
+    setForm((current) =>
+      plan ? outboundOrderFormForPlan(plan, current) : { ...current, plan_id: planId },
+    )
   }
 
   function upsertOutboundOrder(order: OutboundOrder) {
     setOrders((current) => {
       const exists = current.some((item) => item.id === order.id)
-      return exists ? current.map((item) => (item.id === order.id ? order : item)) : [order, ...current]
+      return exists
+        ? current.map((item) => (item.id === order.id ? order : item))
+        : [order, ...current]
     })
     setSelectedOrderId(order.id)
   }
@@ -364,7 +412,13 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
     event.preventDefault()
     if (!selectedOrder) return
     if (selectedOrder.status !== 'submitted') return
-    if (!canApproveAssignedRecord(currentUser, selectedOrder.reviewer_id, 'warehouse:outbound_order:approve')) {
+    if (
+      !canApproveAssignedRecord(
+        currentUser,
+        selectedOrder.reviewer_id,
+        'warehouse:outbound_order:approve',
+      )
+    ) {
       showError(new Error(`该出库单应由 ${selectedOrder.reviewer_name ?? '指定审批人'} 审批`))
       return
     }
@@ -372,7 +426,10 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
     setMessage('')
     setError('')
     try {
-      const order = await approveOutboundOrder(selectedOrder.id, outboundOrderApprovePayload(approvalForm))
+      const order = await approveOutboundOrder(
+        selectedOrder.id,
+        outboundOrderApprovePayload(approvalForm),
+      )
       const inventoryQuery = order.lines[0]?.product_code ?? order.lines[0]?.product_name ?? ''
       setStatusFilter('approved')
       setInventorySearch(inventoryQuery)
@@ -402,155 +459,169 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
 
   return (
     <section className="outbound-order-page">
-<div className="summary-strip" aria-label="货物出库概览">
+      <div className="summary-strip" aria-label="货物出库概览">
         <Metric label="出库单" value={orders.length} />
         <Metric label="草稿" value={draftCount} />
-        <Metric label="待审批" value={submittedCount} intent={submittedCount > 0 ? 'warning' : 'normal'} />
+        <Metric
+          label="待审批"
+          value={submittedCount}
+          intent={submittedCount > 0 ? 'warning' : 'normal'}
+        />
         <Metric label="已出库" value={approvedCount} />
         <Metric label="出库数量" value={outboundQuantity.toFixed(2)} />
         <Metric label="可用库存" value={availableQuantity.toFixed(2)} />
       </div>
 
-      {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
+      {message ? (
+        <Alert className="workspace-alert" title={message} type="success" showIcon />
+      ) : null}
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid outbound-order-grid">
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="出库单" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadOutboundOrders()
-              }}
-            >
-              <label>
-                出库搜索
-                <Input
-                  value={search}
-                  placeholder="出库单 / 来源单 / 商品"
-                  onChange={(event) => setSearch(event.target.value)}
-                />
-              </label>
-              <label htmlFor="outbound-order-status-filter">
-                单据状态
-                <FormSelect
-                  id="outbound-order-status-filter"
-                  value={statusFilter}
-                  onChange={(event) => setStatusFilter(event.target.value)}
-                >
-                  <option value="">全部状态</option>
-                  {outboundOrderStatusOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label htmlFor="outbound-order-mode-filter">
-                出库模式
-                <FormSelect
-                  id="outbound-order-mode-filter"
-                  value={modeFilter}
-                  onChange={(event) => setModeFilter(event.target.value)}
-                >
-                  <option value="">全部模式</option>
-                  {outboundOrderModeOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label htmlFor="outbound-order-type-filter">
-                出库类型
-                <FormSelect
-                  id="outbound-order-type-filter"
-                  value={typeFilter}
-                  onChange={(event) => setTypeFilter(event.target.value)}
-                >
-                  <option value="">全部类型</option>
-                  {outboundPlanTypeOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                客户标识
-                <Input
-                  value={customerFilter}
-                  placeholder="customer-id"
-                  onChange={(event) => setCustomerFilter(event.target.value)}
-                />
-              </label>
-              <label>
-                来源单 ID
-                <Input
-                  value={sourceIdFilter}
-                  placeholder="shipment-id"
-                  onChange={(event) => setSourceIdFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-              <Button htmlType="button" icon={<Plus size={16} />} onClick={() => setOutboundOrderModalOpen(true)}>
-                生成/审批出库单
-              </Button>
-            </form>
-          </div>
-
-          <Table<OutboundOrder>
-            columns={[
-              {
-                title: '出库单',
-                dataIndex: 'code',
-                render: (value: string, record: OutboundOrder) => (
-                  <button
-                    className="row-button"
-                    type="button"
-                    onClick={(event) => stopAndOpenOutboundOrderDetail(event, record)}
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<Search size={18} />} title="出库单" />
+              <form
+                className="inline-filters"
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  void loadOutboundOrders()
+                }}
+              >
+                <label>
+                  出库搜索
+                  <Input
+                    value={search}
+                    placeholder="出库单 / 来源单 / 商品"
+                    onChange={(event) => setSearch(event.target.value)}
+                  />
+                </label>
+                <label htmlFor="outbound-order-status-filter">
+                  单据状态
+                  <FormSelect
+                    id="outbound-order-status-filter"
+                    value={statusFilter}
+                    onChange={(event) => setStatusFilter(event.target.value)}
                   >
-                    {value}
-                  </button>
-                ),
-              },
-              { title: '状态', dataIndex: 'status', render: outboundOrderStatusLabel },
-              { title: '模式', dataIndex: 'outbound_mode', render: outboundOrderModeLabel },
-              { title: '出库类型', dataIndex: 'outbound_type', render: outboundPlanTypeLabel },
-              { title: '来源单', dataIndex: 'source_code' },
-              { title: '客户', dataIndex: 'customer_name', render: nullableText },
-              { title: '出库日', dataIndex: 'outbound_at', render: formatDate },
-              {
-                title: '数量',
-                dataIndex: 'lines',
-                render: (_, order) => outboundOrderTotalQuantity(order).toFixed(2),
-              },
-              {
-                title: '入口',
-                key: 'detail',
-                width: 110,
-                render: (_: unknown, record: OutboundOrder) => (
-                  <Button size="small" onClick={(event) => stopAndOpenOutboundOrderDetail(event, record)}>
-                    查看详情
-                  </Button>
-                ),
-              },
-            ]}
-            dataSource={orders}
-            loading={loading}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedOrder?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => setSelectedOrderId(record.id),
-            })}
-          />
+                    <option value="">全部状态</option>
+                    {outboundOrderStatusOptions.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </FormSelect>
+                </label>
+                <label htmlFor="outbound-order-mode-filter">
+                  出库模式
+                  <FormSelect
+                    id="outbound-order-mode-filter"
+                    value={modeFilter}
+                    onChange={(event) => setModeFilter(event.target.value)}
+                  >
+                    <option value="">全部模式</option>
+                    {outboundOrderModeOptions.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </FormSelect>
+                </label>
+                <label htmlFor="outbound-order-type-filter">
+                  出库类型
+                  <FormSelect
+                    id="outbound-order-type-filter"
+                    value={typeFilter}
+                    onChange={(event) => setTypeFilter(event.target.value)}
+                  >
+                    <option value="">全部类型</option>
+                    {outboundPlanTypeOptions.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </FormSelect>
+                </label>
+                <label>
+                  客户标识
+                  <Input
+                    value={customerFilter}
+                    placeholder="输入客户编号或名称"
+                    onChange={(event) => setCustomerFilter(event.target.value)}
+                  />
+                </label>
+                <label>
+                  来源单 ID
+                  <Input
+                    value={sourceIdFilter}
+                    placeholder="输入出货单号"
+                    onChange={(event) => setSourceIdFilter(event.target.value)}
+                  />
+                </label>
+                <Button htmlType="submit" icon={<Search size={16} />}>
+                  查询
+                </Button>
+                <Button
+                  htmlType="button"
+                  type="primary"
+                  icon={<Plus size={16} />}
+                  onClick={() => setOutboundOrderModalOpen(true)}
+                >
+                  生成/审批出库单
+                </Button>
+              </form>
+            </div>
+
+            <Table<OutboundOrder>
+              columns={[
+                {
+                  title: '出库单',
+                  dataIndex: 'code',
+                  render: (value: string, record: OutboundOrder) => (
+                    <button
+                      className="row-button"
+                      type="button"
+                      onClick={(event) => stopAndOpenOutboundOrderDetail(event, record)}
+                    >
+                      {value}
+                    </button>
+                  ),
+                },
+                { title: '状态', dataIndex: 'status', render: outboundOrderStatusLabel },
+                { title: '模式', dataIndex: 'outbound_mode', render: outboundOrderModeLabel },
+                { title: '出库类型', dataIndex: 'outbound_type', render: outboundPlanTypeLabel },
+                { title: '来源单', dataIndex: 'source_code' },
+                { title: '客户', dataIndex: 'customer_name', render: nullableText },
+                { title: '出库日', dataIndex: 'outbound_at', render: formatDate },
+                {
+                  title: '数量',
+                  dataIndex: 'lines',
+                  render: (_, order) => outboundOrderTotalQuantity(order).toFixed(2),
+                },
+                {
+                  title: '入口',
+                  key: 'detail',
+                  width: 110,
+                  render: (_: unknown, record: OutboundOrder) => (
+                    <Button
+                      size="small"
+                      onClick={(event) => stopAndOpenOutboundOrderDetail(event, record)}
+                    >
+                      查看详情
+                    </Button>
+                  ),
+                },
+              ]}
+              dataSource={orders}
+              loading={loading}
+              pagination={false}
+              rowClassName={(record) => (record.id === selectedOrder?.id ? 'selected-row' : '')}
+              rowKey="id"
+              size="small"
+              onRow={(record) => ({
+                onClick: () => setSelectedOrderId(record.id),
+              })}
+            />
           </section>
         ) : null}
 
@@ -563,363 +634,407 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
           onCancel={() => setOutboundOrderModalOpen(false)}
         >
           <div className="workflow-modal-content entity-modal-form">
-          <PanelTitle icon={<Warehouse size={18} />} title="出库登记" />
-          <form className="record-form" onSubmit={generateOutboundOrder}>
-            <div className="form-divider">从出库计划生成</div>
-            <label htmlFor="outbound-order-plan-id">
-              出库计划
-              <FormSelect
-                id="outbound-order-plan-id"
-                required
-                value={form.plan_id}
-                onChange={(event) => handleOutboundOrderPlanChange(event.target.value)}
-              >
-                <option value="">选择出库计划</option>
-                {outboundPlans.map((plan) => (
-                  <option key={plan.id} value={plan.id}>
-                    {plan.code} / {plan.source_code} / {outboundPlanStatusLabel(plan.status)}
-                  </option>
-                ))}
-              </FormSelect>
-            </label>
-            <label htmlFor="outbound-order-code">
-              出库单号
-              <Input
-                id="outbound-order-code"
-                required
-                value={form.code}
-                onChange={(event) => setForm({ ...form, code: event.target.value })}
-              />
-            </label>
-            <div className="form-pair two">
-              <label htmlFor="outbound-order-mode">
-                出库模式
+            <PanelTitle icon={<Warehouse size={18} />} title="出库登记" />
+            <form className="record-form" onSubmit={generateOutboundOrder}>
+              <div className="form-divider">从出库计划生成</div>
+              <label htmlFor="outbound-order-plan-id">
+                出库计划
                 <FormSelect
-                  id="outbound-order-mode"
-                  value={form.outbound_mode}
-                  onChange={(event) => setForm({ ...form, outbound_mode: event.target.value })}
+                  id="outbound-order-plan-id"
+                  required
+                  value={form.plan_id}
+                  onChange={(event) => handleOutboundOrderPlanChange(event.target.value)}
                 >
-                  {outboundOrderModeOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
+                  <option value="">选择出库计划</option>
+                  {outboundPlans.map((plan) => (
+                    <option key={plan.id} value={plan.id}>
+                      {plan.code} / {plan.source_code} / {outboundPlanStatusLabel(plan.status)}
                     </option>
                   ))}
                 </FormSelect>
               </label>
-              <label htmlFor="outbound-order-date">
-                出库日期
+              <label htmlFor="outbound-order-code">
+                出库单号
                 <Input
-                  id="outbound-order-date"
+                  id="outbound-order-code"
                   required
-                  type="date"
-                  value={form.outbound_at}
-                  onChange={(event) => setForm({ ...form, outbound_at: event.target.value })}
+                  value={form.code}
+                  onChange={(event) => setForm({ ...form, code: event.target.value })}
                 />
               </label>
-            </div>
-            <div className="form-pair two">
-              <label htmlFor="outbound-order-warehouse-id">
-                仓库 ID
+              <div className="form-pair two">
+                <label htmlFor="outbound-order-mode">
+                  出库模式
+                  <FormSelect
+                    id="outbound-order-mode"
+                    value={form.outbound_mode}
+                    onChange={(event) => setForm({ ...form, outbound_mode: event.target.value })}
+                  >
+                    {outboundOrderModeOptions.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </FormSelect>
+                </label>
+                <label htmlFor="outbound-order-date">
+                  出库日期
+                  <Input
+                    id="outbound-order-date"
+                    required
+                    type="date"
+                    value={form.outbound_at}
+                    onChange={(event) => setForm({ ...form, outbound_at: event.target.value })}
+                  />
+                </label>
+              </div>
+              <div className="form-pair two">
+                <label htmlFor="outbound-order-warehouse-id">
+                  仓库 ID
+                  <Input
+                    id="outbound-order-warehouse-id"
+                    required
+                    value={form.warehouse_id}
+                    onChange={(event) => setForm({ ...form, warehouse_id: event.target.value })}
+                  />
+                </label>
+                <label htmlFor="outbound-order-warehouse-name">
+                  仓库
+                  <Input
+                    id="outbound-order-warehouse-name"
+                    required
+                    value={form.warehouse_name}
+                    onChange={(event) => setForm({ ...form, warehouse_name: event.target.value })}
+                  />
+                </label>
+              </div>
+              <div className="form-pair two">
+                <label htmlFor="outbound-order-location-id">
+                  库位 ID
+                  <Input
+                    id="outbound-order-location-id"
+                    required
+                    value={form.location_id}
+                    onChange={(event) => setForm({ ...form, location_id: event.target.value })}
+                  />
+                </label>
+                <label htmlFor="outbound-order-location-name">
+                  库位
+                  <Input
+                    id="outbound-order-location-name"
+                    required
+                    value={form.location_name}
+                    onChange={(event) => setForm({ ...form, location_name: event.target.value })}
+                  />
+                </label>
+              </div>
+              <label htmlFor="outbound-order-operator">
+                经办人
                 <Input
-                  id="outbound-order-warehouse-id"
+                  id="outbound-order-operator"
                   required
-                  value={form.warehouse_id}
-                  onChange={(event) => setForm({ ...form, warehouse_id: event.target.value })}
+                  value={form.operator_name}
+                  onChange={(event) => setForm({ ...form, operator_name: event.target.value })}
                 />
               </label>
-              <label htmlFor="outbound-order-warehouse-name">
-                仓库
-                <Input
-                  id="outbound-order-warehouse-name"
-                  required
-                  value={form.warehouse_name}
-                  onChange={(event) => setForm({ ...form, warehouse_name: event.target.value })}
+              <label htmlFor="outbound-exception-reason">
+                异常原因
+                <Input.TextArea
+                  id="outbound-exception-reason"
+                  rows={3}
+                  value={form.exception_reason}
+                  onChange={(event) => setForm({ ...form, exception_reason: event.target.value })}
                 />
               </label>
-            </div>
-            <div className="form-pair two">
-              <label htmlFor="outbound-order-location-id">
-                库位 ID
-                <Input
-                  id="outbound-order-location-id"
-                  required
-                  value={form.location_id}
-                  onChange={(event) => setForm({ ...form, location_id: event.target.value })}
-                />
-              </label>
-              <label htmlFor="outbound-order-location-name">
-                库位
-                <Input
-                  id="outbound-order-location-name"
-                  required
-                  value={form.location_name}
-                  onChange={(event) => setForm({ ...form, location_name: event.target.value })}
-                />
-              </label>
-            </div>
-            <label htmlFor="outbound-order-operator">
-              经办人
-              <Input
-                id="outbound-order-operator"
-                required
-                value={form.operator_name}
-                onChange={(event) => setForm({ ...form, operator_name: event.target.value })}
-              />
-            </label>
-            <label htmlFor="outbound-exception-reason">
-              异常原因
-              <Input.TextArea
-                id="outbound-exception-reason"
-                rows={3}
-                value={form.exception_reason}
-                onChange={(event) => setForm({ ...form, exception_reason: event.target.value })}
-              />
-            </label>
-            <Button
-              disabled={!form.plan_id}
-              htmlType="submit"
-              icon={<PackagePlus size={16} />}
-              loading={submitting}
-            >
-              生成出库单
-            </Button>
-          </form>
+              <Button
+                disabled={!form.plan_id}
+                htmlType="submit"
+                icon={<PackagePlus size={16} />}
+                loading={submitting}
+              >
+                生成出库单
+              </Button>
+            </form>
 
-          <form className="record-form accessory-form generation-form" onSubmit={approveSelectedOutboundOrder}>
-            <div className="form-divider">提交和审批</div>
-            {selectedOrder?.status === 'draft' ? (
-              <ApprovalAssigneeSelect
-                currentUserId={currentUser.id}
-                onChange={setReviewerId}
-                requiredPermission="warehouse:outbound_order:approve"
-                value={reviewerId}
-              />
-            ) : null}
-            <Button
-              disabled={!selectedOrder || selectedOrder.status !== 'draft' || !reviewerId}
-              htmlType="button"
-              icon={<Send size={16} />}
-              loading={submitting}
-              onClick={() => void submitSelectedOutboundOrder()}
+            <form
+              className="record-form accessory-form generation-form"
+              onSubmit={approveSelectedOutboundOrder}
             >
-              提交审批
-            </Button>
-            <div className="form-pair two">
-              <label htmlFor="outbound-reviewer-name">
-                审批人
-                <Input
-                  id="outbound-reviewer-name"
-                  disabled
-                  value={selectedOrder?.reviewer_name ?? ''}
+              <div className="form-divider">提交和审批</div>
+              {selectedOrder?.status === 'draft' ? (
+                <ApprovalAssigneeSelect
+                  currentUserId={currentUser.id}
+                  onChange={setReviewerId}
+                  requiredPermission="warehouse:outbound_order:approve"
+                  value={reviewerId}
                 />
-              </label>
-              <label htmlFor="outbound-approved-at">
-                审批日期
-                <Input
-                  id="outbound-approved-at"
-                  required
-                  type="date"
-                  value={approvalForm.approved_at}
+              ) : null}
+              <Button
+                disabled={!selectedOrder || selectedOrder.status !== 'draft' || !reviewerId}
+                htmlType="button"
+                icon={<Send size={16} />}
+                loading={submitting}
+                onClick={() => void submitSelectedOutboundOrder()}
+              >
+                提交审批
+              </Button>
+              <div className="form-pair two">
+                <label htmlFor="outbound-reviewer-name">
+                  审批人
+                  <Input
+                    id="outbound-reviewer-name"
+                    disabled
+                    value={selectedOrder?.reviewer_name ?? ''}
+                  />
+                </label>
+                <label htmlFor="outbound-approved-at">
+                  审批日期
+                  <Input
+                    id="outbound-approved-at"
+                    required
+                    type="date"
+                    value={approvalForm.approved_at}
+                    onChange={(event) =>
+                      setApprovalForm({ ...approvalForm, approved_at: event.target.value })
+                    }
+                  />
+                </label>
+              </div>
+              <label className="checkbox-line" htmlFor="outbound-allow-negative">
+                <input
+                  aria-label="授权负库存出库"
+                  id="outbound-allow-negative"
+                  type="checkbox"
+                  checked={approvalForm.allow_negative}
                   onChange={(event) =>
-                    setApprovalForm({ ...approvalForm, approved_at: event.target.value })
+                    setApprovalForm({ ...approvalForm, allow_negative: event.target.checked })
                   }
                 />
+                授权负库存出库
               </label>
-            </div>
-            <label className="checkbox-line" htmlFor="outbound-allow-negative">
-              <input
-                aria-label="授权负库存出库"
-                id="outbound-allow-negative"
-                type="checkbox"
-                checked={approvalForm.allow_negative}
-                onChange={(event) =>
-                  setApprovalForm({ ...approvalForm, allow_negative: event.target.checked })
+              <Button
+                disabled={
+                  !selectedOrder ||
+                  selectedOrder.status !== 'submitted' ||
+                  !canApproveAssignedRecord(
+                    currentUser,
+                    selectedOrder.reviewer_id,
+                    'warehouse:outbound_order:approve',
+                  )
                 }
-              />
-              授权负库存出库
-            </label>
-            <Button
-              disabled={
-                !selectedOrder ||
-                selectedOrder.status !== 'submitted' ||
-                !canApproveAssignedRecord(currentUser, selectedOrder.reviewer_id, 'warehouse:outbound_order:approve')
-              }
-              htmlType="submit"
-              icon={<CheckCircle2 size={16} />}
-              loading={submitting}
-              type="primary"
-            >
-              审批出库
-            </Button>
-            {selectedOrder?.status === 'submitted' && !canApproveAssignedRecord(currentUser, selectedOrder.reviewer_id, 'warehouse:outbound_order:approve') ? (
-              <Alert
-                message={`等待 ${selectedOrder.reviewer_name ?? '指定审批人'} 审批`}
-                showIcon
-                type="info"
-              />
-            ) : null}
-          </form>
+                htmlType="submit"
+                icon={<CheckCircle2 size={16} />}
+                loading={submitting}
+                type="primary"
+              >
+                审批出库
+              </Button>
+              {selectedOrder?.status === 'submitted' &&
+              !canApproveAssignedRecord(
+                currentUser,
+                selectedOrder.reviewer_id,
+                'warehouse:outbound_order:approve',
+              ) ? (
+                <Alert
+                  message={`等待 ${selectedOrder.reviewer_name ?? '指定审批人'} 审批`}
+                  showIcon
+                  type="info"
+                />
+              ) : null}
+            </form>
           </div>
         </Modal>
 
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="出库明细和库存流水" />
-            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(warehouseOutboundOrderPath)}>
-              返回列表
-            </Button>
-          </div>
-          {selectedOrder ? (
-            <>
-              <dl className="detail-list">
-                <div>
-                  <dt>来源单据</dt>
-                  <dd>{outboundPlanSourceTypeLabel(selectedOrder.source_type)} / {selectedOrder.source_code}</dd>
-                </div>
-                <div>
-                  <dt>客户</dt>
-                  <dd>{selectedOrder.customer_name ?? '未设置客户'}</dd>
-                </div>
-                <div>
-                  <dt>出库模式</dt>
-                  <dd>{outboundOrderModeLabel(selectedOrder.outbound_mode)}</dd>
-                </div>
-                <div>
-                  <dt>单据状态</dt>
-                  <dd>{outboundOrderStatusLabel(selectedOrder.status)}</dd>
-                </div>
-                <div>
-                  <dt>出库日期</dt>
-                  <dd>{formatDate(selectedOrder.outbound_at)}</dd>
-                </div>
-                <div>
-                  <dt>库位</dt>
-                  <dd>{selectedOrder.warehouse_name} / {selectedOrder.location_name}</dd>
-                </div>
-              </dl>
-
-              <div className="accessory-heading">
-                <strong>出库明细</strong>
-                <span>{selectedOrder.lines.length} 条</span>
-              </div>
-              <table className="data-table compact-table">
-                <thead>
-                  <tr>
-                    <th>商品</th>
-                    <th>规格</th>
-                    <th>数量</th>
-                    <th>库存状态</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedOrder.lines.map((line) => (
-                    <tr key={line.id}>
-                      <td>{line.product_code ?? '-'} {line.product_name}</td>
-                      <td>{line.specification ?? line.model ?? '未设置'}</td>
-                      <td>{trimDecimal(line.quantity)} {line.unit}</td>
-                      <td>{stockStatusLabel(line.stock_status)}</td>
-                    </tr>
-                  ))}
-                  {selectedOrder.lines.length === 0 ? (
-                    <tr>
-                      <td className="empty-cell" colSpan={4}>
-                        暂无出库明细
-                      </td>
-                    </tr>
-                  ) : null}
-                </tbody>
-              </table>
-
-              <form className="inline-filters inline-search inventory-search-form" onSubmit={refreshOutboundInventorySnapshot}>
-                <label>
-                  库存搜索
-                  <Input
-                    value={inventorySearch}
-                    placeholder="商品编码 / 商品名称 / 仓库"
-                    onChange={(event) => setInventorySearch(event.target.value)}
-                  />
-                </label>
-                <Button htmlType="submit" icon={<Search size={16} />}>
-                  查库存
-                </Button>
-              </form>
-
-              <div className="accessory-heading">
-                <strong>库存余额</strong>
-                <span>{inventoryBalances.length} 条</span>
-              </div>
-              <table className="data-table compact-table">
-                <thead>
-                  <tr>
-                    <th>商品</th>
-                    <th>库位</th>
-                    <th>可用</th>
-                    <th>待检</th>
-                    <th>锁定</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {inventoryBalances.map((balance) => (
-                    <tr key={balance.id}>
-                      <td>{balance.product_code ?? '-'} {balance.product_name}</td>
-                      <td>{balance.warehouse_name} / {balance.location_name}</td>
-                      <td>{trimDecimal(balance.available_quantity)} {balance.unit}</td>
-                      <td>{trimDecimal(balance.pending_inspection_quantity)} {balance.unit}</td>
-                      <td>{trimDecimal(balance.locked_quantity)} {balance.unit}</td>
-                    </tr>
-                  ))}
-                  {inventoryBalances.length === 0 ? (
-                    <tr>
-                      <td className="empty-cell" colSpan={5}>
-                        暂无库存余额
-                      </td>
-                    </tr>
-                  ) : null}
-                </tbody>
-              </table>
-
-              <div className="accessory-heading">
-                <strong>出库流水</strong>
-                <span>{inventoryLedgers.length} 条</span>
-              </div>
-              <table className="data-table compact-table">
-                <thead>
-                  <tr>
-                    <th>日期</th>
-                    <th>方向</th>
-                    <th>商品</th>
-                    <th>数量</th>
-                    <th>来源</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {inventoryLedgers.map((ledger) => (
-                    <tr key={ledger.id}>
-                      <td>{formatDate(ledger.occurred_at)}</td>
-                      <td>{inventoryDirectionLabel(ledger.direction)} / {stockStatusLabel(ledger.stock_status)}</td>
-                      <td>{ledger.product_code ?? '-'} {ledger.product_name}</td>
-                      <td>{trimDecimal(ledger.quantity)} {ledger.unit}</td>
-                      <td>{ledger.source_code}</td>
-                    </tr>
-                  ))}
-                  {inventoryLedgers.length === 0 ? (
-                    <tr>
-                      <td className="empty-cell" colSpan={5}>
-                        暂无出库流水
-                      </td>
-                    </tr>
-                  ) : null}
-                </tbody>
-              </table>
-            </>
-          ) : (
-            <div className="module-state panel-empty-state">
-              <Package size={28} />
-              <strong>暂无出库单</strong>
-              <span>请返回列表选择出库单查看明细和库存流水</span>
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<LayoutDashboard size={18} />} title="出库明细和库存流水" />
+              <Button
+                icon={<ArrowLeft size={16} />}
+                onClick={() => onNavigate(warehouseOutboundOrderPath)}
+              >
+                返回列表
+              </Button>
             </div>
-          )}
+            {selectedOrder ? (
+              <>
+                <dl className="detail-list">
+                  <div>
+                    <dt>来源单据</dt>
+                    <dd>
+                      {outboundPlanSourceTypeLabel(selectedOrder.source_type)} /{' '}
+                      {selectedOrder.source_code}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>客户</dt>
+                    <dd>{selectedOrder.customer_name ?? '未设置客户'}</dd>
+                  </div>
+                  <div>
+                    <dt>出库模式</dt>
+                    <dd>{outboundOrderModeLabel(selectedOrder.outbound_mode)}</dd>
+                  </div>
+                  <div>
+                    <dt>单据状态</dt>
+                    <dd>{outboundOrderStatusLabel(selectedOrder.status)}</dd>
+                  </div>
+                  <div>
+                    <dt>出库日期</dt>
+                    <dd>{formatDate(selectedOrder.outbound_at)}</dd>
+                  </div>
+                  <div>
+                    <dt>库位</dt>
+                    <dd>
+                      {selectedOrder.warehouse_name} / {selectedOrder.location_name}
+                    </dd>
+                  </div>
+                </dl>
+
+                <div className="accessory-heading">
+                  <strong>出库明细</strong>
+                  <span>{selectedOrder.lines.length} 条</span>
+                </div>
+                <table className="data-table compact-table">
+                  <thead>
+                    <tr>
+                      <th>商品</th>
+                      <th>规格</th>
+                      <th>数量</th>
+                      <th>库存状态</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedOrder.lines.map((line) => (
+                      <tr key={line.id}>
+                        <td>
+                          {line.product_code ?? '-'} {line.product_name}
+                        </td>
+                        <td>{line.specification ?? line.model ?? '未设置'}</td>
+                        <td>
+                          {trimDecimal(line.quantity)} {line.unit}
+                        </td>
+                        <td>{stockStatusLabel(line.stock_status)}</td>
+                      </tr>
+                    ))}
+                    {selectedOrder.lines.length === 0 ? (
+                      <tr>
+                        <td className="empty-cell" colSpan={4}>
+                          暂无出库明细
+                        </td>
+                      </tr>
+                    ) : null}
+                  </tbody>
+                </table>
+
+                <form
+                  className="inline-filters inline-search inventory-search-form"
+                  onSubmit={refreshOutboundInventorySnapshot}
+                >
+                  <label>
+                    库存搜索
+                    <Input
+                      value={inventorySearch}
+                      placeholder="商品编码 / 商品名称 / 仓库"
+                      onChange={(event) => setInventorySearch(event.target.value)}
+                    />
+                  </label>
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    查库存
+                  </Button>
+                </form>
+
+                <div className="accessory-heading">
+                  <strong>库存余额</strong>
+                  <span>{inventoryBalances.length} 条</span>
+                </div>
+                <table className="data-table compact-table">
+                  <thead>
+                    <tr>
+                      <th>商品</th>
+                      <th>库位</th>
+                      <th>可用</th>
+                      <th>待检</th>
+                      <th>锁定</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {inventoryBalances.map((balance) => (
+                      <tr key={balance.id}>
+                        <td>
+                          {balance.product_code ?? '-'} {balance.product_name}
+                        </td>
+                        <td>
+                          {balance.warehouse_name} / {balance.location_name}
+                        </td>
+                        <td>
+                          {trimDecimal(balance.available_quantity)} {balance.unit}
+                        </td>
+                        <td>
+                          {trimDecimal(balance.pending_inspection_quantity)} {balance.unit}
+                        </td>
+                        <td>
+                          {trimDecimal(balance.locked_quantity)} {balance.unit}
+                        </td>
+                      </tr>
+                    ))}
+                    {inventoryBalances.length === 0 ? (
+                      <tr>
+                        <td className="empty-cell" colSpan={5}>
+                          暂无库存余额
+                        </td>
+                      </tr>
+                    ) : null}
+                  </tbody>
+                </table>
+
+                <div className="accessory-heading">
+                  <strong>出库流水</strong>
+                  <span>{inventoryLedgers.length} 条</span>
+                </div>
+                <table className="data-table compact-table">
+                  <thead>
+                    <tr>
+                      <th>日期</th>
+                      <th>方向</th>
+                      <th>商品</th>
+                      <th>数量</th>
+                      <th>来源</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {inventoryLedgers.map((ledger) => (
+                      <tr key={ledger.id}>
+                        <td>{formatDate(ledger.occurred_at)}</td>
+                        <td>
+                          {inventoryDirectionLabel(ledger.direction)} /{' '}
+                          {stockStatusLabel(ledger.stock_status)}
+                        </td>
+                        <td>
+                          {ledger.product_code ?? '-'} {ledger.product_name}
+                        </td>
+                        <td>
+                          {trimDecimal(ledger.quantity)} {ledger.unit}
+                        </td>
+                        <td>{ledger.source_code}</td>
+                      </tr>
+                    ))}
+                    {inventoryLedgers.length === 0 ? (
+                      <tr>
+                        <td className="empty-cell" colSpan={5}>
+                          暂无出库流水
+                        </td>
+                      </tr>
+                    ) : null}
+                  </tbody>
+                </table>
+              </>
+            ) : (
+              <div className="module-state panel-empty-state">
+                <Package size={28} />
+                <strong>暂无出库单</strong>
+                <span>请返回列表选择出库单查看明细和库存流水</span>
+              </div>
+            )}
           </section>
         ) : null}
       </section>

@@ -5,14 +5,25 @@ import { OutboundOrdersPage } from '../warehouse/OutboundOrdersPage'
 
 describe('OutboundOrdersPage', () => {
   const onNavigate = vi.fn()
-  const currentUser = { id: 'u-admin', username: 'admin', display_name: '管理员', department_name: '管理部', avatar_type: 'preset' as const, avatar_value: 'blue', roles: ['admin'], permissions: ['system:super_admin'] }
+  const currentUser = {
+    id: 'u-admin',
+    username: 'admin',
+    display_name: '管理员',
+    department_name: '管理部',
+    avatar_type: 'preset' as const,
+    avatar_value: 'blue',
+    roles: ['admin'],
+    permissions: ['system:super_admin'],
+  }
 
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
   it('renders without crashing', () => {
-    const { container } = render(<OutboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+    const { container } = render(
+      <OutboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
     expect(container).toBeTruthy()
   })
 
@@ -24,8 +35,8 @@ describe('OutboundOrdersPage', () => {
   it('renders filter inputs', () => {
     render(<OutboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
     expect(screen.getByPlaceholderText('出库单 / 来源单 / 商品')).toBeTruthy()
-    expect(screen.getByPlaceholderText('customer-id')).toBeTruthy()
-    expect(screen.getByPlaceholderText('shipment-id')).toBeTruthy()
+    expect(screen.getByPlaceholderText('输入客户编号或名称')).toBeTruthy()
+    expect(screen.getByPlaceholderText('输入出货单号')).toBeTruthy()
   })
 
   it('opens modal when 生成/审批出库单 button is clicked', async () => {

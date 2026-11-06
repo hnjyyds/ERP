@@ -88,6 +88,19 @@ def _business_approver() -> CurrentUserResponse:
     )
 
 
+def _super_admin_approver() -> CurrentUserResponse:
+    return _user(
+        [
+            "system:super_admin",
+            "warehouse:inbound_order:view",
+            "warehouse:inbound_order:approve",
+            "warehouse:inbound_order:view_all",
+        ],
+        user_id="u-boss",
+        display_name="超级管理员",
+    )
+
+
 async def _prepare_plan(
     session: AsyncSession,
     *,
@@ -286,7 +299,7 @@ async def test_inbound_order_service_formal_inbound_posts_inventory_and_followup
             payload=InboundOrderSubmit(reviewer_id="u-001"),
         )
         approved = await service.approve_order(
-            current_user=_business_approver(),
+            current_user=_super_admin_approver(),
             order_id=order.id,
             payload=InboundOrderApprove(approved_at=date(2026, 8, 30)),
         )
@@ -306,8 +319,8 @@ async def test_inbound_order_service_formal_inbound_posts_inventory_and_followup
         )
 
     assert approved.status == "approved"
-    assert approved.reviewer_id == "u-001"
-    assert approved.reviewer_name == "演示业务主管"
+    assert approved.reviewer_id == "u-boss"
+    assert approved.reviewer_name == "超级管理员"
     assert balances.items[0].available_quantity == "1000"
     assert balances.items[0].pending_inspection_quantity == "0"
     assert ledgers.items[0].quantity == "1000"
