@@ -233,9 +233,9 @@ class SampleDeliveryRepository:
         if delivery is None:
             return None
         delivery.status = "approved"
-        if reviewer_id is not None and delivery.reviewer_id is None:
+        if reviewer_id is not None:
             delivery.reviewer_id = reviewer_id
-        if reviewer_name is not None and delivery.reviewer_name is None:
+        if reviewer_name is not None:
             delivery.reviewer_name = reviewer_name
         delivery.approved_at = approved_at
         await self.session.flush()

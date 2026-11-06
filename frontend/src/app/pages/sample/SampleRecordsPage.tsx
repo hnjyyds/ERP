@@ -2,13 +2,39 @@ import { Alert, Button, Input, Modal, Table } from 'antd'
 import { ArrowLeft, Images, LayoutDashboard, Plus, Search } from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { createSampleRecord, addSampleRecordImage, addSampleRecordStockEvent, listSampleRecords, importSampleRecords, exportSampleRecords, type SampleRecord, type SampleRecordCreatePayload, type SampleRecordImage, type SampleRecordImagePayload, type SampleRecordStockEvent, type SampleRecordStockEventPayload , SampleRequest, SampleRequestToRecordPayload} from '../../../api'
+import {
+  createSampleRecord,
+  addSampleRecordImage,
+  addSampleRecordStockEvent,
+  listSampleRecords,
+  importSampleRecords,
+  exportSampleRecords,
+  type SampleRecord,
+  type SampleRecordCreatePayload,
+  type SampleRecordImage,
+  type SampleRecordImagePayload,
+  type SampleRecordStockEvent,
+  type SampleRecordStockEventPayload,
+  SampleRequest,
+  SampleRequestToRecordPayload,
+} from '../../../api'
 import { sampleRecordPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { downloadCsv } from '../../../shared/print'
-import { sampleRecordTypeOptions, sampleRecordStatusOptions, sampleSourceTypeOptions, sampleStockEventTypeOptions } from '../../../shared/formOptions'
-import { formatDate, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import {
+  sampleRecordTypeOptions,
+  sampleRecordStatusOptions,
+  sampleSourceTypeOptions,
+  sampleStockEventTypeOptions,
+} from '../../../shared/formOptions'
+import {
+  formatDate,
+  nullableText,
+  todayInputValue,
+  type RoutedDetailPageProps,
+  emptyToNull,
+} from '../appHelpers'
 
 type SampleRecordFormState = {
   code: string
@@ -56,7 +82,6 @@ type SampleRecordStockFormState = {
   recipient: string
   note: string
 }
-
 
 function initialSampleRecordForm(): SampleRecordFormState {
   return {
@@ -231,7 +256,10 @@ function sampleRecordStockPayload(form: SampleRecordStockFormState): SampleRecor
   }
 }
 
-function applySampleStockEvent(record: SampleRecord, stockEvent: SampleRecordStockEvent): SampleRecord {
+function applySampleStockEvent(
+  record: SampleRecord,
+  stockEvent: SampleRecordStockEvent,
+): SampleRecord {
   const received = Number(record.stock_summary.received_quantity)
   const delivered = Number(record.stock_summary.delivered_quantity)
   const quantity = Number(stockEvent.quantity)
@@ -268,7 +296,6 @@ function sampleStockEventTypeLabel(value: string): string {
   return sampleStockEventTypeOptions.find((item) => item.value === value)?.label ?? value
 }
 
-
 export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
   const [records, setRecords] = useState<SampleRecord[]>([])
   const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null)
@@ -289,13 +316,10 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
     initialSampleRecordStockForm(),
   )
 
-  const selectedRecord = useMemo(
-    () => {
-      if (detailId) return records.find((item) => item.id === detailId) ?? null
-      return records.find((item) => item.id === selectedRecordId) ?? records[0] ?? null
-    },
-    [detailId, records, selectedRecordId],
-  )
+  const selectedRecord = useMemo(() => {
+    if (detailId) return records.find((item) => item.id === detailId) ?? null
+    return records.find((item) => item.id === selectedRecordId) ?? records[0] ?? null
+  }, [detailId, records, selectedRecordId])
 
   useEffect(() => {
     void loadRecords()
@@ -375,10 +399,15 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
     setMessage('')
     setError('')
     try {
-      const image = await addSampleRecordImage(selectedRecord.id, sampleRecordImagePayload(imageForm))
+      const image = await addSampleRecordImage(
+        selectedRecord.id,
+        sampleRecordImagePayload(imageForm),
+      )
       setRecords((current) =>
         current.map((record) =>
-          record.id === selectedRecord.id ? { ...record, images: [...record.images, image] } : record,
+          record.id === selectedRecord.id
+            ? { ...record, images: [...record.images, image] }
+            : record,
         ),
       )
       setMessage(`已追加样品图片 ${image.filename}`)
@@ -456,114 +485,130 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
     <section className="sample-record-page">
       <div className="summary-strip" aria-label="样品登记概览">
         <Metric label="样品" value={records.length} />
-        <Metric label="确认样" value={records.filter((item) => item.sample_type === 'confirm_sample').length} />
+        <Metric
+          label="确认样"
+          value={records.filter((item) => item.sample_type === 'confirm_sample').length}
+        />
         <Metric label="图片" value={selectedRecord?.images.length ?? 0} />
         <Metric label="留样" value={Number(selectedRecord?.stock_summary.retained_quantity ?? 0)} />
       </div>
 
-      {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
+      {message ? (
+        <Alert className="workspace-alert" title={message} type="success" showIcon />
+      ) : null}
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid sample-record-grid">
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="样品列表" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadRecords()
-              }}
-            >
-              <label className="inline-filter-search">
-                样品搜索
-                <Input
-                  value={search}
-                  placeholder="编号 / 产品 / 客户 / 供应商"
-                  onChange={(event) => setSearch(event.target.value)}
-                />
-              </label>
-              <label className="inline-filter-compact">
-                样品分类筛选
-                <FormSelect value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}>
-                  <option value="">全部分类</option>
-                  {sampleRecordTypeOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label className="inline-filter-compact">
-                样品客户筛选
-                <Input
-                  value={customerFilter}
-                  placeholder="customer-id"
-                  onChange={(event) => setCustomerFilter(event.target.value)}
-                />
-              </label>
-              <label className="inline-filter-compact">
-                采购合同筛选
-                <Input
-                  value={purchaseContractFilter}
-                  placeholder="purchase-contract-id"
-                  onChange={(event) => setPurchaseContractFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-              <Button loading={submitting} onClick={() => void downloadRecordExport()}>
-                导出台账
-              </Button>
-              <Button htmlType="button" icon={<Plus size={16} />} onClick={openCreateRecord}>
-                新增样品
-              </Button>
-            </form>
-          </div>
-
-          <Table<SampleRecord>
-            columns={[
-              {
-                title: '样品编号',
-                dataIndex: 'code',
-                render: (value: string, record: SampleRecord) => (
-                  <button
-                    className="row-button"
-                    type="button"
-                    onClick={(event) => stopAndOpenRecordDetail(event, record)}
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<Search size={18} />} title="样品列表" />
+              <form
+                className="inline-filters"
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  void loadRecords()
+                }}
+              >
+                <label className="inline-filter-search">
+                  样品搜索
+                  <Input
+                    value={search}
+                    placeholder="编号 / 产品 / 客户 / 供应商"
+                    onChange={(event) => setSearch(event.target.value)}
+                  />
+                </label>
+                <label className="inline-filter-compact">
+                  样品分类筛选
+                  <FormSelect
+                    value={typeFilter}
+                    onChange={(event) => setTypeFilter(event.target.value)}
                   >
-                    {value}
-                  </button>
-                ),
-              },
-              { title: '分类', dataIndex: 'sample_type', render: sampleRecordTypeLabel },
-              { title: '产品', dataIndex: 'product_name' },
-              { title: '客户货号', dataIndex: 'customer_sku', render: nullableText },
-              { title: '供应商货号', dataIndex: 'supplier_sku', render: nullableText },
-              { title: '数量', dataIndex: 'quantity', width: 80 },
-              {
-                title: '入口',
-                key: 'detail',
-                width: 110,
-                render: (_: unknown, record: SampleRecord) => (
-                  <Button size="small" onClick={(event) => stopAndOpenRecordDetail(event, record)}>
-                    查看详情
-                  </Button>
-                ),
-              },
-            ]}
-            dataSource={records}
-            loading={loading}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedRecord?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => setSelectedRecordId(record.id),
-            })}
-          />
+                    <option value="">全部分类</option>
+                    {sampleRecordTypeOptions.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </FormSelect>
+                </label>
+                <label className="inline-filter-compact">
+                  样品客户筛选
+                  <Input
+                    value={customerFilter}
+                    placeholder="输入客户编号或名称"
+                    onChange={(event) => setCustomerFilter(event.target.value)}
+                  />
+                </label>
+                <label className="inline-filter-compact">
+                  采购合同筛选
+                  <Input
+                    value={purchaseContractFilter}
+                    placeholder="输入采购合同号"
+                    onChange={(event) => setPurchaseContractFilter(event.target.value)}
+                  />
+                </label>
+                <Button htmlType="submit" icon={<Search size={16} />}>
+                  查询
+                </Button>
+                <Button loading={submitting} onClick={() => void downloadRecordExport()}>
+                  导出台账
+                </Button>
+                <Button
+                  htmlType="button"
+                  type="primary"
+                  icon={<Plus size={16} />}
+                  onClick={openCreateRecord}
+                >
+                  新增样品
+                </Button>
+              </form>
+            </div>
+
+            <Table<SampleRecord>
+              columns={[
+                {
+                  title: '样品编号',
+                  dataIndex: 'code',
+                  render: (value: string, record: SampleRecord) => (
+                    <button
+                      className="row-button"
+                      type="button"
+                      onClick={(event) => stopAndOpenRecordDetail(event, record)}
+                    >
+                      {value}
+                    </button>
+                  ),
+                },
+                { title: '分类', dataIndex: 'sample_type', render: sampleRecordTypeLabel },
+                { title: '产品', dataIndex: 'product_name' },
+                { title: '客户货号', dataIndex: 'customer_sku', render: nullableText },
+                { title: '供应商货号', dataIndex: 'supplier_sku', render: nullableText },
+                { title: '数量', dataIndex: 'quantity', width: 80 },
+                {
+                  title: '入口',
+                  key: 'detail',
+                  width: 110,
+                  render: (_: unknown, record: SampleRecord) => (
+                    <Button
+                      size="small"
+                      onClick={(event) => stopAndOpenRecordDetail(event, record)}
+                    >
+                      查看详情
+                    </Button>
+                  ),
+                },
+              ]}
+              dataSource={records}
+              loading={loading}
+              pagination={false}
+              rowClassName={(record) => (record.id === selectedRecord?.id ? 'selected-row' : '')}
+              rowKey="id"
+              size="small"
+              onRow={(record) => ({
+                onClick: () => setSelectedRecordId(record.id),
+              })}
+            />
           </section>
         ) : null}
 
@@ -578,7 +623,10 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
           <form className="record-form entity-modal-form sample-modal-form" onSubmit={submitRecord}>
             <label>
               样品编号
-              <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
+              <Input
+                value={form.code}
+                onChange={(event) => setForm({ ...form, code: event.target.value })}
+              />
             </label>
             <label htmlFor="sample-record-type">
               样品分类
@@ -691,7 +739,10 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
             </label>
             <label>
               单位
-              <Input value={form.unit} onChange={(event) => setForm({ ...form, unit: event.target.value })} />
+              <Input
+                value={form.unit}
+                onChange={(event) => setForm({ ...form, unit: event.target.value })}
+              />
             </label>
             <label htmlFor="sample-record-source-type">
               样品来源
@@ -752,10 +803,19 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
               />
             </label>
             <div className="modal-actions">
-              <button className="secondary-inline" type="button" onClick={() => setRecordModalOpen(false)}>
+              <button
+                className="secondary-inline"
+                type="button"
+                onClick={() => setRecordModalOpen(false)}
+              >
                 取消
               </button>
-              <button className="secondary-inline" disabled={submitting} type="button" onClick={() => void submitRecordImport()}>
+              <button
+                className="secondary-inline"
+                disabled={submitting}
+                type="button"
+                onClick={() => void submitRecordImport()}
+              >
                 按当前表单导入
               </button>
               <button className="inline-submit" disabled={submitting} type="submit">
@@ -767,232 +827,266 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
 
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="样品明细" />
-            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(sampleRecordPath)}>
-              返回列表
-            </Button>
-          </div>
-          {selectedRecord ? (
-            <>
-              <dl className="detail-list">
-                <div>
-                  <dt>样品编号</dt>
-                  <dd>{selectedRecord.code}</dd>
-                </div>
-                <div>
-                  <dt>分类/状态</dt>
-                  <dd>{sampleRecordTypeLabel(selectedRecord.sample_type)} / {sampleRecordStatusLabel(selectedRecord.status)}</dd>
-                </div>
-                <div>
-                  <dt>产品</dt>
-                  <dd>{selectedRecord.product_code ?? '-'} / {selectedRecord.product_name}</dd>
-                </div>
-                <div>
-                  <dt>客户/供应商</dt>
-                  <dd>{selectedRecord.customer_name ?? '-'} / {selectedRecord.supplier_name ?? '-'}</dd>
-                </div>
-                <div>
-                  <dt>客户货号</dt>
-                  <dd>{selectedRecord.customer_sku ?? '-'}</dd>
-                </div>
-                <div>
-                  <dt>供应商货号</dt>
-                  <dd>{selectedRecord.supplier_sku ?? '-'}</dd>
-                </div>
-                <div>
-                  <dt>采购合同</dt>
-                  <dd>{selectedRecord.purchase_contract_no ?? '-'}</dd>
-                </div>
-                <div>
-                  <dt>收样/提交</dt>
-                  <dd>{formatDate(selectedRecord.received_at)} / {formatDate(selectedRecord.submitted_at)}</dd>
-                </div>
-              </dl>
-
-              <Table
-                className="compact-section"
-                columns={[
-                  { title: '收样数', dataIndex: 'received_quantity' },
-                  { title: '寄样数', dataIndex: 'delivered_quantity' },
-                  { title: '公司留样', dataIndex: 'retained_quantity' },
-                  { title: '单位', dataIndex: 'unit' },
-                ]}
-                dataSource={[selectedRecord.stock_summary]}
-                pagination={false}
-                rowKey="sample_record_id"
-                size="small"
-              />
-
-              <Table<SampleRecordImage>
-                className="compact-section"
-                columns={[
-                  { title: '图片文件', dataIndex: 'filename' },
-                  { title: '文件标识', dataIndex: 'file_id' },
-                  { title: '图片地址', dataIndex: 'url' },
-                  { title: '说明', dataIndex: 'caption', render: nullableText },
-                  {
-                    title: '主图',
-                    dataIndex: 'is_primary',
-                    width: 72,
-                    render: (value: boolean) => (value ? '是' : '否'),
-                  },
-                ]}
-                dataSource={selectedRecord.images}
-                locale={{ emptyText: '暂无样品图片' }}
-                pagination={false}
-                rowKey="id"
-                size="small"
-              />
-
-              <Table
-                className="compact-section"
-                columns={[
-                  { title: '跟单节点', dataIndex: 'node_label' },
-                  { title: '实际日期', dataIndex: 'actual_date', render: formatDate },
-                  { title: '采购合同', dataIndex: 'purchase_contract_no', render: nullableText },
-                  { title: '事件', dataIndex: 'event_type' },
-                ]}
-                dataSource={selectedRecord.followup_events}
-                locale={{ emptyText: '暂无跟单节点事件' }}
-                pagination={false}
-                rowKey="id"
-                size="small"
-              />
-
-              <div className="sample-record-actions compact-section">
-                <form className="record-form" onSubmit={submitImage}>
-                  <div className="form-divider">追加图片</div>
-                  <label>
-                    图片文件标识
-                    <Input
-                      value={imageForm.file_id}
-                      onChange={(event) => setImageForm({ ...imageForm, file_id: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    图片文件名
-                    <Input
-                      value={imageForm.filename}
-                      onChange={(event) => setImageForm({ ...imageForm, filename: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    图片地址
-                    <Input
-                      value={imageForm.url}
-                      onChange={(event) => setImageForm({ ...imageForm, url: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    图片说明
-                    <Input
-                      value={imageForm.caption}
-                      onChange={(event) => setImageForm({ ...imageForm, caption: event.target.value })}
-                    />
-                  </label>
-                  <Button htmlType="submit" loading={submitting}>
-                    追加样品图片
-                  </Button>
-                </form>
-
-                <form className="record-form" onSubmit={submitStockEvent}>
-                  <div className="form-divider">数量事件</div>
-                  <label>
-                    事件类型
-                  <FormSelect
-                    value={stockForm.event_type}
-                    onChange={(event) => setStockForm({ ...stockForm, event_type: event.target.value })}
-                  >
-                    {sampleStockEventTypeOptions.map((item) => (
-                      <option key={item.value} value={item.value}>
-                        {item.label}
-                      </option>
-                    ))}
-                  </FormSelect>
-                  </label>
-                  <label>
-                    数量
-                    <Input
-                      type="number"
-                      min="0.01"
-                      step="0.01"
-                      value={stockForm.quantity}
-                      onChange={(event) => setStockForm({ ...stockForm, quantity: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    日期
-                    <Input
-                      type="date"
-                      value={stockForm.occurred_at}
-                      onChange={(event) => setStockForm({ ...stockForm, occurred_at: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    单位
-                    <Input
-                      value={stockForm.unit}
-                      onChange={(event) => setStockForm({ ...stockForm, unit: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    寄样单号
-                    <Input
-                      value={stockForm.delivery_no}
-                      onChange={(event) => setStockForm({ ...stockForm, delivery_no: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    接收方
-                    <Input
-                      value={stockForm.recipient}
-                      onChange={(event) => setStockForm({ ...stockForm, recipient: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    事件备注
-                    <Input.TextArea
-                      rows={2}
-                      value={stockForm.note}
-                      onChange={(event) => setStockForm({ ...stockForm, note: event.target.value })}
-                    />
-                  </label>
-                  <Button htmlType="submit" loading={submitting}>
-                    登记样品数量
-                  </Button>
-                </form>
-              </div>
-
-              <Table<SampleRecordStockEvent>
-                className="compact-section"
-                columns={[
-                  { title: '事件类型', dataIndex: 'event_type', render: sampleStockEventTypeLabel },
-                  { title: '数量', dataIndex: 'quantity' },
-                  { title: '单位', dataIndex: 'unit' },
-                  { title: '日期', dataIndex: 'occurred_at', render: formatDate },
-                  { title: '寄样单号', dataIndex: 'delivery_no', render: nullableText },
-                  { title: '接收方', dataIndex: 'recipient', render: nullableText },
-                  { title: '备注', dataIndex: 'note', render: nullableText },
-                ]}
-                dataSource={selectedRecord.stock_events}
-                pagination={false}
-                rowKey="id"
-                size="small"
-              />
-            </>
-          ) : (
-            <div className="module-state panel-empty-state">
-              <Images size={28} />
-              <strong>暂无样品记录</strong>
-              <span>请返回列表选择样品查看详情</span>
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<LayoutDashboard size={18} />} title="样品明细" />
+              <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(sampleRecordPath)}>
+                返回列表
+              </Button>
             </div>
-          )}
+            {selectedRecord ? (
+              <>
+                <dl className="detail-list">
+                  <div>
+                    <dt>样品编号</dt>
+                    <dd>{selectedRecord.code}</dd>
+                  </div>
+                  <div>
+                    <dt>分类/状态</dt>
+                    <dd>
+                      {sampleRecordTypeLabel(selectedRecord.sample_type)} /{' '}
+                      {sampleRecordStatusLabel(selectedRecord.status)}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>产品</dt>
+                    <dd>
+                      {selectedRecord.product_code ?? '-'} / {selectedRecord.product_name}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>客户/供应商</dt>
+                    <dd>
+                      {selectedRecord.customer_name ?? '-'} / {selectedRecord.supplier_name ?? '-'}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>客户货号</dt>
+                    <dd>{selectedRecord.customer_sku ?? '-'}</dd>
+                  </div>
+                  <div>
+                    <dt>供应商货号</dt>
+                    <dd>{selectedRecord.supplier_sku ?? '-'}</dd>
+                  </div>
+                  <div>
+                    <dt>采购合同</dt>
+                    <dd>{selectedRecord.purchase_contract_no ?? '-'}</dd>
+                  </div>
+                  <div>
+                    <dt>收样/提交</dt>
+                    <dd>
+                      {formatDate(selectedRecord.received_at)} /{' '}
+                      {formatDate(selectedRecord.submitted_at)}
+                    </dd>
+                  </div>
+                </dl>
+
+                <Table
+                  className="compact-section"
+                  columns={[
+                    { title: '收样数', dataIndex: 'received_quantity' },
+                    { title: '寄样数', dataIndex: 'delivered_quantity' },
+                    { title: '公司留样', dataIndex: 'retained_quantity' },
+                    { title: '单位', dataIndex: 'unit' },
+                  ]}
+                  dataSource={[selectedRecord.stock_summary]}
+                  pagination={false}
+                  rowKey="sample_record_id"
+                  size="small"
+                />
+
+                <Table<SampleRecordImage>
+                  className="compact-section"
+                  columns={[
+                    { title: '图片文件', dataIndex: 'filename' },
+                    { title: '文件标识', dataIndex: 'file_id' },
+                    { title: '图片地址', dataIndex: 'url' },
+                    { title: '说明', dataIndex: 'caption', render: nullableText },
+                    {
+                      title: '主图',
+                      dataIndex: 'is_primary',
+                      width: 72,
+                      render: (value: boolean) => (value ? '是' : '否'),
+                    },
+                  ]}
+                  dataSource={selectedRecord.images}
+                  locale={{ emptyText: '暂无样品图片' }}
+                  pagination={false}
+                  rowKey="id"
+                  size="small"
+                />
+
+                <Table
+                  className="compact-section"
+                  columns={[
+                    { title: '跟单节点', dataIndex: 'node_label' },
+                    { title: '实际日期', dataIndex: 'actual_date', render: formatDate },
+                    { title: '采购合同', dataIndex: 'purchase_contract_no', render: nullableText },
+                    { title: '事件', dataIndex: 'event_type' },
+                  ]}
+                  dataSource={selectedRecord.followup_events}
+                  locale={{ emptyText: '暂无跟单节点事件' }}
+                  pagination={false}
+                  rowKey="id"
+                  size="small"
+                />
+
+                <div className="sample-record-actions compact-section">
+                  <form className="record-form" onSubmit={submitImage}>
+                    <div className="form-divider">追加图片</div>
+                    <label>
+                      图片文件标识
+                      <Input
+                        value={imageForm.file_id}
+                        onChange={(event) =>
+                          setImageForm({ ...imageForm, file_id: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      图片文件名
+                      <Input
+                        value={imageForm.filename}
+                        onChange={(event) =>
+                          setImageForm({ ...imageForm, filename: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      图片地址
+                      <Input
+                        value={imageForm.url}
+                        onChange={(event) =>
+                          setImageForm({ ...imageForm, url: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      图片说明
+                      <Input
+                        value={imageForm.caption}
+                        onChange={(event) =>
+                          setImageForm({ ...imageForm, caption: event.target.value })
+                        }
+                      />
+                    </label>
+                    <Button htmlType="submit" loading={submitting}>
+                      追加样品图片
+                    </Button>
+                  </form>
+
+                  <form className="record-form" onSubmit={submitStockEvent}>
+                    <div className="form-divider">数量事件</div>
+                    <label>
+                      事件类型
+                      <FormSelect
+                        value={stockForm.event_type}
+                        onChange={(event) =>
+                          setStockForm({ ...stockForm, event_type: event.target.value })
+                        }
+                      >
+                        {sampleStockEventTypeOptions.map((item) => (
+                          <option key={item.value} value={item.value}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </FormSelect>
+                    </label>
+                    <label>
+                      数量
+                      <Input
+                        type="number"
+                        min="0.01"
+                        step="0.01"
+                        value={stockForm.quantity}
+                        onChange={(event) =>
+                          setStockForm({ ...stockForm, quantity: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      日期
+                      <Input
+                        type="date"
+                        value={stockForm.occurred_at}
+                        onChange={(event) =>
+                          setStockForm({ ...stockForm, occurred_at: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      单位
+                      <Input
+                        value={stockForm.unit}
+                        onChange={(event) =>
+                          setStockForm({ ...stockForm, unit: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      寄样单号
+                      <Input
+                        value={stockForm.delivery_no}
+                        onChange={(event) =>
+                          setStockForm({ ...stockForm, delivery_no: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      接收方
+                      <Input
+                        value={stockForm.recipient}
+                        onChange={(event) =>
+                          setStockForm({ ...stockForm, recipient: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      事件备注
+                      <Input.TextArea
+                        rows={2}
+                        value={stockForm.note}
+                        onChange={(event) =>
+                          setStockForm({ ...stockForm, note: event.target.value })
+                        }
+                      />
+                    </label>
+                    <Button htmlType="submit" loading={submitting}>
+                      登记样品数量
+                    </Button>
+                  </form>
+                </div>
+
+                <Table<SampleRecordStockEvent>
+                  className="compact-section"
+                  columns={[
+                    {
+                      title: '事件类型',
+                      dataIndex: 'event_type',
+                      render: sampleStockEventTypeLabel,
+                    },
+                    { title: '数量', dataIndex: 'quantity' },
+                    { title: '单位', dataIndex: 'unit' },
+                    { title: '日期', dataIndex: 'occurred_at', render: formatDate },
+                    { title: '寄样单号', dataIndex: 'delivery_no', render: nullableText },
+                    { title: '接收方', dataIndex: 'recipient', render: nullableText },
+                    { title: '备注', dataIndex: 'note', render: nullableText },
+                  ]}
+                  dataSource={selectedRecord.stock_events}
+                  pagination={false}
+                  rowKey="id"
+                  size="small"
+                />
+              </>
+            ) : (
+              <div className="module-state panel-empty-state">
+                <Images size={28} />
+                <strong>暂无样品记录</strong>
+                <span>请返回列表选择样品查看详情</span>
+              </div>
+            )}
           </section>
         ) : null}
       </section>
     </section>
   )
 }
-
-

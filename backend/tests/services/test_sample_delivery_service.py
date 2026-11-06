@@ -153,8 +153,8 @@ async def test_sample_delivery_service_review_updates_sample_stock_and_statistic
             payload=SampleDeliverySubmit(reviewer_id="u-admin"),
         )
         reviewer = _user_with_permissions(
-            ["sample:delivery:approve", "sample:delivery:view"],
-            user_id="u-admin",
+            ["system:super_admin", "sample:delivery:approve", "sample:delivery:view"],
+            user_id="u-boss",
             data_scope="all",
         )
         approved = await delivery_service.approve_delivery(
@@ -188,6 +188,7 @@ async def test_sample_delivery_service_review_updates_sample_stock_and_statistic
 
     assert submitted.status == "submitted"
     assert approved.status == "approved"
+    assert approved.reviewer_id == "u-boss"
     assert shipped.status == "shipped"
     assert sample_detail.stock_summary.delivered_quantity == "2"
     assert sample_detail.stock_summary.retained_quantity == "3"

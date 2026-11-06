@@ -1,14 +1,54 @@
 import { Alert, Button, Input, Modal, Table } from 'antd'
-import { ArrowLeft, FlaskConical, Images as _Images, LayoutDashboard, Plus, Search } from 'lucide-react'
+import {
+  ArrowLeft,
+  FlaskConical,
+  Images as _Images,
+  LayoutDashboard,
+  Plus,
+  Search,
+} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { createSampleRequest, addSampleProgress, addSampleFee, requestSampleFeePayment, createSampleRecordFromRequest, listSampleRequests, type CurrentUser, type SampleRequest, type SampleRequestCreatePayload, type SampleRequestLinePayload, type SampleRequestToRecordPayload, type SampleFee, type SampleFeePayload, type SampleProgress, type SampleProgressPayload, type SampleRecord as _SampleRecord, type SampleRecordCreatePayload as _SampleRecordCreatePayload , SampleRecordImagePayload} from '../../../api'
+import {
+  createSampleRequest,
+  addSampleProgress,
+  addSampleFee,
+  requestSampleFeePayment,
+  createSampleRecordFromRequest,
+  listSampleRequests,
+  type CurrentUser,
+  type SampleRequest,
+  type SampleRequestCreatePayload,
+  type SampleRequestLinePayload,
+  type SampleRequestToRecordPayload,
+  type SampleFee,
+  type SampleFeePayload,
+  type SampleProgress,
+  type SampleProgressPayload,
+  type SampleRecord as _SampleRecord,
+  type SampleRecordCreatePayload as _SampleRecordCreatePayload,
+  SampleRecordImagePayload,
+} from '../../../api'
 import { sampleRequestPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { openSampleRequestPrint } from '../../../shared/print'
-import { sampleStatusOptions, sampleDestinationOptions, sampleProgressStageOptions, sampleFeeTypeOptions, samplePayeeTypeOptions, sampleRecordTypeOptions, sampleSourceTypeOptions as _sampleSourceTypeOptions } from '../../../shared/formOptions'
-import { formatDate, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import {
+  sampleStatusOptions,
+  sampleDestinationOptions,
+  sampleProgressStageOptions,
+  sampleFeeTypeOptions,
+  samplePayeeTypeOptions,
+  sampleRecordTypeOptions,
+  sampleSourceTypeOptions as _sampleSourceTypeOptions,
+} from '../../../shared/formOptions'
+import {
+  formatDate,
+  nullableText,
+  todayInputValue,
+  type RoutedDetailPageProps,
+  emptyToNull,
+} from '../appHelpers'
 import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
 
 type SampleRecordFormState = {
@@ -40,7 +80,6 @@ type SampleRecordFormState = {
   image_url: string
   image_caption: string
 }
-
 
 function sampleRecordFormFromRequest(
   request: SampleRequest,
@@ -94,7 +133,6 @@ function sampleRequestToRecordPayload(form: SampleRecordFormState): SampleReques
   }
 }
 
-
 type SampleRequestFormState = {
   code: string
   status: string
@@ -136,7 +174,6 @@ type SampleFeeFormState = {
   payee_name: string
   remark: string
 }
-
 
 function initialSampleRecordForm(): SampleRecordFormState {
   return {
@@ -294,7 +331,6 @@ function samplePaymentStatusLabel(value: string): string {
   return '未申请'
 }
 
-
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 
 export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props) {
@@ -320,13 +356,10 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
     initialSampleRecordForm(),
   )
 
-  const selectedRequest = useMemo(
-    () => {
-      if (detailId) return requests.find((item) => item.id === detailId) ?? null
-      return requests.find((item) => item.id === selectedRequestId) ?? requests[0] ?? null
-    },
-    [detailId, requests, selectedRequestId],
-  )
+  const selectedRequest = useMemo(() => {
+    if (detailId) return requests.find((item) => item.id === detailId) ?? null
+    return requests.find((item) => item.id === selectedRequestId) ?? requests[0] ?? null
+  }, [detailId, requests, selectedRequestId])
 
   useEffect(() => {
     void loadRequests()
@@ -403,7 +436,10 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
     setMessage('')
     setError('')
     try {
-      const progress = await addSampleProgress(selectedRequest.id, sampleProgressPayload(progressForm))
+      const progress = await addSampleProgress(
+        selectedRequest.id,
+        sampleProgressPayload(progressForm),
+      )
       setRequests((current) =>
         current.map((item) =>
           item.id === selectedRequest.id
@@ -508,127 +544,143 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
     <section className="sample-request-page">
       <div className="summary-strip" aria-label="打样管理概览">
         <Metric label="打样单" value={requests.length} />
-        <Metric label="进行中" value={requests.filter((item) => item.status === 'in_progress').length} />
+        <Metric
+          label="进行中"
+          value={requests.filter((item) => item.status === 'in_progress').length}
+        />
         <Metric label="进度记录" value={selectedRequest?.progress_events.length ?? 0} />
         <Metric label="费用记录" value={selectedRequest?.fees.length ?? 0} />
       </div>
 
-      {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
+      {message ? (
+        <Alert className="workspace-alert" title={message} type="success" showIcon />
+      ) : null}
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid sample-request-grid">
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="打样单列表" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadRequests()
-              }}
-            >
-              <label className="inline-filter-search">
-                打样搜索
-                <Input
-                  value={search}
-                  placeholder="编号 / 客户 / 产品 / 供应商"
-                  onChange={(event) => setSearch(event.target.value)}
-                />
-              </label>
-              <label className="inline-filter-compact">
-                打样状态筛选
-                <FormSelect value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-                  <option value="">全部状态</option>
-                  {sampleStatusOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label className="inline-filter-compact">
-                打样客户筛选
-                <Input
-                  value={customerFilter}
-                  placeholder="customer-id"
-                  onChange={(event) => setCustomerFilter(event.target.value)}
-                />
-              </label>
-              <label className="inline-filter-compact">
-                打样起始日期
-                <Input
-                  type="date"
-                  value={dateFromFilter}
-                  onChange={(event) => setDateFromFilter(event.target.value)}
-                />
-              </label>
-              <label className="inline-filter-compact">
-                打样截止日期
-                <Input
-                  type="date"
-                  value={dateToFilter}
-                  onChange={(event) => setDateToFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-              <Button htmlType="button" icon={<Plus size={16} />} onClick={openCreateRequest}>
-                新增打样单
-              </Button>
-            </form>
-          </div>
-
-          <Table<SampleRequest>
-            columns={[
-              {
-                title: '打样单号',
-                dataIndex: 'code',
-                render: (value: string, record: SampleRequest) => (
-                  <button
-                    className="row-button"
-                    type="button"
-                    onClick={(event) => stopAndOpenRequestDetail(event, record)}
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<Search size={18} />} title="打样单列表" />
+              <form
+                className="inline-filters"
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  void loadRequests()
+                }}
+              >
+                <label className="inline-filter-search">
+                  打样搜索
+                  <Input
+                    value={search}
+                    placeholder="编号 / 客户 / 产品 / 供应商"
+                    onChange={(event) => setSearch(event.target.value)}
+                  />
+                </label>
+                <label className="inline-filter-compact">
+                  打样状态筛选
+                  <FormSelect
+                    value={statusFilter}
+                    onChange={(event) => setStatusFilter(event.target.value)}
                   >
-                    {value}
-                  </button>
-                ),
-              },
-              { title: '客户', dataIndex: 'customer_name' },
-              { title: '产品', dataIndex: 'product_name', render: nullableText },
-              {
-                title: '去向',
-                dataIndex: 'destination',
-                render: sampleDestinationLabel,
-              },
-              {
-                title: '状态',
-                dataIndex: 'status',
-                render: sampleStatusLabel,
-              },
-              { title: '要求完成', dataIndex: 'due_date', render: formatDate },
-              {
-                title: '入口',
-                key: 'detail',
-                width: 110,
-                render: (_: unknown, record: SampleRequest) => (
-                  <Button size="small" onClick={(event) => stopAndOpenRequestDetail(event, record)}>
-                    查看详情
-                  </Button>
-                ),
-              },
-            ]}
-            dataSource={requests}
-            loading={loading}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedRequest?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => setSelectedRequestId(record.id),
-            })}
-          />
+                    <option value="">全部状态</option>
+                    {sampleStatusOptions.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </FormSelect>
+                </label>
+                <label className="inline-filter-compact">
+                  打样客户筛选
+                  <Input
+                    value={customerFilter}
+                    placeholder="输入客户编号或名称"
+                    onChange={(event) => setCustomerFilter(event.target.value)}
+                  />
+                </label>
+                <label className="inline-filter-compact">
+                  打样起始日期
+                  <Input
+                    type="date"
+                    value={dateFromFilter}
+                    onChange={(event) => setDateFromFilter(event.target.value)}
+                  />
+                </label>
+                <label className="inline-filter-compact">
+                  打样截止日期
+                  <Input
+                    type="date"
+                    value={dateToFilter}
+                    onChange={(event) => setDateToFilter(event.target.value)}
+                  />
+                </label>
+                <Button htmlType="submit" icon={<Search size={16} />}>
+                  查询
+                </Button>
+                <Button
+                  htmlType="button"
+                  type="primary"
+                  icon={<Plus size={16} />}
+                  onClick={openCreateRequest}
+                >
+                  新增打样单
+                </Button>
+              </form>
+            </div>
+
+            <Table<SampleRequest>
+              columns={[
+                {
+                  title: '打样单号',
+                  dataIndex: 'code',
+                  render: (value: string, record: SampleRequest) => (
+                    <button
+                      className="row-button"
+                      type="button"
+                      onClick={(event) => stopAndOpenRequestDetail(event, record)}
+                    >
+                      {value}
+                    </button>
+                  ),
+                },
+                { title: '客户', dataIndex: 'customer_name' },
+                { title: '产品', dataIndex: 'product_name', render: nullableText },
+                {
+                  title: '去向',
+                  dataIndex: 'destination',
+                  render: sampleDestinationLabel,
+                },
+                {
+                  title: '状态',
+                  dataIndex: 'status',
+                  render: sampleStatusLabel,
+                },
+                { title: '要求完成', dataIndex: 'due_date', render: formatDate },
+                {
+                  title: '入口',
+                  key: 'detail',
+                  width: 110,
+                  render: (_: unknown, record: SampleRequest) => (
+                    <Button
+                      size="small"
+                      onClick={(event) => stopAndOpenRequestDetail(event, record)}
+                    >
+                      查看详情
+                    </Button>
+                  ),
+                },
+              ]}
+              dataSource={requests}
+              loading={loading}
+              pagination={false}
+              rowClassName={(record) => (record.id === selectedRequest?.id ? 'selected-row' : '')}
+              rowKey="id"
+              size="small"
+              onRow={(record) => ({
+                onClick: () => setSelectedRequestId(record.id),
+              })}
+            />
           </section>
         ) : null}
 
@@ -640,10 +692,16 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
           width={980}
           onCancel={() => setRequestModalOpen(false)}
         >
-          <form className="record-form entity-modal-form sample-modal-form" onSubmit={submitRequest}>
+          <form
+            className="record-form entity-modal-form sample-modal-form"
+            onSubmit={submitRequest}
+          >
             <label>
               打样单号
-              <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
+              <Input
+                value={form.code}
+                onChange={(event) => setForm({ ...form, code: event.target.value })}
+              />
             </label>
             <label htmlFor="sample-request-status">
               打样状态
@@ -738,7 +796,11 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
               <Input
                 value={form.line_product_code}
                 onChange={(event) =>
-                  setForm({ ...form, line_product_code: event.target.value, line_product_id: event.target.value })
+                  setForm({
+                    ...form,
+                    line_product_code: event.target.value,
+                    line_product_id: event.target.value,
+                  })
                 }
               />
             </label>
@@ -782,7 +844,11 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
               />
             </label>
             <div className="modal-actions">
-              <button className="secondary-inline" type="button" onClick={() => setRequestModalOpen(false)}>
+              <button
+                className="secondary-inline"
+                type="button"
+                onClick={() => setRequestModalOpen(false)}
+              >
                 取消
               </button>
               <button className="inline-submit" disabled={submitting} type="submit">
@@ -794,381 +860,421 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
 
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="打样单明细" />
-            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(sampleRequestPath)}>
-              返回列表
-            </Button>
-          </div>
-          {selectedRequest ? (
-            <>
-              <dl className="detail-list">
-                <div>
-                  <dt>打样单号</dt>
-                  <dd>{selectedRequest.code}</dd>
-                </div>
-                <div>
-                  <dt>客户/产品</dt>
-                  <dd>{selectedRequest.customer_name} / {selectedRequest.product_name ?? '-'}</dd>
-                </div>
-                <div>
-                  <dt>去向/状态</dt>
-                  <dd>{sampleDestinationLabel(selectedRequest.destination)} / {sampleStatusLabel(selectedRequest.status)}</dd>
-                </div>
-                <div>
-                  <dt>供应商</dt>
-                  <dd>{selectedRequest.supplier_name ?? '未设置'}</dd>
-                </div>
-                <div>
-                  <dt>打样日期</dt>
-                  <dd>{formatDate(selectedRequest.request_date)}</dd>
-                </div>
-                <div>
-                  <dt>要求完成</dt>
-                  <dd>{formatDate(selectedRequest.due_date)}</dd>
-                </div>
-                <div>
-                  <dt>客户要求</dt>
-                  <dd>{selectedRequest.requirements}</dd>
-                </div>
-              </dl>
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<LayoutDashboard size={18} />} title="打样单明细" />
+              <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(sampleRequestPath)}>
+                返回列表
+              </Button>
+            </div>
+            {selectedRequest ? (
+              <>
+                <dl className="detail-list">
+                  <div>
+                    <dt>打样单号</dt>
+                    <dd>{selectedRequest.code}</dd>
+                  </div>
+                  <div>
+                    <dt>客户/产品</dt>
+                    <dd>
+                      {selectedRequest.customer_name} / {selectedRequest.product_name ?? '-'}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>去向/状态</dt>
+                    <dd>
+                      {sampleDestinationLabel(selectedRequest.destination)} /{' '}
+                      {sampleStatusLabel(selectedRequest.status)}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>供应商</dt>
+                    <dd>{selectedRequest.supplier_name ?? '未设置'}</dd>
+                  </div>
+                  <div>
+                    <dt>打样日期</dt>
+                    <dd>{formatDate(selectedRequest.request_date)}</dd>
+                  </div>
+                  <div>
+                    <dt>要求完成</dt>
+                    <dd>{formatDate(selectedRequest.due_date)}</dd>
+                  </div>
+                  <div>
+                    <dt>客户要求</dt>
+                    <dd>{selectedRequest.requirements}</dd>
+                  </div>
+                </dl>
 
-              <div className="delivery-action-row">
-                <Button onClick={() => void openSampleRequestPrint(selectedRequest.id)}>
-                  打印内部打样单
-                </Button>
-                <Button
-                  disabled={selectedRequest.status !== 'completed'}
-                  onClick={() => loadRequestIntoRecordForm(selectedRequest)}
-                >
-                  载入为样品
-                </Button>
-              </div>
+                <div className="delivery-action-row">
+                  <Button onClick={() => void openSampleRequestPrint(selectedRequest.id)}>
+                    打印内部打样单
+                  </Button>
+                  <Button
+                    disabled={selectedRequest.status !== 'completed'}
+                    onClick={() => loadRequestIntoRecordForm(selectedRequest)}
+                  >
+                    载入为样品
+                  </Button>
+                </div>
 
-              <section className="compact-section">
-                <PanelTitle icon={<Search size={18} />} title="内部打样单明细" />
-                <Table
+                <section className="compact-section">
+                  <PanelTitle icon={<Search size={18} />} title="内部打样单明细" />
+                  <Table
+                    columns={[
+                      { title: '产品编号', dataIndex: 'product_code', render: nullableText },
+                      { title: '产品名称', dataIndex: 'product_name' },
+                      { title: '规格', dataIndex: 'specification', render: nullableText },
+                      { title: '数量', dataIndex: 'quantity', width: 90 },
+                      { title: '单位', dataIndex: 'unit', width: 80 },
+                      { title: '要求', dataIndex: 'requirement', render: nullableText },
+                    ]}
+                    dataSource={selectedRequest.lines}
+                    pagination={false}
+                    rowKey="id"
+                    size="small"
+                  />
+                </section>
+
+                <form className="record-form compact-section" onSubmit={submitProgress}>
+                  <div className="form-divider">打样进度</div>
+                  <label>
+                    进度阶段
+                    <FormSelect
+                      value={progressForm.stage}
+                      onChange={(event) =>
+                        setProgressForm({ ...progressForm, stage: event.target.value })
+                      }
+                    >
+                      {sampleProgressStageOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    进度状态
+                    <FormSelect
+                      value={progressForm.status}
+                      onChange={(event) =>
+                        setProgressForm({ ...progressForm, status: event.target.value })
+                      }
+                    >
+                      {sampleStatusOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    进度日期
+                    <Input
+                      type="date"
+                      value={progressForm.occurred_at}
+                      onChange={(event) =>
+                        setProgressForm({ ...progressForm, occurred_at: event.target.value })
+                      }
+                    />
+                  </label>
+                  <label>
+                    进度经办人
+                    <Input
+                      value={progressForm.handler_name}
+                      onChange={(event) =>
+                        setProgressForm({ ...progressForm, handler_name: event.target.value })
+                      }
+                    />
+                  </label>
+                  <label>
+                    进度说明
+                    <Input.TextArea
+                      rows={2}
+                      value={progressForm.note}
+                      onChange={(event) =>
+                        setProgressForm({ ...progressForm, note: event.target.value })
+                      }
+                    />
+                  </label>
+                  <Button htmlType="submit" loading={submitting} type="primary">
+                    更新打样进度
+                  </Button>
+                </form>
+
+                <Table<SampleProgress>
+                  className="compact-section"
                   columns={[
-                    { title: '产品编号', dataIndex: 'product_code', render: nullableText },
-                    { title: '产品名称', dataIndex: 'product_name' },
-                    { title: '规格', dataIndex: 'specification', render: nullableText },
-                    { title: '数量', dataIndex: 'quantity', width: 90 },
-                    { title: '单位', dataIndex: 'unit', width: 80 },
-                    { title: '要求', dataIndex: 'requirement', render: nullableText },
+                    { title: '阶段', dataIndex: 'stage', render: sampleProgressStageLabel },
+                    { title: '状态', dataIndex: 'status', render: sampleStatusLabel },
+                    { title: '日期', dataIndex: 'occurred_at', render: formatDate },
+                    { title: '经办人', dataIndex: 'handler_name', render: nullableText },
+                    { title: '说明', dataIndex: 'note', render: nullableText },
                   ]}
-                  dataSource={selectedRequest.lines}
+                  dataSource={selectedRequest.progress_events}
+                  locale={{ emptyText: '暂无进度记录' }}
                   pagination={false}
                   rowKey="id"
                   size="small"
                 />
-              </section>
 
-              <form className="record-form compact-section" onSubmit={submitProgress}>
-                <div className="form-divider">打样进度</div>
-                <label>
-                  进度阶段
-                <FormSelect
-                  value={progressForm.stage}
-                  onChange={(event) => setProgressForm({ ...progressForm, stage: event.target.value })}
-                >
-                  {sampleProgressStageOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-                </label>
-                <label>
-                  进度状态
-                <FormSelect
-                  value={progressForm.status}
-                  onChange={(event) => setProgressForm({ ...progressForm, status: event.target.value })}
-                >
-                  {sampleStatusOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-                </label>
-                <label>
-                  进度日期
-                  <Input
-                    type="date"
-                    value={progressForm.occurred_at}
-                    onChange={(event) => setProgressForm({ ...progressForm, occurred_at: event.target.value })}
-                  />
-                </label>
-                <label>
-                  进度经办人
-                  <Input
-                    value={progressForm.handler_name}
-                    onChange={(event) => setProgressForm({ ...progressForm, handler_name: event.target.value })}
-                  />
-                </label>
-                <label>
-                  进度说明
-                  <Input.TextArea
-                    rows={2}
-                    value={progressForm.note}
-                    onChange={(event) => setProgressForm({ ...progressForm, note: event.target.value })}
-                  />
-                </label>
-                <Button htmlType="submit" loading={submitting} type="primary">
-                  更新打样进度
-                </Button>
-              </form>
-
-              <Table<SampleProgress>
-                className="compact-section"
-                columns={[
-                  { title: '阶段', dataIndex: 'stage', render: sampleProgressStageLabel },
-                  { title: '状态', dataIndex: 'status', render: sampleStatusLabel },
-                  { title: '日期', dataIndex: 'occurred_at', render: formatDate },
-                  { title: '经办人', dataIndex: 'handler_name', render: nullableText },
-                  { title: '说明', dataIndex: 'note', render: nullableText },
-                ]}
-                dataSource={selectedRequest.progress_events}
-                locale={{ emptyText: '暂无进度记录' }}
-                pagination={false}
-                rowKey="id"
-                size="small"
-              />
-
-              <form className="record-form compact-section" onSubmit={submitFee}>
-                <div className="form-divider">打样费用</div>
-                <label>
-                  打样费用类型
-                <FormSelect
-                  value={feeForm.fee_type}
-                  onChange={(event) => setFeeForm({ ...feeForm, fee_type: event.target.value })}
-                >
-                  {sampleFeeTypeOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-                </label>
-                <label>
-                  打样费用金额
-                  <Input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={feeForm.amount}
-                    onChange={(event) => setFeeForm({ ...feeForm, amount: event.target.value })}
-                  />
-                </label>
-                <label>
-                  打样费用币种
-                  <Input
-                    value={feeForm.currency}
-                    onChange={(event) => setFeeForm({ ...feeForm, currency: event.target.value })}
-                  />
-                </label>
-                <label>
-                  收款方类型
-                <FormSelect
-                  value={feeForm.payee_type}
-                  onChange={(event) => setFeeForm({ ...feeForm, payee_type: event.target.value })}
-                >
-                  {samplePayeeTypeOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-                </label>
-                <label>
-                  收款方名称
-                  <Input
-                    value={feeForm.payee_name}
-                    onChange={(event) => setFeeForm({ ...feeForm, payee_name: event.target.value })}
-                  />
-                </label>
-                <label>
-                  打样费用备注
-                  <Input.TextArea
-                    rows={2}
-                    value={feeForm.remark}
-                    onChange={(event) => setFeeForm({ ...feeForm, remark: event.target.value })}
-                  />
-                </label>
-                <Button htmlType="submit" loading={submitting}>
-                  登记打样费用
-                </Button>
-              </form>
-
-              {selectedRequest.fees.some((fee) => !fee.payment_request_no) ? (
-                <ApprovalAssigneeSelect
-                  currentUserId={currentUser.id}
-                  label="付费审批人"
-                  onChange={setPaymentReviewerId}
-                  requiredPermission="finance:view"
-                  value={paymentReviewerId}
-                />
-              ) : null}
-
-              <Table<SampleFee>
-                className="compact-section"
-                columns={[
-                  { title: '费用类型', dataIndex: 'fee_type', render: sampleFeeTypeLabel },
-                  {
-                    title: '金额',
-                    dataIndex: 'amount',
-                    render: (_, record) => `${record.currency} ${record.amount}`,
-                  },
-                  { title: '收款方', dataIndex: 'payee_name' },
-                  { title: '付款状态', dataIndex: 'payment_status', render: samplePaymentStatusLabel },
-                  { title: '付款申请', dataIndex: 'payment_request_no', render: nullableText },
-                  {
-                    title: '操作',
-                    dataIndex: 'id',
-                    width: 120,
-                    render: (_, record) => (
-                      <Button
-                        disabled={Boolean(record.payment_request_no) || !paymentReviewerId}
-                        loading={submitting}
-                        size="small"
-                        onClick={() => void submitPaymentRequest(record)}
-                      >
-                        发起付款
-                      </Button>
-                    ),
-                  },
-                ]}
-                dataSource={selectedRequest.fees}
-                locale={{ emptyText: '暂无打样费用' }}
-                pagination={false}
-                rowKey="id"
-                size="small"
-              />
-
-              <form className="record-form compact-section" onSubmit={submitRecordFromRequest}>
-                <div className="form-divider">打样完成转样品登记</div>
-                <div className="form-pair three">
-                    <label>
-                    样品编号
-                    <Input
-                      value={recordForm.code}
-                      onChange={(event) => setRecordForm({ ...recordForm, code: event.target.value })}
-                    />
+                <form className="record-form compact-section" onSubmit={submitFee}>
+                  <div className="form-divider">打样费用</div>
+                  <label>
+                    打样费用类型
+                    <FormSelect
+                      value={feeForm.fee_type}
+                      onChange={(event) => setFeeForm({ ...feeForm, fee_type: event.target.value })}
+                    >
+                      {sampleFeeTypeOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
                   </label>
                   <label>
-                    样品分类
-                  <FormSelect
-                    value={recordForm.sample_type}
-                    onChange={(event) => setRecordForm({ ...recordForm, sample_type: event.target.value })}
-                  >
-                    {sampleRecordTypeOptions.map((item) => (
-                      <option key={item.value} value={item.value}>
-                        {item.label}
-                      </option>
-                    ))}
-                  </FormSelect>
-                  </label>
-                  <label>
-                    收样数量
+                    打样费用金额
                     <Input
                       type="number"
-                      min="0.01"
+                      min="0"
                       step="0.01"
-                      value={recordForm.quantity}
-                      onChange={(event) => setRecordForm({ ...recordForm, quantity: event.target.value })}
-                    />
-                  </label>
-                </div>
-                <div className="form-pair three">
-                  <label>
-                    收样日期
-                    <Input
-                      type="date"
-                      value={recordForm.received_at}
-                      onChange={(event) => setRecordForm({ ...recordForm, received_at: event.target.value })}
+                      value={feeForm.amount}
+                      onChange={(event) => setFeeForm({ ...feeForm, amount: event.target.value })}
                     />
                   </label>
                   <label>
-                    提交日期
+                    打样费用币种
                     <Input
-                      type="date"
-                      value={recordForm.submitted_at}
-                      onChange={(event) => setRecordForm({ ...recordForm, submitted_at: event.target.value })}
+                      value={feeForm.currency}
+                      onChange={(event) => setFeeForm({ ...feeForm, currency: event.target.value })}
                     />
                   </label>
                   <label>
-                    单位
-                    <Input
-                      value={recordForm.unit}
-                      onChange={(event) => setRecordForm({ ...recordForm, unit: event.target.value })}
-                    />
-                  </label>
-                </div>
-                <div className="form-pair two">
-                  <label>
-                    客户货号
-                    <Input
-                      value={recordForm.customer_sku}
-                      onChange={(event) => setRecordForm({ ...recordForm, customer_sku: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    供应商货号
-                    <Input
-                      value={recordForm.supplier_sku}
-                      onChange={(event) => setRecordForm({ ...recordForm, supplier_sku: event.target.value })}
-                    />
-                  </label>
-                </div>
-                <div className="form-pair two">
-                  <label>
-                    采购合同标识
-                    <Input
-                      value={recordForm.purchase_contract_id}
+                    收款方类型
+                    <FormSelect
+                      value={feeForm.payee_type}
                       onChange={(event) =>
-                        setRecordForm({ ...recordForm, purchase_contract_id: event.target.value })
+                        setFeeForm({ ...feeForm, payee_type: event.target.value })
+                      }
+                    >
+                      {samplePayeeTypeOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    收款方名称
+                    <Input
+                      value={feeForm.payee_name}
+                      onChange={(event) =>
+                        setFeeForm({ ...feeForm, payee_name: event.target.value })
                       }
                     />
                   </label>
                   <label>
-                    采购合同号
-                    <Input
-                      value={recordForm.purchase_contract_no}
-                      onChange={(event) =>
-                        setRecordForm({ ...recordForm, purchase_contract_no: event.target.value })
-                      }
+                    打样费用备注
+                    <Input.TextArea
+                      rows={2}
+                      value={feeForm.remark}
+                      onChange={(event) => setFeeForm({ ...feeForm, remark: event.target.value })}
                     />
                   </label>
-                </div>
-                <label>
-                  样品说明
-                  <Input.TextArea
-                    rows={2}
-                    value={recordForm.description}
-                    onChange={(event) => setRecordForm({ ...recordForm, description: event.target.value })}
+                  <Button htmlType="submit" loading={submitting}>
+                    登记打样费用
+                  </Button>
+                </form>
+
+                {selectedRequest.fees.some((fee) => !fee.payment_request_no) ? (
+                  <ApprovalAssigneeSelect
+                    currentUserId={currentUser.id}
+                    label="付费审批人"
+                    onChange={setPaymentReviewerId}
+                    requiredPermission="finance:view"
+                    value={paymentReviewerId}
                   />
-                </label>
-                <Button
-                  disabled={selectedRequest.status !== 'completed'}
-                  htmlType="submit"
-                  loading={submitting}
-                  type="primary"
-                >
-                  转为样品登记
-                </Button>
-              </form>
-            </>
-          ) : (
-            <div className="module-state panel-empty-state">
-              <FlaskConical size={28} />
-              <strong>暂无打样单</strong>
-              <span>请返回列表选择打样单查看详情</span>
-            </div>
-          )}
+                ) : null}
+
+                <Table<SampleFee>
+                  className="compact-section"
+                  columns={[
+                    { title: '费用类型', dataIndex: 'fee_type', render: sampleFeeTypeLabel },
+                    {
+                      title: '金额',
+                      dataIndex: 'amount',
+                      render: (_, record) => `${record.currency} ${record.amount}`,
+                    },
+                    { title: '收款方', dataIndex: 'payee_name' },
+                    {
+                      title: '付款状态',
+                      dataIndex: 'payment_status',
+                      render: samplePaymentStatusLabel,
+                    },
+                    { title: '付款申请', dataIndex: 'payment_request_no', render: nullableText },
+                    {
+                      title: '操作',
+                      dataIndex: 'id',
+                      width: 120,
+                      render: (_, record) => (
+                        <Button
+                          disabled={Boolean(record.payment_request_no) || !paymentReviewerId}
+                          loading={submitting}
+                          size="small"
+                          onClick={() => void submitPaymentRequest(record)}
+                        >
+                          发起付款
+                        </Button>
+                      ),
+                    },
+                  ]}
+                  dataSource={selectedRequest.fees}
+                  locale={{ emptyText: '暂无打样费用' }}
+                  pagination={false}
+                  rowKey="id"
+                  size="small"
+                />
+
+                <form className="record-form compact-section" onSubmit={submitRecordFromRequest}>
+                  <div className="form-divider">打样完成转样品登记</div>
+                  <div className="form-pair three">
+                    <label>
+                      样品编号
+                      <Input
+                        value={recordForm.code}
+                        onChange={(event) =>
+                          setRecordForm({ ...recordForm, code: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      样品分类
+                      <FormSelect
+                        value={recordForm.sample_type}
+                        onChange={(event) =>
+                          setRecordForm({ ...recordForm, sample_type: event.target.value })
+                        }
+                      >
+                        {sampleRecordTypeOptions.map((item) => (
+                          <option key={item.value} value={item.value}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </FormSelect>
+                    </label>
+                    <label>
+                      收样数量
+                      <Input
+                        type="number"
+                        min="0.01"
+                        step="0.01"
+                        value={recordForm.quantity}
+                        onChange={(event) =>
+                          setRecordForm({ ...recordForm, quantity: event.target.value })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="form-pair three">
+                    <label>
+                      收样日期
+                      <Input
+                        type="date"
+                        value={recordForm.received_at}
+                        onChange={(event) =>
+                          setRecordForm({ ...recordForm, received_at: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      提交日期
+                      <Input
+                        type="date"
+                        value={recordForm.submitted_at}
+                        onChange={(event) =>
+                          setRecordForm({ ...recordForm, submitted_at: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      单位
+                      <Input
+                        value={recordForm.unit}
+                        onChange={(event) =>
+                          setRecordForm({ ...recordForm, unit: event.target.value })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="form-pair two">
+                    <label>
+                      客户货号
+                      <Input
+                        value={recordForm.customer_sku}
+                        onChange={(event) =>
+                          setRecordForm({ ...recordForm, customer_sku: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      供应商货号
+                      <Input
+                        value={recordForm.supplier_sku}
+                        onChange={(event) =>
+                          setRecordForm({ ...recordForm, supplier_sku: event.target.value })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="form-pair two">
+                    <label>
+                      采购合同标识
+                      <Input
+                        value={recordForm.purchase_contract_id}
+                        onChange={(event) =>
+                          setRecordForm({ ...recordForm, purchase_contract_id: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      采购合同号
+                      <Input
+                        value={recordForm.purchase_contract_no}
+                        onChange={(event) =>
+                          setRecordForm({ ...recordForm, purchase_contract_no: event.target.value })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <label>
+                    样品说明
+                    <Input.TextArea
+                      rows={2}
+                      value={recordForm.description}
+                      onChange={(event) =>
+                        setRecordForm({ ...recordForm, description: event.target.value })
+                      }
+                    />
+                  </label>
+                  <Button
+                    disabled={selectedRequest.status !== 'completed'}
+                    htmlType="submit"
+                    loading={submitting}
+                    type="primary"
+                  >
+                    转为样品登记
+                  </Button>
+                </form>
+              </>
+            ) : (
+              <div className="module-state panel-empty-state">
+                <FlaskConical size={28} />
+                <strong>暂无打样单</strong>
+                <span>请返回列表选择打样单查看详情</span>
+              </div>
+            )}
           </section>
         ) : null}
       </section>
     </section>
   )
 }
-

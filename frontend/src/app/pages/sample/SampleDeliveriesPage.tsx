@@ -1,14 +1,54 @@
 import { Alert, Button, Input, Modal, Table } from 'antd'
-import { ArrowLeft, LayoutDashboard, Plus, Search , Send} from 'lucide-react'
+import { ArrowLeft, LayoutDashboard, Plus, Search, Send } from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { approveSampleDelivery, createSampleDelivery, exportSampleDeliveries, getSampleDeliveryFeeStatistics, getSampleDeliveryQuoteHistory, getSampleDeliverySampleHistory, getSampleDeliveryStatistics, listSampleDeliveries, submitSampleDelivery, updateSampleDelivery, updateSampleDeliveryTracking, type CurrentUser, type SampleDelivery, type SampleDeliveryApprovePayload, type SampleDeliveryCreatePayload, type SampleDeliveryFeeStatistic, type SampleDeliveryFeeStatistics, type SampleDeliveryStatistics, type SampleDeliveryTrackingPayload , SampleDeliveryCustomerStatistic, SampleDeliveryExpressStatistic, SampleDeliveryFee, SampleDeliveryLine, SampleDeliveryStatusStatistic} from '../../../api'
+import {
+  approveSampleDelivery,
+  createSampleDelivery,
+  exportSampleDeliveries,
+  getSampleDeliveryFeeStatistics,
+  getSampleDeliveryQuoteHistory,
+  getSampleDeliverySampleHistory,
+  getSampleDeliveryStatistics,
+  listSampleDeliveries,
+  submitSampleDelivery,
+  updateSampleDelivery,
+  updateSampleDeliveryTracking,
+  type CurrentUser,
+  type SampleDelivery,
+  type SampleDeliveryApprovePayload,
+  type SampleDeliveryCreatePayload,
+  type SampleDeliveryFeeStatistic,
+  type SampleDeliveryFeeStatistics,
+  type SampleDeliveryStatistics,
+  type SampleDeliveryTrackingPayload,
+  SampleDeliveryCustomerStatistic,
+  SampleDeliveryExpressStatistic,
+  SampleDeliveryFee,
+  SampleDeliveryLine,
+  SampleDeliveryStatusStatistic,
+} from '../../../api'
 import { sampleDeliveryPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { downloadCsv } from '../../../shared/print'
-import { sampleDeliveryStatusOptions, sampleDeliveryFeeTypeOptions, sampleDeliveryPayerTypeOptions, sampleDeliveryTrackingStatusOptions, sampleRecordTypeOptions, sampleRecordStatusOptions } from '../../../shared/formOptions'
-import { canApproveAssignedRecord, formatDate, formatMoney, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import {
+  sampleDeliveryStatusOptions,
+  sampleDeliveryFeeTypeOptions,
+  sampleDeliveryPayerTypeOptions,
+  sampleDeliveryTrackingStatusOptions,
+  sampleRecordTypeOptions,
+  sampleRecordStatusOptions,
+} from '../../../shared/formOptions'
+import {
+  canApproveAssignedRecord,
+  formatDate,
+  formatMoney,
+  nullableText,
+  todayInputValue,
+  type RoutedDetailPageProps,
+  emptyToNull,
+} from '../appHelpers'
 import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
 
 function sampleDeliveryFeeTypeLabel(value: string): string {
@@ -26,7 +66,6 @@ function _sampleRecordStatusLabel(value: string): string {
 function sampleDeliveryStatusLabel(value: string): string {
   return sampleDeliveryStatusOptions.find((item) => item.value === value)?.label ?? value
 }
-
 
 type SampleDeliveryFormState = {
   code: string
@@ -71,7 +110,6 @@ type SampleDeliveryTrackingFormState = {
   tracking_no: string
   status: string
 }
-
 
 function initialSampleDeliveryFeeStatistics(): SampleDeliveryFeeStatistics {
   return {
@@ -244,7 +282,6 @@ function sampleDeliveryPayerTypeLabel(value: string): string {
   return sampleDeliveryPayerTypeOptions.find((item) => item.value === value)?.label ?? value
 }
 
-
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 
 export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Props) {
@@ -278,13 +315,10 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
     initialSampleDeliveryTrackingForm(),
   )
 
-  const selectedDelivery = useMemo(
-    () => {
-      if (detailId) return deliveries.find((item) => item.id === detailId) ?? null
-      return deliveries.find((item) => item.id === selectedDeliveryId) ?? deliveries[0] ?? null
-    },
-    [deliveries, detailId, selectedDeliveryId],
-  )
+  const selectedDelivery = useMemo(() => {
+    if (detailId) return deliveries.find((item) => item.id === detailId) ?? null
+    return deliveries.find((item) => item.id === selectedDeliveryId) ?? deliveries[0] ?? null
+  }, [deliveries, detailId, selectedDeliveryId])
 
   useEffect(() => {
     void loadDeliveries()
@@ -468,7 +502,13 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
 
   async function approveDelivery() {
     if (!selectedDelivery) return
-    if (!canApproveAssignedRecord(currentUser, selectedDelivery.reviewer_id, 'sample:delivery:approve')) {
+    if (
+      !canApproveAssignedRecord(
+        currentUser,
+        selectedDelivery.reviewer_id,
+        'sample:delivery:approve',
+      )
+    ) {
       showError(new Error(`该寄样单应由 ${selectedDelivery.reviewer_name ?? '指定审批人'} 审批`))
       return
     }
@@ -535,145 +575,166 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
     <section className="sample-delivery-page">
       <div className="summary-strip" aria-label="寄样管理概览">
         <Metric label="寄样单" value={deliveries.length} />
-        <Metric label="待审核" value={deliveries.filter((item) => item.status === 'submitted').length} />
-        <Metric label="已审核" value={deliveries.filter((item) => ['approved', 'shipped'].includes(item.status)).length} />
+        <Metric
+          label="待审核"
+          value={deliveries.filter((item) => item.status === 'submitted').length}
+        />
+        <Metric
+          label="已审核"
+          value={deliveries.filter((item) => ['approved', 'shipped'].includes(item.status)).length}
+        />
         <Metric label="寄样数量" value={deliveryStatistics.total_quantity} />
-        <Metric label="费用" value={formatMoney(feeStatistics.total_amount, feeStatistics.currency)} />
+        <Metric
+          label="费用"
+          value={formatMoney(feeStatistics.total_amount, feeStatistics.currency)}
+        />
       </div>
 
-      {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
+      {message ? (
+        <Alert className="workspace-alert" title={message} type="success" showIcon />
+      ) : null}
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid sample-delivery-grid">
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="寄样单列表" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadDeliveries()
-              }}
-            >
-              <label className="inline-filter-search">
-                寄样搜索
-                <Input
-                  value={search}
-                  placeholder="单号 / 客户 / 样品 / 快递"
-                  onChange={(event) => setSearch(event.target.value)}
-                />
-              </label>
-              <label className="inline-filter-compact" htmlFor="sample-delivery-status-filter">
-                审核状态
-                <FormSelect
-                  id="sample-delivery-status-filter"
-                  value={statusFilter}
-                  onChange={(event) => setStatusFilter(event.target.value)}
-                >
-                  <option value="">全部状态</option>
-                  {sampleDeliveryStatusOptions
-                    .filter((item) => item.value !== 'rejected')
-                    .map((item) => (
-                      <option key={item.value} value={item.value}>
-                        {item.label}
-                      </option>
-                    ))}
-                </FormSelect>
-              </label>
-              <label className="inline-filter-compact">
-                客户标识
-                <Input
-                  value={customerFilter}
-                  placeholder="customer-id"
-                  onChange={(event) => setCustomerFilter(event.target.value)}
-                />
-              </label>
-              <label className="inline-filter-compact">
-                快递公司
-                <Input
-                  value={expressFilter}
-                  placeholder="DHL / FedEx"
-                  onChange={(event) => setExpressFilter(event.target.value)}
-                />
-              </label>
-              <label className="inline-filter-compact">
-                寄样起始日期
-                <Input
-                  type="date"
-                  value={dateFromFilter}
-                  onChange={(event) => setDateFromFilter(event.target.value)}
-                />
-              </label>
-              <label className="inline-filter-compact">
-                寄样截止日期
-                <Input
-                  type="date"
-                  value={dateToFilter}
-                  onChange={(event) => setDateToFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-              <Button loading={submitting} onClick={() => void downloadDeliveryExport()}>
-                导出寄样
-              </Button>
-              <Button htmlType="button" icon={<Plus size={16} />} onClick={openCreateDelivery}>
-                新增寄样单
-              </Button>
-            </form>
-          </div>
-
-          <Table<SampleDelivery>
-            columns={[
-              {
-                title: '寄样单号',
-                dataIndex: 'code',
-                render: (value: string, record: SampleDelivery) => (
-                  <button
-                    className="row-button"
-                    type="button"
-                    onClick={(event) => stopAndOpenDeliveryDetail(event, record)}
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<Search size={18} />} title="寄样单列表" />
+              <form
+                className="inline-filters"
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  void loadDeliveries()
+                }}
+              >
+                <label className="inline-filter-search">
+                  寄样搜索
+                  <Input
+                    value={search}
+                    placeholder="单号 / 客户 / 样品 / 快递"
+                    onChange={(event) => setSearch(event.target.value)}
+                  />
+                </label>
+                <label className="inline-filter-compact" htmlFor="sample-delivery-status-filter">
+                  审核状态
+                  <FormSelect
+                    id="sample-delivery-status-filter"
+                    value={statusFilter}
+                    onChange={(event) => setStatusFilter(event.target.value)}
                   >
-                    {value}
-                  </button>
-                ),
-              },
-              { title: '状态', dataIndex: 'status', render: sampleDeliveryStatusLabel },
-              { title: '客户', dataIndex: 'customer_name' },
-              {
-                title: '快递',
-                dataIndex: 'express_company',
-                render: (_, record) => `${record.express_company} / ${record.tracking_no ?? '未填'}`,
-              },
-              { title: '报价单', dataIndex: 'quote_no', render: nullableText },
-              {
-                title: '费用',
-                dataIndex: 'fee_total',
-                render: (_, record) => formatMoney(record.fee_total, record.fees[0]?.currency ?? 'USD'),
-              },
-              {
-                title: '入口',
-                key: 'detail',
-                width: 110,
-                render: (_: unknown, record: SampleDelivery) => (
-                  <Button size="small" onClick={(event) => stopAndOpenDeliveryDetail(event, record)}>
-                    查看详情
-                  </Button>
-                ),
-              },
-            ]}
-            dataSource={deliveries}
-            loading={loading}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedDelivery?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => setSelectedDeliveryId(record.id),
-            })}
-          />
+                    <option value="">全部状态</option>
+                    {sampleDeliveryStatusOptions
+                      .filter((item) => item.value !== 'rejected')
+                      .map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                  </FormSelect>
+                </label>
+                <label className="inline-filter-compact">
+                  客户标识
+                  <Input
+                    value={customerFilter}
+                    placeholder="输入客户编号或名称"
+                    onChange={(event) => setCustomerFilter(event.target.value)}
+                  />
+                </label>
+                <label className="inline-filter-compact">
+                  快递公司
+                  <Input
+                    value={expressFilter}
+                    placeholder="DHL / FedEx"
+                    onChange={(event) => setExpressFilter(event.target.value)}
+                  />
+                </label>
+                <label className="inline-filter-compact">
+                  寄样起始日期
+                  <Input
+                    type="date"
+                    value={dateFromFilter}
+                    onChange={(event) => setDateFromFilter(event.target.value)}
+                  />
+                </label>
+                <label className="inline-filter-compact">
+                  寄样截止日期
+                  <Input
+                    type="date"
+                    value={dateToFilter}
+                    onChange={(event) => setDateToFilter(event.target.value)}
+                  />
+                </label>
+                <Button htmlType="submit" icon={<Search size={16} />}>
+                  查询
+                </Button>
+                <Button loading={submitting} onClick={() => void downloadDeliveryExport()}>
+                  导出寄样
+                </Button>
+                <Button
+                  htmlType="button"
+                  type="primary"
+                  icon={<Plus size={16} />}
+                  onClick={openCreateDelivery}
+                >
+                  新增寄样单
+                </Button>
+              </form>
+            </div>
+
+            <Table<SampleDelivery>
+              columns={[
+                {
+                  title: '寄样单号',
+                  dataIndex: 'code',
+                  render: (value: string, record: SampleDelivery) => (
+                    <button
+                      className="row-button"
+                      type="button"
+                      onClick={(event) => stopAndOpenDeliveryDetail(event, record)}
+                    >
+                      {value}
+                    </button>
+                  ),
+                },
+                { title: '状态', dataIndex: 'status', render: sampleDeliveryStatusLabel },
+                { title: '客户', dataIndex: 'customer_name' },
+                {
+                  title: '快递',
+                  dataIndex: 'express_company',
+                  render: (_, record) =>
+                    `${record.express_company} / ${record.tracking_no ?? '未填'}`,
+                },
+                { title: '报价单', dataIndex: 'quote_no', render: nullableText },
+                {
+                  title: '费用',
+                  dataIndex: 'fee_total',
+                  render: (_, record) =>
+                    formatMoney(record.fee_total, record.fees[0]?.currency ?? 'USD'),
+                },
+                {
+                  title: '入口',
+                  key: 'detail',
+                  width: 110,
+                  render: (_: unknown, record: SampleDelivery) => (
+                    <Button
+                      size="small"
+                      onClick={(event) => stopAndOpenDeliveryDetail(event, record)}
+                    >
+                      查看详情
+                    </Button>
+                  ),
+                },
+              ]}
+              dataSource={deliveries}
+              loading={loading}
+              pagination={false}
+              rowClassName={(record) => (record.id === selectedDelivery?.id ? 'selected-row' : '')}
+              rowKey="id"
+              size="small"
+              onRow={(record) => ({
+                onClick: () => setSelectedDeliveryId(record.id),
+              })}
+            />
           </section>
         ) : null}
 
@@ -699,7 +760,10 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
             <div className="form-pair two">
               <label>
                 寄样单号
-                <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
+                <Input
+                  value={form.code}
+                  onChange={(event) => setForm({ ...form, code: event.target.value })}
+                />
               </label>
               <label>
                 寄样日期
@@ -857,7 +921,10 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
               </label>
               <label>
                 单位
-                <Input value={form.unit} onChange={(event) => setForm({ ...form, unit: event.target.value })} />
+                <Input
+                  value={form.unit}
+                  onChange={(event) => setForm({ ...form, unit: event.target.value })}
+                />
               </label>
             </div>
             <label>
@@ -934,11 +1001,20 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
               />
             </label>
             <div className="modal-actions">
-              <button className="secondary-inline" type="button" onClick={() => setDeliveryModalMode(null)}>
+              <button
+                className="secondary-inline"
+                type="button"
+                onClick={() => setDeliveryModalMode(null)}
+              >
                 取消
               </button>
               {deliveryModalMode === 'edit' ? (
-                <button className="inline-submit" disabled={submitting} type="button" onClick={() => void saveDeliveryDraft()}>
+                <button
+                  className="inline-submit"
+                  disabled={submitting}
+                  type="button"
+                  onClick={() => void saveDeliveryDraft()}
+                >
                   保存草稿编辑
                 </button>
               ) : (
@@ -952,287 +1028,338 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
 
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="寄样明细" />
-            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(sampleDeliveryPath)}>
-              返回列表
-            </Button>
-          </div>
-          {selectedDelivery ? (
-            <>
-              <dl className="detail-list">
-                <div>
-                  <dt>状态/日期</dt>
-                  <dd>{sampleDeliveryStatusLabel(selectedDelivery.status)} / {formatDate(selectedDelivery.delivery_date)}</dd>
-                </div>
-                <div>
-                  <dt>客户</dt>
-                  <dd>{selectedDelivery.customer_name}</dd>
-                </div>
-                <div>
-                  <dt>供应商/工厂</dt>
-                  <dd>{selectedDelivery.supplier_name ?? '未填'} / {selectedDelivery.factory_name ?? '未填'}</dd>
-                </div>
-                <div>
-                  <dt>收件方</dt>
-                  <dd>{selectedDelivery.recipient_name} / {selectedDelivery.recipient_company ?? '未填'}</dd>
-                </div>
-                <div>
-                  <dt>快递</dt>
-                  <dd>{selectedDelivery.express_company} / {selectedDelivery.tracking_no ?? '未填'}</dd>
-                </div>
-                <div>
-                  <dt>报价单</dt>
-                  <dd>{selectedDelivery.quote_no ?? '未关联'}</dd>
-                </div>
-                <div>
-                  <dt>费用合计</dt>
-                  <dd>{formatMoney(selectedDelivery.fee_total, selectedDelivery.fees[0]?.currency ?? 'USD')}</dd>
-                </div>
-                <div>
-                  <dt>审核人</dt>
-                  <dd>{selectedDelivery.reviewer_name ?? '未审核'}</dd>
-                </div>
-              </dl>
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<LayoutDashboard size={18} />} title="寄样明细" />
+              <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(sampleDeliveryPath)}>
+                返回列表
+              </Button>
+            </div>
+            {selectedDelivery ? (
+              <>
+                <dl className="detail-list">
+                  <div>
+                    <dt>状态/日期</dt>
+                    <dd>
+                      {sampleDeliveryStatusLabel(selectedDelivery.status)} /{' '}
+                      {formatDate(selectedDelivery.delivery_date)}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>客户</dt>
+                    <dd>{selectedDelivery.customer_name}</dd>
+                  </div>
+                  <div>
+                    <dt>供应商/工厂</dt>
+                    <dd>
+                      {selectedDelivery.supplier_name ?? '未填'} /{' '}
+                      {selectedDelivery.factory_name ?? '未填'}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>收件方</dt>
+                    <dd>
+                      {selectedDelivery.recipient_name} /{' '}
+                      {selectedDelivery.recipient_company ?? '未填'}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>快递</dt>
+                    <dd>
+                      {selectedDelivery.express_company} / {selectedDelivery.tracking_no ?? '未填'}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>报价单</dt>
+                    <dd>{selectedDelivery.quote_no ?? '未关联'}</dd>
+                  </div>
+                  <div>
+                    <dt>费用合计</dt>
+                    <dd>
+                      {formatMoney(
+                        selectedDelivery.fee_total,
+                        selectedDelivery.fees[0]?.currency ?? 'USD',
+                      )}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>审核人</dt>
+                    <dd>{selectedDelivery.reviewer_name ?? '未审核'}</dd>
+                  </div>
+                </dl>
 
-              <div className="transaction-box">
-                <strong>寄样备注</strong>
-                <p>{selectedDelivery.remark ?? selectedDelivery.recipient_address}</p>
-              </div>
+                <div className="transaction-box">
+                  <strong>寄样备注</strong>
+                  <p>{selectedDelivery.remark ?? selectedDelivery.recipient_address}</p>
+                </div>
 
-              <div className="delivery-action-row">
-                <Button
-                  disabled={selectedDelivery.status !== 'draft'}
-                  onClick={() => openEditDelivery(selectedDelivery)}
-                >
-                  编辑草稿
-                </Button>
-                {selectedDelivery.status === 'draft' ? (
-                  <ApprovalAssigneeSelect
-                    currentUserId={currentUser.id}
-                    onChange={setReviewerId}
-                    requiredPermission="sample:delivery:approve"
-                    value={reviewerId}
+                <div className="delivery-action-row">
+                  <Button
+                    disabled={selectedDelivery.status !== 'draft'}
+                    onClick={() => openEditDelivery(selectedDelivery)}
+                  >
+                    编辑草稿
+                  </Button>
+                  {selectedDelivery.status === 'draft' ? (
+                    <ApprovalAssigneeSelect
+                      currentUserId={currentUser.id}
+                      onChange={setReviewerId}
+                      requiredPermission="sample:delivery:approve"
+                      value={reviewerId}
+                    />
+                  ) : null}
+                  <Button
+                    disabled={selectedDelivery.status !== 'draft' || !reviewerId}
+                    loading={submitting}
+                    onClick={() => void submitDeliveryForReview()}
+                  >
+                    提交审核
+                  </Button>
+                  <Button
+                    disabled={
+                      selectedDelivery.status !== 'submitted' ||
+                      !canApproveAssignedRecord(
+                        currentUser,
+                        selectedDelivery.reviewer_id,
+                        'sample:delivery:approve',
+                      )
+                    }
+                    loading={submitting}
+                    type="primary"
+                    onClick={() => void approveDelivery()}
+                  >
+                    审核通过
+                  </Button>
+                </div>
+                {selectedDelivery.status === 'submitted' &&
+                !canApproveAssignedRecord(
+                  currentUser,
+                  selectedDelivery.reviewer_id,
+                  'sample:delivery:approve',
+                ) ? (
+                  <Alert
+                    message={`等待 ${selectedDelivery.reviewer_name ?? '指定审批人'} 审批`}
+                    showIcon
+                    type="info"
                   />
                 ) : null}
-                <Button
-                  disabled={selectedDelivery.status !== 'draft' || !reviewerId}
-                  loading={submitting}
-                  onClick={() => void submitDeliveryForReview()}
-                >
-                  提交审核
-                </Button>
-                <Button
-                  disabled={
-                    selectedDelivery.status !== 'submitted' ||
-                    !canApproveAssignedRecord(currentUser, selectedDelivery.reviewer_id, 'sample:delivery:approve')
-                  }
-                  loading={submitting}
-                  type="primary"
-                  onClick={() => void approveDelivery()}
-                >
-                  审核通过
-                </Button>
-              </div>
-              {selectedDelivery.status === 'submitted' && !canApproveAssignedRecord(currentUser, selectedDelivery.reviewer_id, 'sample:delivery:approve') ? (
-                <Alert
-                  message={`等待 ${selectedDelivery.reviewer_name ?? '指定审批人'} 审批`}
-                  showIcon
-                  type="info"
+
+                <form className="record-form accessory-form" onSubmit={submitTracking}>
+                  <div className="form-divider">物流跟踪</div>
+                  <div className="form-pair three">
+                    <label>
+                      快递公司
+                      <Input
+                        value={trackingForm.express_company}
+                        onChange={(event) =>
+                          setTrackingForm({ ...trackingForm, express_company: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      快递单号
+                      <Input
+                        value={trackingForm.tracking_no}
+                        onChange={(event) =>
+                          setTrackingForm({ ...trackingForm, tracking_no: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      物流状态
+                      <FormSelect
+                        value={trackingForm.status}
+                        onChange={(event) =>
+                          setTrackingForm({ ...trackingForm, status: event.target.value })
+                        }
+                      >
+                        {sampleDeliveryTrackingStatusOptions.map((item) => (
+                          <option key={item.value} value={item.value}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </FormSelect>
+                    </label>
+                  </div>
+                  <Button htmlType="submit" loading={submitting}>
+                    更新物流
+                  </Button>
+                </form>
+
+                <Table<SampleDeliveryLine>
+                  className="compact-section"
+                  columns={[
+                    { title: '样品编号', dataIndex: 'sample_code', render: nullableText },
+                    {
+                      title: '产品',
+                      dataIndex: 'product_name',
+                      render: (_, line) => `${line.product_code ?? '未填'} / ${line.product_name}`,
+                    },
+                    {
+                      title: '数量',
+                      dataIndex: 'quantity',
+                      render: (_, line) => `${line.quantity} ${line.unit}`,
+                    },
+                    { title: '分类', dataIndex: 'sample_type', render: sampleRecordTypeLabel },
+                    { title: '备注', dataIndex: 'remark', render: nullableText },
+                  ]}
+                  dataSource={selectedDelivery.lines}
+                  locale={{ emptyText: '暂无寄样明细' }}
+                  pagination={false}
+                  rowKey="id"
+                  size="small"
                 />
-              ) : null}
 
-              <form className="record-form accessory-form" onSubmit={submitTracking}>
-                <div className="form-divider">物流跟踪</div>
-                <div className="form-pair three">
-                  <label>
-                    快递公司
-                    <Input
-                      value={trackingForm.express_company}
-                      onChange={(event) =>
-                        setTrackingForm({ ...trackingForm, express_company: event.target.value })
-                      }
-                    />
-                  </label>
-                  <label>
-                    快递单号
-                    <Input
-                      value={trackingForm.tracking_no}
-                      onChange={(event) => setTrackingForm({ ...trackingForm, tracking_no: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    物流状态
-                  <FormSelect
-                    value={trackingForm.status}
-                    onChange={(event) => setTrackingForm({ ...trackingForm, status: event.target.value })}
-                  >
-                    {sampleDeliveryTrackingStatusOptions.map((item) => (
-                      <option key={item.value} value={item.value}>
-                        {item.label}
-                      </option>
-                    ))}
-                  </FormSelect>
-                  </label>
+                <Table<SampleDeliveryFee>
+                  className="compact-section"
+                  columns={[
+                    {
+                      title: '费用类型',
+                      dataIndex: 'fee_type',
+                      render: sampleDeliveryFeeTypeLabel,
+                    },
+                    {
+                      title: '金额',
+                      dataIndex: 'amount',
+                      render: (_, fee) => formatMoney(fee.amount, fee.currency),
+                    },
+                    {
+                      title: '承担方',
+                      dataIndex: 'payer_type',
+                      render: sampleDeliveryPayerTypeLabel,
+                    },
+                    { title: '备注', dataIndex: 'remark', render: nullableText },
+                  ]}
+                  dataSource={selectedDelivery.fees}
+                  locale={{ emptyText: '暂无费用明细' }}
+                  pagination={false}
+                  rowKey="id"
+                  size="small"
+                />
+
+                <div className="accessory-heading">
+                  <strong>费用统计</strong>
+                  <span>{formatMoney(feeStatistics.total_amount, feeStatistics.currency)}</span>
                 </div>
-                <Button htmlType="submit" loading={submitting}>
-                  更新物流
-                </Button>
-              </form>
+                <Table<SampleDeliveryFeeStatistic>
+                  columns={[
+                    { title: '客户', dataIndex: 'customer_name' },
+                    { title: '快递公司', dataIndex: 'express_company' },
+                    { title: '寄样单数', dataIndex: 'delivery_count' },
+                    {
+                      title: '费用合计',
+                      dataIndex: 'total_amount',
+                      render: (_, item) => formatMoney(item.total_amount, item.currency),
+                    },
+                  ]}
+                  dataSource={feeStatistics.items}
+                  locale={{ emptyText: '暂无已审核费用' }}
+                  pagination={false}
+                  rowKey={(item) =>
+                    `${item.customer_id ?? 'none'}-${item.express_company}-${item.currency}`
+                  }
+                  size="small"
+                />
 
-              <Table<SampleDeliveryLine>
-                className="compact-section"
-                columns={[
-                  { title: '样品编号', dataIndex: 'sample_code', render: nullableText },
-                  {
-                    title: '产品',
-                    dataIndex: 'product_name',
-                    render: (_, line) => `${line.product_code ?? '未填'} / ${line.product_name}`,
-                  },
-                  { title: '数量', dataIndex: 'quantity', render: (_, line) => `${line.quantity} ${line.unit}` },
-                  { title: '分类', dataIndex: 'sample_type', render: sampleRecordTypeLabel },
-                  { title: '备注', dataIndex: 'remark', render: nullableText },
-                ]}
-                dataSource={selectedDelivery.lines}
-                locale={{ emptyText: '暂无寄样明细' }}
-                pagination={false}
-                rowKey="id"
-                size="small"
-              />
+                <div className="accessory-heading">
+                  <strong>寄样统计</strong>
+                  <span>
+                    {deliveryStatistics.total_deliveries} 单 / {deliveryStatistics.total_quantity}{' '}
+                    件
+                  </span>
+                </div>
+                <Table<SampleDeliveryStatusStatistic>
+                  columns={[
+                    { title: '状态', dataIndex: 'status', render: sampleDeliveryStatusLabel },
+                    { title: '寄样单数', dataIndex: 'delivery_count' },
+                    { title: '寄样数量', dataIndex: 'total_quantity' },
+                  ]}
+                  dataSource={deliveryStatistics.by_status}
+                  locale={{ emptyText: '暂无状态统计' }}
+                  pagination={false}
+                  rowKey="status"
+                  size="small"
+                />
+                <Table<SampleDeliveryCustomerStatistic>
+                  className="compact-section"
+                  columns={[
+                    { title: '客户', dataIndex: 'customer_name' },
+                    { title: '寄样单数', dataIndex: 'delivery_count' },
+                    { title: '寄样数量', dataIndex: 'total_quantity' },
+                  ]}
+                  dataSource={deliveryStatistics.by_customer}
+                  locale={{ emptyText: '暂无客户统计' }}
+                  pagination={false}
+                  rowKey={(item) => item.customer_id ?? item.customer_name}
+                  size="small"
+                />
+                <Table<SampleDeliveryExpressStatistic>
+                  className="compact-section"
+                  columns={[
+                    { title: '快递公司', dataIndex: 'express_company' },
+                    { title: '寄样单数', dataIndex: 'delivery_count' },
+                    { title: '寄样数量', dataIndex: 'total_quantity' },
+                  ]}
+                  dataSource={deliveryStatistics.by_express}
+                  locale={{ emptyText: '暂无快递统计' }}
+                  pagination={false}
+                  rowKey="express_company"
+                  size="small"
+                />
 
-              <Table<SampleDeliveryFee>
-                className="compact-section"
-                columns={[
-                  { title: '费用类型', dataIndex: 'fee_type', render: sampleDeliveryFeeTypeLabel },
-                  { title: '金额', dataIndex: 'amount', render: (_, fee) => formatMoney(fee.amount, fee.currency) },
-                  { title: '承担方', dataIndex: 'payer_type', render: sampleDeliveryPayerTypeLabel },
-                  { title: '备注', dataIndex: 'remark', render: nullableText },
-                ]}
-                dataSource={selectedDelivery.fees}
-                locale={{ emptyText: '暂无费用明细' }}
-                pagination={false}
-                rowKey="id"
-                size="small"
-              />
+                <div className="accessory-heading">
+                  <strong>样品寄样历史</strong>
+                  <span>{sampleHistory.length} 条</span>
+                </div>
+                <Table<SampleDelivery>
+                  columns={[
+                    { title: '寄样单', dataIndex: 'code' },
+                    { title: '客户', dataIndex: 'customer_name' },
+                    { title: '日期', dataIndex: 'delivery_date', render: formatDate },
+                    { title: '状态', dataIndex: 'status', render: sampleDeliveryStatusLabel },
+                    {
+                      title: '快递',
+                      dataIndex: 'express_company',
+                      render: (_, delivery) =>
+                        `${delivery.express_company} / ${delivery.tracking_no ?? '未填'}`,
+                    },
+                  ]}
+                  dataSource={sampleHistory}
+                  locale={{ emptyText: '暂无该样品寄样历史' }}
+                  pagination={false}
+                  rowKey="id"
+                  size="small"
+                />
 
-              <div className="accessory-heading">
-                <strong>费用统计</strong>
-                <span>{formatMoney(feeStatistics.total_amount, feeStatistics.currency)}</span>
+                <div className="accessory-heading">
+                  <strong>报价关联寄样</strong>
+                  <span>{quoteHistory.length} 条</span>
+                </div>
+                <Table<SampleDelivery>
+                  columns={[
+                    { title: '报价单', dataIndex: 'quote_no', render: nullableText },
+                    { title: '寄样单', dataIndex: 'code' },
+                    { title: '客户', dataIndex: 'customer_name' },
+                    {
+                      title: '产品',
+                      dataIndex: 'lines',
+                      render: (_, delivery) => delivery.lines[0]?.product_name ?? '未填',
+                    },
+                    { title: '审核日期', dataIndex: 'approved_at', render: formatDate },
+                  ]}
+                  dataSource={quoteHistory}
+                  locale={{ emptyText: '暂无报价关联寄样记录' }}
+                  pagination={false}
+                  rowKey="id"
+                  size="small"
+                />
+              </>
+            ) : (
+              <div className="module-state panel-empty-state">
+                <Send size={28} />
+                <strong>暂无寄样单</strong>
+                <span>请返回列表选择寄样单查看详情</span>
               </div>
-              <Table<SampleDeliveryFeeStatistic>
-                columns={[
-                  { title: '客户', dataIndex: 'customer_name' },
-                  { title: '快递公司', dataIndex: 'express_company' },
-                  { title: '寄样单数', dataIndex: 'delivery_count' },
-                  {
-                    title: '费用合计',
-                    dataIndex: 'total_amount',
-                    render: (_, item) => formatMoney(item.total_amount, item.currency),
-                  },
-                ]}
-                dataSource={feeStatistics.items}
-                locale={{ emptyText: '暂无已审核费用' }}
-                pagination={false}
-                rowKey={(item) => `${item.customer_id ?? 'none'}-${item.express_company}-${item.currency}`}
-                size="small"
-              />
-
-              <div className="accessory-heading">
-                <strong>寄样统计</strong>
-                <span>{deliveryStatistics.total_deliveries} 单 / {deliveryStatistics.total_quantity} 件</span>
-              </div>
-              <Table<SampleDeliveryStatusStatistic>
-                columns={[
-                  { title: '状态', dataIndex: 'status', render: sampleDeliveryStatusLabel },
-                  { title: '寄样单数', dataIndex: 'delivery_count' },
-                  { title: '寄样数量', dataIndex: 'total_quantity' },
-                ]}
-                dataSource={deliveryStatistics.by_status}
-                locale={{ emptyText: '暂无状态统计' }}
-                pagination={false}
-                rowKey="status"
-                size="small"
-              />
-              <Table<SampleDeliveryCustomerStatistic>
-                className="compact-section"
-                columns={[
-                  { title: '客户', dataIndex: 'customer_name' },
-                  { title: '寄样单数', dataIndex: 'delivery_count' },
-                  { title: '寄样数量', dataIndex: 'total_quantity' },
-                ]}
-                dataSource={deliveryStatistics.by_customer}
-                locale={{ emptyText: '暂无客户统计' }}
-                pagination={false}
-                rowKey={(item) => item.customer_id ?? item.customer_name}
-                size="small"
-              />
-              <Table<SampleDeliveryExpressStatistic>
-                className="compact-section"
-                columns={[
-                  { title: '快递公司', dataIndex: 'express_company' },
-                  { title: '寄样单数', dataIndex: 'delivery_count' },
-                  { title: '寄样数量', dataIndex: 'total_quantity' },
-                ]}
-                dataSource={deliveryStatistics.by_express}
-                locale={{ emptyText: '暂无快递统计' }}
-                pagination={false}
-                rowKey="express_company"
-                size="small"
-              />
-
-              <div className="accessory-heading">
-                <strong>样品寄样历史</strong>
-                <span>{sampleHistory.length} 条</span>
-              </div>
-              <Table<SampleDelivery>
-                columns={[
-                  { title: '寄样单', dataIndex: 'code' },
-                  { title: '客户', dataIndex: 'customer_name' },
-                  { title: '日期', dataIndex: 'delivery_date', render: formatDate },
-                  { title: '状态', dataIndex: 'status', render: sampleDeliveryStatusLabel },
-                  {
-                    title: '快递',
-                    dataIndex: 'express_company',
-                    render: (_, delivery) => `${delivery.express_company} / ${delivery.tracking_no ?? '未填'}`,
-                  },
-                ]}
-                dataSource={sampleHistory}
-                locale={{ emptyText: '暂无该样品寄样历史' }}
-                pagination={false}
-                rowKey="id"
-                size="small"
-              />
-
-              <div className="accessory-heading">
-                <strong>报价关联寄样</strong>
-                <span>{quoteHistory.length} 条</span>
-              </div>
-              <Table<SampleDelivery>
-                columns={[
-                  { title: '报价单', dataIndex: 'quote_no', render: nullableText },
-                  { title: '寄样单', dataIndex: 'code' },
-                  { title: '客户', dataIndex: 'customer_name' },
-                  {
-                    title: '产品',
-                    dataIndex: 'lines',
-                    render: (_, delivery) => delivery.lines[0]?.product_name ?? '未填',
-                  },
-                  { title: '审核日期', dataIndex: 'approved_at', render: formatDate },
-                ]}
-                dataSource={quoteHistory}
-                locale={{ emptyText: '暂无报价关联寄样记录' }}
-                pagination={false}
-                rowKey="id"
-                size="small"
-              />
-            </>
-          ) : (
-            <div className="module-state panel-empty-state">
-              <Send size={28} />
-              <strong>暂无寄样单</strong>
-              <span>请返回列表选择寄样单查看详情</span>
-            </div>
-          )}
+            )}
           </section>
         ) : null}
       </section>

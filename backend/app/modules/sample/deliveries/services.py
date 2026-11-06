@@ -32,6 +32,7 @@ from app.modules.sample.deliveries.schemas import (
 from app.modules.sample.records.repositories import SampleRecordRepository
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
@@ -222,7 +223,11 @@ class SampleDeliveryService:
         )
         if delivery.status != "submitted":
             raise ValueError("只有已提交寄样单可以审核")
-        if delivery.reviewer_id is not None and delivery.reviewer_id != current_user.id:
+        if not can_approve_assigned_record(
+            current_user_id=current_user.id,
+            reviewer_id=delivery.reviewer_id,
+            permissions=current_user.permissions,
+        ):
             raise PermissionDeniedError
         lines = await self._repository.list_lines(delivery_id)
         await self._ensure_stock_available(lines)
