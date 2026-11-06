@@ -33,6 +33,7 @@ def _contract_payload(code: str = "EC-E2E-001") -> dict[str, object]:
                 "product_id": "product-bag",
                 "product_code": "BAG-40",
                 "product_name": "Eco Shopping Bag",
+                "barcode": "000123456789012345678901234567890123456789",
                 "specification": "40x35cm",
                 "model": "BAG-40",
                 "quantity": "1000",
@@ -94,6 +95,7 @@ async def test_export_contract_flow_signature_payment_statistics_export_and_even
     contract = create_response.json()["data"]
     assert contract["code"] == "EC-E2E-001"
     assert contract["approval_status"] == "draft"
+    assert contract["lines"][0]["barcode"] == "000123456789012345678901234567890123456789"
     assert contract["statistics"]["total_quantity"] == "1000"
     assert contract["statistics"]["total_amount"] == "1400.00"
     assert contract["statistics"]["shipped_quantity"] == "250"

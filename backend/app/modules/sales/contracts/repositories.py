@@ -122,12 +122,14 @@ class ExportContractRepository:
         shipped_quantity: Decimal | str,
         image_url: str | None,
         remark: str | None,
+        barcode: str | None = None,
     ) -> ExportContractLineRow:
         line = ExportContractLine(
             contract_id=contract_id,
             product_id=product_id,
             product_code=product_code,
             product_name=product_name,
+            barcode=barcode,
             specification=specification,
             model=model,
             quantity=Decimal(str(quantity)),
@@ -319,6 +321,7 @@ class ExportContractRepository:
                     or_(
                         ExportContractLine.product_code.ilike(pattern),
                         ExportContractLine.product_name.ilike(pattern),
+                        ExportContractLine.barcode.ilike(pattern),
                         ExportContractLine.specification.ilike(pattern),
                         ExportContractLine.model.ilike(pattern),
                     )
@@ -385,9 +388,9 @@ class ExportContractRepository:
         if contract is None:
             return None
         contract.approval_status = "approved"
-        if reviewer_id is not None and contract.reviewer_id is None:
+        if reviewer_id is not None:
             contract.reviewer_id = reviewer_id
-        if reviewer_name is not None and contract.reviewer_name is None:
+        if reviewer_name is not None:
             contract.reviewer_name = reviewer_name
         contract.approved_at = approved_at
         await self.session.flush()
@@ -551,6 +554,7 @@ class ExportContractRepository:
             product_id=line.product_id,
             product_code=line.product_code,
             product_name=line.product_name,
+            barcode=line.barcode,
             specification=line.specification,
             model=line.model,
             quantity=line.quantity,

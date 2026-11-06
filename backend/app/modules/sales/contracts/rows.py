@@ -48,6 +48,7 @@ class ExportContractLineRow:
     product_id: str | None
     product_code: str | None
     product_name: str
+    barcode: str | None
     specification: str | None
     model: str | None
     quantity: Decimal

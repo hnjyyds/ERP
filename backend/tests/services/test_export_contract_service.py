@@ -19,6 +19,7 @@ from app.modules.sales.contracts.schemas import (
 from app.modules.sales.contracts.services import (
     ExportContractNotFoundError,
     ExportContractService,
+    PermissionDeniedError,
 )
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
@@ -73,6 +74,7 @@ def _contract_payload(code: str = "EC-SVC-001") -> ExportContractCreate:
                 product_id="product-a",
                 product_code="BAG-40",
                 product_name="Eco Bag",
+                barcode="000123456789012345678901234567890123456789",
                 specification="40x35cm",
                 model="BAG-40",
                 quantity="1000",
@@ -158,6 +160,7 @@ async def test_export_contract_service_approval_signature_payment_export_and_eve
 
     assert contract.approval_status == "draft"
     assert contract.statistics.total_quantity == "1000"
+    assert contract.lines[0].barcode == "000123456789012345678901234567890123456789"
     assert contract.statistics.total_amount == "1400.00"
     assert contract.statistics.shipped_quantity == "250"
     assert contract.statistics.shipped_amount == "350.00"
@@ -202,6 +205,56 @@ async def test_export_contract_service_rejects_approval_before_submit(
                     approved_at=date(2026, 7, 6),
                 ),
             )
+
+
+async def test_export_contract_service_allows_super_admin_to_override_assigned_reviewer(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        service = _make_service(session)
+        owner = _user_with_permissions(
+            ["sales:contract:edit", "sales:contract:view"],
+            user_id="u-001",
+        )
+        contract = await service.create_contract(
+            current_user=owner,
+            payload=_contract_payload("EC-SVC-BOSS-OVERRIDE"),
+        )
+        await service.submit_contract(
+            current_user=owner,
+            contract_id=contract.id,
+            payload=ExportContractSubmit(reviewer_id="u-admin"),
+        )
+        other_approver = _user_with_permissions(
+            ["sales:contract:approve", "sales:contract:view"],
+            user_id="u-other",
+            data_scope="all",
+        )
+        with pytest.raises(PermissionDeniedError):
+            await service.approve_contract(
+                current_user=other_approver,
+                contract_id=contract.id,
+                payload=ExportContractApprove(approved_at=date(2026, 8, 5)),
+            )
+
+        boss = _user_with_permissions(
+            [
+                "system:super_admin",
+                "sales:contract:approve",
+                "sales:contract:view",
+            ],
+            user_id="u-boss",
+            data_scope="all",
+        )
+        approved = await service.approve_contract(
+            current_user=boss,
+            contract_id=contract.id,
+            payload=ExportContractApprove(approved_at=date(2026, 8, 5)),
+        )
+
+    assert approved.approval_status == "approved"
+    assert approved.reviewer_id == "u-boss"
 
 
 async def test_export_contract_service_only_deletes_draft_contracts(

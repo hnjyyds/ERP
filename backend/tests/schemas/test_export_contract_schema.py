@@ -52,6 +52,29 @@ def test_export_contract_schema_requires_positive_line_values() -> None:
         )
 
 
+def test_export_contract_line_barcode_preserves_long_numeric_text() -> None:
+    barcode = "000123456789012345678901234567890123456789"
+
+    line = ExportContractLineCreate(
+        product_name="Eco Shopping Bag",
+        barcode=barcode,
+        quantity="1000",
+        unit="pcs",
+        unit_price="1.40",
+    )
+
+    assert line.barcode == barcode
+
+    with pytest.raises(ValidationError):
+        ExportContractLineCreate(
+            product_name="Eco Shopping Bag",
+            barcode="69012A345678",
+            quantity="1000",
+            unit="pcs",
+            unit_price="1.40",
+        )
+
+
 def test_export_contract_schema_rejects_empty_lines_and_over_progress() -> None:
     with pytest.raises(ValidationError):
         ExportContractCreate(

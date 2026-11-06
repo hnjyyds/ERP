@@ -34,6 +34,13 @@ class ExportContractLineCreate(BaseModel):
         description="订单明细中的商品名称。",
         examples=["Eco Shopping Bag"],
     )
+    barcode: str | None = Field(
+        default=None,
+        max_length=64,
+        pattern=r"^\d+$",
+        description="商品条形码数字串；按文本保存，以保留前导零并避免超长数字精度丢失。",
+        examples=["000123456789012345678901"],
+    )
     specification: str | None = Field(
         default=None,
         max_length=240,
@@ -223,6 +230,7 @@ class ExportContractLineResponse(BaseModel):
     product_id: str | None = Field(description="关联的 ERP 商品 ID。")
     product_code: str | None = Field(description="订单中的商品编码快照。")
     product_name: str = Field(description="订单中的商品名称。")
+    barcode: str | None = Field(description="商品条形码数字串。")
     specification: str | None = Field(description="商品规格或尺寸说明。")
     model: str | None = Field(description="商品型号。")
     quantity: str = Field(description="合同订购数量。")

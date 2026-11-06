@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 
@@ -10,10 +10,12 @@ vi.mock('../../../api', () => ({
   createExportContract: vi.fn(),
   exportExportContract: vi.fn(),
   listExportContracts: vi.fn().mockResolvedValue({ items: [], total: 0 }),
+  listAssignableUsers: vi.fn().mockResolvedValue({ users: [] }),
   registerExportContractSignature: vi.fn(),
   submitExportContract: vi.fn(),
   updateExportContract: vi.fn(),
   listCustomers: vi.fn().mockResolvedValue({ items: [], total: 0 }),
+  listProducts: vi.fn().mockResolvedValue({ items: [], total: 0 }),
   getExportQuotationHistory: vi.fn().mockResolvedValue({ items: [], total: 0 }),
 }))
 
@@ -67,6 +69,8 @@ describe('ExportContractsPage', () => {
     vi.clearAllMocks()
     api.listExportContracts.mockResolvedValue({ items: [], total: 0 })
     api.listCustomers.mockResolvedValue({ items: [], total: 0 })
+    api.listProducts.mockResolvedValue({ items: [], total: 0 })
+    api.listAssignableUsers.mockResolvedValue({ users: [] })
   })
 
   it('renders without crashing (list view)', async () => {
@@ -100,6 +104,178 @@ describe('ExportContractsPage', () => {
     await userEvent.click(searchButton!)
     await waitFor(() => {
       expect(api.listExportContracts).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  it('shows customer details in options but keeps the selected value concise', async () => {
+    api.listCustomers.mockResolvedValue({
+      items: [
+        {
+          id: 'customer-full',
+          code: 'FULL-C-20260804C',
+          cn_name: '全链路测试客户',
+          en_name: 'Full Workflow Test Customer',
+          country: 'Germany',
+          address: null,
+          website: null,
+          status: 'active',
+          owner_user_id: 'u-admin',
+          contacts: [],
+          primary_contact: null,
+          credit_profile: null,
+        },
+      ],
+      total: 1,
+    })
+
+    render(<ExportContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    await screen.findByText('客户筛选')
+    const customerSelect = screen
+      .getByText('客户筛选')
+      .closest('label')
+      ?.querySelector<HTMLElement>('[role="combobox"]')
+    expect(customerSelect).toBeTruthy()
+    await userEvent.click(customerSelect!)
+    expect(await screen.findByText('FULL-C-20260804C · Germany')).toBeTruthy()
+
+    await userEvent.click(screen.getByText('全链路测试客户'))
+    await waitFor(() => {
+      const selectedValue = customerSelect!.closest('.ant-select')
+      expect(selectedValue).toHaveTextContent('全链路测试客户')
+      expect(selectedValue).not.toHaveTextContent('FULL-C-20260804C')
+    })
+  })
+
+  it('supports searching and selecting a salesperson while keeping id and name synchronized', async () => {
+    api.listAssignableUsers.mockResolvedValue({
+      users: [
+        {
+          id: 'u-admin',
+          username: 'admin',
+          display_name: '管理员',
+          department_name: '管理部',
+          avatar_type: 'preset',
+          avatar_value: 'blue',
+        },
+        {
+          id: 'u-sales',
+          username: 'sales',
+          display_name: '销售专员',
+          department_name: '销售部',
+          avatar_type: 'preset',
+          avatar_value: 'green',
+        },
+      ],
+    })
+    const user = userEvent.setup()
+
+    render(<ExportContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+    await screen.findByText('合同列表')
+    await user.click(screen.getByRole('button', { name: '新增合同' }))
+
+    const dialog = await screen.findByRole('dialog')
+    const salespersonSelect = within(dialog).getByRole('combobox', { name: '业务员' })
+    await waitFor(() => {
+      expect(api.listAssignableUsers).toHaveBeenCalledWith('sales:contract:edit')
+      expect(salespersonSelect.closest('.ant-select')).toHaveTextContent('管理员')
+    })
+
+    await user.click(salespersonSelect)
+    await user.type(salespersonSelect, 'sales')
+    const salespersonOption = await screen.findByText('销售专员')
+    await user.click(salespersonOption)
+
+    await waitFor(() => {
+      expect(salespersonSelect.closest('.ant-select')).toHaveTextContent('销售专员')
+      expect(salespersonSelect.closest('.ant-select')).not.toHaveTextContent('u-sales')
+    })
+  })
+
+  it('does not expose a source quotation number field when creating a contract', async () => {
+    const user = userEvent.setup()
+
+    render(<ExportContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+    await screen.findByText('合同列表')
+    await user.click(screen.getByRole('button', { name: '新增合同' }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).queryByText('来源报价号')).not.toBeInTheDocument()
+    expect(within(dialog).getByText('合同备注')).toBeInTheDocument()
+  })
+
+  it('adds multiple products as separate editable contract lines', async () => {
+    api.listProducts.mockResolvedValue({
+      items: [
+        {
+          id: 'product-bag',
+          code: 'BAG-001',
+          cn_name: '环保购物袋',
+          en_name: 'Eco Shopping Bag',
+          specification: '40 × 50 cm',
+          model: 'BAG-L',
+          customs_code: '4202920000',
+          tax_rate: '13.00',
+          rebate_rate: '9.00',
+          package_info: '100 pcs / carton',
+          unit: 'pcs',
+          image_url: null,
+          status: 'active',
+          accessories: [],
+        },
+        {
+          id: 'product-bottle',
+          code: 'BOT-002',
+          cn_name: '不锈钢保温杯',
+          en_name: 'Vacuum Bottle',
+          specification: '500 ml',
+          model: 'VB-500',
+          customs_code: '9617009000',
+          tax_rate: '13.00',
+          rebate_rate: '9.00',
+          package_info: '24 pcs / carton',
+          unit: 'pcs',
+          image_url: null,
+          status: 'active',
+          accessories: [],
+        },
+      ],
+      total: 2,
+    })
+    const user = userEvent.setup()
+
+    render(<ExportContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+    await screen.findByText('合同列表')
+    await user.click(screen.getByRole('button', { name: '新增合同' }))
+    await user.click(await screen.findByRole('button', { name: '添加商品' }))
+
+    await user.click(await screen.findByRole('checkbox', { name: /环保购物袋/ }))
+    await user.click(screen.getByRole('checkbox', { name: /不锈钢保温杯/ }))
+    await user.click(screen.getByRole('button', { name: '添加 2 项' }))
+
+    expect(await screen.findByText('环保购物袋')).toBeTruthy()
+    expect(screen.getByText('不锈钢保温杯')).toBeTruthy()
+    await user.type(
+      screen.getByRole('textbox', { name: '环保购物袋条形码' }),
+      '000123456789012345678901234567890123456789',
+    )
+    await user.clear(screen.getByRole('spinbutton', { name: '环保购物袋数量' }))
+    await user.type(screen.getByRole('spinbutton', { name: '环保购物袋数量' }), '12')
+    await user.click(screen.getByRole('button', { name: '新增出口合同' }))
+
+    await waitFor(() => {
+      expect(api.createExportContract).toHaveBeenCalledWith(
+        expect.objectContaining({
+          lines: [
+            expect.objectContaining({
+              product_id: 'product-bag',
+              barcode: '000123456789012345678901234567890123456789',
+              quantity: '12',
+            }),
+            expect.objectContaining({ product_id: 'product-bottle', quantity: '1' }),
+          ],
+        }),
+      )
     })
   })
 })

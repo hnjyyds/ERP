@@ -76,6 +76,7 @@ class ExportContractLine(Base):
     product_id: Mapped[str | None] = mapped_column(String(36), index=True, nullable=True)
     product_code: Mapped[str | None] = mapped_column(String(80), index=True, nullable=True)
     product_name: Mapped[str] = mapped_column(String(240), index=True, nullable=False)
+    barcode: Mapped[str | None] = mapped_column(String(64), index=True, nullable=True)
     specification: Mapped[str | None] = mapped_column(String(240), nullable=True)
     model: Mapped[str | None] = mapped_column(String(120), nullable=True)
     quantity: Mapped[Decimal] = mapped_column(Numeric(14, 4), nullable=False)

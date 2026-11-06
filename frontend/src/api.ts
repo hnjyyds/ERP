@@ -2442,6 +2442,7 @@ export interface ExportContractLine {
   product_id: string | null
   product_code: string | null
   product_name: string
+  barcode: string | null
   specification: string | null
   model: string | null
   quantity: string
@@ -2556,6 +2557,7 @@ export interface ExportContractLinePayload {
   product_id?: string | null
   product_code?: string | null
   product_name: string
+  barcode?: string | null
   specification?: string | null
   model?: string | null
   quantity: string

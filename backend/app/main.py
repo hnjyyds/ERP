@@ -45,6 +45,7 @@ from app.modules.purchase.invoice_notices import (
 from app.modules.quality.inspections import models as quality_inspection_models  # noqa: F401
 from app.modules.quality.inspections.migrations import ensure_quality_inspection_schema
 from app.modules.sales.contracts import models as contract_models  # noqa: F401
+from app.modules.sales.contracts.migrations import ensure_export_contract_schema
 from app.modules.sales.quotations import models as quotation_models  # noqa: F401
 from app.modules.sales.shipments import models as shipment_models  # noqa: F401
 from app.modules.sample.deliveries import models as sample_delivery_models  # noqa: F401
@@ -86,6 +87,7 @@ async def initialize_database_schema() -> None:
                 await connection.run_sync(ensure_company_schema)
                 await connection.run_sync(ensure_port_data_schema)
                 await connection.run_sync(ensure_purchase_contract_schema)
+                await connection.run_sync(ensure_export_contract_schema)
                 await connection.run_sync(ensure_quality_inspection_schema)
                 await connection.run_sync(ensure_inbound_order_schema)
                 await connection.run_sync(ensure_mcp_settings_schema)

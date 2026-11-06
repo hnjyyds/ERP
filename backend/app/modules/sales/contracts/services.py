@@ -33,6 +33,7 @@ from app.modules.sales.contracts.schemas import (
 )
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
@@ -238,7 +239,11 @@ class ExportContractService:
         )
         if contract.approval_status != "submitted":
             raise ValueError("只有已提交合同可以审批")
-        if contract.reviewer_id is not None and contract.reviewer_id != current_user.id:
+        if not can_approve_assigned_record(
+            current_user_id=current_user.id,
+            reviewer_id=contract.reviewer_id,
+            permissions=current_user.permissions,
+        ):
             raise PermissionDeniedError
         async with UnitOfWork(self._repository.session):
             approved = await self._repository.approve_contract(
@@ -354,6 +359,7 @@ class ExportContractService:
                 product_id=line.product_id,
                 product_code=line.product_code,
                 product_name=line.product_name,
+                barcode=line.barcode,
                 specification=line.specification,
                 model=line.model,
                 quantity=line.quantity,
@@ -467,6 +473,7 @@ class ExportContractService:
             product_id=line.product_id,
             product_code=line.product_code,
             product_name=line.product_name,
+            barcode=line.barcode,
             specification=line.specification,
             model=line.model,
             quantity=self._quantity(line.quantity),
@@ -570,6 +577,7 @@ class ExportContractService:
         for line in lines:
             rows.append(
                 f"{line.product_code or '-'} {line.product_name} "
+                f"barcode={line.barcode or '-'} "
                 f"{self._quantity(line.quantity)} {line.unit} x {self._quantity(line.unit_price)}"
             )
         return "\n".join(rows)
@@ -586,13 +594,22 @@ class ExportContractService:
         writer.writerow(["currency", contract.currency])
         writer.writerow([])
         writer.writerow(
-            ["product_code", "product_name", "quantity", "unit", "unit_price", "amount"]
+            [
+                "product_code",
+                "product_name",
+                "barcode",
+                "quantity",
+                "unit",
+                "unit_price",
+                "amount",
+            ]
         )
         for line in lines:
             writer.writerow(
                 [
                     line.product_code or "",
                     line.product_name,
+                    line.barcode or "",
                     self._quantity(line.quantity),
                     line.unit,
                     self._quantity(line.unit_price),

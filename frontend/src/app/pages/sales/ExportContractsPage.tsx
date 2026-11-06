@@ -1,8 +1,8 @@
-import { Alert, Button, Descriptions as _Descriptions, Input, Modal, Table, Tag as _Tag , Select} from 'antd'
+import { Alert, Button, Checkbox, Descriptions as _Descriptions, Drawer, Input, Modal, Table, Tag as _Tag , Select} from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search , FileStack} from 'lucide-react'
 import type { FormEvent, MouseEvent , ReactNode} from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { addExportContractAdvancePayment, approveExportContract, createExportContract, exportExportContract, listExportContracts, registerExportContractSignature, submitExportContract, updateExportContract, type CurrentUser, type ExportContract, type ExportContractAdvancePayment, type ExportContractAdvancePaymentPayload, type ExportContractApprovePayload, type ExportContractCreatePayload, type ExportContractLine, type ExportContractSignature, type ExportContractSignaturePayload, type Customer, type Product , ExportContractPurchaseStatus, ExportContractShipmentStatus, ExportQuotation, listCustomers, listProducts, getExportQuotationHistory} from '../../../api'
+import { addExportContractAdvancePayment, approveExportContract, createExportContract, exportExportContract, listExportContracts, registerExportContractSignature, submitExportContract, updateExportContract, type AssignableUser, type CurrentUser, type ExportContract, type ExportContractAdvancePayment, type ExportContractAdvancePaymentPayload, type ExportContractApprovePayload, type ExportContractCreatePayload, type ExportContractLine, type ExportContractSignature, type ExportContractSignaturePayload, type Customer, type Product , ExportContractPurchaseStatus, ExportContractShipmentStatus, ExportQuotation, listAssignableUsers, listCustomers, listProducts, getExportQuotationHistory} from '../../../api'
 import { exportContractPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError, showWarningDialog } from '../../../shared/errors'
@@ -21,28 +21,34 @@ function customerOptionLabel(customer: Customer): string {
 
 function renderCustomerOptions(customers: Customer[]): ReactNode {
   return customers.map((customer) => {
-    const label = customerOptionLabel(customer)
+    const displayName = customerDisplayName(customer)
+    const description = [customer.code, customer.country].filter(Boolean).join(' · ')
     return (
-      <Select.Option key={customer.id} value={customer.id} label={label}>
-        {label}
+      <Select.Option key={customer.id} value={customer.id} label={displayName}>
+        <div className="remote-select-option">
+          <span className="remote-select-option-title">{displayName}</span>
+          <span className="remote-select-option-desc">{description}</span>
+        </div>
       </Select.Option>
     )
   })
 }
 
-function productOptionLabel(product: Product): string {
-  return [product.code, product.cn_name, product.en_name].filter(Boolean).join(' / ')
+function assignableUserOptionLabel(user: AssignableUser): string {
+  return [user.display_name, user.username, user.department_name].filter(Boolean).join(' / ')
 }
 
-function renderProductOptions(products: Product[]): ReactNode {
-  return products.map((product) => {
-    const label = productOptionLabel(product)
-    return (
-      <Select.Option key={product.id} value={product.id} label={label}>
-        {label}
-      </Select.Option>
-    )
-  })
+function renderAssignableUserOptions(users: AssignableUser[]): ReactNode {
+  return users.map((user) => (
+    <Select.Option key={user.id} value={user.id} label={user.display_name}>
+      <div className="remote-select-option">
+        <span className="remote-select-option-title">{user.display_name}</span>
+        <span className="remote-select-option-desc">
+          {[user.username, user.department_name].filter(Boolean).join(' · ')}
+        </span>
+      </div>
+    </Select.Option>
+  ))
 }
 
 function contractProgressStatusLabel(value: string): string {
@@ -52,6 +58,23 @@ function contractProgressStatusLabel(value: string): string {
   return value
 }
 
+
+type ExportContractLineFormState = {
+  key: string
+  product_id: string
+  product_code: string
+  product_name: string
+  barcode: string
+  specification: string
+  model: string
+  quantity: string
+  unit: string
+  unit_price: string
+  purchased_quantity: string
+  shipped_quantity: string
+  image_url: string
+  line_remark: string
+}
 
 type ExportContractFormState = {
   code: string
@@ -67,18 +90,7 @@ type ExportContractFormState = {
   source_quotation_id: string
   source_quotation_no: string
   remarks: string
-  product_id: string
-  product_code: string
-  product_name: string
-  specification: string
-  model: string
-  quantity: string
-  unit: string
-  unit_price: string
-  purchased_quantity: string
-  shipped_quantity: string
-  image_url: string
-  line_remark: string
+  lines: ExportContractLineFormState[]
 }
 
 type ExportContractApproveFormState = {
@@ -104,14 +116,14 @@ type ExportContractAdvancePaymentFormState = {
 }
 
 
-function initialExportContractForm(): ExportContractFormState {
+function initialExportContractForm(currentUser?: CurrentUser): ExportContractFormState {
   return {
     code: `EC-${Date.now().toString().slice(-6)}`,
     contract_date: todayInputValue(),
     customer_id: '',
     customer_name: '',
-    sales_user_id: '',
-    sales_user_name: '演示业务主管',
+    sales_user_id: currentUser?.id ?? '',
+    sales_user_name: currentUser?.display_name ?? '',
     currency: 'USD',
     trade_term: 'FOB Ningbo',
     planned_ship_date: todayInputValue(),
@@ -119,18 +131,7 @@ function initialExportContractForm(): ExportContractFormState {
     source_quotation_id: '',
     source_quotation_no: '',
     remarks: '',
-    product_id: '',
-    product_code: '',
-    product_name: '',
-    specification: '',
-    model: '',
-    quantity: '1',
-    unit: 'pcs',
-    unit_price: '1.00',
-    purchased_quantity: '0',
-    shipped_quantity: '0',
-    image_url: '',
-    line_remark: '',
+    lines: [],
   }
 }
 
@@ -163,7 +164,6 @@ function initialExportContractAdvancePaymentForm(): ExportContractAdvancePayment
 }
 
 function exportContractToForm(contract: ExportContract): ExportContractFormState {
-  const line = contract.lines[0]
   return {
     code: contract.code,
     contract_date: contract.contract_date,
@@ -178,18 +178,22 @@ function exportContractToForm(contract: ExportContract): ExportContractFormState
     source_quotation_id: contract.source_quotation_id ?? '',
     source_quotation_no: contract.source_quotation_no ?? '',
     remarks: contract.remarks ?? '',
-    product_id: line?.product_id ?? '',
-    product_code: line?.product_code ?? '',
-    product_name: line?.product_name ?? '',
-    specification: line?.specification ?? '',
-    model: line?.model ?? '',
-    quantity: line?.quantity ?? '1',
-    unit: line?.unit ?? 'pcs',
-    unit_price: line?.unit_price ?? '1.00',
-    purchased_quantity: line?.purchased_quantity ?? '0',
-    shipped_quantity: line?.shipped_quantity ?? '0',
-    image_url: line?.image_url ?? '',
-    line_remark: line?.remark ?? '',
+    lines: contract.lines.map((line, index) => ({
+      key: line.id || `${line.product_id ?? 'line'}-${index}`,
+      product_id: line.product_id ?? '',
+      product_code: line.product_code ?? '',
+      product_name: line.product_name,
+      barcode: line.barcode ?? '',
+      specification: line.specification ?? '',
+      model: line.model ?? '',
+      quantity: line.quantity,
+      unit: line.unit,
+      unit_price: line.unit_price,
+      purchased_quantity: line.purchased_quantity,
+      shipped_quantity: line.shipped_quantity,
+      image_url: line.image_url ?? '',
+      line_remark: line.remark ?? '',
+    })),
   }
 }
 
@@ -208,22 +212,40 @@ function exportContractPayload(form: ExportContractFormState): ExportContractCre
     source_quotation_id: emptyToNull(form.source_quotation_id),
     source_quotation_no: emptyToNull(form.source_quotation_no),
     remarks: emptyToNull(form.remarks),
-    lines: [
-      {
-        product_id: emptyToNull(form.product_id),
-        product_code: emptyToNull(form.product_code),
-        product_name: form.product_name.trim(),
-        specification: emptyToNull(form.specification),
-        model: emptyToNull(form.model),
-        quantity: form.quantity,
-        unit: form.unit.trim(),
-        unit_price: form.unit_price,
-        purchased_quantity: form.purchased_quantity || '0',
-        shipped_quantity: form.shipped_quantity || '0',
-        image_url: emptyToNull(form.image_url),
-        remark: emptyToNull(form.line_remark),
-      },
-    ],
+    lines: form.lines.map((line) => ({
+      product_id: emptyToNull(line.product_id),
+      product_code: emptyToNull(line.product_code),
+      product_name: line.product_name.trim(),
+      barcode: emptyToNull(line.barcode),
+      specification: emptyToNull(line.specification),
+      model: emptyToNull(line.model),
+      quantity: line.quantity,
+      unit: line.unit.trim(),
+      unit_price: line.unit_price,
+      purchased_quantity: line.purchased_quantity || '0',
+      shipped_quantity: line.shipped_quantity || '0',
+      image_url: emptyToNull(line.image_url),
+      remark: emptyToNull(line.line_remark),
+    })),
+  }
+}
+
+function productToContractLine(product: Product): ExportContractLineFormState {
+  return {
+    key: product.id,
+    product_id: product.id,
+    product_code: product.code,
+    product_name: product.cn_name || product.en_name || product.code,
+    barcode: '',
+    specification: product.specification ?? '',
+    model: product.model ?? '',
+    quantity: '1',
+    unit: product.unit || 'pcs',
+    unit_price: '1.00',
+    purchased_quantity: '0',
+    shipped_quantity: '0',
+    image_url: product.image_url ?? '',
+    line_remark: product.package_info ? `包装: ${product.package_info}` : '',
   }
 }
 
@@ -283,17 +305,23 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
   const [statusFilter, setStatusFilter] = useState('')
   const [customerFilter, setCustomerFilter] = useState('')
   const [customers, setCustomers] = useState<Customer[]>([])
+  const [assignableUsers, setAssignableUsers] = useState<AssignableUser[]>([])
   const [history, setHistory] = useState<ExportQuotation[]>([])
   const [exportPreview, setExportPreview] = useState('')
   const [loading, setLoading] = useState(false)
   const [loadingCustomers, setLoadingCustomers] = useState(false)
   const [loadingProducts, setLoadingProducts] = useState(false)
+  const [loadingAssignableUsers, setLoadingAssignableUsers] = useState(false)
+  const [assignableUsersLoaded, setAssignableUsersLoaded] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [createModalOpen, setCreateModalOpen] = useState(false)
+  const [productDrawerOpen, setProductDrawerOpen] = useState(false)
+  const [productSearch, setProductSearch] = useState('')
+  const [pendingProductIds, setPendingProductIds] = useState<string[]>([])
   const [editingContractId, setEditingContractId] = useState<string | null>(null)
-  const [form, setForm] = useState<ExportContractFormState>(() => initialExportContractForm())
+  const [form, setForm] = useState<ExportContractFormState>(() => initialExportContractForm(currentUser))
   const [reviewerId, setReviewerId] = useState('')
   const [approveForm, setApproveForm] = useState<ExportContractApproveFormState>(() =>
     initialExportContractApproveForm(),
@@ -312,11 +340,31 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
     [contracts, detailId, selectedContractId],
   )
 
+  const selectedProductIds = useMemo(
+    () => new Set(form.lines.map((line) => line.product_id).filter(Boolean)),
+    [form.lines],
+  )
+
+  const filteredProducts = useMemo(() => {
+    const normalizedSearch = productSearch.trim().toLocaleLowerCase()
+    if (!normalizedSearch) return products
+    return products.filter((product) =>
+      [product.code, product.cn_name, product.en_name, product.specification, product.model]
+        .filter(Boolean)
+        .some((value) => String(value).toLocaleLowerCase().includes(normalizedSearch)),
+    )
+  }, [productSearch, products])
+
   useEffect(() => {
     void loadContracts()
     void loadCustomerOptions()
     void loadProductOptions()
   }, [])
+
+  useEffect(() => {
+    if (!createModalOpen || assignableUsersLoaded || loadingAssignableUsers) return
+    void loadAssignableUsersForContract()
+  }, [createModalOpen, assignableUsersLoaded, loadingAssignableUsers])
 
   useEffect(() => {
     if (!detailId) {
@@ -381,6 +429,28 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
     }
   }
 
+  async function loadAssignableUsersForContract() {
+    setLoadingAssignableUsers(true)
+    try {
+      const result = await listAssignableUsers('sales:contract:edit')
+      setAssignableUsers(result.users)
+    } catch (caught) {
+      showError(caught, '业务员列表加载失败')
+    } finally {
+      setAssignableUsersLoaded(true)
+      setLoadingAssignableUsers(false)
+    }
+  }
+
+  function applySalesUserToContractForm(userId?: string) {
+    const user = userId ? assignableUsers.find((item) => item.id === userId) : null
+    setForm((current) => ({
+      ...current,
+      sales_user_id: user?.id ?? '',
+      sales_user_name: user?.display_name ?? '',
+    }))
+  }
+
   function applyCustomerToContractForm(customerId?: string) {
     const customer = customers.find((item) => item.id === customerId)
     setForm((current) => ({
@@ -390,20 +460,46 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
     }))
   }
 
-  function applyProductToContractForm(productId?: string) {
-    const product = products.find((item) => item.id === productId)
+  function openProductDrawer() {
+    setProductSearch('')
+    setPendingProductIds([])
+    setProductDrawerOpen(true)
+  }
+
+  function closeProductDrawer() {
+    setProductDrawerOpen(false)
+    setPendingProductIds([])
+  }
+
+  function togglePendingProduct(productId: string, checked: boolean) {
+    setPendingProductIds((current) =>
+      checked ? [...current, productId] : current.filter((id) => id !== productId),
+    )
+  }
+
+  function addPendingProducts() {
+    const additions = products
+      .filter((product) => pendingProductIds.includes(product.id) && !selectedProductIds.has(product.id))
+      .map(productToContractLine)
+    setForm((current) => ({ ...current, lines: [...current.lines, ...additions] }))
+    closeProductDrawer()
+  }
+
+  function updateContractLine(
+    lineKey: string,
+    field: keyof ExportContractLineFormState,
+    value: string,
+  ) {
     setForm((current) => ({
       ...current,
-      product_id: product?.id ?? '',
-      product_code: product?.code ?? '',
-      product_name: product?.cn_name ?? '',
-      specification: product?.specification ?? '',
-      model: product?.model ?? '',
-      unit: product?.unit ?? current.unit,
-      image_url: product?.image_url ?? '',
-      line_remark: product?.package_info
-        ? `包装: ${product.package_info}`
-        : current.line_remark,
+      lines: current.lines.map((line) => (line.key === lineKey ? { ...line, [field]: value } : line)),
+    }))
+  }
+
+  function removeContractLine(lineKey: string) {
+    setForm((current) => ({
+      ...current,
+      lines: current.lines.filter((line) => line.key !== lineKey),
     }))
   }
 
@@ -475,14 +571,35 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
 
   function openCreateContractModal() {
     setEditingContractId(null)
-    setForm(initialExportContractForm())
+    setForm(initialExportContractForm(currentUser))
+    closeProductDrawer()
     setCreateModalOpen(true)
   }
 
   async function submitContract(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!form.product_id) {
-      showWarningDialog('请选择商品资料，确保后续采购和 QC 流程可以正确关联')
+    if (form.lines.length === 0) {
+      showWarningDialog('请至少添加一个商品，确保后续采购和 QC 流程可以正确关联')
+      return
+    }
+    const invalidLine = form.lines.find(
+      (line) =>
+        !line.product_name.trim() ||
+        !line.unit.trim() ||
+        !Number.isFinite(Number(line.quantity)) ||
+        Number(line.quantity) <= 0 ||
+        !Number.isFinite(Number(line.unit_price)) ||
+        Number(line.unit_price) <= 0,
+    )
+    if (invalidLine) {
+      showWarningDialog(`请完善商品“${invalidLine.product_name || invalidLine.product_code}”的数量、单位和销售单价`)
+      return
+    }
+    const invalidBarcodeLine = form.lines.find(
+      (line) => line.barcode && !/^\d{1,64}$/.test(line.barcode),
+    )
+    if (invalidBarcodeLine) {
+      showWarningDialog(`商品“${invalidBarcodeLine.product_name}”的条形码只能填写 1 至 64 位数字`)
       return
     }
     setSubmitting(true)
@@ -495,8 +612,9 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
         : await createExportContract(exportContractPayload(form))
       setMessage(editingContractId ? `已保存出口合同 ${saved.code}` : `已新增出口合同 ${saved.code}`)
       setEditingContractId(null)
-      setForm(initialExportContractForm())
+      setForm(initialExportContractForm(currentUser))
       setCreateModalOpen(false)
+      closeProductDrawer()
       upsertContract(saved)
       await loadContracts(saved.id)
     } catch (caught) {
@@ -648,12 +766,9 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
           <section className="workspace-panel list-panel product-list-panel" style={{ gridColumn: '1 / -1' }}>
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<Search size={18} />} title="合同列表" />
-            <Button type="primary" icon={<Plus size={16} />} onClick={openCreateContractModal}>
-              新增合同
-            </Button>
           </div>
           <form
-            className="inline-filters"
+            className="inline-filters single-line-filter-toolbar"
             onSubmit={(event) => {
               event.preventDefault()
               void loadContracts()
@@ -690,19 +805,27 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                 loading={loadingCustomers}
                 value={customerFilter || undefined}
                 placeholder="从客户资料筛选"
-                optionFilterProp="label"
+                optionLabelProp="label"
+                filterOption={(input, option) => {
+                  const customer = customers.find((item) => item.id === option?.value)
+                  return customer
+                    ? customerOptionLabel(customer).toLocaleLowerCase().includes(input.toLocaleLowerCase())
+                    : false
+                }}
                 notFoundContent={loadingCustomers ? '加载客户资料中' : '暂无客户资料'}
+                placement="bottomRight"
+                popupMatchSelectWidth={360}
                 onChange={(value) => setCustomerFilter(value ?? '')}
               >
                 {renderCustomerOptions(customers)}
               </Select>
             </label>
-            <label>
-              <span>&nbsp;</span>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-            </label>
+            <Button htmlType="submit" icon={<Search size={16} />}>
+              查询
+            </Button>
+            <Button type="primary" icon={<Plus size={16} />} onClick={openCreateContractModal}>
+              新增合同
+            </Button>
           </form>
 
           <Table<ExportContract>
@@ -758,8 +881,9 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
           footer={null}
           open={createModalOpen}
           title={editingContractId ? '编辑出口合同' : '新增出口合同'}
-          width={960}
+          width={1160}
           onCancel={() => {
+            closeProductDrawer()
             setCreateModalOpen(false)
             setEditingContractId(null)
           }}
@@ -780,10 +904,38 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
               </label>
               <label>
                 业务员
-                <Input
-                  value={form.sales_user_name}
-                  onChange={(event) => setForm({ ...form, sales_user_name: event.target.value })}
-                />
+                <Select
+                  allowClear
+                  aria-label="业务员"
+                  showSearch
+                  loading={loadingAssignableUsers}
+                  value={form.sales_user_id || undefined}
+                  placeholder={loadingAssignableUsers ? '正在加载业务员' : '请选择业务员'}
+                  optionLabelProp="label"
+                  filterOption={(input, option) => {
+                    const user = assignableUsers.find((item) => item.id === option?.value)
+                    return user
+                      ? assignableUserOptionLabel(user)
+                          .toLocaleLowerCase()
+                          .includes(input.toLocaleLowerCase())
+                      : false
+                  }}
+                  notFoundContent={loadingAssignableUsers ? '加载人员中' : '暂无可选业务员'}
+                  onChange={applySalesUserToContractForm}
+                >
+                  {form.sales_user_id &&
+                  !assignableUsers.some((user) => user.id === form.sales_user_id) ? (
+                    <Select.Option
+                      key={form.sales_user_id}
+                      value={form.sales_user_id}
+                      label={form.sales_user_name || form.sales_user_id}
+                      disabled
+                    >
+                      {form.sales_user_name || form.sales_user_id} / 当前记录
+                    </Select.Option>
+                  ) : null}
+                  {renderAssignableUserOptions(assignableUsers)}
+                </Select>
               </label>
             </div>
             <div className="form-row">
@@ -795,7 +947,13 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                   loading={loadingCustomers}
                   value={form.customer_id || undefined}
                   placeholder={customers.length > 0 ? '从客户资料选择' : '请先在客户资料录入'}
-                  optionFilterProp="label"
+                  optionLabelProp="label"
+                  filterOption={(input, option) => {
+                    const customer = customers.find((item) => item.id === option?.value)
+                    return customer
+                      ? customerOptionLabel(customer).toLocaleLowerCase().includes(input.toLocaleLowerCase())
+                      : false
+                  }}
                   notFoundContent={loadingCustomers ? '加载客户资料中' : '暂无客户资料'}
                   onChange={applyCustomerToContractForm}
                 >
@@ -840,120 +998,214 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
             </div>
             <div className="form-row">
               <label>
-                来源报价号
-                <Input
-                  value={form.source_quotation_no}
-                  onChange={(event) => setForm({ ...form, source_quotation_no: event.target.value })}
-                />
-              </label>
-              <label>
                 合同备注
                 <Input
                   value={form.remarks}
                   onChange={(event) => setForm({ ...form, remarks: event.target.value })}
                 />
               </label>
-              <label>
-                <span>&nbsp;</span>
-                <Button htmlType="submit" type="primary" loading={submitting}>
-                  {editingContractId ? '保存合同' : '新增出口合同'}
-                </Button>
-              </label>
             </div>
-            <div className="form-divider">合同商品明细</div>
-            <div className="form-row">
-              <label>
-                选择商品 *
-                <Select
-                  showSearch
-                  loading={loadingProducts}
-                  value={form.product_id || undefined}
-                  placeholder={products.length > 0 ? '从商品资料选择' : '请先在商品资料录入'}
-                  optionFilterProp="label"
-                  notFoundContent={loadingProducts ? '加载商品资料中' : '暂无商品资料'}
-                  onChange={applyProductToContractForm}
-                >
-                  {renderProductOptions(products)}
-                </Select>
-              </label>
-              <label>
-                商品编号
-                <Input
-                  value={form.product_code}
-                  readOnly
-                />
-              </label>
-              <label>
-                商品名称
-                <Input
-                  value={form.product_name}
-                  readOnly
-                />
-              </label>
+            <div className="contract-line-toolbar">
+              <div>
+                <div className="form-divider">合同商品明细</div>
+                <p>已添加 {form.lines.length} 个商品，可分别填写条形码并调整规格、数量和销售单价。</p>
+              </div>
+              <Button icon={<Plus size={16} />} loading={loadingProducts} onClick={openProductDrawer}>
+                添加商品
+              </Button>
             </div>
-            <div className="form-row">
-              <label>
-                规格
-                <Input
-                  value={form.specification}
-                  onChange={(event) => setForm({ ...form, specification: event.target.value })}
-                />
-              </label>
-            </div>
-            <div className="form-row">
-              <label>
-                型号
-                <Input value={form.model} onChange={(event) => setForm({ ...form, model: event.target.value })} />
-              </label>
-              <label>
-                数量
-                <Input
-                  type="number"
-                  min="0.0001"
-                  step="0.0001"
-                  value={form.quantity}
-                  onChange={(event) => setForm({ ...form, quantity: event.target.value })}
-                />
-              </label>
-              <label>
-                销售单价
-                <Input
-                  type="number"
-                  min="0.0001"
-                  step="0.0001"
-                  value={form.unit_price}
-                  onChange={(event) => setForm({ ...form, unit_price: event.target.value })}
-                />
-              </label>
-            </div>
-            <div className="form-row">
-              <label>
-                单位
-                <Input value={form.unit} onChange={(event) => setForm({ ...form, unit: event.target.value })} />
-              </label>
-              <label>
-                已采购数量
-                <Input
-                  type="number"
-                  min="0"
-                  step="0.0001"
-                  value={form.purchased_quantity}
-                  onChange={(event) => setForm({ ...form, purchased_quantity: event.target.value })}
-                />
-              </label>
-              <label>
-                已出货数量
-                <Input
-                  type="number"
-                  min="0"
-                  step="0.0001"
-                  value={form.shipped_quantity}
-                  onChange={(event) => setForm({ ...form, shipped_quantity: event.target.value })}
-                />
-              </label>
+            <Table<ExportContractLineFormState>
+              className="contract-lines-table"
+              dataSource={form.lines}
+              locale={{ emptyText: '暂未添加商品，请点击“添加商品”批量选择' }}
+              pagination={false}
+              rowKey="key"
+              scroll={{ x: 1200 }}
+              size="small"
+              columns={[
+                {
+                  title: '商品',
+                  key: 'product',
+                  width: 210,
+                  render: (_, line) => (
+                    <div className="contract-line-product">
+                      <strong>{line.product_name}</strong>
+                      <span>{line.product_code}</span>
+                    </div>
+                  ),
+                },
+                {
+                  title: '条形码',
+                  key: 'barcode',
+                  width: 220,
+                  render: (_, line) => (
+                    <Input
+                      aria-label={`${line.product_name}条形码`}
+                      className="barcode-input"
+                      inputMode="numeric"
+                      maxLength={64}
+                      placeholder="仅输入数字"
+                      value={line.barcode}
+                      onChange={(event) =>
+                        updateContractLine(line.key, 'barcode', event.target.value.replace(/\D/g, ''))
+                      }
+                    />
+                  ),
+                },
+                {
+                  title: '规格 / 型号',
+                  key: 'specification',
+                  width: 210,
+                  render: (_, line) => (
+                    <div className="contract-line-stacked-fields">
+                      <Input
+                        aria-label={`${line.product_name}规格`}
+                        placeholder="规格"
+                        value={line.specification}
+                        onChange={(event) => updateContractLine(line.key, 'specification', event.target.value)}
+                      />
+                      <Input
+                        aria-label={`${line.product_name}型号`}
+                        placeholder="型号"
+                        value={line.model}
+                        onChange={(event) => updateContractLine(line.key, 'model', event.target.value)}
+                      />
+                    </div>
+                  ),
+                },
+                {
+                  title: '数量',
+                  key: 'quantity',
+                  width: 130,
+                  render: (_, line) => (
+                    <Input
+                      aria-label={`${line.product_name}数量`}
+                      min="0.0001"
+                      step="0.0001"
+                      type="number"
+                      value={line.quantity}
+                      onChange={(event) => updateContractLine(line.key, 'quantity', event.target.value)}
+                    />
+                  ),
+                },
+                {
+                  title: '单位',
+                  key: 'unit',
+                  width: 105,
+                  render: (_, line) => (
+                    <Input
+                      aria-label={`${line.product_name}单位`}
+                      value={line.unit}
+                      onChange={(event) => updateContractLine(line.key, 'unit', event.target.value)}
+                    />
+                  ),
+                },
+                {
+                  title: '销售单价',
+                  key: 'unit_price',
+                  width: 140,
+                  render: (_, line) => (
+                    <Input
+                      aria-label={`${line.product_name}销售单价`}
+                      min="0.0001"
+                      step="0.0001"
+                      type="number"
+                      value={line.unit_price}
+                      onChange={(event) => updateContractLine(line.key, 'unit_price', event.target.value)}
+                    />
+                  ),
+                },
+                {
+                  title: '金额',
+                  key: 'amount',
+                  width: 140,
+                  render: (_, line) =>
+                    formatMoney((Number(line.quantity || 0) * Number(line.unit_price || 0)).toFixed(2), form.currency),
+                },
+                {
+                  title: '操作',
+                  key: 'actions',
+                  width: 80,
+                  render: (_, line) => (
+                    <Button danger size="small" onClick={() => removeContractLine(line.key)}>
+                      移除
+                    </Button>
+                  ),
+                },
+              ]}
+            />
+            <div className="modal-actions">
+              <Button onClick={() => {
+                closeProductDrawer()
+                setCreateModalOpen(false)
+                setEditingContractId(null)
+              }}>
+                取消
+              </Button>
+              <Button className="inline-submit" htmlType="submit" type="primary" loading={submitting}>
+                {editingContractId ? '保存合同' : '新增出口合同'}
+              </Button>
             </div>
           </form>
         </Modal>
+
+        <Drawer
+          destroyOnHidden
+          footer={(
+            <div className="product-picker-actions">
+              <span>已选择 {pendingProductIds.length} 项</span>
+              <div>
+                <Button onClick={closeProductDrawer}>取消</Button>
+                <Button
+                  disabled={pendingProductIds.length === 0}
+                  type="primary"
+                  onClick={addPendingProducts}
+                >
+                  添加 {pendingProductIds.length} 项
+                </Button>
+              </div>
+            </div>
+          )}
+          open={productDrawerOpen}
+          size="large"
+          title="选择合同商品"
+          zIndex={1100}
+          onClose={closeProductDrawer}
+        >
+          <Input
+            allowClear
+            aria-label="搜索商品"
+            className="product-picker-search"
+            placeholder="搜索商品编号、名称、规格或型号"
+            prefix={<Search size={16} />}
+            value={productSearch}
+            onChange={(event) => setProductSearch(event.target.value)}
+          />
+          <div className="product-picker-list" role="list">
+            {filteredProducts.length > 0 ? filteredProducts.map((product) => {
+              const alreadyAdded = selectedProductIds.has(product.id)
+              const displayName = product.cn_name || product.en_name || product.code
+              return (
+                <div className={`product-picker-item${alreadyAdded ? ' is-added' : ''}`} key={product.id} role="listitem">
+                  <Checkbox
+                    aria-label={`${displayName}（${product.code}）`}
+                    checked={pendingProductIds.includes(product.id)}
+                    disabled={alreadyAdded}
+                    onChange={(event) => togglePendingProduct(product.id, event.target.checked)}
+                  >
+                    <span className="product-picker-item-main">
+                      <strong>{displayName}</strong>
+                      <span>{product.code} · {[product.specification, product.model].filter(Boolean).join(' · ') || '暂无规格型号'}</span>
+                    </span>
+                  </Checkbox>
+                  {alreadyAdded ? <span className="product-picker-added-label">已添加</span> : null}
+                </div>
+              )
+            }) : (
+              <div className="product-picker-empty">没有匹配的商品</div>
+            )}
+          </div>
+        </Drawer>
 
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
@@ -1184,6 +1436,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                 columns={[
                   { title: '商品编号', dataIndex: 'product_code', render: nullableText },
                   { title: '商品名称', dataIndex: 'product_name' },
+                  { title: '条形码', dataIndex: 'barcode', render: nullableText },
                   { title: '规格', dataIndex: 'specification', render: nullableText },
                   { title: '型号', dataIndex: 'model', render: nullableText },
                   { title: '数量', dataIndex: 'quantity', render: (_, line) => `${line.quantity} ${line.unit}` },
