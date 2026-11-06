@@ -44,6 +44,7 @@ from app.modules.sample.deliveries.schemas import (
 )
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
@@ -228,7 +229,11 @@ class ExportQuotationService:
         )
         if quotation.approval_status != "submitted":
             raise ValueError("只有已提交报价可以审批")
-        if quotation.reviewer_id is not None and quotation.reviewer_id != current_user.id:
+        if not can_approve_assigned_record(
+            current_user_id=current_user.id,
+            reviewer_id=quotation.reviewer_id,
+            permissions=current_user.permissions,
+        ):
             raise PermissionDeniedError
         async with UnitOfWork(self._repository.session):
             approved = await self._repository.approve_quotation(

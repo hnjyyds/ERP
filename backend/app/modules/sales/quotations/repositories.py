@@ -308,9 +308,9 @@ class ExportQuotationRepository:
         if quotation is None:
             return None
         quotation.approval_status = "approved"
-        if reviewer_id is not None and quotation.reviewer_id is None:
+        if reviewer_id is not None:
             quotation.reviewer_id = reviewer_id
-        if reviewer_name is not None and quotation.reviewer_name is None:
+        if reviewer_name is not None:
             quotation.reviewer_name = reviewer_name
         quotation.approved_at = approved_at
         await self.session.flush()

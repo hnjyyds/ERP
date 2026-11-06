@@ -101,8 +101,8 @@ async def test_export_quotation_service_approval_contract_export_and_history(
             payload=ExportQuotationSubmit(reviewer_id="u-admin"),
         )
         reviewer = _user_with_permissions(
-            ["sales:quotation:approve", "sales:quotation:view"],
-            user_id="u-admin",
+            ["system:super_admin", "sales:quotation:approve", "sales:quotation:view"],
+            user_id="u-boss",
             data_scope="all",
         )
         approved = await service.approve_quotation(
@@ -140,6 +140,7 @@ async def test_export_quotation_service_approval_contract_export_and_history(
     assert quotation.total_amount == "1370.00"
     assert submitted.approval_status == "submitted"
     assert approved.approval_status == "approved"
+    assert approved.reviewer_id == "u-boss"
     assert history.total == 1
     assert history.items[0].code == "QT-SVC-001"
     assert references.items[0].reference_price == "0.82"
