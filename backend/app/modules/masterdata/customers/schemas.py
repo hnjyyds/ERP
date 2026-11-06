@@ -68,9 +68,9 @@ class CustomerCreditProfileInput(BaseModel):
         examples=["USD"],
     )
     payment_terms: str = Field(
-        min_length=1,
+        default="",
         max_length=200,
-        description="约定的付款条件。",
+        description="约定的付款条件，未填写时为空字符串。",
         examples=["30% deposit, 70% before shipment"],
     )
     risk_note: str | None = Field(

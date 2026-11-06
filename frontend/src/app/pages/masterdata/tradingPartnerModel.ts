@@ -264,7 +264,7 @@ function creditProfilePayload(form: PartnerFormState) {
     credit_grade: form.credit_grade || 'A',
     credit_limit: form.credit_limit || '0',
     currency: form.currency.trim() || 'USD',
-    payment_terms: form.payment_terms.trim() || '未设置',
+    payment_terms: form.payment_terms.trim(),
     risk_note: emptyToNull(form.risk_note),
   }
 }

@@ -25,7 +25,7 @@ class SupplierCreditProfileInput(BaseModel):
     credit_grade: str = Field(min_length=1, max_length=40)
     credit_limit: Decimal = Field(ge=0)
     currency: str = Field(min_length=1, max_length=10)
-    payment_terms: str = Field(min_length=1, max_length=200)
+    payment_terms: str = Field(default="", max_length=200)
     risk_note: str | None = Field(default=None, max_length=2000)
 
 

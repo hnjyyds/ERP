@@ -725,7 +725,7 @@ export function TradingPartnerPage({
                     <div>
                       <dt>{t('masterdata.tradingPartner.paymentTerms')}</dt>
                       <dd>
-                        {selected.credit_profile?.payment_terms ??
+                        {selected.credit_profile?.payment_terms ||
                           t('masterdata.field.notMaintained')}
                       </dd>
                     </div>
