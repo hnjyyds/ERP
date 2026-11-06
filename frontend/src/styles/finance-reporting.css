@@ -1,0 +1,701 @@
+/* finance-reporting — 财务报表、收付款、退税与跟进 / 出运区块
+   由 styles.css 按区块拆出，顺序由 styles.css 的 @import 保证。 */
+.reporting-statistics-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: start;
+  margin-top: 16px;
+}
+
+.reporting-approval-list-panel,
+.reporting-type-summary-panel,
+.reporting-statistics-panel,
+.reporting-stat-side-panel,
+.reporting-drilldown-panel {
+  min-width: 0;
+}
+
+.reporting-statistics-panel {
+  /* single column layout, no span needed */
+}
+
+.reporting-stat-strip {
+  margin: 12px 0;
+}
+
+.reporting-status-stack,
+.reporting-drilldown-stack {
+  display: grid;
+  gap: 14px;
+}
+
+.reporting-status-stack > div > strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--erp-primary-strong);
+}
+
+.reporting-drilldown-panel {
+  grid-column: 1 / -1;
+}
+
+.finance-profit-panel {
+  grid-row: span 3;
+  min-width: 0;
+}
+
+.finance-receipt-list-panel,
+.finance-payment-list-panel,
+.finance-fee-list-panel,
+.finance-tax-list-panel,
+.finance-misc-list-panel,
+.finance-settlement-list-panel {
+  grid-row: span 2;
+  min-width: 0;
+}
+
+.finance-page .panel-heading.toolbar-heading {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.finance-receipt-form-panel,
+.finance-receipt-detail-panel,
+.finance-receivable-panel,
+.finance-payment-form-panel,
+.finance-payment-request-panel,
+.finance-payable-panel,
+.finance-fee-form-panel,
+.finance-fee-request-panel,
+.finance-fee-payable-panel,
+.finance-tax-form-panel,
+.finance-tax-process-panel,
+.finance-tax-usage-panel,
+.finance-misc-form-panel,
+.finance-misc-allocation-panel,
+.finance-misc-summary-panel,
+.finance-settlement-form-panel,
+.finance-manual-cost-panel,
+.finance-profit-calculation-panel {
+  min-width: 0;
+}
+
+.finance-receivable-panel,
+.finance-payable-panel,
+.finance-fee-payable-panel,
+.finance-tax-usage-panel,
+.finance-misc-summary-panel,
+.finance-profit-calculation-panel {
+  grid-column: 1 / -1;
+}
+
+.finance-settlement-descriptions {
+  margin-bottom: 14px;
+}
+
+.finance-settlement-descriptions .ant-descriptions-item-label,
+.finance-settlement-descriptions .ant-descriptions-item-content {
+  font-size: 12px;
+}
+
+.finance-receipt-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  align-items: center;
+  margin: 0 0 12px;
+  border: 1px solid var(--erp-border-soft);
+  border-radius: 8px;
+  background: var(--erp-surface-soft);
+  padding: 10px 12px;
+}
+
+.finance-receipt-strip span {
+  color: var(--erp-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.finance-receipt-strip strong {
+  color: var(--erp-text);
+  font-size: 16px;
+}
+
+.checkbox-line {
+  display: inline-flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  color: var(--erp-text);
+  font-weight: 700;
+}
+
+.checkbox-line input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--erp-primary);
+}
+
+.finance-side-panel {
+  min-width: 0;
+}
+
+.finance-status-stack {
+  display: grid;
+  gap: 18px;
+}
+
+.finance-status-stack > div > strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--erp-text);
+  font-size: 13px;
+}
+
+.finance-compact-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  margin: 0 0 14px;
+  border: 1px solid var(--erp-border-soft);
+  border-radius: 8px;
+  background: var(--erp-border-soft);
+}
+
+.finance-compact-list div {
+  min-width: 0;
+  background: var(--erp-surface-soft);
+  padding: 12px;
+}
+
+.finance-compact-list dt {
+  color: var(--erp-muted);
+  font-size: 12px;
+}
+
+.finance-compact-list dd {
+  margin: 4px 0 0;
+  color: var(--erp-text);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.finance-receipt-actions {
+  display: grid;
+  gap: 14px;
+}
+
+.finance-payment-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 16px;
+  align-items: start;
+}
+
+.finance-payment-fields > label {
+  min-width: 0;
+}
+
+.finance-tax-actions {
+  display: grid;
+  gap: 14px;
+}
+
+.finance-receipt-detail-list,
+.finance-payment-detail-list,
+.finance-fee-detail-list,
+.finance-tax-detail-list {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.finance-allocation-history {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.finance-allocation-history > strong {
+  color: var(--erp-text);
+  font-size: 13px;
+}
+
+.approval-form {
+  border: 1px solid var(--erp-border-soft);
+  border-radius: 8px;
+  background: var(--erp-surface-soft);
+  padding: 14px;
+}
+
+.approval-rejection-reason {
+  display: grid;
+  gap: 7px;
+}
+
+.approval-rejection-reason i {
+  color: #D92D20;
+  font-style: normal;
+}
+
+.approval-action-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.purchase-contract-rejection-alert {
+  margin-top: 14px;
+}
+
+.sample-record-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.sample-record-actions .record-form {
+  align-content: start;
+  margin: 0;
+  border: 1px solid var(--erp-border-soft);
+  border-radius: 8px;
+  background: var(--erp-surface-soft);
+  padding: 14px;
+}
+
+.accessory-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 18px 0 8px;
+}
+
+.accessory-heading span {
+  color: var(--erp-faint);
+  font-size: 13px;
+}
+
+.compact-table {
+  min-width: 0;
+  table-layout: fixed;
+}
+
+.compact-table th,
+.compact-table td {
+  overflow-wrap: anywhere;
+}
+
+.followup-node-table th:last-child,
+.followup-node-table td:last-child {
+  width: 132px;
+  text-align: right;
+}
+
+.followup-node-table td:first-child strong {
+  display: inline-block;
+  color: var(--erp-text);
+  font-weight: 800;
+}
+
+.followup-node-target > td {
+  background: color-mix(in srgb, var(--erp-primary) 8%, var(--erp-surface)) !important;
+}
+
+.followup-node-target > td:first-child {
+  box-shadow: inset 3px 0 0 var(--erp-primary);
+}
+
+.followup-node-focus-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  margin-left: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--erp-primary) 12%, var(--erp-surface));
+  padding: 2px 8px;
+  color: var(--erp-primary-strong);
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.followup-source-summary {
+  display: block;
+  max-width: 220px;
+  overflow: hidden;
+  margin-top: 3px;
+  color: var(--erp-muted);
+  font-size: 11px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.followup-node-action-cell .ant-btn {
+  min-width: 96px;
+}
+
+.followup-node-completed,
+.followup-node-waiting {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  color: var(--erp-muted);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.followup-node-completed {
+  color: var(--erp-success, #217a45);
+}
+
+.followup-node-completion-form .ant-alert {
+  margin-bottom: 4px;
+}
+
+.followup-node-completion-form .modal-actions {
+  margin-top: 8px;
+}
+
+.accessory-form {
+  margin-top: 14px;
+  padding: 0;
+}
+
+.delivery-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.delivery-action-row button:disabled {
+  cursor: not-allowed;
+  opacity: 0.56;
+}
+
+.contract-detail-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.contract-detail-split .record-form {
+  align-content: start;
+  margin: 0;
+  border: 1px solid var(--erp-border-soft);
+  border-radius: 8px;
+  background: var(--erp-surface-soft);
+  padding: 14px;
+}
+
+.contract-media-row {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.42fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: stretch;
+  margin-top: 16px;
+}
+
+.compact-photo {
+  min-height: 180px;
+  aspect-ratio: auto;
+}
+
+.compact-detail-list {
+  margin: 0;
+}
+
+.export-panel {
+  grid-column: 1 / -1;
+}
+
+.export-panel pre {
+  overflow-x: auto;
+  margin: 0;
+  padding: 16px;
+  color: #1D2129;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.transaction-box {
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid #E0E3E8;
+  border-radius: 8px;
+  background: #FAFBFC;
+}
+
+.transaction-box p {
+  margin-top: 8px;
+  color: var(--erp-text);
+  line-height: 1.5;
+}
+
+.placeholder-panel {
+  padding: 22px;
+}
+
+.placeholder-panel p {
+  margin-top: 8px;
+  color: var(--erp-faint);
+}
+
+@media (max-width: 980px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+    border-right: 0;
+    border-bottom: 1px solid #E0E3E8;
+  }
+
+  .user-block {
+    position: static;
+    margin-top: 18px;
+  }
+
+  .desktop-grid,
+  .schedule-layout,
+  .product-grid,
+  .sample-request-grid,
+  .sample-record-grid,
+  .sample-delivery-grid,
+  .export-quotation-grid,
+  .export-contract-grid,
+  .shipment-grid,
+  .purchase-inquiry-grid,
+  .purchase-contract-grid,
+  .purchase-invoice-grid,
+  .followup-grid,
+  .quality-inspection-grid,
+  .inbound-plan-grid,
+  .inbound-order-grid,
+  .outbound-plan-grid,
+  .outbound-order-grid,
+  .reporting-grid,
+  .reporting-statistics-grid,
+  .finance-grid,
+  .finance-receipt-grid,
+  .finance-payment-grid,
+  .finance-fee-grid,
+  .finance-tax-grid,
+  .finance-misc-grid,
+  .finance-settlement-grid,
+  .contract-detail-split,
+  .contract-media-row,
+  .finance-overview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inline-filter-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .inline-filter-actions {
+    justify-content: flex-start;
+  }
+
+  .schedule-form {
+    border-left: 0;
+    border-top: 1px solid #EBEEF2;
+  }
+
+  .product-form-panel {
+    grid-row: auto;
+  }
+
+  .finance-receipt-list-panel,
+  .finance-receivable-panel,
+  .finance-payment-list-panel,
+  .finance-payable-panel,
+  .finance-fee-list-panel,
+  .finance-fee-payable-panel,
+  .finance-tax-list-panel,
+  .finance-tax-usage-panel,
+  .finance-misc-list-panel,
+  .finance-misc-summary-panel,
+  .finance-settlement-list-panel,
+  .finance-profit-calculation-panel {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .reporting-statistics-panel,
+  .reporting-drilldown-panel {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .finance-payment-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 820px) {
+  .login-shell {
+    padding: 18px;
+  }
+
+  .login-stage {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    align-items: start;
+    min-height: auto;
+  }
+
+  .login-intro {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    min-height: auto;
+    gap: 22px;
+    border-right: 0;
+    border-radius: 12px;
+    padding: 26px;
+  }
+
+  .login-editorial-brand {
+    min-height: 36px;
+    font-size: 30px;
+  }
+
+  .login-editorial-hero {
+    width: min(330px, 72vw);
+    min-width: 0;
+  }
+
+  .login-editorial-hero figcaption {
+    width: min(440px, 138%);
+    font-size: 1.18rem;
+    line-height: 1.2;
+  }
+
+  .login-editorial-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .login-editorial-footer div {
+    max-width: none;
+    text-align: left;
+  }
+
+  .login-panel {
+    justify-self: center;
+    width: min(480px, 100%);
+    border: 1px solid #d8d1c1;
+    border-radius: 8px;
+    background: rgba(255, 254, 250, 0.96);
+    padding: clamp(26px, 4vw, 40px);
+    box-shadow:
+      0 28px 72px rgba(29, 33, 41, 0.16),
+      0 8px 22px rgba(140, 143, 156, 0.1);
+  }
+
+  .login-panel-heading {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #E0E3E8;
+  }
+}
+
+@media (max-width: 720px) {
+  .login-shell {
+    padding: 18px;
+  }
+
+  .login-panel {
+    order: -1;
+  }
+
+  .login-editorial-brand {
+    min-height: 32px;
+    font-size: 26px;
+  }
+
+  .login-editorial-hero {
+    width: min(284px, 76vw);
+  }
+
+  .login-editorial-hero figcaption {
+    width: min(360px, 136%);
+    font-size: 0.96rem;
+    line-height: 1.18;
+  }
+
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .inline-filter-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .finance-payment-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-strip,
+  .sample-record-page .summary-strip,
+  .sample-delivery-page .summary-strip,
+  .export-quotation-page .summary-strip,
+  .export-contract-page .summary-strip,
+  .shipment-page .summary-strip,
+  .purchase-inquiry-page .summary-strip,
+  .purchase-contract-page .summary-strip,
+  .purchase-invoice-page .summary-strip,
+  .followup-page .summary-strip,
+  .quality-inspection-page .summary-strip,
+  .inbound-plan-page .summary-strip,
+  .inbound-order-page .summary-strip,
+  .outbound-plan-page .summary-strip,
+  .outbound-order-page .summary-strip,
+  .reporting-page .summary-strip,
+  .finance-page .summary-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .product-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .delivery-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-cell {
+    border-bottom: 1px solid #E0E3E8;
+  }
+
+  .task-row,
+  .schedule-row {
+    grid-template-columns: 1fr;
+  }
+
+  .task-row time,
+  .schedule-row time {
+    text-align: left;
+  }
+
+  .toolbar-heading,
+  .search-form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .search-form label,
+  .form-pair.two,
+  .form-pair.three,
+  .detail-list {
+    grid-template-columns: 1fr;
+  }
+}
+

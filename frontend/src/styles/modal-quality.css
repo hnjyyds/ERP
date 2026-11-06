@@ -1,0 +1,472 @@
+/* modal-quality — 基础资料弹窗美化、商品图片上传与 QC 表单校验
+   由 styles.css 按区块拆出，顺序由 styles.css 的 @import 保证。 */
+/* ===== 基础资料新增/编辑弹窗美化 =====
+   用 :has(.entity-modal-form) 锚定这些实体表单弹窗，统一外壳、标题、
+   输入框、分区与按钮风格，零 JSX 改动，不影响其它弹窗。 */
+
+/* 弹窗入场动画 */
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes modalFadeOut {
+  from { opacity: 1; transform: scale(1) translateY(0); }
+  to   { opacity: 0; transform: scale(0.96) translateY(8px); }
+}
+@keyframes fieldSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes sectionReveal {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--erp-primary) 12%, transparent); }
+  50%      { box-shadow: 0 0 0 5px color-mix(in srgb, var(--erp-primary) 18%, transparent); }
+}
+
+.ant-modal:has(.entity-modal-form) .ant-modal-content {
+  border: 1px solid rgba(235, 238, 242, 0.5);
+  border-radius: 16px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%);
+  box-shadow:
+    0 32px 80px rgba(10, 14, 23, 0.14),
+    0 4px 16px rgba(10, 14, 23, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  padding: 0;
+  overflow: hidden;
+  animation: modalFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 标题栏：更精致的渐变 + 主色左侧竖条 */
+.ant-modal:has(.entity-modal-form) .ant-modal-header {
+  margin: 0;
+  padding: 20px 28px;
+  border-bottom: 1px solid rgba(235, 238, 242, 0.5);
+  background: linear-gradient(135deg, #F5F7FA 0%, #FAFBFC 50%, #FFFFFF 100%);
+}
+
+.ant-modal:has(.entity-modal-form) .ant-modal-title {
+  position: relative;
+  padding-left: 16px;
+  color: #1a2420;
+  font-size: 1.1rem;
+  font-weight: 850;
+  letter-spacing: -0.01em;
+}
+
+.ant-modal:has(.entity-modal-form) .ant-modal-title::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 4px;
+  height: 20px;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--erp-primary), color-mix(in srgb, var(--erp-primary) 70%, #0ea5e9));
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--erp-primary) 30%, transparent);
+}
+
+/* 正文与表单内边距 */
+.ant-modal:has(.entity-modal-form) .ant-modal-body {
+  padding: 20px 28px 24px;
+}
+
+.entity-modal-form {
+  padding: 0;
+}
+
+/* 关闭按钮 */
+.ant-modal:has(.entity-modal-form) .ant-modal-close {
+  top: 18px;
+  inset-inline-end: 20px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: #8C8F9C;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.ant-modal:has(.entity-modal-form) .ant-modal-close:hover {
+  background: rgba(173, 52, 52, 0.08);
+  color: var(--erp-danger);
+  transform: rotate(90deg);
+}
+
+/* 字段标签 */
+.entity-modal-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #1D2129;
+  font-size: 12px;
+  font-weight: 760;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+/* 输入框 / 下拉：精致描边 + 主色聚焦光圈 + 微交互动效 */
+.entity-modal-form .ant-input,
+.entity-modal-form .ant-input-affix-wrapper,
+.entity-modal-form .ant-select-selector,
+.entity-modal-form .ant-input-number,
+.entity-modal-form textarea {
+  border-radius: 10px !important;
+  border-color: rgba(224, 227, 232, 0.7) !important;
+  background: linear-gradient(180deg, #FFFFFF, #FAFBFC) !important;
+  box-shadow: 0 1px 3px rgba(10, 14, 23, 0.04) !important;
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    background 0.22s ease,
+    transform 0.15s ease !important;
+  min-height: 36px;
+}
+
+
+.entity-modal-form .ant-input:hover,
+.entity-modal-form .ant-input-affix-wrapper:hover,
+.entity-modal-form .ant-select:hover .ant-select-selector,
+.entity-modal-form textarea:hover {
+  border-color: color-mix(in srgb, var(--erp-primary) 50%, #aaa) !important;
+  box-shadow: 0 2px 6px rgba(10, 14, 23, 0.06) !important;
+}
+
+.entity-modal-form .ant-input:focus,
+.entity-modal-form .ant-input-affix-wrapper-focused,
+.entity-modal-form .ant-select-focused .ant-select-selector,
+.entity-modal-form textarea:focus {
+  border-color: var(--erp-primary) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--erp-primary) 14%, transparent), 0 2px 8px rgba(10, 14, 23, 0.06) !important;
+  transform: translateY(-1px);
+}
+
+
+/* 分区标题：主色 pill 标签 */
+.entity-modal-form .form-divider {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  margin-bottom: 14px;
+  padding: 5px 14px;
+  border-top: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--erp-primary) 8%, white);
+  color: var(--erp-primary);
+  font-size: 12px;
+  font-weight: 820;
+  letter-spacing: 0.03em;
+}
+
+.entity-modal-form .form-divider::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--erp-primary);
+  opacity: 0.6;
+}
+
+.entity-modal-form .entity-modal-section {
+  margin-top: 20px;
+  border-top: 1px solid rgba(235, 238, 242, 0.5);
+  padding-top: 18px;
+  animation: sectionReveal 0.3s ease both;
+}
+
+/* Grid staggered entrance animation */
+.entity-modal-form .entity-modal-grid > * {
+  animation: fieldSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.entity-modal-form .entity-modal-grid > *:nth-child(1)  { animation-delay: 0.03s; }
+.entity-modal-form .entity-modal-grid > *:nth-child(2)  { animation-delay: 0.06s; }
+.entity-modal-form .entity-modal-grid > *:nth-child(3)  { animation-delay: 0.09s; }
+.entity-modal-form .entity-modal-grid > *:nth-child(4)  { animation-delay: 0.12s; }
+.entity-modal-form .entity-modal-grid > *:nth-child(5)  { animation-delay: 0.15s; }
+.entity-modal-form .entity-modal-grid > *:nth-child(6)  { animation-delay: 0.18s; }
+.entity-modal-form .entity-modal-grid > *:nth-child(7)  { animation-delay: 0.21s; }
+.entity-modal-form .entity-modal-grid > *:nth-child(8)  { animation-delay: 0.24s; }
+.entity-modal-form .entity-modal-grid > *:nth-child(9)  { animation-delay: 0.27s; }
+.entity-modal-form .entity-modal-grid > *:nth-child(10) { animation-delay: 0.30s; }
+
+/* 底部操作区 */
+.entity-modal-form .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 18px 0 4px;
+  background: linear-gradient(180deg, transparent, rgba(245, 247, 250, 0.6));
+  border-top: 1px solid rgba(235, 238, 242, 0.4);
+  animation: sectionReveal 0.35s ease 0.2s both;
+}
+
+/* 主按钮：精致渐变 + 浮起效果 */
+.entity-modal-form .modal-actions .inline-submit {
+  min-height: 36px;
+  padding: 0 24px;
+  border-radius: 6px;
+  border: none;
+  color: white;
+  font-weight: 760;
+  letter-spacing: 0.02em;
+}
+
+.entity-modal-form .modal-actions .inline-submit:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--erp-accent-strong) 0%, color-mix(in srgb, var(--erp-accent-strong) 85%, #000) 100%);
+  box-shadow:
+    0 8px 24px color-mix(in srgb, var(--erp-accent) 36%, transparent),
+    0 2px 6px color-mix(in srgb, var(--erp-accent) 24%, transparent);
+  transform: translateY(-2px);
+}
+
+.entity-modal-form .modal-actions .inline-submit:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow:
+    0 2px 8px color-mix(in srgb, var(--erp-accent) 24%, transparent);
+}
+
+/* 取消按钮 */
+.entity-modal-form .modal-actions .secondary-inline {
+  min-height: 36px;
+  padding: 0 20px;
+  border-radius: 6px;
+  border: 1px solid rgba(224, 227, 232, 0.6);
+  background: rgba(255, 255, 255, 0.9);
+  color: #4E5259;
+  font-weight: 700;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.entity-modal-form .modal-actions .secondary-inline:hover {
+  border-color: color-mix(in srgb, var(--erp-primary) 40%, #aaa);
+  background: color-mix(in srgb, var(--erp-primary) 4%, white);
+  color: var(--erp-primary);
+  transform: translateY(-1px);
+}
+
+.primary-theme-button {
+  background: var(--erp-primary, #3A56D4) !important;
+  color: #fff !important;
+  border: 0 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--erp-primary) 24%, transparent);
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.primary-theme-button:hover:not(:disabled),
+.primary-theme-button:focus-visible {
+  background: var(--erp-primary-strong, #2f48c0) !important;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--erp-primary) 28%, transparent);
+  transform: translateY(-1px);
+}
+
+.primary-theme-button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+/* 商品图片上传 */
+.product-image-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.product-image-field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--erp-muted);
+}
+
+.product-image-uploader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.product-image-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.product-image-preview img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--erp-border);
+  background: #fffdf8;
+}
+
+.product-image-remove {
+  border: 1px solid var(--erp-border);
+  border-radius: 8px;
+  background: var(--erp-surface);
+  color: var(--erp-muted);
+  font: inherit;
+  cursor: pointer;
+  padding: 6px 12px;
+}
+
+.product-image-remove:hover {
+  border-color: var(--erp-danger);
+  color: var(--erp-danger);
+}
+
+.product-image-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px dashed var(--erp-accent);
+  background: color-mix(in srgb, var(--erp-accent) 8%, #fffdf8);
+  color: var(--erp-accent-strong);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.product-image-upload:hover {
+  border-color: var(--erp-accent-strong);
+  background: color-mix(in srgb, var(--erp-accent) 14%, #fffdf8);
+}
+
+.product-image-upload input[type='file'] {
+  display: none;
+}
+
+.product-image-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--erp-faint);
+}
+
+/* QC 表单校验：必填标识、字段错误和可定位的错误摘要 */
+.form-field-label {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 3px;
+}
+
+.form-required-mark {
+  color: var(--erp-danger);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.form-field-error {
+  color: var(--erp-danger);
+  font-size: 12px;
+  font-weight: 560;
+  line-height: 1.45;
+}
+
+.task-schedule-overdue {
+  color: var(--color-danger, #d4380d);
+  font-weight: 600;
+}
+
+.quality-line-editor-list {
+  display: grid;
+  gap: 12px;
+}
+
+.quality-line-editor {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--erp-border);
+  border-radius: 6px;
+  background: var(--erp-surface-soft);
+}
+
+.quality-file-upload {
+  display: grid;
+  gap: 6px;
+}
+
+.quality-file-upload input[type='file'] {
+  min-height: 38px;
+  padding: 7px 10px;
+  border: 1px solid var(--erp-border);
+  border-radius: 6px;
+  background: var(--erp-surface);
+}
+
+.quality-attachment-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  min-height: 32px;
+  color: var(--erp-muted);
+}
+
+.quality-attachment-list a {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.detail-action-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 12px 0;
+  color: var(--erp-muted);
+}
+
+.quality-form-validation-summary {
+  margin-bottom: 2px;
+  border-color: color-mix(in srgb, var(--erp-danger) 28%, var(--erp-border));
+  background: color-mix(in srgb, var(--erp-danger) 5%, var(--erp-surface));
+}
+
+.quality-form-validation-list {
+  display: grid;
+  gap: 4px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quality-form-validation-list button {
+  border: 0;
+  background: transparent;
+  color: var(--erp-danger);
+  cursor: pointer;
+  font: inherit;
+  line-height: 1.5;
+  padding: 0;
+  text-align: left;
+}
+
+.quality-form-validation-list button:hover,
+.quality-form-validation-list button:focus-visible {
+  text-decoration: underline;
+}
+
+.entity-modal-form .ant-input-status-error,
+.entity-modal-form .ant-select-status-error .ant-select-selector,
+.entity-modal-form textarea.ant-input-status-error {
+  border-color: var(--erp-danger) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--erp-danger) 12%, transparent) !important;
+}
+

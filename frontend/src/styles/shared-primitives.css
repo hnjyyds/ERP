@@ -1,0 +1,738 @@
+/* shared-primitives — 通用顶栏、按钮、摘要卡、任务列表、表单与数据表格
+   由 styles.css 按区块拆出，顺序由 styles.css 的 @import 保证。 */
+.workspace {
+  padding: 28px clamp(18px, 3vw, 44px) 48px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #7a5641;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+.icon-button,
+.primary-button,
+.secondary-button {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.primary-button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.icon-button {
+  padding: 0 14px;
+  background: #F0F2F5;
+  color: #1D2129;
+}
+
+.icon-button.compact {
+  min-height: 34px;
+  padding: 0 11px;
+}
+
+.primary-button {
+  width: 100%;
+  padding: 0 14px;
+  background: var(--erp-primary);
+  color: #fff;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--erp-primary) 22%, transparent);
+}
+
+.secondary-button {
+  width: 100%;
+  padding: 0 14px;
+  border: 1px solid color-mix(in srgb, var(--erp-primary) 70%, #000);
+  background: var(--erp-primary);
+  color: #fff;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--erp-primary) 22%, transparent);
+}
+
+.icon-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.error-banner {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-left: 4px solid #b94f35;
+  background: #f8ddd2;
+  color: #663222;
+}
+
+.success-banner {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-left: 4px solid #0ea5e9;
+  background: #e5f1ea;
+  color: #1f4f3e;
+}
+
+@keyframes metricCountUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.summary-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(110px, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid rgba(207, 217, 210, 0.6);
+  border-radius: 12px;
+  background: rgba(207, 217, 210, 0.4);
+  box-shadow: 0 2px 8px rgba(10, 14, 23, 0.04);
+}
+
+.summary-cell {
+  min-height: 76px;
+  padding: 14px 16px;
+  border-right: 0;
+  background: var(--erp-surface);
+  transition: background 0.2s ease;
+  animation: metricCountUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.summary-cell:nth-child(1) { animation-delay: 0.05s; }
+.summary-cell:nth-child(2) { animation-delay: 0.10s; }
+.summary-cell:nth-child(3) { animation-delay: 0.15s; }
+.summary-cell:nth-child(4) { animation-delay: 0.20s; }
+.summary-cell:nth-child(5) { animation-delay: 0.25s; }
+
+.summary-cell:hover {
+  background: color-mix(in srgb, var(--erp-primary) 3%, var(--erp-surface));
+}
+
+.summary-cell:last-child {
+  border-right: 0;
+}
+
+.summary-cell span,
+.task-row span,
+.schedule-row span {
+  display: block;
+  color: var(--erp-faint);
+  font-size: 13px;
+}
+
+.summary-cell strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 26px;
+}
+
+.desktop-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(300px, 0.7fr);
+  gap: 18px;
+}
+
+.panel {
+  border: 1px solid #E0E3E8;
+  border-radius: 8px;
+  background: #FFFFFF;
+}
+
+.panel.wide {
+  grid-column: 1 / -1;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 54px;
+  padding: 0 16px;
+  border-bottom: 1px solid #EBEEF2;
+}
+
+
+
+
+
+
+
+
+.operation-flow-step-locked {
+  grid-template-columns: 24px minmax(0, 1fr) 14px;
+  border-color: rgba(224, 227, 232, 0.55);
+  background: rgba(240, 242, 245, 0.38);
+  color: rgba(75, 72, 65, 0.72);
+  cursor: not-allowed;
+}
+
+
+
+
+
+
+
+
+.operation-flow-copy small {
+  overflow: hidden;
+  color: var(--erp-muted);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+
+
+
+
+.panel-heading > span {
+  color: var(--erp-faint);
+  font-size: 13px;
+}
+
+.panel-heading h2 {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.task-list,
+.schedule-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.task-row,
+.schedule-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px;
+  gap: 16px;
+  align-items: center;
+  min-height: 66px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5ebe5;
+}
+
+.schedule-row {
+  grid-template-columns: 130px minmax(0, 1fr);
+}
+
+.task-row:last-child,
+.schedule-row:last-child {
+  border-bottom: 0;
+}
+
+.task-row time,
+.schedule-row time {
+  color: #7a5641;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.schedule-row time {
+  text-align: left;
+}
+
+.notice-item {
+  padding: 15px 16px;
+  border-bottom: 1px solid #e5ebe5;
+}
+
+.notice-item:last-child {
+  border-bottom: 0;
+}
+
+.notice-item p {
+  margin-top: 8px;
+  color: #4f5c55;
+  line-height: 1.5;
+}
+
+.order-workflow-top,
+.export-contract-page,
+.export-contract-grid {
+  background: #FFFFFF !important;
+}
+
+.schedule-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 0;
+}
+
+.schedule-form {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-left: 1px solid #EBEEF2;
+  background: #FAFBFC;
+}
+
+.schedule-form label {
+  display: grid;
+  gap: 6px;
+  color: #1D2129;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.schedule-form input,
+.schedule-form textarea {
+  width: 100%;
+  border: 1px solid #bfcabf;
+  border-radius: 6px;
+  background: #FFFFFF;
+  color: #1D2129;
+}
+
+.schedule-form input {
+  min-height: 36px;
+  padding: 0 10px;
+}
+
+.schedule-form textarea {
+  resize: vertical;
+  padding: 9px 10px;
+}
+
+.form-pair {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.shortcut-list {
+  display: grid;
+  padding: 12px;
+  gap: 8px;
+}
+
+.shortcut-list a {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: 6px;
+  background: #FAFBFC;
+  color: #1D2129;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.product-summary {
+  grid-template-columns: repeat(3, minmax(130px, 1fr));
+}
+
+.delivery-summary {
+  grid-template-columns: repeat(4, minmax(130px, 1fr));
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(360px, 0.75fr);
+  gap: 18px;
+}
+
+.product-list-panel,
+.product-detail-panel,
+.export-panel {
+  min-width: 0;
+}
+
+.product-form-panel {
+  grid-row: span 2;
+}
+
+.toolbar-heading {
+  align-items: center;
+  gap: 16px;
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.search-form label {
+  display: grid;
+  grid-template-columns: auto minmax(180px, 260px);
+  gap: 8px;
+  align-items: center;
+  color: #8C8F9C;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.search-form input:not(.ant-select-input),
+.record-form input:not(.ant-select-input),
+.record-form textarea,
+.record-form select {
+  width: 100%;
+  border: 1px solid #bfcabf;
+  border-radius: 6px;
+  background: #FFFFFF;
+  color: #1D2129;
+}
+
+.search-form input:not(.ant-select-input),
+.record-form input:not(.ant-select-input),
+.record-form select {
+  min-height: 34px;
+  padding: 0 10px;
+}
+
+.record-form textarea {
+  resize: vertical;
+  padding: 9px 10px;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.customer-table {
+  min-width: 700px;
+}
+
+.data-table th,
+.data-table td {
+  padding: 11px 12px;
+  border-bottom: 1px solid #EBEEF2;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.data-table th {
+  background: #F0F2F5;
+  color: #4E5259;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.data-table tbody tr {
+  cursor: pointer;
+}
+
+.data-table tbody tr:hover,
+.data-table tbody tr.selected {
+  background: #F5F7FA;
+}
+
+.row-button {
+  border: 0;
+  background: transparent;
+  color: #4F6EF7;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.empty-cell {
+  height: 82px;
+  color: var(--erp-faint);
+  text-align: center;
+}
+
+.record-form {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  background: transparent;
+}
+
+.record-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: #1D2129;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* 统一 record-form 内所有输入控件高度和对齐 */
+.record-form .ant-input,
+.record-form .ant-input-affix-wrapper,
+.record-form .ant-input-number,
+.record-form .ant-select-selector,
+.record-form .ant-picker {
+  min-height: 34px !important;
+  border-radius: 6px !important;
+}
+
+.record-form select,
+.record-form input:not([type='checkbox']):not([type='radio']):not(.ant-select-input),
+.record-form textarea {
+  min-height: 34px;
+  border-radius: 6px;
+}
+
+.record-form .checkbox-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-line input {
+  width: 16px;
+  min-height: 16px;
+}
+
+.record-form .checkbox-label {
+  gap: 8px;
+  flex-direction: row !important;
+
+  align-items: center;
+}
+
+.record-form .checkbox-label input {
+  width: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  accent-color: #4F6EF7;
+}
+
+/* ===== Flex 三列表单布局 ===== */
+.contract-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contract-modal-form .form-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px 18px;
+  align-items: start;
+}
+
+.contract-modal-form .form-row > label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #4E5259;
+}
+
+/* 输入框统一高度，不撑满 */
+.contract-modal-form .form-row > label .ant-input,
+.contract-modal-form .form-row > label .ant-input-affix-wrapper,
+.contract-modal-form .form-row > label .ant-select-selector,
+.contract-modal-form .form-row > label .ant-input-number {
+  width: 100%;
+  height: 34px;
+  border-radius: 6px;
+}
+
+/* 按钮在 label 内不撑满，自适应宽度 */
+.contract-modal-form .form-row > label .ant-btn {
+  height: 34px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+
+
+/* form-divider 在三列布局中占满 */
+.contract-modal-form .form-divider {
+  width: 100%;
+}
+
+.contract-line-toolbar {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 4px;
+}
+
+.contract-line-toolbar .form-divider {
+  margin-bottom: 6px;
+}
+
+.contract-line-toolbar p {
+  margin: 0;
+  color: var(--erp-text-muted, #6b7280);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.contract-lines-table {
+  flex: 0 0 auto;
+  overflow: hidden;
+  border: 1px solid var(--erp-border, #e5e7eb);
+  border-radius: 10px;
+}
+
+.contract-lines-table .ant-table-cell {
+  vertical-align: middle;
+}
+
+.contract-lines-table .ant-input {
+  min-height: 34px;
+  border-radius: 7px !important;
+}
+
+.contract-lines-table .barcode-input {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.contract-line-product,
+.contract-line-stacked-fields,
+.product-picker-item-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.contract-line-product {
+  gap: 3px;
+}
+
+.contract-line-product strong {
+  overflow: hidden;
+  color: var(--erp-text, #1d2129);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contract-line-product span {
+  color: var(--erp-text-muted, #6b7280);
+  font-size: 12px;
+}
+
+.contract-line-stacked-fields {
+  gap: 6px;
+}
+
+.product-picker-search {
+  margin-bottom: 16px;
+}
+
+.product-picker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.product-picker-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 68px;
+  padding: 12px 14px;
+  border: 1px solid var(--erp-border, #e5e7eb);
+  border-radius: 10px;
+  background: #fff;
+  transition: border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.product-picker-item:hover:not(.is-added) {
+  border-color: color-mix(in srgb, var(--erp-primary) 42%, #d1d5db);
+  background: color-mix(in srgb, var(--erp-primary) 3%, #fff);
+}
+
+.product-picker-item.is-added {
+  background: #f8fafc;
+}
+
+.product-picker-item .ant-checkbox-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+.product-picker-item-main {
+  gap: 4px;
+  margin-left: 4px;
+}
+
+.product-picker-item-main strong,
+.product-picker-item-main span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-picker-item-main span,
+.product-picker-added-label,
+.product-picker-empty,
+.product-picker-actions > span {
+  color: var(--erp-text-muted, #6b7280);
+  font-size: 12px;
+}
+
+.product-picker-added-label {
+  flex: 0 0 auto;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #eef2f7;
+}
+
+.product-picker-empty {
+  padding: 56px 16px;
+  text-align: center;
+}
+
+.product-picker-actions,
+.product-picker-actions > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.product-picker-actions {
+  justify-content: space-between;
+}
+

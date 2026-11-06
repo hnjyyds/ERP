@@ -1,0 +1,370 @@
+/* responsive-cascade — 响应式基线、减少动效与级联锁定
+   由 styles.css 按区块拆出，顺序由 styles.css 的 @import 保证。 */
+/* Responsive interaction baseline: keep business controls usable without
+   making the desktop data-dense layout unnecessarily tall. */
+@media (max-width: 980px) {
+  .finance-tab-rail {
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .finance-tab {
+    flex: 0 0 auto;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 640px) {
+  button:not(.ant-switch),
+  .ant-btn,
+  .inline-submit,
+  .secondary-inline,
+  .danger-inline,
+  .table-action,
+  .panel-icon-button,
+  .topbar-settings-button {
+    min-height: 44px !important;
+  }
+
+  .panel-icon-button,
+  .topbar-settings-button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .ant-input,
+  .ant-input-affix-wrapper,
+  .ant-input-number,
+  .ant-picker,
+  .ant-select-selector,
+  .inline-filters select {
+    height: 44px !important;
+    min-height: 44px;
+  }
+
+  .ant-select-single .ant-select-selection-item,
+  .ant-select-single .ant-select-selection-placeholder,
+  .inline-filters .ant-select-single .ant-select-selection-item,
+  .inline-filters .ant-select-single .ant-select-selection-placeholder,
+  .record-form .ant-select-single .ant-select-selection-item,
+  .record-form .ant-select-single .ant-select-selection-placeholder {
+    line-height: 42px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Cascade lock: legacy page styles above intentionally remain available,
+   while these shared primitives define the final cross-module experience. */
+body .react-shell {
+  grid-template-columns: 244px minmax(0, 1fr);
+  background: var(--erp-bg);
+}
+
+body .react-sidebar {
+  border-right: 1px solid var(--erp-border);
+  background: #f8f9fb;
+  background-image: none;
+  box-shadow: none;
+  padding: 18px 14px 14px;
+}
+
+body .react-workspace {
+  background: var(--erp-bg);
+  background-image: none;
+  padding: 20px clamp(16px, 2.2vw, 32px) 40px;
+}
+
+body .brand {
+  min-height: 48px;
+  margin-bottom: 10px;
+  padding-bottom: 12px;
+}
+
+body .brand-wordmark {
+  min-width: 70px;
+  font-size: 0.875rem;
+  padding-right: 10px;
+}
+
+body .brand strong { font-size: 0.9375rem; }
+body .brand span { font-size: 0.75rem; }
+
+body .react-nav,
+body .nav-groups { gap: 6px; }
+
+body .nav-group,
+body .settings-group {
+  border-color: transparent;
+  background: transparent;
+}
+
+body .nav-group[open],
+body .settings-group[open] {
+  border-color: var(--erp-border-soft);
+  background: #fff;
+}
+
+body .nav-group-summary,
+body .settings-summary {
+  min-height: 38px;
+  font-size: 0.8125rem;
+  padding-inline: 9px;
+}
+
+body .nav-link,
+body .nav-dashboard,
+body .nav-group-items .nav-link {
+  min-height: 38px;
+  border-radius: 6px;
+}
+
+body .nav-link span,
+body .nav-group-items .nav-link span {
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+body .nav-link:hover,
+body .nav-link:focus-visible {
+  border-color: var(--erp-border);
+  background: #fff;
+  box-shadow: none;
+  transform: none;
+}
+
+body .nav-link.active,
+body .nav-submenu > .nav-link-parent.active {
+  border-color: color-mix(in srgb, var(--erp-primary) 22%, var(--erp-border));
+  background: color-mix(in srgb, var(--erp-primary) 10%, #fff);
+  box-shadow: none;
+  color: var(--erp-primary-strong);
+}
+
+body .nav-link.active .nav-link-icon,
+body .nav-submenu > .nav-link-parent.active .nav-link-icon {
+  color: var(--erp-primary);
+  filter: none;
+}
+
+body .react-topbar {
+  align-items: center;
+  margin: -20px calc(-1 * clamp(16px, 2.2vw, 32px)) 16px;
+  border-bottom-color: var(--erp-border);
+  background: color-mix(in srgb, var(--erp-bg) 94%, transparent);
+  padding: 14px clamp(16px, 2.2vw, 32px) 12px;
+}
+
+body .react-topbar h1 {
+  margin: 0;
+  font-size: clamp(1.35rem, 1.8vw, 1.75rem);
+  font-weight: 760;
+  line-height: 1.25;
+}
+
+body .summary-strip,
+body .metric-strip {
+  overflow-x: auto;
+  border-color: var(--erp-border);
+  border-radius: 6px;
+  background: var(--erp-surface);
+  box-shadow: none;
+}
+
+body .summary-cell,
+body .metric-cell {
+  min-height: 64px;
+  border-right: 1px solid var(--erp-border-soft);
+  padding: 10px 14px;
+  animation: none;
+}
+
+body .summary-cell strong,
+body .metric-cell strong,
+body .metric-strip .metric-value {
+  margin-top: 2px;
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+body .panel,
+body .module-panel,
+body .list-panel,
+body .form-panel,
+body .detail-panel,
+body .dashboard-panel {
+  border-color: var(--erp-border);
+  border-radius: 6px;
+  background: var(--erp-surface);
+  box-shadow: none;
+}
+
+body .toolbar-heading,
+body .inline-filters,
+body .search-form,
+body .section-actions,
+body .table-actions { flex-wrap: wrap; }
+
+body .toolbar-heading {
+  align-items: flex-end;
+  gap: 10px 16px;
+}
+
+body .ant-table-thead > tr > th,
+body .data-table th {
+  height: 40px;
+  background: #f3f5f7 !important;
+  color: #545d69;
+  font-size: 0.75rem;
+  font-weight: 720;
+}
+
+body .ant-table-tbody > tr:hover > td,
+body .data-table tbody tr:hover { background: #f6f8fb !important; }
+
+body .table-scroll {
+  max-width: 100%;
+  overflow: auto;
+}
+
+body .entity-modal-form .entity-modal-grid > *,
+body .entity-modal-form .modal-actions { animation: none; }
+
+@media (max-width: 1180px) {
+  body .react-shell { grid-template-columns: 220px minmax(0, 1fr); }
+  body .react-sidebar { padding-inline: 10px; }
+  body .brand-wordmark { display: none; }
+}
+
+@media (max-width: 980px) {
+  body .react-shell,
+  body .react-shell-home {
+    display: block;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  body .react-sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: block;
+    width: 100%;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--erp-border);
+    padding: 10px 14px;
+  }
+
+  body .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  body .brand {
+    min-height: 36px;
+    margin: 0;
+    border: 0;
+    padding: 0;
+  }
+
+  body .mobile-nav-toggle { display: inline-flex; }
+
+  body .react-nav {
+    display: none;
+    max-height: calc(100vh - 68px);
+    margin-top: 10px;
+    overflow: auto;
+  }
+
+  body .react-sidebar.is-mobile-open .react-nav { display: grid; }
+
+  body .react-workspace,
+  body .react-shell-home .react-workspace {
+    height: auto;
+    min-height: calc(100vh - 57px);
+    overflow: visible;
+    padding: 14px 14px 32px;
+  }
+
+  body .react-topbar {
+    position: static;
+    margin: -14px -14px 14px;
+    padding: 12px 14px;
+  }
+
+  body .react-shell-home .dashboard-workbench,
+  body .react-shell-home .dashboard-board {
+    height: auto;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 640px) {
+  body .react-topbar h1 {
+    max-width: 18ch;
+    font-size: 1.25rem;
+  }
+
+  body .summary-strip,
+  body .metric-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  body .toolbar-heading,
+  body .inline-filters,
+  body .search-form,
+  body .section-actions,
+  body .table-actions { align-items: stretch; }
+
+  body .masterdata-page .list-panel,
+  body .masterdata-page .detail-panel,
+  body .masterdata-page .masterdata-detail-panel {
+    overflow: visible;
+  }
+
+  body .ant-table-wrapper,
+  body .ant-table-container,
+  body .ant-table-content {
+    max-width: 100%;
+  }
+
+  body .ant-table-content {
+    overflow-x: auto !important;
+    overscroll-behavior-inline: contain;
+  }
+
+  body .toolbar-heading .search-form,
+  body .toolbar-heading .section-actions,
+  body .toolbar-heading .table-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  body .toolbar-heading .search-form label,
+  body .toolbar-heading .inline-filter-search {
+    grid-column: 1 / -1;
+  }
+
+  body .toolbar-heading .ant-btn,
+  body .toolbar-heading button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
