@@ -327,15 +327,24 @@ class FollowupRepository:
         await self.session.flush()
         return self._map_plan(plan)
 
-    async def mark_overdue_nodes(self, *, as_of: date) -> int:
-        rows = list(
-            await self.session.scalars(
-                select(PurchaseFollowNode)
-                .where(PurchaseFollowNode.actual_date.is_(None))
-                .where(PurchaseFollowNode.planned_date < as_of)
-                .where(PurchaseFollowNode.status != "completed")
-            )
+    async def mark_overdue_nodes(
+        self,
+        *,
+        as_of: date,
+        owner_user_ids: list[str] | None = None,
+    ) -> int:
+        statement = (
+            select(PurchaseFollowNode)
+            .where(PurchaseFollowNode.actual_date.is_(None))
+            .where(PurchaseFollowNode.planned_date < as_of)
+            .where(PurchaseFollowNode.status != "completed")
         )
+        if owner_user_ids is not None:
+            statement = statement.join(
+                PurchaseFollowPlan,
+                PurchaseFollowNode.follow_plan_id == PurchaseFollowPlan.id,
+            ).where(PurchaseFollowPlan.owner_user_id.in_(owner_user_ids))
+        rows = list(await self.session.scalars(statement))
         affected_plan_ids: list[str] = []
         for node in rows:
             node.status = "overdue"

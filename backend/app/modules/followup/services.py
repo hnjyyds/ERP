@@ -48,6 +48,20 @@ class FollowupNodeNotFoundError(Exception):
     pass
 
 
+FOLLOWUP_NODE_NAMES = {
+    "contract_confirmed": "下单日期",
+    "confirm_sample_submitted": "确认样提交日期",
+    "bulk_sample_submitted": "大货样提交日期",
+    "quality_inspection": "QC查验日期",
+    "inbound_completed": "入库日期",
+    "outbound_completed": "出库日期",
+}
+
+
+def followup_node_name(node_code: str, fallback: str) -> str:
+    return FOLLOWUP_NODE_NAMES.get(node_code, fallback)
+
+
 @dataclass(frozen=True)
 class _DefaultFollowupNode:
     node_code: str
@@ -61,7 +75,7 @@ class _DefaultFollowupNode:
 DEFAULT_FOLLOWUP_NODES = (
     _DefaultFollowupNode(
         node_code="contract_confirmed",
-        node_name="合同下单确立",
+        node_name=FOLLOWUP_NODE_NAMES["contract_confirmed"],
         sequence_no=10,
         standard_days=0,
         remind_before_days=0,
@@ -69,7 +83,7 @@ DEFAULT_FOLLOWUP_NODES = (
     ),
     _DefaultFollowupNode(
         node_code="confirm_sample_submitted",
-        node_name="确认样提交",
+        node_name=FOLLOWUP_NODE_NAMES["confirm_sample_submitted"],
         sequence_no=20,
         standard_days=3,
         remind_before_days=1,
@@ -77,7 +91,7 @@ DEFAULT_FOLLOWUP_NODES = (
     ),
     _DefaultFollowupNode(
         node_code="bulk_sample_submitted",
-        node_name="大货样提交",
+        node_name=FOLLOWUP_NODE_NAMES["bulk_sample_submitted"],
         sequence_no=30,
         standard_days=7,
         remind_before_days=2,
@@ -85,7 +99,7 @@ DEFAULT_FOLLOWUP_NODES = (
     ),
     _DefaultFollowupNode(
         node_code="quality_inspection",
-        node_name="QC 查验",
+        node_name=FOLLOWUP_NODE_NAMES["quality_inspection"],
         sequence_no=40,
         standard_days=14,
         remind_before_days=2,
@@ -93,7 +107,7 @@ DEFAULT_FOLLOWUP_NODES = (
     ),
     _DefaultFollowupNode(
         node_code="inbound_completed",
-        node_name="入库",
+        node_name=FOLLOWUP_NODE_NAMES["inbound_completed"],
         sequence_no=50,
         standard_days=20,
         remind_before_days=3,
@@ -101,7 +115,7 @@ DEFAULT_FOLLOWUP_NODES = (
     ),
     _DefaultFollowupNode(
         node_code="outbound_completed",
-        node_name="出库",
+        node_name=FOLLOWUP_NODE_NAMES["outbound_completed"],
         sequence_no=60,
         standard_days=25,
         remind_before_days=3,
@@ -155,7 +169,7 @@ class FollowupService:
                 await self._repository.add_template_node(
                     template_id=template.id,
                     node_code=node.node_code,
-                    node_name=node.node_name,
+                    node_name=followup_node_name(node.node_code, node.node_name),
                     sequence_no=node.sequence_no,
                     standard_days=node.standard_days,
                     remind_before_days=node.remind_before_days,
@@ -185,7 +199,7 @@ class FollowupService:
                 await self._repository.add_template_node(
                     template_id=template.id,
                     node_code=node.node_code,
-                    node_name=node.node_name,
+                    node_name=followup_node_name(node.node_code, node.node_name),
                     sequence_no=node.sequence_no,
                     standard_days=node.standard_days,
                     remind_before_days=node.remind_before_days,
@@ -204,9 +218,7 @@ class FollowupService:
         contract = await self._purchase_contract_repository.get_contract(purchase_contract_id)
         if contract is None:
             raise FollowupPlanNotFoundError
-        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
-            current_user=current_user,
-        )
+        allowed_user_ids = await self._resolve_plan_owner_user_ids(current_user=current_user)
         if allowed_user_ids is not None and contract.owner_user_id not in allowed_user_ids:
             raise PermissionDeniedError
         plan = await self.ensure_plan_for_contract(contract=contract, as_of=as_of)
@@ -243,7 +255,7 @@ class FollowupService:
                 await self._repository.add_plan_node(
                     follow_plan_id=plan.id,
                     node_code=node.node_code,
-                    node_name=node.node_name,
+                    node_name=followup_node_name(node.node_code, node.node_name),
                     sequence_no=node.sequence_no,
                     planned_date=planned_date,
                     remind_date=remind_date,
@@ -270,9 +282,7 @@ class FollowupService:
         self._require(current_user, "followup:plan:view")
         if overall_status is not None:
             self._validate_plan_status(overall_status)
-        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
-            current_user=current_user,
-        )
+        owner_user_ids = await self._resolve_plan_owner_user_ids(current_user=current_user)
         rows, total = await self._repository.list_plans(
             q=q,
             overall_status=overall_status,
@@ -394,11 +404,12 @@ class FollowupService:
         as_of: date,
     ) -> PurchaseFollowOverdueNodeListResponse:
         self._require(current_user, "followup:plan:view")
+        owner_user_ids = await self._resolve_plan_owner_user_ids(current_user=current_user)
         async with UnitOfWork(self._repository.session):
-            await self._repository.mark_overdue_nodes(as_of=as_of)
-        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
-            current_user=current_user,
-        )
+            await self._repository.mark_overdue_nodes(
+                as_of=as_of,
+                owner_user_ids=owner_user_ids,
+            )
         rows = await self._repository.list_overdue_nodes(
             as_of=as_of,
             owner_user_ids=owner_user_ids,
@@ -445,9 +456,7 @@ class FollowupService:
         plan = await self._repository.get_plan(plan_id)
         if plan is None:
             raise FollowupPlanNotFoundError
-        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
-            current_user=current_user,
-        )
+        allowed_user_ids = await self._resolve_plan_owner_user_ids(current_user=current_user)
         if allowed_user_ids is not None and plan.owner_user_id not in allowed_user_ids:
             raise FollowupPlanNotFoundError
         return plan
@@ -462,12 +471,26 @@ class FollowupService:
         plan = await self._repository.get_plan_by_contract(purchase_contract_id)
         if plan is None:
             raise FollowupPlanNotFoundError
-        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
-            current_user=current_user,
-        )
+        allowed_user_ids = await self._resolve_plan_owner_user_ids(current_user=current_user)
         if allowed_user_ids is not None and plan.owner_user_id not in allowed_user_ids:
             raise FollowupPlanNotFoundError
         return plan
+
+    async def _resolve_plan_owner_user_ids(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+    ) -> list[str] | None:
+        """跟单计划默认仅本人可见，查看全部需要独立的数据权限。"""
+        if "followup:plan:view_all" in current_user.permissions:
+            return None
+        resolved_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user
+        )
+        # 基础权限始终收敛到本人；若未来数据范围规则不再包含本人，则安全地拒绝全部。
+        if resolved_user_ids is not None and current_user.id not in resolved_user_ids:
+            return []
+        return [current_user.id]
 
     async def _template_response(
         self,
@@ -491,7 +514,7 @@ class FollowupService:
             id=node.id,
             template_id=node.template_id,
             node_code=node.node_code,
-            node_name=node.node_name,
+            node_name=followup_node_name(node.node_code, node.node_name),
             sequence_no=node.sequence_no,
             standard_days=node.standard_days,
             remind_before_days=node.remind_before_days,
@@ -524,7 +547,7 @@ class FollowupService:
             id=node.id,
             follow_plan_id=node.follow_plan_id,
             node_code=node.node_code,
-            node_name=node.node_name,
+            node_name=followup_node_name(node.node_code, node.node_name),
             sequence_no=node.sequence_no,
             planned_date=node.planned_date,
             remind_date=node.remind_date,
@@ -547,7 +570,7 @@ class FollowupService:
             purchase_contract_no=node.purchase_contract_no,
             supplier_name=node.supplier_name,
             node_code=node.node_code,
-            node_name=node.node_name,
+            node_name=followup_node_name(node.node_code, node.node_name),
             planned_date=node.planned_date,
             remind_date=node.remind_date,
             overdue_days=node.overdue_days,

@@ -5,10 +5,15 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.modules.followup.repositories import FollowupRepository
 from app.modules.followup.schemas import FollowSourceEventSync
-from app.modules.followup.services import FollowupService, PermissionDeniedError
+from app.modules.followup.services import (
+    FollowupPlanNotFoundError,
+    FollowupService,
+    PermissionDeniedError,
+)
 from app.modules.purchase.contracts.repositories import PurchaseContractRepository
 from app.modules.sample.records.repositories import SampleRecordRepository
 from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.data_scope_rules import DataScope
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
@@ -26,32 +31,39 @@ def _user(
     permissions: list[str],
     *,
     user_id: str = "u-001",
+    data_scope: DataScope = "self",
 ) -> CurrentUserResponse:
     return CurrentUserResponse(
         id=user_id,
         username=user_id,
         display_name="演示业务主管",
         department_name="业务部",
+        data_scope=data_scope,
         roles=["业务主管"],
         permissions=permissions,
     )
 
 
-async def _create_approved_contract(repository: PurchaseContractRepository) -> str:
+async def _create_approved_contract(
+    repository: PurchaseContractRepository,
+    *,
+    code: str = "PC-FUP-SVC",
+    owner_user_id: str = "u-001",
+) -> str:
     contract = await repository.create_contract(
-        code="PC-FUP-SVC",
+        code=code,
         contract_date=date(2026, 8, 5),
         supplier_id="supplier-pack-a",
         supplier_name="华东包装制品厂",
-        buyer_user_id="u-001",
-        buyer_user_name="演示业务主管",
+        buyer_user_id=owner_user_id,
+        buyer_user_name=owner_user_id,
         currency="USD",
         delivery_date=date(2026, 8, 30),
         payment_terms="30% 预付，70% 出货前",
         source_type="stock_purchase",
         remarks="采购跟单服务测试",
         approval_status="submitted",
-        owner_user_id="u-001",
+        owner_user_id=owner_user_id,
     )
     approved = await repository.approve_contract(
         contract_id=contract.id,
@@ -144,6 +156,14 @@ async def test_followup_service_generates_plan_syncs_sources_and_scans_overdue(
     assert len(plan.nodes) == 6
     assert plan.nodes[0].node_code == "contract_confirmed"
     assert plan.nodes[0].actual_date == date(2026, 8, 5)
+    assert [node.node_name for node in plan.nodes] == [
+        "下单日期",
+        "确认样提交日期",
+        "大货样提交日期",
+        "QC查验日期",
+        "入库日期",
+        "出库日期",
+    ]
     confirm_node = next(
         node for node in synced.nodes if node.node_code == "confirm_sample_submitted"
     )
@@ -163,3 +183,68 @@ async def test_followup_service_enforces_permissions(
             await service.list_templates(
                 current_user=_user(["followup:plan:view"]),
             )
+
+
+async def test_followup_plan_visibility_requires_view_all_for_other_owners(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        purchase_repository = PurchaseContractRepository(session)
+        own_contract_id = await _create_approved_contract(
+            purchase_repository,
+            code="PC-FUP-OWN",
+            owner_user_id="u-001",
+        )
+        other_contract_id = await _create_approved_contract(
+            purchase_repository,
+            code="PC-FUP-OTHER",
+            owner_user_id="u-002",
+        )
+        own_contract = await purchase_repository.get_contract(own_contract_id)
+        other_contract = await purchase_repository.get_contract(other_contract_id)
+        assert own_contract is not None
+        assert other_contract is not None
+
+        service = _make_service(session)
+        own_plan = await service.ensure_plan_for_contract(contract=own_contract)
+        other_plan = await service.ensure_plan_for_contract(contract=other_contract)
+        own_only_user = _user(
+            ["followup:plan:view"],
+            user_id="u-001",
+            # 回归真实角色曾经配置为 all 的情况：模块级 view_all 才能越过本人范围。
+            data_scope="all",
+        )
+
+        own_only_plans = await service.list_plans(
+            current_user=own_only_user,
+            q=None,
+            overall_status=None,
+            supplier_id=None,
+            purchase_contract_id=None,
+        )
+        own_overdue = await service.scan_overdue_nodes(
+            current_user=own_only_user,
+            as_of=date(2026, 9, 5),
+        )
+
+        assert [plan.id for plan in own_only_plans.items] == [own_plan.id]
+        assert {node.follow_plan_id for node in own_overdue.items} == {own_plan.id}
+        assert (await service.get_plan(current_user=own_only_user, plan_id=own_plan.id)).id == (
+            own_plan.id
+        )
+        with pytest.raises(FollowupPlanNotFoundError):
+            await service.get_plan(current_user=own_only_user, plan_id=other_plan.id)
+
+        all_plans = await service.list_plans(
+            current_user=_user(
+                ["followup:plan:view", "followup:plan:view_all"],
+                user_id="u-admin",
+                data_scope="self",
+            ),
+            q=None,
+            overall_status=None,
+            supplier_id=None,
+            purchase_contract_id=None,
+        )
+
+    assert {plan.id for plan in all_plans.items} == {own_plan.id, other_plan.id}
