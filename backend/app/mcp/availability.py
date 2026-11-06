@@ -24,11 +24,13 @@ class McpAvailabilityMiddleware:
                     {
                         "success": False,
                         "code": "MCP_DISABLED",
-                        "message": "MCP 服务未启用",
+                        "message": "MCP service is disabled",
                         "data": None,
                         "error": {
                             "code": "MCP_DISABLED",
-                            "message": "请联系系统管理员启用 MCP 服务",
+                            "message": (
+                                "Please contact your system administrator to enable MCP."
+                            ),
                         },
                     },
                     status_code=503,

@@ -282,7 +282,7 @@ class ErpMcpCrudService:
     @staticmethod
     def _require_confirmation(confirm: bool) -> None:
         if not confirm:
-            raise ConfirmationRequiredError("删除操作必须显式传入 confirm=true")
+            raise ConfirmationRequiredError("Delete operations require an explicit confirm=true")
 
     @staticmethod
     def _customer_service(session: AsyncSession) -> CustomerService:
