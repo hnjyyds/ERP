@@ -57,7 +57,8 @@ type FollowupTemplateFormState = {
 }
 
 function approvalDocumentTypeLabel(value: string): string {
-  return reportingDocumentTypeOptions.find((item) => item.value === value)?.label ?? value
+  const option = reportingDocumentTypeOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function approvalDocumentTypeTag(value: string): ReactNode {
@@ -67,7 +68,8 @@ function approvalDocumentTypeTag(value: string): ReactNode {
 
 function approvalStatusTag(value: string): ReactNode {
   const color = value === 'approved' ? 'success' : value === 'submitted' ? 'warning' : 'default'
-  const label = reportingStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = reportingStatusOptions.find((item) => item.value === value)
+  const label = option ? t(option.labelKey) : value
   return <Tag color={color}>{label}</Tag>
 }
 
@@ -278,7 +280,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
                 <option value="">全部类型</option>
                 {reportingDocumentTypeOptions.map((item) => (
                   <option key={item.value} value={item.value}>
-                    {item.label}
+                    {t(item.labelKey)}
                   </option>
                 ))}
               </FormSelect>
@@ -292,7 +294,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
                 <option value="">全部状态</option>
                 {reportingStatusOptions.map((item) => (
                   <option key={item.value} value={item.value}>
-                    {item.label}
+                    {t(item.labelKey)}
                   </option>
                 ))}
               </FormSelect>

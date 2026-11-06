@@ -1964,5 +1964,483 @@
         "countryRequired": "请填写国家/地区"
       }
     }
+  },
+  "finance": {
+    "payment": {
+      "title": "付款管理",
+      "requestStatus": {
+        "submitted": "待审批",
+        "approved": "已审批",
+        "rejected": "已退回"
+      },
+      "type": {
+        "prepayment": "预付款",
+        "goodsPayment": "货款",
+        "other": "其他付款"
+      },
+      "panel": {
+        "supplierInvoices": "供应商发票列表",
+        "paymentRequests": "付款申请和审批",
+        "newPaymentRequest": "付款申请新增",
+        "paymentApproval": "付款审批",
+        "paymentRequestList": "付款申请列表",
+        "payables": "应付账款查询"
+      },
+      "field": {
+        "supplierInvoiceNo": "供应商发票号",
+        "invoiceDate": "发票日期",
+        "supplierId": "供应商标识",
+        "supplierName": "供应商名称",
+        "invoiceNoticeId": "开票通知标识",
+        "invoiceNoticeCode": "开票通知编号",
+        "purchaseContractId": "采购合同标识",
+        "purchaseContractNo": "采购合同号",
+        "invoiceAmount": "发票金额",
+        "dueDate": "到期日",
+        "remark": "备注",
+        "currentInvoice": "当前发票",
+        "paid": "已付",
+        "unpaid": "未付",
+        "requestNo": "付款申请号",
+        "supplierInvoiceId": "供应商发票标识",
+        "paymentType": "付款类别",
+        "requestDate": "申请日期",
+        "requestedAmount": "申请金额",
+        "requestRemark": "申请备注",
+        "approvedAmount": "审批金额",
+        "approvedAt": "审批日期",
+        "reviewer": "审批人",
+        "paymentAccount": "付款账号",
+        "approvalRemark": "审批备注"
+      },
+      "filter": {
+        "invoiceSearch": "发票搜索",
+        "invoiceStatus": "付款状态",
+        "allStatuses": "全部状态",
+        "payableSearch": "应付搜索",
+        "payableStatus": "应付状态"
+      },
+      "action": {
+        "search": "查询",
+        "registerInvoice": "发票登记",
+        "cancel": "取消",
+        "submitSupplierInvoice": "登记供应商发票",
+        "createPaymentRequest": "新增付款申请",
+        "approvePayment": "审批付款"
+      },
+      "table": {
+        "supplierInvoice": "供应商发票",
+        "supplier": "供应商",
+        "purchaseContract": "采购合同",
+        "paidAmount": "已付款",
+        "payableBalance": "应付余额",
+        "requestNo": "申请号",
+        "category": "类别",
+        "invoiceNo": "发票号"
+      },
+      "modal": {
+        "supplierInvoiceTitle": "供应商发票登记"
+      },
+      "message": {
+        "loadSupplierInvoicesFailed": "供应商发票加载失败",
+        "loadPaymentRequestsFailed": "付款申请加载失败",
+        "loadPayablesFailed": "应付账款加载失败",
+        "supplierInvoiceCreated": "已登记供应商发票 {code}",
+        "supplierInvoiceCreateFailed": "供应商发票登记失败",
+        "paymentRequestCreated": "已新增付款申请 {code}",
+        "paymentRequestCreateFailed": "付款申请新增失败",
+        "paymentRequestApproved": "已审批付款申请 {code}",
+        "paymentApprovalFailed": "付款审批失败",
+        "noSupplierInvoice": "暂无供应商发票",
+        "waitingApproval": "等待 {reviewer} 审批",
+        "designatedReviewer": "指定审批人"
+      },
+      "validation": {
+        "reviewerRequired": "请选择审批人",
+        "approverMismatch": "该付款申请应由 {reviewer} 审批"
+      }
+    },
+    "receipt": {
+      "title": "收款管理",
+      "status": {
+        "unclaimed": "待认领",
+        "claimed": "已认领",
+        "partiallyAllocated": "部分分摊",
+        "allocated": "已分摊"
+      },
+      "type": {
+        "normal": "普通收款",
+        "advance": "预收款"
+      },
+      "allocationType": {
+        "contract": "合同分摊",
+        "invoice": "发票分摊",
+        "advance": "预收款分摊"
+      },
+      "panel": {
+        "receipts": "银行水单列表",
+        "claimAndAllocation": "认领和分摊",
+        "claim": "水单认领",
+        "allocation": "收款分摊",
+        "allocationHistory": "分摊记录",
+        "receivables": "应收账款查询"
+      },
+      "field": {
+        "receiptNo": "银行水单号",
+        "receivedDate": "收款日期",
+        "payerName": "付款人",
+        "customerId": "客户标识",
+        "customerName": "客户名称",
+        "receiptAmount": "收款金额",
+        "receiptType": "收款性质",
+        "bankAccount": "收款银行账号",
+        "referenceNo": "银行流水号",
+        "remark": "备注",
+        "currentReceipt": "当前水单",
+        "allocatedAmount": "已分摊",
+        "unallocatedAmount": "未分摊",
+        "claimedAt": "认领日期",
+        "salesUserId": "业务员标识",
+        "salesUserName": "业务员姓名",
+        "claimNote": "认领说明",
+        "allocationType": "分摊类型",
+        "allocatedAt": "分摊日期",
+        "contractId": "出口合同标识",
+        "contractNo": "出口合同号",
+        "invoiceNo": "发票号",
+        "allocationAmount": "分摊金额",
+        "allocationRemark": "分摊备注"
+      },
+      "filter": {
+        "receiptSearch": "水单搜索",
+        "receiptSearchPlaceholder": "水单号 / 付款人 / 客户",
+        "receiptStatus": "水单状态",
+        "allStatuses": "全部状态",
+        "customerIdPlaceholder": "输入客户编号或名称",
+        "receivableSearch": "应收搜索",
+        "receivableSearchPlaceholder": "合同号 / 客户 / 报价号"
+      },
+      "action": {
+        "search": "查询",
+        "registerReceipt": "水单录入",
+        "cancel": "取消",
+        "submitReceipt": "保存水单",
+        "confirmClaim": "确认认领",
+        "saveAllocation": "保存分摊"
+      },
+      "metric": {
+        "listCount_one": "本次列表 {count} 条",
+        "listCount_other": "本次列表 {count} 条"
+      },
+      "table": {
+        "receiptNo": "水单号",
+        "nature": "性质",
+        "receivedAt": "收款日",
+        "customer": "客户",
+        "type": "类型",
+        "contractNo": "合同号",
+        "date": "日期",
+        "exportContract": "出口合同",
+        "salesUser": "业务员",
+        "contractAmount": "合同金额",
+        "receivedAmount": "已收款",
+        "receivableBalance": "应收余额"
+      },
+      "modal": {
+        "registerReceiptTitle": "水单录入"
+      },
+      "message": {
+        "noReceipt": "暂无银行水单",
+        "loadReceiptsFailed": "银行水单加载失败",
+        "loadReceivablesFailed": "应收账款加载失败",
+        "receiptCreated": "已录入银行水单 {code}",
+        "receiptCreateFailed": "银行水单录入失败",
+        "receiptClaimed": "已认领银行水单 {code}",
+        "receiptClaimFailed": "银行水单认领失败",
+        "receiptAllocated": "已分摊银行水单 {code}",
+        "receiptAllocationFailed": "收款分摊失败"
+      }
+    },
+    "supplierInvoice": {
+      "status": {
+        "unpaid": "未付款",
+        "partial": "部分付款",
+        "paid": "已付清"
+      }
+    },
+    "fee": {
+      "title": "付费管理",
+      "type": {
+        "freight": "货代费",
+        "insurance": "保险费",
+        "transport": "运输费",
+        "inspection": "查验费",
+        "express": "快递费",
+        "other": "其他费用"
+      },
+      "panel": {
+        "invoices": "合作伙伴费用发票",
+        "paymentRequests": "付费申请和审批",
+        "newPaymentRequest": "付费申请新增",
+        "paymentApproval": "付费审批",
+        "paymentRequestList": "付费申请列表",
+        "payables": "应付费用查询"
+      },
+      "field": {
+        "feeInvoiceNo": "费用发票号",
+        "invoiceDate": "发票日期",
+        "partnerId": "合作伙伴标识",
+        "partnerName": "合作伙伴名称",
+        "partnerType": "合作伙伴类型",
+        "autoMatch": "自动匹配",
+        "feeType": "费用类型",
+        "shipmentId": "出运单标识",
+        "shipmentNo": "出运单号",
+        "salesUserId": "业务员标识",
+        "salesUserName": "业务员姓名",
+        "invoiceAmount": "发票金额",
+        "dueDate": "到期日",
+        "remark": "备注",
+        "currentInvoice": "当前费用发票",
+        "paid": "已付",
+        "unpaid": "未付",
+        "requestNo": "付费申请号",
+        "partnerFeeInvoiceId": "费用发票标识",
+        "requestDate": "申请日期",
+        "requestedAmount": "申请金额",
+        "requestRemark": "申请备注",
+        "approvedAmount": "审批金额",
+        "approvedAt": "审批日期",
+        "reviewer": "审批人",
+        "paymentAccount": "付款账号",
+        "approvalRemark": "审批备注"
+      },
+      "filter": {
+        "invoiceSearch": "费用发票搜索",
+        "invoiceStatus": "发票状态",
+        "allStatuses": "全部状态",
+        "allTypes": "全部类型",
+        "payableSearch": "应付费用搜索",
+        "payableStatus": "应付状态"
+      },
+      "action": {
+        "search": "查询",
+        "registerInvoice": "发票登记",
+        "cancel": "取消",
+        "submitInvoice": "登记费用发票",
+        "createPaymentRequest": "新增付费申请",
+        "approvePayment": "审批付费"
+      },
+      "table": {
+        "feeInvoice": "费用发票",
+        "partner": "合作伙伴",
+        "shipment": "出运单",
+        "paidAmount": "已付费",
+        "payableBalance": "应付余额",
+        "requestNo": "申请号"
+      },
+      "modal": {
+        "registerInvoiceTitle": "费用发票登记"
+      },
+      "message": {
+        "loadInvoicesFailed": "合作伙伴费用发票加载失败",
+        "loadPaymentRequestsFailed": "付费申请加载失败",
+        "loadPayablesFailed": "应付费用加载失败",
+        "invoiceCreated": "已登记合作伙伴费用发票 {code}",
+        "invoiceCreateFailed": "合作伙伴费用发票登记失败",
+        "paymentRequestCreated": "已新增付费申请 {code}",
+        "paymentRequestCreateFailed": "付费申请新增失败",
+        "paymentRequestApproved": "已审批付费申请 {code}",
+        "paymentApprovalFailed": "付费审批失败",
+        "noInvoice": "暂无合作伙伴费用发票",
+        "waitingApproval": "等待 {reviewer} 审批",
+        "designatedReviewer": "指定审批人"
+      },
+      "validation": {
+        "reviewerRequired": "请选择审批人",
+        "approverMismatch": "该付费申请应由 {reviewer} 审批"
+      }
+    },
+    "tax": {
+      "verificationDocument": {
+        "status": {
+          "issued": "已领用",
+          "customsReceiptRegistered": "已回单",
+          "verified": "已核销",
+          "refunded": "已退税"
+        }
+      },
+      "verificationReminder": {
+        "status": {
+          "pending": "待提醒",
+          "done": "已完成",
+          "overdue": "已逾期"
+        }
+      }
+    },
+    "misc": {
+      "category": {
+        "office": "办公费用",
+        "capitalInterest": "资金占用利息",
+        "taxRefundInterest": "退税利息",
+        "other": "其他杂费"
+      },
+      "allocationMethod": {
+        "manual": "手工分摊",
+        "ratio": "按比例分摊",
+        "amount": "按金额分摊",
+        "quantity": "按数量分摊"
+      }
+    },
+    "settlement": {
+      "status": {
+        "locked": "已锁定"
+      }
+    },
+    "receivable": {
+      "status": {
+        "paid": "已收清",
+        "partial": "部分收款",
+        "unpaid": "未收款"
+      }
+    },
+    "reimbursement": {
+      "category": {
+        "travel": "差旅",
+        "office": "办公",
+        "entertainment": "招待",
+        "other": "其他"
+      },
+      "status": {
+        "submitted": "待审批",
+        "approved": "已审批",
+        "rejected": "已驳回",
+        "paid": "已付款"
+      }
+    },
+    "report": {
+      "documentType": {
+        "exportContract": "出口合同",
+        "purchaseContract": "采购合同"
+      },
+      "status": {
+        "submitted": "待审批",
+        "approved": "已审批"
+      },
+      "costType": {
+        "salesIncome": "销售收入",
+        "purchaseCost": "采购成本",
+        "partnerFee": "合作伙伴费",
+        "miscFee": "杂费分摊",
+        "taxRefund": "退税收入",
+        "otherCost": "其他成本"
+      },
+      "direction": {
+        "income": "收入",
+        "cost": "成本"
+      }
+    },
+    "field": {
+      "status": "状态",
+      "amount": "金额",
+      "currency": "币种"
+    },
+    "home": {
+      "moduleCardsAria": "财务模块入口"
+    },
+    "overview": {
+      "panel": {
+        "shipmentProfit": "出运利润明细",
+        "currencySummary": "分币种汇总",
+        "invoicePaymentStatus": "开票和付款状态",
+        "purchaseInvoiceNotice": "采购开票通知",
+        "sampleFeePayment": "样品费用付款",
+        "partnerFeeEntry": "合作伙伴费用入口"
+      },
+      "summary": {
+        "partnerCount": "合作伙伴",
+        "activePartner": "启用伙伴",
+        "pendingInvoiceAmount": "待收税票金额"
+      },
+      "table": {
+        "code": "出货单",
+        "customer": "客户",
+        "shipmentDate": "出货日期",
+        "plannedShipDate": "计划出运",
+        "receivable": "应收",
+        "payable": "应付",
+        "profit": "利润",
+        "profitRate": "利润率",
+        "shipmentCount": "出货",
+        "count": "数量",
+        "partnerType": "伙伴类型"
+      },
+      "message": {
+        "loadFailed": "财务总览加载失败"
+      }
+    },
+    "page": {
+      "summaryAria": "财务管理概览",
+      "metric": {
+        "shipmentCount": "出货单",
+        "receivableAmount": "应收金额",
+        "payableAmount": "应付成本",
+        "profitAmount": "预计利润",
+        "invoiceNoticeCount": "开票通知",
+        "sampleFeeAmount": "样品费用"
+      },
+      "card": {
+        "overview": {
+          "title": "经营总览",
+          "caption": "出运利润 / 分币种 / 状态汇总",
+          "metricLabel": "预计利润"
+        },
+        "receipts": {
+          "title": "收款管理",
+          "caption": "银行水单认领、分摊与应收账款",
+          "metricLabel": "应收金额"
+        },
+        "payments": {
+          "title": "付款管理",
+          "caption": "供应商发票、付款申请与应付账款",
+          "metricLabel": "应付成本"
+        },
+        "fees": {
+          "title": "付费管理",
+          "caption": "合作伙伴费用发票、付费申请与审批",
+          "metricLabel": "启用伙伴"
+        },
+        "tax": {
+          "title": "核销退税",
+          "caption": "核销单领用、回单核销与退税登记",
+          "metricLabel": "核销单"
+        },
+        "misc": {
+          "title": "杂费管理",
+          "caption": "杂费项目配置与单票分摊查询",
+          "metricLabel": "杂费项目"
+        },
+        "settlement": {
+          "title": "结算核算",
+          "caption": "单票结算锁定、手工成本与利润核算",
+          "metricLabel": "锁定结算"
+        },
+        "reimbursements": {
+          "title": "报销管理",
+          "caption": "员工报销单登记、审批与付款",
+          "metricLabel": "报销单"
+        },
+        "portData": {
+          "title": "口岸数据导入",
+          "caption": "进出口报关数据导入与查询",
+          "metricLabel": "导入批次"
+        },
+        "reports": {
+          "title": "财务报表",
+          "caption": "水单、收付与退税统计报表",
+          "metricLabel": "报表"
+        }
+      }
+    }
   }
 }

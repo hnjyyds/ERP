@@ -1,4 +1,5 @@
 import { ChevronRight } from 'lucide-react'
+import { t } from '../../../appI18n'
 import type { FinanceViewShell } from '../financePageTypes'
 
 type Props = {
@@ -13,7 +14,7 @@ export function FinanceHomeView({ shell }: Props) {
       {summaryStrip}
       {moduleAlerts}
 
-      <section className="finance-module-cards" aria-label="财务模块入口">
+      <section className="finance-module-cards" aria-label={t('finance.home.moduleCardsAria')}>
         {financeModuleCards.map((card) => (
           <button
             key={card.module}

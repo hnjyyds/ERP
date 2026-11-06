@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { type VerificationDocument, type VerificationUsageItem } from '../../../../api'
 import { FormSelect, PanelTitle } from '../../../../shared/ui'
+import { t } from '../../../appI18n'
 import {
   verificationDocumentStatusOptions,
   verificationReminderStatusOptions,
@@ -126,7 +127,7 @@ export function TaxView({ model, shell }: Props) {
                     <option value="">全部状态</option>
                     {verificationDocumentStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
@@ -140,7 +141,7 @@ export function TaxView({ model, shell }: Props) {
                     <option value="">全部提醒</option>
                     {verificationReminderStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
@@ -651,7 +652,7 @@ export function TaxView({ model, shell }: Props) {
                     <option value="">全部状态</option>
                     {verificationDocumentStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
@@ -665,7 +666,7 @@ export function TaxView({ model, shell }: Props) {
                     <option value="">全部提醒</option>
                     {verificationReminderStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>

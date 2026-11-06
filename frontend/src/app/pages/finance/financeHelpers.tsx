@@ -51,11 +51,16 @@ import type {
   CustomsReceiptCollectionReport,
   TaxRefundStatisticsReport,
 } from '../../../api'
-import { translate } from '../../../locales'
+import { translate, type TranslationKey } from '../../../locales'
 import { daysFromTodayInputValue, emptyToNull, getRuntimeSettings, todayInputValue } from '../appHelpers'
-import { allocationTypeOptions, feePaymentRequestStatusOptions, feeTypeOptions, miscFeeAllocationMethodOptions, miscFeeCategoryOptions, miscFeeItemStatusOptions, partnerFeeInvoiceStatusOptions, paymentRequestStatusOptions, paymentTypeOptions, profitCostTypeOptions, purchaseInvoiceNoticeStatusOptions, receiptStatusOptions, receiptTypeOptions, reportingDocumentTypeOptions, reportingStatusOptions, sampleFeeTypeOptions, settlementStatusOptions, shipmentStatusOptions, supplierInvoiceStatusOptions, verificationDocumentStatusOptions, verificationReminderStatusOptions } from '../../../shared/formOptions'
+import { type LocalizedOption, allocationTypeOptions, feePaymentRequestStatusOptions, feeTypeOptions, miscFeeAllocationMethodOptions, miscFeeCategoryOptions, miscFeeItemStatusOptions, partnerFeeInvoiceStatusOptions, paymentRequestStatusOptions, paymentTypeOptions, profitCostTypeOptions, purchaseInvoiceNoticeStatusOptions, receiptStatusOptions, receiptTypeOptions, reportingDocumentTypeOptions, reportingStatusOptions, sampleFeeTypeOptions, settlementStatusOptions, shipmentStatusOptions, supplierInvoiceStatusOptions, verificationDocumentStatusOptions, verificationReminderStatusOptions } from '../../../shared/formOptions'
 
 import type { FinanceModule } from '../../routes'
+
+function optionLabel(options: LocalizedOption[], value: string): string {
+  const option = options.find((item) => item.value === value)
+  return option ? translate(getRuntimeSettings().language, option.labelKey) : value
+}
 
 export function shipmentStatusLabel(value: string): string {
   const option = shipmentStatusOptions.find((item) => item.value === value)
@@ -258,12 +263,12 @@ export function initialBankReceiptForm(): BankReceiptFormState {
   return {
     receipt_no: `BR-${Date.now().toString().slice(-6)}`,
     received_at: todayInputValue(),
-    payer_name: 'Euro Home Retail Ltd.',
-    customer_id: 'customer-euro-home',
-    customer_name: '欧陆家居用品有限公司',
-    amount: '500.00',
+    payer_name: '',
+    customer_id: '',
+    customer_name: '',
+    amount: '',
     currency: 'USD',
-    bank_account: 'BOC 6222 ****',
+    bank_account: '',
     reference_no: '',
     receipt_type: 'advance',
     remark: '',
@@ -273,9 +278,9 @@ export function initialBankReceiptForm(): BankReceiptFormState {
 export function initialReceiptClaimForm(): ReceiptClaimFormState {
   return {
     claimed_at: todayInputValue(),
-    sales_user_id: 'u-001',
-    sales_user_name: '演示业务主管',
-    note: '确认客户预收款',
+    sales_user_id: '',
+    sales_user_name: '',
+    note: '',
   }
 }
 
@@ -286,7 +291,7 @@ export function initialReceiptAllocationForm(currency = 'USD'): ReceiptAllocatio
     contract_no: '',
     invoice_no: '',
     allocated_at: todayInputValue(),
-    amount: '300.00',
+    amount: '',
     currency,
     remark: '',
   }
@@ -333,7 +338,7 @@ export function receiptAllocationPayload(
 }
 
 export function receiptStatusLabel(value: string): string {
-  return receiptStatusOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(receiptStatusOptions, value)
 }
 
 export function receiptStatusColor(value: string): string {
@@ -348,17 +353,17 @@ export function receiptStatusTag(value: string): ReactNode {
 }
 
 export function receiptTypeLabel(value: string): string {
-  return receiptTypeOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(receiptTypeOptions, value)
 }
 
 export function allocationTypeLabel(value: string): string {
-  return allocationTypeOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(allocationTypeOptions, value)
 }
 
 export function receivableStatusLabel(value: string): string {
-  if (value === 'paid') return '已收清'
-  if (value === 'partial') return '部分收款'
-  return '未收款'
+  if (value === 'paid') return translate(getRuntimeSettings().language, 'finance.receivable.status.paid')
+  if (value === 'partial') return translate(getRuntimeSettings().language, 'finance.receivable.status.partial')
+  return translate(getRuntimeSettings().language, 'finance.receivable.status.unpaid')
 }
 
 export function receivableStatusTag(value: string): ReactNode {
@@ -370,13 +375,13 @@ export function initialSupplierInvoiceForm(): SupplierInvoiceFormState {
   return {
     invoice_no: `SI-${Date.now().toString().slice(-6)}`,
     invoice_date: todayInputValue(),
-    supplier_id: 'supplier-pack-a',
-    supplier_name: '华东包装制品厂',
+    supplier_id: '',
+    supplier_name: '',
     purchase_invoice_notice_id: '',
     purchase_invoice_notice_code: '',
-    purchase_contract_id: 'pc-pay-ui-001',
-    purchase_contract_no: 'PC-PAY-UI-001',
-    total_amount: '3200.00',
+    purchase_contract_id: '',
+    purchase_contract_no: '',
+    total_amount: '',
     currency: 'CNY',
     due_date: daysFromTodayInputValue(30),
     remark: '',
@@ -389,7 +394,7 @@ export function initialPaymentRequestForm(invoice?: SupplierInvoice): PaymentReq
     supplier_invoice_id: invoice?.id ?? '',
     payment_type: 'goods_payment',
     request_date: todayInputValue(),
-    requested_amount: invoice?.unpaid_amount ?? '1200.00',
+    requested_amount: invoice?.unpaid_amount ?? '',
     currency: invoice?.currency ?? 'CNY',
     reviewer_id: '',
     remark: '',
@@ -397,14 +402,14 @@ export function initialPaymentRequestForm(invoice?: SupplierInvoice): PaymentReq
 }
 
 export function initialPaymentApprovalForm(
-  amount = '1200.00',
+  amount = '',
   reviewerName = '',
 ): PaymentApprovalFormState {
   return {
     approved_amount: amount,
     approved_at: todayInputValue(),
     reviewer_name: reviewerName,
-    payment_account: 'BOC 8888',
+    payment_account: '',
     remark: '',
   }
 }
@@ -449,7 +454,7 @@ export function paymentApprovalPayload(form: PaymentApprovalFormState): PaymentR
 }
 
 export function supplierInvoiceStatusLabel(value: string): string {
-  return supplierInvoiceStatusOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(supplierInvoiceStatusOptions, value)
 }
 
 export function supplierInvoiceStatusTag(value: string): ReactNode {
@@ -458,7 +463,7 @@ export function supplierInvoiceStatusTag(value: string): ReactNode {
 }
 
 export function paymentRequestStatusLabel(value: string): string {
-  return paymentRequestStatusOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(paymentRequestStatusOptions, value)
 }
 
 export function paymentRequestStatusTag(value: string): ReactNode {
@@ -467,22 +472,22 @@ export function paymentRequestStatusTag(value: string): ReactNode {
 }
 
 export function paymentTypeLabel(value: string): string {
-  return paymentTypeOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(paymentTypeOptions, value)
 }
 
 export function initialPartnerFeeInvoiceForm(): PartnerFeeInvoiceFormState {
   return {
     invoice_no: `PFI-${Date.now().toString().slice(-6)}`,
     invoice_date: todayInputValue(),
-    partner_id: 'partner-freight-ui',
-    partner_name: '上海远洋货代有限公司',
+    partner_id: '',
+    partner_name: '',
     partner_type: 'freight_forwarder',
     shipment_plan_id: '',
-    shipment_no: 'SHIP-FEE-UI-001',
-    sales_user_id: 'u-001',
-    sales_user_name: '演示业务主管',
+    shipment_no: '',
+    sales_user_id: '',
+    sales_user_name: '',
     fee_type: 'freight',
-    total_amount: '980.00',
+    total_amount: '',
     currency: 'USD',
     due_date: daysFromTodayInputValue(30),
     remark: '',
@@ -494,7 +499,7 @@ export function initialFeePaymentRequestForm(invoice?: PartnerFeeInvoice): FeePa
     request_no: `FPR-${Date.now().toString().slice(-6)}`,
     partner_fee_invoice_id: invoice?.id ?? '',
     request_date: todayInputValue(),
-    requested_amount: invoice?.unpaid_amount ?? '400.00',
+    requested_amount: invoice?.unpaid_amount ?? '',
     currency: invoice?.currency ?? 'USD',
     reviewer_id: '',
     remark: '',
@@ -502,14 +507,14 @@ export function initialFeePaymentRequestForm(invoice?: PartnerFeeInvoice): FeePa
 }
 
 export function initialFeePaymentApprovalForm(
-  amount = '400.00',
+  amount = '',
   reviewerName = '',
 ): FeePaymentApprovalFormState {
   return {
     approved_amount: amount,
     approved_at: todayInputValue(),
     reviewer_name: reviewerName,
-    payment_account: 'BOC 9999',
+    payment_account: '',
     remark: '',
   }
 }
@@ -555,7 +560,7 @@ export function feePaymentApprovalPayload(form: FeePaymentApprovalFormState): Fe
 }
 
 export function partnerFeeInvoiceStatusLabel(value: string): string {
-  return partnerFeeInvoiceStatusOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(partnerFeeInvoiceStatusOptions, value)
 }
 
 export function partnerFeeInvoiceStatusTag(value: string): ReactNode {
@@ -564,7 +569,7 @@ export function partnerFeeInvoiceStatusTag(value: string): ReactNode {
 }
 
 export function feePaymentRequestStatusLabel(value: string): string {
-  return feePaymentRequestStatusOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(feePaymentRequestStatusOptions, value)
 }
 
 export function feePaymentRequestStatusTag(value: string): ReactNode {
@@ -573,20 +578,20 @@ export function feePaymentRequestStatusTag(value: string): ReactNode {
 }
 
 export function feeTypeLabel(value: string): string {
-  return feeTypeOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(feeTypeOptions, value)
 }
 
 export function initialVerificationDocumentForm(): VerificationDocumentFormState {
   return {
     document_no: `VD-${Date.now().toString().slice(-6)}`,
     received_at: todayInputValue(),
-    owner_user_id: 'u-001',
-    owner_user_name: '演示业务主管',
+    owner_user_id: '',
+    owner_user_name: '',
     shipment_plan_id: '',
-    shipment_no: 'SP-TAX-UI-001',
-    customer_name: '欧陆家居用品有限公司',
+    shipment_no: '',
+    customer_name: '',
     currency: 'USD',
-    refundable_amount: '96.00',
+    refundable_amount: '',
     valid_until: daysFromTodayInputValue(30),
     remark: '',
   }
@@ -667,7 +672,7 @@ export function taxRefundPayload(form: TaxRefundFormState): TaxRefundRegisterPay
 }
 
 export function verificationDocumentStatusLabel(value: string): string {
-  return verificationDocumentStatusOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(verificationDocumentStatusOptions, value)
 }
 
 export function verificationDocumentStatusTag(value: string): ReactNode {
@@ -683,7 +688,7 @@ export function verificationDocumentStatusTag(value: string): ReactNode {
 }
 
 export function verificationReminderStatusLabel(value: string): string {
-  return verificationReminderStatusOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(verificationReminderStatusOptions, value)
 }
 
 export function verificationReminderStatusTag(value: string): ReactNode {
@@ -694,7 +699,7 @@ export function verificationReminderStatusTag(value: string): ReactNode {
 export function initialMiscFeeItemForm(): MiscFeeItemFormState {
   return {
     code: `MISC-${Date.now().toString().slice(-6)}`,
-    name: '办公费用',
+    name: '',
     category: 'office',
     default_allocation_method: 'manual',
     is_active: true,
@@ -707,14 +712,14 @@ export function initialMiscFeeAllocationForm(item?: MiscFeeItem): MiscFeeAllocat
     allocation_no: `MFA-${Date.now().toString().slice(-6)}`,
     item_id: item?.id ?? '',
     shipment_plan_id: '',
-    shipment_no: 'SP-MISC-UI-001',
-    sales_user_id: 'u-001',
-    sales_user_name: '演示业务主管',
+    shipment_no: '',
+    sales_user_id: '',
+    sales_user_name: '',
     allocated_at: todayInputValue(),
-    amount: '36.00',
+    amount: '',
     currency: 'USD',
     allocation_method: item?.default_allocation_method ?? 'manual',
-    basis: '按本票业务实际占用分摊',
+    basis: '',
     remark: '',
   }
 }
@@ -751,15 +756,15 @@ export function miscFeeAllocationPayload(
 }
 
 export function miscFeeCategoryLabel(value: string): string {
-  return miscFeeCategoryOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(miscFeeCategoryOptions, value)
 }
 
 export function miscFeeAllocationMethodLabel(value: string): string {
-  return miscFeeAllocationMethodOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(miscFeeAllocationMethodOptions, value)
 }
 
 export function miscFeeItemStatusLabel(value: string): string {
-  return miscFeeItemStatusOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(miscFeeItemStatusOptions, value)
 }
 
 export function miscFeeItemStatusTag(value: string): ReactNode {
@@ -768,24 +773,26 @@ export function miscFeeItemStatusTag(value: string): ReactNode {
 }
 
 export function reimbursementCategoryLabel(value: string): string {
-  const labels: Record<string, string> = {
-    travel: '差旅',
-    office: '办公',
-    entertainment: '招待',
-    other: '其他',
+  const labelKeys: Record<string, TranslationKey> = {
+    travel: 'finance.reimbursement.category.travel',
+    office: 'finance.reimbursement.category.office',
+    entertainment: 'finance.reimbursement.category.entertainment',
+    other: 'finance.reimbursement.category.other',
   }
-  return labels[value] ?? value
+  const labelKey = labelKeys[value]
+  return labelKey ? translate(getRuntimeSettings().language, labelKey) : value
 }
 
 export function reimbursementStatusTag(value: string): ReactNode {
-  const config: Record<string, { color: string; label: string }> = {
-    submitted: { color: 'processing', label: '待审批' },
-    approved: { color: 'success', label: '已审批' },
-    rejected: { color: 'error', label: '已驳回' },
-    paid: { color: 'default', label: '已付款' },
+  const config: Record<string, { color: string; labelKey: TranslationKey }> = {
+    submitted: { color: 'processing', labelKey: 'finance.reimbursement.status.submitted' },
+    approved: { color: 'success', labelKey: 'finance.reimbursement.status.approved' },
+    rejected: { color: 'error', labelKey: 'finance.reimbursement.status.rejected' },
+    paid: { color: 'default', labelKey: 'finance.reimbursement.status.paid' },
   }
-  const item = config[value] ?? { color: 'default', label: value }
-  return <Tag color={item.color}>{item.label}</Tag>
+  const item = config[value]
+  if (!item) return <Tag color="default">{value}</Tag>
+  return <Tag color={item.color}>{translate(getRuntimeSettings().language, item.labelKey)}</Tag>
 }
 
 export function initialFinancialSettlementForm(): FinancialSettlementFormState {
@@ -793,23 +800,23 @@ export function initialFinancialSettlementForm(): FinancialSettlementFormState {
     settlement_no: `FS-${Date.now().toString().slice(-6)}`,
     shipment_plan_id: '',
     shipment_no: '',
-    settlement_date: '2027-01-22',
+    settlement_date: todayInputValue(),
     remark: '',
   }
 }
 
 export function initialManualProfitCostForm(
   currency = 'USD',
-  settlementDate = '2027-01-22',
+  settlementDate = todayInputValue(),
 ): ManualProfitCostFormState {
   return {
     cost_no: `MC-${Date.now().toString().slice(-6)}`,
     cost_type: 'other_cost',
     cost_date: settlementDate,
-    amount: '18.00',
+    amount: '',
     currency,
     source_no: '',
-    reason: '补录单票其他成本',
+    reason: '',
     remark: '',
   }
 }
@@ -842,7 +849,7 @@ export function manualProfitCostPayload(
 }
 
 export function settlementStatusLabel(value: string): string {
-  return settlementStatusOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(settlementStatusOptions, value)
 }
 
 export function settlementStatusTag(value: string): ReactNode {
@@ -851,7 +858,7 @@ export function settlementStatusTag(value: string): ReactNode {
 }
 
 export function approvalDocumentTypeLabel(value: string): string {
-  return reportingDocumentTypeOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(reportingDocumentTypeOptions, value)
 }
 
 export function approvalDocumentTypeTag(value: string): ReactNode {
@@ -861,7 +868,7 @@ export function approvalDocumentTypeTag(value: string): ReactNode {
 
 export function approvalStatusTag(value: string): ReactNode {
   const color = value === 'approved' ? 'success' : value === 'submitted' ? 'warning' : 'default'
-  const label = reportingStatusOptions.find((item) => item.value === value)?.label ?? value
+  const label = optionLabel(reportingStatusOptions, value)
   return <Tag color={color}>{label}</Tag>
 }
 
@@ -870,11 +877,14 @@ export function sourcePathTag(value: string): ReactNode {
 }
 
 export function profitCostTypeLabel(value: string): string {
-  return profitCostTypeOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(profitCostTypeOptions, value)
 }
 
 export function profitCostDirectionTag(value: string): ReactNode {
-  const label = value === 'income' ? '收入' : '成本'
+  const label = translate(
+    getRuntimeSettings().language,
+    value === 'income' ? 'finance.report.direction.income' : 'finance.report.direction.cost',
+  )
   const color = value === 'income' ? 'success' : 'warning'
   return <Tag color={color}>{label}</Tag>
 }

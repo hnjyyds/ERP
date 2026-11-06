@@ -24,6 +24,7 @@ import {
   paymentRequestPayload,
   paymentApprovalPayload,
 } from '../financeHelpers'
+import { t } from '../../../appI18n'
 
 import type { FinanceModuleEnv } from '../financePageTypes'
 
@@ -71,7 +72,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
   )
 
   const [paymentApprovalForm, setPaymentApprovalForm] = useState<PaymentApprovalFormState>(() =>
-    initialPaymentApprovalForm('1200.00', currentUser.display_name),
+    initialPaymentApprovalForm('', currentUser.display_name),
   )
 
   const [loadingSupplierInvoices, setLoadingSupplierInvoices] = useState(false)
@@ -152,7 +153,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
         null
       setSelectedSupplierInvoiceId(nextInvoiceId)
     } catch (caught) {
-      showError(caught, '供应商发票加载失败')
+      showError(caught, t('finance.payment.message.loadSupplierInvoicesFailed'))
     } finally {
       setLoadingSupplierInvoices(false)
     }
@@ -178,7 +179,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
         null
       setSelectedPaymentRequestId(nextRequestId)
     } catch (caught) {
-      showError(caught, '付款申请加载失败')
+      showError(caught, t('finance.payment.message.loadPaymentRequestsFailed'))
     } finally {
       setLoadingPaymentRequests(false)
     }
@@ -196,7 +197,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
       })
       setPayables(result.items)
     } catch (caught) {
-      showError(caught, '应付账款加载失败')
+      showError(caught, t('finance.payment.message.loadPayablesFailed'))
     } finally {
       setLoadingPayables(false)
     }
@@ -209,12 +210,12 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     setError('')
     try {
       const created = await createSupplierInvoice(supplierInvoicePayload(supplierInvoiceForm))
-      setMessage(`已登记供应商发票 ${created.invoice_no}`)
+      setMessage(t('finance.payment.message.supplierInvoiceCreated', { code: created.invoice_no }))
       setSupplierInvoiceForm(initialSupplierInvoiceForm())
       await loadSupplierInvoices(created.id)
       await loadPayables()
     } catch (caught) {
-      showError(caught, '供应商发票登记失败')
+      showError(caught, t('finance.payment.message.supplierInvoiceCreateFailed'))
     } finally {
       setSubmittingSupplierInvoice(false)
     }
@@ -223,7 +224,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
   async function submitPaymentRequest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!paymentRequestForm.reviewer_id) {
-      showError(new Error('请选择审批人'))
+      showError(new Error(t('finance.payment.validation.reviewerRequired')))
       return
     }
     setSubmittingPaymentRequest(true)
@@ -231,11 +232,11 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     setError('')
     try {
       const created = await createPaymentRequest(paymentRequestPayload(paymentRequestForm))
-      setMessage(`已新增付款申请 ${created.request_no}`)
+      setMessage(t('finance.payment.message.paymentRequestCreated', { code: created.request_no }))
       setPaymentRequestForm(initialPaymentRequestForm(selectedSupplierInvoice ?? undefined))
       await loadPaymentRequests(created.id)
     } catch (caught) {
-      showError(caught, '付款申请新增失败')
+      showError(caught, t('finance.payment.message.paymentRequestCreateFailed'))
     } finally {
       setSubmittingPaymentRequest(false)
     }
@@ -249,7 +250,13 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
       selectedPaymentRequest.requester_user_id === currentUser.id
     ) {
       showError(
-        new Error(`该付款申请应由 ${selectedPaymentRequest.reviewer_name ?? '指定审批人'} 审批`),
+        new Error(
+          t('finance.payment.validation.approverMismatch', {
+            reviewer:
+              selectedPaymentRequest.reviewer_name ??
+              t('finance.payment.message.designatedReviewer'),
+          }),
+        ),
       )
       return
     }
@@ -261,13 +268,13 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
         selectedPaymentRequest.id,
         paymentApprovalPayload(paymentApprovalForm),
       )
-      setMessage(`已审批付款申请 ${approved.request_no}`)
-      setPaymentApprovalForm(initialPaymentApprovalForm('1200.00', currentUser.display_name))
+      setMessage(t('finance.payment.message.paymentRequestApproved', { code: approved.request_no }))
+      setPaymentApprovalForm(initialPaymentApprovalForm('', currentUser.display_name))
       await loadPaymentRequests(approved.id)
       await loadSupplierInvoices(selectedSupplierInvoice?.id)
       await loadPayables()
     } catch (caught) {
-      showError(caught, '付款审批失败')
+      showError(caught, t('finance.payment.message.paymentApprovalFailed'))
     } finally {
       setSubmittingPaymentApproval(false)
     }

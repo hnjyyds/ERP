@@ -7,6 +7,7 @@ import {
   FinanceStatusAmount,
 } from '../../../../api'
 import { PanelTitle } from '../../../../shared/ui'
+import { t } from '../../../appI18n'
 import { formatDate, formatFinanceAmount, formatPercent, partnerTypeLabel } from '../../appHelpers'
 import {
   shipmentStatusLabel,
@@ -38,35 +39,54 @@ export function FinanceOverviewView({ model, shell }: Props) {
         <section className="finance-grid">
           <section className="workspace-panel finance-profit-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Wallet size={18} />} title="出运利润明细" />
+              <PanelTitle
+                icon={<Wallet size={18} />}
+                title={t('finance.overview.panel.shipmentProfit')}
+              />
             </div>
             <Table<FinanceShipmentProfit>
               columns={[
                 {
-                  title: '出货单',
+                  title: t('finance.overview.table.code'),
                   dataIndex: 'code',
                   render: (value: string) => <strong>{value}</strong>,
                 },
-                { title: '客户', dataIndex: 'customer_name' },
-                { title: '状态', dataIndex: 'approval_status', render: shipmentStatusLabel },
-                { title: '出货日期', dataIndex: 'shipment_date', render: formatDate },
-                { title: '计划出运', dataIndex: 'planned_ship_date', render: formatDate },
+                { title: t('finance.overview.table.customer'), dataIndex: 'customer_name' },
                 {
-                  title: '应收',
+                  title: t('finance.field.status'),
+                  dataIndex: 'approval_status',
+                  render: shipmentStatusLabel,
+                },
+                {
+                  title: t('finance.overview.table.shipmentDate'),
+                  dataIndex: 'shipment_date',
+                  render: formatDate,
+                },
+                {
+                  title: t('finance.overview.table.plannedShipDate'),
+                  dataIndex: 'planned_ship_date',
+                  render: formatDate,
+                },
+                {
+                  title: t('finance.overview.table.receivable'),
                   dataIndex: 'receivable_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '应付',
+                  title: t('finance.overview.table.payable'),
                   dataIndex: 'payable_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '利润',
+                  title: t('finance.overview.table.profit'),
                   dataIndex: 'profit_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
-                { title: '利润率', dataIndex: 'profit_rate', render: formatPercent },
+                {
+                  title: t('finance.overview.table.profitRate'),
+                  dataIndex: 'profit_rate',
+                  render: formatPercent,
+                },
               ]}
               dataSource={overview?.shipment_profit_items ?? []}
               loading={loading}
@@ -77,22 +97,29 @@ export function FinanceOverviewView({ model, shell }: Props) {
           </section>
 
           <section className="workspace-panel finance-side-panel">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="分币种汇总" />
+            <PanelTitle
+              icon={<LayoutDashboard size={18} />}
+              title={t('finance.overview.panel.currencySummary')}
+            />
             <Table<FinanceCurrencySummary>
               columns={[
-                { title: '币种', dataIndex: 'currency' },
-                { title: '出货', dataIndex: 'shipment_count' },
+                { title: t('finance.field.currency'), dataIndex: 'currency' },
+                { title: t('finance.overview.table.shipmentCount'), dataIndex: 'shipment_count' },
                 {
-                  title: '应收',
+                  title: t('finance.overview.table.receivable'),
                   dataIndex: 'receivable_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '利润',
+                  title: t('finance.overview.table.profit'),
                   dataIndex: 'profit_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
-                { title: '利润率', dataIndex: 'profit_rate', render: formatPercent },
+                {
+                  title: t('finance.overview.table.profitRate'),
+                  dataIndex: 'profit_rate',
+                  render: formatPercent,
+                },
               ]}
               dataSource={overview?.currency_summaries ?? []}
               pagination={false}
@@ -102,20 +129,23 @@ export function FinanceOverviewView({ model, shell }: Props) {
           </section>
 
           <section className="workspace-panel finance-side-panel">
-            <PanelTitle icon={<CheckCircle2 size={18} />} title="开票和付款状态" />
+            <PanelTitle
+              icon={<CheckCircle2 size={18} />}
+              title={t('finance.overview.panel.invoicePaymentStatus')}
+            />
             <div className="finance-status-stack">
               <div>
-                <strong>采购开票通知</strong>
+                <strong>{t('finance.overview.panel.purchaseInvoiceNotice')}</strong>
                 <Table<FinanceStatusAmount>
                   columns={[
                     {
-                      title: '状态',
+                      title: t('finance.field.status'),
                       dataIndex: 'status',
                       render: purchaseInvoiceNoticeStatusLabel,
                     },
-                    { title: '数量', dataIndex: 'count' },
+                    { title: t('finance.overview.table.count'), dataIndex: 'count' },
                     {
-                      title: '金额',
+                      title: t('finance.field.amount'),
                       dataIndex: 'amount',
                       render: (value: string, record) =>
                         formatFinanceAmount(value, record.currency),
@@ -128,13 +158,17 @@ export function FinanceOverviewView({ model, shell }: Props) {
                 />
               </div>
               <div>
-                <strong>样品费用付款</strong>
+                <strong>{t('finance.overview.panel.sampleFeePayment')}</strong>
                 <Table<FinanceStatusAmount>
                   columns={[
-                    { title: '状态', dataIndex: 'status', render: samplePaymentStatusLabel },
-                    { title: '数量', dataIndex: 'count' },
                     {
-                      title: '金额',
+                      title: t('finance.field.status'),
+                      dataIndex: 'status',
+                      render: samplePaymentStatusLabel,
+                    },
+                    { title: t('finance.overview.table.count'), dataIndex: 'count' },
+                    {
+                      title: t('finance.field.amount'),
                       dataIndex: 'amount',
                       render: (value: string, record) =>
                         formatFinanceAmount(value, record.currency),
@@ -150,25 +184,33 @@ export function FinanceOverviewView({ model, shell }: Props) {
           </section>
 
           <section className="workspace-panel finance-side-panel">
-            <PanelTitle icon={<ShieldCheck size={18} />} title="合作伙伴费用入口" />
+            <PanelTitle
+              icon={<ShieldCheck size={18} />}
+              title={t('finance.overview.panel.partnerFeeEntry')}
+            />
             <dl className="finance-compact-list">
               <div>
-                <dt>合作伙伴</dt>
+                <dt>{t('finance.overview.summary.partnerCount')}</dt>
                 <dd>{summary?.partner_count ?? 0}</dd>
               </div>
               <div>
-                <dt>启用伙伴</dt>
+                <dt>{t('finance.overview.summary.activePartner')}</dt>
                 <dd>{summary?.active_partner_count ?? 0}</dd>
               </div>
               <div>
-                <dt>待收税票金额</dt>
-                <dd>{formatFinanceAmount(summary?.invoice_notice_amount, '多币种')}</dd>
+                <dt>{t('finance.overview.summary.pendingInvoiceAmount')}</dt>
+                {/* 多币种：formatFinanceAmount 对空币种不显示前缀 */}
+                <dd>{formatFinanceAmount(summary?.invoice_notice_amount, '')}</dd>
               </div>
             </dl>
             <Table<FinancePartnerTypeSummary>
               columns={[
-                { title: '伙伴类型', dataIndex: 'partner_type', render: partnerTypeLabel },
-                { title: '数量', dataIndex: 'count' },
+                {
+                  title: t('finance.overview.table.partnerType'),
+                  dataIndex: 'partner_type',
+                  render: partnerTypeLabel,
+                },
+                { title: t('finance.overview.table.count'), dataIndex: 'count' },
               ]}
               dataSource={overview?.partner_type_summaries ?? []}
               pagination={false}

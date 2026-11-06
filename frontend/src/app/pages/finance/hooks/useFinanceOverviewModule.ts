@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { getFinanceOverview, type FinanceOverview } from '../../../../api'
 import { showError } from '../../../../shared/errors'
+import { t } from '../../../appI18n'
 
 import type { FinanceModuleEnv } from '../financePageTypes'
 
@@ -17,7 +18,7 @@ export function useFinanceOverviewModule(env: Pick<FinanceModuleEnv, 'setError'>
     try {
       setOverview(await getFinanceOverview())
     } catch (caught) {
-      showError(caught, '财务总览加载失败')
+      showError(caught, t('finance.overview.message.loadFailed'))
     } finally {
       setLoading(false)
     }

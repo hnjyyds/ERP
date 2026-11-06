@@ -8,6 +8,7 @@ import {
   miscFeeItemStatusOptions,
 } from '../../../../shared/formOptions'
 import { formatDate, formatFinanceAmount, nullableText } from '../../appHelpers'
+import { t } from '../../../appI18n'
 import {
   initialMiscFeeAllocationForm,
   miscFeeCategoryLabel,
@@ -109,7 +110,7 @@ export function MiscView({ model, shell }: Props) {
                     <option value="">全部分类</option>
                     {miscFeeCategoryOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
@@ -123,7 +124,7 @@ export function MiscView({ model, shell }: Props) {
                     <option value="">全部状态</option>
                     {miscFeeItemStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
@@ -226,7 +227,7 @@ export function MiscView({ model, shell }: Props) {
                   >
                     {miscFeeCategoryOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
@@ -244,7 +245,7 @@ export function MiscView({ model, shell }: Props) {
                   >
                     {miscFeeAllocationMethodOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
@@ -444,7 +445,7 @@ export function MiscView({ model, shell }: Props) {
                 >
                   {miscFeeAllocationMethodOptions.map((item) => (
                     <option key={item.value} value={item.value}>
-                      {item.label}
+                      {t(item.labelKey)}
                     </option>
                   ))}
                 </FormSelect>
@@ -516,7 +517,7 @@ export function MiscView({ model, shell }: Props) {
                     <option value="">全部分类</option>
                     {miscFeeCategoryOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>

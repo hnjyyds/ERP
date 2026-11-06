@@ -22,6 +22,7 @@ import {
   type FinanceView,
 } from '../../routes'
 import { Metric } from '../../../shared/ui'
+import { t } from '../../appI18n'
 import { formatFinanceAmount, type ModuleNavigationProps } from '../appHelpers'
 
 import { useFinanceFeedback } from './hooks/useFinanceFeedback'
@@ -169,23 +170,30 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   }, [activeModule, detailId])
 
   const summaryStrip = (
-    <div className="summary-strip" aria-label="财务管理概览">
-      <Metric label="出货单" value={summary?.shipment_count ?? 0} />
+    <div className="summary-strip" aria-label={t('finance.page.summaryAria')}>
+      <Metric label={t('finance.page.metric.shipmentCount')} value={summary?.shipment_count ?? 0} />
       <Metric
-        label="应收金额"
+        label={t('finance.page.metric.receivableAmount')}
         value={formatFinanceAmount(summary?.receivable_amount, currencyLabel)}
       />
       <Metric
-        label="应付成本"
+        label={t('finance.page.metric.payableAmount')}
         value={formatFinanceAmount(summary?.payable_amount, currencyLabel)}
       />
       <Metric
-        label="预计利润"
+        label={t('finance.page.metric.profitAmount')}
         value={formatFinanceAmount(summary?.profit_amount, currencyLabel)}
         intent={profitAmount < 0 ? 'danger' : 'normal'}
       />
-      <Metric label="开票通知" value={summary?.invoice_notice_count ?? 0} />
-      <Metric label="样品费用" value={formatFinanceAmount(summary?.sample_fee_amount, '多币种')} />
+      <Metric
+        label={t('finance.page.metric.invoiceNoticeCount')}
+        value={summary?.invoice_notice_count ?? 0}
+      />
+      {/* 多币种：formatFinanceAmount 对空币种不显示前缀 */}
+      <Metric
+        label={t('finance.page.metric.sampleFeeAmount')}
+        value={formatFinanceAmount(summary?.sample_fee_amount, '')}
+      />
     </div>
   )
 
@@ -209,82 +217,82 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
     {
       module: 'overview',
       icon: <BarChart3 size={20} />,
-      title: '经营总览',
-      caption: '出运利润 / 分币种 / 状态汇总',
+      title: t('finance.page.card.overview.title'),
+      caption: t('finance.page.card.overview.caption'),
       metric: formatFinanceAmount(summary?.profit_amount, currencyLabel),
-      metricLabel: '预计利润',
+      metricLabel: t('finance.page.metric.profitAmount'),
     },
     {
       module: 'receipts',
       icon: <Wallet size={20} />,
-      title: '收款管理',
-      caption: '银行水单认领、分摊与应收账款',
+      title: t('finance.page.card.receipts.title'),
+      caption: t('finance.page.card.receipts.caption'),
       metric: formatFinanceAmount(summary?.receivable_amount, currencyLabel),
-      metricLabel: '应收金额',
+      metricLabel: t('finance.page.metric.receivableAmount'),
     },
     {
       module: 'payments',
       icon: <Coins size={20} />,
-      title: '付款管理',
-      caption: '供应商发票、付款申请与应付账款',
+      title: t('finance.page.card.payments.title'),
+      caption: t('finance.page.card.payments.caption'),
       metric: formatFinanceAmount(summary?.payable_amount, currencyLabel),
-      metricLabel: '应付成本',
+      metricLabel: t('finance.page.metric.payableAmount'),
     },
     {
       module: 'fees',
       icon: <Handshake size={20} />,
-      title: '付费管理',
-      caption: '合作伙伴费用发票、付费申请与审批',
+      title: t('finance.page.card.fees.title'),
+      caption: t('finance.page.card.fees.caption'),
       metric: String(summary?.active_partner_count ?? 0),
-      metricLabel: '启用伙伴',
+      metricLabel: t('finance.page.card.fees.metricLabel'),
     },
     {
       module: 'tax',
       icon: <ShieldCheck size={20} />,
-      title: '核销退税',
-      caption: '核销单领用、回单核销与退税登记',
+      title: t('finance.page.card.tax.title'),
+      caption: t('finance.page.card.tax.caption'),
       metric: String(verificationDocuments.length),
-      metricLabel: '核销单',
+      metricLabel: t('finance.page.card.tax.metricLabel'),
     },
     {
       module: 'misc',
       icon: <FileStack size={20} />,
-      title: '杂费管理',
-      caption: '杂费项目配置与单票分摊查询',
+      title: t('finance.page.card.misc.title'),
+      caption: t('finance.page.card.misc.caption'),
       metric: String(miscFeeItems.length),
-      metricLabel: '杂费项目',
+      metricLabel: t('finance.page.card.misc.metricLabel'),
     },
     {
       module: 'settlement',
       icon: <PackagePlus size={20} />,
-      title: '结算核算',
-      caption: '单票结算锁定、手工成本与利润核算',
+      title: t('finance.page.card.settlement.title'),
+      caption: t('finance.page.card.settlement.caption'),
       metric: String(financialSettlements.length),
-      metricLabel: '锁定结算',
+      metricLabel: t('finance.page.card.settlement.metricLabel'),
     },
     {
       module: 'reimbursements',
       icon: <Receipt size={20} />,
-      title: '报销管理',
-      caption: '员工报销单登记、审批与付款',
+      title: t('finance.page.card.reimbursements.title'),
+      caption: t('finance.page.card.reimbursements.caption'),
       metric: String(reimbursements.length),
-      metricLabel: '报销单',
+      metricLabel: t('finance.page.card.reimbursements.metricLabel'),
     },
     {
       module: 'portData',
       icon: <Ship size={20} />,
-      title: '口岸数据导入',
-      caption: '进出口报关数据导入与查询',
+      title: t('finance.page.card.portData.title'),
+      caption: t('finance.page.card.portData.caption'),
       metric: String(portImportBatches.length),
-      metricLabel: '导入批次',
+      metricLabel: t('finance.page.card.portData.metricLabel'),
     },
     {
       module: 'reports',
       icon: <FileSpreadsheet size={20} />,
-      title: '财务报表',
-      caption: '水单、收付与退税统计报表',
+      title: t('finance.page.card.reports.title'),
+      caption: t('finance.page.card.reports.caption'),
       metric: '6',
-      metricLabel: '报表',
+      metricLabel: t('finance.page.card.reports.metricLabel'),
     },
   ]
 

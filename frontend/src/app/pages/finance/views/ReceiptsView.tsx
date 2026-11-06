@@ -8,6 +8,7 @@ import {
   allocationTypeOptions,
 } from '../../../../shared/formOptions'
 import { formatDate, formatFinanceAmount, nullableText } from '../../appHelpers'
+import { t } from '../../../appI18n'
 import {
   initialReceiptAllocationForm,
   receiptStatusLabel,
@@ -77,7 +78,7 @@ export function ReceiptsView({ model, shell }: Props) {
             onClick={() => goModule('receipts')}
           >
             <ArrowLeft size={16} />
-            收款管理
+            {t('finance.receipt.title')}
           </button>
         </div>
       ) : (
@@ -86,12 +87,12 @@ export function ReceiptsView({ model, shell }: Props) {
       {moduleAlerts}
       <section
         className={detailId ? 'finance-detail-grid' : 'finance-receipt-grid'}
-        aria-label="收款管理"
+        aria-label={t('finance.receipt.title')}
       >
         {!detailId ? (
           <section className="workspace-panel finance-receipt-list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title="银行水单列表" />
+              <PanelTitle icon={<Search size={18} />} title={t('finance.receipt.panel.receipts')} />
               <form
                 className="inline-filters"
                 onSubmit={(event) => {
@@ -100,55 +101,55 @@ export function ReceiptsView({ model, shell }: Props) {
                 }}
               >
                 <label>
-                  水单搜索
+                  {t('finance.receipt.filter.receiptSearch')}
                   <Input
                     value={receiptSearch}
-                    placeholder="水单号 / 付款人 / 客户"
+                    placeholder={t('finance.receipt.filter.receiptSearchPlaceholder')}
                     onChange={(event) => setReceiptSearch(event.target.value)}
                   />
                 </label>
                 <label>
-                  水单状态
+                  {t('finance.receipt.filter.receiptStatus')}
                   <FormSelect
                     value={receiptStatusFilter}
                     onChange={(event) => setReceiptStatusFilter(event.target.value)}
                   >
-                    <option value="">全部状态</option>
+                    <option value="">{t('finance.receipt.filter.allStatuses')}</option>
                     {receiptStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label>
-                  客户标识
+                  {t('finance.receipt.field.customerId')}
                   <Input
                     value={receiptCustomerFilter}
-                    placeholder="输入客户编号或名称"
+                    placeholder={t('finance.receipt.filter.customerIdPlaceholder')}
                     onChange={(event) => setReceiptCustomerFilter(event.target.value)}
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('finance.receipt.action.search')}
                 </Button>
                 <Button
                   type="primary"
                   icon={<Plus size={16} />}
                   onClick={() => setReceiptModalOpen(true)}
                 >
-                  水单录入
+                  {t('finance.receipt.action.registerReceipt')}
                 </Button>
               </form>
             </div>
 
             <div className="finance-receipt-strip">
-              <span>本次列表 {receipts.length} 条</span>
+              <span>{t('finance.receipt.metric.listCount', { count: receipts.length })}</span>
               <strong>
                 {formatFinanceAmount(totalReceiptAmount.toFixed(2), receipts[0]?.currency ?? 'USD')}
               </strong>
               <span>
-                未分摊{' '}
+                {t('finance.receipt.field.unallocatedAmount')}{' '}
                 {formatFinanceAmount(
                   totalUnallocatedAmount.toFixed(2),
                   receipts[0]?.currency ?? 'USD',
@@ -159,7 +160,7 @@ export function ReceiptsView({ model, shell }: Props) {
             <Table<BankReceipt>
               columns={[
                 {
-                  title: '水单号',
+                  title: t('finance.receipt.table.receiptNo'),
                   dataIndex: 'receipt_no',
                   render: (value: string) => (
                     <button className="row-button" type="button">
@@ -167,18 +168,18 @@ export function ReceiptsView({ model, shell }: Props) {
                     </button>
                   ),
                 },
-                { title: '状态', dataIndex: 'status', render: receiptStatusTag },
-                { title: '性质', dataIndex: 'receipt_type', render: receiptTypeLabel },
-                { title: '收款日', dataIndex: 'received_at', render: formatDate },
-                { title: '付款人', dataIndex: 'payer_name' },
-                { title: '客户', dataIndex: 'customer_name', render: nullableText },
+                { title: t('finance.field.status'), dataIndex: 'status', render: receiptStatusTag },
+                { title: t('finance.receipt.table.nature'), dataIndex: 'receipt_type', render: receiptTypeLabel },
+                { title: t('finance.receipt.table.receivedAt'), dataIndex: 'received_at', render: formatDate },
+                { title: t('finance.receipt.field.payerName'), dataIndex: 'payer_name' },
+                { title: t('finance.receipt.table.customer'), dataIndex: 'customer_name', render: nullableText },
                 {
-                  title: '金额',
+                  title: t('finance.field.amount'),
                   dataIndex: 'amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '未分摊',
+                  title: t('finance.receipt.field.unallocatedAmount'),
                   dataIndex: 'unallocated_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
@@ -205,7 +206,7 @@ export function ReceiptsView({ model, shell }: Props) {
             centered
             footer={null}
             open={receiptModalOpen}
-            title="水单录入"
+            title={t('finance.receipt.modal.registerReceiptTitle')}
             width={720}
             onCancel={() => setReceiptModalOpen(false)}
           >
@@ -218,7 +219,7 @@ export function ReceiptsView({ model, shell }: Props) {
             >
               <div className="form-pair two">
                 <label>
-                  银行水单号
+                  {t('finance.receipt.field.receiptNo')}
                   <Input
                     value={receiptForm.receipt_no}
                     onChange={(event) =>
@@ -227,7 +228,7 @@ export function ReceiptsView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  收款日期
+                  {t('finance.receipt.field.receivedDate')}
                   <Input
                     type="date"
                     value={receiptForm.received_at}
@@ -238,7 +239,7 @@ export function ReceiptsView({ model, shell }: Props) {
                 </label>
               </div>
               <label>
-                付款人
+                {t('finance.receipt.field.payerName')}
                 <Input
                   value={receiptForm.payer_name}
                   onChange={(event) =>
@@ -248,7 +249,7 @@ export function ReceiptsView({ model, shell }: Props) {
               </label>
               <div className="form-pair two">
                 <label>
-                  客户标识
+                  {t('finance.receipt.field.customerId')}
                   <Input
                     value={receiptForm.customer_id}
                     onChange={(event) =>
@@ -257,7 +258,7 @@ export function ReceiptsView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  客户名称
+                  {t('finance.receipt.field.customerName')}
                   <Input
                     value={receiptForm.customer_name}
                     onChange={(event) =>
@@ -268,7 +269,7 @@ export function ReceiptsView({ model, shell }: Props) {
               </div>
               <div className="form-pair three">
                 <label>
-                  收款金额
+                  {t('finance.receipt.field.receiptAmount')}
                   <Input
                     value={receiptForm.amount}
                     onChange={(event) =>
@@ -277,7 +278,7 @@ export function ReceiptsView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  币种
+                  {t('finance.field.currency')}
                   <Input
                     value={receiptForm.currency}
                     onChange={(event) =>
@@ -286,7 +287,7 @@ export function ReceiptsView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  收款性质
+                  {t('finance.receipt.field.receiptType')}
                   <FormSelect
                     value={receiptForm.receipt_type}
                     onChange={(event) =>
@@ -295,14 +296,14 @@ export function ReceiptsView({ model, shell }: Props) {
                   >
                     {receiptTypeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
               </div>
               <label>
-                收款银行账号
+                {t('finance.receipt.field.bankAccount')}
                 <Input
                   value={receiptForm.bank_account}
                   onChange={(event) =>
@@ -311,7 +312,7 @@ export function ReceiptsView({ model, shell }: Props) {
                 />
               </label>
               <label>
-                银行流水号
+                {t('finance.receipt.field.referenceNo')}
                 <Input
                   value={receiptForm.reference_no}
                   onChange={(event) =>
@@ -320,7 +321,7 @@ export function ReceiptsView({ model, shell }: Props) {
                 />
               </label>
               <label>
-                备注
+                {t('finance.receipt.field.remark')}
                 <Input.TextArea
                   rows={2}
                   value={receiptForm.remark}
@@ -335,10 +336,10 @@ export function ReceiptsView({ model, shell }: Props) {
                   type="button"
                   onClick={() => setReceiptModalOpen(false)}
                 >
-                  取消
+                  {t('finance.receipt.action.cancel')}
                 </button>
                 <button className="inline-submit" disabled={submittingReceipt} type="submit">
-                  保存水单
+                  {t('finance.receipt.action.submitReceipt')}
                 </button>
               </div>
             </form>
@@ -347,20 +348,20 @@ export function ReceiptsView({ model, shell }: Props) {
 
         {detailId ? (
           <section className="workspace-panel finance-receipt-detail-panel">
-            <PanelTitle icon={<CheckCircle2 size={18} />} title="认领和分摊" />
+            <PanelTitle icon={<CheckCircle2 size={18} />} title={t('finance.receipt.panel.claimAndAllocation')} />
             {selectedReceipt ? (
               <>
                 <dl className="detail-list finance-receipt-detail-list">
                   <div>
-                    <dt>当前水单</dt>
+                    <dt>{t('finance.receipt.field.currentReceipt')}</dt>
                     <dd>{selectedReceipt.receipt_no}</dd>
                   </div>
                   <div>
-                    <dt>状态</dt>
+                    <dt>{t('finance.field.status')}</dt>
                     <dd>{receiptStatusLabel(selectedReceipt.status)}</dd>
                   </div>
                   <div>
-                    <dt>已分摊</dt>
+                    <dt>{t('finance.receipt.field.allocatedAmount')}</dt>
                     <dd>
                       {formatFinanceAmount(
                         selectedReceipt.allocated_amount,
@@ -369,7 +370,7 @@ export function ReceiptsView({ model, shell }: Props) {
                     </dd>
                   </div>
                   <div>
-                    <dt>未分摊</dt>
+                    <dt>{t('finance.receipt.field.unallocatedAmount')}</dt>
                     <dd>
                       {formatFinanceAmount(
                         selectedReceipt.unallocated_amount,
@@ -380,10 +381,10 @@ export function ReceiptsView({ model, shell }: Props) {
                 </dl>
                 <div className="finance-receipt-actions">
                   <form className="record-form compact-section" onSubmit={submitClaim}>
-                    <div className="form-divider">水单认领</div>
+                    <div className="form-divider">{t('finance.receipt.panel.claim')}</div>
                     <div className="form-pair two">
                       <label>
-                        认领日期
+                        {t('finance.receipt.field.claimedAt')}
                         <Input
                           type="date"
                           value={claimForm.claimed_at}
@@ -393,7 +394,7 @@ export function ReceiptsView({ model, shell }: Props) {
                         />
                       </label>
                       <label>
-                        业务员标识
+                        {t('finance.receipt.field.salesUserId')}
                         <Input
                           value={claimForm.sales_user_id}
                           onChange={(event) =>
@@ -403,7 +404,7 @@ export function ReceiptsView({ model, shell }: Props) {
                       </label>
                     </div>
                     <label>
-                      业务员姓名
+                      {t('finance.receipt.field.salesUserName')}
                       <Input
                         value={claimForm.sales_user_name}
                         onChange={(event) =>
@@ -412,7 +413,7 @@ export function ReceiptsView({ model, shell }: Props) {
                       />
                     </label>
                     <label>
-                      认领说明
+                      {t('finance.receipt.field.claimNote')}
                       <Input
                         value={claimForm.note}
                         onChange={(event) =>
@@ -426,15 +427,15 @@ export function ReceiptsView({ model, shell }: Props) {
                       loading={submittingClaim}
                       disabled={!selectedReceiptCanClaim}
                     >
-                      确认认领
+                      {t('finance.receipt.action.confirmClaim')}
                     </Button>
                   </form>
 
                   <form className="record-form compact-section" onSubmit={submitAllocation}>
-                    <div className="form-divider">收款分摊</div>
+                    <div className="form-divider">{t('finance.receipt.panel.allocation')}</div>
                     <div className="form-pair two">
                       <label>
-                        分摊类型
+                        {t('finance.receipt.field.allocationType')}
                         <FormSelect
                           value={allocationForm.allocation_type}
                           onChange={(event) =>
@@ -446,13 +447,13 @@ export function ReceiptsView({ model, shell }: Props) {
                         >
                           {allocationTypeOptions.map((item) => (
                             <option key={item.value} value={item.value}>
-                              {item.label}
+                              {t(item.labelKey)}
                             </option>
                           ))}
                         </FormSelect>
                       </label>
                       <label>
-                        分摊日期
+                        {t('finance.receipt.field.allocatedAt')}
                         <Input
                           type="date"
                           value={allocationForm.allocated_at}
@@ -467,7 +468,7 @@ export function ReceiptsView({ model, shell }: Props) {
                     </div>
                     <div className="form-pair two">
                       <label>
-                        出口合同标识
+                        {t('finance.receipt.field.contractId')}
                         <Input
                           value={allocationForm.contract_id}
                           onChange={(event) =>
@@ -479,7 +480,7 @@ export function ReceiptsView({ model, shell }: Props) {
                         />
                       </label>
                       <label>
-                        出口合同号
+                        {t('finance.receipt.field.contractNo')}
                         <Input
                           value={allocationForm.contract_no}
                           onChange={(event) =>
@@ -493,7 +494,7 @@ export function ReceiptsView({ model, shell }: Props) {
                     </div>
                     <div className="form-pair three">
                       <label>
-                        发票号
+                        {t('finance.receipt.field.invoiceNo')}
                         <Input
                           value={allocationForm.invoice_no}
                           onChange={(event) =>
@@ -505,7 +506,7 @@ export function ReceiptsView({ model, shell }: Props) {
                         />
                       </label>
                       <label>
-                        分摊金额
+                        {t('finance.receipt.field.allocationAmount')}
                         <Input
                           value={allocationForm.amount}
                           onChange={(event) =>
@@ -514,7 +515,7 @@ export function ReceiptsView({ model, shell }: Props) {
                         />
                       </label>
                       <label>
-                        币种
+                        {t('finance.field.currency')}
                         <Input
                           value={allocationForm.currency}
                           onChange={(event) =>
@@ -524,7 +525,7 @@ export function ReceiptsView({ model, shell }: Props) {
                       </label>
                     </div>
                     <label>
-                      分摊备注
+                      {t('finance.receipt.field.allocationRemark')}
                       <Input
                         value={allocationForm.remark}
                         onChange={(event) =>
@@ -538,29 +539,29 @@ export function ReceiptsView({ model, shell }: Props) {
                       loading={submittingAllocation}
                       disabled={!selectedReceiptCanAllocate}
                     >
-                      保存分摊
+                      {t('finance.receipt.action.saveAllocation')}
                     </Button>
                   </form>
                 </div>
                 {selectedReceipt.allocations.length > 0 ? (
                   <section className="finance-allocation-history">
-                    <strong>分摊记录</strong>
+                    <strong>{t('finance.receipt.panel.allocationHistory')}</strong>
                     <Table<BankReceipt['allocations'][number]>
                       columns={[
                         {
-                          title: '类型',
+                          title: t('finance.receipt.table.type'),
                           dataIndex: 'allocation_type',
                           render: allocationTypeLabel,
                         },
-                        { title: '合同号', dataIndex: 'contract_no', render: nullableText },
-                        { title: '发票号', dataIndex: 'invoice_no', render: nullableText },
+                        { title: t('finance.receipt.table.contractNo'), dataIndex: 'contract_no', render: nullableText },
+                        { title: t('finance.receipt.field.invoiceNo'), dataIndex: 'invoice_no', render: nullableText },
                         {
-                          title: '金额',
+                          title: t('finance.field.amount'),
                           dataIndex: 'amount',
                           render: (value: string, record) =>
                             formatFinanceAmount(value, record.currency),
                         },
-                        { title: '日期', dataIndex: 'allocated_at', render: formatDate },
+                        { title: t('finance.receipt.table.date'), dataIndex: 'allocated_at', render: formatDate },
                       ]}
                       dataSource={selectedReceipt.allocations}
                       pagination={false}
@@ -571,7 +572,7 @@ export function ReceiptsView({ model, shell }: Props) {
                 ) : null}
               </>
             ) : (
-              <div className="module-state">暂无银行水单</div>
+              <div className="module-state">{t('finance.receipt.message.noReceipt')}</div>
             )}
           </section>
         ) : null}
@@ -579,7 +580,7 @@ export function ReceiptsView({ model, shell }: Props) {
         {!detailId ? (
           <section className="workspace-panel finance-receivable-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<ShieldCheck size={18} />} title="应收账款查询" />
+              <PanelTitle icon={<ShieldCheck size={18} />} title={t('finance.receipt.panel.receivables')} />
               <form
                 className="inline-filters"
                 onSubmit={(event) => {
@@ -588,57 +589,57 @@ export function ReceiptsView({ model, shell }: Props) {
                 }}
               >
                 <label>
-                  应收搜索
+                  {t('finance.receipt.filter.receivableSearch')}
                   <Input
                     value={receivableSearch}
-                    placeholder="合同号 / 客户 / 报价号"
+                    placeholder={t('finance.receipt.filter.receivableSearchPlaceholder')}
                     onChange={(event) => setReceivableSearch(event.target.value)}
                   />
                 </label>
                 <label>
-                  出口合同号
+                  {t('finance.receipt.field.contractNo')}
                   <Input
                     value={receivableContractFilter}
                     onChange={(event) => setReceivableContractFilter(event.target.value)}
                   />
                 </label>
                 <label>
-                  发票号
+                  {t('finance.receipt.field.invoiceNo')}
                   <Input
                     value={receivableInvoiceFilter}
                     onChange={(event) => setReceivableInvoiceFilter(event.target.value)}
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('finance.receipt.action.search')}
                 </Button>
               </form>
             </div>
             <Table<ReceivableItem>
               columns={[
                 {
-                  title: '出口合同',
+                  title: t('finance.receipt.table.exportContract'),
                   dataIndex: 'contract_no',
                   render: (value: string) => <strong>{value}</strong>,
                 },
-                { title: '客户', dataIndex: 'customer_name' },
-                { title: '业务员', dataIndex: 'sales_user_name', render: nullableText },
+                { title: t('finance.receipt.table.customer'), dataIndex: 'customer_name' },
+                { title: t('finance.receipt.table.salesUser'), dataIndex: 'sales_user_name', render: nullableText },
                 {
-                  title: '合同金额',
+                  title: t('finance.receipt.table.contractAmount'),
                   dataIndex: 'total_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '已收款',
+                  title: t('finance.receipt.table.receivedAmount'),
                   dataIndex: 'received_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '应收余额',
+                  title: t('finance.receipt.table.receivableBalance'),
                   dataIndex: 'receivable_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
-                { title: '状态', dataIndex: 'status', render: receivableStatusTag },
+                { title: t('finance.field.status'), dataIndex: 'status', render: receivableStatusTag },
               ]}
               dataSource={receivables}
               loading={loadingReceivables}

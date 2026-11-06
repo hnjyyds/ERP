@@ -21,6 +21,7 @@ import {
   receiptClaimPayload,
   receiptAllocationPayload,
 } from '../financeHelpers'
+import { t } from '../../../appI18n'
 
 import type { FinanceModuleEnv } from '../financePageTypes'
 
@@ -92,7 +93,7 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
         null
       setSelectedReceiptId(nextReceiptId)
     } catch (caught) {
-      showError(caught, '银行水单加载失败')
+      showError(caught, t('finance.receipt.message.loadReceiptsFailed'))
     } finally {
       setLoadingReceipts(false)
     }
@@ -109,7 +110,7 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
       })
       setReceivables(result.items)
     } catch (caught) {
-      showError(caught, '应收账款加载失败')
+      showError(caught, t('finance.receipt.message.loadReceivablesFailed'))
     } finally {
       setLoadingReceivables(false)
     }
@@ -122,11 +123,11 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
     setError('')
     try {
       const created = await createBankReceipt(bankReceiptPayload(receiptForm))
-      setMessage(`已录入银行水单 ${created.receipt_no}`)
+      setMessage(t('finance.receipt.message.receiptCreated', { code: created.receipt_no }))
       setReceiptForm(initialBankReceiptForm())
       await loadReceipts(created.id)
     } catch (caught) {
-      showError(caught, '银行水单录入失败')
+      showError(caught, t('finance.receipt.message.receiptCreateFailed'))
     } finally {
       setSubmittingReceipt(false)
     }
@@ -140,13 +141,13 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
     setError('')
     try {
       const claimed = await claimBankReceipt(selectedReceipt.id, receiptClaimPayload(claimForm))
-      setMessage(`已认领银行水单 ${claimed.receipt_no}`)
+      setMessage(t('finance.receipt.message.receiptClaimed', { code: claimed.receipt_no }))
       setClaimForm(initialReceiptClaimForm())
       setReceipts((current) => current.map((item) => (item.id === claimed.id ? claimed : item)))
       setSelectedReceiptId(claimed.id)
       await loadReceipts(claimed.id)
     } catch (caught) {
-      showError(caught, '银行水单认领失败')
+      showError(caught, t('finance.receipt.message.receiptClaimFailed'))
     } finally {
       setSubmittingClaim(false)
     }
@@ -163,14 +164,14 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
         selectedReceipt.id,
         receiptAllocationPayload(allocationForm),
       )
-      setMessage(`已分摊银行水单 ${allocated.receipt_no}`)
+      setMessage(t('finance.receipt.message.receiptAllocated', { code: allocated.receipt_no }))
       setAllocationForm(initialReceiptAllocationForm(allocated.currency))
       setReceipts((current) => current.map((item) => (item.id === allocated.id ? allocated : item)))
       setSelectedReceiptId(allocated.id)
       await loadReceipts(allocated.id)
       await loadReceivables()
     } catch (caught) {
-      showError(caught, '收款分摊失败')
+      showError(caught, t('finance.receipt.message.receiptAllocationFailed'))
     } finally {
       setSubmittingAllocation(false)
     }

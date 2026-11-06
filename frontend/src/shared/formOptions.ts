@@ -132,106 +132,108 @@ export const shipmentStatusOptions: LocalizedOption[] = [
   { value: 'rejected', labelKey: 'sales.status.rejected' },
 ]
 
-export const receiptStatusOptions = [
-  { value: 'unclaimed', label: '待认领' },
-  { value: 'claimed', label: '已认领' },
-  { value: 'partially_allocated', label: '部分分摊' },
-  { value: 'allocated', label: '已分摊' },
+export const receiptStatusOptions: LocalizedOption[] = [
+  { value: 'unclaimed', labelKey: 'finance.receipt.status.unclaimed' },
+  { value: 'claimed', labelKey: 'finance.receipt.status.claimed' },
+  { value: 'partially_allocated', labelKey: 'finance.receipt.status.partiallyAllocated' },
+  { value: 'allocated', labelKey: 'finance.receipt.status.allocated' },
 ]
 
-export const receiptTypeOptions = [
-  { value: 'normal', label: '普通收款' },
-  { value: 'advance', label: '预收款' },
+export const receiptTypeOptions: LocalizedOption[] = [
+  { value: 'normal', labelKey: 'finance.receipt.type.normal' },
+  { value: 'advance', labelKey: 'finance.receipt.type.advance' },
 ]
 
-export const allocationTypeOptions = [
-  { value: 'contract', label: '合同分摊' },
-  { value: 'invoice', label: '发票分摊' },
-  { value: 'advance', label: '预收款分摊' },
+export const allocationTypeOptions: LocalizedOption[] = [
+  { value: 'contract', labelKey: 'finance.receipt.allocationType.contract' },
+  { value: 'invoice', labelKey: 'finance.receipt.allocationType.invoice' },
+  { value: 'advance', labelKey: 'finance.receipt.allocationType.advance' },
 ]
 
-export const supplierInvoiceStatusOptions = [
-  { value: 'unpaid', label: '未付款' },
-  { value: 'partial', label: '部分付款' },
-  { value: 'paid', label: '已付清' },
+export const supplierInvoiceStatusOptions: LocalizedOption[] = [
+  { value: 'unpaid', labelKey: 'finance.supplierInvoice.status.unpaid' },
+  { value: 'partial', labelKey: 'finance.supplierInvoice.status.partial' },
+  { value: 'paid', labelKey: 'finance.supplierInvoice.status.paid' },
 ]
 
-export const paymentRequestStatusOptions = [
-  { value: 'submitted', label: '待审批' },
-  { value: 'approved', label: '已审批' },
-  { value: 'rejected', label: '已退回' },
+export const paymentRequestStatusOptions: LocalizedOption[] = [
+  { value: 'submitted', labelKey: 'finance.payment.requestStatus.submitted' },
+  { value: 'approved', labelKey: 'finance.payment.requestStatus.approved' },
+  { value: 'rejected', labelKey: 'finance.payment.requestStatus.rejected' },
 ]
 
-export const paymentTypeOptions = [
-  { value: 'prepayment', label: '预付款' },
-  { value: 'goods_payment', label: '货款' },
-  { value: 'other', label: '其他付款' },
+export const paymentTypeOptions: LocalizedOption[] = [
+  { value: 'prepayment', labelKey: 'finance.payment.type.prepayment' },
+  { value: 'goods_payment', labelKey: 'finance.payment.type.goodsPayment' },
+  { value: 'other', labelKey: 'finance.payment.type.other' },
 ]
 
 export const partnerFeeInvoiceStatusOptions = supplierInvoiceStatusOptions
 
 export const feePaymentRequestStatusOptions = paymentRequestStatusOptions
 
-export const feeTypeOptions = [
-  { value: 'freight', label: '货代费' },
-  { value: 'insurance', label: '保险费' },
-  { value: 'transport', label: '运输费' },
-  { value: 'inspection', label: '查验费' },
-  { value: 'express', label: '快递费' },
-  { value: 'other', label: '其他费用' },
+export const feeTypeOptions: LocalizedOption[] = [
+  { value: 'freight', labelKey: 'finance.fee.type.freight' },
+  { value: 'insurance', labelKey: 'finance.fee.type.insurance' },
+  { value: 'transport', labelKey: 'finance.fee.type.transport' },
+  { value: 'inspection', labelKey: 'finance.fee.type.inspection' },
+  { value: 'express', labelKey: 'finance.fee.type.express' },
+  { value: 'other', labelKey: 'finance.fee.type.other' },
 ]
 
-export const verificationDocumentStatusOptions = [
-  { value: 'issued', label: '已领用' },
-  { value: 'customs_receipt_registered', label: '已回单' },
-  { value: 'verified', label: '已核销' },
-  { value: 'refunded', label: '已退税' },
+export const verificationDocumentStatusOptions: LocalizedOption[] = [
+  { value: 'issued', labelKey: 'finance.tax.verificationDocument.status.issued' },
+  { value: 'customs_receipt_registered', labelKey: 'finance.tax.verificationDocument.status.customsReceiptRegistered' },
+  { value: 'verified', labelKey: 'finance.tax.verificationDocument.status.verified' },
+  { value: 'refunded', labelKey: 'finance.tax.verificationDocument.status.refunded' },
 ]
 
-export const verificationReminderStatusOptions = [
-  { value: 'pending', label: '待提醒' },
-  { value: 'done', label: '已完成' },
-  { value: 'overdue', label: '已逾期' },
+export const verificationReminderStatusOptions: LocalizedOption[] = [
+  { value: 'pending', labelKey: 'finance.tax.verificationReminder.status.pending' },
+  { value: 'done', labelKey: 'finance.tax.verificationReminder.status.done' },
+  { value: 'overdue', labelKey: 'finance.tax.verificationReminder.status.overdue' },
 ]
 
-export const miscFeeCategoryOptions = [
-  { value: 'office', label: '办公费用' },
-  { value: 'capital_interest', label: '资金占用利息' },
-  { value: 'tax_refund_interest', label: '退税利息' },
-  { value: 'other', label: '其他杂费' },
+export const miscFeeCategoryOptions: LocalizedOption[] = [
+  { value: 'office', labelKey: 'finance.misc.category.office' },
+  { value: 'capital_interest', labelKey: 'finance.misc.category.capitalInterest' },
+  { value: 'tax_refund_interest', labelKey: 'finance.misc.category.taxRefundInterest' },
+  { value: 'other', labelKey: 'finance.misc.category.other' },
 ]
 
-export const miscFeeAllocationMethodOptions = [
-  { value: 'manual', label: '手工分摊' },
-  { value: 'ratio', label: '按比例分摊' },
-  { value: 'amount', label: '按金额分摊' },
-  { value: 'quantity', label: '按数量分摊' },
+export const miscFeeAllocationMethodOptions: LocalizedOption[] = [
+  { value: 'manual', labelKey: 'finance.misc.allocationMethod.manual' },
+  { value: 'ratio', labelKey: 'finance.misc.allocationMethod.ratio' },
+  { value: 'amount', labelKey: 'finance.misc.allocationMethod.amount' },
+  { value: 'quantity', labelKey: 'finance.misc.allocationMethod.quantity' },
 ]
 
-export const miscFeeItemStatusOptions = [
-  { value: 'active', label: '启用' },
-  { value: 'inactive', label: '停用' },
+export const miscFeeItemStatusOptions: LocalizedOption[] = [
+  { value: 'active', labelKey: 'status.active' },
+  { value: 'inactive', labelKey: 'status.inactive' },
 ]
 
-export const settlementStatusOptions = [{ value: 'locked', label: '已锁定' }]
-
-export const reportingDocumentTypeOptions = [
-  { value: 'export_contract', label: '出口合同' },
-  { value: 'purchase_contract', label: '采购合同' },
+export const settlementStatusOptions: LocalizedOption[] = [
+  { value: 'locked', labelKey: 'finance.settlement.status.locked' },
 ]
 
-export const reportingStatusOptions = [
-  { value: 'submitted', label: '待审批' },
-  { value: 'approved', label: '已审批' },
+export const reportingDocumentTypeOptions: LocalizedOption[] = [
+  { value: 'export_contract', labelKey: 'finance.report.documentType.exportContract' },
+  { value: 'purchase_contract', labelKey: 'finance.report.documentType.purchaseContract' },
 ]
 
-export const profitCostTypeOptions = [
-  { value: 'sales_income', label: '销售收入' },
-  { value: 'purchase_cost', label: '采购成本' },
-  { value: 'partner_fee', label: '合作伙伴费' },
-  { value: 'misc_fee', label: '杂费分摊' },
-  { value: 'tax_refund', label: '退税收入' },
-  { value: 'other_cost', label: '其他成本' },
+export const reportingStatusOptions: LocalizedOption[] = [
+  { value: 'submitted', labelKey: 'finance.report.status.submitted' },
+  { value: 'approved', labelKey: 'finance.report.status.approved' },
+]
+
+export const profitCostTypeOptions: LocalizedOption[] = [
+  { value: 'sales_income', labelKey: 'finance.report.costType.salesIncome' },
+  { value: 'purchase_cost', labelKey: 'finance.report.costType.purchaseCost' },
+  { value: 'partner_fee', labelKey: 'finance.report.costType.partnerFee' },
+  { value: 'misc_fee', labelKey: 'finance.report.costType.miscFee' },
+  { value: 'tax_refund', labelKey: 'finance.report.costType.taxRefund' },
+  { value: 'other_cost', labelKey: 'finance.report.costType.otherCost' },
 ]
 
 export const purchaseInquiryStatusOptions: LocalizedOption[] = [

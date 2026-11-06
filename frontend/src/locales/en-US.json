@@ -1964,5 +1964,483 @@
         "countryRequired": "Enter the country/region"
       }
     }
+  },
+  "finance": {
+    "payment": {
+      "title": "Payments",
+      "requestStatus": {
+        "submitted": "Pending Approval",
+        "approved": "Approved",
+        "rejected": "Returned"
+      },
+      "type": {
+        "prepayment": "Prepayment",
+        "goodsPayment": "Goods Payment",
+        "other": "Other Payment"
+      },
+      "panel": {
+        "supplierInvoices": "Supplier Invoice List",
+        "paymentRequests": "Payment Requests & Approvals",
+        "newPaymentRequest": "New Payment Request",
+        "paymentApproval": "Payment Approval",
+        "paymentRequestList": "Payment Request List",
+        "payables": "Payables Inquiry"
+      },
+      "field": {
+        "supplierInvoiceNo": "Supplier Invoice No.",
+        "invoiceDate": "Invoice Date",
+        "supplierId": "Supplier ID",
+        "supplierName": "Supplier Name",
+        "invoiceNoticeId": "Invoice Notice ID",
+        "invoiceNoticeCode": "Invoice Notice No.",
+        "purchaseContractId": "Purchase Contract ID",
+        "purchaseContractNo": "Purchase Contract No.",
+        "invoiceAmount": "Invoice Amount",
+        "dueDate": "Due Date",
+        "remark": "Remarks",
+        "currentInvoice": "Current Invoice",
+        "paid": "Paid",
+        "unpaid": "Unpaid",
+        "requestNo": "Payment Request No.",
+        "supplierInvoiceId": "Supplier Invoice ID",
+        "paymentType": "Payment Type",
+        "requestDate": "Request Date",
+        "requestedAmount": "Requested Amount",
+        "requestRemark": "Request Remarks",
+        "approvedAmount": "Approved Amount",
+        "approvedAt": "Approval Date",
+        "reviewer": "Approver",
+        "paymentAccount": "Payment Account",
+        "approvalRemark": "Approval Remarks"
+      },
+      "filter": {
+        "invoiceSearch": "Invoice Search",
+        "invoiceStatus": "Payment Status",
+        "allStatuses": "All Statuses",
+        "payableSearch": "Payable Search",
+        "payableStatus": "Payable Status"
+      },
+      "action": {
+        "search": "Search",
+        "registerInvoice": "Register Invoice",
+        "cancel": "Cancel",
+        "submitSupplierInvoice": "Register Supplier Invoice",
+        "createPaymentRequest": "Create Payment Request",
+        "approvePayment": "Approve Payment"
+      },
+      "table": {
+        "supplierInvoice": "Supplier Invoice",
+        "supplier": "Supplier",
+        "purchaseContract": "Purchase Contract",
+        "paidAmount": "Paid",
+        "payableBalance": "Payable Balance",
+        "requestNo": "Request No.",
+        "category": "Category",
+        "invoiceNo": "Invoice No."
+      },
+      "modal": {
+        "supplierInvoiceTitle": "Supplier Invoice Registration"
+      },
+      "message": {
+        "loadSupplierInvoicesFailed": "Failed to load supplier invoices",
+        "loadPaymentRequestsFailed": "Failed to load payment requests",
+        "loadPayablesFailed": "Failed to load payables",
+        "supplierInvoiceCreated": "Supplier invoice {code} registered",
+        "supplierInvoiceCreateFailed": "Failed to register supplier invoice",
+        "paymentRequestCreated": "Payment request {code} created",
+        "paymentRequestCreateFailed": "Failed to create payment request",
+        "paymentRequestApproved": "Payment request {code} approved",
+        "paymentApprovalFailed": "Failed to approve payment",
+        "noSupplierInvoice": "No supplier invoice",
+        "waitingApproval": "Pending approval by {reviewer}",
+        "designatedReviewer": "Designated Approver"
+      },
+      "validation": {
+        "reviewerRequired": "Please select an approver",
+        "approverMismatch": "This payment request must be approved by {reviewer}"
+      }
+    },
+    "receipt": {
+      "title": "Receipts",
+      "status": {
+        "unclaimed": "Unclaimed",
+        "claimed": "Claimed",
+        "partiallyAllocated": "Partially Allocated",
+        "allocated": "Allocated"
+      },
+      "type": {
+        "normal": "Standard Receipt",
+        "advance": "Advance Receipt"
+      },
+      "allocationType": {
+        "contract": "Contract Allocation",
+        "invoice": "Invoice Allocation",
+        "advance": "Advance Allocation"
+      },
+      "panel": {
+        "receipts": "Bank Receipt List",
+        "claimAndAllocation": "Claim & Allocation",
+        "claim": "Receipt Claim",
+        "allocation": "Receipt Allocation",
+        "allocationHistory": "Allocation Records",
+        "receivables": "Receivables Inquiry"
+      },
+      "field": {
+        "receiptNo": "Bank Receipt No.",
+        "receivedDate": "Receipt Date",
+        "payerName": "Payer",
+        "customerId": "Customer ID",
+        "customerName": "Customer Name",
+        "receiptAmount": "Receipt Amount",
+        "receiptType": "Receipt Type",
+        "bankAccount": "Receiving Bank Account",
+        "referenceNo": "Bank Reference No.",
+        "remark": "Remarks",
+        "currentReceipt": "Current Receipt",
+        "allocatedAmount": "Allocated",
+        "unallocatedAmount": "Unallocated",
+        "claimedAt": "Claim Date",
+        "salesUserId": "Salesperson ID",
+        "salesUserName": "Salesperson Name",
+        "claimNote": "Claim Notes",
+        "allocationType": "Allocation Type",
+        "allocatedAt": "Allocation Date",
+        "contractId": "Export Contract ID",
+        "contractNo": "Export Contract No.",
+        "invoiceNo": "Invoice No.",
+        "allocationAmount": "Allocation Amount",
+        "allocationRemark": "Allocation Remarks"
+      },
+      "filter": {
+        "receiptSearch": "Receipt Search",
+        "receiptSearchPlaceholder": "Receipt No. / Payer / Customer",
+        "receiptStatus": "Receipt Status",
+        "allStatuses": "All Statuses",
+        "customerIdPlaceholder": "Enter customer ID or name",
+        "receivableSearch": "Receivable Search",
+        "receivableSearchPlaceholder": "Contract No. / Customer / Quotation No."
+      },
+      "action": {
+        "search": "Search",
+        "registerReceipt": "Register Receipt",
+        "cancel": "Cancel",
+        "submitReceipt": "Save Receipt",
+        "confirmClaim": "Confirm Claim",
+        "saveAllocation": "Save Allocation"
+      },
+      "metric": {
+        "listCount_one": "{count} receipt in this list",
+        "listCount_other": "{count} receipts in this list"
+      },
+      "table": {
+        "receiptNo": "Receipt No.",
+        "nature": "Type",
+        "receivedAt": "Received On",
+        "customer": "Customer",
+        "type": "Type",
+        "contractNo": "Contract No.",
+        "date": "Date",
+        "exportContract": "Export Contract",
+        "salesUser": "Salesperson",
+        "contractAmount": "Contract Amount",
+        "receivedAmount": "Received",
+        "receivableBalance": "Receivable Balance"
+      },
+      "modal": {
+        "registerReceiptTitle": "Register Receipt"
+      },
+      "message": {
+        "noReceipt": "No bank receipt",
+        "loadReceiptsFailed": "Failed to load bank receipts",
+        "loadReceivablesFailed": "Failed to load receivables",
+        "receiptCreated": "Bank receipt {code} registered",
+        "receiptCreateFailed": "Failed to register bank receipt",
+        "receiptClaimed": "Bank receipt {code} claimed",
+        "receiptClaimFailed": "Failed to claim bank receipt",
+        "receiptAllocated": "Bank receipt {code} allocated",
+        "receiptAllocationFailed": "Failed to allocate receipt"
+      }
+    },
+    "supplierInvoice": {
+      "status": {
+        "unpaid": "Unpaid",
+        "partial": "Partially Paid",
+        "paid": "Paid"
+      }
+    },
+    "fee": {
+      "title": "Fee Management",
+      "type": {
+        "freight": "Forwarding Fee",
+        "insurance": "Insurance",
+        "transport": "Transport Fee",
+        "inspection": "Inspection Fee",
+        "express": "Courier Fee",
+        "other": "Other Fee"
+      },
+      "panel": {
+        "invoices": "Partner Fee Invoices",
+        "paymentRequests": "Fee Payment Requests & Approvals",
+        "newPaymentRequest": "New Fee Payment Request",
+        "paymentApproval": "Fee Payment Approval",
+        "paymentRequestList": "Fee Payment Request List",
+        "payables": "Payable Fees Inquiry"
+      },
+      "field": {
+        "feeInvoiceNo": "Fee Invoice No.",
+        "invoiceDate": "Invoice Date",
+        "partnerId": "Partner ID",
+        "partnerName": "Partner Name",
+        "partnerType": "Partner Type",
+        "autoMatch": "Auto Match",
+        "feeType": "Fee Type",
+        "shipmentId": "Shipment ID",
+        "shipmentNo": "Shipment No.",
+        "salesUserId": "Salesperson ID",
+        "salesUserName": "Salesperson Name",
+        "invoiceAmount": "Invoice Amount",
+        "dueDate": "Due Date",
+        "remark": "Remarks",
+        "currentInvoice": "Current Fee Invoice",
+        "paid": "Paid",
+        "unpaid": "Unpaid",
+        "requestNo": "Fee Payment Request No.",
+        "partnerFeeInvoiceId": "Fee Invoice ID",
+        "requestDate": "Request Date",
+        "requestedAmount": "Requested Amount",
+        "requestRemark": "Request Remarks",
+        "approvedAmount": "Approved Amount",
+        "approvedAt": "Approval Date",
+        "reviewer": "Approver",
+        "paymentAccount": "Payment Account",
+        "approvalRemark": "Approval Remarks"
+      },
+      "filter": {
+        "invoiceSearch": "Fee Invoice Search",
+        "invoiceStatus": "Invoice Status",
+        "allStatuses": "All Statuses",
+        "allTypes": "All Types",
+        "payableSearch": "Payable Fee Search",
+        "payableStatus": "Payable Status"
+      },
+      "action": {
+        "search": "Search",
+        "registerInvoice": "Register Invoice",
+        "cancel": "Cancel",
+        "submitInvoice": "Register Fee Invoice",
+        "createPaymentRequest": "Create Payment Request",
+        "approvePayment": "Approve Payment"
+      },
+      "table": {
+        "feeInvoice": "Fee Invoice",
+        "partner": "Partner",
+        "shipment": "Shipment",
+        "paidAmount": "Paid",
+        "payableBalance": "Payable Balance",
+        "requestNo": "Request No."
+      },
+      "modal": {
+        "registerInvoiceTitle": "Fee Invoice Registration"
+      },
+      "message": {
+        "loadInvoicesFailed": "Failed to load partner fee invoices",
+        "loadPaymentRequestsFailed": "Failed to load payment requests",
+        "loadPayablesFailed": "Failed to load payables",
+        "invoiceCreated": "Partner fee invoice {code} registered",
+        "invoiceCreateFailed": "Failed to register partner fee invoice",
+        "paymentRequestCreated": "Payment request {code} created",
+        "paymentRequestCreateFailed": "Failed to create payment request",
+        "paymentRequestApproved": "Payment request {code} approved",
+        "paymentApprovalFailed": "Failed to approve payment",
+        "noInvoice": "No partner fee invoice",
+        "waitingApproval": "Pending approval by {reviewer}",
+        "designatedReviewer": "Designated Approver"
+      },
+      "validation": {
+        "reviewerRequired": "Please select an approver",
+        "approverMismatch": "This payment request must be approved by {reviewer}"
+      }
+    },
+    "tax": {
+      "verificationDocument": {
+        "status": {
+          "issued": "Issued",
+          "customsReceiptRegistered": "Customs Receipt Returned",
+          "verified": "Verified",
+          "refunded": "Refunded"
+        }
+      },
+      "verificationReminder": {
+        "status": {
+          "pending": "Pending",
+          "done": "Done",
+          "overdue": "Overdue"
+        }
+      }
+    },
+    "misc": {
+      "category": {
+        "office": "Office Expenses",
+        "capitalInterest": "Capital Occupation Interest",
+        "taxRefundInterest": "Tax Refund Interest",
+        "other": "Other Misc. Fees"
+      },
+      "allocationMethod": {
+        "manual": "Manual",
+        "ratio": "By Ratio",
+        "amount": "By Amount",
+        "quantity": "By Quantity"
+      }
+    },
+    "settlement": {
+      "status": {
+        "locked": "Locked"
+      }
+    },
+    "receivable": {
+      "status": {
+        "paid": "Fully Received",
+        "partial": "Partially Received",
+        "unpaid": "Not Received"
+      }
+    },
+    "reimbursement": {
+      "category": {
+        "travel": "Travel",
+        "office": "Office",
+        "entertainment": "Entertainment",
+        "other": "Other"
+      },
+      "status": {
+        "submitted": "Pending Approval",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "paid": "Paid"
+      }
+    },
+    "report": {
+      "documentType": {
+        "exportContract": "Export Contract",
+        "purchaseContract": "Purchase Contract"
+      },
+      "status": {
+        "submitted": "Pending Approval",
+        "approved": "Approved"
+      },
+      "costType": {
+        "salesIncome": "Sales Income",
+        "purchaseCost": "Purchase Cost",
+        "partnerFee": "Partner Fee",
+        "miscFee": "Misc. Fee Allocation",
+        "taxRefund": "Tax Refund Income",
+        "otherCost": "Other Cost"
+      },
+      "direction": {
+        "income": "Income",
+        "cost": "Cost"
+      }
+    },
+    "field": {
+      "status": "Status",
+      "amount": "Amount",
+      "currency": "Currency"
+    },
+    "home": {
+      "moduleCardsAria": "Finance module entries"
+    },
+    "overview": {
+      "panel": {
+        "shipmentProfit": "Shipment Profit Details",
+        "currencySummary": "Summary by Currency",
+        "invoicePaymentStatus": "Invoice and Payment Status",
+        "purchaseInvoiceNotice": "Purchase Invoice Notices",
+        "sampleFeePayment": "Sample Fee Payments",
+        "partnerFeeEntry": "Partner Fee Entry"
+      },
+      "summary": {
+        "partnerCount": "Partners",
+        "activePartner": "Active Partners",
+        "pendingInvoiceAmount": "Pending Tax Invoice Amount"
+      },
+      "table": {
+        "code": "Shipment No.",
+        "customer": "Customer",
+        "shipmentDate": "Shipment Date",
+        "plannedShipDate": "Planned Shipment",
+        "receivable": "Receivable",
+        "payable": "Payable",
+        "profit": "Profit",
+        "profitRate": "Profit Margin",
+        "shipmentCount": "Shipments",
+        "count": "Count",
+        "partnerType": "Partner Type"
+      },
+      "message": {
+        "loadFailed": "Failed to load finance overview"
+      }
+    },
+    "page": {
+      "summaryAria": "Finance overview",
+      "metric": {
+        "shipmentCount": "Shipments",
+        "receivableAmount": "Receivables",
+        "payableAmount": "Payable Costs",
+        "profitAmount": "Estimated Profit",
+        "invoiceNoticeCount": "Invoice Notices",
+        "sampleFeeAmount": "Sample Fees"
+      },
+      "card": {
+        "overview": {
+          "title": "Operations Overview",
+          "caption": "Shipment profit / by currency / status summary",
+          "metricLabel": "Estimated Profit"
+        },
+        "receipts": {
+          "title": "Receipts",
+          "caption": "Bank receipt claiming, allocation, and receivables",
+          "metricLabel": "Receivables"
+        },
+        "payments": {
+          "title": "Payments",
+          "caption": "Supplier invoices, payment requests, and payables",
+          "metricLabel": "Payable Costs"
+        },
+        "fees": {
+          "title": "Partner Fee Management",
+          "caption": "Partner fee invoices, payment requests, and approvals",
+          "metricLabel": "Active Partners"
+        },
+        "tax": {
+          "title": "Tax Verification & Refund",
+          "caption": "Verification document issuance, customs receipt verification, and tax refund registration",
+          "metricLabel": "Verification Docs"
+        },
+        "misc": {
+          "title": "Misc. Fee Management",
+          "caption": "Misc. fee item setup and per-shipment allocation lookup",
+          "metricLabel": "Misc. Fee Items"
+        },
+        "settlement": {
+          "title": "Settlement & Costing",
+          "caption": "Per-shipment settlement locking, manual costs, and profit calculation",
+          "metricLabel": "Locked Settlements"
+        },
+        "reimbursements": {
+          "title": "Reimbursements",
+          "caption": "Employee reimbursement registration, approval, and payment",
+          "metricLabel": "Reimbursements"
+        },
+        "portData": {
+          "title": "Port Data Import",
+          "caption": "Import/export customs declaration data import and lookup",
+          "metricLabel": "Import Batches"
+        },
+        "reports": {
+          "title": "Financial Reports",
+          "caption": "Receipt, payment, and tax refund statistics reports",
+          "metricLabel": "Reports"
+        }
+      }
+    }
   }
 }

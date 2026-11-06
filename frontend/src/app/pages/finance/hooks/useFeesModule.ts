@@ -24,6 +24,7 @@ import {
   feePaymentRequestPayload,
   feePaymentApprovalPayload,
 } from '../financeHelpers'
+import { t } from '../../../appI18n'
 
 import type { FinanceModuleEnv } from '../financePageTypes'
 
@@ -79,7 +80,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
   )
 
   const [feePaymentApprovalForm, setFeePaymentApprovalForm] = useState<FeePaymentApprovalFormState>(
-    () => initialFeePaymentApprovalForm('400.00', currentUser.display_name),
+    () => initialFeePaymentApprovalForm('', currentUser.display_name),
   )
 
   const [loadingPartnerFeeInvoices, setLoadingPartnerFeeInvoices] = useState(false)
@@ -162,7 +163,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
         null
       setSelectedPartnerFeeInvoiceId(nextInvoiceId)
     } catch (caught) {
-      showError(caught, '合作伙伴费用发票加载失败')
+      showError(caught, t('finance.fee.message.loadInvoicesFailed'))
     } finally {
       setLoadingPartnerFeeInvoices(false)
     }
@@ -189,7 +190,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
         null
       setSelectedFeePaymentRequestId(nextRequestId)
     } catch (caught) {
-      showError(caught, '付费申请加载失败')
+      showError(caught, t('finance.fee.message.loadPaymentRequestsFailed'))
     } finally {
       setLoadingFeePaymentRequests(false)
     }
@@ -208,7 +209,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
       })
       setFeePayables(result.items)
     } catch (caught) {
-      showError(caught, '应付费用加载失败')
+      showError(caught, t('finance.fee.message.loadPayablesFailed'))
     } finally {
       setLoadingFeePayables(false)
     }
@@ -221,12 +222,12 @@ export function useFeesModule(env: FinanceModuleEnv) {
     setError('')
     try {
       const created = await createPartnerFeeInvoice(partnerFeeInvoicePayload(partnerFeeInvoiceForm))
-      setMessage(`已登记合作伙伴费用发票 ${created.invoice_no}`)
+      setMessage(t('finance.fee.message.invoiceCreated', { code: created.invoice_no }))
       setPartnerFeeInvoiceForm(initialPartnerFeeInvoiceForm())
       await loadPartnerFeeInvoices(created.id)
       await loadFeePayables()
     } catch (caught) {
-      showError(caught, '合作伙伴费用发票登记失败')
+      showError(caught, t('finance.fee.message.invoiceCreateFailed'))
     } finally {
       setSubmittingPartnerFeeInvoice(false)
     }
@@ -235,7 +236,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
   async function submitFeePaymentRequest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!feePaymentRequestForm.reviewer_id) {
-      showError(new Error('请选择审批人'))
+      showError(new Error(t('finance.fee.validation.reviewerRequired')))
       return
     }
     setSubmittingFeePaymentRequest(true)
@@ -243,11 +244,11 @@ export function useFeesModule(env: FinanceModuleEnv) {
     setError('')
     try {
       const created = await createFeePaymentRequest(feePaymentRequestPayload(feePaymentRequestForm))
-      setMessage(`已新增付费申请 ${created.request_no}`)
+      setMessage(t('finance.fee.message.paymentRequestCreated', { code: created.request_no }))
       setFeePaymentRequestForm(initialFeePaymentRequestForm(selectedPartnerFeeInvoice ?? undefined))
       await loadFeePaymentRequests(created.id)
     } catch (caught) {
-      showError(caught, '付费申请新增失败')
+      showError(caught, t('finance.fee.message.paymentRequestCreateFailed'))
     } finally {
       setSubmittingFeePaymentRequest(false)
     }
@@ -265,7 +266,13 @@ export function useFeesModule(env: FinanceModuleEnv) {
       selectedFeePaymentRequest.requester_user_id === currentUser.id
     ) {
       showError(
-        new Error(`该付费申请应由 ${selectedFeePaymentRequest.reviewer_name ?? '指定审批人'} 审批`),
+        new Error(
+          t('finance.fee.validation.approverMismatch', {
+            reviewer:
+              selectedFeePaymentRequest.reviewer_name ??
+              t('finance.fee.message.designatedReviewer'),
+          }),
+        ),
       )
       return
     }
@@ -277,13 +284,13 @@ export function useFeesModule(env: FinanceModuleEnv) {
         selectedFeePaymentRequest.id,
         feePaymentApprovalPayload(feePaymentApprovalForm),
       )
-      setMessage(`已审批付费申请 ${approved.request_no}`)
-      setFeePaymentApprovalForm(initialFeePaymentApprovalForm('400.00', currentUser.display_name))
+      setMessage(t('finance.fee.message.paymentRequestApproved', { code: approved.request_no }))
+      setFeePaymentApprovalForm(initialFeePaymentApprovalForm('', currentUser.display_name))
       await loadFeePaymentRequests(approved.id)
       await loadPartnerFeeInvoices(selectedPartnerFeeInvoice?.id)
       await loadFeePayables()
     } catch (caught) {
-      showError(caught, '付费审批失败')
+      showError(caught, t('finance.fee.message.paymentApprovalFailed'))
     } finally {
       setSubmittingFeePaymentApproval(false)
     }

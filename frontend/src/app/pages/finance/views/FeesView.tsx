@@ -87,7 +87,7 @@ export function FeesView({ model, shell }: Props) {
         <div className="finance-subnav">
           <button className="finance-back-button" type="button" onClick={() => goModule('fees')}>
             <ArrowLeft size={16} />
-            付费管理
+            {t('finance.fee.title')}
           </button>
         </div>
       ) : (
@@ -96,12 +96,15 @@ export function FeesView({ model, shell }: Props) {
       {moduleAlerts}
       <section
         className={detailId ? 'finance-detail-grid' : 'finance-fee-grid'}
-        aria-label="付费管理"
+        aria-label={t('finance.fee.title')}
       >
         {!detailId ? (
           <section className="workspace-panel finance-fee-list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Wallet size={18} />} title="合作伙伴费用发票" />
+              <PanelTitle
+                icon={<Wallet size={18} />}
+                title={t('finance.fee.panel.invoices')}
+              />
               <form
                 className="inline-filters single-line-filter-toolbar"
                 onSubmit={(event) => {
@@ -110,70 +113,70 @@ export function FeesView({ model, shell }: Props) {
                 }}
               >
                 <label>
-                  费用发票搜索
+                  {t('finance.fee.filter.invoiceSearch')}
                   <Input
                     value={feeInvoiceSearch}
                     onChange={(event) => setFeeInvoiceSearch(event.target.value)}
                   />
                 </label>
                 <label>
-                  发票状态
+                  {t('finance.fee.filter.invoiceStatus')}
                   <FormSelect
                     value={feeInvoiceStatusFilter}
                     onChange={(event) => setFeeInvoiceStatusFilter(event.target.value)}
                   >
-                    <option value="">全部状态</option>
+                    <option value="">{t('finance.fee.filter.allStatuses')}</option>
                     {partnerFeeInvoiceStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label>
-                  费用类型
+                  {t('finance.fee.field.feeType')}
                   <FormSelect
                     value={feeInvoiceTypeFilter}
                     onChange={(event) => setFeeInvoiceTypeFilter(event.target.value)}
                   >
-                    <option value="">全部类型</option>
+                    <option value="">{t('finance.fee.filter.allTypes')}</option>
                     {feeTypeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label>
-                  合作伙伴标识
+                  {t('finance.fee.field.partnerId')}
                   <Input
                     value={feeInvoicePartnerFilter}
                     onChange={(event) => setFeeInvoicePartnerFilter(event.target.value)}
                   />
                 </label>
                 <label>
-                  出运单号
+                  {t('finance.fee.field.shipmentNo')}
                   <Input
                     value={feeInvoiceShipmentFilter}
                     onChange={(event) => setFeeInvoiceShipmentFilter(event.target.value)}
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('finance.fee.action.search')}
                 </Button>
                 <Button
                   type="primary"
                   icon={<Plus size={16} />}
                   onClick={() => setFeeInvoiceModalOpen(true)}
                 >
-                  发票登记
+                  {t('finance.fee.action.registerInvoice')}
                 </Button>
               </form>
             </div>
             <Table<PartnerFeeInvoice>
               columns={[
                 {
-                  title: '费用发票',
+                  title: t('finance.fee.table.feeInvoice'),
                   dataIndex: 'invoice_no',
                   render: (value: string) => (
                     <button className="row-button" type="button">
@@ -181,17 +184,17 @@ export function FeesView({ model, shell }: Props) {
                     </button>
                   ),
                 },
-                { title: '状态', dataIndex: 'status', render: partnerFeeInvoiceStatusTag },
-                { title: '合作伙伴', dataIndex: 'partner_name' },
-                { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
-                { title: '费用类型', dataIndex: 'fee_type', render: feeTypeLabel },
+                { title: t('finance.field.status'), dataIndex: 'status', render: partnerFeeInvoiceStatusTag },
+                { title: t('finance.fee.table.partner'), dataIndex: 'partner_name' },
+                { title: t('finance.fee.table.shipment'), dataIndex: 'shipment_no', render: nullableText },
+                { title: t('finance.fee.field.feeType'), dataIndex: 'fee_type', render: feeTypeLabel },
                 {
-                  title: '发票金额',
+                  title: t('finance.fee.field.invoiceAmount'),
                   dataIndex: 'total_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '未付',
+                  title: t('finance.fee.field.unpaid'),
                   dataIndex: 'unpaid_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
@@ -223,7 +226,7 @@ export function FeesView({ model, shell }: Props) {
             centered
             footer={null}
             open={feeInvoiceModalOpen}
-            title="费用发票登记"
+            title={t('finance.fee.modal.registerInvoiceTitle')}
             width={760}
             onCancel={() => setFeeInvoiceModalOpen(false)}
           >
@@ -236,7 +239,7 @@ export function FeesView({ model, shell }: Props) {
             >
               <div className="form-pair two">
                 <label>
-                  费用发票号
+                  {t('finance.fee.field.feeInvoiceNo')}
                   <Input
                     value={partnerFeeInvoiceForm.invoice_no}
                     onChange={(event) =>
@@ -248,7 +251,7 @@ export function FeesView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  发票日期
+                  {t('finance.fee.field.invoiceDate')}
                   <Input
                     type="date"
                     value={partnerFeeInvoiceForm.invoice_date}
@@ -263,7 +266,7 @@ export function FeesView({ model, shell }: Props) {
               </div>
               <div className="form-pair two">
                 <label>
-                  合作伙伴标识
+                  {t('finance.fee.field.partnerId')}
                   <Input
                     value={partnerFeeInvoiceForm.partner_id}
                     onChange={(event) =>
@@ -275,7 +278,7 @@ export function FeesView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  合作伙伴名称
+                  {t('finance.fee.field.partnerName')}
                   <Input
                     value={partnerFeeInvoiceForm.partner_name}
                     onChange={(event) =>
@@ -289,7 +292,7 @@ export function FeesView({ model, shell }: Props) {
               </div>
               <div className="form-pair two">
                 <label>
-                  合作伙伴类型
+                  {t('finance.fee.field.partnerType')}
                   <FormSelect
                     value={partnerFeeInvoiceForm.partner_type}
                     onChange={(event) =>
@@ -299,7 +302,7 @@ export function FeesView({ model, shell }: Props) {
                       })
                     }
                   >
-                    <option value="">自动匹配</option>
+                    <option value="">{t('finance.fee.field.autoMatch')}</option>
                     {partnerTypeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
                         {t(item.labelKey)}
@@ -308,7 +311,7 @@ export function FeesView({ model, shell }: Props) {
                   </FormSelect>
                 </label>
                 <label>
-                  费用类型
+                  {t('finance.fee.field.feeType')}
                   <FormSelect
                     value={partnerFeeInvoiceForm.fee_type}
                     onChange={(event) =>
@@ -320,7 +323,7 @@ export function FeesView({ model, shell }: Props) {
                   >
                     {feeTypeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
@@ -328,7 +331,7 @@ export function FeesView({ model, shell }: Props) {
               </div>
               <div className="form-pair two">
                 <label>
-                  出运单标识
+                  {t('finance.fee.field.shipmentId')}
                   <Input
                     value={partnerFeeInvoiceForm.shipment_plan_id}
                     onChange={(event) =>
@@ -340,7 +343,7 @@ export function FeesView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  出运单号
+                  {t('finance.fee.field.shipmentNo')}
                   <Input
                     value={partnerFeeInvoiceForm.shipment_no}
                     onChange={(event) =>
@@ -354,7 +357,7 @@ export function FeesView({ model, shell }: Props) {
               </div>
               <div className="form-pair two">
                 <label>
-                  业务员标识
+                  {t('finance.fee.field.salesUserId')}
                   <Input
                     value={partnerFeeInvoiceForm.sales_user_id}
                     onChange={(event) =>
@@ -366,7 +369,7 @@ export function FeesView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  业务员姓名
+                  {t('finance.fee.field.salesUserName')}
                   <Input
                     value={partnerFeeInvoiceForm.sales_user_name}
                     onChange={(event) =>
@@ -380,7 +383,7 @@ export function FeesView({ model, shell }: Props) {
               </div>
               <div className="form-pair three">
                 <label>
-                  发票金额
+                  {t('finance.fee.field.invoiceAmount')}
                   <Input
                     value={partnerFeeInvoiceForm.total_amount}
                     onChange={(event) =>
@@ -392,7 +395,7 @@ export function FeesView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  币种
+                  {t('finance.field.currency')}
                   <Input
                     value={partnerFeeInvoiceForm.currency}
                     onChange={(event) =>
@@ -404,7 +407,7 @@ export function FeesView({ model, shell }: Props) {
                   />
                 </label>
                 <label>
-                  到期日
+                  {t('finance.fee.field.dueDate')}
                   <Input
                     type="date"
                     value={partnerFeeInvoiceForm.due_date}
@@ -418,7 +421,7 @@ export function FeesView({ model, shell }: Props) {
                 </label>
               </div>
               <label>
-                备注
+                {t('finance.fee.field.remark')}
                 <Input
                   value={partnerFeeInvoiceForm.remark}
                   onChange={(event) =>
@@ -435,14 +438,14 @@ export function FeesView({ model, shell }: Props) {
                   type="button"
                   onClick={() => setFeeInvoiceModalOpen(false)}
                 >
-                  取消
+                  {t('finance.fee.action.cancel')}
                 </button>
                 <button
                   className="inline-submit"
                   disabled={submittingPartnerFeeInvoice}
                   type="submit"
                 >
-                  登记费用发票
+                  {t('finance.fee.action.submitInvoice')}
                 </button>
               </div>
             </form>
@@ -451,19 +454,22 @@ export function FeesView({ model, shell }: Props) {
 
         {detailId ? (
           <section className="workspace-panel finance-fee-request-panel">
-            <PanelTitle icon={<CheckCircle2 size={18} />} title="付费申请和审批" />
+            <PanelTitle
+              icon={<CheckCircle2 size={18} />}
+              title={t('finance.fee.panel.paymentRequests')}
+            />
             {selectedPartnerFeeInvoice ? (
               <dl className="detail-list finance-fee-detail-list">
                 <div>
-                  <dt>当前费用发票</dt>
+                  <dt>{t('finance.fee.field.currentInvoice')}</dt>
                   <dd>{selectedPartnerFeeInvoice.invoice_no}</dd>
                 </div>
                 <div>
-                  <dt>费用类型</dt>
+                  <dt>{t('finance.fee.field.feeType')}</dt>
                   <dd>{feeTypeLabel(selectedPartnerFeeInvoice.fee_type)}</dd>
                 </div>
                 <div>
-                  <dt>已付</dt>
+                  <dt>{t('finance.fee.field.paid')}</dt>
                   <dd>
                     {formatFinanceAmount(
                       selectedPartnerFeeInvoice.paid_amount,
@@ -472,7 +478,7 @@ export function FeesView({ model, shell }: Props) {
                   </dd>
                 </div>
                 <div>
-                  <dt>未付</dt>
+                  <dt>{t('finance.fee.field.unpaid')}</dt>
                   <dd>
                     {formatFinanceAmount(
                       selectedPartnerFeeInvoice.unpaid_amount,
@@ -482,14 +488,14 @@ export function FeesView({ model, shell }: Props) {
                 </div>
               </dl>
             ) : (
-              <div className="module-state">暂无合作伙伴费用发票</div>
+              <div className="module-state">{t('finance.fee.message.noInvoice')}</div>
             )}
             <div className="finance-receipt-actions">
               <form className="record-form compact-section" onSubmit={submitFeePaymentRequest}>
-                <div className="form-divider">付费申请新增</div>
+                <div className="form-divider">{t('finance.fee.panel.newPaymentRequest')}</div>
                 <div className="finance-payment-fields">
                   <label>
-                    付费申请号
+                    {t('finance.fee.field.requestNo')}
                     <Input
                       value={feePaymentRequestForm.request_no}
                       onChange={(event) =>
@@ -501,7 +507,7 @@ export function FeesView({ model, shell }: Props) {
                     />
                   </label>
                   <label>
-                    费用发票标识
+                    {t('finance.fee.field.partnerFeeInvoiceId')}
                     <Input
                       value={feePaymentRequestForm.partner_fee_invoice_id}
                       onChange={(event) =>
@@ -513,7 +519,7 @@ export function FeesView({ model, shell }: Props) {
                     />
                   </label>
                   <label>
-                    申请日期
+                    {t('finance.fee.field.requestDate')}
                     <Input
                       type="date"
                       value={feePaymentRequestForm.request_date}
@@ -526,7 +532,7 @@ export function FeesView({ model, shell }: Props) {
                     />
                   </label>
                   <label>
-                    申请金额
+                    {t('finance.fee.field.requestedAmount')}
                     <Input
                       value={feePaymentRequestForm.requested_amount}
                       onChange={(event) =>
@@ -538,7 +544,7 @@ export function FeesView({ model, shell }: Props) {
                     />
                   </label>
                   <label>
-                    币种
+                    {t('finance.field.currency')}
                     <Input
                       value={feePaymentRequestForm.currency}
                       onChange={(event) =>
@@ -550,7 +556,7 @@ export function FeesView({ model, shell }: Props) {
                     />
                   </label>
                   <label>
-                    申请备注
+                    {t('finance.fee.field.requestRemark')}
                     <Input
                       value={feePaymentRequestForm.remark}
                       onChange={(event) =>
@@ -576,14 +582,14 @@ export function FeesView({ model, shell }: Props) {
                   loading={submittingFeePaymentRequest}
                   disabled={!selectedPartnerFeeInvoice || !feePaymentRequestForm.reviewer_id}
                 >
-                  新增付费申请
+                  {t('finance.fee.action.createPaymentRequest')}
                 </Button>
               </form>
               <form className="record-form compact-section" onSubmit={submitFeePaymentApproval}>
-                <div className="form-divider">付费审批</div>
+                <div className="form-divider">{t('finance.fee.panel.paymentApproval')}</div>
                 <div className="finance-payment-fields">
                   <label>
-                    审批金额
+                    {t('finance.fee.field.approvedAmount')}
                     <Input
                       value={feePaymentApprovalForm.approved_amount}
                       onChange={(event) =>
@@ -595,7 +601,7 @@ export function FeesView({ model, shell }: Props) {
                     />
                   </label>
                   <label>
-                    审批日期
+                    {t('finance.fee.field.approvedAt')}
                     <Input
                       type="date"
                       value={feePaymentApprovalForm.approved_at}
@@ -608,11 +614,11 @@ export function FeesView({ model, shell }: Props) {
                     />
                   </label>
                   <label>
-                    审批人
+                    {t('finance.fee.field.reviewer')}
                     <Input disabled value={selectedFeePaymentRequest?.reviewer_name ?? ''} />
                   </label>
                   <label>
-                    付款账号
+                    {t('finance.fee.field.paymentAccount')}
                     <Input
                       value={feePaymentApprovalForm.payment_account}
                       onChange={(event) =>
@@ -624,7 +630,7 @@ export function FeesView({ model, shell }: Props) {
                     />
                   </label>
                   <label>
-                    审批备注
+                    {t('finance.fee.field.approvalRemark')}
                     <Input
                       value={feePaymentApprovalForm.remark}
                       onChange={(event) =>
@@ -642,24 +648,28 @@ export function FeesView({ model, shell }: Props) {
                   loading={submittingFeePaymentApproval}
                   disabled={!selectedFeePaymentRequestCanApprove}
                 >
-                  审批付费
+                  {t('finance.fee.action.approvePayment')}
                 </Button>
                 {selectedFeePaymentRequest?.status === 'submitted' &&
                 !selectedFeePaymentRequestCanApprove ? (
                   <Alert
                     showIcon
                     type="info"
-                    message={`等待 ${selectedFeePaymentRequest.reviewer_name ?? '指定审批人'} 审批`}
+                    message={t('finance.fee.message.waitingApproval', {
+                      reviewer:
+                        selectedFeePaymentRequest.reviewer_name ??
+                        t('finance.fee.message.designatedReviewer'),
+                    })}
                   />
                 ) : null}
               </form>
             </div>
             <section className="finance-allocation-history">
-              <strong>付费申请列表</strong>
+              <strong>{t('finance.fee.panel.paymentRequestList')}</strong>
               <Table<FeePaymentRequest>
                 columns={[
                   {
-                    title: '申请号',
+                    title: t('finance.fee.table.requestNo'),
                     dataIndex: 'request_no',
                     render: (value: string) => (
                       <button className="row-button" type="button">
@@ -667,17 +677,17 @@ export function FeesView({ model, shell }: Props) {
                       </button>
                     ),
                   },
-                  { title: '状态', dataIndex: 'status', render: feePaymentRequestStatusTag },
-                  { title: '费用类型', dataIndex: 'fee_type', render: feeTypeLabel },
-                  { title: '合作伙伴', dataIndex: 'partner_name' },
-                  { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
+                  { title: t('finance.field.status'), dataIndex: 'status', render: feePaymentRequestStatusTag },
+                  { title: t('finance.fee.field.feeType'), dataIndex: 'fee_type', render: feeTypeLabel },
+                  { title: t('finance.fee.table.partner'), dataIndex: 'partner_name' },
+                  { title: t('finance.fee.table.shipment'), dataIndex: 'shipment_no', render: nullableText },
                   {
-                    title: '申请金额',
+                    title: t('finance.fee.field.requestedAmount'),
                     dataIndex: 'requested_amount',
                     render: (value: string, record) => formatFinanceAmount(value, record.currency),
                   },
                   {
-                    title: '已付',
+                    title: t('finance.fee.field.paid'),
                     dataIndex: 'paid_amount',
                     render: (value: string, record) => formatFinanceAmount(value, record.currency),
                   },
@@ -709,7 +719,10 @@ export function FeesView({ model, shell }: Props) {
         {!detailId ? (
           <section className="workspace-panel finance-fee-payable-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<ShieldCheck size={18} />} title="应付费用查询" />
+              <PanelTitle
+                icon={<ShieldCheck size={18} />}
+                title={t('finance.fee.panel.payables')}
+              />
               <form
                 className="inline-filters single-line-filter-toolbar"
                 onSubmit={(event) => {
@@ -718,85 +731,85 @@ export function FeesView({ model, shell }: Props) {
                 }}
               >
                 <label>
-                  应付费用搜索
+                  {t('finance.fee.filter.payableSearch')}
                   <Input
                     value={feePayableSearch}
                     onChange={(event) => setFeePayableSearch(event.target.value)}
                   />
                 </label>
                 <label>
-                  应付状态
+                  {t('finance.fee.filter.payableStatus')}
                   <FormSelect
                     value={feePayableStatusFilter}
                     onChange={(event) => setFeePayableStatusFilter(event.target.value)}
                   >
-                    <option value="">全部状态</option>
+                    <option value="">{t('finance.fee.filter.allStatuses')}</option>
                     {partnerFeeInvoiceStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label>
-                  费用类型
+                  {t('finance.fee.field.feeType')}
                   <FormSelect
                     value={feePayableTypeFilter}
                     onChange={(event) => setFeePayableTypeFilter(event.target.value)}
                   >
-                    <option value="">全部类型</option>
+                    <option value="">{t('finance.fee.filter.allTypes')}</option>
                     {feeTypeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label>
-                  合作伙伴标识
+                  {t('finance.fee.field.partnerId')}
                   <Input
                     value={feePayablePartnerFilter}
                     onChange={(event) => setFeePayablePartnerFilter(event.target.value)}
                   />
                 </label>
                 <label>
-                  出运单号
+                  {t('finance.fee.field.shipmentNo')}
                   <Input
                     value={feePayableShipmentFilter}
                     onChange={(event) => setFeePayableShipmentFilter(event.target.value)}
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('finance.fee.action.search')}
                 </Button>
               </form>
             </div>
             <Table<FeePayableItem>
               columns={[
                 {
-                  title: '费用发票',
+                  title: t('finance.fee.table.feeInvoice'),
                   dataIndex: 'invoice_no',
                   render: (value: string) => <strong>{value}</strong>,
                 },
-                { title: '合作伙伴', dataIndex: 'partner_name' },
-                { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
-                { title: '费用类型', dataIndex: 'fee_type', render: feeTypeLabel },
+                { title: t('finance.fee.table.partner'), dataIndex: 'partner_name' },
+                { title: t('finance.fee.table.shipment'), dataIndex: 'shipment_no', render: nullableText },
+                { title: t('finance.fee.field.feeType'), dataIndex: 'fee_type', render: feeTypeLabel },
                 {
-                  title: '发票金额',
+                  title: t('finance.fee.field.invoiceAmount'),
                   dataIndex: 'total_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '已付费',
+                  title: t('finance.fee.table.paidAmount'),
                   dataIndex: 'paid_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '应付余额',
+                  title: t('finance.fee.table.payableBalance'),
                   dataIndex: 'payable_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
-                { title: '状态', dataIndex: 'status', render: partnerFeeInvoiceStatusTag },
+                { title: t('finance.field.status'), dataIndex: 'status', render: partnerFeeInvoiceStatusTag },
               ]}
               dataSource={feePayables}
               loading={loadingFeePayables}
