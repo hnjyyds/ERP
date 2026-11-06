@@ -18,9 +18,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { showError, showWarningDialog } from '../../../shared/errors'
 import { Metric, PanelTitle, useColumnView, type ColumnOption } from '../../../shared/ui'
+import { t } from '../../appI18n'
 import {
   contactPayload,
-  creditGradeOptions,
   entityToForm,
   formCreditGradeOptions,
   formStatusOptions,
@@ -45,15 +45,17 @@ import {
   type TransactionListResult,
 } from './tradingPartnerModel'
 
-const defaultColumnOptions: ColumnOption[] = [
-  { key: 'code', title: '编号', required: true },
-  { key: 'cn_name', title: '中文名称' },
-  { key: 'en_name', title: '英文名称' },
-  { key: 'partner_type', title: '类型' },
-  { key: 'country', title: '国家/地区' },
-  { key: 'contact', title: '联系人' },
-  { key: 'status', title: '状态' },
-]
+function buildColumnOptions(): ColumnOption[] {
+  return [
+    { key: 'code', title: t('masterdata.field.code'), required: true },
+    { key: 'cn_name', title: t('masterdata.field.cnName') },
+    { key: 'en_name', title: t('masterdata.field.enName') },
+    { key: 'partner_type', title: t('masterdata.field.type') },
+    { key: 'country', title: t('masterdata.field.country') },
+    { key: 'contact', title: t('masterdata.field.contact') },
+    { key: 'status', title: t('masterdata.field.status') },
+  ]
+}
 
 export type TradingPartnerPageProps = {
   className: string
@@ -126,13 +128,10 @@ export function TradingPartnerPage({
   const [editingContactId, setEditingContactId] = useState<string | null>(null)
   const [form, setForm] = useState<PartnerFormState>(() => initialPartnerForm(createPrefix))
   const [contactForm, setContactForm] = useState<ContactFormState>(() => initialContactForm())
-  const columnOptions = useMemo(
-    () =>
-      kind === 'partner'
-        ? defaultColumnOptions
-        : defaultColumnOptions.filter((option) => option.key !== 'partner_type'),
-    [kind],
-  )
+  const columnOptions =
+    kind === 'partner'
+      ? buildColumnOptions()
+      : buildColumnOptions().filter((option) => option.key !== 'partner_type')
   const { isVisible: isColumnVisible, control: columnViewControl } = useColumnView(
     `masterdata-${kind}-columns`,
     columnOptions,
@@ -143,6 +142,27 @@ export function TradingPartnerPage({
     kind === 'partner' ? partnerType : creditGrade,
     statusFilter,
   ].filter(Boolean).length
+
+  const partnerTypeSelectOptions = [
+    { value: '', label: t('masterdata.field.allTypes') },
+    ...partnerTypeOptions.map((option) => ({ value: option.value, label: t(option.labelKey) })),
+  ]
+  const formPartnerTypeOptions = partnerTypeOptions.map((option) => ({
+    value: option.value,
+    label: t(option.labelKey),
+  }))
+  const localizedStatusOptions = statusOptions.map((option) => ({
+    value: option.value,
+    label: t(option.labelKey),
+  }))
+  const localizedFormStatusOptions = formStatusOptions.map((option) => ({
+    value: option.value,
+    label: t(option.labelKey),
+  }))
+  const localizedCreditGradeOptions = [
+    { value: '', label: t('masterdata.tradingPartner.allCreditGrades') },
+    ...formCreditGradeOptions,
+  ]
 
   const openDetail = useCallback(
     (record: PartnerEntity) => {
@@ -160,74 +180,77 @@ export function TradingPartnerPage({
     [openDetail],
   )
 
-  const columns = useMemo<ColumnsType<PartnerEntity>>(
-    () => [
-      ...(isColumnVisible('code')
-        ? [
-            {
-              title: '编号',
-              dataIndex: 'code',
-              width: 130,
-              render: (value: string, record: PartnerEntity) => (
-                <button
-                  className="row-button"
-                  type="button"
-                  onClick={(event) => stopAndOpenDetail(event, record)}
-                >
-                  {value}
-                </button>
-              ),
-            },
-          ]
-        : []),
-      ...(isColumnVisible('cn_name') ? [{ title: '中文名称', dataIndex: 'cn_name' }] : []),
-      ...(isColumnVisible('en_name') ? [{ title: '英文名称', dataIndex: 'en_name' }] : []),
-      ...(kind === 'partner' && isColumnVisible('partner_type')
-        ? [
-            {
-              title: '类型',
-              dataIndex: 'partner_type',
-              width: 120,
-              render: (value: string) => partnerTypeLabel(value),
-            },
-          ]
-        : []),
-      ...(isColumnVisible('country')
-        ? [{ title: '国家/地区', dataIndex: 'country', width: 120 }]
-        : []),
-      ...(isColumnVisible('contact')
-        ? [
-            {
-              title: '联系人',
-              width: 140,
-              render: (_: unknown, record: PartnerEntity) =>
-                record.primary_contact?.name ?? record.contacts[0]?.name ?? '未维护',
-            },
-          ]
-        : []),
-      ...(isColumnVisible('status')
-        ? [
-            {
-              title: '状态',
-              dataIndex: 'status',
-              width: 90,
-              render: (value: string) => <StatusTag value={value} />,
-            },
-          ]
-        : []),
-      {
-        title: '入口',
-        key: 'detail',
-        width: 110,
-        render: (_: unknown, record: PartnerEntity) => (
-          <Button size="small" onClick={(event) => stopAndOpenDetail(event, record)}>
-            查看详情
-          </Button>
-        ),
-      },
-    ],
-    [isColumnVisible, kind, stopAndOpenDetail],
-  )
+  const columns: ColumnsType<PartnerEntity> = [
+    ...(isColumnVisible('code')
+      ? [
+          {
+            title: t('masterdata.field.code'),
+            dataIndex: 'code',
+            width: 130,
+            render: (value: string, record: PartnerEntity) => (
+              <button
+                className="row-button"
+                type="button"
+                onClick={(event) => stopAndOpenDetail(event, record)}
+              >
+                {value}
+              </button>
+            ),
+          },
+        ]
+      : []),
+    ...(isColumnVisible('cn_name')
+      ? [{ title: t('masterdata.field.cnName'), dataIndex: 'cn_name' }]
+      : []),
+    ...(isColumnVisible('en_name')
+      ? [{ title: t('masterdata.field.enName'), dataIndex: 'en_name' }]
+      : []),
+    ...(kind === 'partner' && isColumnVisible('partner_type')
+      ? [
+          {
+            title: t('masterdata.field.type'),
+            dataIndex: 'partner_type',
+            width: 120,
+            render: (value: string) => partnerTypeLabel(value),
+          },
+        ]
+      : []),
+    ...(isColumnVisible('country')
+      ? [{ title: t('masterdata.field.country'), dataIndex: 'country', width: 120 }]
+      : []),
+    ...(isColumnVisible('contact')
+      ? [
+          {
+            title: t('masterdata.field.contact'),
+            width: 140,
+            render: (_: unknown, record: PartnerEntity) =>
+              record.primary_contact?.name ??
+              record.contacts[0]?.name ??
+              t('masterdata.field.notMaintained'),
+          },
+        ]
+      : []),
+    ...(isColumnVisible('status')
+      ? [
+          {
+            title: t('masterdata.field.status'),
+            dataIndex: 'status',
+            width: 90,
+            render: (value: string) => <StatusTag value={value} />,
+          },
+        ]
+      : []),
+    {
+      title: t('masterdata.field.entry'),
+      key: 'detail',
+      width: 110,
+      render: (_: unknown, record: PartnerEntity) => (
+        <Button size="small" onClick={(event) => stopAndOpenDetail(event, record)}>
+          {t('masterdata.action.viewDetail')}
+        </Button>
+      ),
+    },
+  ]
 
   const filteredRows = useMemo(
     () => rows.filter((row) => !statusFilter || row.status === statusFilter),
@@ -294,7 +317,7 @@ export function TradingPartnerPage({
         return result.items[0]?.id ?? null
       })
     } catch (caught) {
-      showError(caught, `${entityLabel}列表加载失败`)
+      showError(caught, t('masterdata.tradingPartner.listLoadFailed', { entity: entityLabel }))
     } finally {
       setLoading(false)
     }
@@ -346,16 +369,16 @@ export function TradingPartnerPage({
       if (entityModalMode === 'edit' && selected) {
         const updated = await updateEntity(selected.id, partnerUpdatePayload(form, kind))
         setRows((current) => current.map((item) => (item.id === updated.id ? updated : item)))
-        setMessage(`${entityLabel}已保存`)
+        setMessage(t('masterdata.tradingPartner.saved', { entity: entityLabel }))
       } else {
         const created = await createEntity(partnerCreatePayload(form, kind))
         setRows((current) => [created, ...current])
         setSelectedId(created.id)
-        setMessage(`${entityLabel}已新增`)
+        setMessage(t('masterdata.tradingPartner.created', { entity: entityLabel }))
       }
       setEntityModalMode(null)
     } catch (caught) {
-      showError(caught, `${entityLabel}保存失败`)
+      showError(caught, t('masterdata.tradingPartner.saveFailed', { entity: entityLabel }))
     } finally {
       setSubmitting(false)
     }
@@ -367,7 +390,7 @@ export function TradingPartnerPage({
     setMessage('')
     setError('')
     if (!contactForm.name.trim()) {
-      showWarningDialog('请填写联系人姓名')
+      showWarningDialog(t('masterdata.tradingPartner.contactNameRequired'))
       return
     }
     setSubmitting(true)
@@ -379,10 +402,14 @@ export function TradingPartnerPage({
       }
       setContactModalOpen(false)
       setEditingContactId(null)
-      setMessage(editingContactId ? '联系人已保存' : '联系人已新增')
+      setMessage(
+        editingContactId
+          ? t('masterdata.tradingPartner.contactSaved')
+          : t('masterdata.tradingPartner.contactCreated'),
+      )
       await loadRows()
     } catch (caught) {
-      showError(caught, '联系人保存失败')
+      showError(caught, t('masterdata.tradingPartner.contactSaveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -391,18 +418,18 @@ export function TradingPartnerPage({
   function confirmDeleteContact(contact: PartnerContact) {
     if (!selected) return
     Modal.confirm({
-      title: `删除联系人 ${contact.name}`,
-      content: '删除后该联系人不会再作为后续单据的默认联系人，历史记录仍然保留业务引用信息。',
-      okText: '删除',
-      cancelText: '取消',
+      title: t('masterdata.tradingPartner.contactDeleteTitle', { name: contact.name }),
+      content: t('masterdata.tradingPartner.contactDeleteContent'),
+      okText: t('common.delete'),
+      cancelText: t('common.cancel'),
       okButtonProps: { danger: true },
       onOk: async () => {
         try {
           await deleteContact(selected.id, contact.id)
-          setMessage('联系人已删除')
+          setMessage(t('masterdata.tradingPartner.contactDeleted'))
           await loadRows()
         } catch (caught) {
-          showError(caught, '联系人删除失败')
+          showError(caught, t('masterdata.tradingPartner.contactDeleteFailed'))
         }
       },
     })
@@ -411,18 +438,21 @@ export function TradingPartnerPage({
   function confirmDeactivate() {
     if (!selected) return
     Modal.confirm({
-      title: `停用${entityLabel} ${selected.cn_name}`,
-      content: '停用后不会作为后续业务的默认可选项，历史资料仍然保留。',
-      okText: '停用',
-      cancelText: '取消',
+      title: t('masterdata.tradingPartner.deactivateTitle', {
+        entity: entityLabel,
+        name: selected.cn_name,
+      }),
+      content: t('masterdata.tradingPartner.deactivateContent'),
+      okText: t('masterdata.action.deactivate'),
+      cancelText: t('common.cancel'),
       okButtonProps: { danger: true },
       onOk: async () => {
         try {
           const updated = await deactivateEntity(selected.id)
           setRows((current) => current.map((item) => (item.id === updated.id ? updated : item)))
-          setMessage(`${entityLabel}已停用`)
+          setMessage(t('masterdata.tradingPartner.deactivated', { entity: entityLabel }))
         } catch (caught) {
-          showError(caught, `${entityLabel}停用失败`)
+          showError(caught, t('masterdata.tradingPartner.deactivateFailed', { entity: entityLabel }))
         }
       },
     })
@@ -430,12 +460,22 @@ export function TradingPartnerPage({
 
   return (
     <section className={`masterdata-page masterdata-entity-page ${className}`}>
-      <div className="summary-strip" aria-label={`${entityLabel}概览`}>
+      <div
+        className="summary-strip"
+        aria-label={t('masterdata.tradingPartner.overviewAria', { entity: entityLabel })}
+      >
         <Metric label={entityLabel} value={rows.length} />
-        <Metric label="启用" value={rows.filter((item) => item.status === 'active').length} />
-        <Metric label="联系人" value={rows.reduce((sum, item) => sum + item.contacts.length, 0)} />
+        <Metric label={t('status.active')} value={rows.filter((item) => item.status === 'active').length} />
         <Metric
-          label={showCreditFields ? '有信用资料' : '类型数'}
+          label={t('masterdata.field.contact')}
+          value={rows.reduce((sum, item) => sum + item.contacts.length, 0)}
+        />
+        <Metric
+          label={
+            showCreditFields
+              ? t('masterdata.tradingPartner.withCreditProfile')
+              : t('masterdata.tradingPartner.typeCount')
+          }
           value={
             showCreditFields
               ? rows.filter((item) => 'credit_profile' in item && Boolean(item.credit_profile)).length
@@ -457,7 +497,10 @@ export function TradingPartnerPage({
         {!detailId ? (
           <section className="workspace-panel list-panel masterdata-list-panel">
           <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title={`${entityLabel}列表`} />
+            <PanelTitle
+              icon={<Search size={18} />}
+              title={t('masterdata.tradingPartner.listTitle', { entity: entityLabel })}
+            />
             <form
               className="inline-filters partner-inline-filters"
               onSubmit={(event) => {
@@ -467,7 +510,7 @@ export function TradingPartnerPage({
             >
               <div className="partner-filter-toolbar">
                 <label className="inline-filter-search">
-                  搜索
+                  {t('masterdata.tradingPartner.searchLabel')}
                   <Input
                     value={search}
                     placeholder={searchPlaceholder}
@@ -475,9 +518,13 @@ export function TradingPartnerPage({
                   />
                 </label>
                 <div className="partner-filter-actions">
-                  <Tooltip title={`查询${entityLabel}`}>
+                  <Tooltip
+                    title={t('masterdata.tradingPartner.searchTooltip', { entity: entityLabel })}
+                  >
                     <Button
-                      aria-label={`查询${entityLabel}`}
+                      aria-label={t('masterdata.tradingPartner.searchTooltip', {
+                        entity: entityLabel,
+                      })}
                       className="toolbar-icon-button"
                       htmlType="submit"
                       icon={<Search size={16} />}
@@ -489,20 +536,24 @@ export function TradingPartnerPage({
                     icon={<Plus size={16} />}
                     onClick={openCreate}
                   >
-                    新增{entityLabel}
+                    {t('masterdata.tradingPartner.create', { entity: entityLabel })}
                   </Button>
                   <Tooltip
                     title={
                       activeAdvancedFilterCount > 0
-                        ? `高级筛选，已启用 ${activeAdvancedFilterCount} 项`
-                        : '高级筛选'
+                        ? t('masterdata.tradingPartner.advancedFilterActive', {
+                            count: activeAdvancedFilterCount,
+                          })
+                        : t('masterdata.tradingPartner.advancedFilter')
                     }
                   >
                     <Button
                       aria-label={
                         activeAdvancedFilterCount > 0
-                          ? `高级筛选，已启用 ${activeAdvancedFilterCount} 项`
-                          : '高级筛选'
+                          ? t('masterdata.tradingPartner.advancedFilterActive', {
+                              count: activeAdvancedFilterCount,
+                            })
+                          : t('masterdata.tradingPartner.advancedFilter')
                       }
                       aria-expanded={advancedFiltersOpen}
                       aria-pressed={advancedFiltersOpen}
@@ -523,45 +574,52 @@ export function TradingPartnerPage({
               </div>
 
               {advancedFiltersOpen ? (
-                <div className="partner-advanced-filters" aria-label={`${entityLabel}高级筛选`}>
+                <div
+                  className="partner-advanced-filters"
+                  aria-label={t('masterdata.tradingPartner.advancedFilterAria', {
+                    entity: entityLabel,
+                  })}
+                >
                   <label>
-                    国家/地区
+                    {t('masterdata.field.country')}
                     <Input
                       value={country}
-                      placeholder="国家/地区"
+                      placeholder={t('masterdata.field.country')}
                       onChange={(event) => setCountry(event.target.value)}
                     />
                   </label>
                   <label>
-                    {kind === 'partner' ? '类型' : '信用'}
+                    {kind === 'partner'
+                      ? t('masterdata.field.type')
+                      : t('masterdata.tradingPartner.credit')}
                     {kind === 'partner' ? (
                       <Select
-                        aria-label="类型"
-                        options={[{ value: '', label: '全部类型' }, ...partnerTypeOptions]}
+                        aria-label={t('masterdata.field.type')}
+                        options={partnerTypeSelectOptions}
                         value={partnerType}
                         onChange={setPartnerType}
                       />
                     ) : (
                       <Select
-                        aria-label="信用"
-                        options={creditGradeOptions}
+                        aria-label={t('masterdata.tradingPartner.credit')}
+                        options={localizedCreditGradeOptions}
                         value={creditGrade}
                         onChange={setCreditGrade}
                       />
                     )}
                   </label>
                   <label>
-                    状态
+                    {t('masterdata.field.status')}
                     <Select
-                      aria-label="状态"
-                      options={statusOptions}
+                      aria-label={t('masterdata.field.status')}
+                      options={localizedStatusOptions}
                       value={statusFilter}
                       onChange={setStatusFilter}
                     />
                   </label>
-                  <Tooltip title="重置高级筛选">
+                  <Tooltip title={t('masterdata.tradingPartner.resetAdvancedFilters')}>
                     <Button
-                      aria-label="重置高级筛选"
+                      aria-label={t('masterdata.tradingPartner.resetAdvancedFilters')}
                       className="toolbar-icon-button advanced-filter-reset"
                       disabled={activeAdvancedFilterCount === 0}
                       htmlType="button"
@@ -595,17 +653,20 @@ export function TradingPartnerPage({
             <PanelTitle icon={<UsersRound size={18} />} title={pageTitle} />
             {selected ? (
               <div className="section-actions">
-                <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(listPath)}>
-                  返回列表
+                <Button
+                  icon={<ArrowLeft size={16} />}
+                  onClick={() => onNavigate(listPath)}
+                >
+                  {t('masterdata.action.backToList')}
                 </Button>
                 <Button icon={<Plus size={16} />} onClick={openContactModal}>
-                  新增联系人
+                  {t('masterdata.tradingPartner.addContact')}
                 </Button>
                 <Button icon={<FilePenLine size={16} />} onClick={openEdit}>
-                  编辑资料
+                  {t('masterdata.action.editProfile')}
                 </Button>
                 <Button danger icon={<Trash2 size={16} />} onClick={confirmDeactivate}>
-                  停用
+                  {t('masterdata.action.deactivate')}
                 </Button>
               </div>
             ) : null}
@@ -625,91 +686,139 @@ export function TradingPartnerPage({
 
               <dl className="detail-list">
                 <div>
-                  <dt>国家/地区</dt>
+                  <dt>{t('masterdata.field.country')}</dt>
                   <dd>{selected.country}</dd>
                 </div>
                 <div>
-                  <dt>地址</dt>
-                  <dd>{selected.address ?? '未维护'}</dd>
+                  <dt>{t('masterdata.field.address')}</dt>
+                  <dd>{selected.address ?? t('masterdata.field.notMaintained')}</dd>
                 </div>
                 <div>
-                  <dt>网站</dt>
-                  <dd>{selected.website ?? '未维护'}</dd>
+                  <dt>{t('masterdata.field.website')}</dt>
+                  <dd>{selected.website ?? t('masterdata.field.notMaintained')}</dd>
                 </div>
                 <div>
-                  <dt>{kind === 'partner' ? '伙伴类型' : '信用等级'}</dt>
+                  <dt>
+                    {kind === 'partner'
+                      ? t('masterdata.tradingPartner.partnerType')
+                      : t('masterdata.tradingPartner.creditGrade')}
+                  </dt>
                   <dd>
                     {kind === 'partner' && 'partner_type' in selected
                       ? partnerTypeLabel(selected.partner_type)
                       : 'credit_profile' in selected
-                        ? selected.credit_profile?.credit_grade ?? '未维护'
-                        : '未维护'}
+                        ? selected.credit_profile?.credit_grade ??
+                          t('masterdata.field.notMaintained')
+                        : t('masterdata.field.notMaintained')}
                   </dd>
                 </div>
                 {showCreditFields && 'credit_profile' in selected ? (
                   <>
                     <div>
-                      <dt>授信额度</dt>
+                      <dt>{t('masterdata.tradingPartner.creditLimit')}</dt>
                       <dd>
                         {selected.credit_profile?.credit_limit
                           ? `${selected.credit_profile.credit_limit} ${selected.credit_profile.currency}`
-                          : '无权限或未维护'}
+                          : t('masterdata.tradingPartner.creditUnavailable')}
                       </dd>
                     </div>
                     <div>
-                      <dt>账期</dt>
-                      <dd>{selected.credit_profile?.payment_terms ?? '未维护'}</dd>
+                      <dt>{t('masterdata.tradingPartner.paymentTerms')}</dt>
+                      <dd>
+                        {selected.credit_profile?.payment_terms ??
+                          t('masterdata.field.notMaintained')}
+                      </dd>
                     </div>
                     <div>
-                      <dt>风险备注</dt>
-                      <dd>{selected.credit_profile?.risk_note ?? '无'}</dd>
+                      <dt>{t('masterdata.tradingPartner.riskNote')}</dt>
+                      <dd>{selected.credit_profile?.risk_note ?? t('common.none')}</dd>
                     </div>
                   </>
                 ) : null}
                 <div>
-                  <dt>负责人</dt>
+                  <dt>{t('masterdata.field.owner')}</dt>
                   <dd>{selected.owner_user_id}</dd>
                 </div>
               </dl>
 
               <section className="compact-section">
-                <PanelTitle icon={<UserRound size={18} />} title="联系人" />
+                <PanelTitle
+                  icon={<UserRound size={18} />}
+                  title={t('masterdata.tradingPartner.contactSection')}
+                />
                 <div className="contact-card-grid">
                   {selected.contacts.length > 0 ? (
                     selected.contacts.map((contact) => (
                       <article className="contact-card" key={contact.id}>
                         <strong>{contact.name}</strong>
-                        <span>{contact.title ?? '未填写职务'}</span>
-                        <p>{contact.email ?? '未填写邮箱'}</p>
-                        <p>{contact.phone ?? '未填写电话'}</p>
+                        <span>
+                          {contact.title ?? t('masterdata.tradingPartner.contactTitleMissing')}
+                        </span>
+                        <p>
+                          {contact.email ?? t('masterdata.tradingPartner.contactEmailMissing')}
+                        </p>
+                        <p>
+                          {contact.phone ?? t('masterdata.tradingPartner.contactPhoneMissing')}
+                        </p>
                         <div className="contact-card-footer">
-                          {contact.is_primary ? <Tag color="gold">主要联系人</Tag> : <span />}
+                          {contact.is_primary ? (
+                            <Tag color="gold">{t('masterdata.tradingPartner.primaryContact')}</Tag>
+                          ) : (
+                            <span />
+                          )}
                           <div className="table-actions">
                             <Button size="small" onClick={() => openEditContact(contact)}>
-                              编辑
+                              {t('common.edit')}
                             </Button>
                             <Button danger size="small" onClick={() => confirmDeleteContact(contact)}>
-                              删除
+                              {t('common.delete')}
                             </Button>
                           </div>
                         </div>
                       </article>
                     ))
                   ) : (
-                    <div className="module-state">暂无联系人</div>
+                    <div className="module-state">{t('masterdata.tradingPartner.noContacts')}</div>
                   )}
                 </div>
               </section>
 
               <section className="compact-section">
-                <PanelTitle icon={<History size={18} />} title={kind === 'partner' ? '费用记录' : '业务记录'} />
+                <PanelTitle
+                  icon={<History size={18} />}
+                  title={
+                    kind === 'partner'
+                      ? t('masterdata.tradingPartner.feeRecords')
+                      : t('masterdata.tradingPartner.businessRecords')
+                  }
+                />
                 <Table<PartnerTransaction>
                   columns={[
-                    { title: '来源', dataIndex: 'source_type', width: 120 },
-                    { title: '编号', dataIndex: 'source_code', width: 160 },
-                    { title: '摘要', dataIndex: 'summary' },
-                    { title: '金额', dataIndex: 'amount', width: 120, render: (value) => value ?? '-' },
-                    { title: '时间', dataIndex: 'occurred_at', width: 160 },
+                    {
+                      title: t('masterdata.tradingPartner.transactionSource'),
+                      dataIndex: 'source_type',
+                      width: 120,
+                    },
+                    {
+                      title: t('masterdata.tradingPartner.transactionCode'),
+                      dataIndex: 'source_code',
+                      width: 160,
+                    },
+                    {
+                      title: t('masterdata.tradingPartner.transactionSummary'),
+                      dataIndex: 'summary',
+                    },
+                    {
+                      title: t('masterdata.tradingPartner.transactionAmount'),
+                      dataIndex: 'amount',
+                      width: 120,
+                      render: (value) => value ?? '-',
+                    },
+                    {
+                      title: t('masterdata.tradingPartner.transactionTime'),
+                      dataIndex: 'occurred_at',
+                      width: 160,
+                    },
                   ]}
                   dataSource={transactions}
                   loading={transactionLoading}
@@ -722,8 +831,10 @@ export function TradingPartnerPage({
           ) : (
             <div className="module-state panel-empty-state">
               <UsersRound size={28} />
-              <strong>暂无{entityLabel}资料</strong>
-              <span>请返回列表选择{entityLabel}查看详情</span>
+              <strong>{t('masterdata.tradingPartner.emptyTitle', { entity: entityLabel })}</strong>
+              <span>
+                {t('masterdata.tradingPartner.emptyDescription', { entity: entityLabel })}
+              </span>
             </div>
           )}
           </section>
@@ -734,14 +845,18 @@ export function TradingPartnerPage({
         centered
         footer={null}
         open={Boolean(entityModalMode)}
-        title={entityModalMode === 'edit' ? `编辑${entityLabel}` : `新增${entityLabel}`}
+        title={
+          entityModalMode === 'edit'
+            ? t('masterdata.tradingPartner.editTitle', { entity: entityLabel })
+            : t('masterdata.tradingPartner.createTitle', { entity: entityLabel })
+        }
         width={1040}
         onCancel={() => setEntityModalMode(null)}
       >
         <form className="record-form entity-modal-form" onSubmit={submitEntity}>
           <div className="entity-modal-grid">
             <label>
-              编号
+              {t('masterdata.field.code')}
               <Input
                 disabled={entityModalMode === 'edit'}
                 value={form.code}
@@ -749,51 +864,51 @@ export function TradingPartnerPage({
               />
             </label>
             <label>
-              中文名称
+              {t('masterdata.field.cnName')}
               <Input value={form.cn_name} onChange={(event) => setForm({ ...form, cn_name: event.target.value })} />
             </label>
             <label>
-              英文名称
+              {t('masterdata.field.enName')}
               <Input value={form.en_name} onChange={(event) => setForm({ ...form, en_name: event.target.value })} />
             </label>
             {kind === 'partner' ? (
               <label>
-                合作伙伴类型
+                {t('masterdata.tradingPartner.partnerTypeSection')}
                 <Select
-                  options={partnerTypeOptions}
+                  options={formPartnerTypeOptions}
                   value={form.partner_type}
                   onChange={(value) => setForm({ ...form, partner_type: value })}
                 />
               </label>
             ) : null}
             <label>
-              国家/地区
+              {t('masterdata.field.country')}
               <Input value={form.country} onChange={(event) => setForm({ ...form, country: event.target.value })} />
             </label>
             <label>
-              状态
+              {t('masterdata.field.status')}
               <Select
-                options={formStatusOptions}
+                options={localizedFormStatusOptions}
                 value={form.status}
                 onChange={(value) => setForm({ ...form, status: value })}
               />
             </label>
             <label>
-              网站
+              {t('masterdata.field.website')}
               <Input value={form.website} onChange={(event) => setForm({ ...form, website: event.target.value })} />
             </label>
             <label className="entity-modal-span">
-              地址
+              {t('masterdata.field.address')}
               <Input value={form.address} onChange={(event) => setForm({ ...form, address: event.target.value })} />
             </label>
           </div>
 
           {showCreditFields ? (
             <div className="entity-modal-section">
-              <div className="form-divider">信用资料</div>
+              <div className="form-divider">{t('masterdata.tradingPartner.creditSection')}</div>
               <div className="entity-modal-grid">
                 <label>
-                  信用等级
+                  {t('masterdata.tradingPartner.creditGrade')}
                   <Select
                     options={formCreditGradeOptions}
                     value={form.credit_grade}
@@ -801,7 +916,7 @@ export function TradingPartnerPage({
                   />
                 </label>
                 <label>
-                  授信额度
+                  {t('masterdata.tradingPartner.creditLimit')}
                   <Input
                     type="number"
                     min="0"
@@ -811,21 +926,21 @@ export function TradingPartnerPage({
                   />
                 </label>
                 <label>
-                  币种
+                  {t('masterdata.tradingPartner.currency')}
                   <Input
                     value={form.currency}
                     onChange={(event) => setForm({ ...form, currency: event.target.value })}
                   />
                 </label>
                 <label className="entity-modal-span">
-                  账期
+                  {t('masterdata.tradingPartner.paymentTerms')}
                   <Input
                     value={form.payment_terms}
                     onChange={(event) => setForm({ ...form, payment_terms: event.target.value })}
                   />
                 </label>
                 <label className="entity-modal-span">
-                  风险备注
+                  {t('masterdata.tradingPartner.riskNote')}
                   <Input.TextArea
                     rows={3}
                     value={form.risk_note}
@@ -838,31 +953,31 @@ export function TradingPartnerPage({
 
           {entityModalMode === 'create' ? (
             <div className="entity-modal-section">
-              <div className="form-divider">首个联系人</div>
+              <div className="form-divider">{t('masterdata.tradingPartner.firstContact')}</div>
               <div className="entity-modal-grid">
                 <label>
-                  姓名
+                  {t('masterdata.tradingPartner.firstName')}
                   <Input
                     value={form.contact_name}
                     onChange={(event) => setForm({ ...form, contact_name: event.target.value })}
                   />
                 </label>
                 <label>
-                  职务
+                  {t('masterdata.tradingPartner.jobTitle')}
                   <Input
                     value={form.contact_title}
                     onChange={(event) => setForm({ ...form, contact_title: event.target.value })}
                   />
                 </label>
                 <label>
-                  邮箱
+                  {t('masterdata.tradingPartner.contactEmail')}
                   <Input
                     value={form.contact_email}
                     onChange={(event) => setForm({ ...form, contact_email: event.target.value })}
                   />
                 </label>
                 <label>
-                  电话
+                  {t('masterdata.tradingPartner.contactPhone')}
                   <Input
                     value={form.contact_phone}
                     onChange={(event) => setForm({ ...form, contact_phone: event.target.value })}
@@ -875,7 +990,7 @@ export function TradingPartnerPage({
                       setForm({ ...form, contact_is_primary: event.target.checked })
                     }
                   />
-                  主要联系人
+                  {t('masterdata.tradingPartner.primaryContact')}
                 </label>
               </div>
             </div>
@@ -883,10 +998,12 @@ export function TradingPartnerPage({
 
           <div className="modal-actions">
             <button className="secondary-inline" type="button" onClick={() => setEntityModalMode(null)}>
-              取消
+              {t('common.cancel')}
             </button>
             <button className="inline-submit" disabled={submitting} type="submit">
-              {entityModalMode === 'edit' ? `保存${entityLabel}` : `新增${entityLabel}`}
+              {entityModalMode === 'edit'
+                ? t('masterdata.tradingPartner.saveButton', { entity: entityLabel })
+                : t('masterdata.tradingPartner.create', { entity: entityLabel })}
             </button>
           </div>
         </form>
@@ -896,7 +1013,11 @@ export function TradingPartnerPage({
         centered
         footer={null}
         open={contactModalOpen}
-        title={editingContactId ? `编辑${entityLabel}联系人` : `新增${entityLabel}联系人`}
+        title={
+          editingContactId
+            ? t('masterdata.tradingPartner.editContactTitle', { entity: entityLabel })
+            : t('masterdata.tradingPartner.createContactTitle', { entity: entityLabel })
+        }
         width={760}
         onCancel={() => {
           setContactModalOpen(false)
@@ -906,28 +1027,28 @@ export function TradingPartnerPage({
         <form className="record-form entity-modal-form" onSubmit={submitContact}>
           <div className="entity-modal-grid two">
             <label>
-              姓名
+              {t('masterdata.tradingPartner.firstName')}
               <Input
                 value={contactForm.name}
                 onChange={(event) => setContactForm({ ...contactForm, name: event.target.value })}
               />
             </label>
             <label>
-              职务
+              {t('masterdata.tradingPartner.jobTitle')}
               <Input
                 value={contactForm.title}
                 onChange={(event) => setContactForm({ ...contactForm, title: event.target.value })}
               />
             </label>
             <label>
-              邮箱
+              {t('masterdata.tradingPartner.contactEmail')}
               <Input
                 value={contactForm.email}
                 onChange={(event) => setContactForm({ ...contactForm, email: event.target.value })}
               />
             </label>
             <label>
-              电话
+              {t('masterdata.tradingPartner.contactPhone')}
               <Input
                 value={contactForm.phone}
                 onChange={(event) => setContactForm({ ...contactForm, phone: event.target.value })}
@@ -940,7 +1061,7 @@ export function TradingPartnerPage({
                   setContactForm({ ...contactForm, is_primary: event.target.checked })
                 }
               />
-              设为主要联系人
+              {t('masterdata.tradingPartner.setPrimaryContact')}
             </label>
           </div>
           <div className="modal-actions">
@@ -952,10 +1073,12 @@ export function TradingPartnerPage({
                 setEditingContactId(null)
               }}
             >
-              取消
+              {t('common.cancel')}
             </button>
             <button className="inline-submit" disabled={submitting} type="submit">
-              {editingContactId ? '保存联系人' : '新增联系人'}
+              {editingContactId
+                ? t('masterdata.tradingPartner.saveContact')
+                : t('masterdata.tradingPartner.addContact')}
             </button>
           </div>
         </form>
@@ -967,7 +1090,7 @@ export function TradingPartnerPage({
 function StatusTag({ value }: { value: string }) {
   return (
     <Tag color={value === 'active' ? 'success' : 'default'}>
-      {value === 'active' ? '启用' : '停用'}
+      {value === 'active' ? t('status.active') : t('status.inactive')}
     </Tag>
   )
 }

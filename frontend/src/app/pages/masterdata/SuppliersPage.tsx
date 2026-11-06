@@ -13,6 +13,7 @@ import {
 } from '../../../api'
 import type { PartnerContactPayload, PartnerCreatePayload, PartnerUpdatePayload } from './tradingPartnerModel'
 import { TradingPartnerPage } from './TradingPartnerPage'
+import { t } from '../../appI18n'
 import { moduleDetailPath, supplierPath } from '../../routes'
 
 type SuppliersPageProps = {
@@ -27,7 +28,7 @@ export function SuppliersPage({ detailId, onNavigate }: SuppliersPageProps) {
       createEntity={(payload) => createSupplier(asSupplierCreatePayload(payload))}
       createPrefix="S"
       deactivateEntity={deactivateSupplier}
-      entityLabel="供应商"
+      entityLabel={t('masterdata.supplier.entityLabel')}
       kind="supplier"
       detailId={detailId}
       detailPath={(id) => moduleDetailPath(supplierPath, id)}
@@ -35,8 +36,8 @@ export function SuppliersPage({ detailId, onNavigate }: SuppliersPageProps) {
       listEntity={(filters) => listSuppliers(filters)}
       listTransactions={listSupplierTransactions}
       onNavigate={onNavigate}
-      pageTitle="供应商资料"
-      searchPlaceholder="供应商编号 / 中英文名称 / 联系人"
+      pageTitle={t('masterdata.supplier.pageTitle')}
+      searchPlaceholder={t('masterdata.supplier.searchPlaceholder')}
       updateEntity={(id, payload) => updateSupplier(id, asSupplierUpdatePayload(payload))}
       addContact={(id, payload) => addSupplierContact(id, asSupplierContactPayload(payload))}
       updateContact={(id, contactId, payload) =>

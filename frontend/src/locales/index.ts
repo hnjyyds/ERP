@@ -14,8 +14,18 @@ type LeafPaths<T, Prefix extends string = ''> = {
   [K in keyof T & string]: T[K] extends string ? Join<Prefix, K> : LeafPaths<T[K], Join<Prefix, K>>
 }[keyof T & string]
 
+/**
+ * 复数文案在 JSON 里写成 `xxx_one` / `xxx_other` 两个叶子，
+ * 对调用方折叠成基 key `xxx`，由 translate 按 count 选择分支。
+ */
+type PluralBase<K extends string> = K extends `${infer Base}_one`
+  ? Base
+  : K extends `${infer Base}_other`
+    ? Base
+    : K
+
 /** 所有合法的文案 key，由 zh-CN.json 的结构推导，拼错或缺 key 时 tsc 直接报错。 */
-export type TranslationKey = LeafPaths<typeof zhCN>
+export type TranslationKey = PluralBase<LeafPaths<typeof zhCN>>
 
 /** 插值参数，例如 `{ code: 'P-001' }` 对应文案里的 `{code}`。 */
 export type TranslationParams = Record<string, string | number>
@@ -43,6 +53,12 @@ function interpolate(template: string, params: TranslationParams): string {
   )
 }
 
+/** 带 count 参数时优先取复数分支，缺 count 时用 `_other`。 */
+function pluralVariant(key: TranslationKey, params: TranslationParams): string {
+  if (!('count' in params)) return key
+  return Number(params.count) === 1 ? `${key}_one` : `${key}_other`
+}
+
 /**
  * 按语言取文案并做 `{name}` 插值。
  * key 已由类型约束，运行时只保留“当前语言缺失回退中文”的兜底，正常不会触发。
@@ -52,8 +68,11 @@ export function translate(
   key: TranslationKey,
   params: TranslationParams = {},
 ): string {
+  const variant = pluralVariant(key, params)
   const template =
+    resolveMessage(localeMessages[locale], variant) ??
     resolveMessage(localeMessages[locale], key) ??
+    resolveMessage(localeMessages['zh-CN'], variant) ??
     resolveMessage(localeMessages['zh-CN'], key) ??
     key
   return interpolate(template, params)

@@ -16,6 +16,15 @@ import type {
   SupplierTransaction,
   SupplierUpdatePayload,
 } from '../../../api'
+import { translate, type TranslationKey } from '../../../locales'
+import {
+  partnerStatusOptions,
+  partnerTypeOptions,
+  type LocalizedOption,
+} from '../../../shared/formOptions'
+import { getRuntimeSettings } from '../appHelpers'
+
+export { partnerTypeOptions }
 
 export type TradingPartnerKind = 'customer' | 'supplier' | 'partner'
 
@@ -73,32 +82,24 @@ export type ContactFormState = {
   is_primary: boolean
 }
 
-export const statusOptions = [
-  { value: '', label: '全部状态' },
-  { value: 'active', label: '启用' },
-  { value: 'inactive', label: '停用' },
+export const statusOptions: LocalizedOption[] = [
+  { value: '', labelKey: 'masterdata.field.allStatus' },
+  ...partnerStatusOptions,
 ]
 
-export const formStatusOptions = [
-  { value: 'active', label: '启用' },
-  { value: 'inactive', label: '停用' },
-]
+export const formStatusOptions: LocalizedOption[] = partnerStatusOptions
 
 export const creditGradeOptions = [
-  { value: '', label: '全部信用等级' },
   { value: 'A', label: 'A' },
   { value: 'B', label: 'B' },
   { value: 'C', label: 'C' },
 ]
 
-export const formCreditGradeOptions = creditGradeOptions.filter((option) => option.value)
+export const formCreditGradeOptions = creditGradeOptions
 
-export const partnerTypeOptions = [
-  { value: 'express', label: '快件公司' },
-  { value: 'freight_forwarder', label: '货代公司' },
-  { value: 'insurer', label: '保险公司' },
-  { value: 'carrier', label: '运输公司' },
-]
+function translateMasterdata(key: TranslationKey): string {
+  return translate(getRuntimeSettings().language, key)
+}
 
 export function initialPartnerForm(prefix: string): PartnerFormState {
   return {
@@ -161,11 +162,13 @@ export function validatePartnerForm(
   requireCode: boolean,
   kind: TradingPartnerKind,
 ): string {
-  if (requireCode && !form.code.trim()) return '请填写编号'
-  if (!form.cn_name.trim()) return '请填写中文名称'
-  if (!form.en_name.trim()) return '请填写英文名称'
-  if (kind === 'partner' && !form.partner_type) return '请选择合作伙伴类型'
-  if (!form.country.trim()) return '请填写国家/地区'
+  if (requireCode && !form.code.trim()) return translateMasterdata('masterdata.tradingPartner.validation.codeRequired')
+  if (!form.cn_name.trim()) return translateMasterdata('masterdata.tradingPartner.validation.cnNameRequired')
+  if (!form.en_name.trim()) return translateMasterdata('masterdata.tradingPartner.validation.enNameRequired')
+  if (kind === 'partner' && !form.partner_type) {
+    return translateMasterdata('masterdata.tradingPartner.validation.partnerTypeRequired')
+  }
+  if (!form.country.trim()) return translateMasterdata('masterdata.tradingPartner.validation.countryRequired')
   return ''
 }
 
@@ -238,7 +241,8 @@ export function contactPayload(form: ContactFormState): PartnerContactPayload {
 }
 
 export function partnerTypeLabel(value: string): string {
-  return partnerTypeOptions.find((item) => item.value === value)?.label ?? value
+  const option = partnerTypeOptions.find((item) => item.value === value)
+  return option ? translateMasterdata(option.labelKey) : value
 }
 
 export function getContactEntityId(contact: PartnerContact): string {

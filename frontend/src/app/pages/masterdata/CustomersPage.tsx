@@ -13,6 +13,7 @@ import {
 } from '../../../api'
 import type { PartnerContactPayload, PartnerCreatePayload, PartnerUpdatePayload } from './tradingPartnerModel'
 import { TradingPartnerPage } from './TradingPartnerPage'
+import { t } from '../../appI18n'
 import { customerPath, moduleDetailPath } from '../../routes'
 
 type CustomersPageProps = {
@@ -27,7 +28,7 @@ export function CustomersPage({ detailId, onNavigate }: CustomersPageProps) {
       createEntity={(payload) => createCustomer(asCustomerCreatePayload(payload))}
       createPrefix="C"
       deactivateEntity={deactivateCustomer}
-      entityLabel="客户"
+      entityLabel={t('masterdata.customer.entityLabel')}
       kind="customer"
       detailId={detailId}
       detailPath={(id) => moduleDetailPath(customerPath, id)}
@@ -35,8 +36,8 @@ export function CustomersPage({ detailId, onNavigate }: CustomersPageProps) {
       listEntity={(filters) => listCustomers(filters)}
       listTransactions={listCustomerTransactions}
       onNavigate={onNavigate}
-      pageTitle="客户资料"
-      searchPlaceholder="客户编号 / 中英文名称 / 联系人"
+      pageTitle={t('masterdata.customer.pageTitle')}
+      searchPlaceholder={t('masterdata.customer.searchPlaceholder')}
       updateEntity={(id, payload) => updateCustomer(id, asCustomerUpdatePayload(payload))}
       addContact={(id, payload) => addCustomerContact(id, asCustomerContactPayload(payload))}
       updateContact={(id, contactId, payload) =>

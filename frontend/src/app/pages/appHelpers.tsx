@@ -2,6 +2,7 @@ import { Tag } from 'antd'
 import { LockKeyhole as _LockKeyhole } from 'lucide-react'
 import type { ReactNode as _ReactNode } from 'react'
 import type { AppLanguage, AppTimeZone, CurrentUser, MenuItem } from '../../api'
+import { translate } from '../../locales'
 import { partnerTypeOptions } from '../../shared/formOptions'
 import {
   customerPath,
@@ -234,7 +235,8 @@ export function formatPercent(value?: string | null): string {
 }
 
 export function partnerTypeLabel(value: string): string {
-  return partnerTypeOptions.find((item) => item.value === value)?.label ?? value
+  const option = partnerTypeOptions.find((item) => item.value === value)
+  return option ? translate(getRuntimeSettings().language, option.labelKey) : value
 }
 
 // ── Page title / tag helpers (used by App shell) ─────────────────────

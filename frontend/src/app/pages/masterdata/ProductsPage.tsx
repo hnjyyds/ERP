@@ -57,8 +57,8 @@ function buildProductColumnOptions(): ColumnOption[] {
 
 function productStatusOptions() {
   return [
-    { value: 'active', label: t('masterdata.product.status.active') },
-    { value: 'inactive', label: t('masterdata.product.status.inactive') },
+    { value: 'active', label: t('status.active') },
+    { value: 'inactive', label: t('status.inactive') },
   ]
 }
 
@@ -422,8 +422,8 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
       p.code, p.cn_name, p.en_name, p.specification ?? '', p.model ?? '',
       p.customs_code, p.rebate_rate, p.package_info, p.unit,
       p.status === 'active'
-        ? t('masterdata.product.status.active')
-        : t('masterdata.product.status.inactive'),
+        ? t('status.active')
+        : t('status.inactive'),
     ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(','))
     const csv = [headers.join(','), ...csvRows].join('\n')
     downloadCsv(t('masterdata.product.exportFileName'), csv)
@@ -560,8 +560,8 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
                   render: (value: string) => (
                     <Tag color={value === 'active' ? 'success' : 'default'}>
                       {value === 'active'
-                        ? t('masterdata.product.status.active')
-                        : t('masterdata.product.status.inactive')}
+                        ? t('status.active')
+                        : t('status.inactive')}
                     </Tag>
                   ),
                 },
@@ -660,8 +660,8 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
                     <dt>{t('masterdata.product.field.status')}</dt>
                     <dd>
                       {selectedProduct.status === 'active'
-                        ? t('masterdata.product.status.active')
-                        : t('masterdata.product.status.inactive')}
+                        ? t('status.active')
+                        : t('status.inactive')}
                     </dd>
                   </div>
                   <div>

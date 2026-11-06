@@ -11,6 +11,7 @@ import {
   feeTypeOptions,
   partnerTypeOptions,
 } from '../../../../shared/formOptions'
+import { t } from '../../../appI18n'
 import { formatFinanceAmount, nullableText } from '../../appHelpers'
 import {
   initialFeePaymentRequestForm,
@@ -301,7 +302,7 @@ export function FeesView({ model, shell }: Props) {
                     <option value="">自动匹配</option>
                     {partnerTypeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>

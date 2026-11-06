@@ -1,20 +1,28 @@
-export const partnerTypeOptions = [
-  { value: 'express', label: '快件公司' },
-  { value: 'freight_forwarder', label: '货代公司' },
-  { value: 'insurer', label: '保险公司' },
-  { value: 'carrier', label: '运输公司' },
+import type { TranslationKey } from '../locales'
+
+/** 选项只存 value 与域内文案 key，渲染时再按当前语言取 label。 */
+export type LocalizedOption = {
+  value: string
+  labelKey: TranslationKey
+}
+
+export const partnerTypeOptions: LocalizedOption[] = [
+  { value: 'express', labelKey: 'masterdata.partner.type.express' },
+  { value: 'freight_forwarder', labelKey: 'masterdata.partner.type.freightForwarder' },
+  { value: 'insurer', labelKey: 'masterdata.partner.type.insurer' },
+  { value: 'carrier', labelKey: 'masterdata.partner.type.carrier' },
 ]
 
-export const partnerStatusOptions = [
-  { value: 'active', label: '启用' },
-  { value: 'inactive', label: '停用' },
+export const partnerStatusOptions: LocalizedOption[] = [
+  { value: 'active', labelKey: 'status.active' },
+  { value: 'inactive', labelKey: 'status.inactive' },
 ]
 
-export const documentPartyTypeOptions = [
-  { value: 'consignee', label: '收货人' },
-  { value: 'notify_party', label: '通知人' },
-  { value: 'issuing_bank', label: '开证行' },
-  { value: 'bill_notify_party', label: '提单通知人' },
+export const documentPartyTypeOptions: LocalizedOption[] = [
+  { value: 'consignee', labelKey: 'masterdata.documentParty.type.consignee' },
+  { value: 'notify_party', labelKey: 'masterdata.documentParty.type.notifyParty' },
+  { value: 'issuing_bank', labelKey: 'masterdata.documentParty.type.issuingBank' },
+  { value: 'bill_notify_party', labelKey: 'masterdata.documentParty.type.billNotifyParty' },
 ]
 
 export const sampleStatusOptions = [

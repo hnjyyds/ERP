@@ -23,7 +23,9 @@ import {
   type DocumentPartyUpdatePayload,
 } from '../../../api'
 import { showError, showWarningDialog } from '../../../shared/errors'
+import { documentPartyTypeOptions, type LocalizedOption } from '../../../shared/formOptions'
 import { Metric, PanelTitle } from '../../../shared/ui'
+import { t } from '../../appI18n'
 import { documentPartyPath, moduleDetailPath } from '../../routes'
 
 type DocumentPartyFormState = {
@@ -46,23 +48,10 @@ type DocumentPartyFormState = {
   status: string
 }
 
-const documentPartyTypeOptions = [
-  { value: '', label: '全部类型' },
-  { value: 'consignee', label: '收货人' },
-  { value: 'notify_party', label: '通知人' },
-  { value: 'issuing_bank', label: '开证行' },
-  { value: 'bill_notify_party', label: '提单通知人' },
+const statusKeys: LocalizedOption[] = [
+  { value: 'active', labelKey: 'status.active' },
+  { value: 'inactive', labelKey: 'status.inactive' },
 ]
-
-const documentPartyFormTypeOptions = documentPartyTypeOptions.filter((option) => option.value)
-
-const statusOptions = [
-  { value: '', label: '全部状态' },
-  { value: 'active', label: '启用' },
-  { value: 'inactive', label: '停用' },
-]
-
-const formStatusOptions = statusOptions.filter((option) => option.value)
 
 type DocumentPartiesPageProps = {
   detailId: string | null
@@ -81,6 +70,31 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
   const [error, setError] = useState('')
   const [modalMode, setModalMode] = useState<'create' | 'edit' | null>(null)
   const [form, setForm] = useState<DocumentPartyFormState>(() => initialDocumentPartyForm())
+
+  const typeFilterOptions = [
+    { value: '', label: t('masterdata.documentParty.allTypes') },
+    ...documentPartyTypeOptions.map((option) => ({
+      value: option.value,
+      label: t(option.labelKey),
+    })),
+  ]
+  const formTypeOptions = documentPartyTypeOptions.map((option) => ({
+    value: option.value,
+    label: t(option.labelKey),
+  }))
+  const statusFilterOptions = [
+    { value: '', label: t('masterdata.field.allStatus') },
+    ...statusKeys.map((option) => ({ value: option.value, label: t(option.labelKey) })),
+  ]
+  const formStatusOptions = statusKeys.map((option) => ({
+    value: option.value,
+    label: t(option.labelKey),
+  }))
+
+  function documentPartyTypeLabel(value: string): string {
+    const option = documentPartyTypeOptions.find((item) => item.value === value)
+    return option ? t(option.labelKey) : value
+  }
 
   const filteredParties = useMemo(
     () => parties.filter((item) => !statusFilter || item.status === statusFilter),
@@ -131,7 +145,7 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
         return result.items[0]?.id ?? null
       })
     } catch (caught) {
-      showError(caught, '单证资料加载失败')
+      showError(caught, t('masterdata.documentParty.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -162,16 +176,16 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
       if (modalMode === 'edit' && selectedParty) {
         const updated = await updateDocumentParty(selectedParty.id, documentPartyUpdatePayload(form))
         setParties((current) => current.map((item) => (item.id === updated.id ? updated : item)))
-        setMessage('单证资料已保存')
+        setMessage(t('masterdata.documentParty.saved'))
       } else {
         const created = await createDocumentParty(documentPartyPayload(form))
         setParties((current) => [created, ...current])
         setSelectedId(created.id)
-        setMessage('单证资料已新增')
+        setMessage(t('masterdata.documentParty.created'))
       }
       setModalMode(null)
     } catch (caught) {
-      showError(caught, '单证资料保存失败')
+      showError(caught, t('masterdata.documentParty.saveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -180,18 +194,18 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
   function confirmDeactivate() {
     if (!selectedParty) return
     Modal.confirm({
-      title: `停用单证资料 ${selectedParty.display_name}`,
-      content: '停用后不会在业务单据中作为默认单证方，历史记录仍然保留。',
-      okText: '停用',
-      cancelText: '取消',
+      title: t('masterdata.documentParty.deactivateTitle', { name: selectedParty.display_name }),
+      content: t('masterdata.documentParty.deactivateContent'),
+      okText: t('masterdata.action.deactivate'),
+      cancelText: t('common.cancel'),
       okButtonProps: { danger: true },
       onOk: async () => {
         try {
           const updated = await deactivateDocumentParty(selectedParty.id)
           setParties((current) => current.map((item) => (item.id === updated.id ? updated : item)))
-          setMessage('单证资料已停用')
+          setMessage(t('masterdata.documentParty.deactivated'))
         } catch (caught) {
-          showError(caught, '单证资料停用失败')
+          showError(caught, t('masterdata.documentParty.deactivateFailed'))
         }
       },
     })
@@ -199,11 +213,20 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
 
   return (
     <section className="masterdata-page document-party-page masterdata-entity-page">
-      <div className="summary-strip" aria-label="单证资料概览">
-        <Metric label="单证资料" value={parties.length} />
-        <Metric label="默认资料" value={parties.filter((item) => item.is_default).length} />
-        <Metric label="收货人" value={parties.filter((item) => item.party_type === 'consignee').length} />
-        <Metric label="开证行" value={parties.filter((item) => item.party_type === 'issuing_bank').length} />
+      <div className="summary-strip" aria-label={t('masterdata.documentParty.overviewAria')}>
+        <Metric label={t('masterdata.documentParty.entityLabel')} value={parties.length} />
+        <Metric
+          label={t('masterdata.documentParty.defaultMetric')}
+          value={parties.filter((item) => item.is_default).length}
+        />
+        <Metric
+          label={t('masterdata.documentParty.consigneeMetric')}
+          value={parties.filter((item) => item.party_type === 'consignee').length}
+        />
+        <Metric
+          label={t('masterdata.documentParty.issuingBankMetric')}
+          value={parties.filter((item) => item.party_type === 'issuing_bank').length}
+        />
       </div>
 
       {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
@@ -219,7 +242,7 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
         {!detailId ? (
           <section className="workspace-panel list-panel masterdata-list-panel">
           <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="单证资料列表" />
+            <PanelTitle icon={<Search size={18} />} title={t('masterdata.documentParty.listTitle')} />
             <form
               className="inline-filters"
               onSubmit={(event) => {
@@ -228,26 +251,26 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
               }}
             >
               <label className="inline-filter-search">
-                搜索
+                {t('masterdata.documentParty.searchLabel')}
                 <Input
                   value={search}
-                  placeholder="编号 / 名称 / 客户 / 银行 / 联系人"
+                  placeholder={t('masterdata.documentParty.searchPlaceholder')}
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </label>
               <label className="inline-filter-compact">
-                类型
-                <Select options={documentPartyTypeOptions} value={typeFilter} onChange={setTypeFilter} />
+                {t('masterdata.field.type')}
+                <Select options={typeFilterOptions} value={typeFilter} onChange={setTypeFilter} />
               </label>
               <label className="inline-filter-compact">
-                状态
-                <Select options={statusOptions} value={statusFilter} onChange={setStatusFilter} />
+                {t('masterdata.field.status')}
+                <Select options={statusFilterOptions} value={statusFilter} onChange={setStatusFilter} />
               </label>
               <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
+                {t('masterdata.documentParty.query')}
               </Button>
               <Button type="primary" icon={<Plus size={16} />} onClick={openCreate}>
-                新增单证资料
+                {t('masterdata.documentParty.create')}
               </Button>
             </form>
           </div>
@@ -255,7 +278,7 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
           <Table<DocumentParty>
             columns={[
               {
-                title: '编号',
+                title: t('masterdata.field.code'),
                 dataIndex: 'code',
                 width: 130,
                 render: (value: string, record: DocumentParty) => (
@@ -268,28 +291,32 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
                   </button>
                 ),
               },
-              { title: '名称', dataIndex: 'display_name' },
+              { title: t('masterdata.field.name'), dataIndex: 'display_name' },
               {
-                title: '类型',
+                title: t('masterdata.field.type'),
                 dataIndex: 'party_type',
                 width: 120,
                 render: documentPartyTypeLabel,
               },
-              { title: '客户', dataIndex: 'customer_name', render: (value) => value ?? '通用' },
-              { title: '国家/地区', dataIndex: 'country', width: 120 },
               {
-                title: '状态',
+                title: t('masterdata.documentParty.relatedCustomer'),
+                dataIndex: 'customer_name',
+                render: (value) => value ?? t('masterdata.documentParty.generic'),
+              },
+              { title: t('masterdata.field.country'), dataIndex: 'country', width: 120 },
+              {
+                title: t('masterdata.field.status'),
                 dataIndex: 'status',
                 width: 90,
                 render: (value: string) => <StatusTag value={value} />,
               },
               {
-                title: '入口',
+                title: t('masterdata.field.entry'),
                 key: 'detail',
                 width: 110,
                 render: (_value: unknown, record: DocumentParty) => (
                   <Button size="small" onClick={(event) => stopAndOpenDetail(event, record)}>
-                    查看详情
+                    {t('masterdata.action.viewDetail')}
                   </Button>
                 ),
               },
@@ -310,17 +337,17 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
         {detailId ? (
           <section className="workspace-panel masterdata-detail-panel masterdata-standalone-detail">
           <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Building2 size={18} />} title="单证资料明细" />
+            <PanelTitle icon={<Building2 size={18} />} title={t('masterdata.documentParty.detailTitle')} />
             {selectedParty ? (
               <div className="section-actions">
                 <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(documentPartyPath)}>
-                  返回列表
+                  {t('masterdata.action.backToList')}
                 </Button>
                 <Button icon={<FilePenLine size={16} />} onClick={openEdit}>
-                  编辑资料
+                  {t('masterdata.action.editProfile')}
                 </Button>
                 <Button danger icon={<Trash2 size={16} />} onClick={confirmDeactivate}>
-                  停用
+                  {t('masterdata.action.deactivate')}
                 </Button>
               </div>
             ) : null}
@@ -336,60 +363,71 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
                   <p>{documentPartyTypeLabel(selectedParty.party_type)}</p>
                 </div>
                 <div className="section-actions">
-                  {selectedParty.is_default ? <Tag icon={<Star size={12} />} color="gold">默认</Tag> : null}
+                  {selectedParty.is_default ? (
+                    <Tag icon={<Star size={12} />} color="gold">
+                      {t('masterdata.documentParty.defaultTag')}
+                    </Tag>
+                  ) : null}
                   <StatusTag value={selectedParty.status} />
                 </div>
               </div>
 
               <dl className="detail-list">
                 <div>
-                  <dt>关联客户</dt>
-                  <dd>{selectedParty.customer_name ?? '通用资料'}</dd>
+                  <dt>{t('masterdata.documentParty.relatedCustomer')}</dt>
+                  <dd>{selectedParty.customer_name ?? t('masterdata.documentParty.genericProfile')}</dd>
                 </div>
                 <div>
-                  <dt>国家/地区</dt>
+                  <dt>{t('masterdata.field.country')}</dt>
                   <dd>{selectedParty.country}</dd>
                 </div>
                 <div>
-                  <dt>联系人</dt>
-                  <dd>{selectedParty.contact_person ?? '未维护'}</dd>
+                  <dt>{t('masterdata.field.contact')}</dt>
+                  <dd>{selectedParty.contact_person ?? t('masterdata.field.notMaintained')}</dd>
                 </div>
                 <div>
-                  <dt>联系方式</dt>
-                  <dd>{selectedParty.email ?? selectedParty.phone ?? '未维护'}</dd>
+                  <dt>{t('masterdata.documentParty.contactInfo')}</dt>
+                  <dd>
+                    {selectedParty.email ??
+                      selectedParty.phone ??
+                      t('masterdata.field.notMaintained')}
+                  </dd>
                 </div>
                 <div>
-                  <dt>地址</dt>
-                  <dd>{selectedParty.address ?? '未维护'}</dd>
+                  <dt>{t('masterdata.field.address')}</dt>
+                  <dd>{selectedParty.address ?? t('masterdata.field.notMaintained')}</dd>
                 </div>
                 <div>
-                  <dt>税号</dt>
-                  <dd>{selectedParty.tax_id ?? '未维护'}</dd>
+                  <dt>{t('masterdata.field.taxId')}</dt>
+                  <dd>{selectedParty.tax_id ?? t('masterdata.field.notMaintained')}</dd>
                 </div>
                 <div>
-                  <dt>备注</dt>
-                  <dd>{selectedParty.remarks ?? '无'}</dd>
+                  <dt>{t('masterdata.field.remarks')}</dt>
+                  <dd>{selectedParty.remarks ?? t('common.none')}</dd>
                 </div>
                 <div>
-                  <dt>负责人</dt>
+                  <dt>{t('masterdata.field.owner')}</dt>
                   <dd>{selectedParty.owner_user_id}</dd>
                 </div>
               </dl>
 
               <section className="compact-section bank-card">
-                <PanelTitle icon={<Landmark size={18} />} title="银行资料" />
+                <PanelTitle
+                  icon={<Landmark size={18} />}
+                  title={t('masterdata.documentParty.bankSection')}
+                />
                 <dl className="detail-list">
                   <div>
-                    <dt>银行名称</dt>
-                    <dd>{selectedParty.bank_name ?? '未维护'}</dd>
+                    <dt>{t('masterdata.documentParty.bankName')}</dt>
+                    <dd>{selectedParty.bank_name ?? t('masterdata.field.notMaintained')}</dd>
                   </div>
                   <div>
                     <dt>SWIFT</dt>
-                    <dd>{selectedParty.swift_code ?? '未维护'}</dd>
+                    <dd>{selectedParty.swift_code ?? t('masterdata.field.notMaintained')}</dd>
                   </div>
                   <div>
-                    <dt>账号</dt>
-                    <dd>{selectedParty.account_no ?? '未维护'}</dd>
+                    <dt>{t('masterdata.documentParty.accountNo')}</dt>
+                    <dd>{selectedParty.account_no ?? t('masterdata.field.notMaintained')}</dd>
                   </div>
                 </dl>
               </section>
@@ -397,8 +435,8 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
           ) : (
             <div className="module-state panel-empty-state">
               <Building2 size={28} />
-              <strong>暂无单证资料</strong>
-              <span>请返回列表选择单证资料查看详情</span>
+              <strong>{t('masterdata.documentParty.emptyTitle')}</strong>
+              <span>{t('masterdata.documentParty.emptyDescription')}</span>
             </div>
           )}
           </section>
@@ -409,14 +447,18 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
         centered
         footer={null}
         open={Boolean(modalMode)}
-        title={modalMode === 'edit' ? '编辑单证资料' : '新增单证资料'}
+        title={
+          modalMode === 'edit'
+            ? t('masterdata.documentParty.editTitle')
+            : t('masterdata.documentParty.createTitle')
+        }
         width={1040}
         onCancel={() => setModalMode(null)}
       >
         <form className="record-form entity-modal-form" onSubmit={submitParty}>
           <div className="entity-modal-grid">
             <label>
-              编号
+              {t('masterdata.field.code')}
               <Input
                 disabled={modalMode === 'edit'}
                 value={form.code}
@@ -424,15 +466,15 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
               />
             </label>
             <label>
-              类型
+              {t('masterdata.field.type')}
               <Select
-                options={documentPartyFormTypeOptions}
+                options={formTypeOptions}
                 value={form.party_type}
                 onChange={(value) => setForm({ ...form, party_type: value })}
               />
             </label>
             <label>
-              状态
+              {t('masterdata.field.status')}
               <Select
                 options={formStatusOptions}
                 value={form.status}
@@ -440,56 +482,56 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
               />
             </label>
             <label className="entity-modal-span">
-              显示名称
+              {t('masterdata.documentParty.displayName')}
               <Input
                 value={form.display_name}
                 onChange={(event) => setForm({ ...form, display_name: event.target.value })}
               />
             </label>
             <label>
-              关联客户 ID
+              {t('masterdata.documentParty.customerId')}
               <Input
                 value={form.customer_id}
                 onChange={(event) => setForm({ ...form, customer_id: event.target.value })}
               />
             </label>
             <label>
-              关联客户名称
+              {t('masterdata.documentParty.customerName')}
               <Input
                 value={form.customer_name}
                 onChange={(event) => setForm({ ...form, customer_name: event.target.value })}
               />
             </label>
             <label>
-              国家/地区
+              {t('masterdata.field.country')}
               <Input value={form.country} onChange={(event) => setForm({ ...form, country: event.target.value })} />
             </label>
             <label className="entity-modal-span">
-              地址
+              {t('masterdata.field.address')}
               <Input value={form.address} onChange={(event) => setForm({ ...form, address: event.target.value })} />
             </label>
           </div>
 
           <div className="entity-modal-section">
-            <div className="form-divider">联系人与银行资料</div>
+            <div className="form-divider">{t('masterdata.documentParty.contactAndBankSection')}</div>
             <div className="entity-modal-grid">
               <label>
-                联系人
+                {t('masterdata.field.contact')}
                 <Input
                   value={form.contact_person}
                   onChange={(event) => setForm({ ...form, contact_person: event.target.value })}
                 />
               </label>
               <label>
-                邮箱
+                {t('masterdata.field.email')}
                 <Input value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
               </label>
               <label>
-                电话
+                {t('masterdata.field.phone')}
                 <Input value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} />
               </label>
               <label>
-                银行名称
+                {t('masterdata.documentParty.bankName')}
                 <Input
                   value={form.bank_name}
                   onChange={(event) => setForm({ ...form, bank_name: event.target.value })}
@@ -503,14 +545,14 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
                 />
               </label>
               <label>
-                账号
+                {t('masterdata.documentParty.accountNo')}
                 <Input
                   value={form.account_no}
                   onChange={(event) => setForm({ ...form, account_no: event.target.value })}
                 />
               </label>
               <label>
-                税号
+                {t('masterdata.field.taxId')}
                 <Input value={form.tax_id} onChange={(event) => setForm({ ...form, tax_id: event.target.value })} />
               </label>
               <label className="checkbox-label">
@@ -520,10 +562,10 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
                     setForm({ ...form, is_default: event.target.checked })
                   }
                 />
-                设为默认资料
+                {t('masterdata.documentParty.isDefault')}
               </label>
               <label className="entity-modal-span">
-                备注
+                {t('masterdata.field.remarks')}
                 <Input.TextArea
                   rows={4}
                   value={form.remarks}
@@ -535,10 +577,12 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
 
           <div className="modal-actions">
             <button className="secondary-inline" type="button" onClick={() => setModalMode(null)}>
-              取消
+              {t('common.cancel')}
             </button>
             <button className="inline-submit" disabled={submitting} type="submit">
-              {modalMode === 'edit' ? '保存单证资料' : '新增单证资料'}
+              {modalMode === 'edit'
+                ? t('masterdata.documentParty.saveButton')
+                : t('masterdata.documentParty.create')}
             </button>
           </div>
         </form>
@@ -550,7 +594,7 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
 function StatusTag({ value }: { value: string }) {
   return (
     <Tag color={value === 'active' ? 'success' : 'default'}>
-      {value === 'active' ? '启用' : '停用'}
+      {value === 'active' ? t('status.active') : t('status.inactive')}
     </Tag>
   )
 }
@@ -600,9 +644,9 @@ function documentPartyToForm(party: DocumentParty): DocumentPartyFormState {
 }
 
 function validateDocumentPartyForm(form: DocumentPartyFormState, requireCode: boolean): string {
-  if (requireCode && !form.code.trim()) return '请填写编号'
-  if (!form.display_name.trim()) return '请填写显示名称'
-  if (!form.country.trim()) return '请填写国家/地区'
+  if (requireCode && !form.code.trim()) return t('masterdata.documentParty.validation.codeRequired')
+  if (!form.display_name.trim()) return t('masterdata.documentParty.validation.displayNameRequired')
+  if (!form.country.trim()) return t('masterdata.documentParty.validation.countryRequired')
   return ''
 }
 
@@ -631,10 +675,6 @@ function documentPartyPayload(form: DocumentPartyFormState): DocumentPartyCreate
 function documentPartyUpdatePayload(form: DocumentPartyFormState): DocumentPartyUpdatePayload {
   const { code: _code, ...payload } = documentPartyPayload(form)
   return payload
-}
-
-function documentPartyTypeLabel(value: string): string {
-  return documentPartyTypeOptions.find((item) => item.value === value)?.label ?? value
 }
 
 function emptyToNull(value: string): string | null {
