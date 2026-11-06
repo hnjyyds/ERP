@@ -14,6 +14,7 @@
 - [实现步骤](docs/05-实现步骤.md)
 - [React 前端迁移和优化计划](docs/06-React前端迁移和优化计划.md)
 - [Semi Design 前端 UI 重构设计](docs/07-SemiDesign前端UI重构设计.md)
+- [仓库级 UI 设计规范](docs/13-仓库级UI设计规范.md)
 - [基础资料板块能力和 PDF 差距](docs/09-基础资料板块能力和PDF差距.md)
 - [传统贸易时尚配饰/服装/香包 ERP 样板](docs/11-传统贸易时尚配饰服装香包ERP样板.md)
 - [日志与故障排查](docs/12-日志与故障排查.md)
