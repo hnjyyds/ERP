@@ -3725,5 +3725,494 @@
         "issueDescriptionNotAllowed": "整单通过时不能登记未关闭异常"
       }
     }
+  },
+  "organization": {
+    "pageAria": "组织概览",
+    "metric": {
+      "users": "用户",
+      "active": "启用",
+      "inactive": "停用",
+      "departments": "部门",
+      "roles": "角色"
+    },
+    "filter": {
+      "search": "搜索用户、部门或角色"
+    },
+    "action": {
+      "copy": "复制"
+    },
+    "message": {
+      "noPermission": "缺少组织管理权限",
+      "loadFailed": "组织管理数据加载失败",
+      "operationFailed": "操作失败",
+      "passwordCopied": "密码已复制",
+      "copyFailed": "复制失败，请手动选择密码"
+    },
+    "company": {
+      "pageAria": "公司信息",
+      "title": "公司信息",
+      "description": "公司抬头、银行信息用于单证和对外文件。",
+      "updatedAt": "（最近更新 {value}）",
+      "action": {
+        "edit": "编辑公司信息",
+        "save": "保存公司信息"
+      },
+      "field": {
+        "currentLetterhead": "当前抬头",
+        "name": "公司名称",
+        "nameEn": "英文名称",
+        "letterhead": "单证抬头",
+        "address": "地址",
+        "addressEn": "英文地址",
+        "phone": "电话",
+        "fax": "传真",
+        "email": "邮箱",
+        "website": "网站",
+        "taxNo": "税号",
+        "bankName": "开户行",
+        "bankAccount": "银行账号",
+        "bankSwift": "SWIFT"
+      },
+      "placeholder": {
+        "nameEmpty": "未填写公司名称",
+        "subtitleEmpty": "暂无英文名称或单证抬头"
+      },
+      "modal": {
+        "editTitle": "编辑公司信息"
+      },
+      "validation": {
+        "nameRequired": "请填写公司名称"
+      },
+      "message": {
+        "saved": "公司信息已保存",
+        "saveFailed": "公司信息保存失败"
+      }
+    },
+    "department": {
+      "pageAria": "部门管理",
+      "title": "部门管理",
+      "description": "统一维护组织部门；新增成员时需关联一个有效部门。",
+      "action": {
+        "create": "新增部门",
+        "editAria": "编辑 {name}",
+        "deleteAria": "删除 {name}",
+        "createSubmit": "创建部门",
+        "saveSubmit": "保存部门"
+      },
+      "field": {
+        "name": "部门名称",
+        "parent": "上级部门",
+        "sort": "排序",
+        "sortAria": "部门排序"
+      },
+      "card": {
+        "parent": "上级 {name}",
+        "topLevel": "一级部门",
+        "userCount_one": "{count} 人",
+        "userCount_other": "{count} 人"
+      },
+      "empty": "暂无部门。请先新增部门，再创建成员账号。",
+      "unnamed": "未命名部门",
+      "placeholder": {
+        "name": "如 业务部、财务部",
+        "parent": "不选择则为一级部门"
+      },
+      "modal": {
+        "createTitle": "新增部门",
+        "editTitle": "编辑部门",
+        "deleteTitle": "删除部门"
+      },
+      "validation": {
+        "nameRequired": "请填写部门名称"
+      },
+      "message": {
+        "created": "部门已创建",
+        "updated": "部门已更新",
+        "saveFailed": "部门保存失败",
+        "deleteConfirm": "删除后 {name} 将从部门列表中移除，是否继续？",
+        "hasUsers_one": "{name} 下还有 {count} 个用户，不能删除。",
+        "hasUsers_other": "{name} 下还有 {count} 个用户，不能删除。",
+        "deleted": "部门已删除",
+        "deleteFailed": "部门删除失败"
+      }
+    },
+    "role": {
+      "pageAria": "角色管理",
+      "title": "角色管理",
+      "description": "新增、改名或删除角色；已分配给用户的角色需先解除关联才能删除。",
+      "action": {
+        "create": "新增角色",
+        "editAria": "编辑 {name}",
+        "deleteAria": "删除 {name}",
+        "createSubmit": "创建角色",
+        "saveSubmit": "保存角色"
+      },
+      "field": {
+        "name": "角色名称",
+        "code": "角色编码",
+        "dataScope": "数据范围"
+      },
+      "card": {
+        "permissionCount_one": "{count} 项权限",
+        "permissionCount_other": "{count} 项权限",
+        "userCount_one": "{count} 人",
+        "userCount_other": "{count} 人"
+      },
+      "empty": "暂无角色。请先新增角色，再为用户分配。",
+      "unnamed": "未命名角色",
+      "tooltip": {
+        "superAdminLocked": "超级管理员角色不可删除",
+        "assignedLocked": "角色已分配给用户，不能删除"
+      },
+      "hint": {
+        "dataScope": "控制该角色用户能查看的业务单据范围（按单据负责人所属部门判定）。",
+        "editPermissions": "如需调整该角色的权限，请在用户详情中点击「编辑用户权限」后选择此角色保存。"
+      },
+      "placeholder": {
+        "name": "如 业务主管、财务",
+        "code": "小写字母，如 sales_manager"
+      },
+      "dataScope": {
+        "self": "仅本人",
+        "department": "本部门",
+        "departmentTree": "本部门及下级",
+        "all": "全部数据"
+      },
+      "modal": {
+        "createTitle": "新增角色",
+        "editTitle": "编辑角色",
+        "deleteTitle": "删除角色"
+      },
+      "validation": {
+        "nameRequired": "请填写角色名称",
+        "codeInvalid": "角色编码需以小写字母开头，仅含小写字母、数字和下划线"
+      },
+      "message": {
+        "created": "角色已创建",
+        "updated": "角色已更新",
+        "saveFailed": "角色保存失败",
+        "deleteConfirm": "删除后 {name} 将从角色列表中移除，是否继续？",
+        "assignedToUsers_one": "{name} 已分配给 {count} 个用户，不能删除。请先解除这些用户的该角色。",
+        "assignedToUsers_other": "{name} 已分配给 {count} 个用户，不能删除。请先解除这些用户的该角色。",
+        "deleted": "角色已删除",
+        "deleteFailed": "角色删除失败"
+      }
+    },
+    "user": {
+      "listAria": "用户列表",
+      "detailAria": "用户详情",
+      "unassignedDepartment": "未分配部门",
+      "roleSeparator": "、",
+      "noRoles": "暂无角色",
+      "avatarFallback": "用户",
+      "empty": {
+        "noMatch": "没有匹配的用户",
+        "select": "请选择用户"
+      },
+      "status": {
+        "activeDetail": "启用中",
+        "inactiveDetail": "已停用"
+      },
+      "action": {
+        "create": "新增用户",
+        "editProfile": "编辑资料",
+        "editPermissions": "编辑用户权限",
+        "resetPassword": "重置密码",
+        "delete": "删除用户",
+        "createSubmit": "创建用户",
+        "saveSubmit": "保存修改"
+      },
+      "field": {
+        "username": "用户名",
+        "displayName": "姓名",
+        "department": "部门",
+        "role": "角色",
+        "password": "密码",
+        "createdAt": "创建时间",
+        "accountActive": "账号启用"
+      },
+      "placeholder": {
+        "username": "用于登录，如 sales.chen",
+        "department": "请选择部门"
+      },
+      "hint": {
+        "initialPassword": "系统会自动生成初始密码，创建成功后只展示一次。",
+        "createDepartmentFirst": "请先新增部门后再添加成员"
+      },
+      "modal": {
+        "createTitle": "新增用户",
+        "editTitle": "编辑用户",
+        "deleteTitle": "删除用户",
+        "resetPasswordTitle": "重置密码",
+        "initialPasswordTitle": "初始密码",
+        "temporaryPasswordTitle": "临时密码"
+      },
+      "validation": {
+        "required": "请填写用户名和姓名",
+        "departmentRequired": "请选择部门"
+      },
+      "message": {
+        "created": "用户已创建",
+        "updated": "用户已更新",
+        "deactivated": "用户已停用",
+        "deleteConfirm": "删除后 {name} 将无法登录，历史业务记录会保留。是否继续？",
+        "deleteFailed": "删除失败",
+        "resetConfirm": "系统将为 {name} 生成新的临时密码，旧密码会立即失效。",
+        "passwordReset": "密码已重置",
+        "resetFailed": "重置失败",
+        "passwordOnce": "{username} 的{title}仅展示这一次，请复制后交给账号使用人。",
+        "departmentRequiredFirst": "请先新增部门"
+      }
+    },
+    "permission": {
+      "pageAria": "角色权限配置",
+      "title": "权限配置",
+      "description": "先选择角色，再按左侧导航对应的功能勾选权限；没有勾选的板块不会出现在该角色用户的侧边栏。",
+      "configRole": "配置角色",
+      "sidebarModule": "侧边栏模块",
+      "selectAllAria": "{name}权限全选",
+      "none": "暂无可配置权限",
+      "unnamed": "未命名权限",
+      "action": {
+        "save": "保存权限"
+      },
+      "modal": {
+        "title": "按侧边栏功能授权"
+      },
+      "module": {
+        "dashboard": "工作桌面",
+        "system": "系统管理",
+        "organization": "组织管理",
+        "masterdata": "基础资料",
+        "sample": "样品业务",
+        "sales": "销售出口",
+        "purchase": "采购业务",
+        "qualityWarehouse": "质检仓库",
+        "finance": "财务报表",
+        "other": "其他权限"
+      },
+      "section": {
+        "dashboard": "工作桌面",
+        "schedule": "个人日程",
+        "announcement": "公司公告",
+        "system": "系统权限",
+        "organization": "组织管理",
+        "organizationUser": "组织用户",
+        "organizationRole": "角色权限",
+        "product": "商品资料",
+        "customer": "客户资料",
+        "supplier": "供应商资料",
+        "partner": "合作伙伴",
+        "documentParty": "单证资料",
+        "sampleRequest": "打样管理",
+        "sampleRecord": "样品登记",
+        "sampleDelivery": "寄样管理",
+        "quotation": "出口报价",
+        "salesContract": "出口合同",
+        "shipment": "出货明细",
+        "inquiry": "采购询价",
+        "purchaseContract": "采购合同",
+        "invoiceNotice": "开票通知",
+        "purchaseFollowup": "采购跟单",
+        "followupTemplate": "跟单模板",
+        "followupPlan": "采购跟单计划",
+        "qualityInspection": "QC 查验",
+        "inboundPlan": "入库计划",
+        "inboundOrder": "货物入库",
+        "outboundPlan": "出库计划",
+        "outboundOrder": "货物出库",
+        "finance": "财务管理",
+        "reporting": "经理查询"
+      },
+      "category": {
+        "functional": "功能",
+        "data": "数据",
+        "field": "字段",
+        "process": "流程"
+      },
+      "message": {
+        "updated": "{name} 权限已更新",
+        "saveFailed": "权限保存失败"
+      }
+    }
+  },
+  "system": {
+    "mcp": {
+      "field": {
+        "enable": "是否启用 MCP",
+        "endpoint": "MCP 服务地址",
+        "transport": "传输协议",
+        "serverName": "服务名称",
+        "tokenParameter": "鉴权请求头",
+        "accessToken": "MCP 连接令牌",
+        "tokenNotGenerated": "尚未在当前页面生成"
+      },
+      "action": {
+        "rotate": "轮换令牌",
+        "generate": "生成令牌",
+        "rotateAria": "轮换连接令牌",
+        "generateAria": "生成连接令牌",
+        "copyAll": "复制全部",
+        "copyAllAria": "复制全部连接信息",
+        "copyConfig": "复制配置",
+        "copyLabel": "复制{label}"
+      },
+      "panel": {
+        "connectionTitle": "连接与鉴权",
+        "connectionDescription": "AI 客户端建立连接所需的全部参数",
+        "authRules": "鉴权规则",
+        "authNoteThrough": "AI 客户端通过",
+        "authNoteVia": "请求头发送",
+        "authNoteSuffix": "。该令牌只能访问 MCP 已开放的工具，不能用于普通 ERP API。",
+        "clientConfigTitle": "AI 客户端配置",
+        "clientConfigDescription": "可直接复制给支持 Streamable HTTP 的客户端",
+        "toolsTitle": "AI 可用能力",
+        "toolsDescription_one": "当前共开放 {count} 个工具，沿用 ERP 账号权限和数据范围",
+        "toolsDescription_other": "当前共开放 {count} 个工具，沿用 ERP 账号权限和数据范围",
+        "permissionIsolation": "权限隔离"
+      },
+      "table": {
+        "toolCount_one": "{count} 个工具",
+        "toolCount_other": "{count} 个工具"
+      },
+      "modal": {
+        "rotateTitle": "轮换 MCP 连接令牌",
+        "generateTitle": "生成 MCP 连接令牌",
+        "rotateDescription": "轮换后旧令牌立即失效，需要同步更新所有 AI 客户端。",
+        "generateDescription": "令牌只会完整显示一次，请生成后立即复制到可信任的 AI 客户端。",
+        "rotateConfirm": "确认轮换",
+        "generateConfirm": "确认生成"
+      },
+      "message": {
+        "loadFailed": "MCP 配置加载失败",
+        "loadFailedDescription": "请确认当前账号具备系统管理员权限后重试。",
+        "copied": "{label}已复制",
+        "copyFailed": "复制失败，请手动选择内容",
+        "tokenHidden": "令牌已隐藏",
+        "enabled": "MCP 服务已启用",
+        "disabled": "MCP 服务已关闭",
+        "toggleFailed": "MCP 状态更新失败",
+        "rotated": "MCP 连接令牌已轮换",
+        "generated": "MCP 连接令牌已生成",
+        "generateFailed": "MCP 连接令牌生成失败",
+        "allCopied": "全部连接信息已复制",
+        "configCopied": "AI 客户端配置已复制",
+        "newTokenWarning": "新令牌仅在本页完整显示一次，请立即复制并妥善保存。",
+        "existingTokenInfo": "已有连接令牌正在使用。出于安全考虑，系统不会再次显示原令牌；如已丢失请轮换。",
+        "generateFirstInfo": "请先生成 MCP 专用连接令牌，再复制 AI 客户端配置。"
+      },
+      "status": {
+        "enabled": "MCP 服务已启用",
+        "disabled": "MCP 服务未启用",
+        "running": "运行中",
+        "stopped": "已关闭",
+        "description": "允许受信任的 AI 客户端通过标准 MCP 协议查询和维护 ERP 数据。关闭后不会影响现有业务页面和 API。"
+      },
+      "empty": {
+        "title": "启用后即可查看 AI 连接信息",
+        "description": "连接地址、鉴权令牌、客户端配置和全部可用工具只在 MCP 开启时展示。"
+      },
+      "text": {
+        "instructionService": "MCP 服务：{name}",
+        "instructionEndpoint": "连接地址：{url}",
+        "instructionTransport": "传输协议：Streamable HTTP",
+        "instructionAuth": "鉴权方式：HTTP {header} 请求头",
+        "instructionToken": "{header}：{token}",
+        "instructionTools": "可用能力：{value}",
+        "listSeparator": "、"
+      }
+    }
+  },
+  "reporting": {
+    "pageAria": "经理查询概览",
+    "metric": {
+      "documents": "审批单据",
+      "pending": "待审批",
+      "approved": "已审批",
+      "documentTypes": "单据类型"
+    },
+    "field": {
+      "documentType": "单据类型",
+      "approvalStatus": "审批状态",
+      "applicant": "申请人标识",
+      "dateFrom": "开始日期",
+      "dateTo": "结束日期"
+    },
+    "filter": {
+      "allTypes": "全部类型",
+      "allStatuses": "全部状态",
+      "applicantPlaceholder": "输入申请人编号"
+    },
+    "action": {
+      "search": "查询",
+      "reset": "重置",
+      "goApprove": "去审批",
+      "viewDetail": "查看详情"
+    },
+    "panel": {
+      "approvalListTitle": "审批单据查询",
+      "typeSummaryTitle": "类型汇总"
+    },
+    "table": {
+      "documentNo": "单据编号",
+      "type": "类型",
+      "status": "状态",
+      "counterparty": "客户/供应商",
+      "applicant": "申请人",
+      "businessDate": "业务日期",
+      "submittedAt": "提交日期",
+      "approvedAt": "审批日期",
+      "amount": "金额",
+      "actions": "操作",
+      "unsupported": "暂不支持",
+      "total": "合计",
+      "customer": "客户",
+      "shipmentNo": "出货单",
+      "shipmentCount": "出货单",
+      "receivable": "应收",
+      "profit": "利润",
+      "drilldown": "下钻",
+      "period": "月份",
+      "salesperson": "业务员",
+      "shippedAmount": "出货额",
+      "count": "数量",
+      "shipmentDate": "出货日",
+      "exportContractNo": "出口合同"
+    },
+    "message": {
+      "approvalLoadFailed": "经理查询加载失败",
+      "statisticsLoadFailed": "统计分析加载失败"
+    },
+    "statistics": {
+      "pageAria": "统计分析报表",
+      "title": "统计分析报表",
+      "filter": {
+        "dateFrom": "统计开始",
+        "dateTo": "统计结束",
+        "status": "统计状态",
+        "customer": "客户标识",
+        "customerPlaceholder": "输入客户编号或名称",
+        "supplier": "供应商标识",
+        "supplierPlaceholder": "输入供应商编号或名称",
+        "salesperson": "业务员标识",
+        "salespersonPlaceholder": "输入业务员编号"
+      },
+      "action": {
+        "search": "查询统计",
+        "reset": "重置统计"
+      },
+      "metric": {
+        "exportContract": "出口合同",
+        "purchaseContract": "采购合同",
+        "shipmentReceivable": "出货应收",
+        "shipmentProfit": "出货利润"
+      },
+      "salesMonthlyTitle": "业务员月度出货",
+      "contractStatusTitle": "合同状态金额",
+      "drilldownTitle": "原始单据追溯"
+    },
+    "module": {
+      "ready": "React 工作台入口已就绪"
+    }
   }
 }

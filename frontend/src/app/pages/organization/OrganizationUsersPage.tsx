@@ -53,6 +53,7 @@ import {
 } from '../../../api'
 import { showError } from '../../../shared/errors'
 import { Metric, UserAvatar, UserAvatarPicker, defaultAvatarPreset } from '../../../shared/ui'
+import { t, type TranslationKey } from '../../appI18n'
 
 const superAdminPermission = 'system:super_admin'
 
@@ -95,20 +96,24 @@ type CompanyInfoFormState = {
   bank_swift: string
 }
 
-const COMPANY_FIELD_LABELS: Array<{ key: keyof CompanyInfoFormState; label: string; full?: boolean }> = [
-  { key: 'name', label: '公司名称' },
-  { key: 'name_en', label: '英文名称' },
-  { key: 'letterhead', label: '单证抬头', full: true },
-  { key: 'address', label: '地址' },
-  { key: 'address_en', label: '英文地址' },
-  { key: 'phone', label: '电话' },
-  { key: 'fax', label: '传真' },
-  { key: 'email', label: '邮箱' },
-  { key: 'website', label: '网站' },
-  { key: 'tax_no', label: '税号' },
-  { key: 'bank_name', label: '开户行' },
-  { key: 'bank_account', label: '银行账号' },
-  { key: 'bank_swift', label: 'SWIFT' },
+const COMPANY_FIELD_LABELS: Array<{
+  key: keyof CompanyInfoFormState
+  labelKey: TranslationKey
+  full?: boolean
+}> = [
+  { key: 'name', labelKey: 'organization.company.field.name' },
+  { key: 'name_en', labelKey: 'organization.company.field.nameEn' },
+  { key: 'letterhead', labelKey: 'organization.company.field.letterhead', full: true },
+  { key: 'address', labelKey: 'organization.company.field.address' },
+  { key: 'address_en', labelKey: 'organization.company.field.addressEn' },
+  { key: 'phone', labelKey: 'organization.company.field.phone' },
+  { key: 'fax', labelKey: 'organization.company.field.fax' },
+  { key: 'email', labelKey: 'organization.company.field.email' },
+  { key: 'website', labelKey: 'organization.company.field.website' },
+  { key: 'tax_no', labelKey: 'organization.company.field.taxNo' },
+  { key: 'bank_name', labelKey: 'organization.company.field.bankName' },
+  { key: 'bank_account', labelKey: 'organization.company.field.bankAccount' },
+  { key: 'bank_swift', labelKey: 'organization.company.field.bankSwift' },
 ]
 
 function emptyCompanyForm(): CompanyInfoFormState {
@@ -177,25 +182,26 @@ type PasswordRevealState = {
 
 type OrganizationPermissionSection = {
   key: string
-  label: string
+  labelKey: TranslationKey | null
+  fallbackLabel: string
   items: OrganizationPermission[]
 }
 
 type OrganizationPermissionGroup = {
   key: string
-  label: string
+  labelKey: TranslationKey
   sections: OrganizationPermissionSection[]
 }
 
 type PermissionSectionDefinition = {
   key: string
-  label: string
+  labelKey: TranslationKey
   prefixes: string[]
 }
 
 type PermissionGroupDefinition = {
   key: string
-  label: string
+  labelKey: TranslationKey
   sections: PermissionSectionDefinition[]
 }
 
@@ -212,131 +218,131 @@ const _permissionModuleOrder = [
   'other',
 ]
 
-const permissionModuleLabels: Record<string, string> = {
-  dashboard: '工作桌面',
-  system: '系统管理',
-  organization: '组织管理',
-  masterdata: '基础资料',
-  sample: '样品业务',
-  sales: '销售出口',
-  purchase: '采购业务',
-  qualityWarehouse: '质检仓库',
-  finance: '财务报表',
-  other: '其他权限',
+const permissionModuleLabelKeys: Record<string, TranslationKey> = {
+  dashboard: 'organization.permission.module.dashboard',
+  system: 'organization.permission.module.system',
+  organization: 'organization.permission.module.organization',
+  masterdata: 'organization.permission.module.masterdata',
+  sample: 'organization.permission.module.sample',
+  sales: 'organization.permission.module.sales',
+  purchase: 'organization.permission.module.purchase',
+  qualityWarehouse: 'organization.permission.module.qualityWarehouse',
+  finance: 'organization.permission.module.finance',
+  other: 'organization.permission.module.other',
 }
 
-const permissionSectionLabels: Record<string, string> = {
-  'dashboard:dashboard': '工作桌面',
-  'dashboard:schedule': '个人日程',
-  'dashboard:announcement': '公司公告',
-  'system:system': '系统权限',
-  'organization:user': '组织用户',
-  'organization:role': '角色权限',
-  'masterdata:product': '商品资料',
-  'masterdata:customer': '客户资料',
-  'masterdata:supplier': '供应商资料',
-  'masterdata:partner': '合作伙伴',
-  'masterdata:document_party': '单证资料',
-  'sample:request': '打样管理',
-  'sample:record': '样品登记',
-  'sample:delivery': '寄样管理',
-  'sales:quotation': '出口报价',
-  'sales:contract': '出口合同',
-  'sales:shipment': '出货明细',
-  'purchase:inquiry': '采购询价',
-  'purchase:contract': '采购合同',
-  'purchase:invoice_notice': '开票通知',
-  'purchase:followup': '采购跟单',
-  'followup:template': '跟单模板',
-  'followup:plan': '采购跟单计划',
-  'quality:inspection': 'QC 查验',
-  'warehouse:inbound_plan': '入库计划',
-  'warehouse:inbound_order': '货物入库',
-  'warehouse:outbound_plan': '出库计划',
-  'warehouse:outbound_order': '货物出库',
-  'finance:finance': '财务管理',
-  'finance:reporting': '经理查询',
+const permissionSectionLabelKeys: Record<string, TranslationKey> = {
+  'dashboard:dashboard': 'organization.permission.section.dashboard',
+  'dashboard:schedule': 'organization.permission.section.schedule',
+  'dashboard:announcement': 'organization.permission.section.announcement',
+  'system:system': 'organization.permission.section.system',
+  'organization:user': 'organization.permission.section.organizationUser',
+  'organization:role': 'organization.permission.section.organizationRole',
+  'masterdata:product': 'organization.permission.section.product',
+  'masterdata:customer': 'organization.permission.section.customer',
+  'masterdata:supplier': 'organization.permission.section.supplier',
+  'masterdata:partner': 'organization.permission.section.partner',
+  'masterdata:document_party': 'organization.permission.section.documentParty',
+  'sample:request': 'organization.permission.section.sampleRequest',
+  'sample:record': 'organization.permission.section.sampleRecord',
+  'sample:delivery': 'organization.permission.section.sampleDelivery',
+  'sales:quotation': 'organization.permission.section.quotation',
+  'sales:contract': 'organization.permission.section.salesContract',
+  'sales:shipment': 'organization.permission.section.shipment',
+  'purchase:inquiry': 'organization.permission.section.inquiry',
+  'purchase:contract': 'organization.permission.section.purchaseContract',
+  'purchase:invoice_notice': 'organization.permission.section.invoiceNotice',
+  'purchase:followup': 'organization.permission.section.purchaseFollowup',
+  'followup:template': 'organization.permission.section.followupTemplate',
+  'followup:plan': 'organization.permission.section.followupPlan',
+  'quality:inspection': 'organization.permission.section.qualityInspection',
+  'warehouse:inbound_plan': 'organization.permission.section.inboundPlan',
+  'warehouse:inbound_order': 'organization.permission.section.inboundOrder',
+  'warehouse:outbound_plan': 'organization.permission.section.outboundPlan',
+  'warehouse:outbound_order': 'organization.permission.section.outboundOrder',
+  'finance:finance': 'organization.permission.section.finance',
+  'finance:reporting': 'organization.permission.section.reporting',
 }
 
 const sidebarPermissionCatalog: PermissionGroupDefinition[] = [
   {
     key: 'dashboard',
-    label: '工作桌面',
+    labelKey: 'organization.permission.module.dashboard',
     sections: [
       {
         key: 'dashboard:dashboard',
-        label: '工作桌面',
+        labelKey: 'organization.permission.section.dashboard',
         prefixes: ['dashboard:', 'schedule:', 'announcement:'],
       },
     ],
   },
   {
     key: 'system',
-    label: '系统管理',
+    labelKey: 'organization.permission.module.system',
     sections: [
       {
         key: 'system:organization',
-        label: '组织管理',
+        labelKey: 'organization.permission.section.organization',
         prefixes: ['system:', 'organization:'],
       },
     ],
   },
   {
     key: 'masterdata',
-    label: '基础资料',
+    labelKey: 'organization.permission.module.masterdata',
     sections: [
-      { key: 'masterdata:product', label: '商品资料', prefixes: ['masterdata:product:'] },
-      { key: 'masterdata:customer', label: '客户资料', prefixes: ['masterdata:customer:'] },
-      { key: 'masterdata:supplier', label: '供应商资料', prefixes: ['masterdata:supplier:'] },
-      { key: 'masterdata:partner', label: '合作伙伴', prefixes: ['masterdata:partner:'] },
-      { key: 'masterdata:document_party', label: '单证资料', prefixes: ['masterdata:document_party:'] },
+      { key: 'masterdata:product', labelKey: 'organization.permission.section.product', prefixes: ['masterdata:product:'] },
+      { key: 'masterdata:customer', labelKey: 'organization.permission.section.customer', prefixes: ['masterdata:customer:'] },
+      { key: 'masterdata:supplier', labelKey: 'organization.permission.section.supplier', prefixes: ['masterdata:supplier:'] },
+      { key: 'masterdata:partner', labelKey: 'organization.permission.section.partner', prefixes: ['masterdata:partner:'] },
+      { key: 'masterdata:document_party', labelKey: 'organization.permission.section.documentParty', prefixes: ['masterdata:document_party:'] },
     ],
   },
   {
     key: 'sample',
-    label: '样品业务',
+    labelKey: 'organization.permission.module.sample',
     sections: [
-      { key: 'sample:request', label: '打样管理', prefixes: ['sample:request:'] },
-      { key: 'sample:record', label: '样品登记', prefixes: ['sample:record:'] },
-      { key: 'sample:delivery', label: '寄样管理', prefixes: ['sample:delivery:'] },
+      { key: 'sample:request', labelKey: 'organization.permission.section.sampleRequest', prefixes: ['sample:request:'] },
+      { key: 'sample:record', labelKey: 'organization.permission.section.sampleRecord', prefixes: ['sample:record:'] },
+      { key: 'sample:delivery', labelKey: 'organization.permission.section.sampleDelivery', prefixes: ['sample:delivery:'] },
     ],
   },
   {
     key: 'sales',
-    label: '销售出口',
+    labelKey: 'organization.permission.module.sales',
     sections: [
-      { key: 'sales:quotation', label: '出口报价', prefixes: ['sales:quotation:'] },
-      { key: 'sales:contract', label: '出口合同', prefixes: ['sales:contract:'] },
-      { key: 'sales:shipment', label: '出货明细', prefixes: ['sales:shipment:'] },
+      { key: 'sales:quotation', labelKey: 'organization.permission.section.quotation', prefixes: ['sales:quotation:'] },
+      { key: 'sales:contract', labelKey: 'organization.permission.section.salesContract', prefixes: ['sales:contract:'] },
+      { key: 'sales:shipment', labelKey: 'organization.permission.section.shipment', prefixes: ['sales:shipment:'] },
     ],
   },
   {
     key: 'purchase',
-    label: '采购业务',
+    labelKey: 'organization.permission.module.purchase',
     sections: [
-      { key: 'purchase:inquiry', label: '采购询价', prefixes: ['purchase:inquiry:'] },
-      { key: 'purchase:contract', label: '采购合同', prefixes: ['purchase:contract:'] },
-      { key: 'purchase:invoice_notice', label: '开票通知', prefixes: ['purchase:invoice_notice:'] },
-      { key: 'purchase:followup', label: '采购跟单', prefixes: ['followup:', 'purchase:followup:'] },
+      { key: 'purchase:inquiry', labelKey: 'organization.permission.section.inquiry', prefixes: ['purchase:inquiry:'] },
+      { key: 'purchase:contract', labelKey: 'organization.permission.section.purchaseContract', prefixes: ['purchase:contract:'] },
+      { key: 'purchase:invoice_notice', labelKey: 'organization.permission.section.invoiceNotice', prefixes: ['purchase:invoice_notice:'] },
+      { key: 'purchase:followup', labelKey: 'organization.permission.section.purchaseFollowup', prefixes: ['followup:', 'purchase:followup:'] },
     ],
   },
   {
     key: 'qualityWarehouse',
-    label: '质检仓库',
+    labelKey: 'organization.permission.module.qualityWarehouse',
     sections: [
-      { key: 'quality:inspection', label: 'QC 查验', prefixes: ['quality:inspection:'] },
-      { key: 'warehouse:inbound_plan', label: '入库计划', prefixes: ['warehouse:inbound_plan:'] },
-      { key: 'warehouse:inbound_order', label: '货物入库', prefixes: ['warehouse:inbound_order:'] },
-      { key: 'warehouse:outbound_plan', label: '出库计划', prefixes: ['warehouse:outbound_plan:'] },
-      { key: 'warehouse:outbound_order', label: '货物出库', prefixes: ['warehouse:outbound_order:'] },
+      { key: 'quality:inspection', labelKey: 'organization.permission.section.qualityInspection', prefixes: ['quality:inspection:'] },
+      { key: 'warehouse:inbound_plan', labelKey: 'organization.permission.section.inboundPlan', prefixes: ['warehouse:inbound_plan:'] },
+      { key: 'warehouse:inbound_order', labelKey: 'organization.permission.section.inboundOrder', prefixes: ['warehouse:inbound_order:'] },
+      { key: 'warehouse:outbound_plan', labelKey: 'organization.permission.section.outboundPlan', prefixes: ['warehouse:outbound_plan:'] },
+      { key: 'warehouse:outbound_order', labelKey: 'organization.permission.section.outboundOrder', prefixes: ['warehouse:outbound_order:'] },
     ],
   },
   {
     key: 'finance',
-    label: '财务报表',
+    labelKey: 'organization.permission.module.finance',
     sections: [
-      { key: 'finance:finance', label: '财务管理', prefixes: ['finance:'] },
-      { key: 'finance:reporting', label: '经理查询', prefixes: ['reporting:'] },
+      { key: 'finance:finance', labelKey: 'organization.permission.section.finance', prefixes: ['finance:'] },
+      { key: 'finance:reporting', labelKey: 'organization.permission.section.reporting', prefixes: ['reporting:'] },
     ],
   },
 ]
@@ -397,7 +403,7 @@ function permissionModuleKey(permission: OrganizationPermission) {
   if (namespace === 'followup') return 'purchase'
   if (namespace === 'quality' || namespace === 'warehouse') return 'qualityWarehouse'
   if (namespace === 'reporting') return 'finance'
-  return permissionModuleLabels[namespace] ? namespace : 'other'
+  return permissionModuleLabelKeys[namespace] ? namespace : 'other'
 }
 
 function permissionSectionKey(permission: OrganizationPermission) {
@@ -411,9 +417,13 @@ function permissionSectionKey(permission: OrganizationPermission) {
   return `${namespace ?? 'other'}:${resource}`
 }
 
-function permissionSectionLabel(permission: OrganizationPermission) {
+function permissionSectionLabelKey(permission: OrganizationPermission): TranslationKey | null {
   const key = permissionSectionKey(permission)
-  if (permissionSectionLabels[key]) return permissionSectionLabels[key]
+  return permissionSectionLabelKeys[key] ?? null
+}
+
+function permissionSectionFallbackLabel(permission: OrganizationPermission) {
+  const key = permissionSectionKey(permission)
   const resource = key.split(':')[1] ?? key
   return resource
     .split('_')
@@ -422,20 +432,24 @@ function permissionSectionLabel(permission: OrganizationPermission) {
     .join(' ')
 }
 
+function permissionSectionText(section: OrganizationPermissionSection) {
+  return section.labelKey ? t(section.labelKey) : section.fallbackLabel
+}
+
 function permissionActionKey(permission: OrganizationPermission) {
   const parts = permission.code.split(':')
   return parts.slice(2).join(':') || parts[1] || permission.code
 }
 
-const permissionCategoryLabels: Record<string, string> = {
-  functional: '功能',
-  data: '数据',
-  field: '字段',
-  process: '流程',
+const permissionCategoryLabelKeys: Record<string, TranslationKey> = {
+  functional: 'organization.permission.category.functional',
+  data: 'organization.permission.category.data',
+  field: 'organization.permission.category.field',
+  process: 'organization.permission.category.process',
 }
 
 function permissionCategoryLabel(permission: OrganizationPermission) {
-  return permissionCategoryLabels[permission.category] ?? permissionCategoryLabels.functional
+  return t(permissionCategoryLabelKeys[permission.category] ?? permissionCategoryLabelKeys.functional)
 }
 
 function sortPermissions(items: OrganizationPermission[]) {
@@ -463,13 +477,14 @@ function groupOrganizationPermissions(permissions: OrganizationPermission[]): Or
   const usedPermissionIds = new Set<string>()
   const catalogGroups = sidebarPermissionCatalog.map((group) => ({
     key: group.key,
-    label: group.label,
+    labelKey: group.labelKey,
     sections: group.sections.map((section) => {
       const items = sortPermissions(permissions.filter((permission) => permissionMatchesSection(permission, section)))
       items.forEach((permission) => usedPermissionIds.add(permission.id))
       return {
         key: section.key,
-        label: section.label,
+        labelKey: section.labelKey,
+        fallbackLabel: '',
         items,
       }
     }),
@@ -482,7 +497,8 @@ function groupOrganizationPermissions(permissions: OrganizationPermission[]): Or
     const key = `${moduleKey}:${sectionKey}`
     const section = uncataloguedSections.get(key) ?? {
       key: sectionKey,
-      label: permissionSectionLabel(permission),
+      labelKey: permissionSectionLabelKey(permission),
+      fallbackLabel: permissionSectionFallbackLabel(permission),
       items: [],
     }
     section.items.push(permission)
@@ -495,7 +511,7 @@ function groupOrganizationPermissions(permissions: OrganizationPermission[]): Or
     ...catalogGroups,
     {
       key: 'other',
-      label: '其他权限',
+      labelKey: 'organization.permission.module.other',
       sections: Array.from(uncataloguedSections.values())
         .sort((left, right) => orderedIndex(permissionSectionOrder, left.key) - orderedIndex(permissionSectionOrder, right.key))
         .map((section) => ({
@@ -518,7 +534,7 @@ function normalizeOrganizationPermission(
   permission: Partial<OrganizationPermission> | null | undefined,
 ): OrganizationPermission {
   const code = safeOrganizationText(permission?.code)
-  const name = safeOrganizationText(permission?.name, code || '未命名权限')
+  const name = safeOrganizationText(permission?.name, code || t('organization.permission.unnamed'))
   const category = safeOrganizationText(permission?.category, 'functional') || 'functional'
   return {
     id: safeOrganizationText(permission?.id, code || name),
@@ -530,7 +546,7 @@ function normalizeOrganizationPermission(
 
 function normalizeOrganizationRole(role: Partial<OrganizationRole> | null | undefined): OrganizationRole {
   const code = safeOrganizationText(role?.code)
-  const name = safeOrganizationText(role?.name, code || '未命名角色')
+  const name = safeOrganizationText(role?.name, code || t('organization.role.unnamed'))
   return {
     id: safeOrganizationText(role?.id, code || name),
     name,
@@ -544,11 +560,11 @@ function normalizeOrganizationRole(role: Partial<OrganizationRole> | null | unde
 
 const dataScopeOrder: OrganizationDataScope[] = ['self', 'department', 'department_tree', 'all']
 
-const dataScopeLabels: Record<OrganizationDataScope, string> = {
-  self: '仅本人',
-  department: '本部门',
-  department_tree: '本部门及下级',
-  all: '全部数据',
+const dataScopeLabels: Record<OrganizationDataScope, TranslationKey> = {
+  self: 'organization.role.dataScope.self',
+  department: 'organization.role.dataScope.department',
+  department_tree: 'organization.role.dataScope.departmentTree',
+  all: 'organization.role.dataScope.all',
 }
 
 function normalizeDataScope(value: unknown): OrganizationDataScope {
@@ -560,7 +576,7 @@ function normalizeDataScope(value: unknown): OrganizationDataScope {
 function normalizeOrganizationDepartment(
   department: Partial<OrganizationDepartment> | null | undefined,
 ): OrganizationDepartment {
-  const name = safeOrganizationText(department?.name, '未命名部门')
+  const name = safeOrganizationText(department?.name, t('organization.department.unnamed'))
   return {
     id: safeOrganizationText(department?.id, name),
     name,
@@ -577,7 +593,7 @@ function normalizeOrganizationUser(user: Partial<OrganizationUser> | null | unde
     username,
     display_name: displayName,
     department_id: typeof user?.department_id === 'string' ? user.department_id : null,
-    department_name: safeOrganizationText(user?.department_name, '未分配部门'),
+    department_name: safeOrganizationText(user?.department_name, t('organization.user.unassignedDepartment')),
     avatar_type: normalizeAvatarType(user?.avatar_type),
     avatar_value: safeOrganizationText(user?.avatar_value, defaultAvatarPreset),
     roles: Array.isArray(user?.roles) ? user.roles.map((role) => normalizeOrganizationRole(role)) : [],
@@ -619,25 +635,11 @@ function formatOrganizationDateTime(value: string | null) {
   return `${year}-${month}-${day} ${hour}:${minute}`
 }
 
-type OrganizationTranslateKey = 'common.cancel' | 'common.close'
-
 type OrganizationUsersPageProps = {
   currentUser: CurrentUser
-  translate?: (key: OrganizationTranslateKey) => string
 }
 
-function defaultOrganizationTranslate(key: OrganizationTranslateKey) {
-  const labels: Record<OrganizationTranslateKey, string> = {
-    'common.cancel': '取消',
-    'common.close': '关闭',
-  }
-  return labels[key]
-}
-
-export function OrganizationUsersPage({
-  currentUser,
-  translate = defaultOrganizationTranslate,
-}: OrganizationUsersPageProps) {
+export function OrganizationUsersPage({ currentUser }: OrganizationUsersPageProps) {
   const canManageOrganization = currentUser.permissions.includes(superAdminPermission)
   const [users, setUsers] = useState<OrganizationUser[]>([])
   const [departments, setDepartments] = useState<OrganizationDepartment[]>([])
@@ -687,7 +689,7 @@ export function OrganizationUsersPage({
   useEffect(() => {
     if (!canManageOrganization) {
       setLoading(false)
-      setActionError('缺少组织管理权限')
+      setActionError(t('organization.message.noPermission'))
       return
     }
     void loadOrganization()
@@ -742,7 +744,7 @@ export function OrganizationUsersPage({
           : '')
       setSelectedDepartmentId(preferredDepartmentId || normalizedOptions.departments[0]?.id || '')
     } catch (caught) {
-      showError(caught, '组织管理数据加载失败')
+      showError(caught, t('organization.message.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -775,7 +777,7 @@ export function OrganizationUsersPage({
   async function handleSaveCompanyInfo(event: FormEvent) {
     event.preventDefault()
     if (!companyForm.name.trim()) {
-      setActionError('请填写公司名称')
+      setActionError(t('organization.company.validation.nameRequired'))
       return
     }
     setActionError('')
@@ -786,9 +788,9 @@ export function OrganizationUsersPage({
       setCompanyForm(companyInfoToForm(updated))
       setCompanyUpdatedAt(updated.updated_at)
       setCompanyModalOpen(false)
-      setActionMessage('公司信息已保存')
+      setActionMessage(t('organization.company.message.saved'))
     } catch (caught) {
-      showError(caught, '公司信息保存失败')
+      showError(caught, t('organization.company.message.saveFailed'))
     } finally {
       setBusyAction(null)
     }
@@ -808,7 +810,7 @@ export function OrganizationUsersPage({
 
   function openCreateModal() {
     if (!departments.length) {
-      setActionError('请先新增部门')
+      setActionError(t('organization.user.message.departmentRequiredFirst'))
       return
     }
     resetCreateForm()
@@ -912,10 +914,10 @@ export function OrganizationUsersPage({
         permission_ids: permissionFormIds,
       }
       const updated = await updateOrganizationRolePermissions(selectedRole.id, payload)
-      setActionMessage(`${updated.name} 权限已更新`)
+      setActionMessage(t('organization.permission.message.updated', { name: updated.name }))
       await loadOrganization(undefined, updated.id)
     } catch (caught) {
-      showError(caught, '权限保存失败')
+      showError(caught, t('organization.permission.message.saveFailed'))
     } finally {
       setBusyAction(null)
     }
@@ -924,24 +926,24 @@ export function OrganizationUsersPage({
   async function copyPassword(password: string) {
     try {
       await navigator.clipboard.writeText(password)
-      setActionMessage('密码已复制')
+      setActionMessage(t('organization.message.passwordCopied'))
     } catch {
-      setActionError('复制失败，请手动选择密码')
+      setActionError(t('organization.message.copyFailed'))
     }
   }
 
   async function submitUserForm(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (userModalMode === 'create' && !departments.length) {
-      setActionError('请先新增部门')
+      setActionError(t('organization.user.message.departmentRequiredFirst'))
       return
     }
     if (!form.username.trim() || !form.display_name.trim()) {
-      setActionError('请填写用户名和姓名')
+      setActionError(t('organization.user.validation.required'))
       return
     }
     if (!form.department_id) {
-      setActionError('请选择部门')
+      setActionError(t('organization.user.validation.departmentRequired'))
       return
     }
     setBusyAction(userModalMode ?? 'user')
@@ -961,11 +963,11 @@ export function OrganizationUsersPage({
         const created: OrganizationUserCreateResult = await createOrganizationUser(payload)
         setUserModalMode(null)
         setPasswordReveal({
-          title: '初始密码',
+          title: t('organization.user.modal.initialPasswordTitle'),
           username: created.user.username,
           password: created.initial_password,
         })
-        setActionMessage('用户已创建')
+        setActionMessage(t('organization.user.message.created'))
         await loadOrganization(created.user.id)
       }
       if (userModalMode === 'edit' && selectedUser) {
@@ -979,11 +981,11 @@ export function OrganizationUsersPage({
         }
         const updated = await updateOrganizationUser(selectedUser.id, payload)
         setUserModalMode(null)
-        setActionMessage('用户已更新')
+        setActionMessage(t('organization.user.message.updated'))
         await loadOrganization(updated.id)
       }
     } catch (caught) {
-      showError(caught, '操作失败')
+      showError(caught, t('organization.message.operationFailed'))
     } finally {
       setBusyAction(null)
     }
@@ -993,7 +995,7 @@ export function OrganizationUsersPage({
     event.preventDefault()
     const name = departmentForm.name.trim()
     if (!name) {
-      setActionError('请填写部门名称')
+      setActionError(t('organization.department.validation.nameRequired'))
       return
     }
     const sortOrder = Number.parseInt(departmentForm.sort_order, 10)
@@ -1009,7 +1011,7 @@ export function OrganizationUsersPage({
         }
         const created = await createOrganizationDepartment(payload)
         setDepartmentModalMode(null)
-        setActionMessage('部门已创建')
+        setActionMessage(t('organization.department.message.created'))
         await loadOrganization(undefined, undefined, created.id)
       }
       if (departmentModalMode === 'edit' && selectedDepartment) {
@@ -1020,11 +1022,11 @@ export function OrganizationUsersPage({
         }
         const updated = await updateOrganizationDepartment(selectedDepartment.id, payload)
         setDepartmentModalMode(null)
-        setActionMessage('部门已更新')
+        setActionMessage(t('organization.department.message.updated'))
         await loadOrganization(undefined, undefined, updated.id)
       }
     } catch (caught) {
-      showError(caught, '部门保存失败')
+      showError(caught, t('organization.department.message.saveFailed'))
     } finally {
       setBusyAction(null)
     }
@@ -1072,11 +1074,11 @@ export function OrganizationUsersPage({
     const name = roleForm.name.trim()
     const code = roleForm.code.trim()
     if (!name) {
-      setActionError('请填写角色名称')
+      setActionError(t('organization.role.validation.nameRequired'))
       return
     }
     if (!/^[a-z][a-z0-9_]*$/.test(code)) {
-      setActionError('角色编码需以小写字母开头，仅含小写字母、数字和下划线')
+      setActionError(t('organization.role.validation.codeInvalid'))
       return
     }
     setBusyAction(roleModalMode === 'edit' ? `role-${editingRoleId}` : 'role')
@@ -1092,18 +1094,18 @@ export function OrganizationUsersPage({
         }
         const created = await createOrganizationRole(payload)
         setRoleModalMode(null)
-        setActionMessage('角色已创建')
+        setActionMessage(t('organization.role.message.created'))
         await loadOrganization(undefined, created.id)
       }
       if (roleModalMode === 'edit' && editingRoleId) {
         const payload: OrganizationRoleUpdatePayload = { name, code, data_scope: roleForm.data_scope }
         const updated = await updateOrganizationRole(editingRoleId, payload)
         setRoleModalMode(null)
-        setActionMessage('角色已更新')
+        setActionMessage(t('organization.role.message.updated'))
         await loadOrganization(undefined, updated.id)
       }
     } catch (caught) {
-      showError(caught, '角色保存失败')
+      showError(caught, t('organization.role.message.saveFailed'))
     } finally {
       setBusyAction(null)
     }
@@ -1113,12 +1115,12 @@ export function OrganizationUsersPage({
     const relatedUsers = users.filter((user) => user.roles.some((item) => item.id === role.id))
     Modal.confirm({
       centered: true,
-      title: '删除角色',
+      title: t('organization.role.modal.deleteTitle'),
       content: relatedUsers.length
-        ? `${role.name} 已分配给 ${relatedUsers.length} 个用户，不能删除。请先解除这些用户的该角色。`
-        : `删除后 ${role.name} 将从角色列表中移除，是否继续？`,
-      okText: '删除',
-      cancelText: translate('common.cancel'),
+        ? t('organization.role.message.assignedToUsers', { name: role.name, count: relatedUsers.length })
+        : t('organization.role.message.deleteConfirm', { name: role.name }),
+      okText: t('common.delete'),
+      cancelText: t('common.cancel'),
       okButtonProps: { danger: true, disabled: relatedUsers.length > 0 },
       onOk: async () => {
         if (relatedUsers.length) return
@@ -1127,10 +1129,10 @@ export function OrganizationUsersPage({
         setActionMessage('')
         try {
           await deleteOrganizationRole(role.id)
-          setActionMessage('角色已删除')
+          setActionMessage(t('organization.role.message.deleted'))
           await loadOrganization()
         } catch (caught) {
-          showError(caught, '角色删除失败')
+          showError(caught, t('organization.role.message.deleteFailed'))
         } finally {
           setBusyAction(null)
         }
@@ -1141,10 +1143,10 @@ export function OrganizationUsersPage({
   function confirmDeactivate(user: OrganizationUser) {
     Modal.confirm({
       centered: true,
-      title: '删除用户',
-      content: `删除后 ${user.display_name} 将无法登录，历史业务记录会保留。是否继续？`,
-      okText: '删除',
-      cancelText: translate('common.cancel'),
+      title: t('organization.user.modal.deleteTitle'),
+      content: t('organization.user.message.deleteConfirm', { name: user.display_name }),
+      okText: t('common.delete'),
+      cancelText: t('common.cancel'),
       okButtonProps: { danger: true },
       onOk: async () => {
         setBusyAction(`delete-${user.id}`)
@@ -1152,10 +1154,10 @@ export function OrganizationUsersPage({
         setActionMessage('')
         try {
           const deleted = await deleteOrganizationUser(user.id)
-          setActionMessage('用户已停用')
+          setActionMessage(t('organization.user.message.deactivated'))
           await loadOrganization(deleted.id)
         } catch (caught) {
-          showError(caught, '删除失败')
+          showError(caught, t('organization.user.message.deleteFailed'))
         } finally {
           setBusyAction(null)
         }
@@ -1167,12 +1169,12 @@ export function OrganizationUsersPage({
     const relatedUsers = users.filter((user) => user.department_id === department.id)
     Modal.confirm({
       centered: true,
-      title: '删除部门',
+      title: t('organization.department.modal.deleteTitle'),
       content: relatedUsers.length
-        ? `${department.name} 下还有 ${relatedUsers.length} 个用户，不能删除。`
-        : `删除后 ${department.name} 将从部门列表中移除，是否继续？`,
-      okText: '删除',
-      cancelText: translate('common.cancel'),
+        ? t('organization.department.message.hasUsers', { name: department.name, count: relatedUsers.length })
+        : t('organization.department.message.deleteConfirm', { name: department.name }),
+      okText: t('common.delete'),
+      cancelText: t('common.cancel'),
       okButtonProps: { danger: true, disabled: relatedUsers.length > 0 },
       onOk: async () => {
         if (relatedUsers.length) return
@@ -1181,10 +1183,10 @@ export function OrganizationUsersPage({
         setActionMessage('')
         try {
           const deleted = await deleteOrganizationDepartment(department.id)
-          setActionMessage('部门已删除')
+          setActionMessage(t('organization.department.message.deleted'))
           await loadOrganization(undefined, undefined, deleted.id === selectedDepartmentId ? undefined : selectedDepartmentId)
         } catch (caught) {
-          showError(caught, '部门删除失败')
+          showError(caught, t('organization.department.message.deleteFailed'))
         } finally {
           setBusyAction(null)
         }
@@ -1195,10 +1197,10 @@ export function OrganizationUsersPage({
   function confirmResetPassword(user: OrganizationUser) {
     Modal.confirm({
       centered: true,
-      title: '重置密码',
-      content: `系统将为 ${user.display_name} 生成新的临时密码，旧密码会立即失效。`,
-      okText: '重置密码',
-      cancelText: translate('common.cancel'),
+      title: t('organization.user.modal.resetPasswordTitle'),
+      content: t('organization.user.message.resetConfirm', { name: user.display_name }),
+      okText: t('organization.user.action.resetPassword'),
+      cancelText: t('common.cancel'),
       onOk: async () => {
         setBusyAction(`reset-${user.id}`)
         setActionError('')
@@ -1206,14 +1208,14 @@ export function OrganizationUsersPage({
         try {
           const reset: OrganizationPasswordResetResult = await resetOrganizationUserPassword(user.id)
           setPasswordReveal({
-            title: '临时密码',
+            title: t('organization.user.modal.temporaryPasswordTitle'),
             username: reset.user.username,
             password: reset.temporary_password,
           })
-          setActionMessage('密码已重置')
+          setActionMessage(t('organization.user.message.passwordReset'))
           await loadOrganization(reset.user.id)
         } catch (caught) {
-          showError(caught, '重置失败')
+          showError(caught, t('organization.user.message.resetFailed'))
         } finally {
           setBusyAction(null)
         }
@@ -1230,26 +1232,35 @@ export function OrganizationUsersPage({
       {actionError ? <div className="dashboard-feedback error">{actionError}</div> : null}
       {actionMessage ? <div className="dashboard-feedback success">{actionMessage}</div> : null}
 
-      <div className="organization-summary" aria-label="组织概览">
-        <Metric label="用户" value={users.length} icon={<UsersRound size={17} />} />
-        <Metric label="启用" value={activeUsers.length} icon={<ShieldCheck size={17} />} />
-        <Metric label="停用" value={inactiveUsers.length} icon={<Trash2 size={17} />} intent="warning" />
-        <Metric label="部门" value={departments.length} icon={<LayoutDashboard size={17} />} />
-        <Metric label="角色" value={roles.length} icon={<KeyRound size={17} />} />
+      <div className="organization-summary" aria-label={t('organization.pageAria')}>
+        <Metric label={t('organization.metric.users')} value={users.length} icon={<UsersRound size={17} />} />
+        <Metric label={t('organization.metric.active')} value={activeUsers.length} icon={<ShieldCheck size={17} />} />
+        <Metric
+          label={t('organization.metric.inactive')}
+          value={inactiveUsers.length}
+          icon={<Trash2 size={17} />}
+          intent="warning"
+        />
+        <Metric
+          label={t('organization.metric.departments')}
+          value={departments.length}
+          icon={<LayoutDashboard size={17} />}
+        />
+        <Metric label={t('organization.metric.roles')} value={roles.length} icon={<KeyRound size={17} />} />
       </div>
 
       <div className="organization-toolbar">
         <label className="organization-search">
           <Search size={17} />
           <input
-            aria-label="搜索用户、部门或角色"
-            placeholder="搜索用户、部门或角色"
+            aria-label={t('organization.filter.search')}
+            placeholder={t('organization.filter.search')}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
         </label>
         <div className="organization-toolbar-actions">
-          {!departments.length ? <span>请先新增部门后再添加成员</span> : null}
+          {!departments.length ? <span>{t('organization.user.hint.createDepartmentFirst')}</span> : null}
           <button
             className="inline-submit"
             disabled={!departments.length}
@@ -1257,20 +1268,22 @@ export function OrganizationUsersPage({
             onClick={openCreateModal}
           >
             <Plus size={15} />
-            新增用户
+            {t('organization.user.action.create')}
           </button>
         </div>
       </div>
 
-      <section className="organization-company" aria-label="公司信息">
+      <section className="organization-company" aria-label={t('organization.company.pageAria')}>
         <header className="organization-departments-head">
           <div>
             <Building2 size={18} />
             <div>
-              <h2>公司信息</h2>
+              <h2>{t('organization.company.title')}</h2>
               <p>
-                公司抬头、银行信息用于单证和对外文件。
-                {companyUpdatedAt ? `（最近更新 ${formatOrganizationDateTime(companyUpdatedAt)}）` : ''}
+                {t('organization.company.description')}
+                {companyUpdatedAt
+                  ? t('organization.company.updatedAt', { value: formatOrganizationDateTime(companyUpdatedAt) })
+                  : ''}
               </p>
             </div>
           </div>
@@ -1281,31 +1294,35 @@ export function OrganizationUsersPage({
             onClick={openCompanyModal}
           >
             <Pencil size={15} />
-            编辑公司信息
+            {t('organization.company.action.edit')}
           </button>
         </header>
         {companyLoaded ? (
           <div className="organization-company-summary">
             <div className="organization-company-identity">
-              <span>当前抬头</span>
-              <strong>{companyInfo?.name || '未填写公司名称'}</strong>
-              <small>{companyInfo?.name_en || companyInfo?.letterhead || '暂无英文名称或单证抬头'}</small>
+              <span>{t('organization.company.field.currentLetterhead')}</span>
+              <strong>{companyInfo?.name || t('organization.company.placeholder.nameEmpty')}</strong>
+              <small>
+                {companyInfo?.name_en ||
+                  companyInfo?.letterhead ||
+                  t('organization.company.placeholder.subtitleEmpty')}
+              </small>
             </div>
             <div className="organization-company-facts">
               <div>
-                <span>电话</span>
+                <span>{t('organization.company.field.phone')}</span>
                 <strong>{companyInfo?.phone || '-'}</strong>
               </div>
               <div>
-                <span>邮箱</span>
+                <span>{t('organization.company.field.email')}</span>
                 <strong>{companyInfo?.email || '-'}</strong>
               </div>
               <div>
-                <span>开户行</span>
+                <span>{t('organization.company.field.bankName')}</span>
                 <strong>{companyInfo?.bank_name || '-'}</strong>
               </div>
               <div>
-                <span>银行账号</span>
+                <span>{t('organization.company.field.bankAccount')}</span>
                 <strong>{companyInfo?.bank_account || '-'}</strong>
               </div>
             </div>
@@ -1316,18 +1333,18 @@ export function OrganizationUsersPage({
       </section>
 
       <div className="organization-structure">
-      <section className="organization-departments" aria-label="部门管理">
+      <section className="organization-departments" aria-label={t('organization.department.pageAria')}>
         <header className="organization-departments-head">
           <div>
             <Building2 size={18} />
             <div>
-              <h2>部门管理</h2>
-              <p>统一维护组织部门；新增成员时需关联一个有效部门。</p>
+              <h2>{t('organization.department.title')}</h2>
+              <p>{t('organization.department.description')}</p>
             </div>
           </div>
           <button className="secondary-inline" type="button" onClick={openCreateDepartmentModal}>
             <Plus size={15} />
-            新增部门
+            {t('organization.department.action.create')}
           </button>
         </header>
         {departments.length ? (
@@ -1344,11 +1361,14 @@ export function OrganizationUsersPage({
                   >
                     <strong>{department.name}</strong>
                     <small>
-                      {parent ? `上级 ${parent.name}` : '一级部门'} · {relatedUsers} 人
+                      {parent
+                        ? t('organization.department.card.parent', { name: parent.name })
+                        : t('organization.department.card.topLevel')}{' '}
+                      · {t('organization.department.card.userCount', { count: relatedUsers })}
                     </small>
                   </button>
                   <button
-                    aria-label={`编辑 ${department.name}`}
+                    aria-label={t('organization.department.action.editAria', { name: department.name })}
                     className="secondary-inline icon-only"
                     type="button"
                     onClick={() => openEditDepartmentModal(department)}
@@ -1356,7 +1376,7 @@ export function OrganizationUsersPage({
                     <Pencil size={15} />
                   </button>
                   <button
-                    aria-label={`删除 ${department.name}`}
+                    aria-label={t('organization.department.action.deleteAria', { name: department.name })}
                     className="danger-inline icon-only"
                     disabled={busyAction === `department-delete-${department.id}`}
                     type="button"
@@ -1369,22 +1389,22 @@ export function OrganizationUsersPage({
             })}
           </div>
         ) : (
-          <div className="organization-department-empty">暂无部门。请先新增部门，再创建成员账号。</div>
+          <div className="organization-department-empty">{t('organization.department.empty')}</div>
         )}
       </section>
 
-      <section className="organization-departments" aria-label="角色管理">
+      <section className="organization-departments" aria-label={t('organization.role.pageAria')}>
         <header className="organization-departments-head">
           <div>
             <KeyRound size={18} />
             <div>
-              <h2>角色管理</h2>
-              <p>新增、改名或删除角色；已分配给用户的角色需先解除关联才能删除。</p>
+              <h2>{t('organization.role.title')}</h2>
+              <p>{t('organization.role.description')}</p>
             </div>
           </div>
           <button className="secondary-inline" type="button" onClick={openCreateRoleModal}>
             <Plus size={15} />
-            新增角色
+            {t('organization.role.action.create')}
           </button>
         </header>
         {roles.length ? (
@@ -1401,12 +1421,14 @@ export function OrganizationUsersPage({
                   >
                     <strong>{role.name}</strong>
                     <small>
-                      {role.code} · {role.permissions.length} 项权限 · {relatedUsers} 人 ·{' '}
-                      {dataScopeLabels[role.data_scope]}
+                      {role.code} ·{' '}
+                      {t('organization.role.card.permissionCount', { count: role.permissions.length })} ·{' '}
+                      {t('organization.role.card.userCount', { count: relatedUsers })} ·{' '}
+                      {t(dataScopeLabels[role.data_scope])}
                     </small>
                   </button>
                   <button
-                    aria-label={`编辑 ${role.name}`}
+                    aria-label={t('organization.role.action.editAria', { name: role.name })}
                     className="secondary-inline icon-only"
                     type="button"
                     onClick={() => openEditRoleModal(role)}
@@ -1414,14 +1436,14 @@ export function OrganizationUsersPage({
                     <Pencil size={15} />
                   </button>
                   <button
-                    aria-label={`删除 ${role.name}`}
+                    aria-label={t('organization.role.action.deleteAria', { name: role.name })}
                     className="danger-inline icon-only"
                     disabled={isSuperAdmin || relatedUsers > 0 || busyAction === `role-delete-${role.id}`}
                     title={
                       isSuperAdmin
-                        ? '超级管理员角色不可删除'
+                        ? t('organization.role.tooltip.superAdminLocked')
                         : relatedUsers > 0
-                          ? '角色已分配给用户，不能删除'
+                          ? t('organization.role.tooltip.assignedLocked')
                           : undefined
                     }
                     type="button"
@@ -1434,13 +1456,13 @@ export function OrganizationUsersPage({
             })}
           </div>
         ) : (
-          <div className="organization-department-empty">暂无角色。请先新增角色，再为用户分配。</div>
+          <div className="organization-department-empty">{t('organization.role.empty')}</div>
         )}
       </section>
       </div>
 
       <div className="organization-layout">
-        <section className="organization-list" aria-label="用户列表">
+        <section className="organization-list" aria-label={t('organization.user.listAria')}>
           {filteredUsers.length ? (
             filteredUsers.map((user) => (
               <button
@@ -1458,20 +1480,20 @@ export function OrganizationUsersPage({
                 <span className="organization-user-main">
                   <strong>{user.display_name}</strong>
                   <small>
-                    {user.username} · {user.department_name || '未分配部门'}
+                    {user.username} · {user.department_name || t('organization.user.unassignedDepartment')}
                   </small>
                 </span>
                 <span className={user.is_active ? 'organization-status active' : 'organization-status inactive'}>
-                  {user.is_active ? '启用' : '停用'}
+                  {user.is_active ? t('status.active') : t('status.inactive')}
                 </span>
               </button>
             ))
           ) : (
-            <div className="dashboard-empty">没有匹配的用户</div>
+            <div className="dashboard-empty">{t('organization.user.empty.noMatch')}</div>
           )}
         </section>
 
-        <section className="organization-detail" aria-label="用户详情">
+        <section className="organization-detail" aria-label={t('organization.user.detailAria')}>
           {selectedUser ? (
             <>
               <div className="organization-detail-head">
@@ -1492,25 +1514,30 @@ export function OrganizationUsersPage({
                     selectedUser.is_active ? 'organization-status active' : 'organization-status inactive'
                   }
                 >
-                  {selectedUser.is_active ? '启用中' : '已停用'}
+                  {selectedUser.is_active
+                    ? t('organization.user.status.activeDetail')
+                    : t('organization.user.status.inactiveDetail')}
                 </span>
               </div>
 
               <div className="organization-detail-grid">
                 <div>
-                  <span>部门</span>
-                  <strong>{selectedUser.department_name || '未分配部门'}</strong>
+                  <span>{t('organization.user.field.department')}</span>
+                  <strong>{selectedUser.department_name || t('organization.user.unassignedDepartment')}</strong>
                 </div>
                 <div>
-                  <span>角色</span>
-                  <strong>{selectedUser.roles.map((role) => role.name).join('、') || '暂无角色'}</strong>
+                  <span>{t('organization.user.field.role')}</span>
+                  <strong>
+                    {selectedUser.roles.map((role) => role.name).join(t('organization.user.roleSeparator')) ||
+                      t('organization.user.noRoles')}
+                  </strong>
                 </div>
                 <div>
-                  <span>密码</span>
-                  <strong>{selectedUser.password_set ? '******' : '未设置'}</strong>
+                  <span>{t('organization.user.field.password')}</span>
+                  <strong>{selectedUser.password_set ? '******' : t('common.notSet')}</strong>
                 </div>
                 <div>
-                  <span>创建时间</span>
+                  <span>{t('organization.user.field.createdAt')}</span>
                   <strong>{formatOrganizationDateTime(selectedUser.created_at)}</strong>
                 </div>
               </div>
@@ -1518,7 +1545,7 @@ export function OrganizationUsersPage({
               <div className="organization-actions">
                 <button className="secondary-inline" type="button" onClick={() => openEditModal(selectedUser)}>
                   <Save size={15} />
-                  编辑资料
+                  {t('organization.user.action.editProfile')}
                 </button>
                 <button
                   className="secondary-inline"
@@ -1527,7 +1554,7 @@ export function OrganizationUsersPage({
                   onClick={() => setPermissionModalOpen(true)}
                 >
                   <ShieldCheck size={15} />
-                  编辑用户权限
+                  {t('organization.user.action.editPermissions')}
                 </button>
                 <button
                   className="secondary-inline"
@@ -1536,7 +1563,7 @@ export function OrganizationUsersPage({
                   onClick={() => confirmResetPassword(selectedUser)}
                 >
                   <KeyRound size={15} />
-                  重置密码
+                  {t('organization.user.action.resetPassword')}
                 </button>
                 <button
                   className="danger-inline"
@@ -1545,12 +1572,12 @@ export function OrganizationUsersPage({
                   onClick={() => confirmDeactivate(selectedUser)}
                 >
                   <Trash2 size={15} />
-                  删除用户
+                  {t('organization.user.action.delete')}
                 </button>
               </div>
             </>
           ) : (
-            <div className="dashboard-empty">请选择用户</div>
+            <div className="dashboard-empty">{t('organization.user.empty.select')}</div>
           )}
         </section>
       </div>
@@ -1560,7 +1587,7 @@ export function OrganizationUsersPage({
         className="organization-company-modal"
         footer={null}
         open={companyModalOpen}
-        title="编辑公司信息"
+        title={t('organization.company.modal.editTitle')}
         width={900}
         onCancel={closeCompanyModal}
       >
@@ -1575,11 +1602,11 @@ export function OrganizationUsersPage({
                 className={field.full ? 'organization-company-field full' : 'organization-company-field'}
               >
                 <span>
-                  {field.label}
+                  {t(field.labelKey)}
                   {field.key === 'name' ? ' *' : ''}
                 </span>
                 <input
-                  aria-label={field.label}
+                  aria-label={t(field.labelKey)}
                   value={companyForm[field.key]}
                   onChange={(event) =>
                     setCompanyForm({ ...companyForm, [field.key]: event.target.value })
@@ -1590,11 +1617,11 @@ export function OrganizationUsersPage({
           </div>
           <div className="modal-actions">
             <button className="secondary-inline" type="button" onClick={closeCompanyModal}>
-              {translate('common.cancel')}
+              {t('common.cancel')}
             </button>
             <button className="inline-submit" disabled={busyAction === 'company-save'} type="submit">
               <Save size={15} />
-              保存公司信息
+              {t('organization.company.action.save')}
             </button>
           </div>
         </form>
@@ -1604,19 +1631,19 @@ export function OrganizationUsersPage({
         centered
         footer={null}
         open={permissionModalOpen}
-        title="按侧边栏功能授权"
+        title={t('organization.permission.modal.title')}
         width={960}
         onCancel={() => setPermissionModalOpen(false)}
       >
-        <section className="organization-permissions in-modal" aria-label="角色权限配置">
+        <section className="organization-permissions in-modal" aria-label={t('organization.permission.pageAria')}>
         <div className="organization-permissions-head">
           <div>
-            <span>权限配置</span>
-            <p>先选择角色，再按左侧导航对应的功能勾选权限；没有勾选的板块不会出现在该角色用户的侧边栏。</p>
+            <span>{t('organization.permission.title')}</span>
+            <p>{t('organization.permission.description')}</p>
           </div>
           <div className="organization-permission-actions">
             <label className="organization-permission-role-select">
-              <span>配置角色</span>
+              <span>{t('organization.permission.configRole')}</span>
               <Select
                 disabled={!roles.length}
                 options={roles.map((role) => ({ label: role.name, value: role.id }))}
@@ -1631,7 +1658,7 @@ export function OrganizationUsersPage({
               onClick={() => void submitRolePermissions()}
             >
               <Save size={15} />
-              保存权限
+              {t('organization.permission.action.save')}
             </button>
           </div>
         </div>
@@ -1646,12 +1673,12 @@ export function OrganizationUsersPage({
                 <section className="organization-permission-module" key={group.key}>
                   <header>
                     <div>
-                      <span>侧边栏模块</span>
-                      <h3>{group.label}</h3>
+                      <span>{t('organization.permission.sidebarModule')}</span>
+                      <h3>{t(group.labelKey)}</h3>
                     </div>
                     <label className="organization-permission-bulk">
                       <input
-                        aria-label={`${group.label}权限全选`}
+                        aria-label={t('organization.permission.selectAllAria', { name: t(group.labelKey) })}
                         checked={groupFullySelected}
                         disabled={!groupItems.length}
                         type="checkbox"
@@ -1668,12 +1695,14 @@ export function OrganizationUsersPage({
                         <div className="organization-permission-section" key={section.key}>
                           <div className="organization-permission-section-head">
                             <div>
-                              <small>{group.label}</small>
-                              <strong>{section.label}</strong>
+                              <small>{t(group.labelKey)}</small>
+                              <strong>{permissionSectionText(section)}</strong>
                             </div>
                             <label>
                               <input
-                                aria-label={`${section.label}权限全选`}
+                                aria-label={t('organization.permission.selectAllAria', {
+                                  name: permissionSectionText(section),
+                                })}
                                 checked={sectionFullySelected}
                                 disabled={!section.items.length}
                                 type="checkbox"
@@ -1707,7 +1736,9 @@ export function OrganizationUsersPage({
                                 )
                               })
                             ) : (
-                              <div className="organization-permission-missing">暂无可配置权限</div>
+                              <div className="organization-permission-missing">
+                                {t('organization.permission.none')}
+                              </div>
                             )}
                           </div>
                         </div>
@@ -1726,13 +1757,17 @@ export function OrganizationUsersPage({
         centered
         footer={null}
         open={Boolean(userModalMode)}
-        title={userModalMode === 'create' ? '新增用户' : '编辑用户'}
+        title={
+          userModalMode === 'create'
+            ? t('organization.user.modal.createTitle')
+            : t('organization.user.modal.editTitle')
+        }
         width={760}
         onCancel={() => setUserModalMode(null)}
       >
         <form className="dashboard-form modal-dashboard-form organization-form" onSubmit={submitUserForm}>
           <UserAvatarPicker
-            label={form.display_name || form.username || '用户'}
+            label={form.display_name || form.username || t('organization.user.avatarFallback')}
             value={{
               avatar_type: form.avatar_type,
               avatar_value: form.avatar_value,
@@ -1741,39 +1776,39 @@ export function OrganizationUsersPage({
           />
           <div className="dashboard-form-row">
             <label>
-              <span>用户名</span>
+              <span>{t('organization.user.field.username')}</span>
               <input
-                aria-label="用户名"
+                aria-label={t('organization.user.field.username')}
                 disabled={userModalMode === 'edit'}
-                placeholder="用于登录，如 sales.chen"
+                placeholder={t('organization.user.placeholder.username')}
                 value={form.username}
                 onChange={(event) => setForm({ ...form, username: event.target.value })}
               />
             </label>
             <label>
-              <span>姓名</span>
+              <span>{t('organization.user.field.displayName')}</span>
               <input
-                aria-label="姓名"
+                aria-label={t('organization.user.field.displayName')}
                 value={form.display_name}
                 onChange={(event) => setForm({ ...form, display_name: event.target.value })}
               />
             </label>
           </div>
           <label>
-            <span>部门</span>
+            <span>{t('organization.user.field.department')}</span>
             <Select
               disabled={!departments.length}
               options={departments.map((department) => ({
                 value: department.id,
                 label: department.name,
               }))}
-              placeholder="请选择部门"
+              placeholder={t('organization.user.placeholder.department')}
               value={form.department_id || undefined}
               onChange={(value) => setForm({ ...form, department_id: value })}
             />
           </label>
           <div className="organization-role-picker">
-            <span>角色</span>
+            <span>{t('organization.user.field.role')}</span>
             <div>
               {roles.map((role) => {
                 const checked = form.role_ids.includes(role.id)
@@ -1794,24 +1829,26 @@ export function OrganizationUsersPage({
           </div>
           <label className="organization-toggle">
             <input
-              aria-label="账号启用"
+              aria-label={t('organization.user.field.accountActive')}
               checked={form.is_active}
               type="checkbox"
               onChange={(event) => setForm({ ...form, is_active: event.target.checked })}
             />
-            <span>账号启用</span>
+            <span>{t('organization.user.field.accountActive')}</span>
           </label>
           {userModalMode === 'create' ? (
             <div className="organization-password-note">
-              系统会自动生成初始密码，创建成功后只展示一次。
+              {t('organization.user.hint.initialPassword')}
             </div>
           ) : null}
           <div className="modal-actions">
             <button className="secondary-inline" type="button" onClick={() => setUserModalMode(null)}>
-              {translate('common.cancel')}
+              {t('common.cancel')}
             </button>
             <button className="inline-submit" disabled={busyAction === userModalMode} type="submit">
-              {userModalMode === 'create' ? '创建用户' : '保存修改'}
+              {userModalMode === 'create'
+                ? t('organization.user.action.createSubmit')
+                : t('organization.user.action.saveSubmit')}
             </button>
           </div>
         </form>
@@ -1821,22 +1858,26 @@ export function OrganizationUsersPage({
         centered
         footer={null}
         open={Boolean(departmentModalMode)}
-        title={departmentModalMode === 'create' ? '新增部门' : '编辑部门'}
+        title={
+          departmentModalMode === 'create'
+            ? t('organization.department.modal.createTitle')
+            : t('organization.department.modal.editTitle')
+        }
         width={520}
         onCancel={() => setDepartmentModalMode(null)}
       >
         <form className="dashboard-form modal-dashboard-form organization-form" onSubmit={submitDepartmentForm}>
           <label>
-            <span>部门名称</span>
+            <span>{t('organization.department.field.name')}</span>
             <input
-              aria-label="部门名称"
-              placeholder="如 业务部、财务部"
+              aria-label={t('organization.department.field.name')}
+              placeholder={t('organization.department.placeholder.name')}
               value={departmentForm.name}
               onChange={(event) => setDepartmentForm({ ...departmentForm, name: event.target.value })}
             />
           </label>
           <label>
-            <span>上级部门</span>
+            <span>{t('organization.department.field.parent')}</span>
             <Select
               allowClear
               options={departments
@@ -1845,15 +1886,15 @@ export function OrganizationUsersPage({
                   value: department.id,
                   label: department.name,
                 }))}
-              placeholder="不选择则为一级部门"
+              placeholder={t('organization.department.placeholder.parent')}
               value={departmentForm.parent_id || undefined}
               onChange={(value) => setDepartmentForm({ ...departmentForm, parent_id: value ?? null })}
             />
           </label>
           <label>
-            <span>排序</span>
+            <span>{t('organization.department.field.sort')}</span>
             <input
-              aria-label="部门排序"
+              aria-label={t('organization.department.field.sortAria')}
               min={0}
               type="number"
               value={departmentForm.sort_order}
@@ -1862,10 +1903,12 @@ export function OrganizationUsersPage({
           </label>
           <div className="modal-actions">
             <button className="secondary-inline" type="button" onClick={() => setDepartmentModalMode(null)}>
-              {translate('common.cancel')}
+              {t('common.cancel')}
             </button>
             <button className="inline-submit" disabled={busyAction?.startsWith('department')} type="submit">
-              {departmentModalMode === 'create' ? '创建部门' : '保存部门'}
+              {departmentModalMode === 'create'
+                ? t('organization.department.action.createSubmit')
+                : t('organization.department.action.saveSubmit')}
             </button>
           </div>
         </form>
@@ -1875,26 +1918,30 @@ export function OrganizationUsersPage({
         centered
         footer={null}
         open={Boolean(roleModalMode)}
-        title={roleModalMode === 'create' ? '新增角色' : '编辑角色'}
+        title={
+          roleModalMode === 'create'
+            ? t('organization.role.modal.createTitle')
+            : t('organization.role.modal.editTitle')
+        }
         width={roleModalMode === 'create' ? 960 : 520}
         onCancel={() => setRoleModalMode(null)}
       >
         <form className="dashboard-form modal-dashboard-form organization-form" onSubmit={submitRoleForm}>
           <div className="dashboard-form-row">
             <label>
-              <span>角色名称</span>
+              <span>{t('organization.role.field.name')}</span>
               <input
-                aria-label="角色名称"
-                placeholder="如 业务主管、财务"
+                aria-label={t('organization.role.field.name')}
+                placeholder={t('organization.role.placeholder.name')}
                 value={roleForm.name}
                 onChange={(event) => setRoleForm({ ...roleForm, name: event.target.value })}
               />
             </label>
             <label>
-              <span>角色编码</span>
+              <span>{t('organization.role.field.code')}</span>
               <input
-                aria-label="角色编码"
-                placeholder="小写字母，如 sales_manager"
+                aria-label={t('organization.role.field.code')}
+                placeholder={t('organization.role.placeholder.code')}
                 value={roleForm.code}
                 onChange={(event) => setRoleForm({ ...roleForm, code: event.target.value })}
               />
@@ -1902,10 +1949,10 @@ export function OrganizationUsersPage({
           </div>
           <div className="dashboard-form-row">
             <label className="organization-data-scope-field">
-              <span>数据范围</span>
+              <span>{t('organization.role.field.dataScope')}</span>
               <Select
                 options={dataScopeOrder.map((scope) => ({
-                  label: dataScopeLabels[scope],
+                  label: t(dataScopeLabels[scope]),
                   value: scope,
                 }))}
                 value={roleForm.data_scope}
@@ -1914,7 +1961,7 @@ export function OrganizationUsersPage({
                 }
               />
               <small className="organization-data-scope-hint">
-                控制该角色用户能查看的业务单据范围（按单据负责人所属部门判定）。
+                {t('organization.role.hint.dataScope')}
               </small>
             </label>
           </div>
@@ -1925,8 +1972,8 @@ export function OrganizationUsersPage({
                   <section className="organization-permission-module" key={group.key}>
                     <header>
                       <div>
-                        <span>侧边栏模块</span>
-                        <h3>{group.label}</h3>
+                        <span>{t('organization.permission.sidebarModule')}</span>
+                        <h3>{t(group.labelKey)}</h3>
                       </div>
                     </header>
                     <div className="organization-permission-sections">
@@ -1938,12 +1985,14 @@ export function OrganizationUsersPage({
                           <div className="organization-permission-section" key={section.key}>
                             <div className="organization-permission-section-head">
                               <div>
-                                <small>{group.label}</small>
-                                <strong>{section.label}</strong>
+                                <small>{t(group.labelKey)}</small>
+                                <strong>{permissionSectionText(section)}</strong>
                               </div>
                               <label>
                                 <input
-                                  aria-label={`${section.label}权限全选`}
+                                  aria-label={t('organization.permission.selectAllAria', {
+                                    name: permissionSectionText(section),
+                                  })}
                                   checked={sectionFullySelected}
                                   disabled={!section.items.length}
                                   type="checkbox"
@@ -1972,7 +2021,9 @@ export function OrganizationUsersPage({
                                   )
                                 })
                               ) : (
-                                <div className="organization-permission-missing">暂无可配置权限</div>
+                                <div className="organization-permission-missing">
+                                  {t('organization.permission.none')}
+                                </div>
                               )}
                             </div>
                           </div>
@@ -1985,15 +2036,17 @@ export function OrganizationUsersPage({
             </div>
           ) : (
             <div className="organization-password-note">
-              如需调整该角色的权限，请在用户详情中点击「编辑用户权限」后选择此角色保存。
+              {t('organization.role.hint.editPermissions')}
             </div>
           )}
           <div className="modal-actions">
             <button className="secondary-inline" type="button" onClick={() => setRoleModalMode(null)}>
-              {translate('common.cancel')}
+              {t('common.cancel')}
             </button>
             <button className="inline-submit" disabled={busyAction?.startsWith('role')} type="submit">
-              {roleModalMode === 'create' ? '创建角色' : '保存角色'}
+              {roleModalMode === 'create'
+                ? t('organization.role.action.createSubmit')
+                : t('organization.role.action.saveSubmit')}
             </button>
           </div>
         </form>
@@ -2003,14 +2056,17 @@ export function OrganizationUsersPage({
         centered
         footer={null}
         open={Boolean(passwordReveal)}
-        title={passwordReveal?.title ?? '密码'}
+        title={passwordReveal?.title ?? t('organization.user.field.password')}
         width={520}
         onCancel={() => setPasswordReveal(null)}
       >
         {passwordReveal ? (
           <section className="organization-password-reveal">
             <p>
-              {passwordReveal.username} 的{passwordReveal.title}仅展示这一次，请复制后交给账号使用人。
+              {t('organization.user.message.passwordOnce', {
+                username: passwordReveal.username,
+                title: passwordReveal.title,
+              })}
             </p>
             <div>
               <code>{passwordReveal.password}</code>
@@ -2020,12 +2076,12 @@ export function OrganizationUsersPage({
                 onClick={() => void copyPassword(passwordReveal.password)}
               >
                 <Copy size={15} />
-                复制
+                {t('organization.action.copy')}
               </button>
             </div>
             <div className="modal-actions">
               <button className="secondary-inline" type="button" onClick={() => setPasswordReveal(null)}>
-                {translate('common.close')}
+                {t('common.close')}
               </button>
             </div>
           </section>

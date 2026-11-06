@@ -3725,5 +3725,494 @@
         "issueDescriptionNotAllowed": "Open issues cannot be registered when the whole order passes"
       }
     }
+  },
+  "organization": {
+    "pageAria": "Organization overview",
+    "metric": {
+      "users": "Users",
+      "active": "Active",
+      "inactive": "Inactive",
+      "departments": "Departments",
+      "roles": "Roles"
+    },
+    "filter": {
+      "search": "Search users, departments, or roles"
+    },
+    "action": {
+      "copy": "Copy"
+    },
+    "message": {
+      "noPermission": "You do not have organization management permission",
+      "loadFailed": "Failed to load organization data",
+      "operationFailed": "Operation failed",
+      "passwordCopied": "Password copied",
+      "copyFailed": "Copy failed. Please select and copy the password manually"
+    },
+    "company": {
+      "pageAria": "Company info",
+      "title": "Company Info",
+      "description": "Company letterhead and bank details are used for documents and external files.",
+      "updatedAt": "(Last updated {value})",
+      "action": {
+        "edit": "Edit Company Info",
+        "save": "Save Company Info"
+      },
+      "field": {
+        "currentLetterhead": "Current letterhead",
+        "name": "Company Name",
+        "nameEn": "English Name",
+        "letterhead": "Document Letterhead",
+        "address": "Address",
+        "addressEn": "English Address",
+        "phone": "Phone",
+        "fax": "Fax",
+        "email": "Email",
+        "website": "Website",
+        "taxNo": "Tax ID",
+        "bankName": "Bank Name",
+        "bankAccount": "Bank Account",
+        "bankSwift": "SWIFT"
+      },
+      "placeholder": {
+        "nameEmpty": "Company name not set",
+        "subtitleEmpty": "No English name or document letterhead"
+      },
+      "modal": {
+        "editTitle": "Edit Company Info"
+      },
+      "validation": {
+        "nameRequired": "Please enter the company name"
+      },
+      "message": {
+        "saved": "Company info saved",
+        "saveFailed": "Failed to save company info"
+      }
+    },
+    "department": {
+      "pageAria": "Department management",
+      "title": "Department Management",
+      "description": "Maintain organization departments. New members must be linked to a valid department.",
+      "action": {
+        "create": "Add Department",
+        "editAria": "Edit {name}",
+        "deleteAria": "Delete {name}",
+        "createSubmit": "Create Department",
+        "saveSubmit": "Save Department"
+      },
+      "field": {
+        "name": "Department Name",
+        "parent": "Parent Department",
+        "sort": "Sort Order",
+        "sortAria": "Department sort order"
+      },
+      "card": {
+        "parent": "Parent: {name}",
+        "topLevel": "Top-level department",
+        "userCount_one": "{count} user",
+        "userCount_other": "{count} users"
+      },
+      "empty": "No departments yet. Create a department before adding member accounts.",
+      "unnamed": "Unnamed department",
+      "placeholder": {
+        "name": "e.g. Sales Department, Finance Department",
+        "parent": "Leave empty for a top-level department"
+      },
+      "modal": {
+        "createTitle": "Add Department",
+        "editTitle": "Edit Department",
+        "deleteTitle": "Delete Department"
+      },
+      "validation": {
+        "nameRequired": "Please enter the department name"
+      },
+      "message": {
+        "created": "Department created",
+        "updated": "Department updated",
+        "saveFailed": "Failed to save department",
+        "deleteConfirm": "After deletion, {name} will be removed from the department list. Continue?",
+        "hasUsers_one": "There is still {count} user under {name}, so it cannot be deleted.",
+        "hasUsers_other": "There are still {count} users under {name}, so it cannot be deleted.",
+        "deleted": "Department deleted",
+        "deleteFailed": "Failed to delete department"
+      }
+    },
+    "role": {
+      "pageAria": "Role management",
+      "title": "Role Management",
+      "description": "Create, rename, or delete roles. A role assigned to users must be unassigned before it can be deleted.",
+      "action": {
+        "create": "Add Role",
+        "editAria": "Edit {name}",
+        "deleteAria": "Delete {name}",
+        "createSubmit": "Create Role",
+        "saveSubmit": "Save Role"
+      },
+      "field": {
+        "name": "Role Name",
+        "code": "Role Code",
+        "dataScope": "Data Scope"
+      },
+      "card": {
+        "permissionCount_one": "{count} permission",
+        "permissionCount_other": "{count} permissions",
+        "userCount_one": "{count} user",
+        "userCount_other": "{count} users"
+      },
+      "empty": "No roles yet. Create a role before assigning it to users.",
+      "unnamed": "Unnamed role",
+      "tooltip": {
+        "superAdminLocked": "The Super Admin role cannot be deleted",
+        "assignedLocked": "This role is assigned to users and cannot be deleted"
+      },
+      "hint": {
+        "dataScope": "Controls the business documents users with this role can view (based on the department of the document owner).",
+        "editPermissions": "To adjust this role's permissions, go to User Details, click Edit User Permissions, select this role, and save."
+      },
+      "placeholder": {
+        "name": "e.g. Sales Manager, Finance",
+        "code": "Lowercase letters, e.g. sales_manager"
+      },
+      "dataScope": {
+        "self": "Self only",
+        "department": "This department",
+        "departmentTree": "This department and sub-departments",
+        "all": "All data"
+      },
+      "modal": {
+        "createTitle": "Add Role",
+        "editTitle": "Edit Role",
+        "deleteTitle": "Delete Role"
+      },
+      "validation": {
+        "nameRequired": "Please enter the role name",
+        "codeInvalid": "Role code must start with a lowercase letter and contain only lowercase letters, digits, and underscores"
+      },
+      "message": {
+        "created": "Role created",
+        "updated": "Role updated",
+        "saveFailed": "Failed to save role",
+        "deleteConfirm": "After deletion, {name} will be removed from the role list. Continue?",
+        "assignedToUsers_one": "{name} is assigned to {count} user and cannot be deleted. Unassign it from that user first.",
+        "assignedToUsers_other": "{name} is assigned to {count} users and cannot be deleted. Unassign it from those users first.",
+        "deleted": "Role deleted",
+        "deleteFailed": "Failed to delete role"
+      }
+    },
+    "user": {
+      "listAria": "User list",
+      "detailAria": "User details",
+      "unassignedDepartment": "Unassigned",
+      "roleSeparator": ", ",
+      "noRoles": "No roles",
+      "avatarFallback": "User",
+      "empty": {
+        "noMatch": "No matching users",
+        "select": "Select a user"
+      },
+      "status": {
+        "activeDetail": "Active",
+        "inactiveDetail": "Inactive"
+      },
+      "action": {
+        "create": "Add User",
+        "editProfile": "Edit Profile",
+        "editPermissions": "Edit User Permissions",
+        "resetPassword": "Reset Password",
+        "delete": "Delete User",
+        "createSubmit": "Create User",
+        "saveSubmit": "Save Changes"
+      },
+      "field": {
+        "username": "Username",
+        "displayName": "Name",
+        "department": "Department",
+        "role": "Role",
+        "password": "Password",
+        "createdAt": "Created At",
+        "accountActive": "Account Active"
+      },
+      "placeholder": {
+        "username": "Used for sign-in, e.g. sales.chen",
+        "department": "Select a department"
+      },
+      "hint": {
+        "initialPassword": "An initial password will be generated automatically and shown only once after creation.",
+        "createDepartmentFirst": "Create a department before adding members"
+      },
+      "modal": {
+        "createTitle": "Add User",
+        "editTitle": "Edit User",
+        "deleteTitle": "Delete User",
+        "resetPasswordTitle": "Reset Password",
+        "initialPasswordTitle": "Initial Password",
+        "temporaryPasswordTitle": "Temporary Password"
+      },
+      "validation": {
+        "required": "Please enter the username and name",
+        "departmentRequired": "Please select a department"
+      },
+      "message": {
+        "created": "User created",
+        "updated": "User updated",
+        "deactivated": "User deactivated",
+        "deleteConfirm": "After deletion, {name} will no longer be able to sign in. Historical business records will be kept. Continue?",
+        "deleteFailed": "Delete failed",
+        "resetConfirm": "A new temporary password will be generated for {name}, and the old password will expire immediately.",
+        "passwordReset": "Password reset",
+        "resetFailed": "Reset failed",
+        "passwordOnce": "The {title} of {username} will be shown only once. Copy it and give it to the account owner.",
+        "departmentRequiredFirst": "Create a department first"
+      }
+    },
+    "permission": {
+      "pageAria": "Role permission settings",
+      "title": "Permission Settings",
+      "description": "Select a role, then check permissions by sidebar feature. Unchecked modules will not appear in the sidebar for users with this role.",
+      "configRole": "Role",
+      "sidebarModule": "Sidebar Module",
+      "selectAllAria": "Select all {name} permissions",
+      "none": "No configurable permissions",
+      "unnamed": "Unnamed permission",
+      "action": {
+        "save": "Save Permissions"
+      },
+      "modal": {
+        "title": "Authorize by Sidebar Feature"
+      },
+      "module": {
+        "dashboard": "Dashboard",
+        "system": "System Management",
+        "organization": "Organization",
+        "masterdata": "Master Data",
+        "sample": "Sample Business",
+        "sales": "Sales & Export",
+        "purchase": "Purchasing",
+        "qualityWarehouse": "Quality & Warehouse",
+        "finance": "Financial Reports",
+        "other": "Other Permissions"
+      },
+      "section": {
+        "dashboard": "Dashboard",
+        "schedule": "Personal Schedule",
+        "announcement": "Company Announcements",
+        "system": "System Permissions",
+        "organization": "Organization Management",
+        "organizationUser": "Organization Users",
+        "organizationRole": "Role Permissions",
+        "product": "Products",
+        "customer": "Customers",
+        "supplier": "Suppliers",
+        "partner": "Partners",
+        "documentParty": "Document Parties",
+        "sampleRequest": "Sample Requests",
+        "sampleRecord": "Sample Records",
+        "sampleDelivery": "Sample Deliveries",
+        "quotation": "Quotations",
+        "salesContract": "Sales Contracts",
+        "shipment": "Shipments",
+        "inquiry": "Purchase Inquiries",
+        "purchaseContract": "Purchase Contracts",
+        "invoiceNotice": "Invoice Notices",
+        "purchaseFollowup": "Purchase Follow-up",
+        "followupTemplate": "Follow-up Templates",
+        "followupPlan": "Follow-up Plans",
+        "qualityInspection": "QC Inspections",
+        "inboundPlan": "Inbound Plans",
+        "inboundOrder": "Inbound Orders",
+        "outboundPlan": "Outbound Plans",
+        "outboundOrder": "Outbound Orders",
+        "finance": "Finance",
+        "reporting": "Management Reports"
+      },
+      "category": {
+        "functional": "Functional",
+        "data": "Data",
+        "field": "Field",
+        "process": "Process"
+      },
+      "message": {
+        "updated": "{name} permissions updated",
+        "saveFailed": "Failed to save permissions"
+      }
+    }
+  },
+  "system": {
+    "mcp": {
+      "field": {
+        "enable": "Enable MCP",
+        "endpoint": "MCP Server URL",
+        "transport": "Transport Protocol",
+        "serverName": "Server Name",
+        "tokenParameter": "Auth Header",
+        "accessToken": "MCP Access Token",
+        "tokenNotGenerated": "Not generated on this page"
+      },
+      "action": {
+        "rotate": "Rotate Token",
+        "generate": "Generate Token",
+        "rotateAria": "Rotate connection token",
+        "generateAria": "Generate connection token",
+        "copyAll": "Copy All",
+        "copyAllAria": "Copy all connection details",
+        "copyConfig": "Copy Config",
+        "copyLabel": "Copy {label}"
+      },
+      "panel": {
+        "connectionTitle": "Connection & Authentication",
+        "connectionDescription": "All parameters required for AI clients to connect",
+        "authRules": "Authentication Rules",
+        "authNoteThrough": "AI clients pass the",
+        "authNoteVia": "request header to send",
+        "authNoteSuffix": ". This token can only access tools exposed by MCP and cannot be used for the regular ERP API.",
+        "clientConfigTitle": "AI Client Configuration",
+        "clientConfigDescription": "Copy directly to clients that support Streamable HTTP",
+        "toolsTitle": "AI Capabilities",
+        "toolsDescription_one": "Currently {count} tool is available, using ERP account permissions and data scope",
+        "toolsDescription_other": "Currently {count} tools are available, using ERP account permissions and data scope",
+        "permissionIsolation": "Permission Isolation"
+      },
+      "table": {
+        "toolCount_one": "{count} tool",
+        "toolCount_other": "{count} tools"
+      },
+      "modal": {
+        "rotateTitle": "Rotate MCP Connection Token",
+        "generateTitle": "Generate MCP Connection Token",
+        "rotateDescription": "The old token becomes invalid immediately after rotation. Update all AI clients accordingly.",
+        "generateDescription": "The token is shown in full only once. Copy it to trusted AI clients immediately after generating.",
+        "rotateConfirm": "Confirm Rotation",
+        "generateConfirm": "Confirm Generation"
+      },
+      "message": {
+        "loadFailed": "Failed to load MCP settings",
+        "loadFailedDescription": "Confirm that the current account has system administrator permission, then try again.",
+        "copied": "{label} copied",
+        "copyFailed": "Copy failed. Please select the content and copy it manually",
+        "tokenHidden": "Token hidden",
+        "enabled": "MCP service enabled",
+        "disabled": "MCP service disabled",
+        "toggleFailed": "Failed to update MCP status",
+        "rotated": "MCP connection token rotated",
+        "generated": "MCP connection token generated",
+        "generateFailed": "Failed to generate MCP connection token",
+        "allCopied": "All connection details copied",
+        "configCopied": "AI client configuration copied",
+        "newTokenWarning": "The new token is shown in full only once on this page. Copy and store it immediately.",
+        "existingTokenInfo": "An existing connection token is in use. For security, the system will not display the original token again. Rotate it if it has been lost.",
+        "generateFirstInfo": "Generate a dedicated MCP connection token before copying the AI client configuration."
+      },
+      "status": {
+        "enabled": "MCP service enabled",
+        "disabled": "MCP service not enabled",
+        "running": "Running",
+        "stopped": "Stopped",
+        "description": "Allow trusted AI clients to query and maintain ERP data through the standard MCP protocol. Disabling it does not affect existing business pages or APIs."
+      },
+      "empty": {
+        "title": "Enable MCP to view AI connection details",
+        "description": "The endpoint, auth token, client configuration, and all available tools are shown only when MCP is enabled."
+      },
+      "text": {
+        "instructionService": "MCP service: {name}",
+        "instructionEndpoint": "Endpoint: {url}",
+        "instructionTransport": "Transport: Streamable HTTP",
+        "instructionAuth": "Authentication: HTTP {header} header",
+        "instructionToken": "{header}: {token}",
+        "instructionTools": "Available capabilities: {value}",
+        "listSeparator": ", "
+      }
+    }
+  },
+  "reporting": {
+    "pageAria": "Manager Query Overview",
+    "metric": {
+      "documents": "Approval Documents",
+      "pending": "Pending Approval",
+      "approved": "Approved",
+      "documentTypes": "Document Types"
+    },
+    "field": {
+      "documentType": "Document Type",
+      "approvalStatus": "Approval Status",
+      "applicant": "Applicant ID",
+      "dateFrom": "Start Date",
+      "dateTo": "End Date"
+    },
+    "filter": {
+      "allTypes": "All Types",
+      "allStatuses": "All Statuses",
+      "applicantPlaceholder": "Enter applicant ID"
+    },
+    "action": {
+      "search": "Search",
+      "reset": "Reset",
+      "goApprove": "Approve",
+      "viewDetail": "View Details"
+    },
+    "panel": {
+      "approvalListTitle": "Approval Document Query",
+      "typeSummaryTitle": "Type Summary"
+    },
+    "table": {
+      "documentNo": "Document No.",
+      "type": "Type",
+      "status": "Status",
+      "counterparty": "Customer/Supplier",
+      "applicant": "Applicant",
+      "businessDate": "Business Date",
+      "submittedAt": "Submitted Date",
+      "approvedAt": "Approved Date",
+      "amount": "Amount",
+      "actions": "Actions",
+      "unsupported": "Not supported",
+      "total": "Total",
+      "customer": "Customer",
+      "shipmentNo": "Shipment No.",
+      "shipmentCount": "Shipment Count",
+      "receivable": "Receivable",
+      "profit": "Profit",
+      "drilldown": "Drilldown",
+      "period": "Month",
+      "salesperson": "Salesperson",
+      "shippedAmount": "Shipped Amount",
+      "count": "Count",
+      "shipmentDate": "Shipment Date",
+      "exportContractNo": "Export Contract No."
+    },
+    "message": {
+      "approvalLoadFailed": "Failed to load manager query",
+      "statisticsLoadFailed": "Failed to load statistics"
+    },
+    "statistics": {
+      "pageAria": "Statistics Report",
+      "title": "Statistics Report",
+      "filter": {
+        "dateFrom": "Statistics Start",
+        "dateTo": "Statistics End",
+        "status": "Statistics Status",
+        "customer": "Customer ID",
+        "customerPlaceholder": "Enter customer ID or name",
+        "supplier": "Supplier ID",
+        "supplierPlaceholder": "Enter supplier ID or name",
+        "salesperson": "Salesperson ID",
+        "salespersonPlaceholder": "Enter salesperson ID"
+      },
+      "action": {
+        "search": "Search Statistics",
+        "reset": "Reset Statistics"
+      },
+      "metric": {
+        "exportContract": "Export Contracts",
+        "purchaseContract": "Purchase Contracts",
+        "shipmentReceivable": "Shipment Receivable",
+        "shipmentProfit": "Shipment Profit"
+      },
+      "salesMonthlyTitle": "Monthly Shipments by Salesperson",
+      "contractStatusTitle": "Contract Amount by Status",
+      "drilldownTitle": "Source Document Traceability"
+    },
+    "module": {
+      "ready": "React workspace entry is ready"
+    }
   }
 }

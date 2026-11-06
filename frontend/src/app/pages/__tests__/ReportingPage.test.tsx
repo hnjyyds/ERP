@@ -92,12 +92,12 @@ describe('ReportingPage', () => {
 
   it('renders summary strip', () => {
     render(<ReportingPage onNavigate={onNavigate} />)
-    expect(screen.getByLabelText('经理查询概览')).toBeTruthy()
+    expect(screen.getByLabelText('reporting.pageAria')).toBeTruthy()
   })
 
   it('renders approval document query panel', () => {
     render(<ReportingPage onNavigate={onNavigate} />)
-    expect(screen.getByText('审批单据查询')).toBeTruthy()
+    expect(screen.getByText('reporting.panel.approvalListTitle')).toBeTruthy()
   })
 
   it('opens pending documents for approval and approved documents for details', async () => {
@@ -120,10 +120,10 @@ describe('ReportingPage', () => {
 
     render(<ReportingPage onNavigate={onNavigate} />)
 
-    await user.click(await screen.findByRole('button', { name: /去审批/ }))
+    await user.click(await screen.findByRole('button', { name: /reporting.action.goApprove/ }))
     expect(onNavigate).toHaveBeenLastCalledWith('/sales/contracts/export-1')
 
-    await user.click(screen.getByRole('button', { name: /查看详情/ }))
+    await user.click(screen.getByRole('button', { name: /reporting.action.viewDetail/ }))
     expect(onNavigate).toHaveBeenLastCalledWith('/purchase/contracts/purchase-1')
   })
 
@@ -142,7 +142,7 @@ describe('ReportingPage', () => {
 
     render(<ReportingPage onNavigate={onNavigate} />)
 
-    expect(await screen.findByText('暂不支持')).toBeTruthy()
+    expect(await screen.findByText('reporting.table.unsupported')).toBeTruthy()
     expect(onNavigate).not.toHaveBeenCalled()
   })
 })

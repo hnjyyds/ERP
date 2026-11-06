@@ -133,10 +133,13 @@ export function FollowupTemplateNodeFields({
 export function ModulePage({ menu }: { menu: MenuItem | null }) {
   return (
     <section className="workspace-panel module-panel">
-      <PanelTitle icon={<LayoutDashboard size={18} />} title={menu?.label ?? '业务模块'} />
+      <PanelTitle
+        icon={<LayoutDashboard size={18} />}
+        title={menu?.label ?? t('page.businessModule')}
+      />
       <div className="module-state">
-        <strong>{menu?.label ?? '业务模块'}</strong>
-        <span>React 工作台入口已就绪</span>
+        <strong>{menu?.label ?? t('page.businessModule')}</strong>
+        <span>{t('reporting.module.ready')}</span>
       </div>
     </section>
   )
@@ -188,7 +191,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
       })
       setApprovals(result)
     } catch (caught) {
-      showError(caught, '经理查询加载失败')
+      showError(caught, t('reporting.message.approvalLoadFailed'))
     } finally {
       setLoading(false)
     }
@@ -208,7 +211,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
       })
       setStatistics(result)
     } catch (caught) {
-      showError(caught, '统计分析加载失败')
+      showError(caught, t('reporting.message.statisticsLoadFailed'))
     } finally {
       setLoadingStatistics(false)
     }
@@ -223,7 +226,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
     void listApprovalDocuments({ status: 'submitted' })
       .then(setApprovals)
       .catch((caught: unknown) => {
-        showError(caught, '经理查询加载失败')
+        showError(caught, t('reporting.message.approvalLoadFailed'))
       })
   }
 
@@ -237,7 +240,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
     void listReportingStatistics()
       .then(setStatistics)
       .catch((caught: unknown) => {
-        showError(caught, '统计分析加载失败')
+        showError(caught, t('reporting.message.statisticsLoadFailed'))
       })
   }
 
@@ -246,15 +249,18 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
 
   return (
     <section className="reporting-page">
-      <div className="summary-strip" aria-label="经理查询概览">
-        <Metric label="审批单据" value={approvals?.total ?? 0} />
+      <div className="summary-strip" aria-label={t('reporting.pageAria')}>
+        <Metric label={t('reporting.metric.documents')} value={approvals?.total ?? 0} />
         <Metric
-          label="待审批"
+          label={t('reporting.metric.pending')}
           value={approvals?.pending_count ?? 0}
           intent={(approvals?.pending_count ?? 0) > 0 ? 'warning' : 'normal'}
         />
-        <Metric label="已审批" value={approvals?.approved_count ?? 0} />
-        <Metric label="单据类型" value={approvals?.type_summaries.length ?? 0} />
+        <Metric label={t('reporting.metric.approved')} value={approvals?.approved_count ?? 0} />
+        <Metric
+          label={t('reporting.metric.documentTypes')}
+          value={approvals?.type_summaries.length ?? 0}
+        />
       </div>
 
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
@@ -262,7 +268,10 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
       <section className="reporting-grid">
         <section className="workspace-panel reporting-approval-list-panel">
           <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<BarChart3 size={18} />} title="审批单据查询" />
+            <PanelTitle
+              icon={<BarChart3 size={18} />}
+              title={t('reporting.panel.approvalListTitle')}
+            />
           </div>
           <form
             className="inline-filters single-line-filter-toolbar"
@@ -272,12 +281,12 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
             }}
           >
             <label>
-              单据类型
+              {t('reporting.field.documentType')}
               <FormSelect
                 value={documentTypeFilter}
                 onChange={(event) => setDocumentTypeFilter(event.target.value)}
               >
-                <option value="">全部类型</option>
+                <option value="">{t('reporting.filter.allTypes')}</option>
                 {reportingDocumentTypeOptions.map((item) => (
                   <option key={item.value} value={item.value}>
                     {t(item.labelKey)}
@@ -286,12 +295,12 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
               </FormSelect>
             </label>
             <label>
-              审批状态
+              {t('reporting.field.approvalStatus')}
               <FormSelect
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
               >
-                <option value="">全部状态</option>
+                <option value="">{t('reporting.filter.allStatuses')}</option>
                 {reportingStatusOptions.map((item) => (
                   <option key={item.value} value={item.value}>
                     {t(item.labelKey)}
@@ -300,15 +309,15 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
               </FormSelect>
             </label>
             <label>
-              申请人标识
+              {t('reporting.field.applicant')}
               <Input
                 value={applicantUserFilter}
-                placeholder="输入申请人编号"
+                placeholder={t('reporting.filter.applicantPlaceholder')}
                 onChange={(event) => setApplicantUserFilter(event.target.value)}
               />
             </label>
             <label>
-              开始日期
+              {t('reporting.field.dateFrom')}
               <Input
                 type="date"
                 value={dateFromFilter}
@@ -316,7 +325,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
               />
             </label>
             <label>
-              结束日期
+              {t('reporting.field.dateTo')}
               <Input
                 type="date"
                 value={dateToFilter}
@@ -324,39 +333,64 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
               />
             </label>
             <Button htmlType="submit" icon={<Search size={16} />} loading={loading}>
-              查询
+              {t('reporting.action.search')}
             </Button>
             <Button type="default" onClick={resetFilters}>
-              重置
+              {t('reporting.action.reset')}
             </Button>
           </form>
 
           <Table<ApprovalDocument>
             columns={[
               {
-                title: '单据编号',
+                title: t('reporting.table.documentNo'),
                 dataIndex: 'document_no',
                 render: (value: string) => <strong>{value}</strong>,
               },
-              { title: '类型', dataIndex: 'document_type', render: approvalDocumentTypeTag },
-              { title: '状态', dataIndex: 'status', render: approvalStatusTag },
-              { title: '客户/供应商', dataIndex: 'counterparty_name' },
-              { title: '申请人', dataIndex: 'applicant_user_name', render: nullableText },
-              { title: '业务日期', dataIndex: 'business_date', render: formatDate },
-              { title: '提交日期', dataIndex: 'submitted_at', render: formatDate },
-              { title: '审批日期', dataIndex: 'approved_at', render: formatDate },
               {
-                title: '金额',
+                title: t('reporting.table.type'),
+                dataIndex: 'document_type',
+                render: approvalDocumentTypeTag,
+              },
+              {
+                title: t('reporting.table.status'),
+                dataIndex: 'status',
+                render: approvalStatusTag,
+              },
+              { title: t('reporting.table.counterparty'), dataIndex: 'counterparty_name' },
+              {
+                title: t('reporting.table.applicant'),
+                dataIndex: 'applicant_user_name',
+                render: nullableText,
+              },
+              {
+                title: t('reporting.table.businessDate'),
+                dataIndex: 'business_date',
+                render: formatDate,
+              },
+              {
+                title: t('reporting.table.submittedAt'),
+                dataIndex: 'submitted_at',
+                render: formatDate,
+              },
+              {
+                title: t('reporting.table.approvedAt'),
+                dataIndex: 'approved_at',
+                render: formatDate,
+              },
+              {
+                title: t('reporting.table.amount'),
                 dataIndex: 'amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
               {
-                title: '操作',
+                title: t('reporting.table.actions'),
                 key: 'actions',
                 width: 112,
                 render: (_value: unknown, record) => {
                   const targetPath = approvalDocumentPath(record)
-                  if (!targetPath) return <span className="muted-text">暂不支持</span>
+                  if (!targetPath)
+                    return <span className="muted-text">{t('reporting.table.unsupported')}</span>
                   return (
                     <Button
                       type="link"
@@ -364,7 +398,9 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
                       icon={<ArrowRight size={14} />}
                       onClick={() => onNavigate(targetPath)}
                     >
-                      {record.status === 'submitted' ? '去审批' : '查看详情'}
+                      {record.status === 'submitted'
+                        ? t('reporting.action.goApprove')
+                        : t('reporting.action.viewDetail')}
                     </Button>
                   )
                 },
@@ -379,13 +415,20 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
         </section>
 
         <section className="workspace-panel reporting-type-summary-panel">
-          <PanelTitle icon={<CheckCircle2 size={18} />} title="类型汇总" />
+          <PanelTitle
+            icon={<CheckCircle2 size={18} />}
+            title={t('reporting.panel.typeSummaryTitle')}
+          />
           <Table<ApprovalTypeSummary>
             columns={[
-              { title: '单据类型', dataIndex: 'document_type', render: approvalDocumentTypeTag },
-              { title: '待审批', dataIndex: 'pending_count' },
-              { title: '已审批', dataIndex: 'approved_count' },
-              { title: '合计', dataIndex: 'total_count' },
+              {
+                title: t('reporting.metric.documentTypes'),
+                dataIndex: 'document_type',
+                render: approvalDocumentTypeTag,
+              },
+              { title: t('reporting.metric.pending'), dataIndex: 'pending_count' },
+              { title: t('reporting.metric.approved'), dataIndex: 'approved_count' },
+              { title: t('reporting.table.total'), dataIndex: 'total_count' },
             ]}
             dataSource={approvals?.type_summaries ?? []}
             loading={loading}
@@ -396,10 +439,13 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
         </section>
       </section>
 
-      <section className="reporting-statistics-grid" aria-label="统计分析报表">
+      <section
+        className="reporting-statistics-grid"
+        aria-label={t('reporting.statistics.pageAria')}
+      >
         <section className="workspace-panel reporting-statistics-panel">
           <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<BarChart3 size={18} />} title="统计分析报表" />
+            <PanelTitle icon={<BarChart3 size={18} />} title={t('reporting.statistics.title')} />
           </div>
           <form
             className="inline-filters"
@@ -409,7 +455,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
             }}
           >
             <label>
-              统计开始
+              {t('reporting.statistics.filter.dateFrom')}
               <Input
                 type="date"
                 value={statisticsDateFromFilter}
@@ -417,7 +463,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
               />
             </label>
             <label>
-              统计结束
+              {t('reporting.statistics.filter.dateTo')}
               <Input
                 type="date"
                 value={statisticsDateToFilter}
@@ -425,12 +471,12 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
               />
             </label>
             <label>
-              统计状态
+              {t('reporting.statistics.filter.status')}
               <FormSelect
                 value={statisticsStatusFilter}
                 onChange={(event) => setStatisticsStatusFilter(event.target.value)}
               >
-                <option value="">全部状态</option>
+                <option value="">{t('reporting.filter.allStatuses')}</option>
                 {exportContractStatusOptions.map((item) => (
                   <option key={item.value} value={item.value}>
                     {t(item.labelKey)}
@@ -439,61 +485,61 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
               </FormSelect>
             </label>
             <label>
-              客户标识
+              {t('reporting.statistics.filter.customer')}
               <Input
                 value={statisticsCustomerFilter}
-                placeholder="输入客户编号或名称"
+                placeholder={t('reporting.statistics.filter.customerPlaceholder')}
                 onChange={(event) => setStatisticsCustomerFilter(event.target.value)}
               />
             </label>
             <label>
-              供应商标识
+              {t('reporting.statistics.filter.supplier')}
               <Input
                 value={statisticsSupplierFilter}
-                placeholder="输入供应商编号或名称"
+                placeholder={t('reporting.statistics.filter.supplierPlaceholder')}
                 onChange={(event) => setStatisticsSupplierFilter(event.target.value)}
               />
             </label>
             <label>
-              业务员标识
+              {t('reporting.statistics.filter.salesperson')}
               <Input
                 value={statisticsSalesFilter}
-                placeholder="输入业务员编号"
+                placeholder={t('reporting.statistics.filter.salespersonPlaceholder')}
                 onChange={(event) => setStatisticsSalesFilter(event.target.value)}
               />
             </label>
             <Button htmlType="submit" icon={<Search size={16} />} loading={loadingStatistics}>
-              查询统计
+              {t('reporting.statistics.action.search')}
             </Button>
             <Button type="default" onClick={resetStatisticsFilters}>
-              重置统计
+              {t('reporting.statistics.action.reset')}
             </Button>
           </form>
 
           <div className="summary-strip reporting-stat-strip">
             <Metric
-              label="出口合同"
+              label={t('reporting.statistics.metric.exportContract')}
               value={formatFinanceAmount(
                 statisticsSummary?.export_contract_amount,
                 statisticsSummary?.currency_label,
               )}
             />
             <Metric
-              label="采购合同"
+              label={t('reporting.statistics.metric.purchaseContract')}
               value={formatFinanceAmount(
                 statisticsSummary?.purchase_contract_amount,
                 statisticsSummary?.currency_label,
               )}
             />
             <Metric
-              label="出货应收"
+              label={t('reporting.statistics.metric.shipmentReceivable')}
               value={formatFinanceAmount(
                 statisticsSummary?.shipment_receivable_amount,
                 statisticsSummary?.currency_label,
               )}
             />
             <Metric
-              label="出货利润"
+              label={t('reporting.statistics.metric.shipmentProfit')}
               value={formatFinanceAmount(
                 statisticsSummary?.shipment_profit_amount,
                 statisticsSummary?.currency_label,
@@ -503,19 +549,23 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
 
           <Table<CustomerShipmentStatistic>
             columns={[
-              { title: '客户', dataIndex: 'customer_name' },
-              { title: '出货单', dataIndex: 'shipment_count' },
+              { title: t('reporting.table.customer'), dataIndex: 'customer_name' },
+              { title: t('reporting.table.shipmentCount'), dataIndex: 'shipment_count' },
               {
-                title: '应收',
+                title: t('reporting.table.receivable'),
                 dataIndex: 'receivable_amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
               {
-                title: '利润',
+                title: t('reporting.table.profit'),
                 dataIndex: 'profit_amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
-              { title: '下钻', dataIndex: 'source_path', render: sourcePathTag },
+              {
+                title: t('reporting.table.drilldown'),
+                dataIndex: 'source_path',
+                render: sourcePathTag,
+              },
             ]}
             dataSource={statistics?.customer_shipments ?? []}
             loading={loadingStatistics}
@@ -526,14 +576,21 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
         </section>
 
         <section className="workspace-panel reporting-stat-side-panel">
-          <PanelTitle icon={<CheckCircle2 size={18} />} title="业务员月度出货" />
+          <PanelTitle
+            icon={<CheckCircle2 size={18} />}
+            title={t('reporting.statistics.salesMonthlyTitle')}
+          />
           <Table<SalesMonthlyShipmentStatistic>
             columns={[
-              { title: '月份', dataIndex: 'period' },
-              { title: '业务员', dataIndex: 'sales_user_name', render: nullableText },
-              { title: '出货单', dataIndex: 'shipment_count' },
+              { title: t('reporting.table.period'), dataIndex: 'period' },
               {
-                title: '出货额',
+                title: t('reporting.table.salesperson'),
+                dataIndex: 'sales_user_name',
+                render: nullableText,
+              },
+              { title: t('reporting.table.shipmentCount'), dataIndex: 'shipment_count' },
+              {
+                title: t('reporting.table.shippedAmount'),
                 dataIndex: 'shipped_amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
@@ -549,16 +606,23 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
         </section>
 
         <section className="workspace-panel reporting-stat-side-panel">
-          <PanelTitle icon={<ShieldCheck size={18} />} title="合同状态金额" />
+          <PanelTitle
+            icon={<ShieldCheck size={18} />}
+            title={t('reporting.statistics.contractStatusTitle')}
+          />
           <div className="reporting-status-stack">
             <div>
-              <strong>出口合同</strong>
+              <strong>{t('reporting.statistics.metric.exportContract')}</strong>
               <Table<StatusAmountStatistic>
                 columns={[
-                  { title: '状态', dataIndex: 'status', render: approvalStatusTag },
-                  { title: '数量', dataIndex: 'count' },
                   {
-                    title: '金额',
+                    title: t('reporting.table.status'),
+                    dataIndex: 'status',
+                    render: approvalStatusTag,
+                  },
+                  { title: t('reporting.table.count'), dataIndex: 'count' },
+                  {
+                    title: t('reporting.table.amount'),
                     dataIndex: 'amount',
                     render: (value: string, record) => formatFinanceAmount(value, record.currency),
                   },
@@ -571,13 +635,17 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
               />
             </div>
             <div>
-              <strong>采购合同</strong>
+              <strong>{t('reporting.statistics.metric.purchaseContract')}</strong>
               <Table<StatusAmountStatistic>
                 columns={[
-                  { title: '状态', dataIndex: 'status', render: approvalStatusTag },
-                  { title: '数量', dataIndex: 'count' },
                   {
-                    title: '金额',
+                    title: t('reporting.table.status'),
+                    dataIndex: 'status',
+                    render: approvalStatusTag,
+                  },
+                  { title: t('reporting.table.count'), dataIndex: 'count' },
+                  {
+                    title: t('reporting.table.amount'),
                     dataIndex: 'amount',
                     render: (value: string, record) => formatFinanceAmount(value, record.currency),
                   },
@@ -593,29 +661,44 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
         </section>
 
         <section className="workspace-panel reporting-drilldown-panel">
-          <PanelTitle icon={<Search size={18} />} title="原始单据追溯" />
+          <PanelTitle
+            icon={<Search size={18} />}
+            title={t('reporting.statistics.drilldownTitle')}
+          />
           <div className="reporting-drilldown-stack">
             <Table<ShipmentStatisticItem>
               columns={[
                 {
-                  title: '出货单',
+                  title: t('reporting.table.shipmentNo'),
                   dataIndex: 'shipment_no',
                   render: (value: string) => <strong>{value}</strong>,
                 },
-                { title: '客户', dataIndex: 'customer_name' },
-                { title: '状态', dataIndex: 'status', render: approvalStatusTag },
-                { title: '出货日', dataIndex: 'shipment_date', render: formatDate },
+                { title: t('reporting.table.customer'), dataIndex: 'customer_name' },
                 {
-                  title: '应收',
+                  title: t('reporting.table.status'),
+                  dataIndex: 'status',
+                  render: approvalStatusTag,
+                },
+                {
+                  title: t('reporting.table.shipmentDate'),
+                  dataIndex: 'shipment_date',
+                  render: formatDate,
+                },
+                {
+                  title: t('reporting.table.receivable'),
                   dataIndex: 'receivable_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
-                  title: '利润',
+                  title: t('reporting.table.profit'),
                   dataIndex: 'profit_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
-                { title: '下钻', dataIndex: 'source_path', render: sourcePathTag },
+                {
+                  title: t('reporting.table.drilldown'),
+                  dataIndex: 'source_path',
+                  render: sourcePathTag,
+                },
               ]}
               dataSource={statistics?.shipment_items ?? []}
               loading={loadingStatistics}
@@ -626,19 +709,31 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
             <Table<ReportDocumentStatistic>
               columns={[
                 {
-                  title: '出口合同',
+                  title: t('reporting.table.exportContractNo'),
                   dataIndex: 'document_no',
                   render: (value: string) => <strong>{value}</strong>,
                 },
-                { title: '客户', dataIndex: 'party_name' },
-                { title: '业务员', dataIndex: 'business_user_name', render: nullableText },
-                { title: '状态', dataIndex: 'status', render: approvalStatusTag },
+                { title: t('reporting.table.customer'), dataIndex: 'party_name' },
                 {
-                  title: '金额',
+                  title: t('reporting.table.salesperson'),
+                  dataIndex: 'business_user_name',
+                  render: nullableText,
+                },
+                {
+                  title: t('reporting.table.status'),
+                  dataIndex: 'status',
+                  render: approvalStatusTag,
+                },
+                {
+                  title: t('reporting.table.amount'),
                   dataIndex: 'amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
-                { title: '下钻', dataIndex: 'source_path', render: sourcePathTag },
+                {
+                  title: t('reporting.table.drilldown'),
+                  dataIndex: 'source_path',
+                  render: sourcePathTag,
+                },
               ]}
               dataSource={statistics?.export_contract_items ?? []}
               loading={loadingStatistics}
