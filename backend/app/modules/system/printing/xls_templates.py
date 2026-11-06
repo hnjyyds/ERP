@@ -12,6 +12,8 @@ from PIL import Image, ImageFile, UnidentifiedImageError
 from xlrd.xldate import xldate_from_date_tuple  # type: ignore[import-untyped]
 from xlutils.copy import copy as copy_workbook  # type: ignore[import-untyped]
 from xlwt.Cell import BlankCell, NumberCell, StrCell  # type: ignore[import-untyped]
+from xlwt.Formatting import Font  # type: ignore[import-untyped]
+from xlwt.Style import XFStyle  # type: ignore[import-untyped]
 from xlwt.Workbook import Workbook  # type: ignore[import-untyped]
 from xlwt.Worksheet import Worksheet  # type: ignore[import-untyped]
 
@@ -20,6 +22,7 @@ PURCHASE_CONTRACT_UPLOAD_DIR = Path(__file__).parents[4] / ".data" / "uploads"
 PURCHASE_CONTRACT_CONTENT_TYPE = "application/vnd.ms-excel"
 PURCHASE_CONTRACT_MAX_TEMPLATE_LINES = 3
 PURCHASE_CONTRACT_IMAGE_BOX = (148, 228)
+PURCHASE_CONTRACT_COMPANY_NAME_FONT_HEIGHT = 360
 _COLOR_SPLIT_RE = re.compile(r"[/、,，]+")
 
 
@@ -112,6 +115,29 @@ class _TemplateWriter:
     ) -> None:
         self._target.insert_bitmap_data(data, row, column, x=x, y=y)
 
+    def write_company_block(
+        self,
+        row: int,
+        column: int,
+        company: PurchaseContractTemplateCompany,
+    ) -> None:
+        style_index = self._style_index_for(row, column)
+        default_font = self._font_for_cell(row, column)
+        company_name_font = self._font_for_cell(row, column)
+        company_name_font.height = PURCHASE_CONTRACT_COMPANY_NAME_FONT_HEIGHT
+        company_name_font.bold = True
+        style = XFStyle()
+        style.font = default_font
+        self._target.row(row)._Row__rich_text_helper(
+            column,
+            [
+                (company.name, company_name_font),
+                _company_details_block(company),
+            ],
+            style,
+            style_index=style_index,
+        )
+
     def save(self) -> bytes:
         buffer = BytesIO()
         self._workbook.save(buffer)
@@ -122,13 +148,29 @@ class _TemplateWriter:
         index = getattr(cell, "xf_idx", None)
         return int(index) if index is not None else 0
 
+    def _font_for_cell(self, row: int, column: int) -> Font:
+        style_index = self._source.sheet_by_index(0).cell_xf_index(row, column)
+        source_font = self._source.font_list[self._source.xf_list[style_index].font_index]
+        font = Font()
+        font.name = source_font.name
+        font.height = source_font.height
+        font.bold = source_font.bold
+        font.italic = source_font.italic
+        font.colour_index = source_font.colour_index
+        font.escapement = source_font.escapement
+        font.outline = source_font.outline
+        font.shadow = source_font.shadow
+        font.struck_out = source_font.struck_out
+        font.underline = source_font.underline_type
+        return font
+
 
 def render_purchase_contract_template(data: PurchaseContractTemplateData) -> bytes:
     writer = _TemplateWriter(PURCHASE_CONTRACT_TEMPLATE_PATH)
     _clear_purchase_contract_fields(writer)
     writer.write(13, 2, data.code)
     writer.write(13, 5, data.supplier_name)
-    writer.write(13, 8, _company_block(data.company))
+    writer.write_company_block(13, 8, data.company)
     writer.write(14, 2, data.contract_date)
     writer.write(14, 5, data.buyer_user_name)
     writer.write(15, 2, data.delivery_date)
@@ -141,8 +183,8 @@ def render_purchase_contract_template(data: PurchaseContractTemplateData) -> byt
     writer.write(23, 0, "TOTAL")
     writer.write(23, 8, _number_or_text(data.total_quantity))
     writer.write(23, 9, _number_or_text(data.total_amount))
-    writer.write(28, 0, _delivery_address_note(data.company))
-    writer.write(29, 0, f"4.付款方式: {data.payment_terms}")
+    writer.write(28, 0, _warehouse_receiving_hours_note())
+    writer.write(29, 0, f"3.付款方式: {data.payment_terms}")
     writer.write(30, 0, _quality_note(data.remarks))
 
     display_lines = _display_lines(data.lines)
@@ -174,15 +216,15 @@ def purchase_contract_template_filename(code: str) -> str:
     return f"{safe_code or 'purchase-contract'}-采购合同.xls"
 
 
-def _company_block(company: PurchaseContractTemplateCompany) -> str:
-    rows = [company.name]
+def _company_details_block(company: PurchaseContractTemplateCompany) -> str:
+    rows: list[str] = []
     if company.address:
         rows.append(f"地 址：{company.address}")
     if company.phone:
         rows.append(f"电 话: {company.phone}")
     if company.email:
         rows.append(f"邮 箱: {company.email}")
-    return "\n".join(row for row in rows if row)
+    return "\n" + "\n".join(row for row in rows if row) if rows else ""
 
 
 def _product_description(line: PurchaseContractTemplateLine) -> str:
@@ -193,13 +235,12 @@ def _product_description(line: PurchaseContractTemplateLine) -> str:
     return "\n\n".join(parts)
 
 
-def _delivery_address_note(company: PurchaseContractTemplateCompany) -> str:
-    address = company.address or "请在公司信息中维护送货地址"
-    return f"2.送货地址：{address}"
-
-
 def _quality_note(_remarks: str) -> str:
-    return "5.供应商应严格按照订单要求的品质生产,确保品质良好,包装无误."
+    return "4.供应商应严格按照订单要求的品质生产,确保品质良好,包装无误."
+
+
+def _warehouse_receiving_hours_note() -> str:
+    return "2.仓库收货时间：9:00-11:30   13:30-17:30（周一至周六）"
 
 
 def _transport_label(remarks: str) -> str:
@@ -297,6 +338,7 @@ def _clear_purchase_contract_fields(writer: _TemplateWriter) -> None:
         (23, 0),
         (23, 8),
         (23, 9),
+        (27, 0),
         (28, 0),
         (29, 0),
         (30, 0),

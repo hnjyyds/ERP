@@ -269,11 +269,17 @@ async def test_generate_purchase_contract_template_uses_contract_company_and_pro
     assert data["content_type"] == "application/vnd.ms-excel"
     assert len(content) > 50_000
 
-    workbook = xlrd.open_workbook(file_contents=content)
+    workbook = xlrd.open_workbook(file_contents=content, formatting_info=True)
     sheet = workbook.sheet_by_index(0)
     assert sheet.cell_value(13, 2) == "NL2502085"
     assert sheet.cell_value(13, 5) == "贝斯特针织"
     assert "义乌市新裴贸易有限公司" in sheet.cell_value(13, 8)
+    company_runs = sheet.rich_text_runlist_map[(13, 8)]
+    company_name_font = workbook.font_list[company_runs[0][1]]
+    company_details_font = workbook.font_list[company_runs[1][1]]
+    assert company_name_font.height == 360
+    assert company_name_font.bold
+    assert company_name_font.height > company_details_font.height
     assert sheet.cell_value(14, 5) == "蒋芳"
     assert sheet.cell_value(15, 5) == "18072781890"
     assert sheet.cell_value(16, 5) == "浙江义乌"
@@ -296,6 +302,11 @@ async def test_generate_purchase_contract_template_uses_contract_company_and_pro
     assert sheet.cell_value(20, 12) == "工厂严格把控产品质量，大货不能出现抽纱，掉毛，污渍等现象。"
     assert sheet.cell_value(23, 8) == 9999
     assert sheet.cell_value(23, 9) == 78492.15
+    assert sheet.cell_value(27, 0) == ""
+    assert sheet.cell_value(28, 0).startswith("2.仓库收货时间：")
+    assert "义乌市福田街道涌金大道" not in sheet.cell_value(28, 0)
+    assert sheet.cell_value(29, 0).startswith("3.付款方式:")
+    assert sheet.cell_value(30, 0).startswith("4.供应商应严格按照订单要求")
 
 
 async def test_print_export_contract_not_found(
