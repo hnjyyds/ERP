@@ -234,65 +234,61 @@ export const profitCostTypeOptions = [
   { value: 'other_cost', label: '其他成本' },
 ]
 
-export const purchaseInquiryStatusOptions = [
-  { value: 'draft', label: '草稿' },
-  { value: 'sent', label: '已发模板' },
-  { value: 'quoted', label: '已报价' },
-  { value: 'closed', label: '已关闭' },
+export const purchaseInquiryStatusOptions: LocalizedOption[] = [
+  { value: 'draft', labelKey: 'purchase.inquiry.status.draft' },
+  { value: 'sent', labelKey: 'purchase.inquiry.status.sent' },
+  { value: 'quoted', labelKey: 'purchase.inquiry.status.quoted' },
+  { value: 'closed', labelKey: 'purchase.inquiry.status.closed' },
 ]
 
-export const purchaseContractStatusOptions = [
-  { value: 'draft', label: '草稿' },
-  { value: 'submitted', label: '待审批' },
-  { value: 'approved', label: '已审批' },
-  { value: 'rejected', label: '已驳回' },
+export const purchaseContractStatusOptions: LocalizedOption[] = [
+  { value: 'draft', labelKey: 'purchase.contract.status.draft' },
+  { value: 'submitted', labelKey: 'purchase.contract.status.submitted' },
+  { value: 'approved', labelKey: 'purchase.contract.status.approved' },
+  { value: 'rejected', labelKey: 'purchase.contract.status.rejected' },
 ]
 
-export const purchaseContractSourceTypeOptions = [
-  { value: 'export_contract', label: '出口合同生成' },
-  { value: 'stock_purchase', label: '库存采购' },
-  { value: 'manual', label: '手工采购' },
+export const purchaseContractSourceTypeOptions: LocalizedOption[] = [
+  { value: 'export_contract', labelKey: 'purchase.contract.source.exportContract' },
+  { value: 'stock_purchase', labelKey: 'purchase.contract.source.stockPurchase' },
+  { value: 'manual', labelKey: 'purchase.contract.source.manual' },
 ]
 
-export const purchaseInvoiceNoticeStatusOptions = [
-  { value: 'draft', label: '草稿' },
-  { value: 'sent', label: '已发送' },
-  { value: 'received', label: '已收票' },
+export const purchaseInvoiceNoticeStatusOptions: LocalizedOption[] = [
+  { value: 'draft', labelKey: 'purchase.invoiceNotice.status.draft' },
+  { value: 'sent', labelKey: 'purchase.invoiceNotice.status.sent' },
+  { value: 'received', labelKey: 'purchase.invoiceNotice.status.received' },
 ]
 
-export const followupStatusOptions = [
-  { value: 'pending', label: '待跟进' },
-  { value: 'in_progress', label: '进行中' },
-  { value: 'overdue', label: '已逾期' },
-  { value: 'completed', label: '已完成' },
+export const followupStatusOptions: LocalizedOption[] = [
+  { value: 'pending', labelKey: 'purchase.followup.status.pending' },
+  { value: 'in_progress', labelKey: 'purchase.followup.status.inProgress' },
+  { value: 'overdue', labelKey: 'purchase.followup.status.overdue' },
+  { value: 'completed', labelKey: 'purchase.followup.status.completed' },
 ]
 
-export const followupNodeLabels: Record<string, string> = {
-  contract_confirmed: '下单日期',
-  confirm_sample_submitted: '确认样提交日期',
-  bulk_sample_submitted: '大货样提交日期',
-  quality_inspection: 'QC查验日期',
-  inbound_completed: '入库日期',
-  outbound_completed: '出库日期',
+export const followupNodeLabelKeys: Record<string, TranslationKey> = {
+  contract_confirmed: 'purchase.followup.node.contractConfirmed',
+  confirm_sample_submitted: 'purchase.followup.node.confirmSampleSubmitted',
+  bulk_sample_submitted: 'purchase.followup.node.bulkSampleSubmitted',
+  quality_inspection: 'purchase.followup.node.qualityInspection',
+  inbound_completed: 'purchase.followup.node.inboundCompleted',
+  outbound_completed: 'purchase.followup.node.outboundCompleted',
 }
 
-export function getFollowupNodeLabel(value: string, fallback = value): string {
-  return followupNodeLabels[value] ?? fallback
-}
-
-export const followupNodeOptions = [
-  { value: 'confirm_sample_submitted', label: followupNodeLabels.confirm_sample_submitted },
-  { value: 'bulk_sample_submitted', label: followupNodeLabels.bulk_sample_submitted },
-  { value: 'quality_inspection', label: followupNodeLabels.quality_inspection },
-  { value: 'inbound_completed', label: followupNodeLabels.inbound_completed },
-  { value: 'outbound_completed', label: followupNodeLabels.outbound_completed },
+export const followupNodeOptions: LocalizedOption[] = [
+  { value: 'confirm_sample_submitted', labelKey: 'purchase.followup.node.confirmSampleSubmitted' },
+  { value: 'bulk_sample_submitted', labelKey: 'purchase.followup.node.bulkSampleSubmitted' },
+  { value: 'quality_inspection', labelKey: 'purchase.followup.node.qualityInspection' },
+  { value: 'inbound_completed', labelKey: 'purchase.followup.node.inboundCompleted' },
+  { value: 'outbound_completed', labelKey: 'purchase.followup.node.outboundCompleted' },
 ]
 
-export const followupSourceTypeOptions = [
-  { value: 'sample_followup_event', label: '样品事件' },
-  { value: 'quality_inspection', label: 'QC 查验' },
-  { value: 'inventory_inbound', label: '入库单' },
-  { value: 'inventory_outbound', label: '出库单' },
+export const followupSourceTypeOptions: LocalizedOption[] = [
+  { value: 'sample_followup_event', labelKey: 'purchase.followup.sourceType.sampleFollowupEvent' },
+  { value: 'quality_inspection', labelKey: 'purchase.followup.sourceType.qualityInspection' },
+  { value: 'inventory_inbound', labelKey: 'purchase.followup.sourceType.inventoryInbound' },
+  { value: 'inventory_outbound', labelKey: 'purchase.followup.sourceType.inventoryOutbound' },
 ]
 
 export const qualityResultOptions = [

@@ -53,7 +53,7 @@ import {
   followupStatusOptions,
   followupNodeOptions,
   followupSourceTypeOptions,
-  getFollowupNodeLabel,
+  followupNodeLabelKeys,
 } from '../../../shared/formOptions'
 import {
   formatDate,
@@ -62,11 +62,18 @@ import {
   type RoutedDetailPageProps,
   emptyToNull,
 } from '../appHelpers'
+import { t } from '../../appI18n'
+
+function followupNodeLabel(value: string, fallback = value): string {
+  const key = followupNodeLabelKeys[value]
+  return key ? t(key) : fallback
+}
 
 function followupSourceTypeLabel(value: string | null): string {
-  if (!value) return '未回写'
-  if (value === 'purchase_contract') return '采购合同'
-  return followupSourceTypeOptions.find((item) => item.value === value)?.label ?? value
+  if (!value) return t('purchase.followup.detail.notWritten')
+  if (value === 'purchase_contract') return t('purchase.followup.field.purchaseContract')
+  const option = followupSourceTypeOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function FollowupTemplateNodeFields({
@@ -144,7 +151,7 @@ type FollowupSourceEventFormState = {
 
 function initialFollowupTemplateForm(): FollowupTemplateFormState {
   return {
-    name: '标准采购跟单流程',
+    name: '',
     enabled: true,
     is_default: true,
     contract_days: '0',
@@ -174,9 +181,9 @@ function initialFollowupSourceEventForm(): FollowupSourceEventFormState {
     purchase_contract_id: '',
     node_code: 'quality_inspection',
     source_record_type: 'quality_inspection',
-    source_record_id: 'qc-demo-001',
+    source_record_id: '',
     actual_date: todayInputValue(),
-    source_summary: 'QC 查验通过',
+    source_summary: '',
   }
 }
 
@@ -238,7 +245,9 @@ function followupSourceEventFormForPlan(
     source_record_type: followupSourceTypeForNode(firstPending.node_code),
     source_record_id: `${firstPending.node_code}-source`,
     actual_date: firstPending.planned_date,
-    source_summary: `${getFollowupNodeLabel(firstPending.node_code, firstPending.node_name)}完成`,
+    source_summary: t('purchase.followup.message.summaryCompleted', {
+      name: followupNodeLabel(firstPending.node_code, firstPending.node_name),
+    }),
   }
 }
 
@@ -250,7 +259,7 @@ function followupTemplatePayload(form: FollowupTemplateFormState): FollowProcess
     nodes: [
       followupNodePayload(
         'contract_confirmed',
-        getFollowupNodeLabel('contract_confirmed'),
+        followupNodeLabel('contract_confirmed'),
         10,
         'purchase_contract',
         form.contract_days,
@@ -258,7 +267,7 @@ function followupTemplatePayload(form: FollowupTemplateFormState): FollowProcess
       ),
       followupNodePayload(
         'confirm_sample_submitted',
-        getFollowupNodeLabel('confirm_sample_submitted'),
+        followupNodeLabel('confirm_sample_submitted'),
         20,
         'sample_confirm',
         form.confirm_days,
@@ -266,7 +275,7 @@ function followupTemplatePayload(form: FollowupTemplateFormState): FollowProcess
       ),
       followupNodePayload(
         'bulk_sample_submitted',
-        getFollowupNodeLabel('bulk_sample_submitted'),
+        followupNodeLabel('bulk_sample_submitted'),
         30,
         'sample_bulk',
         form.bulk_days,
@@ -274,7 +283,7 @@ function followupTemplatePayload(form: FollowupTemplateFormState): FollowProcess
       ),
       followupNodePayload(
         'quality_inspection',
-        getFollowupNodeLabel('quality_inspection'),
+        followupNodeLabel('quality_inspection'),
         40,
         'qc',
         form.qc_days,
@@ -282,7 +291,7 @@ function followupTemplatePayload(form: FollowupTemplateFormState): FollowProcess
       ),
       followupNodePayload(
         'inbound_completed',
-        getFollowupNodeLabel('inbound_completed'),
+        followupNodeLabel('inbound_completed'),
         50,
         'inbound',
         form.inbound_days,
@@ -290,7 +299,7 @@ function followupTemplatePayload(form: FollowupTemplateFormState): FollowProcess
       ),
       followupNodePayload(
         'outbound_completed',
-        getFollowupNodeLabel('outbound_completed'),
+        followupNodeLabel('outbound_completed'),
         60,
         'outbound',
         form.outbound_days,
@@ -339,19 +348,16 @@ function followupSourceEventPayload(form: FollowupSourceEventFormState): FollowS
 }
 
 function followupPlanStatusLabel(value: string): string {
-  return followupStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = followupStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function followupNodeStatusLabel(value: string): string {
-  if (value === 'pending') return '待完成'
-  if (value === 'in_progress') return '进行中'
-  if (value === 'completed') return '已完成'
-  if (value === 'overdue') return '已逾期'
+  if (value === 'pending') return t('purchase.followup.detail.nodeStatusPending')
+  if (value === 'in_progress') return t('purchase.followup.status.inProgress')
+  if (value === 'completed') return t('purchase.followup.status.completed')
+  if (value === 'overdue') return t('purchase.followup.status.overdue')
   return value
-}
-
-function followupNodeLabel(value: string): string {
-  return getFollowupNodeLabel(value)
 }
 
 function followupSourceTypeForNode(nodeCode: string): string {
@@ -393,13 +399,13 @@ function followupNodeBusinessPath(
 }
 
 function followupNodeActionLabel(node: PurchaseFollowNode): string {
-  if (node.status === 'completed') return '查看来源'
-  if (isSampleSubmissionNode(node)) return '登记提交'
-  if (node.node_code === 'contract_confirmed') return '查看合同'
-  if (node.node_code === 'quality_inspection') return '进入 QC'
-  if (node.node_code === 'inbound_completed') return '进入入库'
-  if (node.node_code === 'outbound_completed') return '进入出库'
-  return '去处理'
+  if (node.status === 'completed') return t('purchase.followup.action.viewSource')
+  if (isSampleSubmissionNode(node)) return t('purchase.followup.action.registerSubmit')
+  if (node.node_code === 'contract_confirmed') return t('purchase.followup.action.viewContract')
+  if (node.node_code === 'quality_inspection') return t('purchase.followup.action.enterQc')
+  if (node.node_code === 'inbound_completed') return t('purchase.followup.action.enterInbound')
+  if (node.node_code === 'outbound_completed') return t('purchase.followup.action.enterOutbound')
+  return t('purchase.followup.action.handle')
 }
 
 export function FollowupPage({
@@ -516,7 +522,7 @@ export function FollowupPage({
       setSelectedTemplateId(nextTemplateId)
       setSelectedPlanId(nextPlanId)
     } catch (caught) {
-      showError(caught, '采购跟单加载失败')
+      showError(caught, t('purchase.followup.list.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -532,11 +538,11 @@ export function FollowupPage({
       const template = selectedTemplate
         ? await updateFollowupTemplate(selectedTemplate.id, payload)
         : await createFollowupTemplate(payload)
-      setMessage(`已保存跟单模板 ${template.name}`)
+      setMessage(t('purchase.followup.message.templateSaved', { name: template.name }))
       setFollowupModalOpen(false)
       await loadFollowupWorkspace(selectedPlan?.id, template.id)
     } catch (caught) {
-      showError(caught, '跟单模板保存失败')
+      showError(caught, t('purchase.followup.message.templateSaveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -555,9 +561,9 @@ export function FollowupPage({
       setSelectedPlanId(plan.id)
       setFollowupModalOpen(false)
       await loadFollowupWorkspace(plan.id)
-      setMessage(`已生成跟单计划 ${plan.purchase_contract_no}`)
+      setMessage(t('purchase.followup.message.planGenerated', { no: plan.purchase_contract_no }))
     } catch (caught) {
-      showError(caught, '跟单计划生成失败')
+      showError(caught, t('purchase.followup.message.planGenerateFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -574,9 +580,11 @@ export function FollowupPage({
         as_of: selectedPlan.base_date,
       })
       await loadFollowupWorkspace(synced.id)
-      setMessage(`已同步样品跟单事件 ${synced.purchase_contract_no}`)
+      setMessage(
+        t('purchase.followup.message.sampleSynced', { no: synced.purchase_contract_no }),
+      )
     } catch (caught) {
-      showError(caught, '样品事件同步失败')
+      showError(caught, t('purchase.followup.message.sampleSyncFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -592,9 +600,9 @@ export function FollowupPage({
       const plan = await syncFollowupSourceEvent(followupSourceEventPayload(sourceEventForm))
       setFollowupModalOpen(false)
       await loadFollowupWorkspace(plan.id)
-      setMessage(`已回写节点 ${nodeLabel}`)
+      setMessage(t('purchase.followup.message.sourceSynced', { name: nodeLabel }))
     } catch (caught) {
-      showError(caught, '来源事件回写失败')
+      showError(caught, t('purchase.followup.message.sourceSyncFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -621,17 +629,19 @@ export function FollowupPage({
     setError('')
     try {
       const plan = await syncFollowupSourceEvent(followupSourceEventPayload(nodeCompletionForm))
-      const completedNodeName = getFollowupNodeLabel(
+      const completedNodeName = followupNodeLabel(
         nodeActionNode.node_code,
         nodeActionNode.node_name,
       )
       setNodeActionNode(null)
       await loadFollowupWorkspace(plan.id)
-      setMessage(`已登记${completedNodeName}，节点状态已更新`)
+      setMessage(t('purchase.followup.message.nodeCompleted', { name: completedNodeName }))
     } catch (caught) {
       showError(
         caught,
-        `${getFollowupNodeLabel(nodeActionNode.node_code, nodeActionNode.node_name)}登记失败`,
+        t('purchase.followup.message.nodeCompleteFailed', {
+          name: followupNodeLabel(nodeActionNode.node_code, nodeActionNode.node_name),
+        }),
       )
     } finally {
       setSubmitting(false)
@@ -646,9 +656,9 @@ export function FollowupPage({
     try {
       const overdue = await listFollowupOverdueNodes(overdueAsOf)
       setOverdueNodes(overdue.items)
-      setMessage(`已找到 ${overdue.total} 个逾期节点`)
+      setMessage(t('purchase.followup.message.overdueFound', { count: overdue.total }))
     } catch (caught) {
-      showError(caught, '逾期节点查询失败')
+      showError(caught, t('purchase.followup.message.overdueScanFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -664,17 +674,23 @@ export function FollowupPage({
 
   return (
     <section className="followup-page">
-      <div className="summary-strip" aria-label="采购跟单概览">
-        <Metric label="跟单计划" value={plans.length} />
-        <Metric label="已完成计划" value={completedPlans} />
+      <div
+        className="summary-strip"
+        aria-label={t('purchase.followup.metric.overviewAria')}
+      >
+        <Metric label={t('purchase.followup.metric.planCount')} value={plans.length} />
+        <Metric label={t('purchase.followup.metric.completedPlans')} value={completedPlans} />
         <Metric
-          label="逾期计划"
+          label={t('purchase.followup.metric.overduePlans')}
           value={overduePlans}
           intent={overduePlans > 0 ? 'warning' : 'normal'}
         />
-        <Metric label="完成节点" value={`${completedNodes}/${totalNodes}`} />
         <Metric
-          label="逾期节点"
+          label={t('purchase.followup.metric.completedNodes')}
+          value={`${completedNodes}/${totalNodes}`}
+        />
+        <Metric
+          label={t('purchase.followup.metric.overdueNodes')}
           value={overdueNodes.length}
           intent={overdueNodes.length > 0 ? 'danger' : 'normal'}
         />
@@ -689,7 +705,10 @@ export function FollowupPage({
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title="采购跟单计划" />
+              <PanelTitle
+                icon={<Search size={18} />}
+                title={t('purchase.followup.list.title')}
+              />
               <form
                 className="inline-filters single-line-filter-toolbar"
                 onSubmit={(event) => {
@@ -698,52 +717,52 @@ export function FollowupPage({
                 }}
               >
                 <label>
-                  计划搜索
+                  {t('purchase.followup.list.searchLabel')}
                   <Input
                     value={search}
-                    placeholder="采购合同 / 供应商"
+                    placeholder={t('purchase.followup.list.searchPlaceholder')}
                     onChange={(event) => setSearch(event.target.value)}
                   />
                 </label>
                 <label>
-                  整体状态
+                  {t('purchase.followup.list.statusFilter')}
                   <FormSelect
                     value={statusFilter}
                     onChange={(event) => setStatusFilter(event.target.value)}
                   >
-                    <option value="">全部状态</option>
+                    <option value="">{t('purchase.followup.list.allStatuses')}</option>
                     {followupStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label>
-                  供应商标识
+                  {t('purchase.followup.list.supplierFilter')}
                   <Input
                     value={supplierFilter}
-                    placeholder="输入供应商编号或名称"
+                    placeholder={t('purchase.followup.list.supplierFilterPlaceholder')}
                     onChange={(event) => setSupplierFilter(event.target.value)}
                   />
                 </label>
                 <label>
-                  采购合同 ID
+                  {t('purchase.followup.list.contractFilter')}
                   <Input
                     value={contractFilter}
-                    placeholder="输入采购合同号"
+                    placeholder={t('purchase.followup.list.contractFilterPlaceholder')}
                     onChange={(event) => setContractFilter(event.target.value)}
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('purchase.followup.list.query')}
                 </Button>
                 <Button
                   htmlType="button"
                   icon={<Settings size={16} />}
                   onClick={() => setFollowupModalOpen(true)}
                 >
-                  配置/生成
+                  {t('purchase.followup.list.configureGenerate')}
                 </Button>
               </form>
             </div>
@@ -751,7 +770,7 @@ export function FollowupPage({
             <Table<PurchaseFollowPlan>
               columns={[
                 {
-                  title: '采购合同',
+                  title: t('purchase.followup.field.purchaseContract'),
                   dataIndex: 'purchase_contract_no',
                   render: (value: string, record: PurchaseFollowPlan) => (
                     <button
@@ -763,17 +782,25 @@ export function FollowupPage({
                     </button>
                   ),
                 },
-                { title: '状态', dataIndex: 'overall_status', render: followupPlanStatusLabel },
-                { title: '供应商', dataIndex: 'supplier_name' },
-                { title: '基准日', dataIndex: 'base_date', render: formatDate },
                 {
-                  title: '节点',
+                  title: t('purchase.followup.field.status'),
+                  dataIndex: 'overall_status',
+                  render: followupPlanStatusLabel,
+                },
+                { title: t('purchase.followup.field.supplier'), dataIndex: 'supplier_name' },
+                {
+                  title: t('purchase.followup.field.baseDay'),
+                  dataIndex: 'base_date',
+                  render: formatDate,
+                },
+                {
+                  title: t('purchase.followup.field.nodes'),
                   dataIndex: 'nodes',
                   render: (_, plan) =>
                     `${plan.nodes.filter((node) => node.status === 'completed').length}/${plan.nodes.length}`,
                 },
                 {
-                  title: '入口',
+                  title: t('purchase.followup.field.entry'),
                   key: 'detail',
                   width: 110,
                   render: (_: unknown, record: PurchaseFollowPlan) => (
@@ -781,7 +808,7 @@ export function FollowupPage({
                       size="small"
                       onClick={(event) => stopAndOpenFollowupDetail(event, record)}
                     >
-                      查看详情
+                      {t('purchase.followup.action.viewDetail')}
                     </Button>
                   ),
                 },
@@ -803,16 +830,19 @@ export function FollowupPage({
           centered
           footer={null}
           open={followupModalOpen}
-          title="跟单模板和计划生成"
+          title={t('purchase.followup.form.modalTitle')}
           width={1040}
           onCancel={() => setFollowupModalOpen(false)}
         >
           <div className="workflow-modal-content entity-modal-form">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="跟单流程模板" />
+            <PanelTitle
+              icon={<LayoutDashboard size={18} />}
+              title={t('purchase.followup.form.templateTitle')}
+            />
             <form className="record-form" onSubmit={saveFollowupTemplate}>
               <div className="form-pair two">
                 <label htmlFor="followup-template-name">
-                  模板名称
+                  {t('purchase.followup.field.templateName')}
                   <Input
                     id="followup-template-name"
                     required
@@ -823,13 +853,13 @@ export function FollowupPage({
                   />
                 </label>
                 <label>
-                  默认模板
+                  {t('purchase.followup.field.defaultTemplate')}
                   <Segmented
-                    aria-label="默认模板"
+                    aria-label={t('purchase.followup.field.defaultTemplate')}
                     className="boolean-segmented"
                     options={[
-                      { label: '是', value: 'true' },
-                      { label: '否', value: 'false' },
+                      { label: t('purchase.followup.form.yes'), value: 'true' },
+                      { label: t('purchase.followup.form.no'), value: 'false' },
                     ]}
                     value={String(templateForm.is_default)}
                     onChange={(value) =>
@@ -839,7 +869,7 @@ export function FollowupPage({
                 </label>
                 <label className="checkbox-label" htmlFor="followup-template-enabled">
                   <input
-                    aria-label="启用模板"
+                    aria-label={t('purchase.followup.form.enabled')}
                     checked={templateForm.enabled}
                     id="followup-template-enabled"
                     type="checkbox"
@@ -847,61 +877,61 @@ export function FollowupPage({
                       setTemplateForm({ ...templateForm, enabled: event.target.checked })
                     }
                   />
-                  启用模板
+                  {t('purchase.followup.form.enabled')}
                 </label>
               </div>
 
-              <div className="form-divider">节点标准天数 / 提前提醒天数</div>
+              <div className="form-divider">{t('purchase.followup.form.nodeDaysDivider')}</div>
               <FollowupTemplateNodeFields
                 daysKey="contract_days"
-                label="下单日期"
+                label={t('purchase.followup.node.contractConfirmed')}
                 remindKey="contract_remind"
-                remindLabel="合同提醒"
+                remindLabel={t('purchase.followup.form.contractRemind')}
                 setTemplateForm={setTemplateForm}
                 templateForm={templateForm}
               />
               <FollowupTemplateNodeFields
                 daysKey="confirm_days"
-                label="确认样提交日期"
+                label={t('purchase.followup.node.confirmSampleSubmitted')}
                 remindKey="confirm_remind"
-                remindLabel="确认样提醒"
+                remindLabel={t('purchase.followup.form.confirmRemind')}
                 setTemplateForm={setTemplateForm}
                 templateForm={templateForm}
               />
               <FollowupTemplateNodeFields
                 daysKey="bulk_days"
-                label="大货样提交日期"
+                label={t('purchase.followup.node.bulkSampleSubmitted')}
                 remindKey="bulk_remind"
-                remindLabel="大货样提醒"
+                remindLabel={t('purchase.followup.form.bulkRemind')}
                 setTemplateForm={setTemplateForm}
                 templateForm={templateForm}
               />
               <FollowupTemplateNodeFields
                 daysKey="qc_days"
-                label="QC查验日期"
+                label={t('purchase.followup.node.qualityInspection')}
                 remindKey="qc_remind"
-                remindLabel="QC 提醒"
+                remindLabel={t('purchase.followup.form.qcRemind')}
                 setTemplateForm={setTemplateForm}
                 templateForm={templateForm}
               />
               <FollowupTemplateNodeFields
                 daysKey="inbound_days"
-                label="入库日期"
+                label={t('purchase.followup.node.inboundCompleted')}
                 remindKey="inbound_remind"
-                remindLabel="入库提醒"
+                remindLabel={t('purchase.followup.form.inboundRemind')}
                 setTemplateForm={setTemplateForm}
                 templateForm={templateForm}
               />
               <FollowupTemplateNodeFields
                 daysKey="outbound_days"
-                label="出库日期"
+                label={t('purchase.followup.node.outboundCompleted')}
                 remindKey="outbound_remind"
-                remindLabel="出库提醒"
+                remindLabel={t('purchase.followup.form.outboundRemind')}
                 setTemplateForm={setTemplateForm}
                 templateForm={templateForm}
               />
               <Button htmlType="submit" loading={submitting} type="primary">
-                保存跟单模板
+                {t('purchase.followup.action.saveTemplate')}
               </Button>
             </form>
 
@@ -909,9 +939,9 @@ export function FollowupPage({
               className="record-form accessory-form generation-form"
               onSubmit={generateFollowupPlan}
             >
-              <div className="form-divider">采购合同生成跟单计划</div>
+              <div className="form-divider">{t('purchase.followup.form.generateDivider')}</div>
               <label htmlFor="followup-contract-id">
-                采购合同 ID
+                {t('purchase.followup.field.purchaseContractId')}
                 <Input
                   id="followup-contract-id"
                   required
@@ -922,7 +952,7 @@ export function FollowupPage({
                 />
               </label>
               <label htmlFor="followup-base-date">
-                基准日期
+                {t('purchase.followup.field.baseDate')}
                 <Input
                   id="followup-base-date"
                   type="date"
@@ -931,7 +961,7 @@ export function FollowupPage({
                 />
               </label>
               <Button htmlType="submit" loading={submitting}>
-                生成跟单计划
+                {t('purchase.followup.action.generatePlan')}
               </Button>
             </form>
 
@@ -939,9 +969,9 @@ export function FollowupPage({
               className="record-form accessory-form generation-form"
               onSubmit={syncFollowupSourceEventFromForm}
             >
-              <div className="form-divider">业务来源回写</div>
+              <div className="form-divider">{t('purchase.followup.form.sourceDivider')}</div>
               <label htmlFor="followup-source-contract-id">
-                采购合同 ID
+                {t('purchase.followup.field.purchaseContractId')}
                 <Input
                   id="followup-source-contract-id"
                   required
@@ -956,7 +986,7 @@ export function FollowupPage({
               </label>
               <div className="form-pair two">
                 <label>
-                  节点
+                  {t('purchase.followup.field.node')}
                   <FormSelect
                     value={sourceEventForm.node_code}
                     onChange={(event) =>
@@ -969,13 +999,13 @@ export function FollowupPage({
                   >
                     {followupNodeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label>
-                  来源类型
+                  {t('purchase.followup.field.sourceType')}
                   <FormSelect
                     value={sourceEventForm.source_record_type}
                     onChange={(event) =>
@@ -987,7 +1017,7 @@ export function FollowupPage({
                   >
                     {followupSourceTypeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
@@ -995,7 +1025,7 @@ export function FollowupPage({
               </div>
               <div className="form-pair two">
                 <label htmlFor="followup-source-id">
-                  来源记录 ID
+                  {t('purchase.followup.field.sourceRecordId')}
                   <Input
                     id="followup-source-id"
                     required
@@ -1009,7 +1039,7 @@ export function FollowupPage({
                   />
                 </label>
                 <label htmlFor="followup-actual-date">
-                  实际日期
+                  {t('purchase.followup.field.actualDate')}
                   <Input
                     id="followup-actual-date"
                     required
@@ -1022,7 +1052,7 @@ export function FollowupPage({
                 </label>
               </div>
               <label htmlFor="followup-source-summary">
-                来源摘要
+                {t('purchase.followup.field.sourceSummary')}
                 <Input
                   id="followup-source-summary"
                   required
@@ -1033,7 +1063,7 @@ export function FollowupPage({
                 />
               </label>
               <Button htmlType="submit" loading={submitting}>
-                回写实际日期
+                {t('purchase.followup.action.syncSource')}
               </Button>
             </form>
           </div>
@@ -1045,8 +1075,10 @@ export function FollowupPage({
           open={Boolean(nodeActionNode)}
           title={
             nodeActionNode
-              ? `登记${getFollowupNodeLabel(nodeActionNode.node_code, nodeActionNode.node_name)}`
-              : '登记节点完成情况'
+              ? t('purchase.followup.form.registerTitle', {
+                  name: followupNodeLabel(nodeActionNode.node_code, nodeActionNode.node_name),
+                })
+              : t('purchase.followup.form.registerFallbackTitle')
           }
           width={600}
           onCancel={() => setNodeActionNode(null)}
@@ -1054,14 +1086,16 @@ export function FollowupPage({
           {nodeActionNode && selectedPlan ? (
             <form className="record-form followup-node-completion-form" onSubmit={completeNodeFromForm}>
               <Alert
-                description={`登记后，“${getFollowupNodeLabel(nodeActionNode.node_code, nodeActionNode.node_name)}”将记录实际完成日期，并从工作台待办中移除。`}
+                description={t('purchase.followup.form.registerHint', {
+                  name: followupNodeLabel(nodeActionNode.node_code, nodeActionNode.node_name),
+                })}
                 title={`${selectedPlan.purchase_contract_no} · ${selectedPlan.supplier_name}`}
                 type="info"
                 showIcon
               />
               <div className="form-pair two">
                 <label htmlFor="followup-node-actual-date">
-                  实际完成日期
+                  {t('purchase.followup.field.actualCompletionDate')}
                   <Input
                     id="followup-node-actual-date"
                     required
@@ -1076,11 +1110,11 @@ export function FollowupPage({
                   />
                 </label>
                 <label htmlFor="followup-node-source-id">
-                  业务记录编号
+                  {t('purchase.followup.field.businessRecordNo')}
                   <Input
                     id="followup-node-source-id"
                     maxLength={36}
-                    placeholder="填写样品单号或外部记录号"
+                    placeholder={t('purchase.followup.form.businessRecordNoPlaceholder')}
                     required
                     value={nodeCompletionForm.source_record_id}
                     onChange={(event) =>
@@ -1093,11 +1127,11 @@ export function FollowupPage({
                 </label>
               </div>
               <label htmlFor="followup-node-summary">
-                处理说明
+                {t('purchase.followup.field.handleNote')}
                 <Input.TextArea
                   id="followup-node-summary"
                   maxLength={240}
-                  placeholder="填写供应商反馈、提交结果或其他处理说明"
+                  placeholder={t('purchase.followup.form.handleNotePlaceholder')}
                   required
                   rows={3}
                   value={nodeCompletionForm.source_summary}
@@ -1111,10 +1145,10 @@ export function FollowupPage({
               </label>
               <div className="modal-actions split">
                 <Button htmlType="button" onClick={() => setNodeActionNode(null)}>
-                  取消
+                  {t('common.cancel')}
                 </Button>
                 <Button htmlType="submit" loading={submitting} type="primary">
-                  保存并完成节点
+                  {t('purchase.followup.action.saveAndCompleteNode')}
                 </Button>
               </div>
             </form>
@@ -1124,28 +1158,31 @@ export function FollowupPage({
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<LayoutDashboard size={18} />} title="节点进度查询" />
+              <PanelTitle
+                icon={<LayoutDashboard size={18} />}
+                title={t('purchase.followup.detail.title')}
+              />
               <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(followupPath)}>
-                返回列表
+                {t('purchase.followup.action.backToList')}
               </Button>
             </div>
             {selectedPlan ? (
               <>
                 <dl className="detail-list">
                   <div>
-                    <dt>整体状态</dt>
+                    <dt>{t('purchase.followup.detail.overallStatus')}</dt>
                     <dd>{followupPlanStatusLabel(selectedPlan.overall_status)}</dd>
                   </div>
                   <div>
-                    <dt>供应商</dt>
+                    <dt>{t('purchase.followup.field.supplier')}</dt>
                     <dd>{selectedPlan.supplier_name}</dd>
                   </div>
                   <div>
-                    <dt>基准日期</dt>
+                    <dt>{t('purchase.followup.field.baseDate')}</dt>
                     <dd>{formatDate(selectedPlan.base_date)}</dd>
                   </div>
                   <div>
-                    <dt>采购合同 ID</dt>
+                    <dt>{t('purchase.followup.field.purchaseContractId')}</dt>
                     <dd>{selectedPlan.purchase_contract_id}</dd>
                   </div>
                 </dl>
@@ -1156,42 +1193,46 @@ export function FollowupPage({
                     loading={submitting}
                     onClick={() => void syncSelectedFollowupSampleEvents()}
                   >
-                    同步样品事件
+                    {t('purchase.followup.action.syncSampleEvents')}
                   </Button>
                   <Button
                     icon={<Search size={16} />}
                     loading={submitting}
                     onClick={() => void scanFollowupOverdueNodes()}
                   >
-                    查询逾期节点
+                    {t('purchase.followup.action.scanOverdue')}
                   </Button>
                 </div>
 
                 <div className="accessory-heading">
-                  <strong>采购合同节点进度</strong>
+                  <strong>{t('purchase.followup.detail.nodesTitle')}</strong>
                   <span>
                     {targetNodeId && selectedPlan.nodes.some((node) => node.id === targetNodeId)
-                      ? `已定位：${(() => {
-                          const targetNode = selectedPlan.nodes.find(
-                            (node) => node.id === targetNodeId,
-                          )
-                          return targetNode
-                            ? getFollowupNodeLabel(targetNode.node_code, targetNode.node_name)
-                            : ''
-                        })()}`
-                      : `${selectedPlan.nodes.length} 个节点`}
+                      ? t('purchase.followup.detail.located', {
+                          name: (() => {
+                            const targetNode = selectedPlan.nodes.find(
+                              (node) => node.id === targetNodeId,
+                            )
+                            return targetNode
+                              ? followupNodeLabel(targetNode.node_code, targetNode.node_name)
+                              : ''
+                          })(),
+                        })
+                      : t('purchase.followup.detail.nodeCount', {
+                          count: selectedPlan.nodes.length,
+                        })}
                   </span>
                 </div>
                 <table className="data-table compact-table followup-node-table">
                   <thead>
                     <tr>
-                      <th>节点</th>
-                      <th>预计</th>
-                      <th>提醒</th>
-                      <th>实际</th>
-                      <th>状态</th>
-                      <th>来源</th>
-                      <th>操作</th>
+                      <th>{t('purchase.followup.field.node')}</th>
+                      <th>{t('purchase.followup.field.planned')}</th>
+                      <th>{t('purchase.followup.field.remind')}</th>
+                      <th>{t('purchase.followup.field.actual')}</th>
+                      <th>{t('purchase.followup.field.status')}</th>
+                      <th>{t('purchase.followup.field.source')}</th>
+                      <th>{t('purchase.followup.field.action')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1209,12 +1250,20 @@ export function FollowupPage({
                           key={node.id}
                         >
                           <td>
-                            <strong>{getFollowupNodeLabel(node.node_code, node.node_name)}</strong>
-                            {isTargetNode ? <span className="followup-node-focus-label">当前待办</span> : null}
+                            <strong>{followupNodeLabel(node.node_code, node.node_name)}</strong>
+                            {isTargetNode ? (
+                              <span className="followup-node-focus-label">
+                                {t('purchase.followup.detail.currentTodo')}
+                              </span>
+                            ) : null}
                           </td>
                           <td>{formatDate(node.planned_date)}</td>
                           <td>{formatDate(node.remind_date)}</td>
-                          <td>{node.actual_date ? formatDate(node.actual_date) : '待回写'}</td>
+                          <td>
+                            {node.actual_date
+                              ? formatDate(node.actual_date)
+                              : t('purchase.followup.detail.pendingWriteBack')}
+                          </td>
                           <td>{followupNodeStatusLabel(node.status)}</td>
                           <td>
                             <span>{followupSourceTypeLabel(node.source_record_type)}</span>
@@ -1245,10 +1294,12 @@ export function FollowupPage({
                             ) : node.status === 'completed' ? (
                               <span className="followup-node-completed">
                                 <CheckCircle2 size={15} />
-                                已完成
+                                {t('purchase.followup.status.completed')}
                               </span>
                             ) : (
-                              <span className="followup-node-waiting">等待前序业务</span>
+                              <span className="followup-node-waiting">
+                                {t('purchase.followup.detail.waitingPrevious')}
+                              </span>
                             )}
                           </td>
                         </tr>
@@ -1258,12 +1309,14 @@ export function FollowupPage({
                 </table>
 
                 <div className="accessory-heading">
-                  <strong>逾期节点预警</strong>
-                  <span>{overdueNodes.length} 条</span>
+                  <strong>{t('purchase.followup.detail.overdueTitle')}</strong>
+                  <span>
+                    {t('purchase.followup.detail.overdueCount', { count: overdueNodes.length })}
+                  </span>
                 </div>
                 <form className="inline-filters inline-search" onSubmit={scanFollowupOverdueNodes}>
                   <label>
-                    截至日期
+                    {t('purchase.followup.detail.asOf')}
                     <Input
                       type="date"
                       value={overdueAsOf}
@@ -1271,17 +1324,17 @@ export function FollowupPage({
                     />
                   </label>
                   <Button htmlType="submit" icon={<Search size={16} />} loading={submitting}>
-                    查询
+                    {t('purchase.followup.list.query')}
                   </Button>
                 </form>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>采购合同</th>
-                      <th>供应商</th>
-                      <th>节点</th>
-                      <th>预计</th>
-                      <th>逾期</th>
+                      <th>{t('purchase.followup.field.purchaseContract')}</th>
+                      <th>{t('purchase.followup.field.supplier')}</th>
+                      <th>{t('purchase.followup.field.node')}</th>
+                      <th>{t('purchase.followup.field.planned')}</th>
+                      <th>{t('purchase.followup.field.overdueDays')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1289,15 +1342,19 @@ export function FollowupPage({
                       <tr key={node.id}>
                         <td>{node.purchase_contract_no}</td>
                         <td>{node.supplier_name}</td>
-                        <td>{getFollowupNodeLabel(node.node_code, node.node_name)}</td>
+                        <td>{followupNodeLabel(node.node_code, node.node_name)}</td>
                         <td>{formatDate(node.planned_date)}</td>
-                        <td>{node.overdue_days} 天</td>
+                        <td>
+                          {t('purchase.followup.detail.overdueDaysValue', {
+                            count: node.overdue_days,
+                          })}
+                        </td>
                       </tr>
                     ))}
                     {overdueNodes.length === 0 ? (
                       <tr>
                         <td className="empty-cell" colSpan={5}>
-                          暂无逾期节点
+                          {t('purchase.followup.detail.noOverdue')}
                         </td>
                       </tr>
                     ) : null}
@@ -1307,8 +1364,8 @@ export function FollowupPage({
             ) : (
               <div className="module-state panel-empty-state">
                 <ClipboardCheck size={28} />
-                <strong>暂无采购跟单计划</strong>
-                <span>请返回列表选择跟单计划查看详情</span>
+                <strong>{t('purchase.followup.detail.emptyTitle')}</strong>
+                <span>{t('purchase.followup.detail.emptyDescription')}</span>
               </div>
             )}
           </section>

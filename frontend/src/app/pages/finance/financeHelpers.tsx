@@ -63,7 +63,8 @@ export function shipmentStatusLabel(value: string): string {
 }
 
 export function purchaseInvoiceNoticeStatusLabel(value: string): string {
-  return purchaseInvoiceNoticeStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = purchaseInvoiceNoticeStatusOptions.find((item) => item.value === value)
+  return option ? translate(getRuntimeSettings().language, option.labelKey) : value
 }
 
 export function samplePaymentStatusLabel(value: string): string {

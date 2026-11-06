@@ -17,6 +17,7 @@ import {
 } from '../../../api'
 import { purchaseInvoiceNoticePath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { t } from '../../appI18n'
 import { showError } from '../../../shared/errors'
 import { purchaseInvoiceNoticeStatusOptions } from '../../../shared/formOptions'
 import {
@@ -80,39 +81,39 @@ function initialPurchaseInvoiceNoticeForm(): PurchaseInvoiceNoticeFormState {
     declaration_date: todayInputValue(),
     notice_date: todayInputValue(),
     currency: 'CNY',
-    remarks: '根据报关单证按供应商生成开票通知。',
+    remarks: '',
     supplier_id_a: 'supplier-pack-a',
-    supplier_name_a: '华东包装制品厂',
+    supplier_name_a: '',
     purchase_contract_id_a: 'pc-pack-a',
     purchase_contract_no_a: 'PC-2026-PACK-A',
     product_id_a: 'product-bag',
     product_code_a: 'BAG-40',
     product_name_a: 'Eco Shopping Bag',
-    customs_name_a: '环保购物袋',
-    invoice_name_a: '无纺布购物袋',
+    customs_name_a: '',
+    invoice_name_a: '',
     quantity_a: '1000',
     unit_a: 'pcs',
     amount_a: '5200.00',
-    remark_a: '按报关品名和数量开具增值税发票',
+    remark_a: '',
     supplier_id_b: 'supplier-label-a',
-    supplier_name_b: '苏州标签印务厂',
+    supplier_name_b: '',
     purchase_contract_id_b: 'pc-label-a',
     purchase_contract_no_b: 'PC-2026-LABEL-A',
     product_id_b: 'product-label',
     product_code_b: 'LABEL-01',
     product_name_b: 'Hang Tag',
-    customs_name_b: '纸制吊牌',
-    invoice_name_b: '纸质吊牌',
+    customs_name_b: '',
+    invoice_name_b: '',
     quantity_b: '450',
     unit_b: 'pcs',
     amount_b: '360.00',
-    remark_b: '吊牌随货开票',
+    remark_b: '',
   }
 }
 
 function initialPurchaseInvoiceNoticeSendForm(): PurchaseInvoiceNoticeSendFormState {
   return {
-    sender_name: '演示业务主管',
+    sender_name: '',
     sent_at: todayInputValue(),
   }
 }
@@ -204,12 +205,13 @@ function purchaseInvoiceNoticeReceivePayload(
 }
 
 function purchaseInvoiceNoticeStatusLabel(value: string): string {
-  return purchaseInvoiceNoticeStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = purchaseInvoiceNoticeStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function purchaseInvoiceReminderStatusLabel(value: string): string {
-  if (value === 'open') return '待催收'
-  if (value === 'done') return '已完成'
+  if (value === 'open') return t('purchase.invoiceNotice.detail.reminderStatusOpen')
+  if (value === 'done') return t('purchase.invoiceNotice.detail.reminderStatusDone')
   return value
 }
 
@@ -288,7 +290,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
         null
       setSelectedNoticeId(nextSelectedId)
     } catch (caught) {
-      showError(caught, '开票通知加载失败')
+      showError(caught, t('purchase.invoiceNotice.list.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -332,13 +334,13 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
       setStatusFilter('')
       setSupplierFilter('')
       setCustomsFilter(customsId)
-      setMessage(`已生成 ${result.total} 条供应商开票通知`)
+      setMessage(t('purchase.invoiceNotice.message.generated', { count: result.total }))
       setForm(initialPurchaseInvoiceNoticeForm())
       setInvoiceModalOpen(false)
       if (firstNotice) upsertNotice(firstNotice)
       await loadNotices(firstNotice?.id, customsId)
     } catch (caught) {
-      showError(caught, '开票通知生成失败')
+      showError(caught, t('purchase.invoiceNotice.message.generateFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -355,12 +357,12 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
         selectedNotice.id,
         purchaseInvoiceNoticeSendPayload(sendForm),
       )
-      setMessage(`已发送开票通知 ${sent.code}，系统已生成税票催收提醒`)
+      setMessage(t('purchase.invoiceNotice.message.sent', { code: sent.code }))
       setInvoiceActionModal(null)
       upsertNotice(sent)
       await loadNotices(sent.id)
     } catch (caught) {
-      showError(caught, '开票通知发送失败')
+      showError(caught, t('purchase.invoiceNotice.message.sendFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -377,12 +379,14 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
         selectedNotice.id,
         purchaseInvoiceNoticeReceivePayload(receiveForm),
       )
-      setMessage(`已登记税票 ${received.tax_invoice_no ?? ''}`)
+      setMessage(
+        t('purchase.invoiceNotice.message.received', { no: received.tax_invoice_no ?? '' }),
+      )
       setInvoiceActionModal(null)
       upsertNotice(received)
       await loadNotices(received.id)
     } catch (caught) {
-      showError(caught, '税票登记失败')
+      showError(caught, t('purchase.invoiceNotice.message.receiveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -396,12 +400,15 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
 
   return (
     <section className="purchase-invoice-page">
-      <div className="summary-strip" aria-label="开票通知概览">
-        <Metric label="开票通知" value={notices.length} />
-        <Metric label="已发送" value={sentCount} />
-        <Metric label="已收票" value={receivedCount} />
-        <Metric label="通知金额" value={formatMoney(totalAmount.toFixed(2), currency)} />
-        <Metric label="待催收" value={openReminders} />
+      <div className="summary-strip" aria-label={t('purchase.invoiceNotice.metric.overviewAria')}>
+        <Metric label={t('purchase.invoiceNotice.metric.noticeCount')} value={notices.length} />
+        <Metric label={t('purchase.invoiceNotice.metric.sentCount')} value={sentCount} />
+        <Metric label={t('purchase.invoiceNotice.metric.receivedCount')} value={receivedCount} />
+        <Metric
+          label={t('purchase.invoiceNotice.metric.noticeAmount')}
+          value={formatMoney(totalAmount.toFixed(2), currency)}
+        />
+        <Metric label={t('purchase.invoiceNotice.metric.openReminders')} value={openReminders} />
       </div>
 
       {message ? (
@@ -413,7 +420,10 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title="开票通知列表" />
+              <PanelTitle
+                icon={<Search size={18} />}
+                title={t('purchase.invoiceNotice.list.title')}
+              />
               <form
                 className="inline-filters"
                 onSubmit={(event) => {
@@ -422,45 +432,45 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                 }}
               >
                 <label>
-                  通知搜索
+                  {t('purchase.invoiceNotice.list.searchLabel')}
                   <Input
                     value={search}
-                    placeholder="通知号 / 供应商 / 品名"
+                    placeholder={t('purchase.invoiceNotice.list.searchPlaceholder')}
                     onChange={(event) => setSearch(event.target.value)}
                   />
                 </label>
                 <label>
-                  通知状态
+                  {t('purchase.invoiceNotice.list.statusFilter')}
                   <FormSelect
                     value={statusFilter}
                     onChange={(event) => setStatusFilter(event.target.value)}
                   >
-                    <option value="">全部状态</option>
+                    <option value="">{t('purchase.invoiceNotice.list.allStatuses')}</option>
                     {purchaseInvoiceNoticeStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label>
-                  供应商标识
+                  {t('purchase.invoiceNotice.list.supplierFilter')}
                   <Input
                     value={supplierFilter}
-                    placeholder="输入供应商编号或名称"
+                    placeholder={t('purchase.invoiceNotice.list.supplierFilterPlaceholder')}
                     onChange={(event) => setSupplierFilter(event.target.value)}
                   />
                 </label>
                 <label>
-                  报关单证 ID
+                  {t('purchase.invoiceNotice.list.customsFilter')}
                   <Input
                     value={customsFilter}
-                    placeholder="输入报关单证编号"
+                    placeholder={t('purchase.invoiceNotice.list.customsFilterPlaceholder')}
                     onChange={(event) => setCustomsFilter(event.target.value)}
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('purchase.invoiceNotice.list.query')}
                 </Button>
                 <Button
                   htmlType="button"
@@ -470,7 +480,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                     setInvoiceModalOpen(true)
                   }}
                 >
-                  生成开票通知
+                  {t('purchase.invoiceNotice.list.generate')}
                 </Button>
               </form>
             </div>
@@ -478,7 +488,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
             <Table<PurchaseInvoiceNotice>
               columns={[
                 {
-                  title: '开票通知',
+                  title: t('purchase.invoiceNotice.field.noticeCode'),
                   dataIndex: 'code',
                   render: (value: string, record: PurchaseInvoiceNotice) => (
                     <button
@@ -490,22 +500,31 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                     </button>
                   ),
                 },
-                { title: '状态', dataIndex: 'status', render: purchaseInvoiceNoticeStatusLabel },
-                { title: '供应商', dataIndex: 'supplier_name' },
-                { title: '报关单', dataIndex: 'customs_declaration_no' },
                 {
-                  title: '金额',
+                  title: t('purchase.invoiceNotice.field.status'),
+                  dataIndex: 'status',
+                  render: purchaseInvoiceNoticeStatusLabel,
+                },
+                { title: t('purchase.invoiceNotice.field.supplier'), dataIndex: 'supplier_name' },
+                {
+                  title: t('purchase.invoiceNotice.field.customsDeclaration'),
+                  dataIndex: 'customs_declaration_no',
+                },
+                {
+                  title: t('purchase.invoiceNotice.field.amount'),
                   dataIndex: 'total_amount',
                   render: (_, notice) => formatMoney(notice.total_amount, notice.currency),
                 },
                 {
-                  title: '提醒',
+                  title: t('purchase.invoiceNotice.field.reminders'),
                   dataIndex: 'reminders',
                   render: (_, notice) =>
-                    `${notice.reminders.filter((item) => item.status === 'open').length} 个`,
+                    t('purchase.invoiceNotice.list.openReminderCount', {
+                      count: notice.reminders.filter((item) => item.status === 'open').length,
+                    }),
                 },
                 {
-                  title: '入口',
+                  title: t('purchase.invoiceNotice.field.entry'),
                   key: 'detail',
                   width: 110,
                   render: (_: unknown, record: PurchaseInvoiceNotice) => (
@@ -513,7 +532,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                       size="small"
                       onClick={(event) => stopAndOpenInvoiceNoticeDetail(event, record)}
                     >
-                      查看详情
+                      {t('purchase.invoiceNotice.action.viewDetail')}
                     </Button>
                   ),
                 },
@@ -535,16 +554,19 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
           centered
           footer={null}
           open={invoiceModalOpen}
-          title="从报关单证生成开票通知"
+          title={t('purchase.invoiceNotice.form.generateTitle')}
           width={1040}
           onCancel={() => setInvoiceModalOpen(false)}
         >
           <div className="workflow-modal-content entity-modal-form">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="从报关单证生成" />
+            <PanelTitle
+              icon={<LayoutDashboard size={18} />}
+              title={t('purchase.invoiceNotice.form.generateFromCustoms')}
+            />
             <form className="record-form" onSubmit={generateFromCustoms}>
               <div className="form-pair two">
                 <label htmlFor="purchase-invoice-customs-id">
-                  报关单证 ID
+                  {t('purchase.invoiceNotice.field.customsDeclarationId')}
                   <Input
                     id="purchase-invoice-customs-id"
                     value={form.customs_declaration_id}
@@ -554,7 +576,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                   />
                 </label>
                 <label htmlFor="purchase-invoice-customs-no">
-                  报关单号
+                  {t('purchase.invoiceNotice.field.customsDeclarationNo')}
                   <Input
                     id="purchase-invoice-customs-no"
                     required
@@ -567,7 +589,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
               </div>
               <div className="form-pair three">
                 <label htmlFor="purchase-invoice-declaration-date">
-                  报关日期
+                  {t('purchase.invoiceNotice.field.declarationDate')}
                   <Input
                     id="purchase-invoice-declaration-date"
                     required
@@ -577,7 +599,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                   />
                 </label>
                 <label htmlFor="purchase-invoice-notice-date">
-                  通知日期
+                  {t('purchase.invoiceNotice.field.noticeDate')}
                   <Input
                     id="purchase-invoice-notice-date"
                     required
@@ -587,7 +609,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                   />
                 </label>
                 <label htmlFor="purchase-invoice-currency">
-                  币种
+                  {t('purchase.invoiceNotice.field.currency')}
                   <Input
                     id="purchase-invoice-currency"
                     required
@@ -597,7 +619,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                 </label>
               </div>
               <label htmlFor="purchase-invoice-remarks">
-                生成备注
+                {t('purchase.invoiceNotice.field.generateRemarks')}
                 <Input
                   id="purchase-invoice-remarks"
                   value={form.remarks}
@@ -610,17 +632,17 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                 lineKey="a"
                 required
                 setForm={setForm}
-                title="供应商 A 开票要求"
+                title={t('purchase.invoiceNotice.form.supplierSectionA')}
               />
               <PurchaseInvoiceLineFields
                 form={form}
                 lineKey="b"
                 setForm={setForm}
-                title="供应商 B 开票要求"
+                title={t('purchase.invoiceNotice.form.supplierSectionB')}
               />
 
               <Button htmlType="submit" loading={submitting} type="primary">
-                生成开票通知
+                {t('purchase.invoiceNotice.action.generate')}
               </Button>
             </form>
           </div>
@@ -629,57 +651,65 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<LayoutDashboard size={18} />} title="开票通知明细" />
+              <PanelTitle
+                icon={<LayoutDashboard size={18} />}
+                title={t('purchase.invoiceNotice.detail.title')}
+              />
               <Button
                 icon={<ArrowLeft size={16} />}
                 onClick={() => onNavigate(purchaseInvoiceNoticePath)}
               >
-                返回列表
+                {t('purchase.invoiceNotice.action.backToList')}
               </Button>
             </div>
             {selectedNotice ? (
               <>
                 <dl className="detail-list">
                   <div>
-                    <dt>状态/通知日</dt>
+                    <dt>{t('purchase.invoiceNotice.field.statusNoticeDate')}</dt>
                     <dd>
                       {purchaseInvoiceNoticeStatusLabel(selectedNotice.status)} /{' '}
                       {formatDate(selectedNotice.notice_date)}
                     </dd>
                   </div>
                   <div>
-                    <dt>供应商</dt>
+                    <dt>{t('purchase.invoiceNotice.field.supplier')}</dt>
                     <dd>{selectedNotice.supplier_name}</dd>
                   </div>
                   <div>
-                    <dt>报关单号</dt>
+                    <dt>{t('purchase.invoiceNotice.field.customsDeclarationNo')}</dt>
                     <dd>{selectedNotice.customs_declaration_no}</dd>
                   </div>
                   <div>
-                    <dt>报关日期</dt>
+                    <dt>{t('purchase.invoiceNotice.field.declarationDate')}</dt>
                     <dd>{formatDate(selectedNotice.declaration_date)}</dd>
                   </div>
                   <div>
-                    <dt>开票数量</dt>
+                    <dt>{t('purchase.invoiceNotice.field.invoiceQuantity')}</dt>
                     <dd>{selectedNotice.total_quantity}</dd>
                   </div>
                   <div>
-                    <dt>通知金额</dt>
+                    <dt>{t('purchase.invoiceNotice.field.noticeAmount')}</dt>
                     <dd>{formatMoney(selectedNotice.total_amount, selectedNotice.currency)}</dd>
                   </div>
                   <div>
-                    <dt>发送人</dt>
-                    <dd>{selectedNotice.sender_name ?? '未发送'}</dd>
+                    <dt>{t('purchase.invoiceNotice.field.sender')}</dt>
+                    <dd>
+                      {selectedNotice.sender_name ?? t('purchase.invoiceNotice.detail.notSent')}
+                    </dd>
                   </div>
                   <div>
-                    <dt>税票号</dt>
-                    <dd>{selectedNotice.tax_invoice_no ?? '未收票'}</dd>
+                    <dt>{t('purchase.invoiceNotice.field.taxInvoiceNo')}</dt>
+                    <dd>
+                      {selectedNotice.tax_invoice_no ??
+                        t('purchase.invoiceNotice.detail.notReceived')}
+                    </dd>
                   </div>
                 </dl>
 
                 <div className="transaction-box">
-                  <strong>开票通知备注</strong>
-                  <p>{selectedNotice.remarks ?? '未填写'}</p>
+                  <strong>{t('purchase.invoiceNotice.detail.remarksTitle')}</strong>
+                  <p>{selectedNotice.remarks ?? t('purchase.invoiceNotice.detail.remarksEmpty')}</p>
                 </div>
 
                 <div className="delivery-action-row">
@@ -688,13 +718,13 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                     type="primary"
                     onClick={() => setInvoiceActionModal('send')}
                   >
-                    发送开票通知
+                    {t('purchase.invoiceNotice.action.sendNotice')}
                   </Button>
                   <Button
                     disabled={selectedNotice.status === 'received'}
                     onClick={() => setInvoiceActionModal('receive')}
                   >
-                    登记税票
+                    {t('purchase.invoiceNotice.action.receiveInvoice')}
                   </Button>
                 </div>
 
@@ -702,7 +732,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                   centered
                   footer={null}
                   open={invoiceActionModal === 'send'}
-                  title="发送开票通知"
+                  title={t('purchase.invoiceNotice.form.sendTitle')}
                   width={720}
                   onCancel={() => setInvoiceActionModal(null)}
                 >
@@ -711,10 +741,12 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                       className="record-form accessory-form generation-form"
                       onSubmit={sendSelectedNotice}
                     >
-                      <div className="form-divider">发送开票通知</div>
+                      <div className="form-divider">
+                        {t('purchase.invoiceNotice.form.sendTitle')}
+                      </div>
                       <div className="form-pair two">
                         <label htmlFor="purchase-invoice-sender">
-                          发送人
+                          {t('purchase.invoiceNotice.field.sender')}
                           <Input
                             id="purchase-invoice-sender"
                             required
@@ -725,7 +757,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                           />
                         </label>
                         <label htmlFor="purchase-invoice-sent-at">
-                          发送日期
+                          {t('purchase.invoiceNotice.field.sentAt')}
                           <Input
                             id="purchase-invoice-sent-at"
                             required
@@ -743,7 +775,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                         loading={submitting}
                         type="primary"
                       >
-                        发送开票通知
+                        {t('purchase.invoiceNotice.action.sendNotice')}
                       </Button>
                     </form>
                   </div>
@@ -753,7 +785,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                   centered
                   footer={null}
                   open={invoiceActionModal === 'receive'}
-                  title="登记供应商税票"
+                  title={t('purchase.invoiceNotice.form.receiveTitle')}
                   width={720}
                   onCancel={() => setInvoiceActionModal(null)}
                 >
@@ -762,10 +794,12 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                       className="record-form accessory-form generation-form"
                       onSubmit={receiveSelectedNotice}
                     >
-                      <div className="form-divider">登记供应商税票</div>
+                      <div className="form-divider">
+                        {t('purchase.invoiceNotice.form.receiveTitle')}
+                      </div>
                       <div className="form-pair two">
                         <label htmlFor="purchase-invoice-tax-no">
-                          税票号
+                          {t('purchase.invoiceNotice.field.taxInvoiceNo')}
                           <Input
                             id="purchase-invoice-tax-no"
                             required
@@ -776,7 +810,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                           />
                         </label>
                         <label htmlFor="purchase-invoice-received-at">
-                          收票日期
+                          {t('purchase.invoiceNotice.field.receivedAt')}
                           <Input
                             id="purchase-invoice-received-at"
                             required
@@ -793,30 +827,37 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                         htmlType="submit"
                         loading={submitting}
                       >
-                        登记税票
+                        {t('purchase.invoiceNotice.action.receiveInvoice')}
                       </Button>
                     </form>
                   </div>
                 </Modal>
 
                 <div className="accessory-heading">
-                  <strong>开票品名和数量</strong>
-                  <span>{selectedNotice.lines.length} 行</span>
+                  <strong>{t('purchase.invoiceNotice.detail.linesTitle')}</strong>
+                  <span>
+                    {t('purchase.invoiceNotice.detail.lineCount', {
+                      count: selectedNotice.lines.length,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>采购合同</th>
-                      <th>报关品名</th>
-                      <th>开票品名</th>
-                      <th>数量</th>
-                      <th>金额</th>
+                      <th>{t('purchase.invoiceNotice.field.purchaseContract')}</th>
+                      <th>{t('purchase.invoiceNotice.field.customsName')}</th>
+                      <th>{t('purchase.invoiceNotice.field.invoiceName')}</th>
+                      <th>{t('purchase.invoiceNotice.field.quantity')}</th>
+                      <th>{t('purchase.invoiceNotice.field.amount')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {selectedNotice.lines.map((line) => (
                       <tr key={line.id}>
-                        <td>{line.purchase_contract_no ?? '未关联'}</td>
+                        <td>
+                          {line.purchase_contract_no ??
+                            t('purchase.invoiceNotice.detail.notLinked')}
+                        </td>
                         <td>{line.customs_name}</td>
                         <td>{line.invoice_name}</td>
                         <td>
@@ -829,15 +870,19 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                 </table>
 
                 <div className="accessory-heading">
-                  <strong>税票催收提醒</strong>
-                  <span>{selectedNotice.reminders.length} 条</span>
+                  <strong>{t('purchase.invoiceNotice.detail.remindersTitle')}</strong>
+                  <span>
+                    {t('purchase.invoiceNotice.detail.reminderCount', {
+                      count: selectedNotice.reminders.length,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>标题</th>
-                      <th>到期日</th>
-                      <th>状态</th>
+                      <th>{t('purchase.invoiceNotice.field.title')}</th>
+                      <th>{t('purchase.invoiceNotice.field.dueDate')}</th>
+                      <th>{t('purchase.invoiceNotice.field.status')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -851,7 +896,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                     {selectedNotice.reminders.length === 0 ? (
                       <tr>
                         <td className="empty-cell" colSpan={3}>
-                          发送后自动生成税票催收提醒
+                          {t('purchase.invoiceNotice.detail.remindersEmpty')}
                         </td>
                       </tr>
                     ) : null}
@@ -859,15 +904,17 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                 </table>
 
                 <div className="accessory-heading">
-                  <strong>全局税票催收</strong>
-                  <span>{reminders.length} 条</span>
+                  <strong>{t('purchase.invoiceNotice.detail.globalRemindersTitle')}</strong>
+                  <span>
+                    {t('purchase.invoiceNotice.detail.reminderCount', { count: reminders.length })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>标题</th>
-                      <th>到期日</th>
-                      <th>状态</th>
+                      <th>{t('purchase.invoiceNotice.field.title')}</th>
+                      <th>{t('purchase.invoiceNotice.field.dueDate')}</th>
+                      <th>{t('purchase.invoiceNotice.field.status')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -881,7 +928,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                     {reminders.length === 0 ? (
                       <tr>
                         <td className="empty-cell" colSpan={3}>
-                          暂无税票催收提醒
+                          {t('purchase.invoiceNotice.detail.noReminders')}
                         </td>
                       </tr>
                     ) : null}
@@ -891,8 +938,8 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
             ) : (
               <div className="module-state panel-empty-state">
                 <Receipt size={28} />
-                <strong>暂无开票通知</strong>
-                <span>请返回列表选择开票通知查看详情</span>
+                <strong>{t('purchase.invoiceNotice.detail.emptyTitle')}</strong>
+                <span>{t('purchase.invoiceNotice.detail.emptyDescription')}</span>
               </div>
             )}
           </section>
@@ -944,7 +991,7 @@ function PurchaseInvoiceLineFields({
       <div className="form-divider">{title}</div>
       <div className="form-pair two">
         <label htmlFor={`purchase-invoice-supplier-id-${suffix}`}>
-          供应商标识
+          {t('purchase.invoiceNotice.field.supplierId')}
           <Input
             id={`purchase-invoice-supplier-id-${suffix}`}
             value={values.supplier_id}
@@ -952,7 +999,7 @@ function PurchaseInvoiceLineFields({
           />
         </label>
         <label htmlFor={`purchase-invoice-supplier-name-${suffix}`}>
-          供应商
+          {t('purchase.invoiceNotice.field.supplier')}
           <Input
             id={`purchase-invoice-supplier-name-${suffix}`}
             required={required}
@@ -963,7 +1010,7 @@ function PurchaseInvoiceLineFields({
       </div>
       <div className="form-pair two">
         <label htmlFor={`purchase-invoice-contract-no-${suffix}`}>
-          采购合同号
+          {t('purchase.invoiceNotice.field.purchaseContractNo')}
           <Input
             id={`purchase-invoice-contract-no-${suffix}`}
             value={values.purchase_contract_no}
@@ -971,7 +1018,7 @@ function PurchaseInvoiceLineFields({
           />
         </label>
         <label htmlFor={`purchase-invoice-product-code-${suffix}`}>
-          商品编号
+          {t('purchase.invoiceNotice.field.productCode')}
           <Input
             id={`purchase-invoice-product-code-${suffix}`}
             value={values.product_code}
@@ -981,7 +1028,7 @@ function PurchaseInvoiceLineFields({
       </div>
       <div className="visually-hidden">
         <label htmlFor={`purchase-invoice-contract-id-${suffix}`}>
-          采购合同 ID
+          {t('purchase.invoiceNotice.field.purchaseContractId')}
           <Input
             id={`purchase-invoice-contract-id-${suffix}`}
             value={values.purchase_contract_id}
@@ -989,7 +1036,7 @@ function PurchaseInvoiceLineFields({
           />
         </label>
         <label htmlFor={`purchase-invoice-product-id-${suffix}`}>
-          商品 ID
+          {t('purchase.invoiceNotice.field.productId')}
           <Input
             id={`purchase-invoice-product-id-${suffix}`}
             value={values.product_id}
@@ -999,7 +1046,7 @@ function PurchaseInvoiceLineFields({
       </div>
       <div className="form-pair three">
         <label htmlFor={`purchase-invoice-product-name-${suffix}`}>
-          商品名称
+          {t('purchase.invoiceNotice.field.productName')}
           <Input
             id={`purchase-invoice-product-name-${suffix}`}
             required={required}
@@ -1008,7 +1055,7 @@ function PurchaseInvoiceLineFields({
           />
         </label>
         <label htmlFor={`purchase-invoice-customs-name-${suffix}`}>
-          报关品名
+          {t('purchase.invoiceNotice.field.customsName')}
           <Input
             id={`purchase-invoice-customs-name-${suffix}`}
             required={required}
@@ -1017,7 +1064,7 @@ function PurchaseInvoiceLineFields({
           />
         </label>
         <label htmlFor={`purchase-invoice-name-${suffix}`}>
-          开票品名
+          {t('purchase.invoiceNotice.field.invoiceName')}
           <Input
             id={`purchase-invoice-name-${suffix}`}
             required={required}
@@ -1028,7 +1075,7 @@ function PurchaseInvoiceLineFields({
       </div>
       <div className="form-pair three">
         <label htmlFor={`purchase-invoice-quantity-${suffix}`}>
-          开票数量
+          {t('purchase.invoiceNotice.field.invoiceQuantity')}
           <Input
             id={`purchase-invoice-quantity-${suffix}`}
             min="0.0001"
@@ -1040,7 +1087,7 @@ function PurchaseInvoiceLineFields({
           />
         </label>
         <label htmlFor={`purchase-invoice-unit-${suffix}`}>
-          单位
+          {t('purchase.invoiceNotice.field.unit')}
           <Input
             id={`purchase-invoice-unit-${suffix}`}
             required={required}
@@ -1049,7 +1096,7 @@ function PurchaseInvoiceLineFields({
           />
         </label>
         <label htmlFor={`purchase-invoice-amount-${suffix}`}>
-          金额
+          {t('purchase.invoiceNotice.field.amount')}
           <Input
             id={`purchase-invoice-amount-${suffix}`}
             min="0"
@@ -1061,7 +1108,7 @@ function PurchaseInvoiceLineFields({
         </label>
       </div>
       <label htmlFor={`purchase-invoice-remark-${suffix}`}>
-        行备注
+        {t('purchase.invoiceNotice.field.lineRemarks')}
         <Input
           id={`purchase-invoice-remark-${suffix}`}
           value={values.remark}

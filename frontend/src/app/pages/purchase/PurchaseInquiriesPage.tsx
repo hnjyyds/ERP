@@ -21,12 +21,10 @@ import {
   SupplierSampleEvidence,
 } from '../../../api'
 import { purchaseInquiryPath, moduleDetailPath } from '../../routes'
+import { t } from '../../appI18n'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
-import {
-  purchaseInquiryStatusOptions,
-  sampleRecordStatusOptions,
-} from '../../../shared/formOptions'
+import { purchaseInquiryStatusOptions } from '../../../shared/formOptions'
 import {
   formatDate,
   formatMoney,
@@ -37,7 +35,11 @@ import {
 } from '../appHelpers'
 
 function sampleRecordStatusLabel(value: string): string {
-  return sampleRecordStatusOptions.find((item) => item.value === value)?.label ?? value
+  if (value === 'registered') return t('purchase.inquiry.detail.sampleStatusRegistered')
+  if (value === 'submitted') return t('purchase.inquiry.detail.sampleStatusSubmitted')
+  if (value === 'confirmed') return t('purchase.inquiry.detail.sampleStatusConfirmed')
+  if (value === 'archived') return t('purchase.inquiry.detail.sampleStatusArchived')
+  return value
 }
 
 type PurchaseInquiryFormState = {
@@ -77,13 +79,13 @@ function initialPurchaseInquiryForm(): PurchaseInquiryFormState {
     code: `PI-${Date.now().toString().slice(-6)}`,
     inquiry_date: todayInputValue(),
     buyer_user_id: 'u-001',
-    buyer_user_name: '演示业务主管',
-    remarks: '环保袋供应商询价',
-    product_id: 'product-bag',
-    product_code: 'BAG-40',
-    product_name: 'Eco Shopping Bag',
-    specification: '40x35cm',
-    model: 'BAG-40',
+    buyer_user_name: '',
+    remarks: '',
+    product_id: '',
+    product_code: '',
+    product_name: '',
+    specification: '',
+    model: '',
     quantity: '1000',
     unit: 'pcs',
   }
@@ -91,21 +93,21 @@ function initialPurchaseInquiryForm(): PurchaseInquiryFormState {
 
 function initialPurchaseQuotationForm(): PurchaseQuotationFormState {
   return {
-    supplier_id: 'supplier-pack-a',
-    supplier_name: '华东包装制品厂',
+    supplier_id: '',
+    supplier_name: '',
     quoted_at: todayInputValue(),
     unit_price: '0.78',
     currency: 'USD',
     lead_time_days: '18',
     min_order_quantity: '800',
     sample_available: true,
-    remark: '含环保包装',
+    remark: '',
   }
 }
 
 function initialPurchaseInquiryTemplateForm(): PurchaseInquiryTemplateFormState {
   return {
-    template_name: '标准采购询价模板',
+    template_name: '',
     recipient_emails: 'supplier@example.com',
   }
 }
@@ -181,7 +183,8 @@ function purchaseInquiryTemplatePayload(
 }
 
 function purchaseInquiryStatusLabel(value: string): string {
-  return purchaseInquiryStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = purchaseInquiryStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function lowestSupplierQuotation(quotations: SupplierQuotation[]): SupplierQuotation | null {
@@ -261,7 +264,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
         null
       setSelectedInquiryId(nextSelectedId)
     } catch (caught) {
-      showError(caught, '采购询价加载失败')
+      showError(caught, t('purchase.inquiry.list.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -288,14 +291,14 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
       setReferences(referenceResult.items)
       setSupplierSamples(sampleResult.items)
     } catch (caught) {
-      showError(caught, '采购询价参考资料加载失败')
+      showError(caught, t('purchase.inquiry.detail.referenceLoadFailed'))
     }
   }
 
   function syncPurchaseInquiryActionForms(inquiry: PurchaseInquiry | null) {
     const firstQuote = inquiry?.quotations[0]
     setTemplateForm({
-      template_name: inquiry?.template_name ?? '标准采购询价模板',
+      template_name: inquiry?.template_name ?? '',
       recipient_emails: firstQuote?.supplier_id
         ? `${firstQuote.supplier_id}@example.com`
         : 'supplier@example.com',
@@ -337,14 +340,18 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
       const saved = editingInquiryId
         ? await updatePurchaseInquiry(editingInquiryId, payload)
         : await createPurchaseInquiry(payload)
-      setMessage(editingInquiryId ? `已保存采购询价 ${saved.code}` : `已新增采购询价 ${saved.code}`)
+      setMessage(
+        editingInquiryId
+          ? t('purchase.inquiry.message.saved', { code: saved.code })
+          : t('purchase.inquiry.message.created', { code: saved.code }),
+      )
       setEditingInquiryId(null)
       setForm(initialPurchaseInquiryForm())
       setInquiryModalOpen(false)
       upsertInquiry(saved)
       await loadInquiries(saved.id)
     } catch (caught) {
-      showError(caught, '采购询价保存失败')
+      showError(caught, t('purchase.inquiry.message.saveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -362,11 +369,11 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
         purchaseInquiryTemplatePayload(templateForm),
       )
       setTemplatePreview(template.content)
-      setMessage(`已生成询价模板 ${template.filename}`)
+      setMessage(t('purchase.inquiry.message.templateGenerated', { filename: template.filename }))
       setInquiryActionModal(null)
       await loadInquiries(selectedInquiry.id)
     } catch (caught) {
-      showError(caught, '询价模板发送失败')
+      showError(caught, t('purchase.inquiry.message.templateFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -383,12 +390,14 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
         selectedInquiry.id,
         purchaseQuotationPayload(quotationForm, selectedInquiry.lines[0].id),
       )
-      setMessage(`已登记供应商报价 ${quotationForm.supplier_name}`)
+      setMessage(
+        t('purchase.inquiry.message.quotationAdded', { supplier: quotationForm.supplier_name }),
+      )
       setInquiryActionModal(null)
       upsertInquiry(updated)
       await Promise.all([loadInquiries(updated.id), loadPurchaseInquiryAuxiliary(updated)])
     } catch (caught) {
-      showError(caught, '供应商报价登记失败')
+      showError(caught, t('purchase.inquiry.message.quotationAddFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -406,7 +415,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
     if (!selectedInquiry) return
     setEditingInquiryId(selectedInquiry.id)
     setForm(purchaseInquiryToForm(selectedInquiry))
-    setMessage(`正在编辑采购询价 ${selectedInquiry.code}`)
+    setMessage(t('purchase.inquiry.message.editing', { code: selectedInquiry.code }))
     setInquiryModalOpen(true)
   }
 
@@ -422,11 +431,11 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
 
   return (
     <section className="purchase-inquiry-page">
-      <div className="summary-strip" aria-label="采购询价概览">
-        <Metric label="询价单" value={inquiries.length} />
-        <Metric label="已发模板" value={sentCount} />
-        <Metric label="已报价" value={quotedCount} />
-        <Metric label="供应商报价" value={quotationCount} />
+      <div className="summary-strip" aria-label={t('purchase.inquiry.metric.overviewAria')}>
+        <Metric label={t('purchase.inquiry.metric.inquiryCount')} value={inquiries.length} />
+        <Metric label={t('purchase.inquiry.metric.sentCount')} value={sentCount} />
+        <Metric label={t('purchase.inquiry.metric.quotedCount')} value={quotedCount} />
+        <Metric label={t('purchase.inquiry.metric.quotationCount')} value={quotationCount} />
       </div>
 
       {message ? (
@@ -438,7 +447,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title="采购询价列表" />
+              <PanelTitle icon={<Search size={18} />} title={t('purchase.inquiry.list.title')} />
               <form
                 className="inline-filters"
                 onSubmit={(event) => {
@@ -447,48 +456,48 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                 }}
               >
                 <label>
-                  询价搜索
+                  {t('purchase.inquiry.list.searchLabel')}
                   <Input
                     value={search}
-                    placeholder="询价单号 / 商品 / 备注"
+                    placeholder={t('purchase.inquiry.list.searchPlaceholder')}
                     onChange={(event) => setSearch(event.target.value)}
                   />
                 </label>
                 <label>
-                  询价状态
+                  {t('purchase.inquiry.list.statusFilter')}
                   <FormSelect
                     value={statusFilter}
                     onChange={(event) => setStatusFilter(event.target.value)}
                   >
-                    <option value="">全部状态</option>
+                    <option value="">{t('purchase.inquiry.list.allStatuses')}</option>
                     {purchaseInquiryStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label>
-                  商品标识
+                  {t('purchase.inquiry.list.productFilter')}
                   <Input
                     value={productFilter}
-                    placeholder="输入商品编号或名称"
+                    placeholder={t('purchase.inquiry.list.productFilterPlaceholder')}
                     onChange={(event) => setProductFilter(event.target.value)}
                   />
                 </label>
                 <label>
-                  供应商标识
+                  {t('purchase.inquiry.list.supplierFilter')}
                   <Input
                     value={supplierFilter}
-                    placeholder="输入供应商编号或名称"
+                    placeholder={t('purchase.inquiry.list.supplierFilterPlaceholder')}
                     onChange={(event) => setSupplierFilter(event.target.value)}
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('purchase.inquiry.list.query')}
                 </Button>
                 <Button htmlType="button" icon={<Plus size={16} />} onClick={openCreateInquiry}>
-                  新增采购询价
+                  {t('purchase.inquiry.list.create')}
                 </Button>
               </form>
             </div>
@@ -496,7 +505,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
             <Table<PurchaseInquiry>
               columns={[
                 {
-                  title: '询价单号',
+                  title: t('purchase.inquiry.field.code'),
                   dataIndex: 'code',
                   render: (value: string, record: PurchaseInquiry) => (
                     <button
@@ -508,29 +517,39 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                     </button>
                   ),
                 },
-                { title: '状态', dataIndex: 'status', render: purchaseInquiryStatusLabel },
                 {
-                  title: '商品',
+                  title: t('purchase.inquiry.field.status'),
+                  dataIndex: 'status',
+                  render: purchaseInquiryStatusLabel,
+                },
+                {
+                  title: t('purchase.inquiry.field.product'),
                   dataIndex: 'lines',
                   render: (_, inquiry) =>
-                    `${inquiry.lines[0]?.product_code ?? '未填'} / ${inquiry.lines[0]?.product_name ?? '未填'}`,
+                    `${inquiry.lines[0]?.product_code ?? t('purchase.inquiry.detail.notFilled')} / ${inquiry.lines[0]?.product_name ?? t('purchase.inquiry.detail.notFilled')}`,
                 },
-                { title: '询价日', dataIndex: 'inquiry_date', render: formatDate },
                 {
-                  title: '报价数',
+                  title: t('purchase.inquiry.field.inquiryDay'),
+                  dataIndex: 'inquiry_date',
+                  render: formatDate,
+                },
+                {
+                  title: t('purchase.inquiry.field.quoteCount'),
                   dataIndex: 'quotations',
                   render: (_, inquiry) => inquiry.quotations.length,
                 },
                 {
-                  title: '最低价',
+                  title: t('purchase.inquiry.field.lowestPrice'),
                   dataIndex: 'quotations',
                   render: (_, inquiry) => {
                     const lowest = lowestSupplierQuotation(inquiry.quotations)
-                    return lowest ? formatMoney(lowest.unit_price, lowest.currency) : '未报价'
+                    return lowest
+                      ? formatMoney(lowest.unit_price, lowest.currency)
+                      : t('purchase.inquiry.detail.notQuoted')
                   },
                 },
                 {
-                  title: '入口',
+                  title: t('purchase.inquiry.field.entry'),
                   key: 'detail',
                   width: 110,
                   render: (_: unknown, record: PurchaseInquiry) => (
@@ -538,7 +557,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                       size="small"
                       onClick={(event) => stopAndOpenInquiryDetail(event, record)}
                     >
-                      查看详情
+                      {t('purchase.inquiry.action.viewDetail')}
                     </Button>
                   ),
                 },
@@ -560,7 +579,11 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
           centered
           footer={null}
           open={inquiryModalOpen}
-          title={editingInquiryId ? '编辑采购询价' : '新增采购询价'}
+          title={
+            editingInquiryId
+              ? t('purchase.inquiry.form.editTitle')
+              : t('purchase.inquiry.form.createTitle')
+          }
           width={980}
           onCancel={cancelInquiryEdit}
         >
@@ -568,14 +591,14 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
             <form className="record-form" onSubmit={submitInquiry}>
               <div className="form-pair two">
                 <label>
-                  询价单号
+                  {t('purchase.inquiry.field.code')}
                   <Input
                     value={form.code}
                     onChange={(event) => setForm({ ...form, code: event.target.value })}
                   />
                 </label>
                 <label>
-                  询价日期
+                  {t('purchase.inquiry.field.inquiryDate')}
                   <Input
                     type="date"
                     value={form.inquiry_date}
@@ -585,31 +608,31 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
               </div>
               <div className="form-pair two">
                 <label>
-                  业务员标识
+                  {t('purchase.inquiry.field.buyerId')}
                   <Input
                     value={form.buyer_user_id}
                     onChange={(event) => setForm({ ...form, buyer_user_id: event.target.value })}
                   />
                 </label>
                 <label>
-                  业务员
+                  {t('purchase.inquiry.field.buyer')}
                   <Input
                     value={form.buyer_user_name}
                     onChange={(event) => setForm({ ...form, buyer_user_name: event.target.value })}
                   />
                 </label>
               </div>
-              <div className="form-divider">询价商品</div>
+              <div className="form-divider">{t('purchase.inquiry.form.productSection')}</div>
               <div className="form-pair two">
                 <label>
-                  商品标识
+                  {t('purchase.inquiry.field.productId')}
                   <Input
                     value={form.product_id}
                     onChange={(event) => setForm({ ...form, product_id: event.target.value })}
                   />
                 </label>
                 <label>
-                  商品编号
+                  {t('purchase.inquiry.field.productCode')}
                   <Input
                     value={form.product_code}
                     onChange={(event) => setForm({ ...form, product_code: event.target.value })}
@@ -617,7 +640,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                 </label>
               </div>
               <label>
-                商品名称
+                {t('purchase.inquiry.field.productName')}
                 <Input
                   value={form.product_name}
                   onChange={(event) => setForm({ ...form, product_name: event.target.value })}
@@ -625,14 +648,14 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
               </label>
               <div className="form-pair two">
                 <label>
-                  规格
+                  {t('purchase.inquiry.field.specification')}
                   <Input
                     value={form.specification}
                     onChange={(event) => setForm({ ...form, specification: event.target.value })}
                   />
                 </label>
                 <label>
-                  型号
+                  {t('purchase.inquiry.field.model')}
                   <Input
                     value={form.model}
                     onChange={(event) => setForm({ ...form, model: event.target.value })}
@@ -641,7 +664,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
               </div>
               <div className="form-pair two">
                 <label>
-                  询价数量
+                  {t('purchase.inquiry.field.quantity')}
                   <Input
                     type="number"
                     min="0.0001"
@@ -651,7 +674,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                   />
                 </label>
                 <label>
-                  单位
+                  {t('purchase.inquiry.field.unit')}
                   <Input
                     value={form.unit}
                     onChange={(event) => setForm({ ...form, unit: event.target.value })}
@@ -659,7 +682,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                 </label>
               </div>
               <label>
-                询价备注
+                {t('purchase.inquiry.field.remarks')}
                 <Input.TextArea
                   rows={2}
                   value={form.remarks}
@@ -667,9 +690,13 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                 />
               </label>
               <Button htmlType="submit" loading={submitting} type="primary">
-                {editingInquiryId ? '保存草稿编辑' : '新增采购询价'}
+                {editingInquiryId
+                  ? t('purchase.inquiry.form.save')
+                  : t('purchase.inquiry.form.create')}
               </Button>
-              {editingInquiryId ? <Button onClick={cancelInquiryEdit}>取消编辑</Button> : null}
+              {editingInquiryId ? (
+                <Button onClick={cancelInquiryEdit}>{t('purchase.inquiry.form.cancelEdit')}</Button>
+              ) : null}
             </form>
           </div>
         </Modal>
@@ -677,41 +704,46 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<LayoutDashboard size={18} />} title="询价明细" />
+              <PanelTitle
+                icon={<LayoutDashboard size={18} />}
+                title={t('purchase.inquiry.detail.title')}
+              />
               <Button
                 icon={<ArrowLeft size={16} />}
                 onClick={() => onNavigate(purchaseInquiryPath)}
               >
-                返回列表
+                {t('purchase.inquiry.action.backToList')}
               </Button>
             </div>
             {selectedInquiry ? (
               <>
                 <dl className="detail-list">
                   <div>
-                    <dt>状态/询价日</dt>
+                    <dt>{t('purchase.inquiry.field.statusInquiryDate')}</dt>
                     <dd>
                       {purchaseInquiryStatusLabel(selectedInquiry.status)} /{' '}
                       {formatDate(selectedInquiry.inquiry_date)}
                     </dd>
                   </div>
                   <div>
-                    <dt>业务员</dt>
-                    <dd>{selectedInquiry.buyer_user_name ?? '未指定'}</dd>
+                    <dt>{t('purchase.inquiry.field.buyer')}</dt>
+                    <dd>
+                      {selectedInquiry.buyer_user_name ?? t('purchase.inquiry.detail.unassigned')}
+                    </dd>
                   </div>
                   <div>
-                    <dt>模板</dt>
-                    <dd>{selectedInquiry.template_name ?? '未发送'}</dd>
+                    <dt>{t('purchase.inquiry.field.template')}</dt>
+                    <dd>{selectedInquiry.template_name ?? t('purchase.inquiry.detail.notSent')}</dd>
                   </div>
                   <div>
-                    <dt>模板发送日</dt>
+                    <dt>{t('purchase.inquiry.field.templateSentAt')}</dt>
                     <dd>{formatDate(selectedInquiry.template_sent_at)}</dd>
                   </div>
                 </dl>
 
                 <div className="transaction-box">
-                  <strong>询价备注</strong>
-                  <p>{selectedInquiry.remarks ?? '未填写'}</p>
+                  <strong>{t('purchase.inquiry.field.remarks')}</strong>
+                  <p>{selectedInquiry.remarks ?? t('purchase.inquiry.detail.remarksEmpty')}</p>
                 </div>
 
                 <div className="delivery-action-row">
@@ -719,10 +751,10 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                     disabled={selectedInquiry.status !== 'draft'}
                     onClick={loadSelectedInquiryForEdit}
                   >
-                    编辑询价
+                    {t('purchase.inquiry.action.editInquiry')}
                   </Button>
                   <Button htmlType="button" onClick={() => setInquiryActionModal('template')}>
-                    发送询价模板
+                    {t('purchase.inquiry.action.sendTemplate')}
                   </Button>
                   <Button
                     disabled={!selectedInquiry.lines[0]}
@@ -730,7 +762,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                     type="primary"
                     onClick={() => setInquiryActionModal('quotation')}
                   >
-                    登记供应商报价
+                    {t('purchase.inquiry.action.addQuotation')}
                   </Button>
                 </div>
 
@@ -738,15 +770,17 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                   centered
                   footer={null}
                   open={inquiryActionModal === 'template'}
-                  title="发送询价模板"
+                  title={t('purchase.inquiry.action.sendTemplate')}
                   width={720}
                   onCancel={() => setInquiryActionModal(null)}
                 >
                   <div className="workflow-modal-content entity-modal-form">
                     <form className="record-form accessory-form" onSubmit={sendTemplate}>
-                      <div className="form-divider">询价模板发送</div>
+                      <div className="form-divider">
+                        {t('purchase.inquiry.form.templateSection')}
+                      </div>
                       <label>
-                        模板名称
+                        {t('purchase.inquiry.field.templateName')}
                         <Input
                           value={templateForm.template_name}
                           onChange={(event) =>
@@ -755,7 +789,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                         />
                       </label>
                       <label>
-                        收件邮箱
+                        {t('purchase.inquiry.field.recipientEmails')}
                         <Input
                           value={templateForm.recipient_emails}
                           onChange={(event) =>
@@ -767,7 +801,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                         />
                       </label>
                       <Button htmlType="submit" loading={submitting}>
-                        发送询价模板
+                        {t('purchase.inquiry.action.sendTemplate')}
                       </Button>
                     </form>
                   </div>
@@ -777,16 +811,18 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                   centered
                   footer={null}
                   open={inquiryActionModal === 'quotation'}
-                  title="登记供应商报价"
+                  title={t('purchase.inquiry.action.addQuotation')}
                   width={880}
                   onCancel={() => setInquiryActionModal(null)}
                 >
                   <div className="workflow-modal-content entity-modal-form">
                     <form className="record-form accessory-form" onSubmit={addSupplierQuotation}>
-                      <div className="form-divider">供应商报价明细</div>
+                      <div className="form-divider">
+                        {t('purchase.inquiry.form.quotationSection')}
+                      </div>
                       <div className="form-pair two">
                         <label>
-                          供应商标识
+                          {t('purchase.inquiry.field.supplierId')}
                           <Input
                             value={quotationForm.supplier_id}
                             onChange={(event) =>
@@ -798,7 +834,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                           />
                         </label>
                         <label>
-                          供应商名称
+                          {t('purchase.inquiry.field.supplierName')}
                           <Input
                             value={quotationForm.supplier_name}
                             onChange={(event) =>
@@ -812,7 +848,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                       </div>
                       <div className="form-pair three">
                         <label>
-                          报价日期
+                          {t('purchase.inquiry.field.quotedAt')}
                           <Input
                             type="date"
                             value={quotationForm.quoted_at}
@@ -822,7 +858,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                           />
                         </label>
                         <label>
-                          单价
+                          {t('purchase.inquiry.field.unitPrice')}
                           <Input
                             type="number"
                             min="0.0001"
@@ -834,7 +870,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                           />
                         </label>
                         <label>
-                          币种
+                          {t('purchase.inquiry.field.currency')}
                           <Input
                             value={quotationForm.currency}
                             onChange={(event) =>
@@ -845,7 +881,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                       </div>
                       <div className="form-pair two">
                         <label>
-                          交期天数
+                          {t('purchase.inquiry.field.leadTimeDays')}
                           <Input
                             type="number"
                             min="0"
@@ -860,7 +896,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                           />
                         </label>
                         <label>
-                          最小起订量
+                          {t('purchase.inquiry.field.minOrderQuantity')}
                           <Input
                             type="number"
                             min="0"
@@ -877,7 +913,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                       </div>
                       <label className="checkbox-label">
                         <input
-                          aria-label="可提供样品"
+                          aria-label={t('purchase.inquiry.field.sampleAvailable')}
                           checked={quotationForm.sample_available}
                           type="checkbox"
                           onChange={(event) =>
@@ -887,10 +923,10 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                             })
                           }
                         />
-                        可提供样品
+                        {t('purchase.inquiry.field.sampleAvailable')}
                       </label>
                       <label>
-                        报价备注
+                        {t('purchase.inquiry.field.quotationRemark')}
                         <Input
                           value={quotationForm.remark}
                           onChange={(event) =>
@@ -899,7 +935,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                         />
                       </label>
                       <Button htmlType="submit" loading={submitting} type="primary">
-                        登记供应商报价
+                        {t('purchase.inquiry.action.addQuotation')}
                       </Button>
                     </form>
                   </div>
@@ -907,32 +943,38 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
 
                 {templatePreview ? (
                   <div className="transaction-box export-preview">
-                    <strong>询价模板预览</strong>
+                    <strong>{t('purchase.inquiry.detail.templatePreviewTitle')}</strong>
                     <pre>{templatePreview}</pre>
                   </div>
                 ) : null}
 
                 <div className="accessory-heading">
-                  <strong>询价商品明细</strong>
-                  <span>{selectedInquiry.lines.length} 行</span>
+                  <strong>{t('purchase.inquiry.detail.linesTitle')}</strong>
+                  <span>
+                    {t('purchase.inquiry.detail.lineCount', {
+                      count: selectedInquiry.lines.length,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>商品</th>
-                      <th>规格/型号</th>
-                      <th>数量</th>
-                      <th>单位</th>
+                      <th>{t('purchase.inquiry.field.product')}</th>
+                      <th>{t('purchase.inquiry.field.specificationModel')}</th>
+                      <th>{t('purchase.inquiry.field.lineQuantity')}</th>
+                      <th>{t('purchase.inquiry.field.unit')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {selectedInquiry.lines.map((line) => (
                       <tr key={line.id}>
                         <td>
-                          {line.product_code ?? '未填'} / {line.product_name}
+                          {line.product_code ?? t('purchase.inquiry.detail.notFilled')} /{' '}
+                          {line.product_name}
                         </td>
                         <td>
-                          {line.specification ?? '未填'} / {line.model ?? '未填'}
+                          {line.specification ?? t('purchase.inquiry.detail.notFilled')} /{' '}
+                          {line.model ?? t('purchase.inquiry.detail.notFilled')}
                         </td>
                         <td>{line.quantity}</td>
                         <td>{line.unit}</td>
@@ -942,19 +984,23 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                 </table>
 
                 <div className="accessory-heading">
-                  <strong>供应商报价比较</strong>
-                  <span>{selectedInquiry.quotations.length} 条</span>
+                  <strong>{t('purchase.inquiry.detail.quotationCompareTitle')}</strong>
+                  <span>
+                    {t('purchase.inquiry.detail.quotationCount', {
+                      count: selectedInquiry.quotations.length,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>供应商</th>
-                      <th>商品</th>
-                      <th>单价</th>
-                      <th>交期</th>
-                      <th>起订量</th>
-                      <th>样品</th>
-                      <th>备注</th>
+                      <th>{t('purchase.inquiry.field.supplier')}</th>
+                      <th>{t('purchase.inquiry.field.product')}</th>
+                      <th>{t('purchase.inquiry.field.unitPrice')}</th>
+                      <th>{t('purchase.inquiry.field.leadTime')}</th>
+                      <th>{t('purchase.inquiry.field.minOrderQuantity')}</th>
+                      <th>{t('purchase.inquiry.field.sample')}</th>
+                      <th>{t('purchase.inquiry.field.remark')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -962,19 +1008,33 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                       <tr key={quote.id}>
                         <td>{quote.supplier_name}</td>
                         <td>
-                          {quote.product_code ?? '未填'} / {quote.product_name}
+                          {quote.product_code ?? t('purchase.inquiry.detail.notFilled')} /{' '}
+                          {quote.product_name}
                         </td>
                         <td>{formatMoney(quote.unit_price, quote.currency)}</td>
-                        <td>{quote.lead_time_days ?? '未填'} 天</td>
-                        <td>{quote.min_order_quantity ?? '未填'}</td>
-                        <td>{quote.has_sample ? '有样品' : '未提供'}</td>
-                        <td>{quote.remark ?? '未填'}</td>
+                        <td>
+                          {quote.lead_time_days != null
+                            ? t('purchase.inquiry.detail.days', {
+                                count: quote.lead_time_days,
+                                days: quote.lead_time_days,
+                              })
+                            : t('purchase.inquiry.detail.notFilled')}
+                        </td>
+                        <td>
+                          {quote.min_order_quantity ?? t('purchase.inquiry.detail.notFilled')}
+                        </td>
+                        <td>
+                          {quote.has_sample
+                            ? t('purchase.inquiry.detail.sampleAvailableYes')
+                            : t('purchase.inquiry.detail.sampleNotProvided')}
+                        </td>
+                        <td>{quote.remark ?? t('purchase.inquiry.detail.notFilled')}</td>
                       </tr>
                     ))}
                     {selectedInquiry.quotations.length === 0 ? (
                       <tr>
                         <td className="empty-cell" colSpan={7}>
-                          暂无供应商报价
+                          {t('purchase.inquiry.detail.noQuotations')}
                         </td>
                       </tr>
                     ) : null}
@@ -982,27 +1042,32 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                 </table>
 
                 <div className="accessory-heading">
-                  <strong>供应商样品关联</strong>
-                  <span>{supplierSamples.length} 条</span>
+                  <strong>{t('purchase.inquiry.detail.samplesTitle')}</strong>
+                  <span>
+                    {t('purchase.inquiry.detail.sampleCount', {
+                      count: supplierSamples.length,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>样品编号</th>
-                      <th>供应商</th>
-                      <th>商品</th>
-                      <th>收样日期</th>
-                      <th>数量</th>
-                      <th>状态</th>
+                      <th>{t('purchase.inquiry.field.sampleCode')}</th>
+                      <th>{t('purchase.inquiry.field.supplier')}</th>
+                      <th>{t('purchase.inquiry.field.product')}</th>
+                      <th>{t('purchase.inquiry.field.receivedAt')}</th>
+                      <th>{t('purchase.inquiry.field.lineQuantity')}</th>
+                      <th>{t('purchase.inquiry.field.status')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {supplierSamples.map((sample) => (
                       <tr key={sample.sample_record_id}>
                         <td>{sample.sample_code}</td>
-                        <td>{sample.supplier_name ?? '未填'}</td>
+                        <td>{sample.supplier_name ?? t('purchase.inquiry.detail.notFilled')}</td>
                         <td>
-                          {sample.product_code ?? '未填'} / {sample.product_name}
+                          {sample.product_code ?? t('purchase.inquiry.detail.notFilled')} /{' '}
+                          {sample.product_name}
                         </td>
                         <td>{formatDate(sample.received_at)}</td>
                         <td>
@@ -1014,7 +1079,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                     {supplierSamples.length === 0 ? (
                       <tr>
                         <td className="empty-cell" colSpan={6}>
-                          暂无供应商样品
+                          {t('purchase.inquiry.detail.noSamples')}
                         </td>
                       </tr>
                     ) : null}
@@ -1022,17 +1087,21 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                 </table>
 
                 <div className="accessory-heading">
-                  <strong>采购参考价</strong>
-                  <span>{references.length} 条</span>
+                  <strong>{t('purchase.inquiry.detail.referencesTitle')}</strong>
+                  <span>
+                    {t('purchase.inquiry.detail.referenceCount', {
+                      count: references.length,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>询价单</th>
-                      <th>商品</th>
-                      <th>供应商</th>
-                      <th>参考价</th>
-                      <th>报价日</th>
+                      <th>{t('purchase.inquiry.field.inquiryNo')}</th>
+                      <th>{t('purchase.inquiry.field.product')}</th>
+                      <th>{t('purchase.inquiry.field.supplier')}</th>
+                      <th>{t('purchase.inquiry.field.referencePrice')}</th>
+                      <th>{t('purchase.inquiry.field.quotedDate')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1040,7 +1109,8 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                       <tr key={`${reference.source_inquiry_no}-${reference.supplier_name}`}>
                         <td>{reference.source_inquiry_no}</td>
                         <td>
-                          {reference.product_code ?? '未填'} / {reference.product_name}
+                          {reference.product_code ?? t('purchase.inquiry.detail.notFilled')} /{' '}
+                          {reference.product_name}
                         </td>
                         <td>{reference.supplier_name}</td>
                         <td>{formatMoney(reference.reference_price, reference.currency)}</td>
@@ -1050,7 +1120,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                     {references.length === 0 ? (
                       <tr>
                         <td className="empty-cell" colSpan={5}>
-                          暂无采购参考价
+                          {t('purchase.inquiry.detail.noReferences')}
                         </td>
                       </tr>
                     ) : null}
@@ -1060,8 +1130,8 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
             ) : (
               <div className="module-state panel-empty-state">
                 <FileText size={28} />
-                <strong>暂无采购询价</strong>
-                <span>请返回列表选择询价单查看详情</span>
+                <strong>{t('purchase.inquiry.detail.emptyTitle')}</strong>
+                <span>{t('purchase.inquiry.detail.emptyDescription')}</span>
               </div>
             )}
           </section>

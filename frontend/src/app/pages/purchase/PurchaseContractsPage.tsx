@@ -53,6 +53,7 @@ import {
   emptyToNull,
 } from '../appHelpers'
 import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
+import { t } from '../../appI18n'
 
 function supplierOptionLabel(supplier: Supplier): string {
   return [supplier.code, supplier.cn_name, supplier.en_name].filter(Boolean).join(' / ')
@@ -194,22 +195,22 @@ function initialPurchaseContractGenerateForm(): PurchaseContractGenerateFormStat
     source_contract_id_a: '',
     source_contract_id_b: '',
     supplier_id: 'supplier-accessory-a',
-    supplier_name: '新裴辅料供应商',
+    supplier_name: '',
     buyer_user_id: 'u-001',
-    buyer_user_name: '演示业务主管',
+    buyer_user_name: '',
     qc_user_id: '',
     qc_user_name: '',
     currency: 'USD',
     delivery_date: todayInputValue(),
     unit_price: '0.12',
     payment_terms: '30% advance, 70% before delivery',
-    remarks: '按已审批出口合同商品配件自动生成采购合同。',
+    remarks: '',
   }
 }
 
 function initialPurchaseContractApproveForm(): PurchaseContractApproveFormState {
   return {
-    reviewer_name: '演示业务主管',
+    reviewer_name: '',
     approved_at: todayInputValue(),
     rejection_reason: '',
   }
@@ -319,22 +320,24 @@ function purchaseContractApprovePayload(
 }
 
 function purchaseContractStatusLabel(value: string): string {
-  return purchaseContractStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = purchaseContractStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function purchaseContractSourceTypeLabel(value: string): string {
-  return purchaseContractSourceTypeOptions.find((item) => item.value === value)?.label ?? value
+  const option = purchaseContractSourceTypeOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function purchaseReminderTypeLabel(value: string): string {
-  if (value === 'payment') return '付款提醒'
-  if (value === 'delivery') return '交货提醒'
+  if (value === 'payment') return t('purchase.contract.detail.reminderTypePayment')
+  if (value === 'delivery') return t('purchase.contract.detail.reminderTypeDelivery')
   return value
 }
 
 function purchaseReminderStatusLabel(value: string): string {
-  if (value === 'open') return '待处理'
-  if (value === 'closed') return '已完成'
+  if (value === 'open') return t('purchase.contract.detail.reminderStatusOpen')
+  if (value === 'closed') return t('purchase.contract.detail.reminderStatusClosed')
   return value
 }
 
@@ -386,7 +389,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
 
   useEffect(() => {
     setApproveForm({
-      reviewer_name: selectedContract?.reviewer_name ?? '演示业务主管',
+      reviewer_name: selectedContract?.reviewer_name ?? '',
       approved_at:
         selectedContract?.approved_at ?? selectedContract?.contract_date ?? todayInputValue(),
       rejection_reason: selectedContract?.rejection_reason ?? '',
@@ -435,7 +438,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
         null
       setSelectedContractId(nextSelectedId)
     } catch (caught) {
-      showError(caught, '采购合同加载失败')
+      showError(caught, t('purchase.contract.list.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -446,7 +449,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
       const result = await listPurchaseContractReminders()
       setReminders(result.items)
     } catch (caught) {
-      showError(caught, '采购提醒加载失败')
+      showError(caught, t('purchase.contract.list.reminderLoadFailed'))
     }
   }
 
@@ -456,7 +459,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
       const result = await listProducts()
       setProducts(result.items)
     } catch (caught) {
-      showError(caught, '商品资料加载失败')
+      showError(caught, t('purchase.contract.list.productLoadFailed'))
     } finally {
       setLoadingProducts(false)
     }
@@ -468,7 +471,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
       const result = await listSuppliers()
       setSuppliers(result.items)
     } catch (caught) {
-      showError(caught, '工厂资料加载失败')
+      showError(caught, t('purchase.contract.list.supplierLoadFailed'))
     } finally {
       setLoadingSuppliers(false)
     }
@@ -480,7 +483,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
       const result = await listAssignableUsers('quality:inspection:edit')
       setAssignableUsers(result.users)
     } catch (caught) {
-      showError(caught, '人员列表加载失败')
+      showError(caught, t('purchase.contract.list.userLoadFailed'))
     } finally {
       setLoadingAssignableUsers(false)
     }
@@ -579,7 +582,9 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
         ? await updatePurchaseContract(editingContractId, payload)
         : await createPurchaseContract(payload)
       setMessage(
-        editingContractId ? `已保存采购合同 ${saved.code}` : `已新增采购合同 ${saved.code}`,
+        editingContractId
+          ? t('purchase.contract.message.saved', { code: saved.code })
+          : t('purchase.contract.message.created', { code: saved.code }),
       )
       setEditingContractId(null)
       setContractModalMode('manual')
@@ -589,7 +594,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
       await Promise.all([loadContracts(saved.id, saved), loadContractReminders()])
       upsertContract(saved)
     } catch (caught) {
-      showError(caught, '采购合同保存失败')
+      showError(caught, t('purchase.contract.message.saveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -604,7 +609,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
       .map((item) => item.trim())
       .filter(Boolean)
     if (sources.length === 0) {
-      showWarningDialog('请至少填写一个出口合同 ID')
+      showWarningDialog(t('purchase.contract.validation.exportContractRequired'))
       setSubmitting(false)
       return
     }
@@ -612,14 +617,14 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
       const generated = await generatePurchaseContractFromExportContracts(
         purchaseContractGeneratePayload(generateForm),
       )
-      setMessage(`已从出口合同生成采购合同 ${generated.code}`)
+      setMessage(t('purchase.contract.message.generated', { code: generated.code }))
       setContractModalMode('manual')
       setGenerateForm(initialPurchaseContractGenerateForm())
       setContractModalOpen(false)
       upsertContract(generated)
       await Promise.all([loadContracts(generated.id, generated), loadContractReminders()])
     } catch (caught) {
-      showError(caught, '采购合同生成失败')
+      showError(caught, t('purchase.contract.message.generateFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -628,7 +633,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
   async function submitSelectedContract() {
     if (!selectedContract) return
     if (!reviewerId) {
-      showError(new Error('请选择审批人'))
+      showError(new Error(t('purchase.contract.validation.reviewerRequired')))
       return
     }
     setSubmitting(true)
@@ -638,11 +643,11 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
       const submitted = await submitPurchaseContract(selectedContract.id, {
         reviewer_id: reviewerId,
       })
-      setMessage(`已提交采购合同 ${submitted.code}`)
+      setMessage(t('purchase.contract.message.submitted', { code: submitted.code }))
       upsertContract(submitted)
       await Promise.all([loadContracts(submitted.id, submitted), loadContractReminders()])
     } catch (caught) {
-      showError(caught, '采购合同提交失败')
+      showError(caught, t('purchase.contract.message.submitFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -657,11 +662,17 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
         'purchase:contract:approve',
       )
     ) {
-      showError(new Error(`该采购合同应由 ${selectedContract.reviewer_name ?? '指定审批人'} 审批`))
+      showError(
+        new Error(
+          t('purchase.contract.action.approverMismatch', {
+            name: selectedContract.reviewer_name ?? t('purchase.contract.action.defaultReviewer'),
+          }),
+        ),
+      )
       return
     }
     if (decision === 'rejected' && !approveForm.rejection_reason.trim()) {
-      showWarningDialog('请填写驳回原因')
+      showWarningDialog(t('purchase.contract.validation.rejectionReasonRequired'))
       return
     }
     setSubmitting(true)
@@ -674,14 +685,14 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
       )
       setMessage(
         decision === 'approved'
-          ? `已通过采购合同 ${reviewed.code}`
-          : `已驳回采购合同 ${reviewed.code}`,
+          ? t('purchase.contract.message.approved', { code: reviewed.code })
+          : t('purchase.contract.message.rejected', { code: reviewed.code }),
       )
       setContractApprovalModalOpen(false)
       upsertContract(reviewed)
       await Promise.all([loadContracts(reviewed.id, reviewed), loadContractReminders()])
     } catch (caught) {
-      showError(caught, '采购合同审批失败')
+      showError(caught, t('purchase.contract.message.approveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -689,15 +700,15 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
 
   function confirmRejectSelectedContract() {
     if (!approveForm.rejection_reason.trim()) {
-      showWarningDialog('请填写驳回原因')
+      showWarningDialog(t('purchase.contract.validation.rejectionReasonRequired'))
       return
     }
     Modal.confirm({
       centered: true,
-      title: '确认驳回采购合同？',
-      content: '驳回后，申请人可以根据驳回原因修改合同并重新提交。',
-      okText: '确认驳回',
-      cancelText: '取消',
+      title: t('purchase.contract.action.confirmRejectTitle'),
+      content: t('purchase.contract.action.confirmRejectContent'),
+      okText: t('purchase.contract.action.confirmReject'),
+      cancelText: t('common.cancel'),
       okButtonProps: { danger: true },
       onOk: () => reviewSelectedContract('rejected'),
     })
@@ -711,9 +722,9 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
     try {
       const document_ = await generatePurchaseContractTemplate(selectedContract.id)
       downloadBase64File(document_.filename, document_.content_base64, document_.content_type)
-      setMessage(`已用合同模板生成 ${document_.filename}`)
+      setMessage(t('purchase.contract.message.templateGenerated', { filename: document_.filename }))
     } catch (caught) {
-      showError(caught, '采购合同模板生成失败')
+      showError(caught, t('purchase.contract.message.templateFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -742,7 +753,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
     setEditingContractId(selectedContract.id)
     setContractModalMode('manual')
     setForm(purchaseContractToForm(selectedContract))
-    setMessage(`正在编辑采购合同 ${selectedContract.code}`)
+    setMessage(t('purchase.contract.message.editing', { code: selectedContract.code }))
     setContractModalOpen(true)
   }
 
@@ -759,18 +770,21 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
 
   return (
     <section className="purchase-contract-page">
-      <div className="summary-strip" aria-label="采购合同概览">
-        <Metric label="采购合同" value={contracts.length} />
+      <div className="summary-strip" aria-label={t('purchase.contract.metric.overviewAria')}>
+        <Metric label={t('purchase.contract.metric.contractCount')} value={contracts.length} />
         <Metric
-          label="待审批"
+          label={t('purchase.contract.metric.pendingApproval')}
           value={contracts.filter((item) => item.approval_status === 'submitted').length}
         />
         <Metric
-          label="已审批"
+          label={t('purchase.contract.metric.approvedCount')}
           value={contracts.filter((item) => item.approval_status === 'approved').length}
         />
-        <Metric label="合同金额" value={formatMoney(totalAmount.toFixed(2), currency)} />
-        <Metric label="待办提醒" value={openReminders} />
+        <Metric
+          label={t('purchase.contract.metric.contractAmount')}
+          value={formatMoney(totalAmount.toFixed(2), currency)}
+        />
+        <Metric label={t('purchase.contract.metric.openReminders')} value={openReminders} />
       </div>
 
       {message ? (
@@ -782,7 +796,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title="采购合同列表" />
+              <PanelTitle icon={<Search size={18} />} title={t('purchase.contract.list.title')} />
               <form
                 className="inline-filters single-line-filter-toolbar"
                 onSubmit={(event) => {
@@ -791,51 +805,51 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                 }}
               >
                 <label>
-                  合同搜索
+                  {t('purchase.contract.list.searchLabel')}
                   <Input
                     value={search}
-                    placeholder="合同号 / 供应商 / 商品 / 备注"
+                    placeholder={t('purchase.contract.list.searchPlaceholder')}
                     onChange={(event) => setSearch(event.target.value)}
                   />
                 </label>
                 <label>
-                  审批状态
+                  {t('purchase.contract.list.statusFilter')}
                   <FormSelect
                     value={statusFilter}
                     onChange={(event) => setStatusFilter(event.target.value)}
                   >
-                    <option value="">全部状态</option>
+                    <option value="">{t('purchase.contract.list.allStatuses')}</option>
                     {purchaseContractStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label>
-                  来源类型
+                  {t('purchase.contract.list.sourceFilter')}
                   <FormSelect
                     value={sourceFilter}
                     onChange={(event) => setSourceFilter(event.target.value)}
                   >
-                    <option value="">全部来源</option>
+                    <option value="">{t('purchase.contract.list.allSources')}</option>
                     {purchaseContractSourceTypeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label>
-                  供应商标识
+                  {t('purchase.contract.list.supplierFilter')}
                   <Input
                     value={supplierFilter}
-                    placeholder="输入供应商编号或名称"
+                    placeholder={t('purchase.contract.list.supplierFilterPlaceholder')}
                     onChange={(event) => setSupplierFilter(event.target.value)}
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('purchase.contract.list.query')}
                 </Button>
                 <Button
                   htmlType="button"
@@ -843,14 +857,14 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   icon={<Plus size={16} />}
                   onClick={openCreateContract}
                 >
-                  新增采购合同
+                  {t('purchase.contract.list.create')}
                 </Button>
                 <Button
                   htmlType="button"
                   icon={<FileStack size={16} />}
                   onClick={openGenerateContract}
                 >
-                  从出口合同生成
+                  {t('purchase.contract.list.generate')}
                 </Button>
               </form>
             </div>
@@ -858,7 +872,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
             <Table<PurchaseContract>
               columns={[
                 {
-                  title: '采购合同',
+                  title: t('purchase.contract.field.contract'),
                   dataIndex: 'code',
                   render: (value: string, record: PurchaseContract) => (
                     <button
@@ -871,30 +885,34 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   ),
                 },
                 {
-                  title: '状态',
+                  title: t('purchase.contract.field.status'),
                   dataIndex: 'approval_status',
                   render: purchaseContractStatusLabel,
                 },
                 {
-                  title: '来源',
+                  title: t('purchase.contract.field.source'),
                   dataIndex: 'source_type',
                   render: purchaseContractSourceTypeLabel,
                 },
-                { title: '供应商', dataIndex: 'supplier_name' },
+                { title: t('purchase.contract.field.supplier'), dataIndex: 'supplier_name' },
                 {
-                  title: 'QC 负责人',
+                  title: t('purchase.contract.field.qcUser'),
                   dataIndex: 'qc_user_name',
-                  render: (value: string | null) => value ?? '未指定',
+                  render: (value: string | null) => value ?? t('common.notSet'),
                 },
-                { title: '交货日', dataIndex: 'delivery_date', render: formatDate },
                 {
-                  title: '金额',
+                  title: t('purchase.contract.field.deliveryDay'),
+                  dataIndex: 'delivery_date',
+                  render: formatDate,
+                },
+                {
+                  title: t('purchase.contract.field.amount'),
                   dataIndex: 'statistics',
                   render: (_, contract) =>
                     formatMoney(contract.statistics.total_amount, contract.currency),
                 },
                 {
-                  title: '入口',
+                  title: t('purchase.contract.field.entry'),
                   key: 'detail',
                   width: 110,
                   render: (_: unknown, record: PurchaseContract) => (
@@ -902,7 +920,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                       size="small"
                       onClick={(event) => stopAndOpenPurchaseContractDetail(event, record)}
                     >
-                      查看详情
+                      {t('purchase.contract.action.viewDetail')}
                     </Button>
                   ),
                 },
@@ -926,10 +944,10 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
           open={contractModalOpen}
           title={
             editingContractId
-              ? '编辑采购合同'
+              ? t('purchase.contract.form.editTitle')
               : contractModalMode === 'generate'
-                ? '从出口合同生成采购合同'
-                : '新增采购合同'
+                ? t('purchase.contract.form.generateTitle')
+                : t('purchase.contract.form.createTitle')
           }
           width={1040}
           onCancel={cancelContractEdit}
@@ -939,19 +957,23 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
               <>
                 <PanelTitle
                   icon={<LayoutDashboard size={18} />}
-                  title={editingContractId ? '编辑采购合同' : '库存/手工采购合同'}
+                  title={
+                    editingContractId
+                      ? t('purchase.contract.form.editTitle')
+                      : t('purchase.contract.form.manualTitle')
+                  }
                 />
                 <form className="record-form" onSubmit={submitContractForm}>
                   <div className="form-pair two">
                     <label>
-                      合同号
+                      {t('purchase.contract.field.code')}
                       <Input
                         value={form.code}
                         onChange={(event) => setForm({ ...form, code: event.target.value })}
                       />
                     </label>
                     <label>
-                      合同日期
+                      {t('purchase.contract.field.contractDate')}
                       <Input
                         type="date"
                         value={form.contract_date}
@@ -963,25 +985,37 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   </div>
                   <div className="form-pair three">
                     <label>
-                      选择工厂
+                      {t('purchase.contract.form.selectSupplier')}
                       <Select
                         showSearch
                         loading={loadingSuppliers}
                         value={form.supplier_id || undefined}
-                        placeholder={suppliers.length > 0 ? '从工厂资料选择' : '请先在工厂资料录入'}
+                        placeholder={
+                          suppliers.length > 0
+                            ? t('purchase.contract.form.supplierSelectPlaceholder')
+                            : t('purchase.contract.form.supplierMissing')
+                        }
                         optionFilterProp="label"
-                        notFoundContent={loadingSuppliers ? '加载工厂资料中' : '暂无工厂资料'}
+                        notFoundContent={
+                          loadingSuppliers
+                            ? t('purchase.contract.form.loadingSuppliers')
+                            : t('purchase.contract.form.noSuppliers')
+                        }
                         onChange={applySupplierToPurchaseContractForm}
                       >
                         {renderSupplierOptions(suppliers)}
                       </Select>
                     </label>
                     <label>
-                      工厂标识
-                      <Input value={form.supplier_id} readOnly placeholder="选择工厂后自动带出" />
+                      {t('purchase.contract.field.factoryId')}
+                      <Input
+                        value={form.supplier_id}
+                        readOnly
+                        placeholder={t('purchase.contract.form.supplierIdPlaceholder')}
+                      />
                     </label>
                     <label>
-                      工厂名称
+                      {t('purchase.contract.field.factoryName')}
                       <Input
                         value={form.supplier_name}
                         onChange={(event) =>
@@ -992,7 +1026,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   </div>
                   <div className="form-pair two">
                     <label>
-                      采购员
+                      {t('purchase.contract.field.buyer')}
                       <Input
                         value={form.buyer_user_name}
                         onChange={(event) =>
@@ -1001,7 +1035,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                       />
                     </label>
                     <label>
-                      采购员标识
+                      {t('purchase.contract.field.buyerId')}
                       <Input
                         value={form.buyer_user_id}
                         onChange={(event) =>
@@ -1012,14 +1046,22 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   </div>
                   <div className="form-pair two">
                     <label>
-                      QC 负责人
+                      {t('purchase.contract.field.qcUser')}
                       <Select
                         showSearch
                         loading={loadingAssignableUsers}
                         value={form.qc_user_id || undefined}
-                        placeholder={assignableUsers.length > 0 ? '从系统用户选择' : '暂无可选用户'}
+                        placeholder={
+                          assignableUsers.length > 0
+                            ? t('purchase.contract.form.userSelectPlaceholder')
+                            : t('purchase.contract.form.noUsers')
+                        }
                         optionFilterProp="label"
-                        notFoundContent={loadingAssignableUsers ? '加载人员中' : '暂无可选用户'}
+                        notFoundContent={
+                          loadingAssignableUsers
+                            ? t('purchase.contract.form.loadingUsers')
+                            : t('purchase.contract.form.noUsers')
+                        }
                         onChange={applyQcUserToPurchaseContractForm}
                       >
                         {renderAssignableUserOptions(assignableUsers)}
@@ -1028,14 +1070,14 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   </div>
                   <div className="form-pair three">
                     <label>
-                      币种
+                      {t('purchase.contract.field.currency')}
                       <Input
                         value={form.currency}
                         onChange={(event) => setForm({ ...form, currency: event.target.value })}
                       />
                     </label>
                     <label>
-                      交货日期
+                      {t('purchase.contract.field.deliveryDate')}
                       <Input
                         type="date"
                         value={form.delivery_date}
@@ -1045,7 +1087,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                       />
                     </label>
                     <label>
-                      来源
+                      {t('purchase.contract.field.source')}
                       <FormSelect
                         value={form.source_type}
                         onChange={(event) =>
@@ -1058,38 +1100,46 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                       >
                         {purchaseContractSourceTypeOptions.map((item) => (
                           <option key={item.value} value={item.value}>
-                            {item.label}
+                            {t(item.labelKey)}
                           </option>
                         ))}
                       </FormSelect>
                     </label>
                   </div>
                   <label>
-                    付款条款
+                    {t('purchase.contract.field.paymentTerms')}
                     <Input
                       value={form.payment_terms}
                       onChange={(event) => setForm({ ...form, payment_terms: event.target.value })}
                     />
                   </label>
 
-                  <div className="form-divider">合同商品明细</div>
+                  <div className="form-divider">{t('purchase.contract.form.linesTitle')}</div>
                   <div className="form-pair two">
                     <label>
-                      选择商品
+                      {t('purchase.contract.form.selectProduct')}
                       <Select
                         showSearch
                         loading={loadingProducts}
                         value={form.product_id || undefined}
-                        placeholder={products.length > 0 ? '从商品资料选择' : '请先在商品资料录入'}
+                        placeholder={
+                          products.length > 0
+                            ? t('purchase.contract.form.productSelectPlaceholder')
+                            : t('purchase.contract.form.productMissing')
+                        }
                         optionFilterProp="label"
-                        notFoundContent={loadingProducts ? '加载商品资料中' : '暂无商品资料'}
+                        notFoundContent={
+                          loadingProducts
+                            ? t('purchase.contract.form.loadingProducts')
+                            : t('purchase.contract.form.noProducts')
+                        }
                         onChange={applyProductToPurchaseContractForm}
                       >
                         {renderProductOptions(products)}
                       </Select>
                     </label>
                     <label>
-                      商品编号
+                      {t('purchase.contract.field.productCode')}
                       <Input
                         value={form.product_code}
                         onChange={(event) => setForm({ ...form, product_code: event.target.value })}
@@ -1097,19 +1147,23 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                     </label>
                   </div>
                   <label>
-                    商品名称
+                    {t('purchase.contract.field.productName')}
                     <Input
                       value={form.product_name}
                       onChange={(event) => setForm({ ...form, product_name: event.target.value })}
                     />
                   </label>
                   <label>
-                    商品标识
-                    <Input value={form.product_id} readOnly placeholder="选择商品后自动带出" />
+                    {t('purchase.contract.field.productId')}
+                    <Input
+                      value={form.product_id}
+                      readOnly
+                      placeholder={t('purchase.contract.form.productIdPlaceholder')}
+                    />
                   </label>
                   <div className="form-pair two">
                     <label>
-                      规格
+                      {t('purchase.contract.field.specification')}
                       <Input
                         value={form.specification}
                         onChange={(event) =>
@@ -1118,7 +1172,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                       />
                     </label>
                     <label>
-                      型号
+                      {t('purchase.contract.field.model')}
                       <Input
                         value={form.model}
                         onChange={(event) => setForm({ ...form, model: event.target.value })}
@@ -1127,7 +1181,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   </div>
                   <div className="form-pair three">
                     <label>
-                      数量
+                      {t('purchase.contract.field.quantity')}
                       <Input
                         type="number"
                         min="0.0001"
@@ -1137,14 +1191,14 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                       />
                     </label>
                     <label>
-                      单位
+                      {t('purchase.contract.field.unit')}
                       <Input
                         value={form.unit}
                         onChange={(event) => setForm({ ...form, unit: event.target.value })}
                       />
                     </label>
                     <label>
-                      单价
+                      {t('purchase.contract.field.unitPrice')}
                       <Input
                         type="number"
                         min="0"
@@ -1156,7 +1210,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   </div>
                   <div className="form-pair three">
                     <label>
-                      来源出口合同 ID
+                      {t('purchase.contract.field.sourceExportContractId')}
                       <Input
                         value={form.source_export_contract_id}
                         onChange={(event) =>
@@ -1165,7 +1219,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                       />
                     </label>
                     <label>
-                      来源合同号
+                      {t('purchase.contract.field.sourceContractNo')}
                       <Input
                         value={form.source_export_contract_no}
                         onChange={(event) =>
@@ -1174,7 +1228,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                       />
                     </label>
                     <label>
-                      来源明细 ID
+                      {t('purchase.contract.field.sourceLineId')}
                       <Input
                         value={form.source_export_contract_line_id}
                         onChange={(event) =>
@@ -1184,14 +1238,14 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                     </label>
                   </div>
                   <label>
-                    行备注
+                    {t('purchase.contract.field.lineRemark')}
                     <Input
                       value={form.line_remark}
                       onChange={(event) => setForm({ ...form, line_remark: event.target.value })}
                     />
                   </label>
                   <label>
-                    合同备注
+                    {t('purchase.contract.field.remarks')}
                     <Input.TextArea
                       rows={2}
                       value={form.remarks}
@@ -1199,25 +1253,34 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                     />
                   </label>
                   <Button htmlType="submit" loading={submitting} type="primary">
-                    {editingContractId ? '保存采购合同' : '新增采购合同'}
+                    {editingContractId
+                      ? t('purchase.contract.form.save')
+                      : t('purchase.contract.form.createTitle')}
                   </Button>
                   {editingContractId ? (
-                    <Button onClick={cancelContractEdit}>取消编辑</Button>
+                    <Button onClick={cancelContractEdit}>
+                      {t('purchase.contract.form.cancelEdit')}
+                    </Button>
                   ) : null}
                 </form>
               </>
             ) : (
               <>
-                <PanelTitle icon={<FileStack size={18} />} title="从已审批出口合同生成" />
+                <PanelTitle
+                  icon={<FileStack size={18} />}
+                  title={t('purchase.contract.form.generateFromApprovedTitle')}
+                />
 
                 <form
                   className="record-form accessory-form generation-form"
                   onSubmit={generateContractFromSources}
                 >
-                  <div className="form-divider">从已审批出口合同生成</div>
+                  <div className="form-divider">
+                    {t('purchase.contract.form.generateFromApprovedTitle')}
+                  </div>
                   <div className="form-pair two">
                     <label>
-                      采购合同号
+                      {t('purchase.contract.field.purchaseContractCode')}
                       <Input
                         value={generateForm.code}
                         onChange={(event) =>
@@ -1226,7 +1289,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                       />
                     </label>
                     <label>
-                      合同日期
+                      {t('purchase.contract.field.contractDate')}
                       <Input
                         type="date"
                         value={generateForm.contract_date}
@@ -1241,7 +1304,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   </div>
                   <div className="form-pair two">
                     <label>
-                      出口合同 ID A
+                      {t('purchase.contract.field.exportContractIdA')}
                       <Input
                         value={generateForm.source_contract_id_a}
                         onChange={(event) =>
@@ -1253,7 +1316,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                       />
                     </label>
                     <label>
-                      出口合同 ID B
+                      {t('purchase.contract.field.exportContractIdB')}
                       <Input
                         value={generateForm.source_contract_id_b}
                         onChange={(event) =>
@@ -1267,7 +1330,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   </div>
                   <div className="form-pair two">
                     <label>
-                      供应商标识
+                      {t('purchase.contract.field.supplierId')}
                       <Input
                         value={generateForm.supplier_id}
                         onChange={(event) =>
@@ -1276,7 +1339,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                       />
                     </label>
                     <label>
-                      供应商
+                      {t('purchase.contract.field.supplier')}
                       <Input
                         value={generateForm.supplier_name}
                         onChange={(event) =>
@@ -1287,7 +1350,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   </div>
                   <div className="form-pair three">
                     <label>
-                      币种
+                      {t('purchase.contract.field.currency')}
                       <Input
                         value={generateForm.currency}
                         onChange={(event) =>
@@ -1296,7 +1359,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                       />
                     </label>
                     <label>
-                      交货日期
+                      {t('purchase.contract.field.deliveryDate')}
                       <Input
                         type="date"
                         value={generateForm.delivery_date}
@@ -1309,7 +1372,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                       />
                     </label>
                     <label>
-                      配件单价
+                      {t('purchase.contract.field.accessoryUnitPrice')}
                       <Input
                         type="number"
                         min="0"
@@ -1323,14 +1386,22 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   </div>
                   <div className="form-pair two">
                     <label>
-                      QC 负责人
+                      {t('purchase.contract.field.qcUser')}
                       <Select
                         showSearch
                         loading={loadingAssignableUsers}
                         value={generateForm.qc_user_id || undefined}
-                        placeholder={assignableUsers.length > 0 ? '从系统用户选择' : '暂无可选用户'}
+                        placeholder={
+                          assignableUsers.length > 0
+                            ? t('purchase.contract.form.userSelectPlaceholder')
+                            : t('purchase.contract.form.noUsers')
+                        }
                         optionFilterProp="label"
-                        notFoundContent={loadingAssignableUsers ? '加载人员中' : '暂无可选用户'}
+                        notFoundContent={
+                          loadingAssignableUsers
+                            ? t('purchase.contract.form.loadingUsers')
+                            : t('purchase.contract.form.noUsers')
+                        }
                         onChange={applyQcUserToPurchaseContractGenerateForm}
                       >
                         {renderAssignableUserOptions(assignableUsers)}
@@ -1338,7 +1409,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                     </label>
                   </div>
                   <label>
-                    付款条款
+                    {t('purchase.contract.field.paymentTerms')}
                     <Input
                       value={generateForm.payment_terms}
                       onChange={(event) =>
@@ -1347,7 +1418,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                     />
                   </label>
                   <label>
-                    生成备注
+                    {t('purchase.contract.field.generateRemarks')}
                     <Input
                       value={generateForm.remarks}
                       onChange={(event) =>
@@ -1356,7 +1427,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                     />
                   </label>
                   <Button htmlType="submit" loading={submitting} type="primary">
-                    生成采购合同
+                    {t('purchase.contract.form.generateAction')}
                   </Button>
                 </form>
               </>
@@ -1367,7 +1438,10 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<LayoutDashboard size={18} />} title="采购合同明细" />
+              <PanelTitle
+                icon={<LayoutDashboard size={18} />}
+                title={t('purchase.contract.detail.title')}
+              />
               {selectedContract ? (
                 <span className="panel-kicker contract-code-label">{selectedContract.code}</span>
               ) : null}
@@ -1375,27 +1449,27 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                 icon={<ArrowLeft size={16} />}
                 onClick={() => onNavigate(purchaseContractPath)}
               >
-                返回列表
+                {t('purchase.contract.action.backToList')}
               </Button>
             </div>
             {selectedContract ? (
               <>
                 <div className="contract-summary-intro">
-                  <strong>合同摘要</strong>
-                  <span>快速确认合同来源、执行节点、责任人和付款进度。</span>
+                  <strong>{t('purchase.contract.detail.summaryTitle')}</strong>
+                  <span>{t('purchase.contract.detail.summaryDescription')}</span>
                 </div>
 
                 <div className="contract-summary-sections">
                   <section className="contract-summary-section">
                     <div className="contract-summary-section-heading">
                       <div>
-                        <h3>合同概况</h3>
-                        <p>合同从哪里生成，以及当前处于哪个审批阶段</p>
+                        <h3>{t('purchase.contract.detail.overviewTitle')}</h3>
+                        <p>{t('purchase.contract.detail.overviewDescription')}</p>
                       </div>
                     </div>
                     <dl className="contract-summary-grid">
                       <div>
-                        <dt>合同状态</dt>
+                        <dt>{t('purchase.contract.field.contractStatus')}</dt>
                         <dd>
                           <span
                             className="contract-status-chip"
@@ -1406,15 +1480,15 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                         </dd>
                       </div>
                       <div>
-                        <dt>合同日期</dt>
+                        <dt>{t('purchase.contract.field.contractDate')}</dt>
                         <dd>{formatDate(selectedContract.contract_date)}</dd>
                       </div>
                       <div>
-                        <dt>合同来源</dt>
+                        <dt>{t('purchase.contract.field.contractSource')}</dt>
                         <dd>{purchaseContractSourceTypeLabel(selectedContract.source_type)}</dd>
                       </div>
                       <div>
-                        <dt>供应商</dt>
+                        <dt>{t('purchase.contract.field.supplier')}</dt>
                         <dd>{selectedContract.supplier_name}</dd>
                       </div>
                     </dl>
@@ -1423,21 +1497,21 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   <section className="contract-summary-section">
                     <div className="contract-summary-section-heading">
                       <div>
-                        <h3>履约安排</h3>
-                        <p>负责采购与查验的人员，以及计划交货时间</p>
+                        <h3>{t('purchase.contract.detail.fulfillmentTitle')}</h3>
+                        <p>{t('purchase.contract.detail.fulfillmentDescription')}</p>
                       </div>
                     </div>
                     <dl className="contract-summary-grid">
                       <div>
-                        <dt>采购负责人</dt>
-                        <dd>{selectedContract.buyer_user_name ?? '未指定'}</dd>
+                        <dt>{t('purchase.contract.field.buyerOwner')}</dt>
+                        <dd>{selectedContract.buyer_user_name ?? t('common.notSet')}</dd>
                       </div>
                       <div>
-                        <dt>QC 负责人</dt>
-                        <dd>{selectedContract.qc_user_name ?? '未指定'}</dd>
+                        <dt>{t('purchase.contract.field.qcUser')}</dt>
+                        <dd>{selectedContract.qc_user_name ?? t('common.notSet')}</dd>
                       </div>
                       <div>
-                        <dt>预计交货日期</dt>
+                        <dt>{t('purchase.contract.field.expectedDeliveryDate')}</dt>
                         <dd>{formatDate(selectedContract.delivery_date)}</dd>
                       </div>
                     </dl>
@@ -1446,13 +1520,13 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   <section className="contract-summary-section">
                     <div className="contract-summary-section-heading">
                       <div>
-                        <h3>金额与审批</h3>
-                        <p>金额均按合同币种显示，待付款金额为尚未支付的部分</p>
+                        <h3>{t('purchase.contract.detail.amountApprovalTitle')}</h3>
+                        <p>{t('purchase.contract.detail.amountApprovalDescription')}</p>
                       </div>
                     </div>
                     <dl className="contract-summary-grid">
                       <div>
-                        <dt>合同金额</dt>
+                        <dt>{t('purchase.contract.field.contractAmount')}</dt>
                         <dd>
                           {formatMoney(
                             selectedContract.statistics.total_amount,
@@ -1461,7 +1535,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                         </dd>
                       </div>
                       <div>
-                        <dt>待付款金额</dt>
+                        <dt>{t('purchase.contract.field.unpaidAmount')}</dt>
                         <dd>
                           {formatMoney(
                             selectedContract.statistics.unpaid_amount,
@@ -1470,28 +1544,36 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                         </dd>
                       </div>
                       <div>
-                        <dt>审批人</dt>
-                        <dd>{selectedContract.reviewer_name ?? '未审批'}</dd>
+                        <dt>{t('purchase.contract.field.approver')}</dt>
+                        <dd>
+                          {selectedContract.reviewer_name ??
+                            t('purchase.contract.detail.notApproved')}
+                        </dd>
                       </div>
                     </dl>
                   </section>
                 </div>
 
                 <div className="transaction-box">
-                  <strong>付款条款</strong>
+                  <strong>{t('purchase.contract.field.paymentTerms')}</strong>
                   <p>{selectedContract.payment_terms}</p>
                 </div>
                 <div className="transaction-box">
-                  <strong>合同备注</strong>
-                  <p>{selectedContract.remarks ?? '未填写'}</p>
+                  <strong>{t('purchase.contract.field.remarks')}</strong>
+                  <p>{selectedContract.remarks ?? t('purchase.contract.detail.remarksEmpty')}</p>
                 </div>
 
                 {selectedContract.approval_status === 'rejected' ? (
                   <Alert
                     className="purchase-contract-rejection-alert"
-                    description={selectedContract.rejection_reason ?? '未记录驳回原因'}
+                    description={
+                      selectedContract.rejection_reason ??
+                      t('purchase.contract.detail.rejectionReasonEmpty')
+                    }
                     showIcon
-                    title={`合同已于 ${formatDate(selectedContract.rejected_at)} 驳回`}
+                    title={t('purchase.contract.detail.rejectedTitle', {
+                      date: formatDate(selectedContract.rejected_at),
+                    })}
                     type="error"
                   />
                 ) : null}
@@ -1501,7 +1583,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                     disabled={!['draft', 'rejected'].includes(selectedContract.approval_status)}
                     onClick={loadSelectedContractForEdit}
                   >
-                    编辑合同
+                    {t('purchase.contract.action.editContract')}
                   </Button>
                   {selectedContract.approval_status === 'draft' ? (
                     <ApprovalAssigneeSelect
@@ -1516,7 +1598,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                     loading={submitting}
                     onClick={() => void submitSelectedContract()}
                   >
-                    提交采购合同
+                    {t('purchase.contract.action.submitContract')}
                   </Button>
                   <Button
                     disabled={
@@ -1529,14 +1611,14 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                     }
                     onClick={() => setContractApprovalModalOpen(true)}
                   >
-                    审批采购合同
+                    {t('purchase.contract.action.approveContract')}
                   </Button>
                   <Button
                     icon={<FileSpreadsheet size={16} />}
                     loading={submitting}
                     onClick={() => void generateSelectedContractTemplate()}
                   >
-                    用合同模板生成
+                    {t('purchase.contract.action.generateTemplate')}
                   </Button>
                 </div>
                 {selectedContract.approval_status === 'submitted' &&
@@ -1546,7 +1628,11 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   'purchase:contract:approve',
                 ) ? (
                   <Alert
-                    message={`等待 ${selectedContract.reviewer_name ?? '指定审批人'} 审批`}
+                    message={t('purchase.contract.action.waitingApproval', {
+                      name:
+                        selectedContract.reviewer_name ??
+                        t('purchase.contract.action.defaultReviewer'),
+                    })}
                     showIcon
                     type="info"
                   />
@@ -1556,20 +1642,22 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   centered
                   footer={null}
                   open={contractApprovalModalOpen}
-                  title="审批采购合同"
+                  title={t('purchase.contract.action.approveContract')}
                   width={720}
                   onCancel={() => setContractApprovalModalOpen(false)}
                 >
                   <div className="workflow-modal-content entity-modal-form">
                     <div className="record-form accessory-form approval-form">
-                      <div className="form-divider">采购合同审批</div>
+                      <div className="form-divider">
+                        {t('purchase.contract.detail.approvalTitle')}
+                      </div>
                       <div className="form-pair two">
                         <label>
-                          审批人
+                          {t('purchase.contract.field.approver')}
                           <Input disabled value={selectedContract.reviewer_name ?? ''} />
                         </label>
                         <label>
-                          审批日期
+                          {t('purchase.contract.field.approvedAt')}
                           <Input
                             type="date"
                             value={approveForm.approved_at}
@@ -1584,12 +1672,12 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                       </div>
                       <label className="approval-rejection-reason">
                         <span>
-                          驳回原因 <i aria-hidden="true">*</i>
+                          {t('purchase.contract.field.rejectionReason')} <i aria-hidden="true">*</i>
                         </span>
                         <Input.TextArea
-                          aria-label="驳回原因"
+                          aria-label={t('purchase.contract.field.rejectionReason')}
                           maxLength={2000}
-                          placeholder="请说明需要修改的合同内容"
+                          placeholder={t('purchase.contract.validation.rejectionReasonPlaceholder')}
                           required
                           rows={3}
                           value={approveForm.rejection_reason}
@@ -1615,7 +1703,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                           loading={submitting}
                           onClick={confirmRejectSelectedContract}
                         >
-                          驳回合同
+                          {t('purchase.contract.action.rejectContract')}
                         </Button>
                         <Button
                           disabled={
@@ -1630,7 +1718,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                           type="primary"
                           onClick={() => void reviewSelectedContract('approved')}
                         >
-                          通过审批
+                          {t('purchase.contract.action.approve')}
                         </Button>
                       </div>
                     </div>
@@ -1638,28 +1726,34 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                 </Modal>
 
                 <div className="accessory-heading">
-                  <strong>合同商品明细</strong>
-                  <span>{selectedContract.lines.length} 行</span>
+                  <strong>{t('purchase.contract.detail.linesTitle')}</strong>
+                  <span>
+                    {t('purchase.contract.detail.lineCount', {
+                      count: selectedContract.lines.length,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>商品</th>
-                      <th>规格/型号</th>
-                      <th>数量</th>
-                      <th>单价</th>
-                      <th>金额</th>
-                      <th>未收</th>
+                      <th>{t('purchase.contract.field.product')}</th>
+                      <th>{t('purchase.contract.field.specificationModel')}</th>
+                      <th>{t('purchase.contract.field.quantity')}</th>
+                      <th>{t('purchase.contract.field.unitPrice')}</th>
+                      <th>{t('purchase.contract.field.amount')}</th>
+                      <th>{t('purchase.contract.field.unreceived')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {selectedContract.lines.map((line) => (
                       <tr key={line.id}>
                         <td>
-                          {line.product_code ?? '未填'} / {line.product_name}
+                          {line.product_code ?? t('purchase.contract.detail.notFilled')} /{' '}
+                          {line.product_name}
                         </td>
                         <td>
-                          {line.specification ?? '未填'} / {line.model ?? '未填'}
+                          {line.specification ?? t('purchase.contract.detail.notFilled')} /{' '}
+                          {line.model ?? t('purchase.contract.detail.notFilled')}
                         </td>
                         <td>
                           {line.quantity} {line.unit}
@@ -1675,16 +1769,20 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                 </table>
 
                 <div className="accessory-heading">
-                  <strong>来源出口合同</strong>
-                  <span>{selectedContract.source_links.length} 条</span>
+                  <strong>{t('purchase.contract.detail.sourceContractsTitle')}</strong>
+                  <span>
+                    {t('purchase.contract.detail.sourceCount', {
+                      count: selectedContract.source_links.length,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>出口合同</th>
-                      <th>客户</th>
-                      <th>商品</th>
-                      <th>需求数量</th>
+                      <th>{t('purchase.contract.field.exportContract')}</th>
+                      <th>{t('purchase.contract.field.customer')}</th>
+                      <th>{t('purchase.contract.field.product')}</th>
+                      <th>{t('purchase.contract.field.demandQuantity')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1692,7 +1790,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                       <tr key={source.id}>
                         <td>{source.export_contract_no}</td>
                         <td>{source.customer_name}</td>
-                        <td>{source.product_code ?? '未填'}</td>
+                        <td>{source.product_code ?? t('purchase.contract.detail.notFilled')}</td>
                         <td>
                           {source.demand_quantity} {source.unit}
                         </td>
@@ -1701,7 +1799,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                     {selectedContract.source_links.length === 0 ? (
                       <tr>
                         <td className="empty-cell" colSpan={4}>
-                          库存采购或手工采购，无来源出口合同
+                          {t('purchase.contract.detail.noSourceLinks')}
                         </td>
                       </tr>
                     ) : null}
@@ -1709,17 +1807,21 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                 </table>
 
                 <div className="accessory-heading">
-                  <strong>付款和交货提醒</strong>
-                  <span>{selectedContract.reminders.length} 条</span>
+                  <strong>{t('purchase.contract.detail.remindersTitle')}</strong>
+                  <span>
+                    {t('purchase.contract.detail.reminderCount', {
+                      count: selectedContract.reminders.length,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>类型</th>
-                      <th>标题</th>
-                      <th>到期日</th>
-                      <th>金额</th>
-                      <th>状态</th>
+                      <th>{t('purchase.contract.field.reminderType')}</th>
+                      <th>{t('purchase.contract.field.reminderTitle')}</th>
+                      <th>{t('purchase.contract.field.dueDate')}</th>
+                      <th>{t('purchase.contract.field.amount')}</th>
+                      <th>{t('purchase.contract.field.reminderStatus')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1731,7 +1833,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                         <td>
                           {reminder.amount
                             ? formatMoney(reminder.amount, reminder.currency)
-                            : '无金额'}
+                            : t('purchase.contract.detail.noAmount')}
                         </td>
                         <td>{purchaseReminderStatusLabel(reminder.status)}</td>
                       </tr>
@@ -1740,17 +1842,21 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                 </table>
 
                 <div className="accessory-heading">
-                  <strong>进度概览</strong>
-                  <span>{selectedContract.statistics.unreceived_quantity} 未收</span>
+                  <strong>{t('purchase.contract.detail.progressTitle')}</strong>
+                  <span>
+                    {t('purchase.contract.detail.unreceivedCount', {
+                      count: selectedContract.statistics.unreceived_quantity,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>总数量</th>
-                      <th>已收</th>
-                      <th>未收</th>
-                      <th>已付</th>
-                      <th>未付</th>
+                      <th>{t('purchase.contract.field.totalQuantity')}</th>
+                      <th>{t('purchase.contract.field.received')}</th>
+                      <th>{t('purchase.contract.field.unreceived')}</th>
+                      <th>{t('purchase.contract.field.paid')}</th>
+                      <th>{t('purchase.contract.field.unpaid')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1775,16 +1881,18 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                 </table>
 
                 <div className="accessory-heading">
-                  <strong>全局采购提醒</strong>
-                  <span>{reminders.length} 条</span>
+                  <strong>{t('purchase.contract.detail.globalRemindersTitle')}</strong>
+                  <span>
+                    {t('purchase.contract.detail.reminderCount', { count: reminders.length })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>类型</th>
-                      <th>标题</th>
-                      <th>到期日</th>
-                      <th>金额</th>
+                      <th>{t('purchase.contract.field.reminderType')}</th>
+                      <th>{t('purchase.contract.field.reminderTitle')}</th>
+                      <th>{t('purchase.contract.field.dueDate')}</th>
+                      <th>{t('purchase.contract.field.amount')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1796,14 +1904,14 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                         <td>
                           {reminder.amount
                             ? formatMoney(reminder.amount, reminder.currency)
-                            : '无金额'}
+                            : t('purchase.contract.detail.noAmount')}
                         </td>
                       </tr>
                     ))}
                     {reminders.length === 0 ? (
                       <tr>
                         <td className="empty-cell" colSpan={4}>
-                          暂无采购提醒
+                          {t('purchase.contract.detail.noReminders')}
                         </td>
                       </tr>
                     ) : null}
@@ -1813,8 +1921,8 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
             ) : (
               <div className="module-state panel-empty-state">
                 <FileStack size={28} />
-                <strong>暂无采购合同</strong>
-                <span>请返回列表选择采购合同查看详情</span>
+                <strong>{t('purchase.contract.detail.emptyTitle')}</strong>
+                <span>{t('purchase.contract.detail.emptyDescription')}</span>
               </div>
             )}
           </section>
