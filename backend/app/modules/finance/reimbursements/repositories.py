@@ -152,9 +152,8 @@ class ReimbursementRepository:
         if reimbursement is None:
             return None
         reimbursement.status = "approved" if approved else "rejected"
-        if reimbursement.reviewer_id is None:
-            reimbursement.reviewer_id = approved_by_user_id
-            reimbursement.reviewer_name = approved_by_user_name
+        reimbursement.reviewer_id = approved_by_user_id
+        reimbursement.reviewer_name = approved_by_user_name
         reimbursement.approved_by_user_id = approved_by_user_id
         reimbursement.approved_by_user_name = approved_by_user_name
         reimbursement.approval_remark = approval_remark

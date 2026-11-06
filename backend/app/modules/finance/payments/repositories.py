@@ -282,7 +282,7 @@ class PaymentRepository:
         payment_request.approved_amount = amount
         payment_request.paid_amount = amount
         payment_request.status = "approved"
-        if reviewer_id is not None and payment_request.reviewer_id is None:
+        if reviewer_id is not None:
             payment_request.reviewer_id = reviewer_id
         payment_request.reviewer_name = reviewer_name
         payment_request.approved_at = approved_at

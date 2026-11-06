@@ -39,7 +39,7 @@ async def test_finance_reimbursement_full_flow(
     seeded_system: None,
 ) -> None:
     finance_token = await _login_token(api_client, "finance", "finance123")
-    reviewer_token = await _login_token(api_client, "finance_manager", "finance-manager123")
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
     headers = {"Authorization": f"Bearer {finance_token}"}
 
     create_response = await api_client.post(
@@ -72,6 +72,7 @@ async def test_finance_reimbursement_full_flow(
     assert approve_response.status_code == 200
     approved = approve_response.json()["data"]
     assert approved["status"] == "approved"
+    assert approved["reviewer_id"] == "u-admin"
     assert approved["approval_remark"] == "同意报销"
 
     pay_response = await api_client.post(

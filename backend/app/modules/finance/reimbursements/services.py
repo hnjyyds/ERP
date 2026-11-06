@@ -18,6 +18,7 @@ from app.modules.finance.reimbursements.schemas import (
     ReimbursementResponse,
 )
 from app.modules.system.auth.assignees import AssigneeValidator
+from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
@@ -113,7 +114,11 @@ class ReimbursementService:
         existing = await self._get(reimbursement_id)
         if existing.status != "submitted":
             raise ValueError("只有已提交的报销单可以审批")
-        if existing.reviewer_id is not None and existing.reviewer_id != current_user.id:
+        if not can_approve_assigned_record(
+            current_user_id=current_user.id,
+            reviewer_id=existing.reviewer_id,
+            permissions=current_user.permissions,
+        ):
             raise PermissionDeniedError
         async with UnitOfWork(self._repository.session):
             reimbursement = await self._repository.approve(

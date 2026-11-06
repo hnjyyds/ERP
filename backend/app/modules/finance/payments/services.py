@@ -29,6 +29,7 @@ from app.modules.purchase.invoice_notices.repositories import (
     PurchaseInvoiceNoticeRow,
 )
 from app.modules.system.auth.assignees import AssigneeValidator
+from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
@@ -176,9 +177,10 @@ class PaymentService:
         payment_request = await self._get_payment_request(payment_request_id)
         if payment_request.requester_user_id == current_user.id:
             raise ValueError("付款申请人不能审批自己的申请")
-        if (
-            payment_request.reviewer_id is not None
-            and payment_request.reviewer_id != current_user.id
+        if not can_approve_assigned_record(
+            current_user_id=current_user.id,
+            reviewer_id=payment_request.reviewer_id,
+            permissions=current_user.permissions,
         ):
             raise PermissionDeniedError
         invoice = await self._get_supplier_invoice(payment_request.supplier_invoice_id)

@@ -309,7 +309,7 @@ class FeePaymentRepository:
         request.approved_amount = amount
         request.paid_amount = amount
         request.status = "approved"
-        if reviewer_id is not None and request.reviewer_id is None:
+        if reviewer_id is not None:
             request.reviewer_id = reviewer_id
         request.reviewer_name = reviewer_name
         request.approved_at = approved_at

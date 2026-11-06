@@ -1,21 +1,307 @@
 import { downloadCsv } from '../../../shared/print'
-import { Alert, Button, Descriptions, Input, Modal, Select as _Select, Skeleton, Table, Tag } from 'antd'
-import { ArrowLeft, BarChart3, Coins, FileText, LayoutDashboard, Plus, Search , CheckCircle2, ChevronRight, ClipboardCheck, FileSpreadsheet, FileStack, Handshake, PackagePlus, Receipt, RefreshCw, Save, ShieldCheck, Ship, Wallet} from 'lucide-react'
+import {
+  Alert,
+  Button,
+  Descriptions,
+  Input,
+  Modal,
+  Select as _Select,
+  Skeleton,
+  Table,
+  Tag,
+} from 'antd'
+import {
+  ArrowLeft,
+  BarChart3,
+  Coins,
+  FileText,
+  LayoutDashboard,
+  Plus,
+  Search,
+  CheckCircle2,
+  ChevronRight,
+  ClipboardCheck,
+  FileSpreadsheet,
+  FileStack,
+  Handshake,
+  PackagePlus,
+  Receipt,
+  RefreshCw,
+  Save,
+  ShieldCheck,
+  Ship,
+  Wallet,
+} from 'lucide-react'
 import type { FormEvent, ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { allocateBankReceipt, approveFeePaymentRequest, approvePaymentRequest, autoMatchCustomsReceipts, claimBankReceipt, addManualProfitCost, createBankReceipt, createFinancialSettlement, createFeePaymentRequest, createMiscFeeAllocation, createMiscFeeItem, createPartnerFeeInvoice, createPaymentRequest, createSupplierInvoice, createVerificationDocument, createPortImportBatch, createReimbursement, approveReimbursement, payReimbursement, getFinanceOverview, listBankReceipts, listFinancialSettlements, listFeePayables, listFeePaymentRequests, listMiscFeeAllocationSummary, listMiscFeeAllocations, listMiscFeeItems, listPartnerFeeInvoices, listPayables, listPaymentRequests, listProfitCalculations, listReceivables, listSupplierInvoices, listVerificationDocuments, listVerificationUsage, listReimbursements, listPortImportBatches, listCustomsDeclarationRecords, registerVerification, registerVerificationCustomsReceipt, registerTaxRefund, getReceiptUsageReport, getBankReceiptSummaryReport, getGoodsPaymentReport, getFeePaymentReport, getCustomsReceiptCollectionReport, getTaxRefundStatisticsReport, type BankReceipt, type BankReceiptAllocationPayload as _BankReceiptAllocationPayload, type BankReceiptClaimPayload as _BankReceiptClaimPayload, type BankReceiptCreatePayload as _BankReceiptCreatePayload, type CurrentUser, type CustomsReceiptRegisterPayload as _CustomsReceiptRegisterPayload, type FeePayableItem, type FeePaymentRequest, type FeePaymentRequestApprovePayload as _FeePaymentRequestApprovePayload, type FeePaymentRequestCreatePayload as _FeePaymentRequestCreatePayload, type FinancialSettlement, type FinancialSettlementCreatePayload as _FinancialSettlementCreatePayload, type ManualProfitCostCreatePayload as _ManualProfitCostCreatePayload, type PayableItem, type PaymentRequestApprovePayload as _PaymentRequestApprovePayload, type PaymentRequestCreatePayload as _PaymentRequestCreatePayload, type FinanceOverview, type PartnerFeeInvoice, type PartnerFeeInvoiceCreatePayload as _PartnerFeeInvoiceCreatePayload, type MiscFeeAllocation, type MiscFeeAllocationCreatePayload as _MiscFeeAllocationCreatePayload, type MiscFeeItem, type MiscFeeItemCreatePayload as _MiscFeeItemCreatePayload, type ProfitCostItem, type ReceivableItem, type SupplierInvoice, type SupplierInvoiceCreatePayload as _SupplierInvoiceCreatePayload, type SupplierPaymentRequest, type TaxRefundRegisterPayload as _TaxRefundRegisterPayload, type VerificationDocument, type VerificationDocumentCreatePayload as _VerificationDocumentCreatePayload, type VerificationRegisterPayload as _VerificationRegisterPayload, type VerificationUsageItem, type Reimbursement, type ReimbursementCreatePayload, type PortImportBatch, type PortImportBatchCreatePayload, type CustomsDeclarationRecord, type ReceiptUsageDetailRow, type ReceiptUsageDetailReport, type BankReceiptCurrencySummary, type BankReceiptSummaryReport, type GoodsPaymentQueryRow, type GoodsPaymentQueryReport, type FeePaymentQueryRow, type FeePaymentQueryReport, type CustomsReceiptCollectionRow, type CustomsReceiptCollectionReport, type TaxRefundCurrencyTotal, type TaxRefundStatisticsReport , CustomsDeclarationRecordCreatePayload, FinanceCurrencySummary, FinancePartnerTypeSummary, FinanceReportDrilldown, FinanceReportExplanation, FinanceShipmentProfit, FinanceStatusAmount, exportBankReceiptSummaryReport, exportCustomsReceiptCollectionReport, exportFeePaymentReport, exportGoodsPaymentReport, exportReceiptUsageReport, exportTaxRefundStatisticsReport, drilldownFinanceReport, explainFinanceReport} from '../../../api'
-import { financePath, financeOverviewPath as _financeOverviewPath, financeReceiptsPath as _financeReceiptsPath, financePaymentsPath as _financePaymentsPath, financeFeesPath as _financeFeesPath, financeTaxPath as _financeTaxPath, financeMiscPath as _financeMiscPath, financeSettlementPath as _financeSettlementPath, financeReimbursementsPath as _financeReimbursementsPath, financePortDataPath as _financePortDataPath, financeReportsPath as _financeReportsPath, financeModulePathByModule, financeDetailPath, isFinancePath as _isFinancePath, parseFinanceView as _parseFinanceView, reportingPath as _reportingPath, type FinanceModule, type FinanceView } from '../../routes'
+import {
+  allocateBankReceipt,
+  approveFeePaymentRequest,
+  approvePaymentRequest,
+  autoMatchCustomsReceipts,
+  claimBankReceipt,
+  addManualProfitCost,
+  createBankReceipt,
+  createFinancialSettlement,
+  createFeePaymentRequest,
+  createMiscFeeAllocation,
+  createMiscFeeItem,
+  createPartnerFeeInvoice,
+  createPaymentRequest,
+  createSupplierInvoice,
+  createVerificationDocument,
+  createPortImportBatch,
+  createReimbursement,
+  approveReimbursement,
+  payReimbursement,
+  getFinanceOverview,
+  listBankReceipts,
+  listFinancialSettlements,
+  listFeePayables,
+  listFeePaymentRequests,
+  listMiscFeeAllocationSummary,
+  listMiscFeeAllocations,
+  listMiscFeeItems,
+  listPartnerFeeInvoices,
+  listPayables,
+  listPaymentRequests,
+  listProfitCalculations,
+  listReceivables,
+  listSupplierInvoices,
+  listVerificationDocuments,
+  listVerificationUsage,
+  listReimbursements,
+  listPortImportBatches,
+  listCustomsDeclarationRecords,
+  registerVerification,
+  registerVerificationCustomsReceipt,
+  registerTaxRefund,
+  getReceiptUsageReport,
+  getBankReceiptSummaryReport,
+  getGoodsPaymentReport,
+  getFeePaymentReport,
+  getCustomsReceiptCollectionReport,
+  getTaxRefundStatisticsReport,
+  type BankReceipt,
+  type BankReceiptAllocationPayload as _BankReceiptAllocationPayload,
+  type BankReceiptClaimPayload as _BankReceiptClaimPayload,
+  type BankReceiptCreatePayload as _BankReceiptCreatePayload,
+  type CurrentUser,
+  type CustomsReceiptRegisterPayload as _CustomsReceiptRegisterPayload,
+  type FeePayableItem,
+  type FeePaymentRequest,
+  type FeePaymentRequestApprovePayload as _FeePaymentRequestApprovePayload,
+  type FeePaymentRequestCreatePayload as _FeePaymentRequestCreatePayload,
+  type FinancialSettlement,
+  type FinancialSettlementCreatePayload as _FinancialSettlementCreatePayload,
+  type ManualProfitCostCreatePayload as _ManualProfitCostCreatePayload,
+  type PayableItem,
+  type PaymentRequestApprovePayload as _PaymentRequestApprovePayload,
+  type PaymentRequestCreatePayload as _PaymentRequestCreatePayload,
+  type FinanceOverview,
+  type PartnerFeeInvoice,
+  type PartnerFeeInvoiceCreatePayload as _PartnerFeeInvoiceCreatePayload,
+  type MiscFeeAllocation,
+  type MiscFeeAllocationCreatePayload as _MiscFeeAllocationCreatePayload,
+  type MiscFeeItem,
+  type MiscFeeItemCreatePayload as _MiscFeeItemCreatePayload,
+  type ProfitCostItem,
+  type ReceivableItem,
+  type SupplierInvoice,
+  type SupplierInvoiceCreatePayload as _SupplierInvoiceCreatePayload,
+  type SupplierPaymentRequest,
+  type TaxRefundRegisterPayload as _TaxRefundRegisterPayload,
+  type VerificationDocument,
+  type VerificationDocumentCreatePayload as _VerificationDocumentCreatePayload,
+  type VerificationRegisterPayload as _VerificationRegisterPayload,
+  type VerificationUsageItem,
+  type Reimbursement,
+  type ReimbursementCreatePayload,
+  type PortImportBatch,
+  type PortImportBatchCreatePayload,
+  type CustomsDeclarationRecord,
+  type ReceiptUsageDetailRow,
+  type ReceiptUsageDetailReport,
+  type BankReceiptCurrencySummary,
+  type BankReceiptSummaryReport,
+  type GoodsPaymentQueryRow,
+  type GoodsPaymentQueryReport,
+  type FeePaymentQueryRow,
+  type FeePaymentQueryReport,
+  type CustomsReceiptCollectionRow,
+  type CustomsReceiptCollectionReport,
+  type TaxRefundCurrencyTotal,
+  type TaxRefundStatisticsReport,
+  CustomsDeclarationRecordCreatePayload,
+  FinanceCurrencySummary,
+  FinancePartnerTypeSummary,
+  FinanceReportDrilldown,
+  FinanceReportExplanation,
+  FinanceShipmentProfit,
+  FinanceStatusAmount,
+  exportBankReceiptSummaryReport,
+  exportCustomsReceiptCollectionReport,
+  exportFeePaymentReport,
+  exportGoodsPaymentReport,
+  exportReceiptUsageReport,
+  exportTaxRefundStatisticsReport,
+  drilldownFinanceReport,
+  explainFinanceReport,
+} from '../../../api'
+import {
+  financePath,
+  financeOverviewPath as _financeOverviewPath,
+  financeReceiptsPath as _financeReceiptsPath,
+  financePaymentsPath as _financePaymentsPath,
+  financeFeesPath as _financeFeesPath,
+  financeTaxPath as _financeTaxPath,
+  financeMiscPath as _financeMiscPath,
+  financeSettlementPath as _financeSettlementPath,
+  financeReimbursementsPath as _financeReimbursementsPath,
+  financePortDataPath as _financePortDataPath,
+  financeReportsPath as _financeReportsPath,
+  financeModulePathByModule,
+  financeDetailPath,
+  isFinancePath as _isFinancePath,
+  parseFinanceView as _parseFinanceView,
+  reportingPath as _reportingPath,
+  type FinanceModule,
+  type FinanceView,
+} from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
-import { receiptStatusOptions, receiptTypeOptions, allocationTypeOptions, supplierInvoiceStatusOptions, paymentRequestStatusOptions as _paymentRequestStatusOptions, paymentTypeOptions, partnerFeeInvoiceStatusOptions, feePaymentRequestStatusOptions as _feePaymentRequestStatusOptions, feeTypeOptions, verificationDocumentStatusOptions, verificationReminderStatusOptions, miscFeeCategoryOptions, miscFeeAllocationMethodOptions, miscFeeItemStatusOptions, settlementStatusOptions as _settlementStatusOptions, profitCostTypeOptions as _profitCostTypeOptions, reportingDocumentTypeOptions as _reportingDocumentTypeOptions, reportingStatusOptions as _reportingStatusOptions , partnerTypeOptions, shipmentStatusOptions as _shipmentStatusOptions, purchaseInvoiceNoticeStatusOptions as _purchaseInvoiceNoticeStatusOptions, sampleFeeTypeOptions as _sampleFeeTypeOptions} from '../../../shared/formOptions'
-import { canApproveAssignedRecord, formatDate, formatDateTime as _formatDateTime, formatMoney as _formatMoney, formatFinanceAmount, formatPercent, nullableText, todayInputValue as _todayInputValue, pageTitle as _pageTitle, statusTag as _statusTag, severityTag as _severityTag, partnerTypeLabel, type ModuleNavigationProps , emptyToNull as _emptyToNull} from '../appHelpers'
-import { shipmentStatusLabel, purchaseInvoiceNoticeStatusLabel, samplePaymentStatusLabel, BankReceiptFormState, ReceiptClaimFormState, ReceiptAllocationFormState, SupplierInvoiceFormState, PaymentRequestFormState, PaymentApprovalFormState, PartnerFeeInvoiceFormState, FeePaymentRequestFormState, FeePaymentApprovalFormState, VerificationDocumentFormState, CustomsReceiptFormState, VerificationRegisterFormState, TaxRefundFormState, MiscFeeItemFormState, MiscFeeAllocationFormState, FinancialSettlementFormState, ManualProfitCostFormState, initialBankReceiptForm, initialReceiptClaimForm, initialReceiptAllocationForm, bankReceiptPayload, receiptClaimPayload, receiptAllocationPayload, receiptStatusLabel, receiptStatusColor as _receiptStatusColor, receiptStatusTag, receiptTypeLabel, allocationTypeLabel, receivableStatusLabel as _receivableStatusLabel, receivableStatusTag, initialSupplierInvoiceForm, initialPaymentRequestForm, initialPaymentApprovalForm, supplierInvoicePayload, paymentRequestPayload, paymentApprovalPayload, supplierInvoiceStatusLabel, supplierInvoiceStatusTag, paymentRequestStatusLabel as _paymentRequestStatusLabel, paymentRequestStatusTag, paymentTypeLabel, initialPartnerFeeInvoiceForm, initialFeePaymentRequestForm, initialFeePaymentApprovalForm, partnerFeeInvoicePayload, feePaymentRequestPayload, feePaymentApprovalPayload, partnerFeeInvoiceStatusLabel as _partnerFeeInvoiceStatusLabel, partnerFeeInvoiceStatusTag, feePaymentRequestStatusLabel as _feePaymentRequestStatusLabel, feePaymentRequestStatusTag, feeTypeLabel, initialVerificationDocumentForm, initialCustomsReceiptForm, initialVerificationRegisterForm, initialTaxRefundForm, verificationDocumentPayload, customsReceiptPayload, verificationRegisterPayload, taxRefundPayload, verificationDocumentStatusLabel, verificationDocumentStatusTag, verificationReminderStatusLabel as _verificationReminderStatusLabel, verificationReminderStatusTag, initialMiscFeeItemForm, initialMiscFeeAllocationForm, miscFeeItemPayload, miscFeeAllocationPayload, miscFeeCategoryLabel, miscFeeAllocationMethodLabel, miscFeeItemStatusLabel, miscFeeItemStatusTag, reimbursementCategoryLabel, reimbursementStatusTag, initialFinancialSettlementForm, initialManualProfitCostForm, financialSettlementPayload, manualProfitCostPayload, settlementStatusLabel as _settlementStatusLabel, settlementStatusTag, approvalDocumentTypeLabel as _approvalDocumentTypeLabel, approvalDocumentTypeTag as _approvalDocumentTypeTag, approvalStatusTag as _approvalStatusTag, sourcePathTag as _sourcePathTag, profitCostTypeLabel, profitCostDirectionTag } from './financeHelpers'
+import {
+  receiptStatusOptions,
+  receiptTypeOptions,
+  allocationTypeOptions,
+  supplierInvoiceStatusOptions,
+  paymentRequestStatusOptions as _paymentRequestStatusOptions,
+  paymentTypeOptions,
+  partnerFeeInvoiceStatusOptions,
+  feePaymentRequestStatusOptions as _feePaymentRequestStatusOptions,
+  feeTypeOptions,
+  verificationDocumentStatusOptions,
+  verificationReminderStatusOptions,
+  miscFeeCategoryOptions,
+  miscFeeAllocationMethodOptions,
+  miscFeeItemStatusOptions,
+  settlementStatusOptions as _settlementStatusOptions,
+  profitCostTypeOptions as _profitCostTypeOptions,
+  reportingDocumentTypeOptions as _reportingDocumentTypeOptions,
+  reportingStatusOptions as _reportingStatusOptions,
+  partnerTypeOptions,
+  shipmentStatusOptions as _shipmentStatusOptions,
+  purchaseInvoiceNoticeStatusOptions as _purchaseInvoiceNoticeStatusOptions,
+  sampleFeeTypeOptions as _sampleFeeTypeOptions,
+} from '../../../shared/formOptions'
+import {
+  canApproveAssignedRecord,
+  formatDate,
+  formatDateTime as _formatDateTime,
+  formatMoney as _formatMoney,
+  formatFinanceAmount,
+  formatPercent,
+  nullableText,
+  todayInputValue as _todayInputValue,
+  pageTitle as _pageTitle,
+  statusTag as _statusTag,
+  severityTag as _severityTag,
+  partnerTypeLabel,
+  type ModuleNavigationProps,
+  emptyToNull as _emptyToNull,
+} from '../appHelpers'
+import {
+  shipmentStatusLabel,
+  purchaseInvoiceNoticeStatusLabel,
+  samplePaymentStatusLabel,
+  BankReceiptFormState,
+  ReceiptClaimFormState,
+  ReceiptAllocationFormState,
+  SupplierInvoiceFormState,
+  PaymentRequestFormState,
+  PaymentApprovalFormState,
+  PartnerFeeInvoiceFormState,
+  FeePaymentRequestFormState,
+  FeePaymentApprovalFormState,
+  VerificationDocumentFormState,
+  CustomsReceiptFormState,
+  VerificationRegisterFormState,
+  TaxRefundFormState,
+  MiscFeeItemFormState,
+  MiscFeeAllocationFormState,
+  FinancialSettlementFormState,
+  ManualProfitCostFormState,
+  initialBankReceiptForm,
+  initialReceiptClaimForm,
+  initialReceiptAllocationForm,
+  bankReceiptPayload,
+  receiptClaimPayload,
+  receiptAllocationPayload,
+  receiptStatusLabel,
+  receiptStatusColor as _receiptStatusColor,
+  receiptStatusTag,
+  receiptTypeLabel,
+  allocationTypeLabel,
+  receivableStatusLabel as _receivableStatusLabel,
+  receivableStatusTag,
+  initialSupplierInvoiceForm,
+  initialPaymentRequestForm,
+  initialPaymentApprovalForm,
+  supplierInvoicePayload,
+  paymentRequestPayload,
+  paymentApprovalPayload,
+  supplierInvoiceStatusLabel,
+  supplierInvoiceStatusTag,
+  paymentRequestStatusLabel as _paymentRequestStatusLabel,
+  paymentRequestStatusTag,
+  paymentTypeLabel,
+  initialPartnerFeeInvoiceForm,
+  initialFeePaymentRequestForm,
+  initialFeePaymentApprovalForm,
+  partnerFeeInvoicePayload,
+  feePaymentRequestPayload,
+  feePaymentApprovalPayload,
+  partnerFeeInvoiceStatusLabel as _partnerFeeInvoiceStatusLabel,
+  partnerFeeInvoiceStatusTag,
+  feePaymentRequestStatusLabel as _feePaymentRequestStatusLabel,
+  feePaymentRequestStatusTag,
+  feeTypeLabel,
+  initialVerificationDocumentForm,
+  initialCustomsReceiptForm,
+  initialVerificationRegisterForm,
+  initialTaxRefundForm,
+  verificationDocumentPayload,
+  customsReceiptPayload,
+  verificationRegisterPayload,
+  taxRefundPayload,
+  verificationDocumentStatusLabel,
+  verificationDocumentStatusTag,
+  verificationReminderStatusLabel as _verificationReminderStatusLabel,
+  verificationReminderStatusTag,
+  initialMiscFeeItemForm,
+  initialMiscFeeAllocationForm,
+  miscFeeItemPayload,
+  miscFeeAllocationPayload,
+  miscFeeCategoryLabel,
+  miscFeeAllocationMethodLabel,
+  miscFeeItemStatusLabel,
+  miscFeeItemStatusTag,
+  reimbursementCategoryLabel,
+  reimbursementStatusTag,
+  initialFinancialSettlementForm,
+  initialManualProfitCostForm,
+  financialSettlementPayload,
+  manualProfitCostPayload,
+  settlementStatusLabel as _settlementStatusLabel,
+  settlementStatusTag,
+  approvalDocumentTypeLabel as _approvalDocumentTypeLabel,
+  approvalDocumentTypeTag as _approvalDocumentTypeTag,
+  approvalStatusTag as _approvalStatusTag,
+  sourcePathTag as _sourcePathTag,
+  profitCostTypeLabel,
+  profitCostDirectionTag,
+} from './financeHelpers'
 import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
-
-
-
-
-
 
 type FinancePageProps = ModuleNavigationProps & {
   currentUser: CurrentUser
@@ -117,7 +403,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   const [_reportExplanation, setReportExplanation] = useState<FinanceReportExplanation | null>(null)
   const [reportDrilldown, setReportDrilldown] = useState<FinanceReportDrilldown | null>(null)
   const [matchingCustomsReceipts, setMatchingCustomsReceipts] = useState(false)
-  const [receiptUsageReport, setReceiptUsageReport] = useState<ReceiptUsageDetailReport | null>(null)
+  const [receiptUsageReport, setReceiptUsageReport] = useState<ReceiptUsageDetailReport | null>(
+    null,
+  )
   const [bankReceiptSummaryReport, setBankReceiptSummaryReport] =
     useState<BankReceiptSummaryReport | null>(null)
   const [goodsPaymentReport, setGoodsPaymentReport] = useState<GoodsPaymentQueryReport | null>(null)
@@ -129,11 +417,19 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   const [selectedReceiptId, setSelectedReceiptId] = useState<string | null>(null)
   const [selectedSupplierInvoiceId, setSelectedSupplierInvoiceId] = useState<string | null>(null)
   const [selectedPaymentRequestId, setSelectedPaymentRequestId] = useState<string | null>(null)
-  const [selectedPartnerFeeInvoiceId, setSelectedPartnerFeeInvoiceId] = useState<string | null>(null)
-  const [selectedFeePaymentRequestId, setSelectedFeePaymentRequestId] = useState<string | null>(null)
-  const [selectedVerificationDocumentId, setSelectedVerificationDocumentId] = useState<string | null>(null)
+  const [selectedPartnerFeeInvoiceId, setSelectedPartnerFeeInvoiceId] = useState<string | null>(
+    null,
+  )
+  const [selectedFeePaymentRequestId, setSelectedFeePaymentRequestId] = useState<string | null>(
+    null,
+  )
+  const [selectedVerificationDocumentId, setSelectedVerificationDocumentId] = useState<
+    string | null
+  >(null)
   const [selectedMiscFeeItemId, setSelectedMiscFeeItemId] = useState<string | null>(null)
-  const [selectedFinancialSettlementId, setSelectedFinancialSettlementId] = useState<string | null>(null)
+  const [selectedFinancialSettlementId, setSelectedFinancialSettlementId] = useState<string | null>(
+    null,
+  )
   const [receiptSearch, setReceiptSearch] = useState('')
   const [receiptStatusFilter, setReceiptStatusFilter] = useState('')
   const [receiptCustomerFilter, setReceiptCustomerFilter] = useState('')
@@ -186,7 +482,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   const [settlementShipmentFilter, setSettlementShipmentFilter] = useState('')
   const [profitCalculationSearch, setProfitCalculationSearch] = useState('')
   const [profitCalculationShipmentFilter, setProfitCalculationShipmentFilter] = useState('')
-  const [receiptForm, setReceiptForm] = useState<BankReceiptFormState>(() => initialBankReceiptForm())
+  const [receiptForm, setReceiptForm] = useState<BankReceiptFormState>(() =>
+    initialBankReceiptForm(),
+  )
   const [claimForm, setClaimForm] = useState<ReceiptClaimFormState>(() => initialReceiptClaimForm())
   const [allocationForm, setAllocationForm] = useState<ReceiptAllocationFormState>(() =>
     initialReceiptAllocationForm(),
@@ -200,14 +498,14 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   const [paymentApprovalForm, setPaymentApprovalForm] = useState<PaymentApprovalFormState>(() =>
     initialPaymentApprovalForm('1200.00', currentUser.display_name),
   )
-  const [partnerFeeInvoiceForm, setPartnerFeeInvoiceForm] = useState<PartnerFeeInvoiceFormState>(() =>
-    initialPartnerFeeInvoiceForm(),
+  const [partnerFeeInvoiceForm, setPartnerFeeInvoiceForm] = useState<PartnerFeeInvoiceFormState>(
+    () => initialPartnerFeeInvoiceForm(),
   )
-  const [feePaymentRequestForm, setFeePaymentRequestForm] = useState<FeePaymentRequestFormState>(() =>
-    initialFeePaymentRequestForm(),
+  const [feePaymentRequestForm, setFeePaymentRequestForm] = useState<FeePaymentRequestFormState>(
+    () => initialFeePaymentRequestForm(),
   )
-  const [feePaymentApprovalForm, setFeePaymentApprovalForm] = useState<FeePaymentApprovalFormState>(() =>
-    initialFeePaymentApprovalForm('400.00', currentUser.display_name),
+  const [feePaymentApprovalForm, setFeePaymentApprovalForm] = useState<FeePaymentApprovalFormState>(
+    () => initialFeePaymentApprovalForm('400.00', currentUser.display_name),
   )
   const [verificationDocumentForm, setVerificationDocumentForm] =
     useState<VerificationDocumentFormState>(() => initialVerificationDocumentForm())
@@ -216,12 +514,15 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   )
   const [verificationRegisterForm, setVerificationRegisterForm] =
     useState<VerificationRegisterFormState>(() => initialVerificationRegisterForm())
-  const [taxRefundForm, setTaxRefundForm] = useState<TaxRefundFormState>(() => initialTaxRefundForm())
+  const [taxRefundForm, setTaxRefundForm] = useState<TaxRefundFormState>(() =>
+    initialTaxRefundForm(),
+  )
   const [miscFeeItemForm, setMiscFeeItemForm] = useState<MiscFeeItemFormState>(() =>
     initialMiscFeeItemForm(),
   )
-  const [miscFeeAllocationForm, setMiscFeeAllocationForm] =
-    useState<MiscFeeAllocationFormState>(() => initialMiscFeeAllocationForm())
+  const [miscFeeAllocationForm, setMiscFeeAllocationForm] = useState<MiscFeeAllocationFormState>(
+    () => initialMiscFeeAllocationForm(),
+  )
   const [settlementForm, setSettlementForm] = useState<FinancialSettlementFormState>(() =>
     initialFinancialSettlementForm(),
   )
@@ -276,10 +577,10 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
     void loadReceipts()
     void loadReceivables()
     void loadSupplierInvoices()
-    void loadPaymentRequests(activeModule === 'payments' ? itemId ?? undefined : undefined)
+    void loadPaymentRequests(activeModule === 'payments' ? (itemId ?? undefined) : undefined)
     void loadPayables()
     void loadPartnerFeeInvoices()
-    void loadFeePaymentRequests(activeModule === 'fees' ? itemId ?? undefined : undefined)
+    void loadFeePaymentRequests(activeModule === 'fees' ? (itemId ?? undefined) : undefined)
     void loadFeePayables()
     void loadVerificationDocuments()
     void loadVerificationUsage()
@@ -337,11 +638,17 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
     [receipts, selectedReceiptId],
   )
   const selectedSupplierInvoice = useMemo(
-    () => supplierInvoices.find((item) => item.id === selectedSupplierInvoiceId) ?? supplierInvoices[0] ?? null,
+    () =>
+      supplierInvoices.find((item) => item.id === selectedSupplierInvoiceId) ??
+      supplierInvoices[0] ??
+      null,
     [supplierInvoices, selectedSupplierInvoiceId],
   )
   const selectedPaymentRequest = useMemo(
-    () => paymentRequests.find((item) => item.id === selectedPaymentRequestId) ?? paymentRequests[0] ?? null,
+    () =>
+      paymentRequests.find((item) => item.id === selectedPaymentRequestId) ??
+      paymentRequests[0] ??
+      null,
     [paymentRequests, selectedPaymentRequestId],
   )
   const selectedPartnerFeeInvoice = useMemo(
@@ -416,7 +723,8 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
     }))
     setFeePaymentApprovalForm((current) => ({
       ...current,
-      approved_amount: requestForInvoice?.requested_amount ?? selectedPartnerFeeInvoice.unpaid_amount,
+      approved_amount:
+        requestForInvoice?.requested_amount ?? selectedPartnerFeeInvoice.unpaid_amount,
     }))
   }, [
     selectedPartnerFeeInvoice?.id,
@@ -447,10 +755,7 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
       item_id: selectedMiscFeeItem.id,
       allocation_method: selectedMiscFeeItem.default_allocation_method,
     }))
-  }, [
-    selectedMiscFeeItem?.id,
-    selectedMiscFeeItem?.default_allocation_method,
-  ])
+  }, [selectedMiscFeeItem?.id, selectedMiscFeeItem?.default_allocation_method])
 
   useEffect(() => {
     if (!selectedFinancialSettlement) return
@@ -536,7 +841,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
         (activeModule === 'payments' && result.items.some((item) => item.id === detailId)
           ? detailId
           : null) ??
-        (result.items.some((item) => item.id === selectedSupplierInvoiceId) ? selectedSupplierInvoiceId : null) ??
+        (result.items.some((item) => item.id === selectedSupplierInvoiceId)
+          ? selectedSupplierInvoiceId
+          : null) ??
         result.items[0]?.id ??
         null
       setSelectedSupplierInvoiceId(nextInvoiceId)
@@ -560,7 +867,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
       setPaymentRequests(result.items)
       const nextRequestId =
         preferredId ??
-        (result.items.some((item) => item.id === selectedPaymentRequestId) ? selectedPaymentRequestId : null) ??
+        (result.items.some((item) => item.id === selectedPaymentRequestId)
+          ? selectedPaymentRequestId
+          : null) ??
         result.items[0]?.id ??
         null
       setSelectedPaymentRequestId(nextRequestId)
@@ -728,7 +1037,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
         (activeModule === 'misc' && result.items.some((item) => item.id === detailId)
           ? detailId
           : null) ??
-        (result.items.some((item) => item.id === selectedMiscFeeItemId) ? selectedMiscFeeItemId : null) ??
+        (result.items.some((item) => item.id === selectedMiscFeeItemId)
+          ? selectedMiscFeeItemId
+          : null) ??
         result.items[0]?.id ??
         null
       setSelectedMiscFeeItemId(nextItemId)
@@ -890,7 +1201,10 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   async function handleReimbursementApprove(approved: boolean) {
     if (!selectedReimbursementId) return
     const reimbursement = reimbursements.find((item) => item.id === selectedReimbursementId)
-    if (!reimbursement || !canApproveAssignedRecord(currentUser, reimbursement.reviewer_id, 'finance:view')) {
+    if (
+      !reimbursement ||
+      !canApproveAssignedRecord(currentUser, reimbursement.reviewer_id, 'finance:view')
+    ) {
       showError(new Error(`该报销单应由 ${reimbursement?.reviewer_name ?? '指定审批人'} 审批`))
       return
     }
@@ -1249,7 +1563,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
       !canApproveAssignedRecord(currentUser, selectedPaymentRequest.reviewer_id, 'finance:view') ||
       selectedPaymentRequest.requester_user_id === currentUser.id
     ) {
-      showError(new Error(`该付款申请应由 ${selectedPaymentRequest.reviewer_name ?? '指定审批人'} 审批`))
+      showError(
+        new Error(`该付款申请应由 ${selectedPaymentRequest.reviewer_name ?? '指定审批人'} 审批`),
+      )
       return
     }
     setSubmittingPaymentApproval(true)
@@ -1315,10 +1631,16 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
     event.preventDefault()
     if (!selectedFeePaymentRequest) return
     if (
-      !canApproveAssignedRecord(currentUser, selectedFeePaymentRequest.reviewer_id, 'finance:view') ||
+      !canApproveAssignedRecord(
+        currentUser,
+        selectedFeePaymentRequest.reviewer_id,
+        'finance:view',
+      ) ||
       selectedFeePaymentRequest.requester_user_id === currentUser.id
     ) {
-      showError(new Error(`该付费申请应由 ${selectedFeePaymentRequest.reviewer_name ?? '指定审批人'} 审批`))
+      showError(
+        new Error(`该付费申请应由 ${selectedFeePaymentRequest.reviewer_name ?? '指定审批人'} 审批`),
+      )
       return
     }
     setSubmittingFeePaymentApproval(true)
@@ -1513,7 +1835,10 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   const currencyLabel = summary?.currency_label ?? '-'
   const profitAmount = Number(summary?.profit_amount ?? 0)
   const totalReceiptAmount = receipts.reduce((sum, item) => sum + Number(item.amount || 0), 0)
-  const totalUnallocatedAmount = receipts.reduce((sum, item) => sum + Number(item.unallocated_amount || 0), 0)
+  const totalUnallocatedAmount = receipts.reduce(
+    (sum, item) => sum + Number(item.unallocated_amount || 0),
+    0,
+  )
   const selectedReceiptCanClaim = selectedReceipt?.status === 'unclaimed'
   const selectedReceiptCanAllocate = selectedReceipt
     ? selectedReceipt.status !== 'unclaimed' && Number(selectedReceipt.unallocated_amount) > 0
@@ -1556,8 +1881,14 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   const summaryStrip = (
     <div className="summary-strip" aria-label="财务管理概览">
       <Metric label="出货单" value={summary?.shipment_count ?? 0} />
-      <Metric label="应收金额" value={formatFinanceAmount(summary?.receivable_amount, currencyLabel)} />
-      <Metric label="应付成本" value={formatFinanceAmount(summary?.payable_amount, currencyLabel)} />
+      <Metric
+        label="应收金额"
+        value={formatFinanceAmount(summary?.receivable_amount, currencyLabel)}
+      />
+      <Metric
+        label="应付成本"
+        value={formatFinanceAmount(summary?.payable_amount, currencyLabel)}
+      />
       <Metric
         label="预计利润"
         value={formatFinanceAmount(summary?.profit_amount, currencyLabel)}
@@ -1570,7 +1901,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
 
   const moduleAlerts = (
     <>
-      {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
+      {message ? (
+        <Alert className="workspace-alert" title={message} type="success" showIcon />
+      ) : null}
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
     </>
   )
@@ -1668,7 +2001,7 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   if (activeModule === 'home') {
     return (
       <section className="finance-page finance-home">
-{summaryStrip}
+        {summaryStrip}
         {moduleAlerts}
 
         <section className="finance-module-cards" aria-label="财务模块入口">
@@ -1710,137 +2043,147 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
           </section>
         ) : (
           <section className="finance-grid">
-          <section className="workspace-panel finance-profit-panel">
-            <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Wallet size={18} />} title="出运利润明细" />
-            </div>
-            <Table<FinanceShipmentProfit>
-              columns={[
-                { title: '出货单', dataIndex: 'code', render: (value: string) => <strong>{value}</strong> },
-                { title: '客户', dataIndex: 'customer_name' },
-                { title: '状态', dataIndex: 'approval_status', render: shipmentStatusLabel },
-                { title: '出货日期', dataIndex: 'shipment_date', render: formatDate },
-                { title: '计划出运', dataIndex: 'planned_ship_date', render: formatDate },
-                {
-                  title: '应收',
-                  dataIndex: 'receivable_amount',
-                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
-                },
-                {
-                  title: '应付',
-                  dataIndex: 'payable_amount',
-                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
-                },
-                {
-                  title: '利润',
-                  dataIndex: 'profit_amount',
-                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
-                },
-                { title: '利润率', dataIndex: 'profit_rate', render: formatPercent },
-              ]}
-              dataSource={overview?.shipment_profit_items ?? []}
-              loading={loading}
-              pagination={false}
-              rowKey="id"
-              size="small"
-            />
-          </section>
+            <section className="workspace-panel finance-profit-panel">
+              <div className="panel-heading toolbar-heading">
+                <PanelTitle icon={<Wallet size={18} />} title="出运利润明细" />
+              </div>
+              <Table<FinanceShipmentProfit>
+                columns={[
+                  {
+                    title: '出货单',
+                    dataIndex: 'code',
+                    render: (value: string) => <strong>{value}</strong>,
+                  },
+                  { title: '客户', dataIndex: 'customer_name' },
+                  { title: '状态', dataIndex: 'approval_status', render: shipmentStatusLabel },
+                  { title: '出货日期', dataIndex: 'shipment_date', render: formatDate },
+                  { title: '计划出运', dataIndex: 'planned_ship_date', render: formatDate },
+                  {
+                    title: '应收',
+                    dataIndex: 'receivable_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '应付',
+                    dataIndex: 'payable_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '利润',
+                    dataIndex: 'profit_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  { title: '利润率', dataIndex: 'profit_rate', render: formatPercent },
+                ]}
+                dataSource={overview?.shipment_profit_items ?? []}
+                loading={loading}
+                pagination={false}
+                rowKey="id"
+                size="small"
+              />
+            </section>
 
-          <section className="workspace-panel finance-side-panel">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="分币种汇总" />
-            <Table<FinanceCurrencySummary>
-              columns={[
-                { title: '币种', dataIndex: 'currency' },
-                { title: '出货', dataIndex: 'shipment_count' },
-                {
-                  title: '应收',
-                  dataIndex: 'receivable_amount',
-                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
-                },
-                {
-                  title: '利润',
-                  dataIndex: 'profit_amount',
-                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
-                },
-                { title: '利润率', dataIndex: 'profit_rate', render: formatPercent },
-              ]}
-              dataSource={overview?.currency_summaries ?? []}
-              pagination={false}
-              rowKey="currency"
-              size="small"
-            />
-          </section>
+            <section className="workspace-panel finance-side-panel">
+              <PanelTitle icon={<LayoutDashboard size={18} />} title="分币种汇总" />
+              <Table<FinanceCurrencySummary>
+                columns={[
+                  { title: '币种', dataIndex: 'currency' },
+                  { title: '出货', dataIndex: 'shipment_count' },
+                  {
+                    title: '应收',
+                    dataIndex: 'receivable_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '利润',
+                    dataIndex: 'profit_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  { title: '利润率', dataIndex: 'profit_rate', render: formatPercent },
+                ]}
+                dataSource={overview?.currency_summaries ?? []}
+                pagination={false}
+                rowKey="currency"
+                size="small"
+              />
+            </section>
 
-          <section className="workspace-panel finance-side-panel">
-            <PanelTitle icon={<CheckCircle2 size={18} />} title="开票和付款状态" />
-            <div className="finance-status-stack">
-              <div>
-                <strong>采购开票通知</strong>
-                <Table<FinanceStatusAmount>
-                  columns={[
-                    { title: '状态', dataIndex: 'status', render: purchaseInvoiceNoticeStatusLabel },
-                    { title: '数量', dataIndex: 'count' },
-                    {
-                      title: '金额',
-                      dataIndex: 'amount',
-                      render: (value: string, record) => formatFinanceAmount(value, record.currency),
-                    },
-                  ]}
-                  dataSource={overview?.invoice_notice_statuses ?? []}
-                  pagination={false}
-                  rowKey={(record) => `${record.status}-${record.currency}`}
-                  size="small"
-                />
+            <section className="workspace-panel finance-side-panel">
+              <PanelTitle icon={<CheckCircle2 size={18} />} title="开票和付款状态" />
+              <div className="finance-status-stack">
+                <div>
+                  <strong>采购开票通知</strong>
+                  <Table<FinanceStatusAmount>
+                    columns={[
+                      {
+                        title: '状态',
+                        dataIndex: 'status',
+                        render: purchaseInvoiceNoticeStatusLabel,
+                      },
+                      { title: '数量', dataIndex: 'count' },
+                      {
+                        title: '金额',
+                        dataIndex: 'amount',
+                        render: (value: string, record) =>
+                          formatFinanceAmount(value, record.currency),
+                      },
+                    ]}
+                    dataSource={overview?.invoice_notice_statuses ?? []}
+                    pagination={false}
+                    rowKey={(record) => `${record.status}-${record.currency}`}
+                    size="small"
+                  />
+                </div>
+                <div>
+                  <strong>样品费用付款</strong>
+                  <Table<FinanceStatusAmount>
+                    columns={[
+                      { title: '状态', dataIndex: 'status', render: samplePaymentStatusLabel },
+                      { title: '数量', dataIndex: 'count' },
+                      {
+                        title: '金额',
+                        dataIndex: 'amount',
+                        render: (value: string, record) =>
+                          formatFinanceAmount(value, record.currency),
+                      },
+                    ]}
+                    dataSource={overview?.sample_fee_statuses ?? []}
+                    pagination={false}
+                    rowKey={(record) => `${record.status}-${record.currency}`}
+                    size="small"
+                  />
+                </div>
               </div>
-              <div>
-                <strong>样品费用付款</strong>
-                <Table<FinanceStatusAmount>
-                  columns={[
-                    { title: '状态', dataIndex: 'status', render: samplePaymentStatusLabel },
-                    { title: '数量', dataIndex: 'count' },
-                    {
-                      title: '金额',
-                      dataIndex: 'amount',
-                      render: (value: string, record) => formatFinanceAmount(value, record.currency),
-                    },
-                  ]}
-                  dataSource={overview?.sample_fee_statuses ?? []}
-                  pagination={false}
-                  rowKey={(record) => `${record.status}-${record.currency}`}
-                  size="small"
-                />
-              </div>
-            </div>
-          </section>
+            </section>
 
-          <section className="workspace-panel finance-side-panel">
-            <PanelTitle icon={<ShieldCheck size={18} />} title="合作伙伴费用入口" />
-            <dl className="finance-compact-list">
-              <div>
-                <dt>合作伙伴</dt>
-                <dd>{summary?.partner_count ?? 0}</dd>
-              </div>
-              <div>
-                <dt>启用伙伴</dt>
-                <dd>{summary?.active_partner_count ?? 0}</dd>
-              </div>
-              <div>
-                <dt>待收税票金额</dt>
-                <dd>{formatFinanceAmount(summary?.invoice_notice_amount, '多币种')}</dd>
-              </div>
-            </dl>
-            <Table<FinancePartnerTypeSummary>
-              columns={[
-                { title: '伙伴类型', dataIndex: 'partner_type', render: partnerTypeLabel },
-                { title: '数量', dataIndex: 'count' },
-              ]}
-              dataSource={overview?.partner_type_summaries ?? []}
-              pagination={false}
-              rowKey="partner_type"
-              size="small"
-            />
+            <section className="workspace-panel finance-side-panel">
+              <PanelTitle icon={<ShieldCheck size={18} />} title="合作伙伴费用入口" />
+              <dl className="finance-compact-list">
+                <div>
+                  <dt>合作伙伴</dt>
+                  <dd>{summary?.partner_count ?? 0}</dd>
+                </div>
+                <div>
+                  <dt>启用伙伴</dt>
+                  <dd>{summary?.active_partner_count ?? 0}</dd>
+                </div>
+                <div>
+                  <dt>待收税票金额</dt>
+                  <dd>{formatFinanceAmount(summary?.invoice_notice_amount, '多币种')}</dd>
+                </div>
+              </dl>
+              <Table<FinancePartnerTypeSummary>
+                columns={[
+                  { title: '伙伴类型', dataIndex: 'partner_type', render: partnerTypeLabel },
+                  { title: '数量', dataIndex: 'count' },
+                ]}
+                dataSource={overview?.partner_type_summaries ?? []}
+                pagination={false}
+                rowKey="partner_type"
+                size="small"
+              />
+            </section>
           </section>
-        </section>
         )}
       </section>
     )
@@ -1851,7 +2194,11 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
       <section className={detailId ? 'finance-page finance-detail-page' : 'finance-page'}>
         {detailId ? (
           <div className="finance-subnav">
-            <button className="finance-back-button" type="button" onClick={() => goModule('receipts')}>
+            <button
+              className="finance-back-button"
+              type="button"
+              onClick={() => goModule('receipts')}
+            >
               <ArrowLeft size={16} />
               收款管理
             </button>
@@ -1864,474 +2211,569 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
           className={detailId ? 'finance-detail-grid' : 'finance-receipt-grid'}
           aria-label="收款管理"
         >
-        {!detailId ? (
-        <section className="workspace-panel finance-receipt-list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="银行水单列表" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadReceipts()
-              }}
-            >
-              <label>
-                水单搜索
-                <Input
-                  value={receiptSearch}
-                  placeholder="水单号 / 付款人 / 客户"
-                  onChange={(event) => setReceiptSearch(event.target.value)}
-                />
-              </label>
-              <label>
-                水单状态
-                <FormSelect
-                  value={receiptStatusFilter}
-                  onChange={(event) => setReceiptStatusFilter(event.target.value)}
+          {!detailId ? (
+            <section className="workspace-panel finance-receipt-list-panel">
+              <div className="panel-heading toolbar-heading">
+                <PanelTitle icon={<Search size={18} />} title="银行水单列表" />
+                <form
+                  className="inline-filters"
+                  onSubmit={(event) => {
+                    event.preventDefault()
+                    void loadReceipts()
+                  }}
                 >
-                  <option value="">全部状态</option>
-                  {receiptStatusOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                客户标识
-                <Input
-                  value={receiptCustomerFilter}
-                  placeholder="customer-id"
-                  onChange={(event) => setReceiptCustomerFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-              <Button icon={<Plus size={16} />} onClick={() => setReceiptModalOpen(true)}>
-                水单录入
-              </Button>
-            </form>
-          </div>
-
-          <div className="finance-receipt-strip">
-            <span>本次列表 {receipts.length} 条</span>
-            <strong>{formatFinanceAmount(totalReceiptAmount.toFixed(2), receipts[0]?.currency ?? 'USD')}</strong>
-            <span>未分摊 {formatFinanceAmount(totalUnallocatedAmount.toFixed(2), receipts[0]?.currency ?? 'USD')}</span>
-          </div>
-
-          <Table<BankReceipt>
-            columns={[
-              {
-                title: '水单号',
-                dataIndex: 'receipt_no',
-                render: (value: string) => (
-                  <button className="row-button" type="button">
-                    {value}
-                  </button>
-                ),
-              },
-              { title: '状态', dataIndex: 'status', render: receiptStatusTag },
-              { title: '性质', dataIndex: 'receipt_type', render: receiptTypeLabel },
-              { title: '收款日', dataIndex: 'received_at', render: formatDate },
-              { title: '付款人', dataIndex: 'payer_name' },
-              { title: '客户', dataIndex: 'customer_name', render: nullableText },
-              {
-                title: '金额',
-                dataIndex: 'amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '未分摊',
-                dataIndex: 'unallocated_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-            ]}
-            dataSource={receipts}
-            loading={loadingReceipts}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedReceipt?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => {
-                setSelectedReceiptId(record.id)
-                setAllocationForm(initialReceiptAllocationForm(record.currency))
-                goDetail('receipts', record.id)
-              },
-            })}
-          />
-        </section>
-        ) : null}
-
-        {!detailId ? (
-        <Modal
-          centered
-          footer={null}
-          open={receiptModalOpen}
-          title="水单录入"
-          width={720}
-          onCancel={() => setReceiptModalOpen(false)}
-        >
-          <form className="record-form" onSubmit={(e) => { submitReceipt(e); setReceiptModalOpen(false) }}>
-            <div className="form-pair two">
-              <label>
-                银行水单号
-                <Input
-                  value={receiptForm.receipt_no}
-                  onChange={(event) => setReceiptForm({ ...receiptForm, receipt_no: event.target.value })}
-                />
-              </label>
-              <label>
-                收款日期
-                <Input
-                  type="date"
-                  value={receiptForm.received_at}
-                  onChange={(event) => setReceiptForm({ ...receiptForm, received_at: event.target.value })}
-                />
-              </label>
-            </div>
-            <label>
-              付款人
-              <Input
-                value={receiptForm.payer_name}
-                onChange={(event) => setReceiptForm({ ...receiptForm, payer_name: event.target.value })}
-              />
-            </label>
-            <div className="form-pair two">
-              <label>
-                客户标识
-                <Input
-                  value={receiptForm.customer_id}
-                  onChange={(event) => setReceiptForm({ ...receiptForm, customer_id: event.target.value })}
-                />
-              </label>
-              <label>
-                客户名称
-                <Input
-                  value={receiptForm.customer_name}
-                  onChange={(event) => setReceiptForm({ ...receiptForm, customer_name: event.target.value })}
-                />
-              </label>
-            </div>
-            <div className="form-pair three">
-              <label>
-                收款金额
-                <Input
-                  value={receiptForm.amount}
-                  onChange={(event) => setReceiptForm({ ...receiptForm, amount: event.target.value })}
-                />
-              </label>
-              <label>
-                币种
-                <Input
-                  value={receiptForm.currency}
-                  onChange={(event) => setReceiptForm({ ...receiptForm, currency: event.target.value })}
-                />
-              </label>
-              <label>
-                收款性质
-                <FormSelect
-                  value={receiptForm.receipt_type}
-                  onChange={(event) => setReceiptForm({ ...receiptForm, receipt_type: event.target.value })}
-                >
-                  {receiptTypeOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-            </div>
-            <label>
-              收款银行账号
-              <Input
-                value={receiptForm.bank_account}
-                onChange={(event) => setReceiptForm({ ...receiptForm, bank_account: event.target.value })}
-              />
-            </label>
-            <label>
-              银行流水号
-              <Input
-                value={receiptForm.reference_no}
-                onChange={(event) => setReceiptForm({ ...receiptForm, reference_no: event.target.value })}
-              />
-            </label>
-            <label>
-              备注
-              <Input.TextArea
-                rows={2}
-                value={receiptForm.remark}
-                onChange={(event) => setReceiptForm({ ...receiptForm, remark: event.target.value })}
-              />
-            </label>
-            <div className="modal-actions">
-              <button className="secondary-inline" type="button" onClick={() => setReceiptModalOpen(false)}>
-                取消
-              </button>
-              <button className="inline-submit" disabled={submittingReceipt} type="submit">
-                保存水单
-              </button>
-            </div>
-          </form>
-        </Modal>
-        ) : null}
-
-        {detailId ? (
-        <section className="workspace-panel finance-receipt-detail-panel">
-          <PanelTitle icon={<CheckCircle2 size={18} />} title="认领和分摊" />
-          {selectedReceipt ? (
-            <>
-              <dl className="detail-list finance-receipt-detail-list">
-                <div>
-                  <dt>当前水单</dt>
-                  <dd>{selectedReceipt.receipt_no}</dd>
-                </div>
-                <div>
-                  <dt>状态</dt>
-                  <dd>{receiptStatusLabel(selectedReceipt.status)}</dd>
-                </div>
-                <div>
-                  <dt>已分摊</dt>
-                  <dd>{formatFinanceAmount(selectedReceipt.allocated_amount, selectedReceipt.currency)}</dd>
-                </div>
-                <div>
-                  <dt>未分摊</dt>
-                  <dd>{formatFinanceAmount(selectedReceipt.unallocated_amount, selectedReceipt.currency)}</dd>
-                </div>
-              </dl>
-              <div className="finance-receipt-actions">
-                <form className="record-form compact-section" onSubmit={submitClaim}>
-                  <div className="form-divider">水单认领</div>
-                  <div className="form-pair two">
-                    <label>
-                      认领日期
-                      <Input
-                        type="date"
-                        value={claimForm.claimed_at}
-                        onChange={(event) => setClaimForm({ ...claimForm, claimed_at: event.target.value })}
-                      />
-                    </label>
-                    <label>
-                      业务员标识
-                      <Input
-                        value={claimForm.sales_user_id}
-                        onChange={(event) => setClaimForm({ ...claimForm, sales_user_id: event.target.value })}
-                      />
-                    </label>
-                  </div>
                   <label>
-                    业务员姓名
+                    水单搜索
                     <Input
-                      value={claimForm.sales_user_name}
-                      onChange={(event) => setClaimForm({ ...claimForm, sales_user_name: event.target.value })}
+                      value={receiptSearch}
+                      placeholder="水单号 / 付款人 / 客户"
+                      onChange={(event) => setReceiptSearch(event.target.value)}
                     />
                   </label>
                   <label>
-                    认领说明
+                    水单状态
+                    <FormSelect
+                      value={receiptStatusFilter}
+                      onChange={(event) => setReceiptStatusFilter(event.target.value)}
+                    >
+                      <option value="">全部状态</option>
+                      {receiptStatusOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    客户标识
                     <Input
-                      value={claimForm.note}
-                      onChange={(event) => setClaimForm({ ...claimForm, note: event.target.value })}
+                      value={receiptCustomerFilter}
+                      placeholder="输入客户编号或名称"
+                      onChange={(event) => setReceiptCustomerFilter(event.target.value)}
                     />
                   </label>
-                  <Button
-                    htmlType="submit"
-                    icon={<CheckCircle2 size={16} />}
-                    loading={submittingClaim}
-                    disabled={!selectedReceiptCanClaim}
-                  >
-                    确认认领
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    查询
                   </Button>
-                </form>
-
-                <form className="record-form compact-section" onSubmit={submitAllocation}>
-                  <div className="form-divider">收款分摊</div>
-                  <div className="form-pair two">
-                    <label>
-                      分摊类型
-                      <FormSelect
-                        value={allocationForm.allocation_type}
-                        onChange={(event) =>
-                          setAllocationForm({ ...allocationForm, allocation_type: event.target.value })
-                        }
-                      >
-                        {allocationTypeOptions.map((item) => (
-                          <option key={item.value} value={item.value}>
-                            {item.label}
-                          </option>
-                        ))}
-                      </FormSelect>
-                    </label>
-                    <label>
-                      分摊日期
-                      <Input
-                        type="date"
-                        value={allocationForm.allocated_at}
-                        onChange={(event) =>
-                          setAllocationForm({ ...allocationForm, allocated_at: event.target.value })
-                        }
-                      />
-                    </label>
-                  </div>
-                  <div className="form-pair two">
-                    <label>
-                      出口合同标识
-                      <Input
-                        value={allocationForm.contract_id}
-                        onChange={(event) =>
-                          setAllocationForm({ ...allocationForm, contract_id: event.target.value })
-                        }
-                      />
-                    </label>
-                    <label>
-                      出口合同号
-                      <Input
-                        value={allocationForm.contract_no}
-                        onChange={(event) =>
-                          setAllocationForm({ ...allocationForm, contract_no: event.target.value })
-                        }
-                      />
-                    </label>
-                  </div>
-                  <div className="form-pair three">
-                    <label>
-                      发票号
-                      <Input
-                        value={allocationForm.invoice_no}
-                        onChange={(event) =>
-                          setAllocationForm({ ...allocationForm, invoice_no: event.target.value })
-                        }
-                      />
-                    </label>
-                    <label>
-                      分摊金额
-                      <Input
-                        value={allocationForm.amount}
-                        onChange={(event) => setAllocationForm({ ...allocationForm, amount: event.target.value })}
-                      />
-                    </label>
-                    <label>
-                      币种
-                      <Input
-                        value={allocationForm.currency}
-                        onChange={(event) => setAllocationForm({ ...allocationForm, currency: event.target.value })}
-                      />
-                    </label>
-                  </div>
-                  <label>
-                    分摊备注
-                    <Input
-                      value={allocationForm.remark}
-                      onChange={(event) => setAllocationForm({ ...allocationForm, remark: event.target.value })}
-                    />
-                  </label>
                   <Button
-                    htmlType="submit"
-                    icon={<Save size={16} />}
-                    loading={submittingAllocation}
-                    disabled={!selectedReceiptCanAllocate}
+                    type="primary"
+                    icon={<Plus size={16} />}
+                    onClick={() => setReceiptModalOpen(true)}
                   >
-                    保存分摊
+                    水单录入
                   </Button>
                 </form>
               </div>
-              {selectedReceipt.allocations.length > 0 ? (
-                <section className="finance-allocation-history">
-                  <strong>分摊记录</strong>
-                  <Table<BankReceipt['allocations'][number]>
-                    columns={[
-                      { title: '类型', dataIndex: 'allocation_type', render: allocationTypeLabel },
-                      { title: '合同号', dataIndex: 'contract_no', render: nullableText },
-                      { title: '发票号', dataIndex: 'invoice_no', render: nullableText },
-                      {
-                        title: '金额',
-                        dataIndex: 'amount',
-                        render: (value: string, record) => formatFinanceAmount(value, record.currency),
-                      },
-                      { title: '日期', dataIndex: 'allocated_at', render: formatDate },
-                    ]}
-                    dataSource={selectedReceipt.allocations}
-                    pagination={false}
-                    rowKey="id"
-                    size="small"
-                  />
-                </section>
-              ) : null}
-            </>
-          ) : (
-            <div className="module-state">暂无银行水单</div>
-          )}
-        </section>
-        ) : null}
 
-        {!detailId ? (
-        <section className="workspace-panel finance-receivable-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<ShieldCheck size={18} />} title="应收账款查询" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadReceivables()
-              }}
+              <div className="finance-receipt-strip">
+                <span>本次列表 {receipts.length} 条</span>
+                <strong>
+                  {formatFinanceAmount(
+                    totalReceiptAmount.toFixed(2),
+                    receipts[0]?.currency ?? 'USD',
+                  )}
+                </strong>
+                <span>
+                  未分摊{' '}
+                  {formatFinanceAmount(
+                    totalUnallocatedAmount.toFixed(2),
+                    receipts[0]?.currency ?? 'USD',
+                  )}
+                </span>
+              </div>
+
+              <Table<BankReceipt>
+                columns={[
+                  {
+                    title: '水单号',
+                    dataIndex: 'receipt_no',
+                    render: (value: string) => (
+                      <button className="row-button" type="button">
+                        {value}
+                      </button>
+                    ),
+                  },
+                  { title: '状态', dataIndex: 'status', render: receiptStatusTag },
+                  { title: '性质', dataIndex: 'receipt_type', render: receiptTypeLabel },
+                  { title: '收款日', dataIndex: 'received_at', render: formatDate },
+                  { title: '付款人', dataIndex: 'payer_name' },
+                  { title: '客户', dataIndex: 'customer_name', render: nullableText },
+                  {
+                    title: '金额',
+                    dataIndex: 'amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '未分摊',
+                    dataIndex: 'unallocated_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                ]}
+                dataSource={receipts}
+                loading={loadingReceipts}
+                pagination={false}
+                rowClassName={(record) => (record.id === selectedReceipt?.id ? 'selected-row' : '')}
+                rowKey="id"
+                size="small"
+                onRow={(record) => ({
+                  onClick: () => {
+                    setSelectedReceiptId(record.id)
+                    setAllocationForm(initialReceiptAllocationForm(record.currency))
+                    goDetail('receipts', record.id)
+                  },
+                })}
+              />
+            </section>
+          ) : null}
+
+          {!detailId ? (
+            <Modal
+              centered
+              footer={null}
+              open={receiptModalOpen}
+              title="水单录入"
+              width={720}
+              onCancel={() => setReceiptModalOpen(false)}
             >
-              <label>
-                应收搜索
-                <Input
-                  value={receivableSearch}
-                  placeholder="合同号 / 客户 / 报价号"
-                  onChange={(event) => setReceivableSearch(event.target.value)}
-                />
-              </label>
-              <label>
-                出口合同号
-                <Input
-                  value={receivableContractFilter}
-                  onChange={(event) => setReceivableContractFilter(event.target.value)}
-                />
-              </label>
-              <label>
-                发票号
-                <Input
-                  value={receivableInvoiceFilter}
-                  onChange={(event) => setReceivableInvoiceFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-            </form>
-          </div>
-          <Table<ReceivableItem>
-            columns={[
-              { title: '出口合同', dataIndex: 'contract_no', render: (value: string) => <strong>{value}</strong> },
-              { title: '客户', dataIndex: 'customer_name' },
-              { title: '业务员', dataIndex: 'sales_user_name', render: nullableText },
-              {
-                title: '合同金额',
-                dataIndex: 'total_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '已收款',
-                dataIndex: 'received_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '应收余额',
-                dataIndex: 'receivable_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              { title: '状态', dataIndex: 'status', render: receivableStatusTag },
-            ]}
-            dataSource={receivables}
-            loading={loadingReceivables}
-            pagination={false}
-            rowKey="contract_id"
-            size="small"
-          />
-        </section>
-        ) : null}
+              <form
+                className="record-form"
+                onSubmit={(e) => {
+                  submitReceipt(e)
+                  setReceiptModalOpen(false)
+                }}
+              >
+                <div className="form-pair two">
+                  <label>
+                    银行水单号
+                    <Input
+                      value={receiptForm.receipt_no}
+                      onChange={(event) =>
+                        setReceiptForm({ ...receiptForm, receipt_no: event.target.value })
+                      }
+                    />
+                  </label>
+                  <label>
+                    收款日期
+                    <Input
+                      type="date"
+                      value={receiptForm.received_at}
+                      onChange={(event) =>
+                        setReceiptForm({ ...receiptForm, received_at: event.target.value })
+                      }
+                    />
+                  </label>
+                </div>
+                <label>
+                  付款人
+                  <Input
+                    value={receiptForm.payer_name}
+                    onChange={(event) =>
+                      setReceiptForm({ ...receiptForm, payer_name: event.target.value })
+                    }
+                  />
+                </label>
+                <div className="form-pair two">
+                  <label>
+                    客户标识
+                    <Input
+                      value={receiptForm.customer_id}
+                      onChange={(event) =>
+                        setReceiptForm({ ...receiptForm, customer_id: event.target.value })
+                      }
+                    />
+                  </label>
+                  <label>
+                    客户名称
+                    <Input
+                      value={receiptForm.customer_name}
+                      onChange={(event) =>
+                        setReceiptForm({ ...receiptForm, customer_name: event.target.value })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-pair three">
+                  <label>
+                    收款金额
+                    <Input
+                      value={receiptForm.amount}
+                      onChange={(event) =>
+                        setReceiptForm({ ...receiptForm, amount: event.target.value })
+                      }
+                    />
+                  </label>
+                  <label>
+                    币种
+                    <Input
+                      value={receiptForm.currency}
+                      onChange={(event) =>
+                        setReceiptForm({ ...receiptForm, currency: event.target.value })
+                      }
+                    />
+                  </label>
+                  <label>
+                    收款性质
+                    <FormSelect
+                      value={receiptForm.receipt_type}
+                      onChange={(event) =>
+                        setReceiptForm({ ...receiptForm, receipt_type: event.target.value })
+                      }
+                    >
+                      {receiptTypeOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                </div>
+                <label>
+                  收款银行账号
+                  <Input
+                    value={receiptForm.bank_account}
+                    onChange={(event) =>
+                      setReceiptForm({ ...receiptForm, bank_account: event.target.value })
+                    }
+                  />
+                </label>
+                <label>
+                  银行流水号
+                  <Input
+                    value={receiptForm.reference_no}
+                    onChange={(event) =>
+                      setReceiptForm({ ...receiptForm, reference_no: event.target.value })
+                    }
+                  />
+                </label>
+                <label>
+                  备注
+                  <Input.TextArea
+                    rows={2}
+                    value={receiptForm.remark}
+                    onChange={(event) =>
+                      setReceiptForm({ ...receiptForm, remark: event.target.value })
+                    }
+                  />
+                </label>
+                <div className="modal-actions">
+                  <button
+                    className="secondary-inline"
+                    type="button"
+                    onClick={() => setReceiptModalOpen(false)}
+                  >
+                    取消
+                  </button>
+                  <button className="inline-submit" disabled={submittingReceipt} type="submit">
+                    保存水单
+                  </button>
+                </div>
+              </form>
+            </Modal>
+          ) : null}
+
+          {detailId ? (
+            <section className="workspace-panel finance-receipt-detail-panel">
+              <PanelTitle icon={<CheckCircle2 size={18} />} title="认领和分摊" />
+              {selectedReceipt ? (
+                <>
+                  <dl className="detail-list finance-receipt-detail-list">
+                    <div>
+                      <dt>当前水单</dt>
+                      <dd>{selectedReceipt.receipt_no}</dd>
+                    </div>
+                    <div>
+                      <dt>状态</dt>
+                      <dd>{receiptStatusLabel(selectedReceipt.status)}</dd>
+                    </div>
+                    <div>
+                      <dt>已分摊</dt>
+                      <dd>
+                        {formatFinanceAmount(
+                          selectedReceipt.allocated_amount,
+                          selectedReceipt.currency,
+                        )}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>未分摊</dt>
+                      <dd>
+                        {formatFinanceAmount(
+                          selectedReceipt.unallocated_amount,
+                          selectedReceipt.currency,
+                        )}
+                      </dd>
+                    </div>
+                  </dl>
+                  <div className="finance-receipt-actions">
+                    <form className="record-form compact-section" onSubmit={submitClaim}>
+                      <div className="form-divider">水单认领</div>
+                      <div className="form-pair two">
+                        <label>
+                          认领日期
+                          <Input
+                            type="date"
+                            value={claimForm.claimed_at}
+                            onChange={(event) =>
+                              setClaimForm({ ...claimForm, claimed_at: event.target.value })
+                            }
+                          />
+                        </label>
+                        <label>
+                          业务员标识
+                          <Input
+                            value={claimForm.sales_user_id}
+                            onChange={(event) =>
+                              setClaimForm({ ...claimForm, sales_user_id: event.target.value })
+                            }
+                          />
+                        </label>
+                      </div>
+                      <label>
+                        业务员姓名
+                        <Input
+                          value={claimForm.sales_user_name}
+                          onChange={(event) =>
+                            setClaimForm({ ...claimForm, sales_user_name: event.target.value })
+                          }
+                        />
+                      </label>
+                      <label>
+                        认领说明
+                        <Input
+                          value={claimForm.note}
+                          onChange={(event) =>
+                            setClaimForm({ ...claimForm, note: event.target.value })
+                          }
+                        />
+                      </label>
+                      <Button
+                        htmlType="submit"
+                        icon={<CheckCircle2 size={16} />}
+                        loading={submittingClaim}
+                        disabled={!selectedReceiptCanClaim}
+                      >
+                        确认认领
+                      </Button>
+                    </form>
+
+                    <form className="record-form compact-section" onSubmit={submitAllocation}>
+                      <div className="form-divider">收款分摊</div>
+                      <div className="form-pair two">
+                        <label>
+                          分摊类型
+                          <FormSelect
+                            value={allocationForm.allocation_type}
+                            onChange={(event) =>
+                              setAllocationForm({
+                                ...allocationForm,
+                                allocation_type: event.target.value,
+                              })
+                            }
+                          >
+                            {allocationTypeOptions.map((item) => (
+                              <option key={item.value} value={item.value}>
+                                {item.label}
+                              </option>
+                            ))}
+                          </FormSelect>
+                        </label>
+                        <label>
+                          分摊日期
+                          <Input
+                            type="date"
+                            value={allocationForm.allocated_at}
+                            onChange={(event) =>
+                              setAllocationForm({
+                                ...allocationForm,
+                                allocated_at: event.target.value,
+                              })
+                            }
+                          />
+                        </label>
+                      </div>
+                      <div className="form-pair two">
+                        <label>
+                          出口合同标识
+                          <Input
+                            value={allocationForm.contract_id}
+                            onChange={(event) =>
+                              setAllocationForm({
+                                ...allocationForm,
+                                contract_id: event.target.value,
+                              })
+                            }
+                          />
+                        </label>
+                        <label>
+                          出口合同号
+                          <Input
+                            value={allocationForm.contract_no}
+                            onChange={(event) =>
+                              setAllocationForm({
+                                ...allocationForm,
+                                contract_no: event.target.value,
+                              })
+                            }
+                          />
+                        </label>
+                      </div>
+                      <div className="form-pair three">
+                        <label>
+                          发票号
+                          <Input
+                            value={allocationForm.invoice_no}
+                            onChange={(event) =>
+                              setAllocationForm({
+                                ...allocationForm,
+                                invoice_no: event.target.value,
+                              })
+                            }
+                          />
+                        </label>
+                        <label>
+                          分摊金额
+                          <Input
+                            value={allocationForm.amount}
+                            onChange={(event) =>
+                              setAllocationForm({ ...allocationForm, amount: event.target.value })
+                            }
+                          />
+                        </label>
+                        <label>
+                          币种
+                          <Input
+                            value={allocationForm.currency}
+                            onChange={(event) =>
+                              setAllocationForm({ ...allocationForm, currency: event.target.value })
+                            }
+                          />
+                        </label>
+                      </div>
+                      <label>
+                        分摊备注
+                        <Input
+                          value={allocationForm.remark}
+                          onChange={(event) =>
+                            setAllocationForm({ ...allocationForm, remark: event.target.value })
+                          }
+                        />
+                      </label>
+                      <Button
+                        htmlType="submit"
+                        icon={<Save size={16} />}
+                        loading={submittingAllocation}
+                        disabled={!selectedReceiptCanAllocate}
+                      >
+                        保存分摊
+                      </Button>
+                    </form>
+                  </div>
+                  {selectedReceipt.allocations.length > 0 ? (
+                    <section className="finance-allocation-history">
+                      <strong>分摊记录</strong>
+                      <Table<BankReceipt['allocations'][number]>
+                        columns={[
+                          {
+                            title: '类型',
+                            dataIndex: 'allocation_type',
+                            render: allocationTypeLabel,
+                          },
+                          { title: '合同号', dataIndex: 'contract_no', render: nullableText },
+                          { title: '发票号', dataIndex: 'invoice_no', render: nullableText },
+                          {
+                            title: '金额',
+                            dataIndex: 'amount',
+                            render: (value: string, record) =>
+                              formatFinanceAmount(value, record.currency),
+                          },
+                          { title: '日期', dataIndex: 'allocated_at', render: formatDate },
+                        ]}
+                        dataSource={selectedReceipt.allocations}
+                        pagination={false}
+                        rowKey="id"
+                        size="small"
+                      />
+                    </section>
+                  ) : null}
+                </>
+              ) : (
+                <div className="module-state">暂无银行水单</div>
+              )}
+            </section>
+          ) : null}
+
+          {!detailId ? (
+            <section className="workspace-panel finance-receivable-panel">
+              <div className="panel-heading toolbar-heading">
+                <PanelTitle icon={<ShieldCheck size={18} />} title="应收账款查询" />
+                <form
+                  className="inline-filters"
+                  onSubmit={(event) => {
+                    event.preventDefault()
+                    void loadReceivables()
+                  }}
+                >
+                  <label>
+                    应收搜索
+                    <Input
+                      value={receivableSearch}
+                      placeholder="合同号 / 客户 / 报价号"
+                      onChange={(event) => setReceivableSearch(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    出口合同号
+                    <Input
+                      value={receivableContractFilter}
+                      onChange={(event) => setReceivableContractFilter(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    发票号
+                    <Input
+                      value={receivableInvoiceFilter}
+                      onChange={(event) => setReceivableInvoiceFilter(event.target.value)}
+                    />
+                  </label>
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    查询
+                  </Button>
+                </form>
+              </div>
+              <Table<ReceivableItem>
+                columns={[
+                  {
+                    title: '出口合同',
+                    dataIndex: 'contract_no',
+                    render: (value: string) => <strong>{value}</strong>,
+                  },
+                  { title: '客户', dataIndex: 'customer_name' },
+                  { title: '业务员', dataIndex: 'sales_user_name', render: nullableText },
+                  {
+                    title: '合同金额',
+                    dataIndex: 'total_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '已收款',
+                    dataIndex: 'received_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '应收余额',
+                    dataIndex: 'receivable_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  { title: '状态', dataIndex: 'status', render: receivableStatusTag },
+                ]}
+                dataSource={receivables}
+                loading={loadingReceivables}
+                pagination={false}
+                rowKey="contract_id"
+                size="small"
+              />
+            </section>
+          ) : null}
         </section>
       </section>
     )
@@ -2342,7 +2784,11 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
       <section className={detailId ? 'finance-page finance-detail-page' : 'finance-page'}>
         {detailId ? (
           <div className="finance-subnav">
-            <button className="finance-back-button" type="button" onClick={() => goModule('payments')}>
+            <button
+              className="finance-back-button"
+              type="button"
+              onClick={() => goModule('payments')}
+            >
               <ArrowLeft size={16} />
               付款管理
             </button>
@@ -2355,560 +2801,662 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
           className={detailId ? 'finance-detail-grid' : 'finance-payment-grid'}
           aria-label="付款管理"
         >
-        {!detailId ? (
-        <section className="workspace-panel finance-payment-list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="供应商发票列表" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadSupplierInvoices()
-              }}
-            >
-              <label>
-                发票搜索
-                <Input value={invoiceSearch} onChange={(event) => setInvoiceSearch(event.target.value)} />
-              </label>
-              <label>
-                付款状态
-                <FormSelect
-                  value={invoiceStatusFilter}
-                  onChange={(event) => setInvoiceStatusFilter(event.target.value)}
+          {!detailId ? (
+            <section className="workspace-panel finance-payment-list-panel">
+              <div className="panel-heading toolbar-heading">
+                <PanelTitle icon={<Search size={18} />} title="供应商发票列表" />
+                <form
+                  className="inline-filters single-line-filter-toolbar"
+                  onSubmit={(event) => {
+                    event.preventDefault()
+                    void loadSupplierInvoices()
+                  }}
                 >
-                  <option value="">全部状态</option>
-                  {supplierInvoiceStatusOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                供应商标识
-                <Input
-                  value={invoiceSupplierFilter}
-                  onChange={(event) => setInvoiceSupplierFilter(event.target.value)}
-                />
-              </label>
-              <label>
-                采购合同号
-                <Input
-                  value={invoiceContractFilter}
-                  onChange={(event) => setInvoiceContractFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-              <Button icon={<Plus size={16} />} onClick={() => setInvoiceModalOpen(true)}>
-                发票登记
-              </Button>
-            </form>
-          </div>
-          <Table<SupplierInvoice>
-            columns={[
-              {
-                title: '供应商发票',
-                dataIndex: 'invoice_no',
-                render: (value: string) => (
-                  <button className="row-button" type="button">
-                    {value}
-                  </button>
-                ),
-              },
-              { title: '状态', dataIndex: 'status', render: supplierInvoiceStatusTag },
-              { title: '供应商', dataIndex: 'supplier_name' },
-              { title: '采购合同', dataIndex: 'purchase_contract_no', render: nullableText },
-              {
-                title: '发票金额',
-                dataIndex: 'total_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '未付',
-                dataIndex: 'unpaid_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-            ]}
-            dataSource={supplierInvoices}
-            loading={loadingSupplierInvoices}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedSupplierInvoice?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => {
-                setSelectedSupplierInvoiceId(record.id)
-                setPaymentRequestForm(initialPaymentRequestForm(record))
-                setPaymentApprovalForm(
-                  initialPaymentApprovalForm(record.unpaid_amount, currentUser.display_name),
-                )
-                goDetail('payments', record.id)
-              },
-            })}
-          />
-        </section>
-        ) : null}
-
-        {!detailId ? (
-        <Modal
-          centered
-          footer={null}
-          open={invoiceModalOpen}
-          title="供应商发票登记"
-          width={760}
-          onCancel={() => setInvoiceModalOpen(false)}
-        >
-          <form className="record-form" onSubmit={(e) => { submitSupplierInvoice(e); setInvoiceModalOpen(false) }}>
-            <div className="form-pair two">
-              <label>
-                供应商发票号
-                <Input
-                  value={supplierInvoiceForm.invoice_no}
-                  onChange={(event) =>
-                    setSupplierInvoiceForm({ ...supplierInvoiceForm, invoice_no: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                发票日期
-                <Input
-                  type="date"
-                  value={supplierInvoiceForm.invoice_date}
-                  onChange={(event) =>
-                    setSupplierInvoiceForm({ ...supplierInvoiceForm, invoice_date: event.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                供应商标识
-                <Input
-                  value={supplierInvoiceForm.supplier_id}
-                  onChange={(event) =>
-                    setSupplierInvoiceForm({ ...supplierInvoiceForm, supplier_id: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                供应商名称
-                <Input
-                  value={supplierInvoiceForm.supplier_name}
-                  onChange={(event) =>
-                    setSupplierInvoiceForm({ ...supplierInvoiceForm, supplier_name: event.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                开票通知标识
-                <Input
-                  value={supplierInvoiceForm.purchase_invoice_notice_id}
-                  onChange={(event) =>
-                    setSupplierInvoiceForm({
-                      ...supplierInvoiceForm,
-                      purchase_invoice_notice_id: event.target.value,
-                    })
-                  }
-                />
-              </label>
-              <label>
-                开票通知编号
-                <Input
-                  value={supplierInvoiceForm.purchase_invoice_notice_code}
-                  onChange={(event) =>
-                    setSupplierInvoiceForm({
-                      ...supplierInvoiceForm,
-                      purchase_invoice_notice_code: event.target.value,
-                    })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                采购合同标识
-                <Input
-                  value={supplierInvoiceForm.purchase_contract_id}
-                  onChange={(event) =>
-                    setSupplierInvoiceForm({ ...supplierInvoiceForm, purchase_contract_id: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                采购合同号
-                <Input
-                  value={supplierInvoiceForm.purchase_contract_no}
-                  onChange={(event) =>
-                    setSupplierInvoiceForm({ ...supplierInvoiceForm, purchase_contract_no: event.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair three">
-              <label>
-                发票金额
-                <Input
-                  value={supplierInvoiceForm.total_amount}
-                  onChange={(event) =>
-                    setSupplierInvoiceForm({ ...supplierInvoiceForm, total_amount: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                币种
-                <Input
-                  value={supplierInvoiceForm.currency}
-                  onChange={(event) =>
-                    setSupplierInvoiceForm({ ...supplierInvoiceForm, currency: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                到期日
-                <Input
-                  type="date"
-                  value={supplierInvoiceForm.due_date}
-                  onChange={(event) =>
-                    setSupplierInvoiceForm({ ...supplierInvoiceForm, due_date: event.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <label>
-              备注
-              <Input
-                value={supplierInvoiceForm.remark}
-                onChange={(event) =>
-                  setSupplierInvoiceForm({ ...supplierInvoiceForm, remark: event.target.value })
-                }
-              />
-            </label>
-            <div className="modal-actions">
-              <button className="secondary-inline" type="button" onClick={() => setInvoiceModalOpen(false)}>
-                取消
-              </button>
-              <button className="inline-submit" disabled={submittingSupplierInvoice} type="submit">
-                登记供应商发票
-              </button>
-            </div>
-          </form>
-        </Modal>
-        ) : null}
-
-        {detailId ? (
-        <section className="workspace-panel finance-payment-request-panel">
-          <PanelTitle icon={<CheckCircle2 size={18} />} title="付款申请和审批" />
-          {selectedSupplierInvoice ? (
-            <dl className="detail-list finance-payment-detail-list">
-              <div>
-                <dt>当前发票</dt>
-                <dd>{selectedSupplierInvoice.invoice_no}</dd>
-              </div>
-              <div>
-                <dt>状态</dt>
-                <dd>{supplierInvoiceStatusLabel(selectedSupplierInvoice.status)}</dd>
-              </div>
-              <div>
-                <dt>已付</dt>
-                <dd>{formatFinanceAmount(selectedSupplierInvoice.paid_amount, selectedSupplierInvoice.currency)}</dd>
-              </div>
-              <div>
-                <dt>未付</dt>
-                <dd>{formatFinanceAmount(selectedSupplierInvoice.unpaid_amount, selectedSupplierInvoice.currency)}</dd>
-              </div>
-            </dl>
-          ) : (
-            <div className="module-state">暂无供应商发票</div>
-          )}
-          <div className="finance-receipt-actions">
-            <form className="record-form compact-section" onSubmit={submitPaymentRequest}>
-              <div className="form-divider">付款申请新增</div>
-              <div className="finance-payment-fields">
-                <label>
-                  付款申请号
-                  <Input
-                    value={paymentRequestForm.request_no}
-                    onChange={(event) =>
-                      setPaymentRequestForm({ ...paymentRequestForm, request_no: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  供应商发票标识
-                  <Input
-                    value={paymentRequestForm.supplier_invoice_id}
-                    onChange={(event) =>
-                      setPaymentRequestForm({
-                        ...paymentRequestForm,
-                        supplier_invoice_id: event.target.value,
-                      })
-                    }
-                  />
-                </label>
-                <label>
-                  付款类别
-                  <FormSelect
-                    value={paymentRequestForm.payment_type}
-                    onChange={(event) =>
-                      setPaymentRequestForm({ ...paymentRequestForm, payment_type: event.target.value })
-                    }
+                  <label>
+                    发票搜索
+                    <Input
+                      value={invoiceSearch}
+                      onChange={(event) => setInvoiceSearch(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    付款状态
+                    <FormSelect
+                      value={invoiceStatusFilter}
+                      onChange={(event) => setInvoiceStatusFilter(event.target.value)}
+                    >
+                      <option value="">全部状态</option>
+                      {supplierInvoiceStatusOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    供应商标识
+                    <Input
+                      value={invoiceSupplierFilter}
+                      onChange={(event) => setInvoiceSupplierFilter(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    采购合同号
+                    <Input
+                      value={invoiceContractFilter}
+                      onChange={(event) => setInvoiceContractFilter(event.target.value)}
+                    />
+                  </label>
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    查询
+                  </Button>
+                  <Button
+                    type="primary"
+                    icon={<Plus size={16} />}
+                    onClick={() => setInvoiceModalOpen(true)}
                   >
-                    {paymentTypeOptions.map((item) => (
-                      <option key={item.value} value={item.value}>
-                        {item.label}
-                      </option>
-                    ))}
-                  </FormSelect>
-                </label>
-                <label>
-                  申请日期
-                  <Input
-                    type="date"
-                    value={paymentRequestForm.request_date}
-                    onChange={(event) =>
-                      setPaymentRequestForm({ ...paymentRequestForm, request_date: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  申请金额
-                  <Input
-                    value={paymentRequestForm.requested_amount}
-                    onChange={(event) =>
-                      setPaymentRequestForm({ ...paymentRequestForm, requested_amount: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  币种
-                  <Input
-                    value={paymentRequestForm.currency}
-                    onChange={(event) =>
-                      setPaymentRequestForm({ ...paymentRequestForm, currency: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  申请备注
-                  <Input
-                    value={paymentRequestForm.remark}
-                    onChange={(event) =>
-                      setPaymentRequestForm({ ...paymentRequestForm, remark: event.target.value })
-                    }
-                  />
-                </label>
-                <ApprovalAssigneeSelect
-                  currentUserId={currentUser.id}
-                  onChange={(reviewer_id) =>
-                    setPaymentRequestForm({ ...paymentRequestForm, reviewer_id })
-                  }
-                  requiredPermission="finance:view"
-                  value={paymentRequestForm.reviewer_id}
-                />
+                    发票登记
+                  </Button>
+                </form>
               </div>
-              <Button
-                htmlType="submit"
-                icon={<Save size={16} />}
-                loading={submittingPaymentRequest}
-                disabled={!selectedSupplierInvoice || !paymentRequestForm.reviewer_id}
-              >
-                新增付款申请
-              </Button>
-            </form>
-            <form className="record-form compact-section" onSubmit={submitPaymentApproval}>
-              <div className="form-divider">付款审批</div>
-              <div className="finance-payment-fields">
-                <label>
-                  审批金额
-                  <Input
-                    value={paymentApprovalForm.approved_amount}
-                    onChange={(event) =>
-                      setPaymentApprovalForm({ ...paymentApprovalForm, approved_amount: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  审批日期
-                  <Input
-                    type="date"
-                    value={paymentApprovalForm.approved_at}
-                    onChange={(event) =>
-                      setPaymentApprovalForm({ ...paymentApprovalForm, approved_at: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  审批人
-                  <Input
-                    disabled
-                    value={selectedPaymentRequest?.reviewer_name ?? ''}
-                  />
-                </label>
-                <label>
-                  付款账号
-                  <Input
-                    value={paymentApprovalForm.payment_account}
-                    onChange={(event) =>
-                      setPaymentApprovalForm({ ...paymentApprovalForm, payment_account: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  审批备注
-                  <Input
-                    value={paymentApprovalForm.remark}
-                    onChange={(event) =>
-                      setPaymentApprovalForm({ ...paymentApprovalForm, remark: event.target.value })
-                    }
-                  />
-                </label>
-              </div>
-              <Button
-                htmlType="submit"
-                icon={<CheckCircle2 size={16} />}
-                loading={submittingPaymentApproval}
-                disabled={!selectedPaymentRequestCanApprove}
-              >
-                审批付款
-              </Button>
-              {selectedPaymentRequest?.status === 'submitted' && !selectedPaymentRequestCanApprove ? (
-                <Alert
-                  showIcon
-                  type="info"
-                  message={`等待 ${selectedPaymentRequest.reviewer_name ?? '指定审批人'} 审批`}
-                />
-              ) : null}
-            </form>
-          </div>
-          <section className="finance-allocation-history">
-            <strong>付款申请列表</strong>
-            <Table<SupplierPaymentRequest>
-              columns={[
-                {
-                  title: '申请号',
-                  dataIndex: 'request_no',
-                  render: (value: string) => (
-                    <button className="row-button" type="button">
-                      {value}
-                    </button>
-                  ),
-                },
-                { title: '状态', dataIndex: 'status', render: paymentRequestStatusTag },
-                { title: '类别', dataIndex: 'payment_type', render: paymentTypeLabel },
-                { title: '供应商', dataIndex: 'supplier_name' },
-                { title: '发票号', dataIndex: 'supplier_invoice_no' },
-                {
-                  title: '申请金额',
-                  dataIndex: 'requested_amount',
-                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
-                },
-                {
-                  title: '已付',
-                  dataIndex: 'paid_amount',
-                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
-                },
-              ]}
-              dataSource={paymentRequests}
-              loading={loadingPaymentRequests}
-              pagination={false}
-              rowClassName={(record) => (record.id === selectedPaymentRequest?.id ? 'selected-row' : '')}
-              rowKey="id"
-              size="small"
-              onRow={(record) => ({
-                onClick: () => {
-                  setSelectedPaymentRequestId(record.id)
-                  setPaymentApprovalForm(
-                    initialPaymentApprovalForm(record.requested_amount, currentUser.display_name),
-                  )
-                },
-              })}
-            />
-          </section>
-        </section>
-        ) : null}
+              <Table<SupplierInvoice>
+                columns={[
+                  {
+                    title: '供应商发票',
+                    dataIndex: 'invoice_no',
+                    render: (value: string) => (
+                      <button className="row-button" type="button">
+                        {value}
+                      </button>
+                    ),
+                  },
+                  { title: '状态', dataIndex: 'status', render: supplierInvoiceStatusTag },
+                  { title: '供应商', dataIndex: 'supplier_name' },
+                  { title: '采购合同', dataIndex: 'purchase_contract_no', render: nullableText },
+                  {
+                    title: '发票金额',
+                    dataIndex: 'total_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '未付',
+                    dataIndex: 'unpaid_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                ]}
+                dataSource={supplierInvoices}
+                loading={loadingSupplierInvoices}
+                pagination={false}
+                rowClassName={(record) =>
+                  record.id === selectedSupplierInvoice?.id ? 'selected-row' : ''
+                }
+                rowKey="id"
+                size="small"
+                onRow={(record) => ({
+                  onClick: () => {
+                    setSelectedSupplierInvoiceId(record.id)
+                    setPaymentRequestForm(initialPaymentRequestForm(record))
+                    setPaymentApprovalForm(
+                      initialPaymentApprovalForm(record.unpaid_amount, currentUser.display_name),
+                    )
+                    goDetail('payments', record.id)
+                  },
+                })}
+              />
+            </section>
+          ) : null}
 
-        {!detailId ? (
-        <section className="workspace-panel finance-payable-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<ShieldCheck size={18} />} title="应付账款查询" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadPayables()
-              }}
+          {!detailId ? (
+            <Modal
+              centered
+              footer={null}
+              open={invoiceModalOpen}
+              title="供应商发票登记"
+              width={760}
+              onCancel={() => setInvoiceModalOpen(false)}
             >
-              <label>
-                应付搜索
-                <Input value={payableSearch} onChange={(event) => setPayableSearch(event.target.value)} />
-              </label>
-              <label>
-                应付状态
-                <FormSelect
-                  value={payableStatusFilter}
-                  onChange={(event) => setPayableStatusFilter(event.target.value)}
+              <form
+                className="record-form"
+                onSubmit={(e) => {
+                  submitSupplierInvoice(e)
+                  setInvoiceModalOpen(false)
+                }}
+              >
+                <div className="form-pair two">
+                  <label>
+                    供应商发票号
+                    <Input
+                      value={supplierInvoiceForm.invoice_no}
+                      onChange={(event) =>
+                        setSupplierInvoiceForm({
+                          ...supplierInvoiceForm,
+                          invoice_no: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    发票日期
+                    <Input
+                      type="date"
+                      value={supplierInvoiceForm.invoice_date}
+                      onChange={(event) =>
+                        setSupplierInvoiceForm({
+                          ...supplierInvoiceForm,
+                          invoice_date: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-pair two">
+                  <label>
+                    供应商标识
+                    <Input
+                      value={supplierInvoiceForm.supplier_id}
+                      onChange={(event) =>
+                        setSupplierInvoiceForm({
+                          ...supplierInvoiceForm,
+                          supplier_id: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    供应商名称
+                    <Input
+                      value={supplierInvoiceForm.supplier_name}
+                      onChange={(event) =>
+                        setSupplierInvoiceForm({
+                          ...supplierInvoiceForm,
+                          supplier_name: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-pair two">
+                  <label>
+                    开票通知标识
+                    <Input
+                      value={supplierInvoiceForm.purchase_invoice_notice_id}
+                      onChange={(event) =>
+                        setSupplierInvoiceForm({
+                          ...supplierInvoiceForm,
+                          purchase_invoice_notice_id: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    开票通知编号
+                    <Input
+                      value={supplierInvoiceForm.purchase_invoice_notice_code}
+                      onChange={(event) =>
+                        setSupplierInvoiceForm({
+                          ...supplierInvoiceForm,
+                          purchase_invoice_notice_code: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-pair two">
+                  <label>
+                    采购合同标识
+                    <Input
+                      value={supplierInvoiceForm.purchase_contract_id}
+                      onChange={(event) =>
+                        setSupplierInvoiceForm({
+                          ...supplierInvoiceForm,
+                          purchase_contract_id: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    采购合同号
+                    <Input
+                      value={supplierInvoiceForm.purchase_contract_no}
+                      onChange={(event) =>
+                        setSupplierInvoiceForm({
+                          ...supplierInvoiceForm,
+                          purchase_contract_no: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-pair three">
+                  <label>
+                    发票金额
+                    <Input
+                      value={supplierInvoiceForm.total_amount}
+                      onChange={(event) =>
+                        setSupplierInvoiceForm({
+                          ...supplierInvoiceForm,
+                          total_amount: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    币种
+                    <Input
+                      value={supplierInvoiceForm.currency}
+                      onChange={(event) =>
+                        setSupplierInvoiceForm({
+                          ...supplierInvoiceForm,
+                          currency: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    到期日
+                    <Input
+                      type="date"
+                      value={supplierInvoiceForm.due_date}
+                      onChange={(event) =>
+                        setSupplierInvoiceForm({
+                          ...supplierInvoiceForm,
+                          due_date: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <label>
+                  备注
+                  <Input
+                    value={supplierInvoiceForm.remark}
+                    onChange={(event) =>
+                      setSupplierInvoiceForm({ ...supplierInvoiceForm, remark: event.target.value })
+                    }
+                  />
+                </label>
+                <div className="modal-actions">
+                  <button
+                    className="secondary-inline"
+                    type="button"
+                    onClick={() => setInvoiceModalOpen(false)}
+                  >
+                    取消
+                  </button>
+                  <button
+                    className="inline-submit"
+                    disabled={submittingSupplierInvoice}
+                    type="submit"
+                  >
+                    登记供应商发票
+                  </button>
+                </div>
+              </form>
+            </Modal>
+          ) : null}
+
+          {detailId ? (
+            <section className="workspace-panel finance-payment-request-panel">
+              <PanelTitle icon={<CheckCircle2 size={18} />} title="付款申请和审批" />
+              {selectedSupplierInvoice ? (
+                <dl className="detail-list finance-payment-detail-list">
+                  <div>
+                    <dt>当前发票</dt>
+                    <dd>{selectedSupplierInvoice.invoice_no}</dd>
+                  </div>
+                  <div>
+                    <dt>状态</dt>
+                    <dd>{supplierInvoiceStatusLabel(selectedSupplierInvoice.status)}</dd>
+                  </div>
+                  <div>
+                    <dt>已付</dt>
+                    <dd>
+                      {formatFinanceAmount(
+                        selectedSupplierInvoice.paid_amount,
+                        selectedSupplierInvoice.currency,
+                      )}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>未付</dt>
+                    <dd>
+                      {formatFinanceAmount(
+                        selectedSupplierInvoice.unpaid_amount,
+                        selectedSupplierInvoice.currency,
+                      )}
+                    </dd>
+                  </div>
+                </dl>
+              ) : (
+                <div className="module-state">暂无供应商发票</div>
+              )}
+              <div className="finance-receipt-actions">
+                <form className="record-form compact-section" onSubmit={submitPaymentRequest}>
+                  <div className="form-divider">付款申请新增</div>
+                  <div className="finance-payment-fields">
+                    <label>
+                      付款申请号
+                      <Input
+                        value={paymentRequestForm.request_no}
+                        onChange={(event) =>
+                          setPaymentRequestForm({
+                            ...paymentRequestForm,
+                            request_no: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      供应商发票标识
+                      <Input
+                        value={paymentRequestForm.supplier_invoice_id}
+                        onChange={(event) =>
+                          setPaymentRequestForm({
+                            ...paymentRequestForm,
+                            supplier_invoice_id: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      付款类别
+                      <FormSelect
+                        value={paymentRequestForm.payment_type}
+                        onChange={(event) =>
+                          setPaymentRequestForm({
+                            ...paymentRequestForm,
+                            payment_type: event.target.value,
+                          })
+                        }
+                      >
+                        {paymentTypeOptions.map((item) => (
+                          <option key={item.value} value={item.value}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </FormSelect>
+                    </label>
+                    <label>
+                      申请日期
+                      <Input
+                        type="date"
+                        value={paymentRequestForm.request_date}
+                        onChange={(event) =>
+                          setPaymentRequestForm({
+                            ...paymentRequestForm,
+                            request_date: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      申请金额
+                      <Input
+                        value={paymentRequestForm.requested_amount}
+                        onChange={(event) =>
+                          setPaymentRequestForm({
+                            ...paymentRequestForm,
+                            requested_amount: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      币种
+                      <Input
+                        value={paymentRequestForm.currency}
+                        onChange={(event) =>
+                          setPaymentRequestForm({
+                            ...paymentRequestForm,
+                            currency: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      申请备注
+                      <Input
+                        value={paymentRequestForm.remark}
+                        onChange={(event) =>
+                          setPaymentRequestForm({
+                            ...paymentRequestForm,
+                            remark: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <ApprovalAssigneeSelect
+                      currentUserId={currentUser.id}
+                      onChange={(reviewer_id) =>
+                        setPaymentRequestForm({ ...paymentRequestForm, reviewer_id })
+                      }
+                      requiredPermission="finance:view"
+                      value={paymentRequestForm.reviewer_id}
+                    />
+                  </div>
+                  <Button
+                    htmlType="submit"
+                    icon={<Save size={16} />}
+                    loading={submittingPaymentRequest}
+                    disabled={!selectedSupplierInvoice || !paymentRequestForm.reviewer_id}
+                  >
+                    新增付款申请
+                  </Button>
+                </form>
+                <form className="record-form compact-section" onSubmit={submitPaymentApproval}>
+                  <div className="form-divider">付款审批</div>
+                  <div className="finance-payment-fields">
+                    <label>
+                      审批金额
+                      <Input
+                        value={paymentApprovalForm.approved_amount}
+                        onChange={(event) =>
+                          setPaymentApprovalForm({
+                            ...paymentApprovalForm,
+                            approved_amount: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      审批日期
+                      <Input
+                        type="date"
+                        value={paymentApprovalForm.approved_at}
+                        onChange={(event) =>
+                          setPaymentApprovalForm({
+                            ...paymentApprovalForm,
+                            approved_at: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      审批人
+                      <Input disabled value={selectedPaymentRequest?.reviewer_name ?? ''} />
+                    </label>
+                    <label>
+                      付款账号
+                      <Input
+                        value={paymentApprovalForm.payment_account}
+                        onChange={(event) =>
+                          setPaymentApprovalForm({
+                            ...paymentApprovalForm,
+                            payment_account: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      审批备注
+                      <Input
+                        value={paymentApprovalForm.remark}
+                        onChange={(event) =>
+                          setPaymentApprovalForm({
+                            ...paymentApprovalForm,
+                            remark: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <Button
+                    htmlType="submit"
+                    icon={<CheckCircle2 size={16} />}
+                    loading={submittingPaymentApproval}
+                    disabled={!selectedPaymentRequestCanApprove}
+                  >
+                    审批付款
+                  </Button>
+                  {selectedPaymentRequest?.status === 'submitted' &&
+                  !selectedPaymentRequestCanApprove ? (
+                    <Alert
+                      showIcon
+                      type="info"
+                      message={`等待 ${selectedPaymentRequest.reviewer_name ?? '指定审批人'} 审批`}
+                    />
+                  ) : null}
+                </form>
+              </div>
+              <section className="finance-allocation-history">
+                <strong>付款申请列表</strong>
+                <Table<SupplierPaymentRequest>
+                  columns={[
+                    {
+                      title: '申请号',
+                      dataIndex: 'request_no',
+                      render: (value: string) => (
+                        <button className="row-button" type="button">
+                          {value}
+                        </button>
+                      ),
+                    },
+                    { title: '状态', dataIndex: 'status', render: paymentRequestStatusTag },
+                    { title: '类别', dataIndex: 'payment_type', render: paymentTypeLabel },
+                    { title: '供应商', dataIndex: 'supplier_name' },
+                    { title: '发票号', dataIndex: 'supplier_invoice_no' },
+                    {
+                      title: '申请金额',
+                      dataIndex: 'requested_amount',
+                      render: (value: string, record) =>
+                        formatFinanceAmount(value, record.currency),
+                    },
+                    {
+                      title: '已付',
+                      dataIndex: 'paid_amount',
+                      render: (value: string, record) =>
+                        formatFinanceAmount(value, record.currency),
+                    },
+                  ]}
+                  dataSource={paymentRequests}
+                  loading={loadingPaymentRequests}
+                  pagination={false}
+                  rowClassName={(record) =>
+                    record.id === selectedPaymentRequest?.id ? 'selected-row' : ''
+                  }
+                  rowKey="id"
+                  size="small"
+                  onRow={(record) => ({
+                    onClick: () => {
+                      setSelectedPaymentRequestId(record.id)
+                      setPaymentApprovalForm(
+                        initialPaymentApprovalForm(
+                          record.requested_amount,
+                          currentUser.display_name,
+                        ),
+                      )
+                    },
+                  })}
+                />
+              </section>
+            </section>
+          ) : null}
+
+          {!detailId ? (
+            <section className="workspace-panel finance-payable-panel">
+              <div className="panel-heading toolbar-heading">
+                <PanelTitle icon={<ShieldCheck size={18} />} title="应付账款查询" />
+                <form
+                  className="inline-filters single-line-filter-toolbar"
+                  onSubmit={(event) => {
+                    event.preventDefault()
+                    void loadPayables()
+                  }}
                 >
-                  <option value="">全部状态</option>
-                  {supplierInvoiceStatusOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                供应商标识
-                <Input
-                  value={payableSupplierFilter}
-                  onChange={(event) => setPayableSupplierFilter(event.target.value)}
-                />
-              </label>
-              <label>
-                采购合同号
-                <Input
-                  value={payableContractFilter}
-                  onChange={(event) => setPayableContractFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-            </form>
-          </div>
-          <Table<PayableItem>
-            columns={[
-              { title: '供应商发票', dataIndex: 'invoice_no', render: (value: string) => <strong>{value}</strong> },
-              { title: '供应商', dataIndex: 'supplier_name' },
-              { title: '采购合同', dataIndex: 'purchase_contract_no', render: nullableText },
-              {
-                title: '发票金额',
-                dataIndex: 'total_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '已付款',
-                dataIndex: 'paid_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '应付余额',
-                dataIndex: 'payable_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              { title: '状态', dataIndex: 'status', render: supplierInvoiceStatusTag },
-            ]}
-            dataSource={payables}
-            loading={loadingPayables}
-            pagination={false}
-            rowKey="supplier_invoice_id"
-            size="small"
-          />
-        </section>
-        ) : null}
+                  <label>
+                    应付搜索
+                    <Input
+                      value={payableSearch}
+                      onChange={(event) => setPayableSearch(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    应付状态
+                    <FormSelect
+                      value={payableStatusFilter}
+                      onChange={(event) => setPayableStatusFilter(event.target.value)}
+                    >
+                      <option value="">全部状态</option>
+                      {supplierInvoiceStatusOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    供应商标识
+                    <Input
+                      value={payableSupplierFilter}
+                      onChange={(event) => setPayableSupplierFilter(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    采购合同号
+                    <Input
+                      value={payableContractFilter}
+                      onChange={(event) => setPayableContractFilter(event.target.value)}
+                    />
+                  </label>
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    查询
+                  </Button>
+                </form>
+              </div>
+              <Table<PayableItem>
+                columns={[
+                  {
+                    title: '供应商发票',
+                    dataIndex: 'invoice_no',
+                    render: (value: string) => <strong>{value}</strong>,
+                  },
+                  { title: '供应商', dataIndex: 'supplier_name' },
+                  { title: '采购合同', dataIndex: 'purchase_contract_no', render: nullableText },
+                  {
+                    title: '发票金额',
+                    dataIndex: 'total_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '已付款',
+                    dataIndex: 'paid_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '应付余额',
+                    dataIndex: 'payable_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  { title: '状态', dataIndex: 'status', render: supplierInvoiceStatusTag },
+                ]}
+                dataSource={payables}
+                loading={loadingPayables}
+                pagination={false}
+                rowKey="supplier_invoice_id"
+                size="small"
+              />
+            </section>
+          ) : null}
         </section>
       </section>
     )
@@ -2932,599 +3480,716 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
           className={detailId ? 'finance-detail-grid' : 'finance-fee-grid'}
           aria-label="付费管理"
         >
-        {!detailId ? (
-        <section className="workspace-panel finance-fee-list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Wallet size={18} />} title="合作伙伴费用发票" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadPartnerFeeInvoices()
-              }}
-            >
-              <label>
-                费用发票搜索
-                <Input value={feeInvoiceSearch} onChange={(event) => setFeeInvoiceSearch(event.target.value)} />
-              </label>
-              <label>
-                发票状态
-                <FormSelect
-                  value={feeInvoiceStatusFilter}
-                  onChange={(event) => setFeeInvoiceStatusFilter(event.target.value)}
+          {!detailId ? (
+            <section className="workspace-panel finance-fee-list-panel">
+              <div className="panel-heading toolbar-heading">
+                <PanelTitle icon={<Wallet size={18} />} title="合作伙伴费用发票" />
+                <form
+                  className="inline-filters single-line-filter-toolbar"
+                  onSubmit={(event) => {
+                    event.preventDefault()
+                    void loadPartnerFeeInvoices()
+                  }}
                 >
-                  <option value="">全部状态</option>
-                  {partnerFeeInvoiceStatusOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                费用类型
-                <FormSelect value={feeInvoiceTypeFilter} onChange={(event) => setFeeInvoiceTypeFilter(event.target.value)}>
-                  <option value="">全部类型</option>
-                  {feeTypeOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                合作伙伴标识
-                <Input
-                  value={feeInvoicePartnerFilter}
-                  onChange={(event) => setFeeInvoicePartnerFilter(event.target.value)}
-                />
-              </label>
-              <label>
-                出运单号
-                <Input
-                  value={feeInvoiceShipmentFilter}
-                  onChange={(event) => setFeeInvoiceShipmentFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-              <Button icon={<Plus size={16} />} onClick={() => setFeeInvoiceModalOpen(true)}>
-                发票登记
-              </Button>
-            </form>
-          </div>
-          <Table<PartnerFeeInvoice>
-            columns={[
-              {
-                title: '费用发票',
-                dataIndex: 'invoice_no',
-                render: (value: string) => (
-                  <button className="row-button" type="button">
-                    {value}
-                  </button>
-                ),
-              },
-              { title: '状态', dataIndex: 'status', render: partnerFeeInvoiceStatusTag },
-              { title: '合作伙伴', dataIndex: 'partner_name' },
-              { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
-              { title: '费用类型', dataIndex: 'fee_type', render: feeTypeLabel },
-              {
-                title: '发票金额',
-                dataIndex: 'total_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '未付',
-                dataIndex: 'unpaid_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-            ]}
-            dataSource={partnerFeeInvoices}
-            loading={loadingPartnerFeeInvoices}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedPartnerFeeInvoice?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => {
-                setSelectedPartnerFeeInvoiceId(record.id)
-                setFeePaymentRequestForm(initialFeePaymentRequestForm(record))
-                setFeePaymentApprovalForm(
-                  initialFeePaymentApprovalForm(record.unpaid_amount, currentUser.display_name),
-                )
-                goDetail('fees', record.id)
-              },
-            })}
-          />
-        </section>
-        ) : null}
-
-        {!detailId ? (
-        <Modal
-          centered
-          footer={null}
-          open={feeInvoiceModalOpen}
-          title="费用发票登记"
-          width={760}
-          onCancel={() => setFeeInvoiceModalOpen(false)}
-        >
-                    <form className="record-form" onSubmit={(e) => { submitPartnerFeeInvoice(e); setFeeInvoiceModalOpen(false) }}>
-            <div className="form-pair two">
-              <label>
-                费用发票号
-                <Input
-                  value={partnerFeeInvoiceForm.invoice_no}
-                  onChange={(event) =>
-                    setPartnerFeeInvoiceForm({ ...partnerFeeInvoiceForm, invoice_no: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                发票日期
-                <Input
-                  type="date"
-                  value={partnerFeeInvoiceForm.invoice_date}
-                  onChange={(event) =>
-                    setPartnerFeeInvoiceForm({ ...partnerFeeInvoiceForm, invoice_date: event.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                合作伙伴标识
-                <Input
-                  value={partnerFeeInvoiceForm.partner_id}
-                  onChange={(event) =>
-                    setPartnerFeeInvoiceForm({ ...partnerFeeInvoiceForm, partner_id: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                合作伙伴名称
-                <Input
-                  value={partnerFeeInvoiceForm.partner_name}
-                  onChange={(event) =>
-                    setPartnerFeeInvoiceForm({ ...partnerFeeInvoiceForm, partner_name: event.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                合作伙伴类型
-                <FormSelect
-                  value={partnerFeeInvoiceForm.partner_type}
-                  onChange={(event) =>
-                    setPartnerFeeInvoiceForm({ ...partnerFeeInvoiceForm, partner_type: event.target.value })
-                  }
-                >
-                  <option value="">自动匹配</option>
-                  {partnerTypeOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                费用类型
-                <FormSelect
-                  value={partnerFeeInvoiceForm.fee_type}
-                  onChange={(event) =>
-                    setPartnerFeeInvoiceForm({ ...partnerFeeInvoiceForm, fee_type: event.target.value })
-                  }
-                >
-                  {feeTypeOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                出运单标识
-                <Input
-                  value={partnerFeeInvoiceForm.shipment_plan_id}
-                  onChange={(event) =>
-                    setPartnerFeeInvoiceForm({ ...partnerFeeInvoiceForm, shipment_plan_id: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                出运单号
-                <Input
-                  value={partnerFeeInvoiceForm.shipment_no}
-                  onChange={(event) =>
-                    setPartnerFeeInvoiceForm({ ...partnerFeeInvoiceForm, shipment_no: event.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                业务员标识
-                <Input
-                  value={partnerFeeInvoiceForm.sales_user_id}
-                  onChange={(event) =>
-                    setPartnerFeeInvoiceForm({ ...partnerFeeInvoiceForm, sales_user_id: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                业务员姓名
-                <Input
-                  value={partnerFeeInvoiceForm.sales_user_name}
-                  onChange={(event) =>
-                    setPartnerFeeInvoiceForm({ ...partnerFeeInvoiceForm, sales_user_name: event.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair three">
-              <label>
-                发票金额
-                <Input
-                  value={partnerFeeInvoiceForm.total_amount}
-                  onChange={(event) =>
-                    setPartnerFeeInvoiceForm({ ...partnerFeeInvoiceForm, total_amount: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                币种
-                <Input
-                  value={partnerFeeInvoiceForm.currency}
-                  onChange={(event) =>
-                    setPartnerFeeInvoiceForm({ ...partnerFeeInvoiceForm, currency: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                到期日
-                <Input
-                  type="date"
-                  value={partnerFeeInvoiceForm.due_date}
-                  onChange={(event) =>
-                    setPartnerFeeInvoiceForm({ ...partnerFeeInvoiceForm, due_date: event.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <label>
-              备注
-              <Input
-                value={partnerFeeInvoiceForm.remark}
-                onChange={(event) =>
-                  setPartnerFeeInvoiceForm({ ...partnerFeeInvoiceForm, remark: event.target.value })
+                  <label>
+                    费用发票搜索
+                    <Input
+                      value={feeInvoiceSearch}
+                      onChange={(event) => setFeeInvoiceSearch(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    发票状态
+                    <FormSelect
+                      value={feeInvoiceStatusFilter}
+                      onChange={(event) => setFeeInvoiceStatusFilter(event.target.value)}
+                    >
+                      <option value="">全部状态</option>
+                      {partnerFeeInvoiceStatusOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    费用类型
+                    <FormSelect
+                      value={feeInvoiceTypeFilter}
+                      onChange={(event) => setFeeInvoiceTypeFilter(event.target.value)}
+                    >
+                      <option value="">全部类型</option>
+                      {feeTypeOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    合作伙伴标识
+                    <Input
+                      value={feeInvoicePartnerFilter}
+                      onChange={(event) => setFeeInvoicePartnerFilter(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    出运单号
+                    <Input
+                      value={feeInvoiceShipmentFilter}
+                      onChange={(event) => setFeeInvoiceShipmentFilter(event.target.value)}
+                    />
+                  </label>
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    查询
+                  </Button>
+                  <Button
+                    type="primary"
+                    icon={<Plus size={16} />}
+                    onClick={() => setFeeInvoiceModalOpen(true)}
+                  >
+                    发票登记
+                  </Button>
+                </form>
+              </div>
+              <Table<PartnerFeeInvoice>
+                columns={[
+                  {
+                    title: '费用发票',
+                    dataIndex: 'invoice_no',
+                    render: (value: string) => (
+                      <button className="row-button" type="button">
+                        {value}
+                      </button>
+                    ),
+                  },
+                  { title: '状态', dataIndex: 'status', render: partnerFeeInvoiceStatusTag },
+                  { title: '合作伙伴', dataIndex: 'partner_name' },
+                  { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
+                  { title: '费用类型', dataIndex: 'fee_type', render: feeTypeLabel },
+                  {
+                    title: '发票金额',
+                    dataIndex: 'total_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '未付',
+                    dataIndex: 'unpaid_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                ]}
+                dataSource={partnerFeeInvoices}
+                loading={loadingPartnerFeeInvoices}
+                pagination={false}
+                rowClassName={(record) =>
+                  record.id === selectedPartnerFeeInvoice?.id ? 'selected-row' : ''
                 }
+                rowKey="id"
+                size="small"
+                onRow={(record) => ({
+                  onClick: () => {
+                    setSelectedPartnerFeeInvoiceId(record.id)
+                    setFeePaymentRequestForm(initialFeePaymentRequestForm(record))
+                    setFeePaymentApprovalForm(
+                      initialFeePaymentApprovalForm(record.unpaid_amount, currentUser.display_name),
+                    )
+                    goDetail('fees', record.id)
+                  },
+                })}
               />
-            </label>
-            <div className="modal-actions">
-              <button className="secondary-inline" type="button" onClick={() => setFeeInvoiceModalOpen(false)}>
-                取消
-              </button>
-              <button className="inline-submit" disabled={submittingPartnerFeeInvoice} type="submit">
-                登记费用发票
-              </button>
-            </div>
-          </form>
-        </Modal>
-        ) : null}
+            </section>
+          ) : null}
 
-        {detailId ? (
-        <section className="workspace-panel finance-fee-request-panel">
-          <PanelTitle icon={<CheckCircle2 size={18} />} title="付费申请和审批" />
-          {selectedPartnerFeeInvoice ? (
-            <dl className="detail-list finance-fee-detail-list">
-              <div>
-                <dt>当前费用发票</dt>
-                <dd>{selectedPartnerFeeInvoice.invoice_no}</dd>
-              </div>
-              <div>
-                <dt>费用类型</dt>
-                <dd>{feeTypeLabel(selectedPartnerFeeInvoice.fee_type)}</dd>
-              </div>
-              <div>
-                <dt>已付</dt>
-                <dd>{formatFinanceAmount(selectedPartnerFeeInvoice.paid_amount, selectedPartnerFeeInvoice.currency)}</dd>
-              </div>
-              <div>
-                <dt>未付</dt>
-                <dd>{formatFinanceAmount(selectedPartnerFeeInvoice.unpaid_amount, selectedPartnerFeeInvoice.currency)}</dd>
-              </div>
-            </dl>
-          ) : (
-            <div className="module-state">暂无合作伙伴费用发票</div>
-          )}
-          <div className="finance-receipt-actions">
-            <form className="record-form compact-section" onSubmit={submitFeePaymentRequest}>
-              <div className="form-divider">付费申请新增</div>
-              <div className="finance-payment-fields">
-                <label>
-                  付费申请号
-                  <Input
-                    value={feePaymentRequestForm.request_no}
-                    onChange={(event) =>
-                      setFeePaymentRequestForm({ ...feePaymentRequestForm, request_no: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  费用发票标识
-                  <Input
-                    value={feePaymentRequestForm.partner_fee_invoice_id}
-                    onChange={(event) =>
-                      setFeePaymentRequestForm({
-                        ...feePaymentRequestForm,
-                        partner_fee_invoice_id: event.target.value,
-                      })
-                    }
-                  />
-                </label>
-                <label>
-                  申请日期
-                  <Input
-                    type="date"
-                    value={feePaymentRequestForm.request_date}
-                    onChange={(event) =>
-                      setFeePaymentRequestForm({ ...feePaymentRequestForm, request_date: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  申请金额
-                  <Input
-                    value={feePaymentRequestForm.requested_amount}
-                    onChange={(event) =>
-                      setFeePaymentRequestForm({ ...feePaymentRequestForm, requested_amount: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  币种
-                  <Input
-                    value={feePaymentRequestForm.currency}
-                    onChange={(event) =>
-                      setFeePaymentRequestForm({ ...feePaymentRequestForm, currency: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  申请备注
-                  <Input
-                    value={feePaymentRequestForm.remark}
-                    onChange={(event) =>
-                      setFeePaymentRequestForm({ ...feePaymentRequestForm, remark: event.target.value })
-                    }
-                  />
-                </label>
-                <ApprovalAssigneeSelect
-                  currentUserId={currentUser.id}
-                  onChange={(reviewer_id) =>
-                    setFeePaymentRequestForm({ ...feePaymentRequestForm, reviewer_id })
-                  }
-                  requiredPermission="finance:view"
-                  value={feePaymentRequestForm.reviewer_id}
-                />
-              </div>
-              <Button
-                htmlType="submit"
-                icon={<Save size={16} />}
-                loading={submittingFeePaymentRequest}
-                disabled={!selectedPartnerFeeInvoice || !feePaymentRequestForm.reviewer_id}
-              >
-                新增付费申请
-              </Button>
-            </form>
-            <form className="record-form compact-section" onSubmit={submitFeePaymentApproval}>
-              <div className="form-divider">付费审批</div>
-              <div className="finance-payment-fields">
-                <label>
-                  审批金额
-                  <Input
-                    value={feePaymentApprovalForm.approved_amount}
-                    onChange={(event) =>
-                      setFeePaymentApprovalForm({ ...feePaymentApprovalForm, approved_amount: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  审批日期
-                  <Input
-                    type="date"
-                    value={feePaymentApprovalForm.approved_at}
-                    onChange={(event) =>
-                      setFeePaymentApprovalForm({ ...feePaymentApprovalForm, approved_at: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  审批人
-                  <Input
-                    disabled
-                    value={selectedFeePaymentRequest?.reviewer_name ?? ''}
-                  />
-                </label>
-                <label>
-                  付款账号
-                  <Input
-                    value={feePaymentApprovalForm.payment_account}
-                    onChange={(event) =>
-                      setFeePaymentApprovalForm({
-                        ...feePaymentApprovalForm,
-                        payment_account: event.target.value,
-                      })
-                    }
-                  />
-                </label>
-                <label>
-                  审批备注
-                  <Input
-                    value={feePaymentApprovalForm.remark}
-                    onChange={(event) =>
-                      setFeePaymentApprovalForm({ ...feePaymentApprovalForm, remark: event.target.value })
-                    }
-                  />
-                </label>
-              </div>
-              <Button
-                htmlType="submit"
-                icon={<CheckCircle2 size={16} />}
-                loading={submittingFeePaymentApproval}
-                disabled={!selectedFeePaymentRequestCanApprove}
-              >
-                审批付费
-              </Button>
-              {selectedFeePaymentRequest?.status === 'submitted' && !selectedFeePaymentRequestCanApprove ? (
-                <Alert
-                  showIcon
-                  type="info"
-                  message={`等待 ${selectedFeePaymentRequest.reviewer_name ?? '指定审批人'} 审批`}
-                />
-              ) : null}
-            </form>
-          </div>
-          <section className="finance-allocation-history">
-            <strong>付费申请列表</strong>
-            <Table<FeePaymentRequest>
-              columns={[
-                {
-                  title: '申请号',
-                  dataIndex: 'request_no',
-                  render: (value: string) => (
-                    <button className="row-button" type="button">
-                      {value}
-                    </button>
-                  ),
-                },
-                { title: '状态', dataIndex: 'status', render: feePaymentRequestStatusTag },
-                { title: '费用类型', dataIndex: 'fee_type', render: feeTypeLabel },
-                { title: '合作伙伴', dataIndex: 'partner_name' },
-                { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
-                {
-                  title: '申请金额',
-                  dataIndex: 'requested_amount',
-                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
-                },
-                {
-                  title: '已付',
-                  dataIndex: 'paid_amount',
-                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
-                },
-              ]}
-              dataSource={feePaymentRequests}
-              loading={loadingFeePaymentRequests}
-              pagination={false}
-              rowClassName={(record) => (record.id === selectedFeePaymentRequest?.id ? 'selected-row' : '')}
-              rowKey="id"
-              size="small"
-              onRow={(record) => ({
-                onClick: () => {
-                  setSelectedFeePaymentRequestId(record.id)
-                  setFeePaymentApprovalForm(
-                    initialFeePaymentApprovalForm(record.requested_amount, currentUser.display_name),
-                  )
-                },
-              })}
-            />
-          </section>
-        </section>
-        ) : null}
-
-        {!detailId ? (
-        <section className="workspace-panel finance-fee-payable-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<ShieldCheck size={18} />} title="应付费用查询" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadFeePayables()
-              }}
+          {!detailId ? (
+            <Modal
+              centered
+              footer={null}
+              open={feeInvoiceModalOpen}
+              title="费用发票登记"
+              width={760}
+              onCancel={() => setFeeInvoiceModalOpen(false)}
             >
-              <label>
-                应付费用搜索
-                <Input value={feePayableSearch} onChange={(event) => setFeePayableSearch(event.target.value)} />
-              </label>
-              <label>
-                应付状态
-                <FormSelect
-                  value={feePayableStatusFilter}
-                  onChange={(event) => setFeePayableStatusFilter(event.target.value)}
+              <form
+                className="record-form"
+                onSubmit={(e) => {
+                  submitPartnerFeeInvoice(e)
+                  setFeeInvoiceModalOpen(false)
+                }}
+              >
+                <div className="form-pair two">
+                  <label>
+                    费用发票号
+                    <Input
+                      value={partnerFeeInvoiceForm.invoice_no}
+                      onChange={(event) =>
+                        setPartnerFeeInvoiceForm({
+                          ...partnerFeeInvoiceForm,
+                          invoice_no: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    发票日期
+                    <Input
+                      type="date"
+                      value={partnerFeeInvoiceForm.invoice_date}
+                      onChange={(event) =>
+                        setPartnerFeeInvoiceForm({
+                          ...partnerFeeInvoiceForm,
+                          invoice_date: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-pair two">
+                  <label>
+                    合作伙伴标识
+                    <Input
+                      value={partnerFeeInvoiceForm.partner_id}
+                      onChange={(event) =>
+                        setPartnerFeeInvoiceForm({
+                          ...partnerFeeInvoiceForm,
+                          partner_id: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    合作伙伴名称
+                    <Input
+                      value={partnerFeeInvoiceForm.partner_name}
+                      onChange={(event) =>
+                        setPartnerFeeInvoiceForm({
+                          ...partnerFeeInvoiceForm,
+                          partner_name: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-pair two">
+                  <label>
+                    合作伙伴类型
+                    <FormSelect
+                      value={partnerFeeInvoiceForm.partner_type}
+                      onChange={(event) =>
+                        setPartnerFeeInvoiceForm({
+                          ...partnerFeeInvoiceForm,
+                          partner_type: event.target.value,
+                        })
+                      }
+                    >
+                      <option value="">自动匹配</option>
+                      {partnerTypeOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    费用类型
+                    <FormSelect
+                      value={partnerFeeInvoiceForm.fee_type}
+                      onChange={(event) =>
+                        setPartnerFeeInvoiceForm({
+                          ...partnerFeeInvoiceForm,
+                          fee_type: event.target.value,
+                        })
+                      }
+                    >
+                      {feeTypeOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                </div>
+                <div className="form-pair two">
+                  <label>
+                    出运单标识
+                    <Input
+                      value={partnerFeeInvoiceForm.shipment_plan_id}
+                      onChange={(event) =>
+                        setPartnerFeeInvoiceForm({
+                          ...partnerFeeInvoiceForm,
+                          shipment_plan_id: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    出运单号
+                    <Input
+                      value={partnerFeeInvoiceForm.shipment_no}
+                      onChange={(event) =>
+                        setPartnerFeeInvoiceForm({
+                          ...partnerFeeInvoiceForm,
+                          shipment_no: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-pair two">
+                  <label>
+                    业务员标识
+                    <Input
+                      value={partnerFeeInvoiceForm.sales_user_id}
+                      onChange={(event) =>
+                        setPartnerFeeInvoiceForm({
+                          ...partnerFeeInvoiceForm,
+                          sales_user_id: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    业务员姓名
+                    <Input
+                      value={partnerFeeInvoiceForm.sales_user_name}
+                      onChange={(event) =>
+                        setPartnerFeeInvoiceForm({
+                          ...partnerFeeInvoiceForm,
+                          sales_user_name: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-pair three">
+                  <label>
+                    发票金额
+                    <Input
+                      value={partnerFeeInvoiceForm.total_amount}
+                      onChange={(event) =>
+                        setPartnerFeeInvoiceForm({
+                          ...partnerFeeInvoiceForm,
+                          total_amount: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    币种
+                    <Input
+                      value={partnerFeeInvoiceForm.currency}
+                      onChange={(event) =>
+                        setPartnerFeeInvoiceForm({
+                          ...partnerFeeInvoiceForm,
+                          currency: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    到期日
+                    <Input
+                      type="date"
+                      value={partnerFeeInvoiceForm.due_date}
+                      onChange={(event) =>
+                        setPartnerFeeInvoiceForm({
+                          ...partnerFeeInvoiceForm,
+                          due_date: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <label>
+                  备注
+                  <Input
+                    value={partnerFeeInvoiceForm.remark}
+                    onChange={(event) =>
+                      setPartnerFeeInvoiceForm({
+                        ...partnerFeeInvoiceForm,
+                        remark: event.target.value,
+                      })
+                    }
+                  />
+                </label>
+                <div className="modal-actions">
+                  <button
+                    className="secondary-inline"
+                    type="button"
+                    onClick={() => setFeeInvoiceModalOpen(false)}
+                  >
+                    取消
+                  </button>
+                  <button
+                    className="inline-submit"
+                    disabled={submittingPartnerFeeInvoice}
+                    type="submit"
+                  >
+                    登记费用发票
+                  </button>
+                </div>
+              </form>
+            </Modal>
+          ) : null}
+
+          {detailId ? (
+            <section className="workspace-panel finance-fee-request-panel">
+              <PanelTitle icon={<CheckCircle2 size={18} />} title="付费申请和审批" />
+              {selectedPartnerFeeInvoice ? (
+                <dl className="detail-list finance-fee-detail-list">
+                  <div>
+                    <dt>当前费用发票</dt>
+                    <dd>{selectedPartnerFeeInvoice.invoice_no}</dd>
+                  </div>
+                  <div>
+                    <dt>费用类型</dt>
+                    <dd>{feeTypeLabel(selectedPartnerFeeInvoice.fee_type)}</dd>
+                  </div>
+                  <div>
+                    <dt>已付</dt>
+                    <dd>
+                      {formatFinanceAmount(
+                        selectedPartnerFeeInvoice.paid_amount,
+                        selectedPartnerFeeInvoice.currency,
+                      )}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>未付</dt>
+                    <dd>
+                      {formatFinanceAmount(
+                        selectedPartnerFeeInvoice.unpaid_amount,
+                        selectedPartnerFeeInvoice.currency,
+                      )}
+                    </dd>
+                  </div>
+                </dl>
+              ) : (
+                <div className="module-state">暂无合作伙伴费用发票</div>
+              )}
+              <div className="finance-receipt-actions">
+                <form className="record-form compact-section" onSubmit={submitFeePaymentRequest}>
+                  <div className="form-divider">付费申请新增</div>
+                  <div className="finance-payment-fields">
+                    <label>
+                      付费申请号
+                      <Input
+                        value={feePaymentRequestForm.request_no}
+                        onChange={(event) =>
+                          setFeePaymentRequestForm({
+                            ...feePaymentRequestForm,
+                            request_no: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      费用发票标识
+                      <Input
+                        value={feePaymentRequestForm.partner_fee_invoice_id}
+                        onChange={(event) =>
+                          setFeePaymentRequestForm({
+                            ...feePaymentRequestForm,
+                            partner_fee_invoice_id: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      申请日期
+                      <Input
+                        type="date"
+                        value={feePaymentRequestForm.request_date}
+                        onChange={(event) =>
+                          setFeePaymentRequestForm({
+                            ...feePaymentRequestForm,
+                            request_date: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      申请金额
+                      <Input
+                        value={feePaymentRequestForm.requested_amount}
+                        onChange={(event) =>
+                          setFeePaymentRequestForm({
+                            ...feePaymentRequestForm,
+                            requested_amount: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      币种
+                      <Input
+                        value={feePaymentRequestForm.currency}
+                        onChange={(event) =>
+                          setFeePaymentRequestForm({
+                            ...feePaymentRequestForm,
+                            currency: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      申请备注
+                      <Input
+                        value={feePaymentRequestForm.remark}
+                        onChange={(event) =>
+                          setFeePaymentRequestForm({
+                            ...feePaymentRequestForm,
+                            remark: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <ApprovalAssigneeSelect
+                      currentUserId={currentUser.id}
+                      onChange={(reviewer_id) =>
+                        setFeePaymentRequestForm({ ...feePaymentRequestForm, reviewer_id })
+                      }
+                      requiredPermission="finance:view"
+                      value={feePaymentRequestForm.reviewer_id}
+                    />
+                  </div>
+                  <Button
+                    htmlType="submit"
+                    icon={<Save size={16} />}
+                    loading={submittingFeePaymentRequest}
+                    disabled={!selectedPartnerFeeInvoice || !feePaymentRequestForm.reviewer_id}
+                  >
+                    新增付费申请
+                  </Button>
+                </form>
+                <form className="record-form compact-section" onSubmit={submitFeePaymentApproval}>
+                  <div className="form-divider">付费审批</div>
+                  <div className="finance-payment-fields">
+                    <label>
+                      审批金额
+                      <Input
+                        value={feePaymentApprovalForm.approved_amount}
+                        onChange={(event) =>
+                          setFeePaymentApprovalForm({
+                            ...feePaymentApprovalForm,
+                            approved_amount: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      审批日期
+                      <Input
+                        type="date"
+                        value={feePaymentApprovalForm.approved_at}
+                        onChange={(event) =>
+                          setFeePaymentApprovalForm({
+                            ...feePaymentApprovalForm,
+                            approved_at: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      审批人
+                      <Input disabled value={selectedFeePaymentRequest?.reviewer_name ?? ''} />
+                    </label>
+                    <label>
+                      付款账号
+                      <Input
+                        value={feePaymentApprovalForm.payment_account}
+                        onChange={(event) =>
+                          setFeePaymentApprovalForm({
+                            ...feePaymentApprovalForm,
+                            payment_account: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      审批备注
+                      <Input
+                        value={feePaymentApprovalForm.remark}
+                        onChange={(event) =>
+                          setFeePaymentApprovalForm({
+                            ...feePaymentApprovalForm,
+                            remark: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <Button
+                    htmlType="submit"
+                    icon={<CheckCircle2 size={16} />}
+                    loading={submittingFeePaymentApproval}
+                    disabled={!selectedFeePaymentRequestCanApprove}
+                  >
+                    审批付费
+                  </Button>
+                  {selectedFeePaymentRequest?.status === 'submitted' &&
+                  !selectedFeePaymentRequestCanApprove ? (
+                    <Alert
+                      showIcon
+                      type="info"
+                      message={`等待 ${selectedFeePaymentRequest.reviewer_name ?? '指定审批人'} 审批`}
+                    />
+                  ) : null}
+                </form>
+              </div>
+              <section className="finance-allocation-history">
+                <strong>付费申请列表</strong>
+                <Table<FeePaymentRequest>
+                  columns={[
+                    {
+                      title: '申请号',
+                      dataIndex: 'request_no',
+                      render: (value: string) => (
+                        <button className="row-button" type="button">
+                          {value}
+                        </button>
+                      ),
+                    },
+                    { title: '状态', dataIndex: 'status', render: feePaymentRequestStatusTag },
+                    { title: '费用类型', dataIndex: 'fee_type', render: feeTypeLabel },
+                    { title: '合作伙伴', dataIndex: 'partner_name' },
+                    { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
+                    {
+                      title: '申请金额',
+                      dataIndex: 'requested_amount',
+                      render: (value: string, record) =>
+                        formatFinanceAmount(value, record.currency),
+                    },
+                    {
+                      title: '已付',
+                      dataIndex: 'paid_amount',
+                      render: (value: string, record) =>
+                        formatFinanceAmount(value, record.currency),
+                    },
+                  ]}
+                  dataSource={feePaymentRequests}
+                  loading={loadingFeePaymentRequests}
+                  pagination={false}
+                  rowClassName={(record) =>
+                    record.id === selectedFeePaymentRequest?.id ? 'selected-row' : ''
+                  }
+                  rowKey="id"
+                  size="small"
+                  onRow={(record) => ({
+                    onClick: () => {
+                      setSelectedFeePaymentRequestId(record.id)
+                      setFeePaymentApprovalForm(
+                        initialFeePaymentApprovalForm(
+                          record.requested_amount,
+                          currentUser.display_name,
+                        ),
+                      )
+                    },
+                  })}
+                />
+              </section>
+            </section>
+          ) : null}
+
+          {!detailId ? (
+            <section className="workspace-panel finance-fee-payable-panel">
+              <div className="panel-heading toolbar-heading">
+                <PanelTitle icon={<ShieldCheck size={18} />} title="应付费用查询" />
+                <form
+                  className="inline-filters single-line-filter-toolbar"
+                  onSubmit={(event) => {
+                    event.preventDefault()
+                    void loadFeePayables()
+                  }}
                 >
-                  <option value="">全部状态</option>
-                  {partnerFeeInvoiceStatusOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                费用类型
-                <FormSelect value={feePayableTypeFilter} onChange={(event) => setFeePayableTypeFilter(event.target.value)}>
-                  <option value="">全部类型</option>
-                  {feeTypeOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                合作伙伴标识
-                <Input
-                  value={feePayablePartnerFilter}
-                  onChange={(event) => setFeePayablePartnerFilter(event.target.value)}
-                />
-              </label>
-              <label>
-                出运单号
-                <Input
-                  value={feePayableShipmentFilter}
-                  onChange={(event) => setFeePayableShipmentFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-            </form>
-          </div>
-          <Table<FeePayableItem>
-            columns={[
-              { title: '费用发票', dataIndex: 'invoice_no', render: (value: string) => <strong>{value}</strong> },
-              { title: '合作伙伴', dataIndex: 'partner_name' },
-              { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
-              { title: '费用类型', dataIndex: 'fee_type', render: feeTypeLabel },
-              {
-                title: '发票金额',
-                dataIndex: 'total_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '已付费',
-                dataIndex: 'paid_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '应付余额',
-                dataIndex: 'payable_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              { title: '状态', dataIndex: 'status', render: partnerFeeInvoiceStatusTag },
-            ]}
-            dataSource={feePayables}
-            loading={loadingFeePayables}
-            pagination={false}
-            rowKey="partner_fee_invoice_id"
-            size="small"
-          />
-        </section>
-        ) : null}
+                  <label>
+                    应付费用搜索
+                    <Input
+                      value={feePayableSearch}
+                      onChange={(event) => setFeePayableSearch(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    应付状态
+                    <FormSelect
+                      value={feePayableStatusFilter}
+                      onChange={(event) => setFeePayableStatusFilter(event.target.value)}
+                    >
+                      <option value="">全部状态</option>
+                      {partnerFeeInvoiceStatusOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    费用类型
+                    <FormSelect
+                      value={feePayableTypeFilter}
+                      onChange={(event) => setFeePayableTypeFilter(event.target.value)}
+                    >
+                      <option value="">全部类型</option>
+                      {feeTypeOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    合作伙伴标识
+                    <Input
+                      value={feePayablePartnerFilter}
+                      onChange={(event) => setFeePayablePartnerFilter(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    出运单号
+                    <Input
+                      value={feePayableShipmentFilter}
+                      onChange={(event) => setFeePayableShipmentFilter(event.target.value)}
+                    />
+                  </label>
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    查询
+                  </Button>
+                </form>
+              </div>
+              <Table<FeePayableItem>
+                columns={[
+                  {
+                    title: '费用发票',
+                    dataIndex: 'invoice_no',
+                    render: (value: string) => <strong>{value}</strong>,
+                  },
+                  { title: '合作伙伴', dataIndex: 'partner_name' },
+                  { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
+                  { title: '费用类型', dataIndex: 'fee_type', render: feeTypeLabel },
+                  {
+                    title: '发票金额',
+                    dataIndex: 'total_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '已付费',
+                    dataIndex: 'paid_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '应付余额',
+                    dataIndex: 'payable_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  { title: '状态', dataIndex: 'status', render: partnerFeeInvoiceStatusTag },
+                ]}
+                dataSource={feePayables}
+                loading={loadingFeePayables}
+                pagination={false}
+                rowKey="partner_fee_invoice_id"
+                size="small"
+              />
+            </section>
+          ) : null}
         </section>
       </section>
     )
@@ -3548,581 +4213,628 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
           className={detailId ? 'finance-detail-grid' : 'finance-tax-grid'}
           aria-label="核销退税"
         >
-        {!detailId ? (
-        <section className="workspace-panel finance-tax-list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<ShieldCheck size={18} />} title="核销单列表" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadVerificationDocuments()
-              }}
-            >
-              <label>
-                核销单搜索
-                <Input value={verificationSearch} onChange={(event) => setVerificationSearch(event.target.value)} />
-              </label>
-              <label>
-                进度状态
-                <FormSelect
-                  value={verificationStatusFilter}
-                  onChange={(event) => setVerificationStatusFilter(event.target.value)}
+          {!detailId ? (
+            <section className="workspace-panel finance-tax-list-panel">
+              <div className="panel-heading toolbar-heading">
+                <PanelTitle icon={<ShieldCheck size={18} />} title="核销单列表" />
+                <form
+                  aria-label="核销单筛选"
+                  className="inline-filters single-line-filter-toolbar"
+                  onSubmit={(event) => {
+                    event.preventDefault()
+                    void loadVerificationDocuments()
+                  }}
                 >
-                  <option value="">全部状态</option>
-                  {verificationDocumentStatusOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                提醒状态
-                <FormSelect
-                  value={verificationReminderFilter}
-                  onChange={(event) => setVerificationReminderFilter(event.target.value)}
-                >
-                  <option value="">全部提醒</option>
-                  {verificationReminderStatusOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                业务员标识
-                <Input
-                  value={verificationOwnerFilter}
-                  onChange={(event) => setVerificationOwnerFilter(event.target.value)}
-                />
-              </label>
-              <label>
-                出运单号
-                <Input
-                  value={verificationShipmentFilter}
-                  onChange={(event) => setVerificationShipmentFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-              <Button icon={<Plus size={16} />} onClick={() => setTaxDocumentModalOpen(true)}>
-                领用核销单
-              </Button>
-            </form>
-          </div>
-          <Table<VerificationDocument>
-            columns={[
-              {
-                title: '核销单',
-                dataIndex: 'document_no',
-                render: (value: string) => (
-                  <button className="row-button" type="button">
-                    {value}
-                  </button>
-                ),
-              },
-              { title: '状态', dataIndex: 'status', render: verificationDocumentStatusTag },
-              { title: '提醒', dataIndex: 'reminder_status', render: verificationReminderStatusTag },
-              { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
-              { title: '有效期', dataIndex: 'valid_until', render: formatDate },
-              {
-                title: '可退税',
-                dataIndex: 'refundable_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '已退税',
-                dataIndex: 'refunded_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-            ]}
-            dataSource={verificationDocuments}
-            loading={loadingVerificationDocuments}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedVerificationDocument?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => {
-                setSelectedVerificationDocumentId(record.id)
-                setTaxRefundForm(initialTaxRefundForm(record.currency, record.unrefunded_amount))
-                goDetail('tax', record.id)
-              },
-            })}
-          />
-        </section>
-        ) : null}
-
-        {!detailId ? (
-        <Modal
-          centered
-          footer={null}
-          open={taxDocumentModalOpen}
-          title="核销单领用"
-          width={760}
-          onCancel={() => setTaxDocumentModalOpen(false)}
-        >
-                    <form className="record-form" onSubmit={(e) => { submitVerificationDocument(e); setTaxDocumentModalOpen(false) }}>
-            <div className="form-pair two">
-              <label>
-                核销单号
-                <Input
-                  value={verificationDocumentForm.document_no}
-                  onChange={(event) =>
-                    setVerificationDocumentForm({
-                      ...verificationDocumentForm,
-                      document_no: event.target.value,
-                    })
-                  }
-                />
-              </label>
-              <label>
-                领用日期
-                <Input
-                  type="date"
-                  value={verificationDocumentForm.received_at}
-                  onChange={(event) =>
-                    setVerificationDocumentForm({
-                      ...verificationDocumentForm,
-                      received_at: event.target.value,
-                    })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                出运单标识
-                <Input
-                  value={verificationDocumentForm.shipment_plan_id}
-                  onChange={(event) =>
-                    setVerificationDocumentForm({
-                      ...verificationDocumentForm,
-                      shipment_plan_id: event.target.value,
-                    })
-                  }
-                />
-              </label>
-              <label>
-                出运单号
-                <Input
-                  value={verificationDocumentForm.shipment_no}
-                  onChange={(event) =>
-                    setVerificationDocumentForm({
-                      ...verificationDocumentForm,
-                      shipment_no: event.target.value,
-                    })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                业务员标识
-                <Input
-                  value={verificationDocumentForm.owner_user_id}
-                  onChange={(event) =>
-                    setVerificationDocumentForm({
-                      ...verificationDocumentForm,
-                      owner_user_id: event.target.value,
-                    })
-                  }
-                />
-              </label>
-              <label>
-                业务员姓名
-                <Input
-                  value={verificationDocumentForm.owner_user_name}
-                  onChange={(event) =>
-                    setVerificationDocumentForm({
-                      ...verificationDocumentForm,
-                      owner_user_name: event.target.value,
-                    })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                客户名称
-                <Input
-                  value={verificationDocumentForm.customer_name}
-                  onChange={(event) =>
-                    setVerificationDocumentForm({
-                      ...verificationDocumentForm,
-                      customer_name: event.target.value,
-                    })
-                  }
-                />
-              </label>
-              <label>
-                有效期至
-                <Input
-                  type="date"
-                  value={verificationDocumentForm.valid_until}
-                  onChange={(event) =>
-                    setVerificationDocumentForm({
-                      ...verificationDocumentForm,
-                      valid_until: event.target.value,
-                    })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                可退税金额
-                <Input
-                  value={verificationDocumentForm.refundable_amount}
-                  onChange={(event) =>
-                    setVerificationDocumentForm({
-                      ...verificationDocumentForm,
-                      refundable_amount: event.target.value,
-                    })
-                  }
-                />
-              </label>
-              <label>
-                币种
-                <Input
-                  value={verificationDocumentForm.currency}
-                  onChange={(event) =>
-                    setVerificationDocumentForm({
-                      ...verificationDocumentForm,
-                      currency: event.target.value,
-                    })
-                  }
-                />
-              </label>
-            </div>
-            <label>
-              备注
-              <Input
-                value={verificationDocumentForm.remark}
-                onChange={(event) =>
-                  setVerificationDocumentForm({
-                    ...verificationDocumentForm,
-                    remark: event.target.value,
-                  })
+                  <label>
+                    核销单搜索
+                    <Input
+                      value={verificationSearch}
+                      onChange={(event) => setVerificationSearch(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    进度状态
+                    <FormSelect
+                      value={verificationStatusFilter}
+                      onChange={(event) => setVerificationStatusFilter(event.target.value)}
+                    >
+                      <option value="">全部状态</option>
+                      {verificationDocumentStatusOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    提醒状态
+                    <FormSelect
+                      value={verificationReminderFilter}
+                      onChange={(event) => setVerificationReminderFilter(event.target.value)}
+                    >
+                      <option value="">全部提醒</option>
+                      {verificationReminderStatusOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    业务员标识
+                    <Input
+                      value={verificationOwnerFilter}
+                      onChange={(event) => setVerificationOwnerFilter(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    出运单号
+                    <Input
+                      value={verificationShipmentFilter}
+                      onChange={(event) => setVerificationShipmentFilter(event.target.value)}
+                    />
+                  </label>
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    查询
+                  </Button>
+                  <Button
+                    type="primary"
+                    icon={<Plus size={16} />}
+                    onClick={() => setTaxDocumentModalOpen(true)}
+                  >
+                    领用核销单
+                  </Button>
+                </form>
+              </div>
+              <Table<VerificationDocument>
+                columns={[
+                  {
+                    title: '核销单',
+                    dataIndex: 'document_no',
+                    render: (value: string) => (
+                      <button className="row-button" type="button">
+                        {value}
+                      </button>
+                    ),
+                  },
+                  { title: '状态', dataIndex: 'status', render: verificationDocumentStatusTag },
+                  {
+                    title: '提醒',
+                    dataIndex: 'reminder_status',
+                    render: verificationReminderStatusTag,
+                  },
+                  { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
+                  { title: '有效期', dataIndex: 'valid_until', render: formatDate },
+                  {
+                    title: '可退税',
+                    dataIndex: 'refundable_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '已退税',
+                    dataIndex: 'refunded_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                ]}
+                dataSource={verificationDocuments}
+                loading={loadingVerificationDocuments}
+                pagination={false}
+                rowClassName={(record) =>
+                  record.id === selectedVerificationDocument?.id ? 'selected-row' : ''
                 }
+                rowKey="id"
+                size="small"
+                onRow={(record) => ({
+                  onClick: () => {
+                    setSelectedVerificationDocumentId(record.id)
+                    setTaxRefundForm(
+                      initialTaxRefundForm(record.currency, record.unrefunded_amount),
+                    )
+                    goDetail('tax', record.id)
+                  },
+                })}
               />
-            </label>
-            <div className="modal-actions">
-              <button className="secondary-inline" type="button" onClick={() => setTaxDocumentModalOpen(false)}>
-                取消
-              </button>
-              <button className="inline-submit" disabled={submittingVerificationDocument} type="submit">
-                领用核销单
-              </button>
-            </div>
-          </form>
-        </Modal>
-        ) : null}
+            </section>
+          ) : null}
 
-        {detailId ? (
-        <section className="workspace-panel finance-tax-process-panel">
-          <PanelTitle icon={<CheckCircle2 size={18} />} title="回单、核销和退税登记" />
-          {selectedVerificationDocument ? (
-            <dl className="detail-list finance-tax-detail-list">
-              <div>
-                <dt>当前核销单</dt>
-                <dd>{selectedVerificationDocument.document_no}</dd>
-              </div>
-              <div>
-                <dt>状态</dt>
-                <dd>{verificationDocumentStatusLabel(selectedVerificationDocument.status)}</dd>
-              </div>
-              <div>
-                <dt>未退税</dt>
-                <dd>
-                  {formatFinanceAmount(
-                    selectedVerificationDocument.unrefunded_amount,
-                    selectedVerificationDocument.currency,
-                  )}
-                </dd>
-              </div>
-              <div>
-                <dt>提醒日</dt>
-                <dd>{formatDate(selectedVerificationDocument.reminder_date)}</dd>
-              </div>
-            </dl>
-          ) : (
-            <div className="module-state">暂无核销单</div>
-          )}
-          <div className="finance-tax-actions">
-            <form className="record-form compact-section" onSubmit={submitCustomsReceipt}>
-              <div className="form-divider">报关回单登记</div>
-              <div className="form-pair two">
-                <label>
-                  报关单号
-                  <Input
-                    value={customsReceiptForm.customs_declaration_no}
-                    onChange={(event) =>
-                      setCustomsReceiptForm({
-                        ...customsReceiptForm,
-                        customs_declaration_no: event.target.value,
-                      })
-                    }
-                  />
-                </label>
-                <label>
-                  回单号
-                  <Input
-                    value={customsReceiptForm.customs_receipt_no}
-                    onChange={(event) =>
-                      setCustomsReceiptForm({
-                        ...customsReceiptForm,
-                        customs_receipt_no: event.target.value,
-                      })
-                    }
-                  />
-                </label>
-              </div>
-              <div className="form-pair two">
-                <label>
-                  回单日期
-                  <Input
-                    type="date"
-                    value={customsReceiptForm.received_at}
-                    onChange={(event) =>
-                      setCustomsReceiptForm({ ...customsReceiptForm, received_at: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  回单备注
-                  <Input
-                    value={customsReceiptForm.remark}
-                    onChange={(event) =>
-                      setCustomsReceiptForm({ ...customsReceiptForm, remark: event.target.value })
-                    }
-                  />
-                </label>
-              </div>
-              <Button
-                htmlType="submit"
-                icon={<Save size={16} />}
-                loading={submittingCustomsReceipt}
-                disabled={!selectedVerificationCanRegisterCustoms}
-              >
-                登记回单
-              </Button>
-            </form>
-
-            <form className="record-form compact-section" onSubmit={submitVerificationRegister}>
-              <div className="form-divider">核销登记</div>
-              <div className="form-pair two">
-                <label>
-                  核销编号
-                  <Input
-                    value={verificationRegisterForm.verification_no}
-                    onChange={(event) =>
-                      setVerificationRegisterForm({
-                        ...verificationRegisterForm,
-                        verification_no: event.target.value,
-                      })
-                    }
-                  />
-                </label>
-                <label>
-                  核销日期
-                  <Input
-                    type="date"
-                    value={verificationRegisterForm.verified_at}
-                    onChange={(event) =>
-                      setVerificationRegisterForm({
-                        ...verificationRegisterForm,
-                        verified_at: event.target.value,
-                      })
-                    }
-                  />
-                </label>
-              </div>
-              <label>
-                核销备注
-                <Input
-                  value={verificationRegisterForm.remark}
-                  onChange={(event) =>
-                    setVerificationRegisterForm({
-                      ...verificationRegisterForm,
-                      remark: event.target.value,
-                    })
-                  }
-                />
-              </label>
-              <Button
-                htmlType="submit"
-                icon={<CheckCircle2 size={16} />}
-                loading={submittingVerificationRegister}
-                disabled={!selectedVerificationCanVerify}
-              >
-                登记核销
-              </Button>
-            </form>
-
-            <form className="record-form compact-section" onSubmit={submitTaxRefund}>
-              <div className="form-divider">退税登记</div>
-              <div className="form-pair two">
-                <label>
-                  退税编号
-                  <Input
-                    value={taxRefundForm.refund_no}
-                    onChange={(event) =>
-                      setTaxRefundForm({ ...taxRefundForm, refund_no: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  退税日期
-                  <Input
-                    type="date"
-                    value={taxRefundForm.refunded_at}
-                    onChange={(event) =>
-                      setTaxRefundForm({ ...taxRefundForm, refunded_at: event.target.value })
-                    }
-                  />
-                </label>
-              </div>
-              <div className="form-pair three">
-                <label>
-                  退税金额
-                  <Input
-                    value={taxRefundForm.amount}
-                    onChange={(event) =>
-                      setTaxRefundForm({ ...taxRefundForm, amount: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  币种
-                  <Input
-                    value={taxRefundForm.currency}
-                    onChange={(event) =>
-                      setTaxRefundForm({ ...taxRefundForm, currency: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  银行水单号
-                  <Input
-                    value={taxRefundForm.bank_receipt_no}
-                    onChange={(event) =>
-                      setTaxRefundForm({ ...taxRefundForm, bank_receipt_no: event.target.value })
-                    }
-                  />
-                </label>
-              </div>
-              <label>
-                退税备注
-                <Input
-                  value={taxRefundForm.remark}
-                  onChange={(event) =>
-                    setTaxRefundForm({ ...taxRefundForm, remark: event.target.value })
-                  }
-                />
-              </label>
-              <Button
-                htmlType="submit"
-                icon={<Save size={16} />}
-                loading={submittingTaxRefund}
-                disabled={!selectedVerificationCanRefund}
-              >
-                登记退税
-              </Button>
-            </form>
-          </div>
-        </section>
-        ) : null}
-
-        {!detailId ? (
-        <section className="workspace-panel finance-tax-usage-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="核销单使用情况查询" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadVerificationUsage()
-              }}
+          {!detailId ? (
+            <Modal
+              centered
+              footer={null}
+              open={taxDocumentModalOpen}
+              title="核销单领用"
+              width={760}
+              onCancel={() => setTaxDocumentModalOpen(false)}
             >
-              <label>
-                使用情况搜索
-                <Input
-                  value={verificationUsageSearch}
-                  onChange={(event) => setVerificationUsageSearch(event.target.value)}
-                />
-              </label>
-              <label>
-                进度状态
-                <FormSelect
-                  value={verificationUsageStatusFilter}
-                  onChange={(event) => setVerificationUsageStatusFilter(event.target.value)}
+              <form
+                className="record-form"
+                onSubmit={(e) => {
+                  submitVerificationDocument(e)
+                  setTaxDocumentModalOpen(false)
+                }}
+              >
+                <div className="form-pair two">
+                  <label>
+                    核销单号
+                    <Input
+                      value={verificationDocumentForm.document_no}
+                      onChange={(event) =>
+                        setVerificationDocumentForm({
+                          ...verificationDocumentForm,
+                          document_no: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    领用日期
+                    <Input
+                      type="date"
+                      value={verificationDocumentForm.received_at}
+                      onChange={(event) =>
+                        setVerificationDocumentForm({
+                          ...verificationDocumentForm,
+                          received_at: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-pair two">
+                  <label>
+                    出运单标识
+                    <Input
+                      value={verificationDocumentForm.shipment_plan_id}
+                      onChange={(event) =>
+                        setVerificationDocumentForm({
+                          ...verificationDocumentForm,
+                          shipment_plan_id: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    出运单号
+                    <Input
+                      value={verificationDocumentForm.shipment_no}
+                      onChange={(event) =>
+                        setVerificationDocumentForm({
+                          ...verificationDocumentForm,
+                          shipment_no: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-pair two">
+                  <label>
+                    业务员标识
+                    <Input
+                      value={verificationDocumentForm.owner_user_id}
+                      onChange={(event) =>
+                        setVerificationDocumentForm({
+                          ...verificationDocumentForm,
+                          owner_user_id: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    业务员姓名
+                    <Input
+                      value={verificationDocumentForm.owner_user_name}
+                      onChange={(event) =>
+                        setVerificationDocumentForm({
+                          ...verificationDocumentForm,
+                          owner_user_name: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-pair two">
+                  <label>
+                    客户名称
+                    <Input
+                      value={verificationDocumentForm.customer_name}
+                      onChange={(event) =>
+                        setVerificationDocumentForm({
+                          ...verificationDocumentForm,
+                          customer_name: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    有效期至
+                    <Input
+                      type="date"
+                      value={verificationDocumentForm.valid_until}
+                      onChange={(event) =>
+                        setVerificationDocumentForm({
+                          ...verificationDocumentForm,
+                          valid_until: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-pair two">
+                  <label>
+                    可退税金额
+                    <Input
+                      value={verificationDocumentForm.refundable_amount}
+                      onChange={(event) =>
+                        setVerificationDocumentForm({
+                          ...verificationDocumentForm,
+                          refundable_amount: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    币种
+                    <Input
+                      value={verificationDocumentForm.currency}
+                      onChange={(event) =>
+                        setVerificationDocumentForm({
+                          ...verificationDocumentForm,
+                          currency: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <label>
+                  备注
+                  <Input
+                    value={verificationDocumentForm.remark}
+                    onChange={(event) =>
+                      setVerificationDocumentForm({
+                        ...verificationDocumentForm,
+                        remark: event.target.value,
+                      })
+                    }
+                  />
+                </label>
+                <div className="modal-actions">
+                  <button
+                    className="secondary-inline"
+                    type="button"
+                    onClick={() => setTaxDocumentModalOpen(false)}
+                  >
+                    取消
+                  </button>
+                  <button
+                    className="inline-submit"
+                    disabled={submittingVerificationDocument}
+                    type="submit"
+                  >
+                    领用核销单
+                  </button>
+                </div>
+              </form>
+            </Modal>
+          ) : null}
+
+          {detailId ? (
+            <section className="workspace-panel finance-tax-process-panel">
+              <PanelTitle icon={<CheckCircle2 size={18} />} title="回单、核销和退税登记" />
+              {selectedVerificationDocument ? (
+                <dl className="detail-list finance-tax-detail-list">
+                  <div>
+                    <dt>当前核销单</dt>
+                    <dd>{selectedVerificationDocument.document_no}</dd>
+                  </div>
+                  <div>
+                    <dt>状态</dt>
+                    <dd>{verificationDocumentStatusLabel(selectedVerificationDocument.status)}</dd>
+                  </div>
+                  <div>
+                    <dt>未退税</dt>
+                    <dd>
+                      {formatFinanceAmount(
+                        selectedVerificationDocument.unrefunded_amount,
+                        selectedVerificationDocument.currency,
+                      )}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>提醒日</dt>
+                    <dd>{formatDate(selectedVerificationDocument.reminder_date)}</dd>
+                  </div>
+                </dl>
+              ) : (
+                <div className="module-state">暂无核销单</div>
+              )}
+              <div className="finance-tax-actions">
+                <form className="record-form compact-section" onSubmit={submitCustomsReceipt}>
+                  <div className="form-divider">报关回单登记</div>
+                  <div className="form-pair two">
+                    <label>
+                      报关单号
+                      <Input
+                        value={customsReceiptForm.customs_declaration_no}
+                        onChange={(event) =>
+                          setCustomsReceiptForm({
+                            ...customsReceiptForm,
+                            customs_declaration_no: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      回单号
+                      <Input
+                        value={customsReceiptForm.customs_receipt_no}
+                        onChange={(event) =>
+                          setCustomsReceiptForm({
+                            ...customsReceiptForm,
+                            customs_receipt_no: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="form-pair two">
+                    <label>
+                      回单日期
+                      <Input
+                        type="date"
+                        value={customsReceiptForm.received_at}
+                        onChange={(event) =>
+                          setCustomsReceiptForm({
+                            ...customsReceiptForm,
+                            received_at: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      回单备注
+                      <Input
+                        value={customsReceiptForm.remark}
+                        onChange={(event) =>
+                          setCustomsReceiptForm({
+                            ...customsReceiptForm,
+                            remark: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <Button
+                    htmlType="submit"
+                    icon={<Save size={16} />}
+                    loading={submittingCustomsReceipt}
+                    disabled={!selectedVerificationCanRegisterCustoms}
+                  >
+                    登记回单
+                  </Button>
+                </form>
+
+                <form className="record-form compact-section" onSubmit={submitVerificationRegister}>
+                  <div className="form-divider">核销登记</div>
+                  <div className="form-pair two">
+                    <label>
+                      核销编号
+                      <Input
+                        value={verificationRegisterForm.verification_no}
+                        onChange={(event) =>
+                          setVerificationRegisterForm({
+                            ...verificationRegisterForm,
+                            verification_no: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      核销日期
+                      <Input
+                        type="date"
+                        value={verificationRegisterForm.verified_at}
+                        onChange={(event) =>
+                          setVerificationRegisterForm({
+                            ...verificationRegisterForm,
+                            verified_at: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <label>
+                    核销备注
+                    <Input
+                      value={verificationRegisterForm.remark}
+                      onChange={(event) =>
+                        setVerificationRegisterForm({
+                          ...verificationRegisterForm,
+                          remark: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <Button
+                    htmlType="submit"
+                    icon={<CheckCircle2 size={16} />}
+                    loading={submittingVerificationRegister}
+                    disabled={!selectedVerificationCanVerify}
+                  >
+                    登记核销
+                  </Button>
+                </form>
+
+                <form className="record-form compact-section" onSubmit={submitTaxRefund}>
+                  <div className="form-divider">退税登记</div>
+                  <div className="form-pair two">
+                    <label>
+                      退税编号
+                      <Input
+                        value={taxRefundForm.refund_no}
+                        onChange={(event) =>
+                          setTaxRefundForm({ ...taxRefundForm, refund_no: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      退税日期
+                      <Input
+                        type="date"
+                        value={taxRefundForm.refunded_at}
+                        onChange={(event) =>
+                          setTaxRefundForm({ ...taxRefundForm, refunded_at: event.target.value })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="form-pair three">
+                    <label>
+                      退税金额
+                      <Input
+                        value={taxRefundForm.amount}
+                        onChange={(event) =>
+                          setTaxRefundForm({ ...taxRefundForm, amount: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      币种
+                      <Input
+                        value={taxRefundForm.currency}
+                        onChange={(event) =>
+                          setTaxRefundForm({ ...taxRefundForm, currency: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      银行水单号
+                      <Input
+                        value={taxRefundForm.bank_receipt_no}
+                        onChange={(event) =>
+                          setTaxRefundForm({
+                            ...taxRefundForm,
+                            bank_receipt_no: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <label>
+                    退税备注
+                    <Input
+                      value={taxRefundForm.remark}
+                      onChange={(event) =>
+                        setTaxRefundForm({ ...taxRefundForm, remark: event.target.value })
+                      }
+                    />
+                  </label>
+                  <Button
+                    htmlType="submit"
+                    icon={<Save size={16} />}
+                    loading={submittingTaxRefund}
+                    disabled={!selectedVerificationCanRefund}
+                  >
+                    登记退税
+                  </Button>
+                </form>
+              </div>
+            </section>
+          ) : null}
+
+          {!detailId ? (
+            <section className="workspace-panel finance-tax-usage-panel">
+              <div className="panel-heading toolbar-heading">
+                <PanelTitle icon={<LayoutDashboard size={18} />} title="核销单使用情况查询" />
+                <form
+                  className="inline-filters"
+                  onSubmit={(event) => {
+                    event.preventDefault()
+                    void loadVerificationUsage()
+                  }}
                 >
-                  <option value="">全部状态</option>
-                  {verificationDocumentStatusOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                提醒状态
-                <FormSelect
-                  value={verificationUsageReminderFilter}
-                  onChange={(event) => setVerificationUsageReminderFilter(event.target.value)}
-                >
-                  <option value="">全部提醒</option>
-                  {verificationReminderStatusOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                出运单号
-                <Input
-                  value={verificationUsageShipmentFilter}
-                  onChange={(event) => setVerificationUsageShipmentFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-            </form>
-          </div>
-          <Table<VerificationUsageItem>
-            columns={[
-              { title: '核销单', dataIndex: 'document_no', render: (value: string) => <strong>{value}</strong> },
-              { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
-              { title: '业务员', dataIndex: 'owner_user_name', render: nullableText },
-              { title: '状态', dataIndex: 'status', render: verificationDocumentStatusTag },
-              { title: '提醒', dataIndex: 'reminder_status', render: verificationReminderStatusTag },
-              {
-                title: '可退税',
-                dataIndex: 'refundable_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '已退税',
-                dataIndex: 'refunded_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              { title: '回单号', dataIndex: 'customs_receipt_no', render: nullableText },
-              { title: '核销编号', dataIndex: 'verification_no', render: nullableText },
-            ]}
-            dataSource={verificationUsage}
-            loading={loadingVerificationUsage}
-            pagination={false}
-            rowKey="verification_document_id"
-            size="small"
-          />
-        </section>
-        ) : null}
+                  <label>
+                    使用情况搜索
+                    <Input
+                      value={verificationUsageSearch}
+                      onChange={(event) => setVerificationUsageSearch(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    进度状态
+                    <FormSelect
+                      value={verificationUsageStatusFilter}
+                      onChange={(event) => setVerificationUsageStatusFilter(event.target.value)}
+                    >
+                      <option value="">全部状态</option>
+                      {verificationDocumentStatusOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    提醒状态
+                    <FormSelect
+                      value={verificationUsageReminderFilter}
+                      onChange={(event) => setVerificationUsageReminderFilter(event.target.value)}
+                    >
+                      <option value="">全部提醒</option>
+                      {verificationReminderStatusOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    出运单号
+                    <Input
+                      value={verificationUsageShipmentFilter}
+                      onChange={(event) => setVerificationUsageShipmentFilter(event.target.value)}
+                    />
+                  </label>
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    查询
+                  </Button>
+                </form>
+              </div>
+              <Table<VerificationUsageItem>
+                columns={[
+                  {
+                    title: '核销单',
+                    dataIndex: 'document_no',
+                    render: (value: string) => <strong>{value}</strong>,
+                  },
+                  { title: '出运单', dataIndex: 'shipment_no', render: nullableText },
+                  { title: '业务员', dataIndex: 'owner_user_name', render: nullableText },
+                  { title: '状态', dataIndex: 'status', render: verificationDocumentStatusTag },
+                  {
+                    title: '提醒',
+                    dataIndex: 'reminder_status',
+                    render: verificationReminderStatusTag,
+                  },
+                  {
+                    title: '可退税',
+                    dataIndex: 'refundable_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '已退税',
+                    dataIndex: 'refunded_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  { title: '回单号', dataIndex: 'customs_receipt_no', render: nullableText },
+                  { title: '核销编号', dataIndex: 'verification_no', render: nullableText },
+                ]}
+                dataSource={verificationUsage}
+                loading={loadingVerificationUsage}
+                pagination={false}
+                rowKey="verification_document_id"
+                size="small"
+              />
+            </section>
+          ) : null}
         </section>
       </section>
     )
@@ -4146,455 +4858,509 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
           className={detailId ? 'finance-detail-grid' : 'finance-misc-grid'}
           aria-label="杂费管理"
         >
-        {!detailId ? (
-        <section className="workspace-panel finance-misc-list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<ShieldCheck size={18} />} title="杂费项目配置" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadMiscFeeItems()
-              }}
+          {!detailId ? (
+            <section className="workspace-panel finance-misc-list-panel">
+              <div className="panel-heading toolbar-heading">
+                <PanelTitle icon={<ShieldCheck size={18} />} title="杂费项目配置" />
+                <form
+                  className="inline-filters"
+                  onSubmit={(event) => {
+                    event.preventDefault()
+                    void loadMiscFeeItems()
+                  }}
+                >
+                  <label>
+                    项目搜索
+                    <Input
+                      value={miscFeeItemSearch}
+                      onChange={(event) => setMiscFeeItemSearch(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    项目分类
+                    <FormSelect
+                      value={miscFeeItemCategoryFilter}
+                      onChange={(event) => setMiscFeeItemCategoryFilter(event.target.value)}
+                    >
+                      <option value="">全部分类</option>
+                      {miscFeeCategoryOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    启停状态
+                    <FormSelect
+                      value={miscFeeItemStatusFilter}
+                      onChange={(event) => setMiscFeeItemStatusFilter(event.target.value)}
+                    >
+                      <option value="">全部状态</option>
+                      {miscFeeItemStatusOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    查询
+                  </Button>
+                  <Button
+                    type="primary"
+                    icon={<Plus size={16} />}
+                    onClick={() => setMiscItemModalOpen(true)}
+                  >
+                    新增杂费
+                  </Button>
+                </form>
+              </div>
+              <Table<MiscFeeItem>
+                columns={[
+                  {
+                    title: '项目编码',
+                    dataIndex: 'code',
+                    render: (value: string) => (
+                      <button className="row-button" type="button">
+                        {value}
+                      </button>
+                    ),
+                  },
+                  { title: '项目名称', dataIndex: 'name' },
+                  { title: '分类', dataIndex: 'category', render: miscFeeCategoryLabel },
+                  {
+                    title: '默认分摊',
+                    dataIndex: 'default_allocation_method',
+                    render: miscFeeAllocationMethodLabel,
+                  },
+                  { title: '状态', dataIndex: 'status', render: miscFeeItemStatusTag },
+                ]}
+                dataSource={miscFeeItems}
+                loading={loadingMiscFeeItems}
+                pagination={false}
+                rowClassName={(record) =>
+                  record.id === selectedMiscFeeItem?.id ? 'selected-row' : ''
+                }
+                rowKey="id"
+                size="small"
+                onRow={(record) => ({
+                  onClick: () => {
+                    setSelectedMiscFeeItemId(record.id)
+                    setMiscFeeAllocationForm(initialMiscFeeAllocationForm(record))
+                    goDetail('misc', record.id)
+                  },
+                })}
+              />
+            </section>
+          ) : null}
+
+          {!detailId ? (
+            <Modal
+              centered
+              footer={null}
+              open={miscItemModalOpen}
+              title="新增杂费项目"
+              width={640}
+              onCancel={() => setMiscItemModalOpen(false)}
             >
-              <label>
-                项目搜索
-                <Input value={miscFeeItemSearch} onChange={(event) => setMiscFeeItemSearch(event.target.value)} />
-              </label>
-              <label>
-                项目分类
-                <FormSelect
-                  value={miscFeeItemCategoryFilter}
-                  onChange={(event) => setMiscFeeItemCategoryFilter(event.target.value)}
-                >
-                  <option value="">全部分类</option>
-                  {miscFeeCategoryOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                启停状态
-                <FormSelect
-                  value={miscFeeItemStatusFilter}
-                  onChange={(event) => setMiscFeeItemStatusFilter(event.target.value)}
-                >
-                  <option value="">全部状态</option>
-                  {miscFeeItemStatusOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-              <Button icon={<Plus size={16} />} onClick={() => setMiscItemModalOpen(true)}>
-                新增杂费
-              </Button>
-            </form>
-          </div>
-          <Table<MiscFeeItem>
-            columns={[
-              {
-                title: '项目编码',
-                dataIndex: 'code',
-                render: (value: string) => (
-                  <button className="row-button" type="button">
-                    {value}
-                  </button>
-                ),
-              },
-              { title: '项目名称', dataIndex: 'name' },
-              { title: '分类', dataIndex: 'category', render: miscFeeCategoryLabel },
-              {
-                title: '默认分摊',
-                dataIndex: 'default_allocation_method',
-                render: miscFeeAllocationMethodLabel,
-              },
-              { title: '状态', dataIndex: 'status', render: miscFeeItemStatusTag },
-            ]}
-            dataSource={miscFeeItems}
-            loading={loadingMiscFeeItems}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedMiscFeeItem?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => {
-                setSelectedMiscFeeItemId(record.id)
-                setMiscFeeAllocationForm(initialMiscFeeAllocationForm(record))
-                goDetail('misc', record.id)
-              },
-            })}
-          />
-        </section>
-        ) : null}
-
-        {!detailId ? (
-        <Modal
-          centered
-          footer={null}
-          open={miscItemModalOpen}
-          title="新增杂费项目"
-          width={640}
-          onCancel={() => setMiscItemModalOpen(false)}
-        >
-          <form className="record-form" onSubmit={(e) => { submitMiscFeeItem(e); setMiscItemModalOpen(false) }}>
-            <div className="form-pair two">
-              <label>
-                项目编码
-                <Input
-                  value={miscFeeItemForm.code}
-                  onChange={(event) => setMiscFeeItemForm({ ...miscFeeItemForm, code: event.target.value })}
-                />
-              </label>
-              <label>
-                项目名称
-                <Input
-                  value={miscFeeItemForm.name}
-                  onChange={(event) => setMiscFeeItemForm({ ...miscFeeItemForm, name: event.target.value })}
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                项目分类
-                <FormSelect
-                  value={miscFeeItemForm.category}
-                  onChange={(event) =>
-                    setMiscFeeItemForm({ ...miscFeeItemForm, category: event.target.value })
-                  }
-                >
-                  {miscFeeCategoryOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                默认分摊方式
-                <FormSelect
-                  value={miscFeeItemForm.default_allocation_method}
-                  onChange={(event) =>
-                    setMiscFeeItemForm({
-                      ...miscFeeItemForm,
-                      default_allocation_method: event.target.value,
-                    })
-                  }
-                >
-                  {miscFeeAllocationMethodOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-            </div>
-            <label className="checkbox-line">
-              <input
-                aria-label="启用项目"
-                type="checkbox"
-                checked={miscFeeItemForm.is_active}
-                onChange={(event) =>
-                  setMiscFeeItemForm({ ...miscFeeItemForm, is_active: event.target.checked })
-                }
-              />
-              启用项目
-            </label>
-            <label>
-              备注
-              <Input
-                value={miscFeeItemForm.remark}
-                onChange={(event) => setMiscFeeItemForm({ ...miscFeeItemForm, remark: event.target.value })}
-              />
-            </label>
-            <div className="modal-actions">
-              <button className="secondary-inline" type="button" onClick={() => setMiscItemModalOpen(false)}>
-                取消
-              </button>
-              <button className="inline-submit" disabled={submittingMiscFeeItem} type="submit">
-                保存项目
-              </button>
-            </div>
-          </form>
-        </Modal>
-        ) : null}
-
-        {detailId ? (
-        <section className="workspace-panel finance-misc-allocation-panel">
-          <PanelTitle icon={<Wallet size={18} />} title="单票杂费分摊" />
-          {selectedMiscFeeItem ? (
-            <dl className="detail-list finance-misc-detail-list">
-              <div>
-                <dt>当前项目</dt>
-                <dd>{selectedMiscFeeItem.name}</dd>
-              </div>
-              <div>
-                <dt>分类</dt>
-                <dd>{miscFeeCategoryLabel(selectedMiscFeeItem.category)}</dd>
-              </div>
-              <div>
-                <dt>默认方式</dt>
-                <dd>{miscFeeAllocationMethodLabel(selectedMiscFeeItem.default_allocation_method)}</dd>
-              </div>
-              <div>
-                <dt>状态</dt>
-                <dd>{miscFeeItemStatusLabel(selectedMiscFeeItem.status)}</dd>
-              </div>
-            </dl>
-          ) : (
-            <div className="module-state">暂无杂费项目</div>
-          )}
-          <form className="record-form" onSubmit={submitMiscFeeAllocation}>
-            <div className="form-pair two">
-              <label>
-                分摊单号
-                <Input
-                  value={miscFeeAllocationForm.allocation_no}
-                  onChange={(event) =>
-                    setMiscFeeAllocationForm({
-                      ...miscFeeAllocationForm,
-                      allocation_no: event.target.value,
-                    })
-                  }
-                />
-              </label>
-              <label>
-                项目标识
-                <Input
-                  value={miscFeeAllocationForm.item_id}
-                  onChange={(event) =>
-                    setMiscFeeAllocationForm({ ...miscFeeAllocationForm, item_id: event.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                出运单标识
-                <Input
-                  value={miscFeeAllocationForm.shipment_plan_id}
-                  onChange={(event) =>
-                    setMiscFeeAllocationForm({
-                      ...miscFeeAllocationForm,
-                      shipment_plan_id: event.target.value,
-                    })
-                  }
-                />
-              </label>
-              <label>
-                出运单号
-                <Input
-                  value={miscFeeAllocationForm.shipment_no}
-                  onChange={(event) =>
-                    setMiscFeeAllocationForm({ ...miscFeeAllocationForm, shipment_no: event.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                业务员标识
-                <Input
-                  value={miscFeeAllocationForm.sales_user_id}
-                  onChange={(event) =>
-                    setMiscFeeAllocationForm({
-                      ...miscFeeAllocationForm,
-                      sales_user_id: event.target.value,
-                    })
-                  }
-                />
-              </label>
-              <label>
-                业务员姓名
-                <Input
-                  value={miscFeeAllocationForm.sales_user_name}
-                  onChange={(event) =>
-                    setMiscFeeAllocationForm({
-                      ...miscFeeAllocationForm,
-                      sales_user_name: event.target.value,
-                    })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair three">
-              <label>
-                分摊日期
-                <Input
-                  type="date"
-                  value={miscFeeAllocationForm.allocated_at}
-                  onChange={(event) =>
-                    setMiscFeeAllocationForm({
-                      ...miscFeeAllocationForm,
-                      allocated_at: event.target.value,
-                    })
-                  }
-                />
-              </label>
-              <label>
-                金额
-                <Input
-                  value={miscFeeAllocationForm.amount}
-                  onChange={(event) =>
-                    setMiscFeeAllocationForm({ ...miscFeeAllocationForm, amount: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                币种
-                <Input
-                  value={miscFeeAllocationForm.currency}
-                  onChange={(event) =>
-                    setMiscFeeAllocationForm({ ...miscFeeAllocationForm, currency: event.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <label>
-              分摊方式
-              <FormSelect
-                value={miscFeeAllocationForm.allocation_method}
-                onChange={(event) =>
-                  setMiscFeeAllocationForm({
-                    ...miscFeeAllocationForm,
-                    allocation_method: event.target.value,
-                  })
-                }
+              <form
+                className="record-form"
+                onSubmit={(e) => {
+                  submitMiscFeeItem(e)
+                  setMiscItemModalOpen(false)
+                }}
               >
-                {miscFeeAllocationMethodOptions.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </FormSelect>
-            </label>
-            <label>
-              分摊依据
-              <Input
-                value={miscFeeAllocationForm.basis}
-                onChange={(event) =>
-                  setMiscFeeAllocationForm({ ...miscFeeAllocationForm, basis: event.target.value })
-                }
-              />
-            </label>
-            <label>
-              备注
-              <Input
-                value={miscFeeAllocationForm.remark}
-                onChange={(event) =>
-                  setMiscFeeAllocationForm({ ...miscFeeAllocationForm, remark: event.target.value })
-                }
-              />
-            </label>
-            <Button
-              htmlType="submit"
-              icon={<Save size={16} />}
-              loading={submittingMiscFeeAllocation}
-              disabled={!selectedMiscFeeItem}
-            >
-              保存分摊
-            </Button>
-          </form>
-        </section>
-        ) : null}
+                <div className="form-pair two">
+                  <label>
+                    项目编码
+                    <Input
+                      value={miscFeeItemForm.code}
+                      onChange={(event) =>
+                        setMiscFeeItemForm({ ...miscFeeItemForm, code: event.target.value })
+                      }
+                    />
+                  </label>
+                  <label>
+                    项目名称
+                    <Input
+                      value={miscFeeItemForm.name}
+                      onChange={(event) =>
+                        setMiscFeeItemForm({ ...miscFeeItemForm, name: event.target.value })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-pair two">
+                  <label>
+                    项目分类
+                    <FormSelect
+                      value={miscFeeItemForm.category}
+                      onChange={(event) =>
+                        setMiscFeeItemForm({ ...miscFeeItemForm, category: event.target.value })
+                      }
+                    >
+                      {miscFeeCategoryOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    默认分摊方式
+                    <FormSelect
+                      value={miscFeeItemForm.default_allocation_method}
+                      onChange={(event) =>
+                        setMiscFeeItemForm({
+                          ...miscFeeItemForm,
+                          default_allocation_method: event.target.value,
+                        })
+                      }
+                    >
+                      {miscFeeAllocationMethodOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                </div>
+                <label className="checkbox-line">
+                  <input
+                    aria-label="启用项目"
+                    type="checkbox"
+                    checked={miscFeeItemForm.is_active}
+                    onChange={(event) =>
+                      setMiscFeeItemForm({ ...miscFeeItemForm, is_active: event.target.checked })
+                    }
+                  />
+                  启用项目
+                </label>
+                <label>
+                  备注
+                  <Input
+                    value={miscFeeItemForm.remark}
+                    onChange={(event) =>
+                      setMiscFeeItemForm({ ...miscFeeItemForm, remark: event.target.value })
+                    }
+                  />
+                </label>
+                <div className="modal-actions">
+                  <button
+                    className="secondary-inline"
+                    type="button"
+                    onClick={() => setMiscItemModalOpen(false)}
+                  >
+                    取消
+                  </button>
+                  <button className="inline-submit" disabled={submittingMiscFeeItem} type="submit">
+                    保存项目
+                  </button>
+                </div>
+              </form>
+            </Modal>
+          ) : null}
 
-        {!detailId ? (
-        <section className="workspace-panel finance-misc-summary-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="杂费分摊查询" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadMiscFeeAllocations()
-                void loadMiscFeeAllocationSummary()
-              }}
-            >
-              <label>
-                分摊搜索
-                <Input
-                  value={miscFeeAllocationSearch}
-                  onChange={(event) => setMiscFeeAllocationSearch(event.target.value)}
-                />
-              </label>
-              <label>
-                分类
-                <FormSelect
-                  value={miscFeeAllocationCategoryFilter}
-                  onChange={(event) => {
-                    setMiscFeeAllocationCategoryFilter(event.target.value)
-                    setMiscFeeSummaryCategoryFilter(event.target.value)
+          {detailId ? (
+            <section className="workspace-panel finance-misc-allocation-panel">
+              <PanelTitle icon={<Wallet size={18} />} title="单票杂费分摊" />
+              {selectedMiscFeeItem ? (
+                <dl className="detail-list finance-misc-detail-list">
+                  <div>
+                    <dt>当前项目</dt>
+                    <dd>{selectedMiscFeeItem.name}</dd>
+                  </div>
+                  <div>
+                    <dt>分类</dt>
+                    <dd>{miscFeeCategoryLabel(selectedMiscFeeItem.category)}</dd>
+                  </div>
+                  <div>
+                    <dt>默认方式</dt>
+                    <dd>
+                      {miscFeeAllocationMethodLabel(selectedMiscFeeItem.default_allocation_method)}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>状态</dt>
+                    <dd>{miscFeeItemStatusLabel(selectedMiscFeeItem.status)}</dd>
+                  </div>
+                </dl>
+              ) : (
+                <div className="module-state">暂无杂费项目</div>
+              )}
+              <form className="record-form" onSubmit={submitMiscFeeAllocation}>
+                <div className="form-pair two">
+                  <label>
+                    分摊单号
+                    <Input
+                      value={miscFeeAllocationForm.allocation_no}
+                      onChange={(event) =>
+                        setMiscFeeAllocationForm({
+                          ...miscFeeAllocationForm,
+                          allocation_no: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    项目标识
+                    <Input
+                      value={miscFeeAllocationForm.item_id}
+                      onChange={(event) =>
+                        setMiscFeeAllocationForm({
+                          ...miscFeeAllocationForm,
+                          item_id: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-pair two">
+                  <label>
+                    出运单标识
+                    <Input
+                      value={miscFeeAllocationForm.shipment_plan_id}
+                      onChange={(event) =>
+                        setMiscFeeAllocationForm({
+                          ...miscFeeAllocationForm,
+                          shipment_plan_id: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    出运单号
+                    <Input
+                      value={miscFeeAllocationForm.shipment_no}
+                      onChange={(event) =>
+                        setMiscFeeAllocationForm({
+                          ...miscFeeAllocationForm,
+                          shipment_no: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-pair two">
+                  <label>
+                    业务员标识
+                    <Input
+                      value={miscFeeAllocationForm.sales_user_id}
+                      onChange={(event) =>
+                        setMiscFeeAllocationForm({
+                          ...miscFeeAllocationForm,
+                          sales_user_id: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    业务员姓名
+                    <Input
+                      value={miscFeeAllocationForm.sales_user_name}
+                      onChange={(event) =>
+                        setMiscFeeAllocationForm({
+                          ...miscFeeAllocationForm,
+                          sales_user_name: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="form-pair three">
+                  <label>
+                    分摊日期
+                    <Input
+                      type="date"
+                      value={miscFeeAllocationForm.allocated_at}
+                      onChange={(event) =>
+                        setMiscFeeAllocationForm({
+                          ...miscFeeAllocationForm,
+                          allocated_at: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    金额
+                    <Input
+                      value={miscFeeAllocationForm.amount}
+                      onChange={(event) =>
+                        setMiscFeeAllocationForm({
+                          ...miscFeeAllocationForm,
+                          amount: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    币种
+                    <Input
+                      value={miscFeeAllocationForm.currency}
+                      onChange={(event) =>
+                        setMiscFeeAllocationForm({
+                          ...miscFeeAllocationForm,
+                          currency: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <label>
+                  分摊方式
+                  <FormSelect
+                    value={miscFeeAllocationForm.allocation_method}
+                    onChange={(event) =>
+                      setMiscFeeAllocationForm({
+                        ...miscFeeAllocationForm,
+                        allocation_method: event.target.value,
+                      })
+                    }
+                  >
+                    {miscFeeAllocationMethodOptions.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </FormSelect>
+                </label>
+                <label>
+                  分摊依据
+                  <Input
+                    value={miscFeeAllocationForm.basis}
+                    onChange={(event) =>
+                      setMiscFeeAllocationForm({
+                        ...miscFeeAllocationForm,
+                        basis: event.target.value,
+                      })
+                    }
+                  />
+                </label>
+                <label>
+                  备注
+                  <Input
+                    value={miscFeeAllocationForm.remark}
+                    onChange={(event) =>
+                      setMiscFeeAllocationForm({
+                        ...miscFeeAllocationForm,
+                        remark: event.target.value,
+                      })
+                    }
+                  />
+                </label>
+                <Button
+                  htmlType="submit"
+                  icon={<Save size={16} />}
+                  loading={submittingMiscFeeAllocation}
+                  disabled={!selectedMiscFeeItem}
+                >
+                  保存分摊
+                </Button>
+              </form>
+            </section>
+          ) : null}
+
+          {!detailId ? (
+            <section className="workspace-panel finance-misc-summary-panel">
+              <div className="panel-heading toolbar-heading">
+                <PanelTitle icon={<LayoutDashboard size={18} />} title="杂费分摊查询" />
+                <form
+                  className="inline-filters"
+                  onSubmit={(event) => {
+                    event.preventDefault()
+                    void loadMiscFeeAllocations()
+                    void loadMiscFeeAllocationSummary()
                   }}
                 >
-                  <option value="">全部分类</option>
-                  {miscFeeCategoryOptions.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </FormSelect>
-              </label>
-              <label>
-                出运单号
-                <Input
-                  value={miscFeeAllocationShipmentFilter}
-                  onChange={(event) => {
-                    setMiscFeeAllocationShipmentFilter(event.target.value)
-                    setMiscFeeSummaryShipmentFilter(event.target.value)
-                  }}
-                />
-              </label>
-              <label>
-                业务员标识
-                <Input
-                  value={miscFeeAllocationSalesFilter}
-                  onChange={(event) => setMiscFeeAllocationSalesFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-            </form>
-          </div>
-          <div className="finance-receipt-strip">
-            <span>分摊记录 {miscFeeAllocations.length} 条</span>
-            <strong>{formatFinanceAmount(totalMiscFeeAmount.toFixed(2), miscFeeAllocations[0]?.currency ?? 'USD')}</strong>
-            <span>已进入单票利润成本</span>
-          </div>
-          <Table<MiscFeeAllocation>
-            columns={[
-              {
-                title: '分摊单号',
-                dataIndex: 'allocation_no',
-                render: (value: string) => <strong>{value}</strong>,
-              },
-              { title: '杂费项目', dataIndex: 'item_name' },
-              { title: '分类', dataIndex: 'item_category', render: miscFeeCategoryLabel },
-              { title: '出运单', dataIndex: 'shipment_no' },
-              { title: '客户', dataIndex: 'customer_name' },
-              { title: '业务员', dataIndex: 'sales_user_name', render: nullableText },
-              { title: '分摊日', dataIndex: 'allocated_at', render: formatDate },
-              {
-                title: '金额',
-                dataIndex: 'amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              { title: '方式', dataIndex: 'allocation_method', render: miscFeeAllocationMethodLabel },
-            ]}
-            dataSource={miscFeeAllocations}
-            loading={loadingMiscFeeAllocations || loadingMiscFeeSummary}
-            pagination={false}
-            rowKey="id"
-            size="small"
-          />
-        </section>
-        ) : null}
+                  <label>
+                    分摊搜索
+                    <Input
+                      value={miscFeeAllocationSearch}
+                      onChange={(event) => setMiscFeeAllocationSearch(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    分类
+                    <FormSelect
+                      value={miscFeeAllocationCategoryFilter}
+                      onChange={(event) => {
+                        setMiscFeeAllocationCategoryFilter(event.target.value)
+                        setMiscFeeSummaryCategoryFilter(event.target.value)
+                      }}
+                    >
+                      <option value="">全部分类</option>
+                      {miscFeeCategoryOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </label>
+                  <label>
+                    出运单号
+                    <Input
+                      value={miscFeeAllocationShipmentFilter}
+                      onChange={(event) => {
+                        setMiscFeeAllocationShipmentFilter(event.target.value)
+                        setMiscFeeSummaryShipmentFilter(event.target.value)
+                      }}
+                    />
+                  </label>
+                  <label>
+                    业务员标识
+                    <Input
+                      value={miscFeeAllocationSalesFilter}
+                      onChange={(event) => setMiscFeeAllocationSalesFilter(event.target.value)}
+                    />
+                  </label>
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    查询
+                  </Button>
+                </form>
+              </div>
+              <div className="finance-receipt-strip">
+                <span>分摊记录 {miscFeeAllocations.length} 条</span>
+                <strong>
+                  {formatFinanceAmount(
+                    totalMiscFeeAmount.toFixed(2),
+                    miscFeeAllocations[0]?.currency ?? 'USD',
+                  )}
+                </strong>
+                <span>已进入单票利润成本</span>
+              </div>
+              <Table<MiscFeeAllocation>
+                columns={[
+                  {
+                    title: '分摊单号',
+                    dataIndex: 'allocation_no',
+                    render: (value: string) => <strong>{value}</strong>,
+                  },
+                  { title: '杂费项目', dataIndex: 'item_name' },
+                  { title: '分类', dataIndex: 'item_category', render: miscFeeCategoryLabel },
+                  { title: '出运单', dataIndex: 'shipment_no' },
+                  { title: '客户', dataIndex: 'customer_name' },
+                  { title: '业务员', dataIndex: 'sales_user_name', render: nullableText },
+                  { title: '分摊日', dataIndex: 'allocated_at', render: formatDate },
+                  {
+                    title: '金额',
+                    dataIndex: 'amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '方式',
+                    dataIndex: 'allocation_method',
+                    render: miscFeeAllocationMethodLabel,
+                  },
+                ]}
+                dataSource={miscFeeAllocations}
+                loading={loadingMiscFeeAllocations || loadingMiscFeeSummary}
+                pagination={false}
+                rowKey="id"
+                size="small"
+              />
+            </section>
+          ) : null}
         </section>
       </section>
     )
@@ -4605,7 +5371,11 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
       <section className={detailId ? 'finance-page finance-detail-page' : 'finance-page'}>
         {detailId ? (
           <div className="finance-subnav">
-            <button className="finance-back-button" type="button" onClick={() => goModule('settlement')}>
+            <button
+              className="finance-back-button"
+              type="button"
+              onClick={() => goModule('settlement')}
+            >
               <ArrowLeft size={16} />
               结算核算
             </button>
@@ -4618,404 +5388,483 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
           className={detailId ? 'finance-detail-grid' : 'finance-settlement-grid'}
           aria-label="财务结算和利润核算"
         >
-        {!detailId ? (
-        <section className="workspace-panel finance-settlement-list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Wallet size={18} />} title="财务结算列表" />
-          </div>
-          <form
-            className="inline-filters"
-            onSubmit={(event) => {
-              event.preventDefault()
-              void loadFinancialSettlements()
-            }}
-          >
-            <label>
-              结算搜索
-              <Input
-                value={settlementSearch}
-                placeholder="结算单 / 出运单 / 客户"
-                onChange={(event) => setSettlementSearch(event.target.value)}
-              />
-            </label>
-            <label>
-              出运单号
-              <Input
-                value={settlementShipmentFilter}
-                onChange={(event) => setSettlementShipmentFilter(event.target.value)}
-              />
-            </label>
-            <Button htmlType="submit" icon={<Search size={16} />}>
-              查询
-            </Button>
-            <Button icon={<Plus size={16} />} onClick={() => setSettlementModalOpen(true)}>
-              新增结算
-            </Button>
-          </form>
-          <div className="finance-receipt-strip">
-            <span>锁定结算 {financialSettlements.length} 单</span>
-            <strong>{formatFinanceAmount(totalSettlementSalesIncome.toFixed(2), financialSettlements[0]?.currency ?? 'USD')}</strong>
-            <span>毛利 {formatFinanceAmount(totalSettlementGrossProfit.toFixed(2), financialSettlements[0]?.currency ?? 'USD')}</span>
-          </div>
-          <Table<FinancialSettlement>
-            columns={[
-              {
-                title: '结算单',
-                dataIndex: 'settlement_no',
-                render: (value: string) => <strong>{value}</strong>,
-              },
-              { title: '出运单', dataIndex: 'shipment_no' },
-              { title: '客户', dataIndex: 'customer_name' },
-              { title: '结算日', dataIndex: 'settlement_date', render: formatDate },
-              {
-                title: '收入',
-                dataIndex: 'sales_income',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '成本',
-                dataIndex: 'purchase_cost_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '退税',
-                dataIndex: 'tax_refund_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '杂费',
-                dataIndex: 'misc_fee_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '手工成本',
-                dataIndex: 'manual_cost_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '毛利',
-                dataIndex: 'gross_profit',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              { title: '毛利率', dataIndex: 'gross_profit_rate', render: formatPercent },
-              { title: '状态', dataIndex: 'status', render: settlementStatusTag },
-            ]}
-            dataSource={financialSettlements}
-            loading={loadingFinancialSettlements}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedFinancialSettlement?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => {
-                setSelectedFinancialSettlementId(record.id)
-                setManualProfitCostForm(initialManualProfitCostForm(record.currency, record.settlement_date))
-                goDetail('settlement', record.id)
-              },
-            })}
-          />
-        </section>
-        ) : null}
-
-        {!detailId ? (
-        <Modal
-          centered
-          footer={null}
-          open={settlementModalOpen}
-          title="单票结算锁定"
-          width={640}
-          onCancel={() => setSettlementModalOpen(false)}
-        >
-                    <form className="record-form" onSubmit={(e) => { submitFinancialSettlement(e); setSettlementModalOpen(false) }}>
-            <label>
-              结算单号
-              <Input
-                required
-                value={settlementForm.settlement_no}
-                onChange={(event) => setSettlementForm({ ...settlementForm, settlement_no: event.target.value })}
-              />
-            </label>
-            <label>
-              出运单 ID
-              <Input
-                required
-                value={settlementForm.shipment_plan_id}
-                onChange={(event) => setSettlementForm({ ...settlementForm, shipment_plan_id: event.target.value })}
-              />
-            </label>
-            <label>
-              出运单号
-              <Input
-                value={settlementForm.shipment_no}
-                onChange={(event) => setSettlementForm({ ...settlementForm, shipment_no: event.target.value })}
-              />
-            </label>
-            <label>
-              结算日期
-              <Input
-                required
-                type="date"
-                value={settlementForm.settlement_date}
-                onChange={(event) => setSettlementForm({ ...settlementForm, settlement_date: event.target.value })}
-              />
-            </label>
-            <label>
-              备注
-              <textarea
-                aria-label="结算备注"
-                rows={3}
-                value={settlementForm.remark}
-                onChange={(event) => setSettlementForm({ ...settlementForm, remark: event.target.value })}
-              />
-            </label>
-            <div className="modal-actions">
-              <button className="secondary-inline" type="button" onClick={() => setSettlementModalOpen(false)}>
-                取消
-              </button>
-              <button className="inline-submit" disabled={submittingSettlement} type="submit">
-                锁定结算
-              </button>
-            </div>
-          </form>
-        </Modal>
-        ) : null}
-
-        {detailId ? (
-        <section className="workspace-panel finance-manual-cost-panel">
-          <PanelTitle icon={<PackagePlus size={18} />} title="手工成本关联" />
-          {selectedFinancialSettlement ? (
-            <Descriptions
-              bordered
-              className="finance-settlement-descriptions"
-              column={2}
-              items={[
-                { key: 'settlement_no', label: '结算单', children: selectedFinancialSettlement.settlement_no },
-                { key: 'shipment_no', label: '出运单', children: selectedFinancialSettlement.shipment_no },
-                {
-                  key: 'gross_profit',
-                  label: '当前毛利',
-                  children: formatFinanceAmount(
-                    selectedFinancialSettlement.gross_profit,
-                    selectedFinancialSettlement.currency,
-                  ),
-                },
-                {
-                  key: 'manual_cost_amount',
-                  label: '手工成本',
-                  children: formatFinanceAmount(
-                    selectedFinancialSettlement.manual_cost_amount,
-                    selectedFinancialSettlement.currency,
-                  ),
-                },
-              ]}
-              size="small"
-            />
-          ) : (
-            <div className="module-state">暂无可关联结算单</div>
-          )}
-          <form className="record-form compact-section" onSubmit={submitManualProfitCost}>
-            <label>
-              成本单号
-              <Input
-                required
-                value={manualProfitCostForm.cost_no}
-                onChange={(event) => setManualProfitCostForm({ ...manualProfitCostForm, cost_no: event.target.value })}
-              />
-            </label>
-            <label>
-              成本类型
-              <FormSelect
-                value={manualProfitCostForm.cost_type}
-                onChange={(event) =>
-                  setManualProfitCostForm({ ...manualProfitCostForm, cost_type: event.target.value })
-                }
+          {!detailId ? (
+            <section className="workspace-panel finance-settlement-list-panel">
+              <div className="panel-heading toolbar-heading">
+                <PanelTitle icon={<Wallet size={18} />} title="财务结算列表" />
+              </div>
+              <form
+                className="inline-filters"
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  void loadFinancialSettlements()
+                }}
               >
-                <option value="other_cost">其他成本</option>
-              </FormSelect>
-            </label>
-            <label>
-              成本日期
-              <Input
-                required
-                type="date"
-                value={manualProfitCostForm.cost_date}
-                onChange={(event) =>
-                  setManualProfitCostForm({ ...manualProfitCostForm, cost_date: event.target.value })
+                <label>
+                  结算搜索
+                  <Input
+                    value={settlementSearch}
+                    placeholder="结算单 / 出运单 / 客户"
+                    onChange={(event) => setSettlementSearch(event.target.value)}
+                  />
+                </label>
+                <label>
+                  出运单号
+                  <Input
+                    value={settlementShipmentFilter}
+                    onChange={(event) => setSettlementShipmentFilter(event.target.value)}
+                  />
+                </label>
+                <Button htmlType="submit" icon={<Search size={16} />}>
+                  查询
+                </Button>
+                <Button
+                  type="primary"
+                  icon={<Plus size={16} />}
+                  onClick={() => setSettlementModalOpen(true)}
+                >
+                  新增结算
+                </Button>
+              </form>
+              <div className="finance-receipt-strip">
+                <span>锁定结算 {financialSettlements.length} 单</span>
+                <strong>
+                  {formatFinanceAmount(
+                    totalSettlementSalesIncome.toFixed(2),
+                    financialSettlements[0]?.currency ?? 'USD',
+                  )}
+                </strong>
+                <span>
+                  毛利{' '}
+                  {formatFinanceAmount(
+                    totalSettlementGrossProfit.toFixed(2),
+                    financialSettlements[0]?.currency ?? 'USD',
+                  )}
+                </span>
+              </div>
+              <Table<FinancialSettlement>
+                columns={[
+                  {
+                    title: '结算单',
+                    dataIndex: 'settlement_no',
+                    render: (value: string) => <strong>{value}</strong>,
+                  },
+                  { title: '出运单', dataIndex: 'shipment_no' },
+                  { title: '客户', dataIndex: 'customer_name' },
+                  { title: '结算日', dataIndex: 'settlement_date', render: formatDate },
+                  {
+                    title: '收入',
+                    dataIndex: 'sales_income',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '成本',
+                    dataIndex: 'purchase_cost_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '退税',
+                    dataIndex: 'tax_refund_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '杂费',
+                    dataIndex: 'misc_fee_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '手工成本',
+                    dataIndex: 'manual_cost_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '毛利',
+                    dataIndex: 'gross_profit',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  { title: '毛利率', dataIndex: 'gross_profit_rate', render: formatPercent },
+                  { title: '状态', dataIndex: 'status', render: settlementStatusTag },
+                ]}
+                dataSource={financialSettlements}
+                loading={loadingFinancialSettlements}
+                pagination={false}
+                rowClassName={(record) =>
+                  record.id === selectedFinancialSettlement?.id ? 'selected-row' : ''
                 }
+                rowKey="id"
+                size="small"
+                onRow={(record) => ({
+                  onClick: () => {
+                    setSelectedFinancialSettlementId(record.id)
+                    setManualProfitCostForm(
+                      initialManualProfitCostForm(record.currency, record.settlement_date),
+                    )
+                    goDetail('settlement', record.id)
+                  },
+                })}
               />
-            </label>
-            <div className="form-pair two">
-              <label>
-                金额
-                <Input
-                  required
-                  min="0"
-                  step="0.01"
-                  type="number"
-                  value={manualProfitCostForm.amount}
-                  onChange={(event) =>
-                    setManualProfitCostForm({ ...manualProfitCostForm, amount: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                币种
-                <Input
-                  required
-                  value={manualProfitCostForm.currency}
-                  onChange={(event) =>
-                    setManualProfitCostForm({ ...manualProfitCostForm, currency: event.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <label>
-              来源单号
-              <Input
-                value={manualProfitCostForm.source_no}
-                onChange={(event) =>
-                  setManualProfitCostForm({ ...manualProfitCostForm, source_no: event.target.value })
-                }
-              />
-            </label>
-            <label>
-              原因
-              <Input
-                required
-                value={manualProfitCostForm.reason}
-                onChange={(event) =>
-                  setManualProfitCostForm({ ...manualProfitCostForm, reason: event.target.value })
-                }
-              />
-            </label>
-            <label>
-              备注
-              <textarea
-                aria-label="手工成本备注"
-                rows={3}
-                value={manualProfitCostForm.remark}
-                onChange={(event) =>
-                  setManualProfitCostForm({ ...manualProfitCostForm, remark: event.target.value })
-                }
-              />
-            </label>
-            <Button
-              htmlType="submit"
-              icon={<Save size={16} />}
-              loading={submittingManualProfitCost}
-              disabled={!selectedFinancialSettlement}
-            >
-              关联成本
-            </Button>
-          </form>
-        </section>
-        ) : null}
+            </section>
+          ) : null}
 
-        {!detailId ? (
-        <section className="workspace-panel finance-profit-calculation-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<CheckCircle2 size={18} />} title="利润核算表" />
-          </div>
-          <form
-            className="inline-filters"
-            onSubmit={(event) => {
-              event.preventDefault()
-              void loadProfitCalculations()
-            }}
-          >
-            <label>
-              核算搜索
-              <Input
-                value={profitCalculationSearch}
-                placeholder="结算单 / 出运单 / 客户"
-                onChange={(event) => setProfitCalculationSearch(event.target.value)}
-              />
-            </label>
-            <label>
-              出运单号
-              <Input
-                value={profitCalculationShipmentFilter}
-                onChange={(event) => setProfitCalculationShipmentFilter(event.target.value)}
-              />
-            </label>
-            <Button htmlType="submit" icon={<Search size={16} />}>
-              查询
-            </Button>
-          </form>
-          <div className="finance-receipt-strip">
-            <span>核算单票 {profitCalculations.length} 单</span>
-            <strong>{formatFinanceAmount(totalProfitCalculationGrossProfit.toFixed(2), profitCalculations[0]?.currency ?? 'USD')}</strong>
-            <span>按结算锁定口径展开成本明细</span>
-          </div>
-          <Table<FinancialSettlement>
-            columns={[
-              {
-                title: '结算单',
-                dataIndex: 'settlement_no',
-                render: (value: string) => <strong>{value}</strong>,
-              },
-              { title: '出运单', dataIndex: 'shipment_no' },
-              { title: '客户', dataIndex: 'customer_name' },
-              {
-                title: '收入',
-                dataIndex: 'sales_income',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '总成本',
-                render: (_, record) =>
-                  formatFinanceAmount(
-                    (
-                      Number(record.purchase_cost_amount || 0) +
-                      Number(record.partner_fee_amount || 0) +
-                      Number(record.misc_fee_amount || 0) +
-                      Number(record.manual_cost_amount || 0)
-                    ).toFixed(2),
-                    record.currency,
-                  ),
-              },
-              {
-                title: '退税',
-                dataIndex: 'tax_refund_amount',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              {
-                title: '毛利',
-                dataIndex: 'gross_profit',
-                render: (value: string, record) => formatFinanceAmount(value, record.currency),
-              },
-              { title: '毛利率', dataIndex: 'gross_profit_rate', render: formatPercent },
-            ]}
-            dataSource={profitCalculations}
-            expandable={{
-              expandedRowRender: (record) => (
-                <Table<ProfitCostItem>
-                  columns={[
-                    { title: '类型', dataIndex: 'cost_type', render: profitCostTypeLabel },
-                    { title: '方向', dataIndex: 'direction', render: profitCostDirectionTag },
-                    { title: '来源', dataIndex: 'source_no', render: nullableText },
-                    { title: '日期', dataIndex: 'cost_date', render: formatDate },
+          {!detailId ? (
+            <Modal
+              centered
+              footer={null}
+              open={settlementModalOpen}
+              title="单票结算锁定"
+              width={640}
+              onCancel={() => setSettlementModalOpen(false)}
+            >
+              <form
+                className="record-form"
+                onSubmit={(e) => {
+                  submitFinancialSettlement(e)
+                  setSettlementModalOpen(false)
+                }}
+              >
+                <label>
+                  结算单号
+                  <Input
+                    required
+                    value={settlementForm.settlement_no}
+                    onChange={(event) =>
+                      setSettlementForm({ ...settlementForm, settlement_no: event.target.value })
+                    }
+                  />
+                </label>
+                <label>
+                  出运单 ID
+                  <Input
+                    required
+                    value={settlementForm.shipment_plan_id}
+                    onChange={(event) =>
+                      setSettlementForm({ ...settlementForm, shipment_plan_id: event.target.value })
+                    }
+                  />
+                </label>
+                <label>
+                  出运单号
+                  <Input
+                    value={settlementForm.shipment_no}
+                    onChange={(event) =>
+                      setSettlementForm({ ...settlementForm, shipment_no: event.target.value })
+                    }
+                  />
+                </label>
+                <label>
+                  结算日期
+                  <Input
+                    required
+                    type="date"
+                    value={settlementForm.settlement_date}
+                    onChange={(event) =>
+                      setSettlementForm({ ...settlementForm, settlement_date: event.target.value })
+                    }
+                  />
+                </label>
+                <label>
+                  备注
+                  <textarea
+                    aria-label="结算备注"
+                    rows={3}
+                    value={settlementForm.remark}
+                    onChange={(event) =>
+                      setSettlementForm({ ...settlementForm, remark: event.target.value })
+                    }
+                  />
+                </label>
+                <div className="modal-actions">
+                  <button
+                    className="secondary-inline"
+                    type="button"
+                    onClick={() => setSettlementModalOpen(false)}
+                  >
+                    取消
+                  </button>
+                  <button className="inline-submit" disabled={submittingSettlement} type="submit">
+                    锁定结算
+                  </button>
+                </div>
+              </form>
+            </Modal>
+          ) : null}
+
+          {detailId ? (
+            <section className="workspace-panel finance-manual-cost-panel">
+              <PanelTitle icon={<PackagePlus size={18} />} title="手工成本关联" />
+              {selectedFinancialSettlement ? (
+                <Descriptions
+                  bordered
+                  className="finance-settlement-descriptions"
+                  column={2}
+                  items={[
                     {
-                      title: '金额',
-                      dataIndex: 'amount',
-                      render: (value: string, item) => formatFinanceAmount(value, item.currency),
+                      key: 'settlement_no',
+                      label: '结算单',
+                      children: selectedFinancialSettlement.settlement_no,
                     },
-                    { title: '原因', dataIndex: 'reason', render: nullableText },
+                    {
+                      key: 'shipment_no',
+                      label: '出运单',
+                      children: selectedFinancialSettlement.shipment_no,
+                    },
+                    {
+                      key: 'gross_profit',
+                      label: '当前毛利',
+                      children: formatFinanceAmount(
+                        selectedFinancialSettlement.gross_profit,
+                        selectedFinancialSettlement.currency,
+                      ),
+                    },
+                    {
+                      key: 'manual_cost_amount',
+                      label: '手工成本',
+                      children: formatFinanceAmount(
+                        selectedFinancialSettlement.manual_cost_amount,
+                        selectedFinancialSettlement.currency,
+                      ),
+                    },
                   ]}
-                  dataSource={record.cost_items}
-                  pagination={false}
-                  rowKey="id"
                   size="small"
                 />
-              ),
-            }}
-            loading={loadingProfitCalculations}
-            pagination={false}
-            rowKey="id"
-            size="small"
-          />
-        </section>
-        ) : null}
+              ) : (
+                <div className="module-state">暂无可关联结算单</div>
+              )}
+              <form className="record-form compact-section" onSubmit={submitManualProfitCost}>
+                <label>
+                  成本单号
+                  <Input
+                    required
+                    value={manualProfitCostForm.cost_no}
+                    onChange={(event) =>
+                      setManualProfitCostForm({
+                        ...manualProfitCostForm,
+                        cost_no: event.target.value,
+                      })
+                    }
+                  />
+                </label>
+                <label>
+                  成本类型
+                  <FormSelect
+                    value={manualProfitCostForm.cost_type}
+                    onChange={(event) =>
+                      setManualProfitCostForm({
+                        ...manualProfitCostForm,
+                        cost_type: event.target.value,
+                      })
+                    }
+                  >
+                    <option value="other_cost">其他成本</option>
+                  </FormSelect>
+                </label>
+                <label>
+                  成本日期
+                  <Input
+                    required
+                    type="date"
+                    value={manualProfitCostForm.cost_date}
+                    onChange={(event) =>
+                      setManualProfitCostForm({
+                        ...manualProfitCostForm,
+                        cost_date: event.target.value,
+                      })
+                    }
+                  />
+                </label>
+                <div className="form-pair two">
+                  <label>
+                    金额
+                    <Input
+                      required
+                      min="0"
+                      step="0.01"
+                      type="number"
+                      value={manualProfitCostForm.amount}
+                      onChange={(event) =>
+                        setManualProfitCostForm({
+                          ...manualProfitCostForm,
+                          amount: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    币种
+                    <Input
+                      required
+                      value={manualProfitCostForm.currency}
+                      onChange={(event) =>
+                        setManualProfitCostForm({
+                          ...manualProfitCostForm,
+                          currency: event.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <label>
+                  来源单号
+                  <Input
+                    value={manualProfitCostForm.source_no}
+                    onChange={(event) =>
+                      setManualProfitCostForm({
+                        ...manualProfitCostForm,
+                        source_no: event.target.value,
+                      })
+                    }
+                  />
+                </label>
+                <label>
+                  原因
+                  <Input
+                    required
+                    value={manualProfitCostForm.reason}
+                    onChange={(event) =>
+                      setManualProfitCostForm({
+                        ...manualProfitCostForm,
+                        reason: event.target.value,
+                      })
+                    }
+                  />
+                </label>
+                <label>
+                  备注
+                  <textarea
+                    aria-label="手工成本备注"
+                    rows={3}
+                    value={manualProfitCostForm.remark}
+                    onChange={(event) =>
+                      setManualProfitCostForm({
+                        ...manualProfitCostForm,
+                        remark: event.target.value,
+                      })
+                    }
+                  />
+                </label>
+                <Button
+                  htmlType="submit"
+                  icon={<Save size={16} />}
+                  loading={submittingManualProfitCost}
+                  disabled={!selectedFinancialSettlement}
+                >
+                  关联成本
+                </Button>
+              </form>
+            </section>
+          ) : null}
+
+          {!detailId ? (
+            <section className="workspace-panel finance-profit-calculation-panel">
+              <div className="panel-heading toolbar-heading">
+                <PanelTitle icon={<CheckCircle2 size={18} />} title="利润核算表" />
+              </div>
+              <form
+                className="inline-filters"
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  void loadProfitCalculations()
+                }}
+              >
+                <label>
+                  核算搜索
+                  <Input
+                    value={profitCalculationSearch}
+                    placeholder="结算单 / 出运单 / 客户"
+                    onChange={(event) => setProfitCalculationSearch(event.target.value)}
+                  />
+                </label>
+                <label>
+                  出运单号
+                  <Input
+                    value={profitCalculationShipmentFilter}
+                    onChange={(event) => setProfitCalculationShipmentFilter(event.target.value)}
+                  />
+                </label>
+                <Button htmlType="submit" icon={<Search size={16} />}>
+                  查询
+                </Button>
+              </form>
+              <div className="finance-receipt-strip">
+                <span>核算单票 {profitCalculations.length} 单</span>
+                <strong>
+                  {formatFinanceAmount(
+                    totalProfitCalculationGrossProfit.toFixed(2),
+                    profitCalculations[0]?.currency ?? 'USD',
+                  )}
+                </strong>
+                <span>按结算锁定口径展开成本明细</span>
+              </div>
+              <Table<FinancialSettlement>
+                columns={[
+                  {
+                    title: '结算单',
+                    dataIndex: 'settlement_no',
+                    render: (value: string) => <strong>{value}</strong>,
+                  },
+                  { title: '出运单', dataIndex: 'shipment_no' },
+                  { title: '客户', dataIndex: 'customer_name' },
+                  {
+                    title: '收入',
+                    dataIndex: 'sales_income',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '总成本',
+                    render: (_, record) =>
+                      formatFinanceAmount(
+                        (
+                          Number(record.purchase_cost_amount || 0) +
+                          Number(record.partner_fee_amount || 0) +
+                          Number(record.misc_fee_amount || 0) +
+                          Number(record.manual_cost_amount || 0)
+                        ).toFixed(2),
+                        record.currency,
+                      ),
+                  },
+                  {
+                    title: '退税',
+                    dataIndex: 'tax_refund_amount',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  {
+                    title: '毛利',
+                    dataIndex: 'gross_profit',
+                    render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  },
+                  { title: '毛利率', dataIndex: 'gross_profit_rate', render: formatPercent },
+                ]}
+                dataSource={profitCalculations}
+                expandable={{
+                  expandedRowRender: (record) => (
+                    <Table<ProfitCostItem>
+                      columns={[
+                        { title: '类型', dataIndex: 'cost_type', render: profitCostTypeLabel },
+                        { title: '方向', dataIndex: 'direction', render: profitCostDirectionTag },
+                        { title: '来源', dataIndex: 'source_no', render: nullableText },
+                        { title: '日期', dataIndex: 'cost_date', render: formatDate },
+                        {
+                          title: '金额',
+                          dataIndex: 'amount',
+                          render: (value: string, item) =>
+                            formatFinanceAmount(value, item.currency),
+                        },
+                        { title: '原因', dataIndex: 'reason', render: nullableText },
+                      ]}
+                      dataSource={record.cost_items}
+                      pagination={false}
+                      rowKey="id"
+                      size="small"
+                    />
+                  ),
+                }}
+                loading={loadingProfitCalculations}
+                pagination={false}
+                rowKey="id"
+                size="small"
+              />
+            </section>
+          ) : null}
         </section>
       </section>
     )
@@ -5023,7 +5872,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
 
   if (activeModule === 'reimbursements') {
     const selectedReimbursement =
-      reimbursements.find((item) => item.id === selectedReimbursementId) ?? reimbursements[0] ?? null
+      reimbursements.find((item) => item.id === selectedReimbursementId) ??
+      reimbursements[0] ??
+      null
     return (
       <section className="finance-page">
         {moduleHeader}
@@ -5076,7 +5927,11 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                 <Button htmlType="submit" icon={<Search size={16} />}>
                   查询
                 </Button>
-                <Button icon={<Plus size={16} />} onClick={() => setReimbursementModalOpen(true)}>
+                <Button
+                  type="primary"
+                  icon={<Plus size={16} />}
+                  onClick={() => setReimbursementModalOpen(true)}
+                >
                   新增报销
                 </Button>
               </form>
@@ -5122,109 +5977,115 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
               onCancel={() => setReimbursementModalOpen(false)}
             >
               <form className="record-form" onSubmit={submitReimbursement}>
-              <label>
-                报销单号
-                <Input
-                  value={reimbursementForm.reimbursement_no}
-                  onChange={(event) =>
-                    setReimbursementForm((prev) => ({ ...prev, reimbursement_no: event.target.value }))
+                <label>
+                  报销单号
+                  <Input
+                    value={reimbursementForm.reimbursement_no}
+                    onChange={(event) =>
+                      setReimbursementForm((prev) => ({
+                        ...prev,
+                        reimbursement_no: event.target.value,
+                      }))
+                    }
+                    required
+                  />
+                </label>
+                <label>
+                  申请人工号
+                  <Input
+                    value={reimbursementForm.applicant_user_id}
+                    onChange={(event) =>
+                      setReimbursementForm((prev) => ({
+                        ...prev,
+                        applicant_user_id: event.target.value,
+                      }))
+                    }
+                    required
+                  />
+                </label>
+                <label>
+                  申请人姓名
+                  <Input
+                    value={reimbursementForm.applicant_user_name}
+                    onChange={(event) =>
+                      setReimbursementForm((prev) => ({
+                        ...prev,
+                        applicant_user_name: event.target.value,
+                      }))
+                    }
+                    required
+                  />
+                </label>
+                <label>
+                  部门
+                  <Input
+                    value={reimbursementForm.department}
+                    onChange={(event) =>
+                      setReimbursementForm((prev) => ({ ...prev, department: event.target.value }))
+                    }
+                    required
+                  />
+                </label>
+                <label>
+                  分类
+                  <FormSelect
+                    value={reimbursementForm.category}
+                    onChange={(event) =>
+                      setReimbursementForm((prev) => ({ ...prev, category: event.target.value }))
+                    }
+                  >
+                    <option value="travel">差旅</option>
+                    <option value="office">办公</option>
+                    <option value="entertainment">招待</option>
+                    <option value="other">其他</option>
+                  </FormSelect>
+                </label>
+                <label>
+                  币种
+                  <Input
+                    value={reimbursementForm.currency}
+                    onChange={(event) =>
+                      setReimbursementForm((prev) => ({ ...prev, currency: event.target.value }))
+                    }
+                    required
+                  />
+                </label>
+                <label>
+                  金额
+                  <Input
+                    value={reimbursementForm.amount}
+                    onChange={(event) =>
+                      setReimbursementForm((prev) => ({ ...prev, amount: event.target.value }))
+                    }
+                    required
+                  />
+                </label>
+                <label>
+                  事由
+                  <Input
+                    value={reimbursementForm.reason}
+                    onChange={(event) =>
+                      setReimbursementForm((prev) => ({ ...prev, reason: event.target.value }))
+                    }
+                  />
+                </label>
+                <ApprovalAssigneeSelect
+                  currentUserId={currentUser.id}
+                  onChange={(reviewer_id) =>
+                    setReimbursementForm((previous) => ({ ...previous, reviewer_id }))
                   }
-                  required
+                  requiredPermission="finance:view"
+                  value={reimbursementForm.reviewer_id}
                 />
-              </label>
-              <label>
-                申请人工号
-                <Input
-                  value={reimbursementForm.applicant_user_id}
-                  onChange={(event) =>
-                    setReimbursementForm((prev) => ({ ...prev, applicant_user_id: event.target.value }))
-                  }
-                  required
-                />
-              </label>
-              <label>
-                申请人姓名
-                <Input
-                  value={reimbursementForm.applicant_user_name}
-                  onChange={(event) =>
-                    setReimbursementForm((prev) => ({
-                      ...prev,
-                      applicant_user_name: event.target.value,
-                    }))
-                  }
-                  required
-                />
-              </label>
-              <label>
-                部门
-                <Input
-                  value={reimbursementForm.department}
-                  onChange={(event) =>
-                    setReimbursementForm((prev) => ({ ...prev, department: event.target.value }))
-                  }
-                  required
-                />
-              </label>
-              <label>
-                分类
-                <FormSelect
-                  value={reimbursementForm.category}
-                  onChange={(event) =>
-                    setReimbursementForm((prev) => ({ ...prev, category: event.target.value }))
-                  }
+                <Button
+                  disabled={!reimbursementForm.reviewer_id}
+                  htmlType="submit"
+                  type="primary"
+                  loading={submittingReimbursement}
+                  icon={<Save size={16} />}
                 >
-                  <option value="travel">差旅</option>
-                  <option value="office">办公</option>
-                  <option value="entertainment">招待</option>
-                  <option value="other">其他</option>
-                </FormSelect>
-              </label>
-              <label>
-                币种
-                <Input
-                  value={reimbursementForm.currency}
-                  onChange={(event) =>
-                    setReimbursementForm((prev) => ({ ...prev, currency: event.target.value }))
-                  }
-                  required
-                />
-              </label>
-              <label>
-                金额
-                <Input
-                  value={reimbursementForm.amount}
-                  onChange={(event) =>
-                    setReimbursementForm((prev) => ({ ...prev, amount: event.target.value }))
-                  }
-                  required
-                />
-              </label>
-              <label>
-                事由
-                <Input
-                  value={reimbursementForm.reason}
-                  onChange={(event) =>
-                    setReimbursementForm((prev) => ({ ...prev, reason: event.target.value }))
-                  }
-                />
-              </label>
-              <ApprovalAssigneeSelect
-                currentUserId={currentUser.id}
-                onChange={(reviewer_id) =>
-                  setReimbursementForm((previous) => ({ ...previous, reviewer_id }))
-                }
-                requiredPermission="finance:view"
-                value={reimbursementForm.reviewer_id}
-              />
-              <Button
-                disabled={!reimbursementForm.reviewer_id}
-                htmlType="submit"
-                type="primary"
-                loading={submittingReimbursement}
-                icon={<Save size={16} />}
-              >
-                登记报销单
-              </Button>
+                  登记报销单
+                </Button>
               </form>
             </Modal>
 
@@ -5239,7 +6100,10 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                     {reimbursementStatusTag(selectedReimbursement.status)}
                   </Descriptions.Item>
                   <Descriptions.Item label="金额">
-                    {formatFinanceAmount(selectedReimbursement.amount, selectedReimbursement.currency)}
+                    {formatFinanceAmount(
+                      selectedReimbursement.amount,
+                      selectedReimbursement.currency,
+                    )}
                   </Descriptions.Item>
                   <Descriptions.Item label="审批人">
                     {selectedReimbursement.reviewer_name ?? '未指定'}
@@ -5249,7 +6113,11 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                   <Button
                     disabled={
                       selectedReimbursement.status !== 'submitted' ||
-                      !canApproveAssignedRecord(currentUser, selectedReimbursement.reviewer_id, 'finance:view')
+                      !canApproveAssignedRecord(
+                        currentUser,
+                        selectedReimbursement.reviewer_id,
+                        'finance:view',
+                      )
                     }
                     loading={submittingReimbursementAction}
                     type="primary"
@@ -5260,7 +6128,11 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                   <Button
                     disabled={
                       selectedReimbursement.status !== 'submitted' ||
-                      !canApproveAssignedRecord(currentUser, selectedReimbursement.reviewer_id, 'finance:view')
+                      !canApproveAssignedRecord(
+                        currentUser,
+                        selectedReimbursement.reviewer_id,
+                        'finance:view',
+                      )
                     }
                     loading={submittingReimbursementAction}
                     danger
@@ -5269,7 +6141,12 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                     驳回
                   </Button>
                 </div>
-                {selectedReimbursement.status === 'submitted' && !canApproveAssignedRecord(currentUser, selectedReimbursement.reviewer_id, 'finance:view') ? (
+                {selectedReimbursement.status === 'submitted' &&
+                !canApproveAssignedRecord(
+                  currentUser,
+                  selectedReimbursement.reviewer_id,
+                  'finance:view',
+                ) ? (
                   <Alert
                     message={`等待 ${selectedReimbursement.reviewer_name ?? '指定审批人'} 审批`}
                     showIcon
@@ -5463,7 +6340,10 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                 <Input
                   value={portRecordForm.customs_receipt_no}
                   onChange={(event) =>
-                    setPortRecordForm((prev) => ({ ...prev, customs_receipt_no: event.target.value }))
+                    setPortRecordForm((prev) => ({
+                      ...prev,
+                      customs_receipt_no: event.target.value,
+                    }))
                   }
                 />
               </label>
@@ -5509,7 +6389,12 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                   required
                 />
               </label>
-              <Button htmlType="submit" type="primary" loading={submittingPortBatch} icon={<Save size={16} />}>
+              <Button
+                htmlType="submit"
+                type="primary"
+                loading={submittingPortBatch}
+                icon={<Save size={16} />}
+              >
                 导入数据
               </Button>
             </form>
@@ -5536,7 +6421,8 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<FileSpreadsheet size={18} />} title="财务统计报表" />
             <form
-              className="inline-filters"
+              aria-label="财务报表筛选"
+              className="inline-filters single-line-filter-toolbar"
               onSubmit={(event) => {
                 event.preventDefault()
                 void loadFinanceReport(activeReport)
@@ -5711,7 +6597,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                   render: (_, record) => (
                     <Button
                       size="small"
-                      onClick={() => void openFinanceReportDrilldown(activeReport, record.receipt_no)}
+                      onClick={() =>
+                        void openFinanceReportDrilldown(activeReport, record.receipt_no)
+                      }
                     >
                       来源
                     </Button>
@@ -5721,7 +6609,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
               dataSource={receiptUsageReport?.rows ?? []}
               loading={loadingReport}
               pagination={false}
-              rowKey={(record) => `${record.receipt_no}-${record.invoice_no ?? record.contract_no ?? ''}-${record.allocated_at}`}
+              rowKey={(record) =>
+                `${record.receipt_no}-${record.invoice_no ?? record.contract_no ?? ''}-${record.allocated_at}`
+              }
               size="small"
             />
           ) : null}
@@ -5783,7 +6673,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                   render: (_, record) => (
                     <Button
                       size="small"
-                      onClick={() => void openFinanceReportDrilldown(activeReport, record.request_no)}
+                      onClick={() =>
+                        void openFinanceReportDrilldown(activeReport, record.request_no)
+                      }
                     >
                       来源
                     </Button>
@@ -5822,7 +6714,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                   render: (_, record) => (
                     <Button
                       size="small"
-                      onClick={() => void openFinanceReportDrilldown(activeReport, record.request_no)}
+                      onClick={() =>
+                        void openFinanceReportDrilldown(activeReport, record.request_no)
+                      }
                     >
                       来源
                     </Button>
@@ -5857,7 +6751,9 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
                   render: (_, record) => (
                     <Button
                       size="small"
-                      onClick={() => void openFinanceReportDrilldown(activeReport, record.document_no)}
+                      onClick={() =>
+                        void openFinanceReportDrilldown(activeReport, record.document_no)
+                      }
                     >
                       来源
                     </Button>
@@ -5906,11 +6802,15 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
               <PanelTitle icon={<ChevronRight size={18} />} title="来源下钻" />
               <Descriptions column={1} size="small">
                 <Descriptions.Item label="来源编号">{reportDrilldown.source_no}</Descriptions.Item>
-                <Descriptions.Item label="来源类型">{reportDrilldown.source_type}</Descriptions.Item>
+                <Descriptions.Item label="来源类型">
+                  {reportDrilldown.source_type}
+                </Descriptions.Item>
                 <Descriptions.Item label="入口">
                   {reportDrilldown.items.length > 0
                     ? reportDrilldown.items
-                        .map((item) => `${item.label}: ${item.value ?? ''} ${item.target_path ?? ''}`)
+                        .map(
+                          (item) => `${item.label}: ${item.value ?? ''} ${item.target_path ?? ''}`,
+                        )
                         .join('；')
                     : '未找到可下钻来源'}
                 </Descriptions.Item>

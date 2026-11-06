@@ -48,6 +48,26 @@ describe('FinancePage', () => {
     expect(container).toBeTruthy()
   })
 
+  it('keeps tax document filters and actions in the shared desktop toolbar', () => {
+    render(
+      <FinancePage currentUser={currentUser} view={{ module: 'tax', id: null }} onNavigate={onNavigate} />,
+    )
+
+    expect(screen.getByRole('form', { name: '核销单筛选' })).toHaveClass(
+      'single-line-filter-toolbar',
+    )
+  })
+
+  it('keeps report filters and actions in the shared desktop toolbar', () => {
+    render(
+      <FinancePage currentUser={currentUser} view={{ module: 'reports', id: null }} onNavigate={onNavigate} />,
+    )
+
+    expect(screen.getByRole('form', { name: '财务报表筛选' })).toHaveClass(
+      'single-line-filter-toolbar',
+    )
+  })
+
   it('keeps the supplier invoice selected by the payment detail route', async () => {
     const invoice = (id: string, invoiceNo: string): SupplierInvoice => ({
       id,

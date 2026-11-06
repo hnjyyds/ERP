@@ -27,6 +27,7 @@ from app.modules.finance.fee_payments.schemas import (
 from app.modules.masterdata.partners.repositories import PartnerRepository, PartnerRow
 from app.modules.sales.shipments.repositories import ShipmentPlanRepository, ShipmentPlanRow
 from app.modules.system.auth.assignees import AssigneeValidator
+from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
@@ -186,7 +187,11 @@ class FeePaymentService:
         request = await self._get_fee_payment_request(fee_payment_request_id)
         if request.requester_user_id == current_user.id:
             raise ValueError("付费申请人不能审批自己的申请")
-        if request.reviewer_id is not None and request.reviewer_id != current_user.id:
+        if not can_approve_assigned_record(
+            current_user_id=current_user.id,
+            reviewer_id=request.reviewer_id,
+            permissions=current_user.permissions,
+        ):
             raise PermissionDeniedError
         invoice = await self._get_partner_fee_invoice(request.partner_fee_invoice_id)
         self._validate_fee_approval(request, invoice, payload)

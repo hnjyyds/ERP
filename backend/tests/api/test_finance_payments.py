@@ -96,11 +96,7 @@ async def test_finance_payment_flow_invoice_request_approve_and_payables(
 ) -> None:
     business_token = await _login_token(api_client)
     finance_token = await _login_token(api_client, "finance", "finance123")
-    finance_manager_token = await _login_token(
-        api_client,
-        "finance_manager",
-        "finance-manager123",
-    )
+    super_admin_token = await _login_token(api_client, "admin", "admin123")
     notice = await _received_purchase_invoice_notice(api_client, business_token)
 
     invoice = await _create_supplier_invoice(api_client, finance_token, notice)
@@ -148,7 +144,7 @@ async def test_finance_payment_flow_invoice_request_approve_and_payables(
 
     approve_response = await api_client.post(
         f"/api/v1/finance/payment-requests/{payment_request['id']}/approve",
-        headers={"Authorization": f"Bearer {finance_manager_token}"},
+        headers={"Authorization": f"Bearer {super_admin_token}"},
         json={
             "approved_amount": "1200.00",
             "approved_at": "2026-09-11",
@@ -159,7 +155,7 @@ async def test_finance_payment_flow_invoice_request_approve_and_payables(
     assert approve_response.status_code == 200
     approved = approve_response.json()["data"]
     assert approved["status"] == "approved"
-    assert approved["reviewer_name"] == "演示财务主管"
+    assert approved["reviewer_id"] == "u-admin"
     assert approved["approved_amount"] == "1200.00"
     assert approved["paid_amount"] == "1200.00"
 
@@ -209,7 +205,7 @@ async def test_finance_payment_flow_invoice_request_approve_and_payables(
 
     final_approve_response = await api_client.post(
         f"/api/v1/finance/payment-requests/{final_request['id']}/approve",
-        headers={"Authorization": f"Bearer {finance_manager_token}"},
+        headers={"Authorization": f"Bearer {super_admin_token}"},
         json={
             "approved_amount": "2000.00",
             "approved_at": "2026-09-13",
