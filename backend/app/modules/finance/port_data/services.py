@@ -152,7 +152,7 @@ class PortDataService:
                     customs_declaration_no=record.declaration_no,
                     customs_receipt_no=record.customs_receipt_no,
                     received_at=record.customs_date or document.received_at,
-                    remark="由口岸导入数据自动匹配报关回单",
+                    remark=None,
                 )
                 if updated is None:
                     continue

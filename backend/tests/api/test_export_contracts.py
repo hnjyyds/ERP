@@ -218,6 +218,7 @@ async def test_export_quotation_confirm_creates_real_export_contract(
     assert generated["contract_id"] == contract["id"]
     assert contract["source_quotation_no"] == quote_no
     assert contract["statistics"]["total_amount"] == "1250.00"
+    assert contract["payment_terms"] == ""
 
 
 async def test_export_contract_endpoints_require_login(

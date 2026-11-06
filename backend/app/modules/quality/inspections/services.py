@@ -118,7 +118,7 @@ class QualityInspectionService:
                 event_type="created",
                 from_status=None,
                 to_status=task_status,
-                notes="QC 任务已创建",
+                notes=None,
                 actor_user_id=current_user.id,
                 actor_user_name=current_user.display_name,
             )

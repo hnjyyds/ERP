@@ -536,7 +536,7 @@ class PurchaseContractService:
                     source_export_contract_line_id=(
                         source.line.id if len(source_lines) == 1 else None
                     ),
-                    remark="按商品配件单位耗料生成",
+                    remark=None,
                 )
             )
         return generated

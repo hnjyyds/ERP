@@ -1394,7 +1394,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                         <td>{formatScheduledAt(event.created_at)}</td>
                         <td>{qualityEventLabel(event.event_type)}</td>
                         <td>{event.actor_user_name}</td>
-                        <td>{nullableText(event.notes)}</td>
+                        <td>{event.notes || t('common.notSet')}</td>
                       </tr>
                     ))}
                     {(selectedInspection.events?.length ?? 0) === 0 ? (

@@ -1559,7 +1559,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
 
                 <div className="transaction-box">
                   <strong>{t('purchase.contract.field.paymentTerms')}</strong>
-                  <p>{selectedContract.payment_terms}</p>
+                  <p>{selectedContract.payment_terms || t('common.notSet')}</p>
                 </div>
                 <div className="transaction-box">
                   <strong>{t('purchase.contract.field.remarks')}</strong>

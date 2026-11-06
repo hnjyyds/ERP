@@ -303,7 +303,7 @@ class ExportQuotationService:
             currency=quotation.currency,
             trade_term=quotation.trade_term,
             planned_ship_date=quotation.valid_until or payload.confirmed_at,
-            payment_terms="按合同约定",
+            payment_terms="",
             source_quotation_id=quotation.id,
             source_quotation_no=quotation.code,
             remarks=quotation.description,

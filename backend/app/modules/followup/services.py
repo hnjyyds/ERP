@@ -263,7 +263,7 @@ class FollowupService:
                     status="completed" if is_contract_node else "pending",
                     source_record_type="purchase_contract" if is_contract_node else None,
                     source_record_id=contract.id if is_contract_node else None,
-                    source_summary="采购合同审批通过" if is_contract_node else None,
+                    source_summary=None,
                 )
             refreshed = await self._repository.refresh_plan_status(plan.id)
             if refreshed is None:

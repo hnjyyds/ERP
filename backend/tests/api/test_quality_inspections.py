@@ -675,6 +675,7 @@ async def test_quality_inspection_persists_all_contract_lines_attachments_and_au
     assert inspection["attachments"][0]["filename"] == "qc-evidence.png"
     assert inspection["events"][0]["event_type"] == "created"
     assert inspection["events"][0]["actor_user_id"] == "u-001"
+    assert inspection["events"][0].get("notes") is None
 
 
 async def test_quality_issue_resolution_and_reinspection_close_the_failed_flow(

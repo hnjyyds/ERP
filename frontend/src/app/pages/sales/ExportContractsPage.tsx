@@ -1261,7 +1261,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                 </div>
                 <div>
                   <dt>{t('sales.contract.field.paymentTerms')}</dt>
-                  <dd>{selectedContract.payment_terms}</dd>
+                  <dd>{selectedContract.payment_terms || t('common.notSet')}</dd>
                 </div>
                 <div>
                   <dt>{t('sales.contract.field.contractAmount')}</dt>
