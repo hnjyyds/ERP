@@ -122,10 +122,10 @@ describe('AppSidebar', () => {
     )
 
     const outOfFlowItem = screen.getByRole('link', {
-      name: '样品申请，nav.locked.nonPrimaryDescription',
+      name: '样品申请, nav.locked.nonPrimaryDescription',
     })
     const deferredItem = screen.getByRole('link', {
-      name: '采购询价，nav.locked.deferredDescription',
+      name: '采购询价, nav.locked.deferredDescription',
     })
 
     expect(outOfFlowItem).toHaveAttribute('aria-disabled', 'true')

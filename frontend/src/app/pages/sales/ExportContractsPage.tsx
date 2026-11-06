@@ -1213,7 +1213,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
               return (
                 <div className={`product-picker-item${alreadyAdded ? ' is-added' : ''}`} key={product.id} role="listitem">
                   <Checkbox
-                    aria-label={`${displayName}（${product.code}）`}
+                    aria-label={`${displayName} (${product.code})`}
                     checked={pendingProductIds.includes(product.id)}
                     disabled={alreadyAdded}
                     onChange={(event) => togglePendingProduct(product.id, event.target.checked)}

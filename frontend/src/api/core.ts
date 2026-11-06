@@ -56,7 +56,7 @@ export async function readApiError(
       const message = body.detail
         .map((item) => item.msg)
         .filter((value): value is string => Boolean(value))
-        .join('；')
+        .join('; ')
       return { code, message, details }
     }
     return { code, message: '', details }

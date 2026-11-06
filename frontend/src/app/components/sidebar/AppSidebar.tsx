@@ -155,7 +155,7 @@ export function AppSidebar({ activePath, dashboardMenu, sidebarMenuGroups, onNav
                         <span
                           key={item.id}
                           aria-disabled="true"
-                          aria-label={`${item.label}，${lockedState.description}`}
+                          aria-label={`${item.label}, ${lockedState.description}`}
                           className="nav-link nav-link-locked"
                           role="link"
                           tabIndex={0}
