@@ -51,7 +51,8 @@ import { t } from '../../appI18n'
 import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
 
 function sampleDeliveryStatusLabel(value: string): string {
-  return sampleDeliveryStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = sampleDeliveryStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 type ExportQuotationFormState = {

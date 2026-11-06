@@ -19,6 +19,7 @@ import {
   SampleRequestToRecordPayload,
 } from '../../../api'
 import { sampleRecordPath, moduleDetailPath } from '../../routes'
+import { t } from '../../appI18n'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { downloadCsv } from '../../../shared/print'
@@ -285,15 +286,18 @@ function formatQuantity(value: number): string {
 }
 
 function sampleRecordTypeLabel(value: string): string {
-  return sampleRecordTypeOptions.find((item) => item.value === value)?.label ?? value
+  const option = sampleRecordTypeOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function sampleRecordStatusLabel(value: string): string {
-  return sampleRecordStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = sampleRecordStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function sampleStockEventTypeLabel(value: string): string {
-  return sampleStockEventTypeOptions.find((item) => item.value === value)?.label ?? value
+  const option = sampleStockEventTypeOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
@@ -359,7 +363,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
         null
       setSelectedRecordId(nextSelectedId)
     } catch (caught) {
-      showError(caught, '样品台账加载失败')
+      showError(caught, t('sample.record.message.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -377,7 +381,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
     setError('')
     try {
       const created = await createSampleRecord(sampleRecordPayload(form))
-      setMessage(`已新增样品 ${created.code}`)
+      setMessage(t('sample.record.message.created', { code: created.code }))
       setForm(initialSampleRecordForm())
       setRecordModalOpen(false)
       await loadRecords(created.id)
@@ -386,7 +390,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
       )
       setSelectedRecordId(created.id)
     } catch (caught) {
-      showError(caught, '样品新增失败')
+      showError(caught, t('sample.record.message.createFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -410,10 +414,10 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
             : record,
         ),
       )
-      setMessage(`已追加样品图片 ${image.filename}`)
+      setMessage(t('sample.record.message.imageAdded', { filename: image.filename }))
       setImageForm(initialSampleRecordImageForm())
     } catch (caught) {
-      showError(caught, '样品图片追加失败')
+      showError(caught, t('sample.record.message.imageAddFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -435,10 +439,15 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
           record.id === selectedRecord.id ? applySampleStockEvent(record, stockEvent) : record,
         ),
       )
-      setMessage(`已登记样品数量 ${stockEvent.quantity} ${stockEvent.unit}`)
+      setMessage(
+        t('sample.record.message.stockEventRegistered', {
+          quantity: stockEvent.quantity,
+          unit: stockEvent.unit,
+        }),
+      )
       setStockForm(initialSampleRecordStockForm())
     } catch (caught) {
-      showError(caught, '样品数量登记失败')
+      showError(caught, t('sample.record.message.stockEventFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -450,12 +459,12 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
     setError('')
     try {
       const result = await importSampleRecords({ records: [sampleRecordPayload(form)] })
-      setMessage(`已导入 ${result.created_count} 条样品`)
+      setMessage(t('sample.record.message.imported', { count: result.created_count }))
       setForm(initialSampleRecordForm())
       setRecordModalOpen(false)
       await loadRecords(result.records[0]?.id)
     } catch (caught) {
-      showError(caught, '样品导入失败')
+      showError(caught, t('sample.record.message.importFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -473,9 +482,9 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
         purchase_contract_id: purchaseContractFilter.trim() || undefined,
       })
       downloadCsv(exported.filename, exported.content)
-      setMessage(`已导出 ${exported.total} 条样品台账`)
+      setMessage(t('sample.record.message.exported', { count: exported.total }))
     } catch (caught) {
-      showError(caught, '样品导出失败')
+      showError(caught, t('sample.record.message.exportFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -483,14 +492,17 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
 
   return (
     <section className="sample-record-page">
-      <div className="summary-strip" aria-label="样品登记概览">
-        <Metric label="样品" value={records.length} />
+      <div className="summary-strip" aria-label={t('sample.record.pageAria')}>
+        <Metric label={t('sample.record.metric.sampleCount')} value={records.length} />
         <Metric
-          label="确认样"
+          label={t('sample.record.metric.confirmSampleCount')}
           value={records.filter((item) => item.sample_type === 'confirm_sample').length}
         />
-        <Metric label="图片" value={selectedRecord?.images.length ?? 0} />
-        <Metric label="留样" value={Number(selectedRecord?.stock_summary.retained_quantity ?? 0)} />
+        <Metric label={t('sample.record.metric.imageCount')} value={selectedRecord?.images.length ?? 0} />
+        <Metric
+          label={t('sample.record.metric.retainedCount')}
+          value={Number(selectedRecord?.stock_summary.retained_quantity ?? 0)}
+        />
       </div>
 
       {message ? (
@@ -502,7 +514,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title="样品列表" />
+              <PanelTitle icon={<Search size={18} />} title={t('sample.record.panel.listTitle')} />
               <form
                 className="inline-filters"
                 onSubmit={(event) => {
@@ -511,48 +523,48 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                 }}
               >
                 <label className="inline-filter-search">
-                  样品搜索
+                  {t('sample.record.filter.search')}
                   <Input
                     value={search}
-                    placeholder="编号 / 产品 / 客户 / 供应商"
+                    placeholder={t('sample.record.filter.searchPlaceholder')}
                     onChange={(event) => setSearch(event.target.value)}
                   />
                 </label>
                 <label className="inline-filter-compact">
-                  样品分类筛选
+                  {t('sample.record.filter.type')}
                   <FormSelect
                     value={typeFilter}
                     onChange={(event) => setTypeFilter(event.target.value)}
                   >
-                    <option value="">全部分类</option>
+                    <option value="">{t('sample.record.filter.allTypes')}</option>
                     {sampleRecordTypeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label className="inline-filter-compact">
-                  样品客户筛选
+                  {t('sample.record.filter.customer')}
                   <Input
                     value={customerFilter}
-                    placeholder="输入客户编号或名称"
+                    placeholder={t('sample.record.filter.customerPlaceholder')}
                     onChange={(event) => setCustomerFilter(event.target.value)}
                   />
                 </label>
                 <label className="inline-filter-compact">
-                  采购合同筛选
+                  {t('sample.record.filter.purchaseContract')}
                   <Input
                     value={purchaseContractFilter}
-                    placeholder="输入采购合同号"
+                    placeholder={t('sample.record.filter.purchaseContractPlaceholder')}
                     onChange={(event) => setPurchaseContractFilter(event.target.value)}
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('sample.record.action.query')}
                 </Button>
                 <Button loading={submitting} onClick={() => void downloadRecordExport()}>
-                  导出台账
+                  {t('sample.record.action.export')}
                 </Button>
                 <Button
                   htmlType="button"
@@ -560,7 +572,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                   icon={<Plus size={16} />}
                   onClick={openCreateRecord}
                 >
-                  新增样品
+                  {t('sample.record.action.create')}
                 </Button>
               </form>
             </div>
@@ -568,7 +580,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
             <Table<SampleRecord>
               columns={[
                 {
-                  title: '样品编号',
+                  title: t('sample.record.table.code'),
                   dataIndex: 'code',
                   render: (value: string, record: SampleRecord) => (
                     <button
@@ -580,13 +592,13 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                     </button>
                   ),
                 },
-                { title: '分类', dataIndex: 'sample_type', render: sampleRecordTypeLabel },
-                { title: '产品', dataIndex: 'product_name' },
-                { title: '客户货号', dataIndex: 'customer_sku', render: nullableText },
-                { title: '供应商货号', dataIndex: 'supplier_sku', render: nullableText },
-                { title: '数量', dataIndex: 'quantity', width: 80 },
+                { title: t('sample.record.table.type'), dataIndex: 'sample_type', render: sampleRecordTypeLabel },
+                { title: t('sample.record.table.product'), dataIndex: 'product_name' },
+                { title: t('sample.record.table.customerSku'), dataIndex: 'customer_sku', render: nullableText },
+                { title: t('sample.record.table.supplierSku'), dataIndex: 'supplier_sku', render: nullableText },
+                { title: t('sample.record.table.quantity'), dataIndex: 'quantity', width: 80 },
                 {
-                  title: '入口',
+                  title: t('sample.record.table.entry'),
                   key: 'detail',
                   width: 110,
                   render: (_: unknown, record: SampleRecord) => (
@@ -594,7 +606,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                       size="small"
                       onClick={(event) => stopAndOpenRecordDetail(event, record)}
                     >
-                      查看详情
+                      {t('sample.record.action.viewDetail')}
                     </Button>
                   ),
                 },
@@ -616,20 +628,20 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
           centered
           footer={null}
           open={recordModalOpen}
-          title="新增样品"
+          title={t('sample.record.modal.createTitle')}
           width={1040}
           onCancel={() => setRecordModalOpen(false)}
         >
           <form className="record-form entity-modal-form sample-modal-form" onSubmit={submitRecord}>
             <label>
-              样品编号
+              {t('sample.record.field.code')}
               <Input
                 value={form.code}
                 onChange={(event) => setForm({ ...form, code: event.target.value })}
               />
             </label>
             <label htmlFor="sample-record-type">
-              样品分类
+              {t('sample.record.field.sampleType')}
               <FormSelect
                 id="sample-record-type"
                 value={form.sample_type}
@@ -637,13 +649,13 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
               >
                 {sampleRecordTypeOptions.map((item) => (
                   <option key={item.value} value={item.value}>
-                    {item.label}
+                    {t(item.labelKey)}
                   </option>
                 ))}
               </FormSelect>
             </label>
             <label htmlFor="sample-record-status">
-              样品状态
+              {t('sample.record.field.status')}
               <FormSelect
                 id="sample-record-status"
                 value={form.status}
@@ -651,13 +663,13 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
               >
                 {sampleRecordStatusOptions.map((item) => (
                   <option key={item.value} value={item.value}>
-                    {item.label}
+                    {t(item.labelKey)}
                   </option>
                 ))}
               </FormSelect>
             </label>
             <label>
-              收样数量
+              {t('sample.record.field.receivedQuantity')}
               <Input
                 type="number"
                 min="0.01"
@@ -667,7 +679,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
               />
             </label>
             <label>
-              收样日期
+              {t('sample.record.field.receivedAt')}
               <Input
                 type="date"
                 value={form.received_at}
@@ -675,7 +687,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
               />
             </label>
             <label>
-              提交日期
+              {t('sample.record.field.submittedAt')}
               <Input
                 type="date"
                 value={form.submitted_at}
@@ -683,49 +695,49 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
               />
             </label>
             <label>
-              产品编号
+              {t('sample.record.field.productCode')}
               <Input
                 value={form.product_code}
                 onChange={(event) => setForm({ ...form, product_code: event.target.value })}
               />
             </label>
             <label>
-              产品名称
+              {t('sample.record.field.productName')}
               <Input
                 value={form.product_name}
                 onChange={(event) => setForm({ ...form, product_name: event.target.value })}
               />
             </label>
             <label>
-              客户货号
+              {t('sample.record.field.customerSku')}
               <Input
                 value={form.customer_sku}
                 onChange={(event) => setForm({ ...form, customer_sku: event.target.value })}
               />
             </label>
             <label>
-              供应商货号
+              {t('sample.record.field.supplierSku')}
               <Input
                 value={form.supplier_sku}
                 onChange={(event) => setForm({ ...form, supplier_sku: event.target.value })}
               />
             </label>
             <label>
-              客户名称
+              {t('sample.record.field.customerName')}
               <Input
                 value={form.customer_name}
                 onChange={(event) => setForm({ ...form, customer_name: event.target.value })}
               />
             </label>
             <label>
-              供应商名称
+              {t('sample.record.field.supplierName')}
               <Input
                 value={form.supplier_name}
                 onChange={(event) => setForm({ ...form, supplier_name: event.target.value })}
               />
             </label>
             <label>
-              采购合同号
+              {t('sample.record.field.purchaseContractNo')}
               <Input
                 value={form.purchase_contract_no}
                 onChange={(event) =>
@@ -738,14 +750,14 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
               />
             </label>
             <label>
-              单位
+              {t('sample.record.field.unit')}
               <Input
                 value={form.unit}
                 onChange={(event) => setForm({ ...form, unit: event.target.value })}
               />
             </label>
             <label htmlFor="sample-record-source-type">
-              样品来源
+              {t('sample.record.field.sourceType')}
               <FormSelect
                 id="sample-record-source-type"
                 value={form.source_type}
@@ -753,50 +765,50 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
               >
                 {sampleSourceTypeOptions.map((item) => (
                   <option key={item.value} value={item.value}>
-                    {item.label}
+                    {t(item.labelKey)}
                   </option>
                 ))}
               </FormSelect>
             </label>
             <label>
-              来源单号
+              {t('sample.record.field.sourceCode')}
               <Input
                 value={form.source_code}
                 onChange={(event) => setForm({ ...form, source_code: event.target.value })}
               />
             </label>
             <label>
-              样品说明
+              {t('sample.record.field.description')}
               <Input.TextArea
                 rows={3}
                 value={form.description}
                 onChange={(event) => setForm({ ...form, description: event.target.value })}
               />
             </label>
-            <div className="form-divider">样品图片</div>
+            <div className="form-divider">{t('sample.record.modal.imageSection')}</div>
             <label>
-              图片文件标识
+              {t('sample.record.field.imageFileId')}
               <Input
                 value={form.image_file_id}
                 onChange={(event) => setForm({ ...form, image_file_id: event.target.value })}
               />
             </label>
             <label>
-              图片文件名
+              {t('sample.record.field.imageFilename')}
               <Input
                 value={form.image_filename}
                 onChange={(event) => setForm({ ...form, image_filename: event.target.value })}
               />
             </label>
             <label>
-              图片地址
+              {t('sample.record.field.imageUrl')}
               <Input
                 value={form.image_url}
                 onChange={(event) => setForm({ ...form, image_url: event.target.value })}
               />
             </label>
             <label>
-              图片说明
+              {t('sample.record.field.imageCaption')}
               <Input
                 value={form.image_caption}
                 onChange={(event) => setForm({ ...form, image_caption: event.target.value })}
@@ -808,7 +820,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                 type="button"
                 onClick={() => setRecordModalOpen(false)}
               >
-                取消
+                {t('sample.record.action.cancel')}
               </button>
               <button
                 className="secondary-inline"
@@ -816,10 +828,10 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                 type="button"
                 onClick={() => void submitRecordImport()}
               >
-                按当前表单导入
+                {t('sample.record.action.importFromForm')}
               </button>
               <button className="inline-submit" disabled={submitting} type="submit">
-                新增样品
+                {t('sample.record.action.create')}
               </button>
             </div>
           </form>
@@ -828,51 +840,51 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<LayoutDashboard size={18} />} title="样品明细" />
+              <PanelTitle icon={<LayoutDashboard size={18} />} title={t('sample.record.panel.detailTitle')} />
               <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(sampleRecordPath)}>
-                返回列表
+                {t('sample.record.action.backToList')}
               </Button>
             </div>
             {selectedRecord ? (
               <>
                 <dl className="detail-list">
                   <div>
-                    <dt>样品编号</dt>
+                    <dt>{t('sample.record.field.code')}</dt>
                     <dd>{selectedRecord.code}</dd>
                   </div>
                   <div>
-                    <dt>分类/状态</dt>
+                    <dt>{t('sample.record.field.typeStatus')}</dt>
                     <dd>
                       {sampleRecordTypeLabel(selectedRecord.sample_type)} /{' '}
                       {sampleRecordStatusLabel(selectedRecord.status)}
                     </dd>
                   </div>
                   <div>
-                    <dt>产品</dt>
+                    <dt>{t('sample.record.field.product')}</dt>
                     <dd>
                       {selectedRecord.product_code ?? '-'} / {selectedRecord.product_name}
                     </dd>
                   </div>
                   <div>
-                    <dt>客户/供应商</dt>
+                    <dt>{t('sample.record.field.customerSupplier')}</dt>
                     <dd>
                       {selectedRecord.customer_name ?? '-'} / {selectedRecord.supplier_name ?? '-'}
                     </dd>
                   </div>
                   <div>
-                    <dt>客户货号</dt>
+                    <dt>{t('sample.record.field.customerSku')}</dt>
                     <dd>{selectedRecord.customer_sku ?? '-'}</dd>
                   </div>
                   <div>
-                    <dt>供应商货号</dt>
+                    <dt>{t('sample.record.field.supplierSku')}</dt>
                     <dd>{selectedRecord.supplier_sku ?? '-'}</dd>
                   </div>
                   <div>
-                    <dt>采购合同</dt>
+                    <dt>{t('sample.record.field.purchaseContract')}</dt>
                     <dd>{selectedRecord.purchase_contract_no ?? '-'}</dd>
                   </div>
                   <div>
-                    <dt>收样/提交</dt>
+                    <dt>{t('sample.record.field.receivedSubmitted')}</dt>
                     <dd>
                       {formatDate(selectedRecord.received_at)} /{' '}
                       {formatDate(selectedRecord.submitted_at)}
@@ -883,10 +895,10 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                 <Table
                   className="compact-section"
                   columns={[
-                    { title: '收样数', dataIndex: 'received_quantity' },
-                    { title: '寄样数', dataIndex: 'delivered_quantity' },
-                    { title: '公司留样', dataIndex: 'retained_quantity' },
-                    { title: '单位', dataIndex: 'unit' },
+                    { title: t('sample.record.table.receivedQuantity'), dataIndex: 'received_quantity' },
+                    { title: t('sample.record.table.deliveredQuantity'), dataIndex: 'delivered_quantity' },
+                    { title: t('sample.record.table.retainedQuantity'), dataIndex: 'retained_quantity' },
+                    { title: t('sample.record.table.unit'), dataIndex: 'unit' },
                   ]}
                   dataSource={[selectedRecord.stock_summary]}
                   pagination={false}
@@ -897,19 +909,20 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                 <Table<SampleRecordImage>
                   className="compact-section"
                   columns={[
-                    { title: '图片文件', dataIndex: 'filename' },
-                    { title: '文件标识', dataIndex: 'file_id' },
-                    { title: '图片地址', dataIndex: 'url' },
-                    { title: '说明', dataIndex: 'caption', render: nullableText },
+                    { title: t('sample.record.table.imageFile'), dataIndex: 'filename' },
+                    { title: t('sample.record.table.fileId'), dataIndex: 'file_id' },
+                    { title: t('sample.record.table.imageUrl'), dataIndex: 'url' },
+                    { title: t('sample.record.table.note'), dataIndex: 'caption', render: nullableText },
                     {
-                      title: '主图',
+                      title: t('sample.record.table.primary'),
                       dataIndex: 'is_primary',
                       width: 72,
-                      render: (value: boolean) => (value ? '是' : '否'),
+                      render: (value: boolean) =>
+                        value ? t('sample.record.table.yes') : t('sample.record.table.no'),
                     },
                   ]}
                   dataSource={selectedRecord.images}
-                  locale={{ emptyText: '暂无样品图片' }}
+                  locale={{ emptyText: t('sample.record.panel.noImages') }}
                   pagination={false}
                   rowKey="id"
                   size="small"
@@ -918,13 +931,13 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                 <Table
                   className="compact-section"
                   columns={[
-                    { title: '跟单节点', dataIndex: 'node_label' },
-                    { title: '实际日期', dataIndex: 'actual_date', render: formatDate },
-                    { title: '采购合同', dataIndex: 'purchase_contract_no', render: nullableText },
-                    { title: '事件', dataIndex: 'event_type' },
+                    { title: t('sample.record.table.followupNode'), dataIndex: 'node_label' },
+                    { title: t('sample.record.table.actualDate'), dataIndex: 'actual_date', render: formatDate },
+                    { title: t('sample.record.table.purchaseContract'), dataIndex: 'purchase_contract_no', render: nullableText },
+                    { title: t('sample.record.table.event'), dataIndex: 'event_type' },
                   ]}
                   dataSource={selectedRecord.followup_events}
-                  locale={{ emptyText: '暂无跟单节点事件' }}
+                  locale={{ emptyText: t('sample.record.panel.noFollowupEvents') }}
                   pagination={false}
                   rowKey="id"
                   size="small"
@@ -932,9 +945,9 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
 
                 <div className="sample-record-actions compact-section">
                   <form className="record-form" onSubmit={submitImage}>
-                    <div className="form-divider">追加图片</div>
+                    <div className="form-divider">{t('sample.record.panel.appendImage')}</div>
                     <label>
-                      图片文件标识
+                      {t('sample.record.field.imageFileId')}
                       <Input
                         value={imageForm.file_id}
                         onChange={(event) =>
@@ -943,7 +956,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                       />
                     </label>
                     <label>
-                      图片文件名
+                      {t('sample.record.field.imageFilename')}
                       <Input
                         value={imageForm.filename}
                         onChange={(event) =>
@@ -952,7 +965,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                       />
                     </label>
                     <label>
-                      图片地址
+                      {t('sample.record.field.imageUrl')}
                       <Input
                         value={imageForm.url}
                         onChange={(event) =>
@@ -961,7 +974,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                       />
                     </label>
                     <label>
-                      图片说明
+                      {t('sample.record.field.imageCaption')}
                       <Input
                         value={imageForm.caption}
                         onChange={(event) =>
@@ -970,14 +983,14 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                       />
                     </label>
                     <Button htmlType="submit" loading={submitting}>
-                      追加样品图片
+                      {t('sample.record.action.addImage')}
                     </Button>
                   </form>
 
                   <form className="record-form" onSubmit={submitStockEvent}>
-                    <div className="form-divider">数量事件</div>
+                    <div className="form-divider">{t('sample.record.panel.stockEvent')}</div>
                     <label>
-                      事件类型
+                      {t('sample.record.field.eventType')}
                       <FormSelect
                         value={stockForm.event_type}
                         onChange={(event) =>
@@ -986,13 +999,13 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                       >
                         {sampleStockEventTypeOptions.map((item) => (
                           <option key={item.value} value={item.value}>
-                            {item.label}
+                            {t(item.labelKey)}
                           </option>
                         ))}
                       </FormSelect>
                     </label>
                     <label>
-                      数量
+                      {t('sample.record.field.quantity')}
                       <Input
                         type="number"
                         min="0.01"
@@ -1004,7 +1017,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                       />
                     </label>
                     <label>
-                      日期
+                      {t('sample.record.field.date')}
                       <Input
                         type="date"
                         value={stockForm.occurred_at}
@@ -1014,7 +1027,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                       />
                     </label>
                     <label>
-                      单位
+                      {t('sample.record.field.unit')}
                       <Input
                         value={stockForm.unit}
                         onChange={(event) =>
@@ -1023,7 +1036,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                       />
                     </label>
                     <label>
-                      寄样单号
+                      {t('sample.record.field.deliveryNo')}
                       <Input
                         value={stockForm.delivery_no}
                         onChange={(event) =>
@@ -1032,7 +1045,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                       />
                     </label>
                     <label>
-                      接收方
+                      {t('sample.record.field.recipient')}
                       <Input
                         value={stockForm.recipient}
                         onChange={(event) =>
@@ -1041,7 +1054,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                       />
                     </label>
                     <label>
-                      事件备注
+                      {t('sample.record.field.eventNote')}
                       <Input.TextArea
                         rows={2}
                         value={stockForm.note}
@@ -1051,7 +1064,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                       />
                     </label>
                     <Button htmlType="submit" loading={submitting}>
-                      登记样品数量
+                      {t('sample.record.action.registerStock')}
                     </Button>
                   </form>
                 </div>
@@ -1060,16 +1073,16 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                   className="compact-section"
                   columns={[
                     {
-                      title: '事件类型',
+                      title: t('sample.record.table.eventType'),
                       dataIndex: 'event_type',
                       render: sampleStockEventTypeLabel,
                     },
-                    { title: '数量', dataIndex: 'quantity' },
-                    { title: '单位', dataIndex: 'unit' },
-                    { title: '日期', dataIndex: 'occurred_at', render: formatDate },
-                    { title: '寄样单号', dataIndex: 'delivery_no', render: nullableText },
-                    { title: '接收方', dataIndex: 'recipient', render: nullableText },
-                    { title: '备注', dataIndex: 'note', render: nullableText },
+                    { title: t('sample.record.table.quantity'), dataIndex: 'quantity' },
+                    { title: t('sample.record.table.unit'), dataIndex: 'unit' },
+                    { title: t('sample.record.table.date'), dataIndex: 'occurred_at', render: formatDate },
+                    { title: t('sample.record.table.deliveryNo'), dataIndex: 'delivery_no', render: nullableText },
+                    { title: t('sample.record.table.recipient'), dataIndex: 'recipient', render: nullableText },
+                    { title: t('sample.record.table.note'), dataIndex: 'note', render: nullableText },
                   ]}
                   dataSource={selectedRecord.stock_events}
                   pagination={false}
@@ -1080,8 +1093,8 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
             ) : (
               <div className="module-state panel-empty-state">
                 <Images size={28} />
-                <strong>暂无样品记录</strong>
-                <span>请返回列表选择样品查看详情</span>
+                <strong>{t('sample.record.panel.emptyTitle')}</strong>
+                <span>{t('sample.record.panel.emptyDescription')}</span>
               </div>
             )}
           </section>

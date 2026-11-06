@@ -25,89 +25,89 @@ export const documentPartyTypeOptions: LocalizedOption[] = [
   { value: 'bill_notify_party', labelKey: 'masterdata.documentParty.type.billNotifyParty' },
 ]
 
-export const sampleStatusOptions = [
-  { value: 'draft', label: '草稿' },
-  { value: 'sent', label: '已发送' },
-  { value: 'in_progress', label: '进行中' },
-  { value: 'completed', label: '已完成' },
-  { value: 'cancelled', label: '已取消' },
+export const sampleStatusOptions: LocalizedOption[] = [
+  { value: 'draft', labelKey: 'sample.request.status.draft' },
+  { value: 'sent', labelKey: 'sample.request.status.sent' },
+  { value: 'in_progress', labelKey: 'sample.request.status.inProgress' },
+  { value: 'completed', labelKey: 'sample.request.status.completed' },
+  { value: 'cancelled', labelKey: 'sample.request.status.cancelled' },
 ]
 
-export const sampleDestinationOptions = [
-  { value: 'in_house', label: '内部打样' },
-  { value: 'factory', label: '外发工厂' },
+export const sampleDestinationOptions: LocalizedOption[] = [
+  { value: 'in_house', labelKey: 'sample.request.destination.inHouse' },
+  { value: 'factory', labelKey: 'sample.request.destination.factory' },
 ]
 
-export const sampleProgressStageOptions = [
-  { value: 'request_created', label: '打样立项' },
-  { value: 'sent_to_factory', label: '外发工厂' },
-  { value: 'in_house', label: '内部打样' },
-  { value: 'sample_received', label: '样品收回' },
-  { value: 'customer_confirmed', label: '客户确认' },
+export const sampleProgressStageOptions: LocalizedOption[] = [
+  { value: 'request_created', labelKey: 'sample.request.progressStage.requestCreated' },
+  { value: 'sent_to_factory', labelKey: 'sample.request.progressStage.sentToFactory' },
+  { value: 'in_house', labelKey: 'sample.request.progressStage.inHouse' },
+  { value: 'sample_received', labelKey: 'sample.request.progressStage.sampleReceived' },
+  { value: 'customer_confirmed', labelKey: 'sample.request.progressStage.customerConfirmed' },
 ]
 
-export const sampleFeeTypeOptions = [
-  { value: 'sample_making', label: '打样费' },
-  { value: 'express', label: '快递费' },
-  { value: 'material', label: '材料费' },
+export const sampleFeeTypeOptions: LocalizedOption[] = [
+  { value: 'sample_making', labelKey: 'sample.request.feeType.sampleMaking' },
+  { value: 'express', labelKey: 'sample.request.feeType.express' },
+  { value: 'material', labelKey: 'sample.request.feeType.material' },
 ]
 
-export const samplePayeeTypeOptions = [
-  { value: 'supplier', label: '供应商' },
-  { value: 'partner', label: '合作伙伴' },
-  { value: 'employee', label: '员工' },
+export const samplePayeeTypeOptions: LocalizedOption[] = [
+  { value: 'supplier', labelKey: 'sample.request.payeeType.supplier' },
+  { value: 'partner', labelKey: 'sample.request.payeeType.partner' },
+  { value: 'employee', labelKey: 'sample.request.payeeType.employee' },
 ]
 
-export const sampleRecordTypeOptions = [
-  { value: 'incoming', label: '来样' },
-  { value: 'confirm_sample', label: '确认样' },
-  { value: 'bulk_sample', label: '大货样' },
-  { value: 'retained_sample', label: '留样' },
+export const sampleRecordTypeOptions: LocalizedOption[] = [
+  { value: 'incoming', labelKey: 'sample.record.type.incoming' },
+  { value: 'confirm_sample', labelKey: 'sample.record.type.confirmSample' },
+  { value: 'bulk_sample', labelKey: 'sample.record.type.bulkSample' },
+  { value: 'retained_sample', labelKey: 'sample.record.type.retainedSample' },
 ]
 
-export const sampleRecordStatusOptions = [
-  { value: 'registered', label: '已登记' },
-  { value: 'submitted', label: '已提交' },
-  { value: 'confirmed', label: '已确认' },
-  { value: 'archived', label: '已归档' },
+export const sampleRecordStatusOptions: LocalizedOption[] = [
+  { value: 'registered', labelKey: 'sample.record.status.registered' },
+  { value: 'submitted', labelKey: 'sample.record.status.submitted' },
+  { value: 'confirmed', labelKey: 'sample.record.status.confirmed' },
+  { value: 'archived', labelKey: 'sample.record.status.archived' },
 ]
 
-export const sampleSourceTypeOptions = [
-  { value: 'sample_request', label: '打样单' },
-  { value: 'purchase_contract', label: '采购合同' },
-  { value: 'customer', label: '客户提供' },
-  { value: 'supplier', label: '供应商提供' },
+export const sampleSourceTypeOptions: LocalizedOption[] = [
+  { value: 'sample_request', labelKey: 'sample.record.sourceType.sampleRequest' },
+  { value: 'purchase_contract', labelKey: 'sample.record.sourceType.purchaseContract' },
+  { value: 'customer', labelKey: 'sample.record.sourceType.customer' },
+  { value: 'supplier', labelKey: 'sample.record.sourceType.supplier' },
 ]
 
-export const sampleStockEventTypeOptions = [
-  { value: 'received', label: '收样' },
-  { value: 'delivered', label: '寄样' },
+export const sampleStockEventTypeOptions: LocalizedOption[] = [
+  { value: 'received', labelKey: 'sample.record.stockEventType.received' },
+  { value: 'delivered', labelKey: 'sample.record.stockEventType.delivered' },
 ]
 
-export const sampleDeliveryStatusOptions = [
-  { value: 'draft', label: '草稿' },
-  { value: 'submitted', label: '待审核' },
-  { value: 'approved', label: '已审核' },
-  { value: 'shipped', label: '已寄出' },
-  { value: 'rejected', label: '已退回' },
+export const sampleDeliveryStatusOptions: LocalizedOption[] = [
+  { value: 'draft', labelKey: 'sample.delivery.status.draft' },
+  { value: 'submitted', labelKey: 'sample.delivery.status.submitted' },
+  { value: 'approved', labelKey: 'sample.delivery.status.approved' },
+  { value: 'shipped', labelKey: 'sample.delivery.status.shipped' },
+  { value: 'rejected', labelKey: 'sample.delivery.status.rejected' },
 ]
 
-export const sampleDeliveryFeeTypeOptions = [
-  { value: 'express', label: '快递费' },
-  { value: 'insurance', label: '保险费' },
-  { value: 'other', label: '其他费用' },
+export const sampleDeliveryFeeTypeOptions: LocalizedOption[] = [
+  { value: 'express', labelKey: 'sample.delivery.feeType.express' },
+  { value: 'insurance', labelKey: 'sample.delivery.feeType.insurance' },
+  { value: 'other', labelKey: 'sample.delivery.feeType.other' },
 ]
 
-export const sampleDeliveryPayerTypeOptions = [
-  { value: 'company', label: '公司承担' },
-  { value: 'customer', label: '客户承担' },
-  { value: 'supplier', label: '供应商承担' },
+export const sampleDeliveryPayerTypeOptions: LocalizedOption[] = [
+  { value: 'company', labelKey: 'sample.delivery.payerType.company' },
+  { value: 'customer', labelKey: 'sample.delivery.payerType.customer' },
+  { value: 'supplier', labelKey: 'sample.delivery.payerType.supplier' },
 ]
 
-export const sampleDeliveryTrackingStatusOptions = [
-  { value: 'submitted', label: '待审核' },
-  { value: 'approved', label: '已审核' },
-  { value: 'shipped', label: '已寄出' },
+export const sampleDeliveryTrackingStatusOptions: LocalizedOption[] = [
+  { value: 'submitted', labelKey: 'sample.delivery.trackingStatus.submitted' },
+  { value: 'approved', labelKey: 'sample.delivery.trackingStatus.approved' },
+  { value: 'shipped', labelKey: 'sample.delivery.trackingStatus.shipped' },
 ]
 
 export const exportQuotationStatusOptions: LocalizedOption[] = [

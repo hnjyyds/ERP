@@ -73,7 +73,7 @@ export function purchaseInvoiceNoticeStatusLabel(value: string): string {
 }
 
 export function samplePaymentStatusLabel(value: string): string {
-  return sampleFeeTypeOptions.find((item) => item.value === value)?.label ?? value
+  return optionLabel(sampleFeeTypeOptions, value)
 }
 
 

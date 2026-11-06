@@ -23,13 +23,10 @@ import {
   type QualityInspectionPayload,
   type QualityInspectionStatus,
 } from '../../../api'
-import {
-  qualityIssueSeverityOptions,
-  qualityResultOptions,
-  qualityTaskStatusOptions,
-} from '../../../shared/formOptions'
+import type { LocalizedOption } from '../../../shared/formOptions'
 import { showError, showWarningDialog } from '../../../shared/errors'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { t } from '../../appI18n'
 
 type Props = { currentUser: CurrentUser }
 
@@ -63,6 +60,26 @@ type CompletionFormState = {
 
 type CompletionErrors = Record<string, string>
 
+const qualityTaskStatusOptions: LocalizedOption[] = [
+  { value: 'pending', labelKey: 'quality.task.status.pending' },
+  { value: 'in_progress', labelKey: 'quality.task.status.inProgress' },
+  { value: 'completed', labelKey: 'quality.task.status.completed' },
+  { value: 'cancelled', labelKey: 'quality.task.status.cancelled' },
+]
+
+const qualityResultOptions: LocalizedOption[] = [
+  { value: 'passed', labelKey: 'quality.task.result.passed' },
+  { value: 'failed', labelKey: 'quality.task.result.failed' },
+  { value: 'partial_passed', labelKey: 'quality.task.result.partialPassed' },
+  { value: 'recheck_required', labelKey: 'quality.task.result.recheckRequired' },
+]
+
+const qualityIssueSeverityOptions: LocalizedOption[] = [
+  { value: 'minor', labelKey: 'quality.task.severity.minor' },
+  { value: 'major', labelKey: 'quality.task.severity.major' },
+  { value: 'critical', labelKey: 'quality.task.severity.critical' },
+]
+
 function today(): string {
   const value = new Date()
   const pad = (part: number) => String(part).padStart(2, '0')
@@ -79,7 +96,8 @@ function formatScheduledAt(value: string): string {
 }
 
 function statusLabel(value: QualityInspectionStatus): string {
-  return qualityTaskStatusOptions.find((option) => option.value === value)?.label ?? value
+  const option = qualityTaskStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function statusColor(value: QualityInspectionStatus): string {
@@ -90,8 +108,9 @@ function statusColor(value: QualityInspectionStatus): string {
 }
 
 function resultLabel(value: string | null): string {
-  if (!value) return '未判定'
-  return qualityResultOptions.find((option) => option.value === value)?.label ?? value
+  if (!value) return t('quality.task.result.undetermined')
+  const option = qualityResultOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function resultColor(value: string | null): string {
@@ -119,7 +138,7 @@ function initialCompletionForm(task: QualityInspection): CompletionFormState {
     })),
     issue: {
       purchase_contract_line_id: task.lines[0]?.purchase_contract_line_id ?? '',
-      issue_type: '包装破损',
+      issue_type: '',
       severity: 'major',
       description: '',
       corrective_action: '',
@@ -188,21 +207,23 @@ function completionPayload(
 
 function validateCompletion(form: CompletionFormState): CompletionErrors {
   const errors: CompletionErrors = {}
-  if (!form.inspected_at) errors.inspected_at = '请选择实际查验日期'
+  if (!form.inspected_at) errors.inspected_at = t('quality.task.validation.inspectedAtRequired')
   if (!qualityResultOptions.some((option) => option.value === form.result)) {
-    errors.result = '请选择查验结果'
+    errors.result = t('quality.task.validation.resultRequired')
   }
-  if (form.lines.length === 0) errors.lines = '采购合同没有可查验的商品明细'
+  if (form.lines.length === 0) errors.lines = t('quality.task.validation.linesRequired')
   form.lines.forEach((line, index) => {
     const prefix = `line-${index}`
-    if (!line.product_name.trim()) errors[`${prefix}-product_name`] = '请输入商品名称'
+    if (!line.product_name.trim()) {
+      errors[`${prefix}-product_name`] = t('quality.task.validation.productNameRequired')
+    }
     const inspectedQuantity = Number(line.inspected_quantity)
     if (
       !line.inspected_quantity.trim() ||
       !Number.isFinite(inspectedQuantity) ||
       inspectedQuantity <= 0
     ) {
-      errors[`${prefix}-inspected_quantity`] = '请输入大于 0 的有效数量'
+      errors[`${prefix}-inspected_quantity`] = t('quality.task.validation.inspectedQuantityInvalid')
     }
     const failedQuantity = Number(line.failed_quantity)
     if (
@@ -210,21 +231,21 @@ function validateCompletion(form: CompletionFormState): CompletionErrors {
       failedQuantity < 0 ||
       failedQuantity > inspectedQuantity
     ) {
-      errors[`${prefix}-failed_quantity`] = '不良数量须在 0 和查验数量之间'
+      errors[`${prefix}-failed_quantity`] = t('quality.task.validation.failedQuantityInvalid')
     }
-    if (!line.unit.trim()) errors[`${prefix}-unit`] = '请输入单位'
+    if (!line.unit.trim()) errors[`${prefix}-unit`] = t('quality.task.validation.unitRequired')
     if (!qualityResultOptions.some((option) => option.value === line.result)) {
-      errors[`${prefix}-result`] = '请选择明细结果'
+      errors[`${prefix}-result`] = t('quality.task.validation.lineResultRequired')
     }
     if (form.result === 'passed' && (failedQuantity > 0 || line.result !== 'passed')) {
-      errors[`${prefix}-result`] = '整单通过时，全部明细必须通过且不良数量为 0'
+      errors[`${prefix}-result`] = t('quality.task.validation.lineResultMustPass')
     }
   })
   if (form.result !== 'passed' && !form.issue.description.trim()) {
-    errors.issue_description = '未通过时必须填写异常描述'
+    errors.issue_description = t('quality.task.validation.issueDescriptionRequired')
   }
   if (form.result === 'passed' && form.issue.description.trim()) {
-    errors.issue_description = '整单通过时不能登记未关闭异常'
+    errors.issue_description = t('quality.task.validation.issueDescriptionNotAllowed')
   }
   return errors
 }
@@ -280,7 +301,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
       })
       setTasks(result.items)
     } catch (caught) {
-      showError(caught, '我的 QC 任务加载失败')
+      showError(caught, t('quality.task.message.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -292,9 +313,9 @@ export function MyQualityTasksPage({ currentUser }: Props) {
     try {
       const updated = await updateQualityInspection(task.id, basePayload(task, 'in_progress'))
       setTasks((current) => current.map((item) => (item.id === task.id ? updated : item)))
-      setMessage(`${task.code} 已开始查验`)
+      setMessage(t('quality.task.message.started', { code: task.code }))
     } catch (caught) {
-      showError(caught, 'QC 任务状态更新失败')
+      showError(caught, t('quality.task.message.statusUpdateFailed'))
     } finally {
       setSubmittingId(null)
     }
@@ -331,7 +352,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
           : current,
       )
     } catch (caught) {
-      showError(caught, '采购合同明细加载失败，请手工填写查验明细')
+      showError(caught, t('quality.task.message.contractLinesLoadFailed'))
     }
   }
 
@@ -380,7 +401,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
     event.target.value = ''
     if (!file) return
     if (!file.type.startsWith('image/')) {
-      showWarningDialog('查验凭证目前仅支持图片')
+      showWarningDialog(t('quality.task.message.evidenceImageOnly'))
       return
     }
     setUploadingEvidence(true)
@@ -398,7 +419,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
           : current,
       )
     } catch (caught) {
-      showError(caught, '查验凭证上传失败')
+      showError(caught, t('quality.task.message.evidenceUploadFailed'))
     } finally {
       setUploadingEvidence(false)
     }
@@ -410,7 +431,9 @@ export function MyQualityTasksPage({ currentUser }: Props) {
     const errors = validateCompletion(completionForm)
     if (Object.keys(errors).length > 0) {
       setCompletionErrors(errors)
-      showWarningDialog(`请修正 ${Object.keys(errors).length} 项查验信息`)
+      showWarningDialog(
+        t('quality.task.message.validationSummary', { count: Object.keys(errors).length }),
+      )
       return
     }
     setSubmittingId(completionTask.id)
@@ -422,9 +445,14 @@ export function MyQualityTasksPage({ currentUser }: Props) {
       setTasks((current) => current.map((item) => (item.id === completionTask.id ? updated : item)))
       setCompletionTask(null)
       setCompletionForm(null)
-      setMessage(`${updated.code} 已完成查验，结果：${resultLabel(updated.result)}`)
+      setMessage(
+        t('quality.task.message.completed', {
+          code: updated.code,
+          result: resultLabel(updated.result),
+        }),
+      )
     } catch (caught) {
-      showError(caught, 'QC 查验结果保存失败')
+      showError(caught, t('quality.task.message.completionSaveFailed'))
     } finally {
       setSubmittingId(null)
     }
@@ -440,7 +468,11 @@ export function MyQualityTasksPage({ currentUser }: Props) {
   async function submitTaskAction(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!actionTask || !actionMode || !actionReason.trim()) {
-      showWarningDialog(actionMode === 'cancel' ? '请填写取消原因' : '请填写调整排期原因')
+      showWarningDialog(
+        actionMode === 'cancel'
+          ? t('quality.task.message.cancelReasonRequired')
+          : t('quality.task.message.rescheduleReasonRequired'),
+      )
       return
     }
     setSubmittingId(actionTask.id)
@@ -454,12 +486,19 @@ export function MyQualityTasksPage({ currentUser }: Props) {
             })
       setTasks((current) => current.map((item) => (item.id === updated.id ? updated : item)))
       setMessage(
-        actionMode === 'cancel' ? `${updated.code} 已取消` : `${updated.code} 的排期已调整`,
+        actionMode === 'cancel'
+          ? t('quality.task.message.cancelled', { code: updated.code })
+          : t('quality.task.message.rescheduled', { code: updated.code }),
       )
       setActionTask(null)
       setActionMode(null)
     } catch (caught) {
-      showError(caught, actionMode === 'cancel' ? 'QC 任务取消失败' : 'QC 排期调整失败')
+      showError(
+        caught,
+        actionMode === 'cancel'
+          ? t('quality.task.message.cancelFailed')
+          : t('quality.task.message.rescheduleFailed'),
+      )
     } finally {
       setSubmittingId(null)
     }
@@ -474,16 +513,24 @@ export function MyQualityTasksPage({ currentUser }: Props) {
 
   return (
     <section className="quality-inspection-page">
-      <div className="summary-strip" aria-label="我的 QC 任务概览">
-        <Metric label="我的任务" value={tasks.length} />
-        <Metric label="待查验" value={pendingCount} intent={pendingCount ? 'warning' : 'normal'} />
+      <div className="summary-strip" aria-label={t('quality.task.pageAria')}>
+        <Metric label={t('quality.task.metric.tasks')} value={tasks.length} />
         <Metric
-          label="查验中"
+          label={t('quality.task.metric.pending')}
+          value={pendingCount}
+          intent={pendingCount ? 'warning' : 'normal'}
+        />
+        <Metric
+          label={t('quality.task.metric.inProgress')}
           value={inProgressCount}
           intent={inProgressCount ? 'warning' : 'normal'}
         />
-        <Metric label="已完成" value={completedCount} />
-        <Metric label="已逾期" value={overdueCount} intent={overdueCount ? 'danger' : 'normal'} />
+        <Metric label={t('quality.task.metric.completed')} value={completedCount} />
+        <Metric
+          label={t('quality.task.metric.overdue')}
+          value={overdueCount}
+          intent={overdueCount ? 'danger' : 'normal'}
+        />
       </div>
 
       {message ? (
@@ -492,7 +539,10 @@ export function MyQualityTasksPage({ currentUser }: Props) {
 
       <section className="workspace-panel list-panel product-list-panel">
         <div className="panel-heading toolbar-heading">
-          <PanelTitle icon={<ClipboardCheck size={18} />} title="我的 QC 任务" />
+          <PanelTitle
+            icon={<ClipboardCheck size={18} />}
+            title={t('quality.task.panel.listTitle')}
+          />
         </div>
         <form
           className="inline-filters"
@@ -502,23 +552,23 @@ export function MyQualityTasksPage({ currentUser }: Props) {
           }}
         >
           <label>
-            任务搜索
+            {t('quality.task.filter.search')}
             <Input
-              placeholder="QC 单号 / 合同 / 供应商"
+              placeholder={t('quality.task.filter.searchPlaceholder')}
               value={search}
               onChange={(event) => setSearch(event.target.value)}
             />
           </label>
           <label>
-            任务状态
+            {t('quality.task.filter.status')}
             <FormSelect
               value={statusFilter}
               onChange={(event) => setStatusFilter(event.target.value)}
             >
-              <option value="">全部状态</option>
+              <option value="">{t('quality.task.filter.allStatuses')}</option>
               {qualityTaskStatusOptions.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {option.label}
+                  {t(option.labelKey)}
                 </option>
               ))}
             </FormSelect>
@@ -526,18 +576,18 @@ export function MyQualityTasksPage({ currentUser }: Props) {
           <label>
             <span>&nbsp;</span>
             <Button htmlType="submit" icon={<Search size={16} />}>
-              查询
+              {t('quality.task.action.query')}
             </Button>
           </label>
         </form>
 
         <Table<QualityInspection>
           columns={[
-            { title: 'QC 任务单号', dataIndex: 'code' },
-            { title: '采购合同', dataIndex: 'purchase_contract_no' },
-            { title: '供应商', dataIndex: 'supplier_name' },
+            { title: t('quality.task.table.code'), dataIndex: 'code' },
+            { title: t('quality.task.table.contract'), dataIndex: 'purchase_contract_no' },
+            { title: t('quality.task.table.supplier'), dataIndex: 'supplier_name' },
             {
-              title: '排期时间',
+              title: t('quality.task.table.scheduledAt'),
               dataIndex: 'scheduled_at',
               render: (value: string, task) => (
                 <span
@@ -552,21 +602,21 @@ export function MyQualityTasksPage({ currentUser }: Props) {
               ),
             },
             {
-              title: '状态',
+              title: t('quality.task.table.status'),
               dataIndex: 'status',
               render: (value: QualityInspectionStatus) => (
                 <Tag color={statusColor(value)}>{statusLabel(value)}</Tag>
               ),
             },
             {
-              title: '结果',
+              title: t('quality.task.table.result'),
               dataIndex: 'result',
               render: (value: string | null) => (
                 <Tag color={resultColor(value)}>{resultLabel(value)}</Tag>
               ),
             },
             {
-              title: '操作',
+              title: t('quality.task.table.operation'),
               key: 'actions',
               width: 340,
               render: (_: unknown, task) => (
@@ -579,7 +629,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
                       type="primary"
                       onClick={() => void startTask(task)}
                     >
-                      开始查验
+                      {t('quality.task.action.start')}
                     </Button>
                   ) : null}
                   {task.status === 'in_progress' ? (
@@ -589,7 +639,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
                       type="primary"
                       onClick={() => void openCompletion(task)}
                     >
-                      登记结果
+                      {t('quality.task.action.registerResult')}
                     </Button>
                   ) : null}
                   {task.status === 'pending' || task.status === 'in_progress' ? (
@@ -598,7 +648,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
                       size="small"
                       onClick={() => openTaskAction(task, 'reschedule')}
                     >
-                      调整排期
+                      {t('quality.task.action.reschedule')}
                     </Button>
                   ) : null}
                   {task.status === 'pending' || task.status === 'in_progress' ? (
@@ -608,7 +658,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
                       size="small"
                       onClick={() => openTaskAction(task, 'cancel')}
                     >
-                      取消
+                      {t('quality.task.action.cancel')}
                     </Button>
                   ) : null}
                 </div>
@@ -627,7 +677,11 @@ export function MyQualityTasksPage({ currentUser }: Props) {
         centered
         footer={null}
         open={Boolean(completionTask && completionForm)}
-        title={completionTask ? `完成 QC 查验 · ${completionTask.code}` : '完成 QC 查验'}
+        title={
+          completionTask
+            ? t('quality.task.modal.completionTitleWithCode', { code: completionTask.code })
+            : t('quality.task.modal.completionTitle')
+        }
         width={920}
         onCancel={() => {
           setCompletionTask(null)
@@ -639,15 +693,17 @@ export function MyQualityTasksPage({ currentUser }: Props) {
           <div className="workflow-modal-content entity-modal-form">
             <Alert
               showIcon
-              title={`排期：${formatScheduledAt(completionTask.scheduled_at)}`}
+              title={t('quality.task.modal.scheduleSummary', {
+                schedule: formatScheduledAt(completionTask.scheduled_at),
+              })}
               description={`${completionTask.purchase_contract_no} / ${completionTask.supplier_name}`}
               type="info"
             />
             <form className="record-form" noValidate onSubmit={submitCompletion}>
-              <div className="form-divider">查验结论</div>
+              <div className="form-divider">{t('quality.task.modal.resultSection')}</div>
               <div className="form-pair two">
                 <label htmlFor="quality-task-inspected-at">
-                  <RequiredLabel>实际查验日期</RequiredLabel>
+                  <RequiredLabel>{t('quality.task.field.inspectedAt')}</RequiredLabel>
                   <Input
                     aria-invalid={Boolean(completionErrors.inspected_at)}
                     id="quality-task-inspected-at"
@@ -660,7 +716,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
                   <CompletionError field="inspected_at" errors={completionErrors} />
                 </label>
                 <label htmlFor="quality-task-result">
-                  <RequiredLabel>查验结果</RequiredLabel>
+                  <RequiredLabel>{t('quality.task.field.result')}</RequiredLabel>
                   <FormSelect
                     aria-invalid={Boolean(completionErrors.result)}
                     id="quality-task-result"
@@ -686,7 +742,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
                   >
                     {qualityResultOptions.map((option) => (
                       <option key={option.value} value={option.value}>
-                        {option.label}
+                        {t(option.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
@@ -694,7 +750,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
                 </label>
               </div>
 
-              <div className="form-divider">查验明细</div>
+              <div className="form-divider">{t('quality.task.modal.linesSection')}</div>
               {completionErrors.lines ? (
                 <Alert showIcon title={completionErrors.lines} type="error" />
               ) : null}
@@ -707,16 +763,19 @@ export function MyQualityTasksPage({ currentUser }: Props) {
                       key={line.purchase_contract_line_id || index}
                     >
                       <div className="accessory-heading">
-                        <strong>{line.product_code || `明细 ${index + 1}`}</strong>
-                        <span>合同明细 {index + 1}</span>
+                        <strong>
+                          {line.product_code ||
+                            t('quality.task.modal.lineFallback', { index: index + 1 })}
+                        </strong>
+                        <span>{t('quality.task.modal.contractLine', { index: index + 1 })}</span>
                       </div>
                       <label htmlFor={`${prefix}-product-name`}>
-                        <RequiredLabel>商品名称</RequiredLabel>
+                        <RequiredLabel>{t('quality.task.field.productName')}</RequiredLabel>
                         <Input id={`${prefix}-product-name`} readOnly value={line.product_name} />
                       </label>
                       <div className="form-pair three">
                         <label htmlFor={`${prefix}-inspected-quantity`}>
-                          <RequiredLabel>查验数量</RequiredLabel>
+                          <RequiredLabel>{t('quality.task.field.inspectedQuantity')}</RequiredLabel>
                           <Input
                             id={`${prefix}-inspected-quantity`}
                             min="0.0001"
@@ -733,7 +792,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
                           />
                         </label>
                         <label htmlFor={`${prefix}-failed-quantity`}>
-                          不良数量
+                          {t('quality.task.field.failedQuantity')}
                           <Input
                             id={`${prefix}-failed-quantity`}
                             min="0"
@@ -750,13 +809,13 @@ export function MyQualityTasksPage({ currentUser }: Props) {
                           />
                         </label>
                         <label htmlFor={`${prefix}-unit`}>
-                          <RequiredLabel>单位</RequiredLabel>
+                          <RequiredLabel>{t('quality.task.field.unit')}</RequiredLabel>
                           <Input id={`${prefix}-unit`} readOnly value={line.unit} />
                         </label>
                       </div>
                       <div className="form-pair two">
                         <label htmlFor={`${prefix}-result`}>
-                          <RequiredLabel>明细结果</RequiredLabel>
+                          <RequiredLabel>{t('quality.task.field.lineResult')}</RequiredLabel>
                           <FormSelect
                             id={`${prefix}-result`}
                             value={line.result}
@@ -766,14 +825,14 @@ export function MyQualityTasksPage({ currentUser }: Props) {
                           >
                             {qualityResultOptions.map((option) => (
                               <option key={option.value} value={option.value}>
-                                {option.label}
+                                {t(option.labelKey)}
                               </option>
                             ))}
                           </FormSelect>
                           <CompletionError field={`${prefix}-result`} errors={completionErrors} />
                         </label>
                         <label htmlFor={`${prefix}-remark`}>
-                          明细备注
+                          {t('quality.task.field.lineRemark')}
                           <Input
                             id={`${prefix}-remark`}
                             value={line.remark}
@@ -788,13 +847,13 @@ export function MyQualityTasksPage({ currentUser }: Props) {
                 })}
               </div>
 
-              <div className="form-divider">异常问题</div>
+              <div className="form-divider">{t('quality.task.modal.issuesSection')}</div>
               {completionForm.result === 'passed' ? (
-                <Alert showIcon title="整单通过时不能登记异常" type="info" />
+                <Alert showIcon title={t('quality.task.modal.passedNoIssue')} type="info" />
               ) : null}
               <div className="form-pair two">
                 <label htmlFor="quality-task-issue-line">
-                  关联商品
+                  {t('quality.task.field.issueLine')}
                   <FormSelect
                     id="quality-task-issue-line"
                     value={completionForm.issue.purchase_contract_line_id}
@@ -813,7 +872,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
                   </FormSelect>
                 </label>
                 <label htmlFor="quality-task-issue-type">
-                  问题类型
+                  {t('quality.task.field.issueType')}
                   <Input
                     id="quality-task-issue-type"
                     value={completionForm.issue.issue_type}
@@ -823,7 +882,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
               </div>
               <div className="form-pair two">
                 <label htmlFor="quality-task-severity">
-                  严重度
+                  {t('quality.task.field.severity')}
                   <FormSelect
                     id="quality-task-severity"
                     value={completionForm.issue.severity}
@@ -831,7 +890,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
                   >
                     {qualityIssueSeverityOptions.map((option) => (
                       <option key={option.value} value={option.value}>
-                        {option.label}
+                        {t(option.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
@@ -839,9 +898,9 @@ export function MyQualityTasksPage({ currentUser }: Props) {
               </div>
               <label htmlFor="quality-task-description">
                 {completionForm.result === 'passed' ? (
-                  '问题描述'
+                  t('quality.task.field.issueDescription')
                 ) : (
-                  <RequiredLabel>问题描述</RequiredLabel>
+                  <RequiredLabel>{t('quality.task.field.issueDescription')}</RequiredLabel>
                 )}
                 <Input.TextArea
                   disabled={completionForm.result === 'passed'}
@@ -854,7 +913,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
                 <CompletionError field="issue_description" errors={completionErrors} />
               </label>
               <label htmlFor="quality-task-corrective-action">
-                整改措施
+                {t('quality.task.field.correctiveAction')}
                 <Input
                   disabled={completionForm.result === 'passed'}
                   id="quality-task-corrective-action"
@@ -863,12 +922,12 @@ export function MyQualityTasksPage({ currentUser }: Props) {
                 />
               </label>
 
-              <div className="form-divider">现场凭证</div>
+              <div className="form-divider">{t('quality.task.modal.evidenceSection')}</div>
               <label className="quality-file-upload" htmlFor="quality-task-evidence">
-                查验图片
+                {t('quality.task.field.evidence')}
                 <input
                   accept="image/*"
-                  aria-label="上传查验图片"
+                  aria-label={t('quality.task.field.uploadEvidenceAria')}
                   id="quality-task-evidence"
                   type="file"
                   onChange={(event) => void handleEvidenceUpload(event)}
@@ -881,11 +940,13 @@ export function MyQualityTasksPage({ currentUser }: Props) {
                     {attachment.filename}
                   </a>
                 ))}
-                {uploadingEvidence ? <span>正在上传凭证...</span> : null}
+                {uploadingEvidence ? (
+                  <span>{t('quality.task.modal.uploadingEvidence')}</span>
+                ) : null}
               </div>
 
               <Button htmlType="submit" loading={submittingId === completionTask.id} type="primary">
-                完成 QC 查验
+                {t('quality.task.action.submitCompletion')}
               </Button>
             </form>
           </div>
@@ -896,7 +957,11 @@ export function MyQualityTasksPage({ currentUser }: Props) {
         centered
         footer={null}
         open={Boolean(actionTask && actionMode)}
-        title={actionMode === 'cancel' ? '取消 QC 任务' : '调整 QC 排期'}
+        title={
+          actionMode === 'cancel'
+            ? t('quality.task.modal.cancelTitle')
+            : t('quality.task.modal.rescheduleTitle')
+        }
         width={560}
         onCancel={() => {
           setActionTask(null)
@@ -912,7 +977,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
             />
             {actionMode === 'reschedule' ? (
               <label htmlFor="quality-action-schedule">
-                <RequiredLabel>新排期时间</RequiredLabel>
+                <RequiredLabel>{t('quality.task.field.newSchedule')}</RequiredLabel>
                 <Input
                   id="quality-action-schedule"
                   required
@@ -923,7 +988,11 @@ export function MyQualityTasksPage({ currentUser }: Props) {
               </label>
             ) : null}
             <label htmlFor="quality-action-reason">
-              <RequiredLabel>{actionMode === 'cancel' ? '取消原因' : '调整原因'}</RequiredLabel>
+              <RequiredLabel>
+                {actionMode === 'cancel'
+                  ? t('quality.task.field.cancelReason')
+                  : t('quality.task.field.rescheduleReason')}
+              </RequiredLabel>
               <Input.TextArea
                 id="quality-action-reason"
                 required
@@ -938,7 +1007,9 @@ export function MyQualityTasksPage({ currentUser }: Props) {
               loading={submittingId === actionTask.id}
               type="primary"
             >
-              {actionMode === 'cancel' ? '确认取消' : '保存排期'}
+              {actionMode === 'cancel'
+                ? t('quality.task.action.confirmCancel')
+                : t('quality.task.action.saveSchedule')}
             </Button>
           </form>
         ) : null}
@@ -951,7 +1022,7 @@ async function readFileAsDataUrl(file: File): Promise<string> {
   return await new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => resolve(String(reader.result))
-    reader.onerror = () => reject(reader.error ?? new Error('文件读取失败'))
+    reader.onerror = () => reject(reader.error ?? new Error(t('quality.task.message.fileReadFailed')))
     reader.readAsDataURL(file)
   })
 }

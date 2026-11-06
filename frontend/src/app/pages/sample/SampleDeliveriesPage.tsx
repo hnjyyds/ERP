@@ -29,6 +29,7 @@ import {
   SampleDeliveryStatusStatistic,
 } from '../../../api'
 import { sampleDeliveryPath, moduleDetailPath } from '../../routes'
+import { t } from '../../appI18n'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { downloadCsv } from '../../../shared/print'
@@ -52,19 +53,23 @@ import {
 import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
 
 function sampleDeliveryFeeTypeLabel(value: string): string {
-  return sampleDeliveryFeeTypeOptions.find((item) => item.value === value)?.label ?? value
+  const option = sampleDeliveryFeeTypeOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function sampleRecordTypeLabel(value: string): string {
-  return sampleRecordTypeOptions.find((item) => item.value === value)?.label ?? value
+  const option = sampleRecordTypeOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function _sampleRecordStatusLabel(value: string): string {
-  return sampleRecordStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = sampleRecordStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function sampleDeliveryStatusLabel(value: string): string {
-  return sampleDeliveryStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = sampleDeliveryStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 type SampleDeliveryFormState = {
@@ -166,7 +171,7 @@ function initialSampleDeliveryForm(): SampleDeliveryFormState {
 
 function initialSampleDeliveryApproveForm(): SampleDeliveryApproveFormState {
   return {
-    reviewer_name: '演示业务主管',
+    reviewer_name: '',
     approved_at: todayInputValue(),
   }
 }
@@ -279,7 +284,8 @@ function sampleDeliveryTrackingPayload(
 }
 
 function sampleDeliveryPayerTypeLabel(value: string): string {
-  return sampleDeliveryPayerTypeOptions.find((item) => item.value === value)?.label ?? value
+  const option = sampleDeliveryPayerTypeOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
@@ -368,7 +374,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
         null
       setSelectedDeliveryId(nextSelectedId)
     } catch (caught) {
-      showError(caught, '寄样管理加载失败')
+      showError(caught, t('sample.delivery.message.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -392,13 +398,13 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
       setSampleHistory(sampleResult.items)
       setQuoteHistory(quoteResult.items)
     } catch (caught) {
-      showError(caught, '寄样历史加载失败')
+      showError(caught, t('sample.delivery.message.historyLoadFailed'))
     }
   }
 
   function syncDeliveryActionForms(delivery: SampleDelivery | null) {
     setApproveForm({
-      reviewer_name: '演示业务主管',
+      reviewer_name: '',
       approved_at: delivery?.delivery_date ?? todayInputValue(),
     })
     setTrackingForm({
@@ -445,7 +451,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
     setError('')
     try {
       const created = await createSampleDelivery(sampleDeliveryPayload(form))
-      setMessage(`已新增寄样单 ${created.code}`)
+      setMessage(t('sample.delivery.message.created', { code: created.code }))
       setForm(initialSampleDeliveryForm())
       setDeliveryModalMode(null)
       upsertDelivery(created)
@@ -455,7 +461,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
       )
       setSelectedDeliveryId(created.id)
     } catch (caught) {
-      showError(caught, '寄样单新增失败')
+      showError(caught, t('sample.delivery.message.createFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -468,12 +474,12 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
     setError('')
     try {
       const updated = await updateSampleDelivery(selectedDelivery.id, sampleDeliveryPayload(form))
-      setMessage(`已保存寄样单 ${updated.code}`)
+      setMessage(t('sample.delivery.message.draftSaved', { code: updated.code }))
       setDeliveryModalMode(null)
       upsertDelivery(updated)
       await loadDeliveries(updated.id)
     } catch (caught) {
-      showError(caught, '寄样单草稿保存失败')
+      showError(caught, t('sample.delivery.message.draftSaveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -482,7 +488,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
   async function submitDeliveryForReview() {
     if (!selectedDelivery) return
     if (!reviewerId) {
-      showError(new Error('请选择审批人'))
+      showError(new Error(t('sample.delivery.validation.reviewerRequired')))
       return
     }
     setSubmitting(true)
@@ -490,11 +496,11 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
     setError('')
     try {
       const submitted = await submitSampleDelivery(selectedDelivery.id, { reviewer_id: reviewerId })
-      setMessage(`已提交寄样单 ${submitted.code}`)
+      setMessage(t('sample.delivery.message.submitted', { code: submitted.code }))
       upsertDelivery(submitted)
       await loadDeliveries(submitted.id)
     } catch (caught) {
-      showError(caught, '寄样单提交失败')
+      showError(caught, t('sample.delivery.message.submitFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -509,7 +515,14 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
         'sample:delivery:approve',
       )
     ) {
-      showError(new Error(`该寄样单应由 ${selectedDelivery.reviewer_name ?? '指定审批人'} 审批`))
+      showError(
+        new Error(
+          t('sample.delivery.message.notReviewer', {
+            reviewer:
+              selectedDelivery.reviewer_name ?? t('sample.delivery.panel.designatedReviewer'),
+          }),
+        ),
+      )
       return
     }
     setSubmitting(true)
@@ -520,11 +533,11 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
         selectedDelivery.id,
         sampleDeliveryApprovePayload(approveForm),
       )
-      setMessage(`已审核寄样单 ${approved.code}`)
+      setMessage(t('sample.delivery.message.approved', { code: approved.code }))
       upsertDelivery(approved)
       await loadDeliveries(approved.id)
     } catch (caught) {
-      showError(caught, '寄样单审核失败')
+      showError(caught, t('sample.delivery.message.approveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -541,11 +554,15 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
         selectedDelivery.id,
         sampleDeliveryTrackingPayload(trackingForm),
       )
-      setMessage(`已更新物流 ${tracked.tracking_no ?? ''}`.trim())
+      setMessage(
+        t('sample.delivery.message.trackingUpdated', {
+          trackingNo: tracked.tracking_no ?? '',
+        }).trim(),
+      )
       upsertDelivery(tracked)
       await loadDeliveries(tracked.id)
     } catch (caught) {
-      showError(caught, '物流跟踪更新失败')
+      showError(caught, t('sample.delivery.message.trackingUpdateFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -563,9 +580,9 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
         express_company: expressFilter.trim() || undefined,
       })
       downloadCsv(exported.filename, exported.content)
-      setMessage(`已导出 ${exported.total} 条寄样记录`)
+      setMessage(t('sample.delivery.message.exported', { count: exported.total }))
     } catch (caught) {
-      showError(caught, '寄样导出失败')
+      showError(caught, t('sample.delivery.message.exportFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -573,19 +590,22 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
 
   return (
     <section className="sample-delivery-page">
-      <div className="summary-strip" aria-label="寄样管理概览">
-        <Metric label="寄样单" value={deliveries.length} />
+      <div className="summary-strip" aria-label={t('sample.delivery.pageAria')}>
+        <Metric label={t('sample.delivery.metric.deliveryCount')} value={deliveries.length} />
         <Metric
-          label="待审核"
+          label={t('sample.delivery.metric.pendingCount')}
           value={deliveries.filter((item) => item.status === 'submitted').length}
         />
         <Metric
-          label="已审核"
+          label={t('sample.delivery.metric.approvedCount')}
           value={deliveries.filter((item) => ['approved', 'shipped'].includes(item.status)).length}
         />
-        <Metric label="寄样数量" value={deliveryStatistics.total_quantity} />
         <Metric
-          label="费用"
+          label={t('sample.delivery.metric.totalQuantity')}
+          value={deliveryStatistics.total_quantity}
+        />
+        <Metric
+          label={t('sample.delivery.metric.feeTotal')}
           value={formatMoney(feeStatistics.total_amount, feeStatistics.currency)}
         />
       </div>
@@ -599,7 +619,10 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title="寄样单列表" />
+              <PanelTitle
+                icon={<Search size={18} />}
+                title={t('sample.delivery.panel.listTitle')}
+              />
               <form
                 className="inline-filters"
                 onSubmit={(event) => {
@@ -608,48 +631,48 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                 }}
               >
                 <label className="inline-filter-search">
-                  寄样搜索
+                  {t('sample.delivery.filter.search')}
                   <Input
                     value={search}
-                    placeholder="单号 / 客户 / 样品 / 快递"
+                    placeholder={t('sample.delivery.filter.searchPlaceholder')}
                     onChange={(event) => setSearch(event.target.value)}
                   />
                 </label>
                 <label className="inline-filter-compact" htmlFor="sample-delivery-status-filter">
-                  审核状态
+                  {t('sample.delivery.filter.status')}
                   <FormSelect
                     id="sample-delivery-status-filter"
                     value={statusFilter}
                     onChange={(event) => setStatusFilter(event.target.value)}
                   >
-                    <option value="">全部状态</option>
+                    <option value="">{t('sample.delivery.filter.allStatuses')}</option>
                     {sampleDeliveryStatusOptions
                       .filter((item) => item.value !== 'rejected')
                       .map((item) => (
                         <option key={item.value} value={item.value}>
-                          {item.label}
+                          {t(item.labelKey)}
                         </option>
                       ))}
                   </FormSelect>
                 </label>
                 <label className="inline-filter-compact">
-                  客户标识
+                  {t('sample.delivery.field.customerId')}
                   <Input
                     value={customerFilter}
-                    placeholder="输入客户编号或名称"
+                    placeholder={t('sample.delivery.filter.customerPlaceholder')}
                     onChange={(event) => setCustomerFilter(event.target.value)}
                   />
                 </label>
                 <label className="inline-filter-compact">
-                  快递公司
+                  {t('sample.delivery.field.expressCompany')}
                   <Input
                     value={expressFilter}
-                    placeholder="DHL / FedEx"
+                    placeholder={t('sample.delivery.filter.expressPlaceholder')}
                     onChange={(event) => setExpressFilter(event.target.value)}
                   />
                 </label>
                 <label className="inline-filter-compact">
-                  寄样起始日期
+                  {t('sample.delivery.filter.dateFrom')}
                   <Input
                     type="date"
                     value={dateFromFilter}
@@ -657,7 +680,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                   />
                 </label>
                 <label className="inline-filter-compact">
-                  寄样截止日期
+                  {t('sample.delivery.filter.dateTo')}
                   <Input
                     type="date"
                     value={dateToFilter}
@@ -665,10 +688,10 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('sample.delivery.action.query')}
                 </Button>
                 <Button loading={submitting} onClick={() => void downloadDeliveryExport()}>
-                  导出寄样
+                  {t('sample.delivery.action.export')}
                 </Button>
                 <Button
                   htmlType="button"
@@ -676,7 +699,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                   icon={<Plus size={16} />}
                   onClick={openCreateDelivery}
                 >
-                  新增寄样单
+                  {t('sample.delivery.action.create')}
                 </Button>
               </form>
             </div>
@@ -684,7 +707,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
             <Table<SampleDelivery>
               columns={[
                 {
-                  title: '寄样单号',
+                  title: t('sample.delivery.table.code'),
                   dataIndex: 'code',
                   render: (value: string, record: SampleDelivery) => (
                     <button
@@ -696,23 +719,23 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                     </button>
                   ),
                 },
-                { title: '状态', dataIndex: 'status', render: sampleDeliveryStatusLabel },
-                { title: '客户', dataIndex: 'customer_name' },
+                { title: t('sample.delivery.table.status'), dataIndex: 'status', render: sampleDeliveryStatusLabel },
+                { title: t('sample.delivery.table.customer'), dataIndex: 'customer_name' },
                 {
-                  title: '快递',
+                  title: t('sample.delivery.table.express'),
                   dataIndex: 'express_company',
                   render: (_, record) =>
-                    `${record.express_company} / ${record.tracking_no ?? '未填'}`,
+                    `${record.express_company} / ${record.tracking_no ?? t('sample.delivery.panel.notFilled')}`,
                 },
-                { title: '报价单', dataIndex: 'quote_no', render: nullableText },
+                { title: t('sample.delivery.table.quote'), dataIndex: 'quote_no', render: nullableText },
                 {
-                  title: '费用',
+                  title: t('sample.delivery.table.fee'),
                   dataIndex: 'fee_total',
                   render: (_, record) =>
                     formatMoney(record.fee_total, record.fees[0]?.currency ?? 'USD'),
                 },
                 {
-                  title: '入口',
+                  title: t('sample.delivery.table.entry'),
                   key: 'detail',
                   width: 110,
                   render: (_: unknown, record: SampleDelivery) => (
@@ -720,7 +743,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                       size="small"
                       onClick={(event) => stopAndOpenDeliveryDetail(event, record)}
                     >
-                      查看详情
+                      {t('sample.delivery.action.viewDetail')}
                     </Button>
                   ),
                 },
@@ -742,7 +765,11 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
           centered
           footer={null}
           open={Boolean(deliveryModalMode)}
-          title={deliveryModalMode === 'edit' ? '编辑寄样单草稿' : '新增寄样单'}
+          title={
+            deliveryModalMode === 'edit'
+              ? t('sample.delivery.modal.editTitle')
+              : t('sample.delivery.modal.createTitle')
+          }
           width={1040}
           onCancel={() => setDeliveryModalMode(null)}
         >
@@ -759,14 +786,14 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
           >
             <div className="form-pair two">
               <label>
-                寄样单号
+                {t('sample.delivery.field.code')}
                 <Input
                   value={form.code}
                   onChange={(event) => setForm({ ...form, code: event.target.value })}
                 />
               </label>
               <label>
-                寄样日期
+                {t('sample.delivery.field.deliveryDate')}
                 <Input
                   type="date"
                   value={form.delivery_date}
@@ -776,14 +803,14 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
             </div>
             <div className="form-pair two">
               <label>
-                客户标识
+                {t('sample.delivery.field.customerId')}
                 <Input
                   value={form.customer_id}
                   onChange={(event) => setForm({ ...form, customer_id: event.target.value })}
                 />
               </label>
               <label>
-                客户名称
+                {t('sample.delivery.field.customerName')}
                 <Input
                   value={form.customer_name}
                   onChange={(event) => setForm({ ...form, customer_name: event.target.value })}
@@ -792,14 +819,14 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
             </div>
             <div className="form-pair two">
               <label>
-                供应商
+                {t('sample.delivery.field.supplier')}
                 <Input
                   value={form.supplier_name}
                   onChange={(event) => setForm({ ...form, supplier_name: event.target.value })}
                 />
               </label>
               <label>
-                工厂
+                {t('sample.delivery.field.factory')}
                 <Input
                   value={form.factory_name}
                   onChange={(event) => setForm({ ...form, factory_name: event.target.value })}
@@ -808,14 +835,14 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
             </div>
             <div className="form-pair two">
               <label>
-                收件人
+                {t('sample.delivery.field.recipientName')}
                 <Input
                   value={form.recipient_name}
                   onChange={(event) => setForm({ ...form, recipient_name: event.target.value })}
                 />
               </label>
               <label>
-                收件公司
+                {t('sample.delivery.field.recipientCompany')}
                 <Input
                   value={form.recipient_company}
                   onChange={(event) => setForm({ ...form, recipient_company: event.target.value })}
@@ -823,7 +850,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
               </label>
             </div>
             <label>
-              收件地址
+              {t('sample.delivery.field.recipientAddress')}
               <Input
                 value={form.recipient_address}
                 onChange={(event) => setForm({ ...form, recipient_address: event.target.value })}
@@ -831,14 +858,14 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
             </label>
             <div className="form-pair two">
               <label>
-                快递公司
+                {t('sample.delivery.field.expressCompany')}
                 <Input
                   value={form.express_company}
                   onChange={(event) => setForm({ ...form, express_company: event.target.value })}
                 />
               </label>
               <label>
-                快递单号
+                {t('sample.delivery.field.trackingNo')}
                 <Input
                   value={form.tracking_no}
                   onChange={(event) => setForm({ ...form, tracking_no: event.target.value })}
@@ -847,31 +874,31 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
             </div>
             <div className="form-pair two">
               <label>
-                报价单号
+                {t('sample.delivery.field.quoteNo')}
                 <Input
                   value={form.quote_no}
                   onChange={(event) => setForm({ ...form, quote_no: event.target.value })}
                 />
               </label>
               <label>
-                报价标识
+                {t('sample.delivery.field.quoteId')}
                 <Input
                   value={form.quote_id}
                   onChange={(event) => setForm({ ...form, quote_id: event.target.value })}
                 />
               </label>
             </div>
-            <div className="form-divider">寄样明细</div>
+            <div className="form-divider">{t('sample.delivery.modal.lineSection')}</div>
             <div className="form-pair two">
               <label>
-                样品标识
+                {t('sample.delivery.field.sampleId')}
                 <Input
                   value={form.sample_record_id}
                   onChange={(event) => setForm({ ...form, sample_record_id: event.target.value })}
                 />
               </label>
               <label>
-                样品编号
+                {t('sample.delivery.field.sampleCode')}
                 <Input
                   value={form.sample_code}
                   onChange={(event) => setForm({ ...form, sample_code: event.target.value })}
@@ -880,7 +907,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
             </div>
             <div className="form-pair two">
               <label htmlFor="sample-delivery-sample-type">
-                样品分类
+                {t('sample.delivery.field.sampleType')}
                 <FormSelect
                   id="sample-delivery-sample-type"
                   value={form.sample_type}
@@ -888,13 +915,13 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                 >
                   {sampleRecordTypeOptions.map((item) => (
                     <option key={item.value} value={item.value}>
-                      {item.label}
+                      {t(item.labelKey)}
                     </option>
                   ))}
                 </FormSelect>
               </label>
               <label>
-                产品编号
+                {t('sample.delivery.field.productCode')}
                 <Input
                   value={form.product_code}
                   onChange={(event) => setForm({ ...form, product_code: event.target.value })}
@@ -902,7 +929,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
               </label>
             </div>
             <label>
-              产品名称
+              {t('sample.delivery.field.productName')}
               <Input
                 value={form.product_name}
                 onChange={(event) => setForm({ ...form, product_name: event.target.value })}
@@ -910,7 +937,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
             </label>
             <div className="form-pair two">
               <label>
-                寄样数量
+                {t('sample.delivery.field.quantity')}
                 <Input
                   type="number"
                   min="0.0001"
@@ -920,7 +947,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                 />
               </label>
               <label>
-                单位
+                {t('sample.delivery.field.unit')}
                 <Input
                   value={form.unit}
                   onChange={(event) => setForm({ ...form, unit: event.target.value })}
@@ -928,16 +955,16 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
               </label>
             </div>
             <label>
-              明细备注
+              {t('sample.delivery.field.lineRemark')}
               <Input
                 value={form.line_remark}
                 onChange={(event) => setForm({ ...form, line_remark: event.target.value })}
               />
             </label>
-            <div className="form-divider">费用登记</div>
+            <div className="form-divider">{t('sample.delivery.modal.feeSection')}</div>
             <div className="form-pair two">
               <label htmlFor="sample-delivery-fee-type">
-                费用类型
+                {t('sample.delivery.field.feeType')}
                 <FormSelect
                   id="sample-delivery-fee-type"
                   value={form.fee_type}
@@ -945,13 +972,13 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                 >
                   {sampleDeliveryFeeTypeOptions.map((item) => (
                     <option key={item.value} value={item.value}>
-                      {item.label}
+                      {t(item.labelKey)}
                     </option>
                   ))}
                 </FormSelect>
               </label>
               <label>
-                金额
+                {t('sample.delivery.field.amount')}
                 <Input
                   type="number"
                   min="0"
@@ -963,14 +990,14 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
             </div>
             <div className="form-pair two">
               <label>
-                币种
+                {t('sample.delivery.field.currency')}
                 <Input
                   value={form.fee_currency}
                   onChange={(event) => setForm({ ...form, fee_currency: event.target.value })}
                 />
               </label>
               <label htmlFor="sample-delivery-fee-payer">
-                承担方
+                {t('sample.delivery.field.payerType')}
                 <FormSelect
                   id="sample-delivery-fee-payer"
                   value={form.fee_payer_type}
@@ -978,21 +1005,21 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                 >
                   {sampleDeliveryPayerTypeOptions.map((item) => (
                     <option key={item.value} value={item.value}>
-                      {item.label}
+                      {t(item.labelKey)}
                     </option>
                   ))}
                 </FormSelect>
               </label>
             </div>
             <label>
-              费用备注
+              {t('sample.delivery.field.feeRemark')}
               <Input
                 value={form.fee_remark}
                 onChange={(event) => setForm({ ...form, fee_remark: event.target.value })}
               />
             </label>
             <label htmlFor="sample-delivery-remark">
-              寄样备注
+              {t('sample.delivery.field.remark')}
               <Input.TextArea
                 id="sample-delivery-remark"
                 rows={2}
@@ -1006,7 +1033,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                 type="button"
                 onClick={() => setDeliveryModalMode(null)}
               >
-                取消
+                {t('sample.delivery.action.cancel')}
               </button>
               {deliveryModalMode === 'edit' ? (
                 <button
@@ -1015,11 +1042,11 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                   type="button"
                   onClick={() => void saveDeliveryDraft()}
                 >
-                  保存草稿编辑
+                  {t('sample.delivery.action.saveDraft')}
                 </button>
               ) : (
                 <button className="inline-submit" disabled={submitting} type="submit">
-                  新增寄样单
+                  {t('sample.delivery.action.create')}
                 </button>
               )}
             </div>
@@ -1029,51 +1056,55 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<LayoutDashboard size={18} />} title="寄样明细" />
+              <PanelTitle
+                icon={<LayoutDashboard size={18} />}
+                title={t('sample.delivery.panel.detailTitle')}
+              />
               <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(sampleDeliveryPath)}>
-                返回列表
+                {t('sample.delivery.action.backToList')}
               </Button>
             </div>
             {selectedDelivery ? (
               <>
                 <dl className="detail-list">
                   <div>
-                    <dt>状态/日期</dt>
+                    <dt>{t('sample.delivery.field.statusDate')}</dt>
                     <dd>
                       {sampleDeliveryStatusLabel(selectedDelivery.status)} /{' '}
                       {formatDate(selectedDelivery.delivery_date)}
                     </dd>
                   </div>
                   <div>
-                    <dt>客户</dt>
+                    <dt>{t('sample.delivery.field.customer')}</dt>
                     <dd>{selectedDelivery.customer_name}</dd>
                   </div>
                   <div>
-                    <dt>供应商/工厂</dt>
+                    <dt>{t('sample.delivery.field.supplierFactory')}</dt>
                     <dd>
-                      {selectedDelivery.supplier_name ?? '未填'} /{' '}
-                      {selectedDelivery.factory_name ?? '未填'}
+                      {selectedDelivery.supplier_name ?? t('sample.delivery.panel.notFilled')} /{' '}
+                      {selectedDelivery.factory_name ?? t('sample.delivery.panel.notFilled')}
                     </dd>
                   </div>
                   <div>
-                    <dt>收件方</dt>
+                    <dt>{t('sample.delivery.field.recipient')}</dt>
                     <dd>
                       {selectedDelivery.recipient_name} /{' '}
-                      {selectedDelivery.recipient_company ?? '未填'}
+                      {selectedDelivery.recipient_company ?? t('sample.delivery.panel.notFilled')}
                     </dd>
                   </div>
                   <div>
-                    <dt>快递</dt>
+                    <dt>{t('sample.delivery.field.express')}</dt>
                     <dd>
-                      {selectedDelivery.express_company} / {selectedDelivery.tracking_no ?? '未填'}
+                      {selectedDelivery.express_company} /{' '}
+                      {selectedDelivery.tracking_no ?? t('sample.delivery.panel.notFilled')}
                     </dd>
                   </div>
                   <div>
-                    <dt>报价单</dt>
-                    <dd>{selectedDelivery.quote_no ?? '未关联'}</dd>
+                    <dt>{t('sample.delivery.field.quote')}</dt>
+                    <dd>{selectedDelivery.quote_no ?? t('sample.delivery.panel.notLinked')}</dd>
                   </div>
                   <div>
-                    <dt>费用合计</dt>
+                    <dt>{t('sample.delivery.field.feeTotal')}</dt>
                     <dd>
                       {formatMoney(
                         selectedDelivery.fee_total,
@@ -1082,13 +1113,13 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                     </dd>
                   </div>
                   <div>
-                    <dt>审核人</dt>
-                    <dd>{selectedDelivery.reviewer_name ?? '未审核'}</dd>
+                    <dt>{t('sample.delivery.field.reviewer')}</dt>
+                    <dd>{selectedDelivery.reviewer_name ?? t('sample.delivery.panel.notReviewed')}</dd>
                   </div>
                 </dl>
 
                 <div className="transaction-box">
-                  <strong>寄样备注</strong>
+                  <strong>{t('sample.delivery.field.remark')}</strong>
                   <p>{selectedDelivery.remark ?? selectedDelivery.recipient_address}</p>
                 </div>
 
@@ -1097,7 +1128,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                     disabled={selectedDelivery.status !== 'draft'}
                     onClick={() => openEditDelivery(selectedDelivery)}
                   >
-                    编辑草稿
+                    {t('sample.delivery.action.editDraft')}
                   </Button>
                   {selectedDelivery.status === 'draft' ? (
                     <ApprovalAssigneeSelect
@@ -1112,7 +1143,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                     loading={submitting}
                     onClick={() => void submitDeliveryForReview()}
                   >
-                    提交审核
+                    {t('sample.delivery.action.submitReview')}
                   </Button>
                   <Button
                     disabled={
@@ -1127,7 +1158,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                     type="primary"
                     onClick={() => void approveDelivery()}
                   >
-                    审核通过
+                    {t('sample.delivery.action.approve')}
                   </Button>
                 </div>
                 {selectedDelivery.status === 'submitted' &&
@@ -1137,17 +1168,21 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                   'sample:delivery:approve',
                 ) ? (
                   <Alert
-                    message={`等待 ${selectedDelivery.reviewer_name ?? '指定审批人'} 审批`}
+                    message={t('sample.delivery.message.awaitingReview', {
+                      reviewer:
+                        selectedDelivery.reviewer_name ??
+                        t('sample.delivery.panel.designatedReviewer'),
+                    })}
                     showIcon
                     type="info"
                   />
                 ) : null}
 
                 <form className="record-form accessory-form" onSubmit={submitTracking}>
-                  <div className="form-divider">物流跟踪</div>
+                  <div className="form-divider">{t('sample.delivery.panel.trackingSection')}</div>
                   <div className="form-pair three">
                     <label>
-                      快递公司
+                      {t('sample.delivery.field.expressCompany')}
                       <Input
                         value={trackingForm.express_company}
                         onChange={(event) =>
@@ -1156,7 +1191,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                       />
                     </label>
                     <label>
-                      快递单号
+                      {t('sample.delivery.field.trackingNo')}
                       <Input
                         value={trackingForm.tracking_no}
                         onChange={(event) =>
@@ -1165,7 +1200,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                       />
                     </label>
                     <label>
-                      物流状态
+                      {t('sample.delivery.field.trackingStatus')}
                       <FormSelect
                         value={trackingForm.status}
                         onChange={(event) =>
@@ -1174,36 +1209,41 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                       >
                         {sampleDeliveryTrackingStatusOptions.map((item) => (
                           <option key={item.value} value={item.value}>
-                            {item.label}
+                            {t(item.labelKey)}
                           </option>
                         ))}
                       </FormSelect>
                     </label>
                   </div>
                   <Button htmlType="submit" loading={submitting}>
-                    更新物流
+                    {t('sample.delivery.action.updateTracking')}
                   </Button>
                 </form>
 
                 <Table<SampleDeliveryLine>
                   className="compact-section"
                   columns={[
-                    { title: '样品编号', dataIndex: 'sample_code', render: nullableText },
                     {
-                      title: '产品',
-                      dataIndex: 'product_name',
-                      render: (_, line) => `${line.product_code ?? '未填'} / ${line.product_name}`,
+                      title: t('sample.delivery.table.sampleCode'),
+                      dataIndex: 'sample_code',
+                      render: nullableText,
                     },
                     {
-                      title: '数量',
+                      title: t('sample.delivery.table.product'),
+                      dataIndex: 'product_name',
+                      render: (_, line) =>
+                        `${line.product_code ?? t('sample.delivery.panel.notFilled')} / ${line.product_name}`,
+                    },
+                    {
+                      title: t('sample.delivery.table.quantity'),
                       dataIndex: 'quantity',
                       render: (_, line) => `${line.quantity} ${line.unit}`,
                     },
-                    { title: '分类', dataIndex: 'sample_type', render: sampleRecordTypeLabel },
-                    { title: '备注', dataIndex: 'remark', render: nullableText },
+                    { title: t('sample.delivery.table.type'), dataIndex: 'sample_type', render: sampleRecordTypeLabel },
+                    { title: t('sample.delivery.table.note'), dataIndex: 'remark', render: nullableText },
                   ]}
                   dataSource={selectedDelivery.lines}
-                  locale={{ emptyText: '暂无寄样明细' }}
+                  locale={{ emptyText: t('sample.delivery.panel.noLines') }}
                   pagination={false}
                   rowKey="id"
                   size="small"
@@ -1213,46 +1253,46 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                   className="compact-section"
                   columns={[
                     {
-                      title: '费用类型',
+                      title: t('sample.delivery.table.feeType'),
                       dataIndex: 'fee_type',
                       render: sampleDeliveryFeeTypeLabel,
                     },
                     {
-                      title: '金额',
+                      title: t('sample.delivery.table.amount'),
                       dataIndex: 'amount',
                       render: (_, fee) => formatMoney(fee.amount, fee.currency),
                     },
                     {
-                      title: '承担方',
+                      title: t('sample.delivery.table.payerType'),
                       dataIndex: 'payer_type',
                       render: sampleDeliveryPayerTypeLabel,
                     },
-                    { title: '备注', dataIndex: 'remark', render: nullableText },
+                    { title: t('sample.delivery.table.note'), dataIndex: 'remark', render: nullableText },
                   ]}
                   dataSource={selectedDelivery.fees}
-                  locale={{ emptyText: '暂无费用明细' }}
+                  locale={{ emptyText: t('sample.delivery.panel.noFees') }}
                   pagination={false}
                   rowKey="id"
                   size="small"
                 />
 
                 <div className="accessory-heading">
-                  <strong>费用统计</strong>
+                  <strong>{t('sample.delivery.panel.feeStatistics')}</strong>
                   <span>{formatMoney(feeStatistics.total_amount, feeStatistics.currency)}</span>
                 </div>
                 <Table<SampleDeliveryFeeStatistic>
                   columns={[
-                    { title: '客户', dataIndex: 'customer_name' },
-                    { title: '快递公司', dataIndex: 'express_company' },
-                    { title: '寄样单数', dataIndex: 'delivery_count' },
+                    { title: t('sample.delivery.table.customer'), dataIndex: 'customer_name' },
+                    { title: t('sample.delivery.table.expressCompany'), dataIndex: 'express_company' },
+                    { title: t('sample.delivery.table.deliveryCount'), dataIndex: 'delivery_count' },
                     {
-                      title: '费用合计',
+                      title: t('sample.delivery.table.feeTotal'),
                       dataIndex: 'total_amount',
                       render: (_, item) => formatMoney(item.total_amount, item.currency),
                     },
                   ]}
                   dataSource={feeStatistics.items}
-                  locale={{ emptyText: '暂无已审核费用' }}
+                  locale={{ emptyText: t('sample.delivery.panel.noApprovedFees') }}
                   pagination={false}
                   rowKey={(item) =>
                     `${item.customer_id ?? 'none'}-${item.express_company}-${item.currency}`
@@ -1261,20 +1301,25 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                 />
 
                 <div className="accessory-heading">
-                  <strong>寄样统计</strong>
+                  <strong>{t('sample.delivery.panel.deliveryStatistics')}</strong>
                   <span>
-                    {deliveryStatistics.total_deliveries} 单 / {deliveryStatistics.total_quantity}{' '}
-                    件
+                    {t('sample.delivery.panel.deliveryCount', {
+                      count: deliveryStatistics.total_deliveries,
+                    })}{' '}
+                    /{' '}
+                    {t('sample.delivery.panel.itemCount', {
+                      count: deliveryStatistics.total_quantity,
+                    })}
                   </span>
                 </div>
                 <Table<SampleDeliveryStatusStatistic>
                   columns={[
-                    { title: '状态', dataIndex: 'status', render: sampleDeliveryStatusLabel },
-                    { title: '寄样单数', dataIndex: 'delivery_count' },
-                    { title: '寄样数量', dataIndex: 'total_quantity' },
+                    { title: t('sample.delivery.table.status'), dataIndex: 'status', render: sampleDeliveryStatusLabel },
+                    { title: t('sample.delivery.table.deliveryCount'), dataIndex: 'delivery_count' },
+                    { title: t('sample.delivery.table.totalQuantity'), dataIndex: 'total_quantity' },
                   ]}
                   dataSource={deliveryStatistics.by_status}
-                  locale={{ emptyText: '暂无状态统计' }}
+                  locale={{ emptyText: t('sample.delivery.panel.noStatusStatistics') }}
                   pagination={false}
                   rowKey="status"
                   size="small"
@@ -1282,12 +1327,12 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                 <Table<SampleDeliveryCustomerStatistic>
                   className="compact-section"
                   columns={[
-                    { title: '客户', dataIndex: 'customer_name' },
-                    { title: '寄样单数', dataIndex: 'delivery_count' },
-                    { title: '寄样数量', dataIndex: 'total_quantity' },
+                    { title: t('sample.delivery.table.customer'), dataIndex: 'customer_name' },
+                    { title: t('sample.delivery.table.deliveryCount'), dataIndex: 'delivery_count' },
+                    { title: t('sample.delivery.table.totalQuantity'), dataIndex: 'total_quantity' },
                   ]}
                   dataSource={deliveryStatistics.by_customer}
-                  locale={{ emptyText: '暂无客户统计' }}
+                  locale={{ emptyText: t('sample.delivery.panel.noCustomerStatistics') }}
                   pagination={false}
                   rowKey={(item) => item.customer_id ?? item.customer_name}
                   size="small"
@@ -1295,59 +1340,64 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                 <Table<SampleDeliveryExpressStatistic>
                   className="compact-section"
                   columns={[
-                    { title: '快递公司', dataIndex: 'express_company' },
-                    { title: '寄样单数', dataIndex: 'delivery_count' },
-                    { title: '寄样数量', dataIndex: 'total_quantity' },
+                    { title: t('sample.delivery.table.expressCompany'), dataIndex: 'express_company' },
+                    { title: t('sample.delivery.table.deliveryCount'), dataIndex: 'delivery_count' },
+                    { title: t('sample.delivery.table.totalQuantity'), dataIndex: 'total_quantity' },
                   ]}
                   dataSource={deliveryStatistics.by_express}
-                  locale={{ emptyText: '暂无快递统计' }}
+                  locale={{ emptyText: t('sample.delivery.panel.noExpressStatistics') }}
                   pagination={false}
                   rowKey="express_company"
                   size="small"
                 />
 
                 <div className="accessory-heading">
-                  <strong>样品寄样历史</strong>
-                  <span>{sampleHistory.length} 条</span>
+                  <strong>{t('sample.delivery.panel.sampleHistory')}</strong>
+                  <span>
+                    {t('sample.delivery.panel.recordCount', { count: sampleHistory.length })}
+                  </span>
                 </div>
                 <Table<SampleDelivery>
                   columns={[
-                    { title: '寄样单', dataIndex: 'code' },
-                    { title: '客户', dataIndex: 'customer_name' },
-                    { title: '日期', dataIndex: 'delivery_date', render: formatDate },
-                    { title: '状态', dataIndex: 'status', render: sampleDeliveryStatusLabel },
+                    { title: t('sample.delivery.table.deliveryCode'), dataIndex: 'code' },
+                    { title: t('sample.delivery.table.customer'), dataIndex: 'customer_name' },
+                    { title: t('sample.delivery.table.date'), dataIndex: 'delivery_date', render: formatDate },
+                    { title: t('sample.delivery.table.status'), dataIndex: 'status', render: sampleDeliveryStatusLabel },
                     {
-                      title: '快递',
+                      title: t('sample.delivery.table.express'),
                       dataIndex: 'express_company',
                       render: (_, delivery) =>
-                        `${delivery.express_company} / ${delivery.tracking_no ?? '未填'}`,
+                        `${delivery.express_company} / ${delivery.tracking_no ?? t('sample.delivery.panel.notFilled')}`,
                     },
                   ]}
                   dataSource={sampleHistory}
-                  locale={{ emptyText: '暂无该样品寄样历史' }}
+                  locale={{ emptyText: t('sample.delivery.panel.noSampleHistory') }}
                   pagination={false}
                   rowKey="id"
                   size="small"
                 />
 
                 <div className="accessory-heading">
-                  <strong>报价关联寄样</strong>
-                  <span>{quoteHistory.length} 条</span>
+                  <strong>{t('sample.delivery.panel.quoteHistory')}</strong>
+                  <span>
+                    {t('sample.delivery.panel.recordCount', { count: quoteHistory.length })}
+                  </span>
                 </div>
                 <Table<SampleDelivery>
                   columns={[
-                    { title: '报价单', dataIndex: 'quote_no', render: nullableText },
-                    { title: '寄样单', dataIndex: 'code' },
-                    { title: '客户', dataIndex: 'customer_name' },
+                    { title: t('sample.delivery.table.quote'), dataIndex: 'quote_no', render: nullableText },
+                    { title: t('sample.delivery.table.deliveryCode'), dataIndex: 'code' },
+                    { title: t('sample.delivery.table.customer'), dataIndex: 'customer_name' },
                     {
-                      title: '产品',
+                      title: t('sample.delivery.table.product'),
                       dataIndex: 'lines',
-                      render: (_, delivery) => delivery.lines[0]?.product_name ?? '未填',
+                      render: (_, delivery) =>
+                        delivery.lines[0]?.product_name ?? t('sample.delivery.panel.notFilled'),
                     },
-                    { title: '审核日期', dataIndex: 'approved_at', render: formatDate },
+                    { title: t('sample.delivery.table.approvedAt'), dataIndex: 'approved_at', render: formatDate },
                   ]}
                   dataSource={quoteHistory}
-                  locale={{ emptyText: '暂无报价关联寄样记录' }}
+                  locale={{ emptyText: t('sample.delivery.panel.noQuoteHistory') }}
                   pagination={false}
                   rowKey="id"
                   size="small"
@@ -1356,8 +1406,8 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
             ) : (
               <div className="module-state panel-empty-state">
                 <Send size={28} />
-                <strong>暂无寄样单</strong>
-                <span>请返回列表选择寄样单查看详情</span>
+                <strong>{t('sample.delivery.panel.emptyTitle')}</strong>
+                <span>{t('sample.delivery.panel.emptyDescription')}</span>
               </div>
             )}
           </section>

@@ -30,6 +30,7 @@ import {
   SampleRecordImagePayload,
 } from '../../../api'
 import { sampleRequestPath, moduleDetailPath } from '../../routes'
+import { t } from '../../appI18n'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { openSampleRequestPrint } from '../../../shared/print'
@@ -100,7 +101,7 @@ function sampleRecordFormFromRequest(
     source_type: 'sample_request',
     source_id: request.id,
     source_code: request.code,
-    source_note: `来自样品申请 ${request.code}`,
+    source_note: t('sample.request.message.recordSourceNote', { code: request.code }),
   }
 }
 
@@ -310,25 +311,29 @@ function sampleFeePayload(form: SampleFeeFormState): SampleFeePayload {
 }
 
 function sampleStatusLabel(value: string): string {
-  return sampleStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = sampleStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function sampleDestinationLabel(value: string): string {
-  return sampleDestinationOptions.find((item) => item.value === value)?.label ?? value
+  const option = sampleDestinationOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function sampleProgressStageLabel(value: string): string {
-  return sampleProgressStageOptions.find((item) => item.value === value)?.label ?? value
+  const option = sampleProgressStageOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function sampleFeeTypeLabel(value: string): string {
-  return sampleFeeTypeOptions.find((item) => item.value === value)?.label ?? value
+  const option = sampleFeeTypeOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function samplePaymentStatusLabel(value: string): string {
-  if (value === 'requested') return '已申请'
-  if (value === 'paid') return '已付款'
-  return '未申请'
+  if (value === 'requested') return t('sample.request.paymentStatus.requested')
+  if (value === 'paid') return t('sample.request.paymentStatus.paid')
+  return t('sample.request.paymentStatus.notRequested')
 }
 
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
@@ -400,7 +405,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
         null
       setSelectedRequestId(nextSelectedId)
     } catch (caught) {
-      showError(caught, '打样单加载失败')
+      showError(caught, t('sample.request.message.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -418,12 +423,12 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
     setError('')
     try {
       const created = await createSampleRequest(sampleRequestPayload(form))
-      setMessage(`已新增打样单 ${created.code}`)
+      setMessage(t('sample.request.message.created', { code: created.code }))
       setForm(initialSampleRequestForm())
       setRequestModalOpen(false)
       await loadRequests(created.id)
     } catch (caught) {
-      showError(caught, '打样单新增失败')
+      showError(caught, t('sample.request.message.createFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -451,10 +456,14 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
             : item,
         ),
       )
-      setMessage(`已更新打样进度 ${sampleProgressStageLabel(progress.stage)}`)
+      setMessage(
+        t('sample.request.message.progressUpdated', {
+          stage: sampleProgressStageLabel(progress.stage),
+        }),
+      )
       setProgressForm(initialSampleProgressForm())
     } catch (caught) {
-      showError(caught, '打样进度更新失败')
+      showError(caught, t('sample.request.message.progressUpdateFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -473,10 +482,12 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
           item.id === selectedRequest.id ? { ...item, fees: [...item.fees, fee] } : item,
         ),
       )
-      setMessage(`已登记打样费用 ${fee.currency} ${fee.amount}`)
+      setMessage(
+        t('sample.request.message.feeRegistered', { currency: fee.currency, amount: fee.amount }),
+      )
       setFeeForm(initialSampleFeeForm())
     } catch (caught) {
-      showError(caught, '打样费用登记失败')
+      showError(caught, t('sample.request.message.feeRegisterFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -485,7 +496,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
   async function submitPaymentRequest(fee: SampleFee) {
     if (!selectedRequest) return
     if (!paymentReviewerId) {
-      showError(new Error('请选择付费审批人'))
+      showError(new Error(t('sample.request.validation.reviewerRequired')))
       return
     }
     setSubmitting(true)
@@ -507,9 +518,9 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
             : item,
         ),
       )
-      setMessage('已发起打样费用付款申请')
+      setMessage(t('sample.request.message.paymentRequested'))
     } catch (caught) {
-      showError(caught, '打样费用付款发起失败')
+      showError(caught, t('sample.request.message.paymentRequestFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -517,7 +528,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
 
   function loadRequestIntoRecordForm(request: SampleRequest) {
     setRecordForm(sampleRecordFormFromRequest(request, recordForm))
-    setMessage(`已载入 ${request.code}，可转为样品登记`)
+    setMessage(t('sample.request.message.recordLoaded', { code: request.code }))
   }
 
   async function submitRecordFromRequest(event: FormEvent<HTMLFormElement>) {
@@ -531,10 +542,10 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
         selectedRequest.id,
         sampleRequestToRecordPayload(recordForm),
       )
-      setMessage(`已转为样品 ${record.code}`)
+      setMessage(t('sample.request.message.recordCreated', { code: record.code }))
       setRecordForm(initialSampleRecordForm())
     } catch (caught) {
-      showError(caught, '打样转样品失败')
+      showError(caught, t('sample.request.message.recordCreateFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -542,14 +553,20 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
 
   return (
     <section className="sample-request-page">
-      <div className="summary-strip" aria-label="打样管理概览">
-        <Metric label="打样单" value={requests.length} />
+      <div className="summary-strip" aria-label={t('sample.request.pageAria')}>
+        <Metric label={t('sample.request.metric.requestCount')} value={requests.length} />
         <Metric
-          label="进行中"
+          label={t('sample.request.metric.inProgressCount')}
           value={requests.filter((item) => item.status === 'in_progress').length}
         />
-        <Metric label="进度记录" value={selectedRequest?.progress_events.length ?? 0} />
-        <Metric label="费用记录" value={selectedRequest?.fees.length ?? 0} />
+        <Metric
+          label={t('sample.request.metric.progressCount')}
+          value={selectedRequest?.progress_events.length ?? 0}
+        />
+        <Metric
+          label={t('sample.request.metric.feeCount')}
+          value={selectedRequest?.fees.length ?? 0}
+        />
       </div>
 
       {message ? (
@@ -561,7 +578,10 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title="打样单列表" />
+              <PanelTitle
+                icon={<Search size={18} />}
+                title={t('sample.request.panel.listTitle')}
+              />
               <form
                 className="inline-filters"
                 onSubmit={(event) => {
@@ -570,37 +590,37 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                 }}
               >
                 <label className="inline-filter-search">
-                  打样搜索
+                  {t('sample.request.filter.search')}
                   <Input
                     value={search}
-                    placeholder="编号 / 客户 / 产品 / 供应商"
+                    placeholder={t('sample.request.filter.searchPlaceholder')}
                     onChange={(event) => setSearch(event.target.value)}
                   />
                 </label>
                 <label className="inline-filter-compact">
-                  打样状态筛选
+                  {t('sample.request.filter.status')}
                   <FormSelect
                     value={statusFilter}
                     onChange={(event) => setStatusFilter(event.target.value)}
                   >
-                    <option value="">全部状态</option>
+                    <option value="">{t('sample.request.filter.allStatuses')}</option>
                     {sampleStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label className="inline-filter-compact">
-                  打样客户筛选
+                  {t('sample.request.filter.customer')}
                   <Input
                     value={customerFilter}
-                    placeholder="输入客户编号或名称"
+                    placeholder={t('sample.request.filter.customerPlaceholder')}
                     onChange={(event) => setCustomerFilter(event.target.value)}
                   />
                 </label>
                 <label className="inline-filter-compact">
-                  打样起始日期
+                  {t('sample.request.filter.dateFrom')}
                   <Input
                     type="date"
                     value={dateFromFilter}
@@ -608,7 +628,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                   />
                 </label>
                 <label className="inline-filter-compact">
-                  打样截止日期
+                  {t('sample.request.filter.dateTo')}
                   <Input
                     type="date"
                     value={dateToFilter}
@@ -616,7 +636,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('sample.request.action.query')}
                 </Button>
                 <Button
                   htmlType="button"
@@ -624,7 +644,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                   icon={<Plus size={16} />}
                   onClick={openCreateRequest}
                 >
-                  新增打样单
+                  {t('sample.request.action.create')}
                 </Button>
               </form>
             </div>
@@ -632,7 +652,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
             <Table<SampleRequest>
               columns={[
                 {
-                  title: '打样单号',
+                  title: t('sample.request.table.code'),
                   dataIndex: 'code',
                   render: (value: string, record: SampleRequest) => (
                     <button
@@ -644,21 +664,29 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                     </button>
                   ),
                 },
-                { title: '客户', dataIndex: 'customer_name' },
-                { title: '产品', dataIndex: 'product_name', render: nullableText },
+                { title: t('sample.request.table.customer'), dataIndex: 'customer_name' },
                 {
-                  title: '去向',
+                  title: t('sample.request.table.product'),
+                  dataIndex: 'product_name',
+                  render: nullableText,
+                },
+                {
+                  title: t('sample.request.table.destination'),
                   dataIndex: 'destination',
                   render: sampleDestinationLabel,
                 },
                 {
-                  title: '状态',
+                  title: t('sample.request.table.status'),
                   dataIndex: 'status',
                   render: sampleStatusLabel,
                 },
-                { title: '要求完成', dataIndex: 'due_date', render: formatDate },
                 {
-                  title: '入口',
+                  title: t('sample.request.table.dueDate'),
+                  dataIndex: 'due_date',
+                  render: formatDate,
+                },
+                {
+                  title: t('sample.request.table.entry'),
                   key: 'detail',
                   width: 110,
                   render: (_: unknown, record: SampleRequest) => (
@@ -666,7 +694,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                       size="small"
                       onClick={(event) => stopAndOpenRequestDetail(event, record)}
                     >
-                      查看详情
+                      {t('sample.request.action.viewDetail')}
                     </Button>
                   ),
                 },
@@ -688,7 +716,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
           centered
           footer={null}
           open={requestModalOpen}
-          title="新增打样单"
+          title={t('sample.request.modal.createTitle')}
           width={980}
           onCancel={() => setRequestModalOpen(false)}
         >
@@ -697,14 +725,14 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
             onSubmit={submitRequest}
           >
             <label>
-              打样单号
+              {t('sample.request.field.code')}
               <Input
                 value={form.code}
                 onChange={(event) => setForm({ ...form, code: event.target.value })}
               />
             </label>
             <label htmlFor="sample-request-status">
-              打样状态
+              {t('sample.request.field.status')}
               <FormSelect
                 id="sample-request-status"
                 value={form.status}
@@ -712,13 +740,13 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
               >
                 {sampleStatusOptions.map((item) => (
                   <option key={item.value} value={item.value}>
-                    {item.label}
+                    {t(item.labelKey)}
                   </option>
                 ))}
               </FormSelect>
             </label>
             <label>
-              打样日期
+              {t('sample.request.field.requestDate')}
               <Input
                 type="date"
                 value={form.request_date}
@@ -726,7 +754,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
               />
             </label>
             <label>
-              要求完成日期
+              {t('sample.request.field.dueDate')}
               <Input
                 type="date"
                 value={form.due_date}
@@ -734,42 +762,42 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
               />
             </label>
             <label>
-              打样客户标识
+              {t('sample.request.field.customerId')}
               <Input
                 value={form.customer_id}
                 onChange={(event) => setForm({ ...form, customer_id: event.target.value })}
               />
             </label>
             <label>
-              打样客户名称
+              {t('sample.request.field.customerName')}
               <Input
                 value={form.customer_name}
                 onChange={(event) => setForm({ ...form, customer_name: event.target.value })}
               />
             </label>
             <label>
-              打样产品编号
+              {t('sample.request.field.productCode')}
               <Input
                 value={form.product_code}
                 onChange={(event) => setForm({ ...form, product_code: event.target.value })}
               />
             </label>
             <label>
-              打样产品名称
+              {t('sample.request.field.productName')}
               <Input
                 value={form.product_name}
                 onChange={(event) => setForm({ ...form, product_name: event.target.value })}
               />
             </label>
             <label>
-              打样供应商名称
+              {t('sample.request.field.supplierName')}
               <Input
                 value={form.supplier_name}
                 onChange={(event) => setForm({ ...form, supplier_name: event.target.value })}
               />
             </label>
             <label htmlFor="sample-request-destination">
-              打样去向
+              {t('sample.request.field.destination')}
               <FormSelect
                 id="sample-request-destination"
                 value={form.destination}
@@ -777,22 +805,22 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
               >
                 {sampleDestinationOptions.map((item) => (
                   <option key={item.value} value={item.value}>
-                    {item.label}
+                    {t(item.labelKey)}
                   </option>
                 ))}
               </FormSelect>
             </label>
             <label>
-              客户打样要求
+              {t('sample.request.field.requirements')}
               <Input.TextArea
                 rows={3}
                 value={form.requirements}
                 onChange={(event) => setForm({ ...form, requirements: event.target.value })}
               />
             </label>
-            <div className="form-divider">内部打样单明细</div>
+            <div className="form-divider">{t('sample.request.modal.lineSection')}</div>
             <label>
-              明细产品编号
+              {t('sample.request.field.lineProductCode')}
               <Input
                 value={form.line_product_code}
                 onChange={(event) =>
@@ -805,21 +833,21 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
               />
             </label>
             <label>
-              明细产品名称
+              {t('sample.request.field.lineProductName')}
               <Input
                 value={form.line_product_name}
                 onChange={(event) => setForm({ ...form, line_product_name: event.target.value })}
               />
             </label>
             <label>
-              明细规格
+              {t('sample.request.field.lineSpecification')}
               <Input
                 value={form.line_specification}
                 onChange={(event) => setForm({ ...form, line_specification: event.target.value })}
               />
             </label>
             <label>
-              明细数量
+              {t('sample.request.field.lineQuantity')}
               <Input
                 type="number"
                 min="0.01"
@@ -829,14 +857,14 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
               />
             </label>
             <label>
-              明细单位
+              {t('sample.request.field.lineUnit')}
               <Input
                 value={form.line_unit}
                 onChange={(event) => setForm({ ...form, line_unit: event.target.value })}
               />
             </label>
             <label>
-              明细要求
+              {t('sample.request.field.lineRequirement')}
               <Input.TextArea
                 rows={2}
                 value={form.line_requirement}
@@ -849,10 +877,10 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                 type="button"
                 onClick={() => setRequestModalOpen(false)}
               >
-                取消
+                {t('sample.request.action.cancel')}
               </button>
               <button className="inline-submit" disabled={submitting} type="submit">
-                新增打样单
+                {t('sample.request.action.create')}
               </button>
             </div>
           </form>
@@ -861,71 +889,89 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<LayoutDashboard size={18} />} title="打样单明细" />
+              <PanelTitle
+                icon={<LayoutDashboard size={18} />}
+                title={t('sample.request.panel.detailTitle')}
+              />
               <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(sampleRequestPath)}>
-                返回列表
+                {t('sample.request.action.backToList')}
               </Button>
             </div>
             {selectedRequest ? (
               <>
                 <dl className="detail-list">
                   <div>
-                    <dt>打样单号</dt>
+                    <dt>{t('sample.request.field.code')}</dt>
                     <dd>{selectedRequest.code}</dd>
                   </div>
                   <div>
-                    <dt>客户/产品</dt>
+                    <dt>{t('sample.request.field.customerProduct')}</dt>
                     <dd>
                       {selectedRequest.customer_name} / {selectedRequest.product_name ?? '-'}
                     </dd>
                   </div>
                   <div>
-                    <dt>去向/状态</dt>
+                    <dt>{t('sample.request.field.destinationStatus')}</dt>
                     <dd>
                       {sampleDestinationLabel(selectedRequest.destination)} /{' '}
                       {sampleStatusLabel(selectedRequest.status)}
                     </dd>
                   </div>
                   <div>
-                    <dt>供应商</dt>
-                    <dd>{selectedRequest.supplier_name ?? '未设置'}</dd>
+                    <dt>{t('sample.request.field.supplier')}</dt>
+                    <dd>{selectedRequest.supplier_name ?? t('sample.request.panel.notSet')}</dd>
                   </div>
                   <div>
-                    <dt>打样日期</dt>
+                    <dt>{t('sample.request.field.requestDate')}</dt>
                     <dd>{formatDate(selectedRequest.request_date)}</dd>
                   </div>
                   <div>
-                    <dt>要求完成</dt>
+                    <dt>{t('sample.request.field.dueDateShort')}</dt>
                     <dd>{formatDate(selectedRequest.due_date)}</dd>
                   </div>
                   <div>
-                    <dt>客户要求</dt>
+                    <dt>{t('sample.request.field.customerRequirement')}</dt>
                     <dd>{selectedRequest.requirements}</dd>
                   </div>
                 </dl>
 
                 <div className="delivery-action-row">
                   <Button onClick={() => void openSampleRequestPrint(selectedRequest.id)}>
-                    打印内部打样单
+                    {t('sample.request.action.print')}
                   </Button>
                   <Button
                     disabled={selectedRequest.status !== 'completed'}
                     onClick={() => loadRequestIntoRecordForm(selectedRequest)}
                   >
-                    载入为样品
+                    {t('sample.request.action.loadAsSample')}
                   </Button>
                 </div>
 
                 <section className="compact-section">
-                  <PanelTitle icon={<Search size={18} />} title="内部打样单明细" />
+                  <PanelTitle
+                    icon={<Search size={18} />}
+                    title={t('sample.request.panel.lineTitle')}
+                  />
                   <Table
                     columns={[
-                      { title: '产品编号', dataIndex: 'product_code', render: nullableText },
-                      { title: '产品名称', dataIndex: 'product_name' },
-                      { title: '规格', dataIndex: 'specification', render: nullableText },
-                      { title: '数量', dataIndex: 'quantity', width: 90 },
-                      { title: '单位', dataIndex: 'unit', width: 80 },
-                      { title: '要求', dataIndex: 'requirement', render: nullableText },
+                      {
+                        title: t('sample.request.table.productCode'),
+                        dataIndex: 'product_code',
+                        render: nullableText,
+                      },
+                      { title: t('sample.request.table.productName'), dataIndex: 'product_name' },
+                      {
+                        title: t('sample.request.table.specification'),
+                        dataIndex: 'specification',
+                        render: nullableText,
+                      },
+                      { title: t('sample.request.table.quantity'), dataIndex: 'quantity', width: 90 },
+                      { title: t('sample.request.table.unit'), dataIndex: 'unit', width: 80 },
+                      {
+                        title: t('sample.request.table.requirement'),
+                        dataIndex: 'requirement',
+                        render: nullableText,
+                      },
                     ]}
                     dataSource={selectedRequest.lines}
                     pagination={false}
@@ -935,9 +981,9 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                 </section>
 
                 <form className="record-form compact-section" onSubmit={submitProgress}>
-                  <div className="form-divider">打样进度</div>
+                  <div className="form-divider">{t('sample.request.panel.progressTitle')}</div>
                   <label>
-                    进度阶段
+                    {t('sample.request.field.progressStage')}
                     <FormSelect
                       value={progressForm.stage}
                       onChange={(event) =>
@@ -946,13 +992,13 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                     >
                       {sampleProgressStageOptions.map((item) => (
                         <option key={item.value} value={item.value}>
-                          {item.label}
+                          {t(item.labelKey)}
                         </option>
                       ))}
                     </FormSelect>
                   </label>
                   <label>
-                    进度状态
+                    {t('sample.request.field.progressStatus')}
                     <FormSelect
                       value={progressForm.status}
                       onChange={(event) =>
@@ -961,13 +1007,13 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                     >
                       {sampleStatusOptions.map((item) => (
                         <option key={item.value} value={item.value}>
-                          {item.label}
+                          {t(item.labelKey)}
                         </option>
                       ))}
                     </FormSelect>
                   </label>
                   <label>
-                    进度日期
+                    {t('sample.request.field.progressDate')}
                     <Input
                       type="date"
                       value={progressForm.occurred_at}
@@ -977,7 +1023,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                     />
                   </label>
                   <label>
-                    进度经办人
+                    {t('sample.request.field.progressHandler')}
                     <Input
                       value={progressForm.handler_name}
                       onChange={(event) =>
@@ -986,7 +1032,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                     />
                   </label>
                   <label>
-                    进度说明
+                    {t('sample.request.field.progressNote')}
                     <Input.TextArea
                       rows={2}
                       value={progressForm.note}
@@ -996,43 +1042,63 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                     />
                   </label>
                   <Button htmlType="submit" loading={submitting} type="primary">
-                    更新打样进度
+                    {t('sample.request.action.updateProgress')}
                   </Button>
                 </form>
 
                 <Table<SampleProgress>
                   className="compact-section"
                   columns={[
-                    { title: '阶段', dataIndex: 'stage', render: sampleProgressStageLabel },
-                    { title: '状态', dataIndex: 'status', render: sampleStatusLabel },
-                    { title: '日期', dataIndex: 'occurred_at', render: formatDate },
-                    { title: '经办人', dataIndex: 'handler_name', render: nullableText },
-                    { title: '说明', dataIndex: 'note', render: nullableText },
+                    {
+                      title: t('sample.request.table.stage'),
+                      dataIndex: 'stage',
+                      render: sampleProgressStageLabel,
+                    },
+                    {
+                      title: t('sample.request.table.status'),
+                      dataIndex: 'status',
+                      render: sampleStatusLabel,
+                    },
+                    {
+                      title: t('sample.request.table.date'),
+                      dataIndex: 'occurred_at',
+                      render: formatDate,
+                    },
+                    {
+                      title: t('sample.request.table.handler'),
+                      dataIndex: 'handler_name',
+                      render: nullableText,
+                    },
+                    {
+                      title: t('sample.request.table.note'),
+                      dataIndex: 'note',
+                      render: nullableText,
+                    },
                   ]}
                   dataSource={selectedRequest.progress_events}
-                  locale={{ emptyText: '暂无进度记录' }}
+                  locale={{ emptyText: t('sample.request.panel.noProgress') }}
                   pagination={false}
                   rowKey="id"
                   size="small"
                 />
 
                 <form className="record-form compact-section" onSubmit={submitFee}>
-                  <div className="form-divider">打样费用</div>
+                  <div className="form-divider">{t('sample.request.panel.feeTitle')}</div>
                   <label>
-                    打样费用类型
+                    {t('sample.request.field.feeType')}
                     <FormSelect
                       value={feeForm.fee_type}
                       onChange={(event) => setFeeForm({ ...feeForm, fee_type: event.target.value })}
                     >
                       {sampleFeeTypeOptions.map((item) => (
                         <option key={item.value} value={item.value}>
-                          {item.label}
+                          {t(item.labelKey)}
                         </option>
                       ))}
                     </FormSelect>
                   </label>
                   <label>
-                    打样费用金额
+                    {t('sample.request.field.feeAmount')}
                     <Input
                       type="number"
                       min="0"
@@ -1042,14 +1108,14 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                     />
                   </label>
                   <label>
-                    打样费用币种
+                    {t('sample.request.field.feeCurrency')}
                     <Input
                       value={feeForm.currency}
                       onChange={(event) => setFeeForm({ ...feeForm, currency: event.target.value })}
                     />
                   </label>
                   <label>
-                    收款方类型
+                    {t('sample.request.field.payeeType')}
                     <FormSelect
                       value={feeForm.payee_type}
                       onChange={(event) =>
@@ -1058,13 +1124,13 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                     >
                       {samplePayeeTypeOptions.map((item) => (
                         <option key={item.value} value={item.value}>
-                          {item.label}
+                          {t(item.labelKey)}
                         </option>
                       ))}
                     </FormSelect>
                   </label>
                   <label>
-                    收款方名称
+                    {t('sample.request.field.payeeName')}
                     <Input
                       value={feeForm.payee_name}
                       onChange={(event) =>
@@ -1073,7 +1139,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                     />
                   </label>
                   <label>
-                    打样费用备注
+                    {t('sample.request.field.feeRemark')}
                     <Input.TextArea
                       rows={2}
                       value={feeForm.remark}
@@ -1081,14 +1147,14 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                     />
                   </label>
                   <Button htmlType="submit" loading={submitting}>
-                    登记打样费用
+                    {t('sample.request.action.registerFee')}
                   </Button>
                 </form>
 
                 {selectedRequest.fees.some((fee) => !fee.payment_request_no) ? (
                   <ApprovalAssigneeSelect
                     currentUserId={currentUser.id}
-                    label="付费审批人"
+                    label={t('sample.request.field.paymentReviewer')}
                     onChange={setPaymentReviewerId}
                     requiredPermission="finance:view"
                     value={paymentReviewerId}
@@ -1098,21 +1164,29 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                 <Table<SampleFee>
                   className="compact-section"
                   columns={[
-                    { title: '费用类型', dataIndex: 'fee_type', render: sampleFeeTypeLabel },
                     {
-                      title: '金额',
+                      title: t('sample.request.table.feeType'),
+                      dataIndex: 'fee_type',
+                      render: sampleFeeTypeLabel,
+                    },
+                    {
+                      title: t('sample.request.table.amount'),
                       dataIndex: 'amount',
                       render: (_, record) => `${record.currency} ${record.amount}`,
                     },
-                    { title: '收款方', dataIndex: 'payee_name' },
+                    { title: t('sample.request.table.payee'), dataIndex: 'payee_name' },
                     {
-                      title: '付款状态',
+                      title: t('sample.request.table.paymentStatus'),
                       dataIndex: 'payment_status',
                       render: samplePaymentStatusLabel,
                     },
-                    { title: '付款申请', dataIndex: 'payment_request_no', render: nullableText },
                     {
-                      title: '操作',
+                      title: t('sample.request.table.paymentRequest'),
+                      dataIndex: 'payment_request_no',
+                      render: nullableText,
+                    },
+                    {
+                      title: t('sample.request.table.operation'),
                       dataIndex: 'id',
                       width: 120,
                       render: (_, record) => (
@@ -1122,23 +1196,23 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                           size="small"
                           onClick={() => void submitPaymentRequest(record)}
                         >
-                          发起付款
+                          {t('sample.request.action.requestPayment')}
                         </Button>
                       ),
                     },
                   ]}
                   dataSource={selectedRequest.fees}
-                  locale={{ emptyText: '暂无打样费用' }}
+                  locale={{ emptyText: t('sample.request.panel.noFees') }}
                   pagination={false}
                   rowKey="id"
                   size="small"
                 />
 
                 <form className="record-form compact-section" onSubmit={submitRecordFromRequest}>
-                  <div className="form-divider">打样完成转样品登记</div>
+                  <div className="form-divider">{t('sample.request.panel.recordTitle')}</div>
                   <div className="form-pair three">
                     <label>
-                      样品编号
+                      {t('sample.request.field.sampleCode')}
                       <Input
                         value={recordForm.code}
                         onChange={(event) =>
@@ -1147,7 +1221,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                       />
                     </label>
                     <label>
-                      样品分类
+                      {t('sample.request.field.sampleType')}
                       <FormSelect
                         value={recordForm.sample_type}
                         onChange={(event) =>
@@ -1156,13 +1230,13 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                       >
                         {sampleRecordTypeOptions.map((item) => (
                           <option key={item.value} value={item.value}>
-                            {item.label}
+                            {t(item.labelKey)}
                           </option>
                         ))}
                       </FormSelect>
                     </label>
                     <label>
-                      收样数量
+                      {t('sample.request.field.receivedQuantity')}
                       <Input
                         type="number"
                         min="0.01"
@@ -1176,7 +1250,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                   </div>
                   <div className="form-pair three">
                     <label>
-                      收样日期
+                      {t('sample.request.field.receivedAt')}
                       <Input
                         type="date"
                         value={recordForm.received_at}
@@ -1186,7 +1260,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                       />
                     </label>
                     <label>
-                      提交日期
+                      {t('sample.request.field.submittedAt')}
                       <Input
                         type="date"
                         value={recordForm.submitted_at}
@@ -1196,7 +1270,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                       />
                     </label>
                     <label>
-                      单位
+                      {t('sample.request.field.unit')}
                       <Input
                         value={recordForm.unit}
                         onChange={(event) =>
@@ -1207,7 +1281,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                   </div>
                   <div className="form-pair two">
                     <label>
-                      客户货号
+                      {t('sample.request.field.customerSku')}
                       <Input
                         value={recordForm.customer_sku}
                         onChange={(event) =>
@@ -1216,7 +1290,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                       />
                     </label>
                     <label>
-                      供应商货号
+                      {t('sample.request.field.supplierSku')}
                       <Input
                         value={recordForm.supplier_sku}
                         onChange={(event) =>
@@ -1227,7 +1301,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                   </div>
                   <div className="form-pair two">
                     <label>
-                      采购合同标识
+                      {t('sample.request.field.purchaseContractId')}
                       <Input
                         value={recordForm.purchase_contract_id}
                         onChange={(event) =>
@@ -1236,7 +1310,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                       />
                     </label>
                     <label>
-                      采购合同号
+                      {t('sample.request.field.purchaseContractNo')}
                       <Input
                         value={recordForm.purchase_contract_no}
                         onChange={(event) =>
@@ -1246,7 +1320,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                     </label>
                   </div>
                   <label>
-                    样品说明
+                    {t('sample.request.field.description')}
                     <Input.TextArea
                       rows={2}
                       value={recordForm.description}
@@ -1261,15 +1335,15 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                     loading={submitting}
                     type="primary"
                   >
-                    转为样品登记
+                    {t('sample.request.action.convertToRecord')}
                   </Button>
                 </form>
               </>
             ) : (
               <div className="module-state panel-empty-state">
                 <FlaskConical size={28} />
-                <strong>暂无打样单</strong>
-                <span>请返回列表选择打样单查看详情</span>
+                <strong>{t('sample.request.panel.emptyTitle')}</strong>
+                <span>{t('sample.request.panel.emptyDescription')}</span>
               </div>
             )}
           </section>

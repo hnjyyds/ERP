@@ -29,14 +29,10 @@ import {
   type QualityInspectionPayload,
   type QualityInspectionStatus,
 } from '../../../api'
-import {
-  qualityIssueSeverityOptions,
-  qualityIssueStatusOptions,
-  qualityResultOptions,
-  qualityTaskStatusOptions,
-} from '../../../shared/formOptions'
+import type { LocalizedOption } from '../../../shared/formOptions'
 import { ApiError, showError, showWarningDialog } from '../../../shared/errors'
 import { FormSelect, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
+import { t, type TranslationKey } from '../../appI18n'
 import { moduleDetailPath, qualityInspectionPath } from '../../routes'
 import { emptyToNull, formatDate, nullableText, type RoutedDetailPageProps } from '../appHelpers'
 
@@ -72,11 +68,38 @@ const validationOrder: QualityTaskValidationField[] = [
   'inspector_id',
 ]
 
-const fieldLabels: Record<QualityTaskValidationField, string> = {
-  code: 'QC 任务单号',
-  purchase_contract_id: '采购合同',
-  scheduled_at: '排期时间',
-  inspector_id: '负责人',
+const qualityTaskStatusOptions: LocalizedOption[] = [
+  { value: 'pending', labelKey: 'quality.inspection.status.pending' },
+  { value: 'in_progress', labelKey: 'quality.inspection.status.inProgress' },
+  { value: 'completed', labelKey: 'quality.inspection.status.completed' },
+  { value: 'cancelled', labelKey: 'quality.inspection.status.cancelled' },
+]
+
+const qualityResultOptions: LocalizedOption[] = [
+  { value: 'passed', labelKey: 'quality.inspection.result.passed' },
+  { value: 'failed', labelKey: 'quality.inspection.result.failed' },
+  { value: 'partial_passed', labelKey: 'quality.inspection.result.partialPassed' },
+  { value: 'recheck_required', labelKey: 'quality.inspection.result.recheckRequired' },
+]
+
+const qualityIssueSeverityOptions: LocalizedOption[] = [
+  { value: 'minor', labelKey: 'quality.inspection.severity.minor' },
+  { value: 'major', labelKey: 'quality.inspection.severity.major' },
+  { value: 'critical', labelKey: 'quality.inspection.severity.critical' },
+]
+
+const qualityIssueStatusOptions: LocalizedOption[] = [
+  { value: 'open', labelKey: 'quality.inspection.issueStatus.open' },
+  { value: 'processing', labelKey: 'quality.inspection.issueStatus.processing' },
+  { value: 'resolved', labelKey: 'quality.inspection.issueStatus.resolved' },
+  { value: 'closed', labelKey: 'quality.inspection.issueStatus.resolved' },
+]
+
+const fieldLabels: Record<QualityTaskValidationField, TranslationKey> = {
+  code: 'quality.inspection.field.code',
+  purchase_contract_id: 'quality.inspection.field.contract',
+  scheduled_at: 'quality.inspection.field.scheduledAt',
+  inspector_id: 'quality.inspection.field.inspector',
 }
 
 const fieldIds: Record<QualityTaskValidationField, string> = {
@@ -131,13 +154,13 @@ function initialTaskForm(currentUser: CurrentUser): QualityTaskFormState {
 
 function validateTaskForm(form: QualityTaskFormState): QualityTaskFormErrors {
   const errors: QualityTaskFormErrors = {}
-  if (!form.code.trim()) errors.code = '请输入 QC 任务单号'
+  if (!form.code.trim()) errors.code = t('quality.inspection.validation.codeRequired')
   if (!form.purchase_contract_id.trim()) {
-    errors.purchase_contract_id = '请选择采购合同'
+    errors.purchase_contract_id = t('quality.inspection.validation.contractRequired')
   }
-  if (!form.scheduled_at) errors.scheduled_at = '请选择排期时间'
+  if (!form.scheduled_at) errors.scheduled_at = t('quality.inspection.validation.scheduledAtRequired')
   if (!form.inspector_id.trim() || !form.inspector_name.trim()) {
-    errors.inspector_id = '请选择负责人'
+    errors.inspector_id = t('quality.inspection.validation.inspectorRequired')
   }
   return errors
 }
@@ -193,7 +216,8 @@ function assignableUserOptionLabel(user: AssignableUser): string {
 }
 
 function taskStatusLabel(value: QualityInspectionStatus): string {
-  return qualityTaskStatusOptions.find((option) => option.value === value)?.label ?? value
+  const option = qualityTaskStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function taskStatusColor(value: QualityInspectionStatus): string {
@@ -204,8 +228,9 @@ function taskStatusColor(value: QualityInspectionStatus): string {
 }
 
 function resultLabel(value: string | null): string {
-  if (!value) return '未判定'
-  return qualityResultOptions.find((option) => option.value === value)?.label ?? value
+  if (!value) return t('quality.inspection.result.undetermined')
+  const option = qualityResultOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function resultColor(value: string | null): string {
@@ -217,34 +242,37 @@ function resultColor(value: string | null): string {
 }
 
 function issueSeverityLabel(value: string): string {
-  return qualityIssueSeverityOptions.find((option) => option.value === value)?.label ?? value
+  const option = qualityIssueSeverityOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function issueStatusLabel(value: string): string {
-  return qualityIssueStatusOptions.find((option) => option.value === value)?.label ?? value
+  const option = qualityIssueStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function qualityEventLabel(value: string): string {
-  const labels: Record<string, string> = {
-    created: '创建任务',
-    started: '开始查验',
-    completed: '完成查验',
-    updated: '更新任务',
-    rescheduled: '调整排期',
-    cancelled: '取消任务',
-    issue_resolved: '关闭异常',
-    reinspection_created: '发起复检',
+  const labels: Record<string, TranslationKey> = {
+    created: 'quality.inspection.event.created',
+    started: 'quality.inspection.event.started',
+    completed: 'quality.inspection.event.completed',
+    updated: 'quality.inspection.event.updated',
+    rescheduled: 'quality.inspection.event.rescheduled',
+    cancelled: 'quality.inspection.event.cancelled',
+    issue_resolved: 'quality.inspection.event.issueResolved',
+    reinspection_created: 'quality.inspection.event.reinspectionCreated',
   }
-  return labels[value] ?? value
+  const labelKey = labels[value]
+  return labelKey ? t(labelKey) : value
 }
 
 function inboundReason(inspection: QualityInspection): string {
-  if (inspection.status !== 'completed') return 'QC 任务尚未完成，暂不能入库'
-  if (inspection.result === 'passed') return 'QC 已通过'
-  if (inspection.result === 'failed') return 'QC 未通过，禁止入库'
-  if (inspection.result === 'partial_passed') return 'QC 部分通过，需按合格数量入库'
-  if (inspection.result === 'recheck_required') return 'QC 需要复检，暂缓入库'
-  return '等待 QC 判定'
+  if (inspection.status !== 'completed') return t('quality.inspection.inbound.notCompleted')
+  if (inspection.result === 'passed') return t('quality.inspection.inbound.passed')
+  if (inspection.result === 'failed') return t('quality.inspection.inbound.failed')
+  if (inspection.result === 'partial_passed') return t('quality.inspection.inbound.partialPassed')
+  if (inspection.result === 'recheck_required') return t('quality.inspection.inbound.recheckRequired')
+  return t('quality.inspection.inbound.waiting')
 }
 
 function isInspectionOverdue(inspection: QualityInspection, now = Date.now()): boolean {
@@ -258,14 +286,28 @@ function hasOpenIssue(inspection: QualityInspection): boolean {
 }
 
 function nextAction(inspection: QualityInspection): { label: string; color?: string } {
-  if (isInspectionOverdue(inspection)) return { label: '已逾期，尽快查验', color: 'error' }
-  if (hasOpenIssue(inspection)) return { label: '关闭异常', color: 'error' }
-  if (inspection.result === 'recheck_required') return { label: '整改后复检', color: 'processing' }
-  if (inspection.result === 'failed') return { label: '跟进整改', color: 'warning' }
-  if (inspection.status === 'pending') return { label: '开始查验', color: 'warning' }
-  if (inspection.status === 'in_progress') return { label: '完成查验', color: 'processing' }
-  if (inspection.status === 'completed') return { label: '查看结果', color: 'success' }
-  return { label: '查看记录' }
+  if (isInspectionOverdue(inspection)) {
+    return { label: t('quality.inspection.nextAction.overdue'), color: 'error' }
+  }
+  if (hasOpenIssue(inspection)) {
+    return { label: t('quality.inspection.nextAction.closeIssue'), color: 'error' }
+  }
+  if (inspection.result === 'recheck_required') {
+    return { label: t('quality.inspection.nextAction.reinspectAfterFix'), color: 'processing' }
+  }
+  if (inspection.result === 'failed') {
+    return { label: t('quality.inspection.nextAction.followUp'), color: 'warning' }
+  }
+  if (inspection.status === 'pending') {
+    return { label: t('quality.inspection.nextAction.start'), color: 'warning' }
+  }
+  if (inspection.status === 'in_progress') {
+    return { label: t('quality.inspection.nextAction.complete'), color: 'processing' }
+  }
+  if (inspection.status === 'completed') {
+    return { label: t('quality.inspection.nextAction.viewResult'), color: 'success' }
+  }
+  return { label: t('quality.inspection.nextAction.viewRecord') }
 }
 
 function taskPriority(inspection: QualityInspection): number {
@@ -304,7 +346,9 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
   const [reinspectionOpen, setReinspectionOpen] = useState(false)
   const [reinspectionCode, setReinspectionCode] = useState('')
   const [reinspectionSchedule, setReinspectionSchedule] = useState(defaultScheduledAt())
-  const [reinspectionReason, setReinspectionReason] = useState('')
+  const [reinspectionReason, setReinspectionReason] = useState(() =>
+    t('quality.inspection.modal.defaultReinspectionReason'),
+  )
   const [uploadingEvidence, setUploadingEvidence] = useState(false)
 
   const fetchContractOptions = useCallback(async (query: string) => {
@@ -315,7 +359,10 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
     return result.items.slice(0, 20).map((item) => ({
       value: item.id,
       label: `${item.code} / ${item.supplier_name}`,
-      description: `下单 ${item.contract_date}  交货 ${item.delivery_date}`,
+      description: t('quality.inspection.option.contractSchedule', {
+        contractDate: item.contract_date,
+        deliveryDate: item.delivery_date,
+      }),
     }))
   }, [])
 
@@ -330,7 +377,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
       suppliers.set(item.supplier_id, {
         value: item.supplier_id,
         label: item.supplier_name,
-        description: `关联已审批合同 ${item.code}`,
+        description: t('quality.inspection.option.relatedContract', { code: item.code }),
       })
     })
     return [...suppliers.values()].slice(0, 20)
@@ -346,7 +393,10 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
       return result.items.slice(0, 20).map((item) => ({
         value: item.id,
         label: `${item.code} / ${item.supplier_name}`,
-        description: `下单 ${item.contract_date}  交货 ${item.delivery_date}`,
+        description: t('quality.inspection.option.contractSchedule', {
+        contractDate: item.contract_date,
+        deliveryDate: item.delivery_date,
+      }),
       }))
     },
     [supplierFilter],
@@ -409,7 +459,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
         return result.items[0]?.id ?? null
       })
     } catch (caught) {
-      showError(caught, 'QC 任务加载失败')
+      showError(caught, t('quality.inspection.message.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -440,7 +490,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
       const result = await listAssignableUsers('quality:inspection:edit')
       setAssignableUsers(result.users)
     } catch (caught) {
-      showError(caught, '负责人列表加载失败')
+      showError(caught, t('quality.inspection.message.assigneesLoadFailed'))
     } finally {
       setAssignableUsersLoaded(true)
       setLoadingAssignableUsers(false)
@@ -452,7 +502,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
       setEligibility(await getQualityInboundEligibility(purchaseContractId))
     } catch (caught) {
       setEligibility(null)
-      showError(caught, '入库判定加载失败')
+      showError(caught, t('quality.inspection.message.eligibilityLoadFailed'))
     }
   }
 
@@ -511,8 +561,15 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
     const entries = validationOrder.filter((field) => errors[field])
     if (entries.length === 0) return
     setFieldErrors(errors)
-    const names = entries.map((field) => fieldLabels[field])
-    showWarningDialog(`请完善 ${names.length} 项信息：${names.slice(0, 3).join('、')}`)
+    const names = entries.map((field) => t(fieldLabels[field]))
+    showWarningDialog(
+      t('quality.inspection.message.validationSummary', {
+        count: names.length,
+        names: names
+          .slice(0, 3)
+          .join(t('quality.inspection.validation.separator')),
+      }),
+    )
     focusField(entries[0], true)
   }
 
@@ -527,14 +584,14 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
     try {
       const task = await createQualityInspection(taskPayload(form))
       setTaskModalOpen(false)
-      setMessage(`已创建 ${task.code}，任务已进入负责人待查验列表`)
+      setMessage(t('quality.inspection.message.created', { code: task.code }))
       await loadQualityInspections(task.id)
     } catch (caught) {
       const backendErrors = validationErrorsFromApi(caught)
       if (validationOrder.some((field) => backendErrors[field])) {
         applyValidationErrors(backendErrors)
       } else {
-        showError(caught, 'QC 任务创建失败')
+        showError(caught, t('quality.inspection.message.createFailed'))
       }
     } finally {
       setSubmitting(false)
@@ -564,7 +621,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
     event.target.value = ''
     if (!file) return
     if (!file.type.startsWith('image/')) {
-      showWarningDialog('整改凭证目前仅支持图片')
+      showWarningDialog(t('quality.inspection.message.evidenceImageOnly'))
       return
     }
     setUploadingEvidence(true)
@@ -575,7 +632,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
         { filename: uploaded.filename, url: uploaded.url, category: 'resolution' },
       ])
     } catch (caught) {
-      showError(caught, '整改凭证上传失败')
+      showError(caught, t('quality.inspection.message.evidenceUploadFailed'))
     } finally {
       setUploadingEvidence(false)
     }
@@ -584,7 +641,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
   async function submitIssueResolution(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!selectedInspection || !resolvingIssueId || !resolutionNote.trim()) {
-      showWarningDialog('请填写异常关闭说明')
+      showWarningDialog(t('quality.inspection.message.resolutionNoteRequired'))
       return
     }
     setSubmitting(true)
@@ -595,9 +652,9 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
       })
       replaceInspection(updated)
       setResolvingIssueId(null)
-      setMessage('QC 异常已关闭，可以在全部异常关闭后发起复检')
+      setMessage(t('quality.inspection.message.issueResolved'))
     } catch (caught) {
-      showError(caught, 'QC 异常关闭失败')
+      showError(caught, t('quality.inspection.message.issueResolveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -605,19 +662,19 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
 
   function openReinspection() {
     if (!selectedInspection || eligibility?.latest_inspection_id !== selectedInspection.id) {
-      showWarningDialog('仅合同最新的未通过 QC 任务可以发起复检')
+      showWarningDialog(t('quality.inspection.message.reinspectionLatestOnly'))
       return
     }
     setReinspectionCode(`QC-R-${Date.now().toString().slice(-6)}`)
     setReinspectionSchedule(defaultScheduledAt())
-    setReinspectionReason('整改完成后复检')
+    setReinspectionReason(t('quality.inspection.modal.defaultReinspectionReason'))
     setReinspectionOpen(true)
   }
 
   async function submitReinspection(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!selectedInspection || !reinspectionCode.trim() || !reinspectionReason.trim()) {
-      showWarningDialog('请完整填写复检编号、排期和原因')
+      showWarningDialog(t('quality.inspection.message.reinspectionRequired'))
       return
     }
     setSubmitting(true)
@@ -630,10 +687,10 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
       })
       setInspections((current) => [reinspection, ...current])
       setReinspectionOpen(false)
-      setMessage(`${reinspection.code} 已创建并进入负责人待查验列表`)
+      setMessage(t('quality.inspection.message.reinspectionCreated', { code: reinspection.code }))
       onNavigate(moduleDetailPath(qualityInspectionPath, reinspection.id))
     } catch (caught) {
-      showError(caught, '复检任务创建失败')
+      showError(caught, t('quality.inspection.message.reinspectionCreateFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -665,21 +722,29 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
 
   return (
     <section className="quality-inspection-page">
-      <div className="summary-strip" aria-label="QC 任务概览">
+      <div className="summary-strip" aria-label={t('quality.inspection.pageAria')}>
         <Metric
-          label="我的待处理"
+          label={t('quality.inspection.metric.myAction')}
           value={myActionCount}
           intent={myActionCount ? 'warning' : 'normal'}
         />
-        <Metric label="待查验" value={pendingCount} intent={pendingCount ? 'warning' : 'normal'} />
         <Metric
-          label="查验中"
+          label={t('quality.inspection.metric.pending')}
+          value={pendingCount}
+          intent={pendingCount ? 'warning' : 'normal'}
+        />
+        <Metric
+          label={t('quality.inspection.metric.inProgress')}
           value={inProgressCount}
           intent={inProgressCount ? 'warning' : 'normal'}
         />
-        <Metric label="已逾期" value={overdueCount} intent={overdueCount ? 'danger' : 'normal'} />
         <Metric
-          label="异常待关闭"
+          label={t('quality.inspection.metric.overdue')}
+          value={overdueCount}
+          intent={overdueCount ? 'danger' : 'normal'}
+        />
+        <Metric
+          label={t('quality.inspection.metric.openIssues')}
           value={openIssueCount}
           intent={openIssueCount ? 'danger' : 'normal'}
         />
@@ -693,7 +758,10 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title="QC 任务列表" />
+              <PanelTitle
+                icon={<Search size={18} />}
+                title={t('quality.inspection.panel.listTitle')}
+              />
             </div>
             <form
               className="inline-filters single-line-filter-toolbar"
@@ -703,47 +771,47 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
               }}
             >
               <label>
-                任务搜索
+                {t('quality.inspection.filter.search')}
                 <Input
                   value={search}
-                  placeholder="QC 单号 / 合同 / 供应商"
+                  placeholder={t('quality.inspection.filter.searchPlaceholder')}
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </label>
               <label>
-                任务状态
+                {t('quality.inspection.filter.status')}
                 <FormSelect
                   value={statusFilter}
                   onChange={(event) => setStatusFilter(event.target.value)}
                 >
-                  <option value="">全部状态</option>
+                  <option value="">{t('quality.inspection.filter.allStatuses')}</option>
                   {qualityTaskStatusOptions.map((option) => (
                     <option key={option.value} value={option.value}>
-                      {option.label}
+                      {t(option.labelKey)}
                     </option>
                   ))}
                 </FormSelect>
               </label>
               <label>
-                查验结果
+                {t('quality.inspection.filter.result')}
                 <FormSelect
                   value={resultFilter}
                   onChange={(event) => setResultFilter(event.target.value)}
                 >
-                  <option value="">全部结果</option>
+                  <option value="">{t('quality.inspection.filter.allResults')}</option>
                   {qualityResultOptions.map((option) => (
                     <option key={option.value} value={option.value}>
-                      {option.label}
+                      {t(option.labelKey)}
                     </option>
                   ))}
                 </FormSelect>
               </label>
               <label className="entity-search-filter">
-                供应商
+                {t('quality.inspection.filter.supplier')}
                 <RemoteSelect
-                  ariaLabel="供应商筛选"
+                  ariaLabel={t('quality.inspection.filter.supplierAria')}
                   fetchOptions={fetchSupplierOptions}
-                  placeholder="输入供应商编号或名称"
+                  placeholder={t('quality.inspection.filter.supplierPlaceholder')}
                   value={supplierFilter || null}
                   onChange={(value) => {
                     setSupplierFilter(value)
@@ -752,48 +820,48 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                 />
               </label>
               <label className="entity-search-filter">
-                采购合同
+                {t('quality.inspection.filter.contract')}
                 <RemoteSelect
-                  ariaLabel="采购合同筛选"
+                  ariaLabel={t('quality.inspection.filter.contractAria')}
                   fetchOptions={fetchFilterContractOptions}
-                  placeholder="输入合同号或供应商"
+                  placeholder={t('quality.inspection.filter.contractPlaceholder')}
                   value={contractFilter || null}
                   onChange={setContractFilter}
                 />
               </label>
               <label>
-                负责人范围
+                {t('quality.inspection.filter.assignee')}
                 <FormSelect
                   value={assigneeFilter}
                   onChange={(event) =>
                     setAssigneeFilter(event.target.value as QualityInspectionAssigneeFilter)
                   }
                 >
-                  <option value="all">看全部</option>
-                  <option value="mine">只看我的</option>
+                  <option value="all">{t('quality.inspection.filter.allAssignees')}</option>
+                  <option value="mine">{t('quality.inspection.filter.mine')}</option>
                 </FormSelect>
               </label>
               <div className="filter-actions">
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('quality.inspection.action.query')}
                 </Button>
                 <Button
-                  aria-label="重置筛选"
+                  aria-label={t('quality.inspection.action.resetFilters')}
                   htmlType="button"
                   icon={<RotateCcw size={16} />}
-                  title="重置筛选"
+                  title={t('quality.inspection.action.resetFilters')}
                   onClick={resetQualityInspectionFilters}
                 />
                 <Button
-                  aria-label="刷新列表"
+                  aria-label={t('quality.inspection.action.refreshList')}
                   htmlType="button"
                   icon={<RefreshCw size={16} />}
                   loading={loading}
-                  title="刷新列表"
+                  title={t('quality.inspection.action.refreshList')}
                   onClick={() => void loadQualityInspections()}
                 />
                 <Button type="primary" icon={<Plus size={16} />} onClick={startNewTask}>
-                  新增 QC 单
+                  {t('quality.inspection.action.create')}
                 </Button>
               </div>
             </form>
@@ -801,7 +869,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
             <Table<QualityInspection>
               columns={[
                 {
-                  title: 'QC 任务单号',
+                  title: t('quality.inspection.table.code'),
                   dataIndex: 'code',
                   render: (value: string, record) => (
                     <button
@@ -814,29 +882,29 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                   ),
                 },
                 {
-                  title: '任务状态',
+                  title: t('quality.inspection.table.status'),
                   dataIndex: 'status',
                   render: (value: QualityInspectionStatus) => (
                     <Tag color={taskStatusColor(value)}>{taskStatusLabel(value)}</Tag>
                   ),
                 },
                 {
-                  title: '查验结果',
+                  title: t('quality.inspection.table.result'),
                   dataIndex: 'result',
                   render: (value: string | null) => (
                     <Tag color={resultColor(value)}>{resultLabel(value)}</Tag>
                   ),
                 },
-                { title: '采购合同', dataIndex: 'purchase_contract_no' },
-                { title: '供应商', dataIndex: 'supplier_name' },
-                { title: '负责人', dataIndex: 'inspector_name' },
+                { title: t('quality.inspection.table.contract'), dataIndex: 'purchase_contract_no' },
+                { title: t('quality.inspection.table.supplier'), dataIndex: 'supplier_name' },
+                { title: t('quality.inspection.table.inspector'), dataIndex: 'inspector_name' },
                 {
-                  title: '排期时间',
+                  title: t('quality.inspection.table.scheduledAt'),
                   dataIndex: 'scheduled_at',
                   render: formatScheduledAt,
                 },
                 {
-                  title: '下一步',
+                  title: t('quality.inspection.table.nextAction'),
                   key: 'next-action',
                   render: (_: unknown, record) => {
                     const action = nextAction(record)
@@ -844,12 +912,12 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                   },
                 },
                 {
-                  title: '入口',
+                  title: t('quality.inspection.table.entry'),
                   key: 'detail',
                   width: 110,
                   render: (_: unknown, record) => (
                     <Button size="small" onClick={(event) => openDetail(event, record)}>
-                      查看详情
+                      {t('quality.inspection.action.viewDetail')}
                     </Button>
                   ),
                 },
@@ -870,7 +938,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
           centered
           footer={null}
           open={taskModalOpen}
-          title="新增 QC 任务"
+          title={t('quality.inspection.modal.createTitle')}
           width={860}
           onCancel={() => {
             setFieldErrors({})
@@ -879,12 +947,15 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
         >
           <div className="workflow-modal-content entity-modal-form">
             <div className="panel-heading quality-form-heading">
-              <PanelTitle icon={<ShieldCheck size={18} />} title="建立 QC 任务" />
+              <PanelTitle
+                icon={<ShieldCheck size={18} />}
+                title={t('quality.inspection.modal.formHeading')}
+              />
             </div>
             <Alert
               showIcon
-              title="这里只建立任务，不填写查验结果"
-              description="负责人将在“我的 QC 任务”中开始查验并登记结果。"
+              title={t('quality.inspection.modal.noticeTitle')}
+              description={t('quality.inspection.modal.noticeDescription')}
               type="info"
             />
             <form className="record-form" noValidate onSubmit={createTask}>
@@ -896,22 +967,27 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                       {validationEntries.map(({ field, message: errorMessage }) => (
                         <li key={field}>
                           <button type="button" onClick={() => focusField(field)}>
-                            {fieldLabels[field]}：{errorMessage}
+                            {t('quality.inspection.validation.item', {
+                              field: t(fieldLabels[field]),
+                              message: errorMessage,
+                            })}
                           </button>
                         </li>
                       ))}
                     </ul>
                   }
                   showIcon
-                  title={`请完善以下 ${validationEntries.length} 项信息`}
+                  title={t('quality.inspection.validation.summaryTitle', {
+                    count: validationEntries.length,
+                  })}
                   type="error"
                 />
               ) : null}
 
-              <div className="form-divider">任务信息</div>
+              <div className="form-divider">{t('quality.inspection.modal.taskSection')}</div>
               <div className="form-pair two">
                 <label htmlFor="quality-code">
-                  <RequiredFieldLabel>QC 任务单号</RequiredFieldLabel>
+                  <RequiredFieldLabel>{t('quality.inspection.field.code')}</RequiredFieldLabel>
                   <Input
                     aria-describedby={fieldErrors.code ? 'quality-code-error' : undefined}
                     aria-invalid={Boolean(fieldErrors.code)}
@@ -924,16 +1000,16 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                   <FieldError field="code" message={fieldErrors.code} />
                 </label>
                 <label htmlFor="quality-contract-id">
-                  <RequiredFieldLabel>采购合同</RequiredFieldLabel>
+                  <RequiredFieldLabel>{t('quality.inspection.field.contract')}</RequiredFieldLabel>
                   <RemoteSelect
                     ariaDescribedBy={
                       fieldErrors.purchase_contract_id ? 'quality-contract-id-error' : undefined
                     }
                     ariaInvalid={Boolean(fieldErrors.purchase_contract_id)}
-                    ariaLabel="采购合同"
+                    ariaLabel={t('quality.inspection.field.contract')}
                     fetchOptions={fetchContractOptions}
                     id="quality-contract-id"
-                    placeholder="输入合同号或供应商搜索"
+                    placeholder={t('quality.inspection.modal.contractPlaceholder')}
                     required
                     status={fieldErrors.purchase_contract_id ? 'error' : undefined}
                     value={form.purchase_contract_id || null}
@@ -948,7 +1024,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
 
               <div className="form-pair two">
                 <label htmlFor="quality-scheduled-at">
-                  <RequiredFieldLabel>排期时间</RequiredFieldLabel>
+                  <RequiredFieldLabel>{t('quality.inspection.field.scheduledAt')}</RequiredFieldLabel>
                   <Input
                     aria-describedby={
                       fieldErrors.scheduled_at ? 'quality-scheduled-at-error' : undefined
@@ -964,19 +1040,27 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                   <FieldError field="scheduled_at" message={fieldErrors.scheduled_at} />
                 </label>
                 <label htmlFor="quality-inspector-id">
-                  <RequiredFieldLabel>负责人</RequiredFieldLabel>
+                  <RequiredFieldLabel>{t('quality.inspection.field.inspector')}</RequiredFieldLabel>
                   <Select
                     aria-describedby={
                       fieldErrors.inspector_id ? 'quality-inspector-id-error' : undefined
                     }
                     aria-invalid={Boolean(fieldErrors.inspector_id)}
-                    aria-label="负责人"
+                    aria-label={t('quality.inspection.field.inspector')}
                     aria-required="true"
                     id="quality-inspector-id"
                     loading={loadingAssignableUsers}
-                    notFoundContent={loadingAssignableUsers ? '加载人员中' : '暂无可选员工'}
+                    notFoundContent={
+                      loadingAssignableUsers
+                        ? t('quality.inspection.modal.inspectorLoading')
+                        : t('quality.inspection.modal.inspectorEmpty')
+                    }
                     optionFilterProp="label"
-                    placeholder={loadingAssignableUsers ? '正在加载员工' : '请选择系统员工'}
+                    placeholder={
+                      loadingAssignableUsers
+                        ? t('quality.inspection.modal.inspectorPlaceholderLoading')
+                        : t('quality.inspection.modal.inspectorPlaceholder')
+                    }
                     showSearch
                     status={fieldErrors.inspector_id ? 'error' : undefined}
                     value={form.inspector_id || undefined}
@@ -987,10 +1071,10 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                       <Select.Option
                         key={form.inspector_id}
                         disabled
-                        label={`${form.inspector_name} / 当前用户`}
+                        label={`${form.inspector_name} / ${t('quality.inspection.field.currentUser')}`}
                         value={form.inspector_id}
                       >
-                        {form.inspector_name} / 当前用户
+                        {form.inspector_name} / {t('quality.inspection.field.currentUser')}
                       </Select.Option>
                     ) : null}
                     {assignableUsers.map((user) => {
@@ -1007,10 +1091,10 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
               </div>
 
               <label htmlFor="quality-task-note">
-                任务说明
+                {t('quality.inspection.field.taskNote')}
                 <Input.TextArea
                   id="quality-task-note"
-                  placeholder="例如：验货地址、重点检查项、供应商联系人"
+                  placeholder={t('quality.inspection.modal.taskNotePlaceholder')}
                   rows={3}
                   value={form.task_note}
                   onChange={(event) =>
@@ -1019,7 +1103,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                 />
               </label>
               <label htmlFor="quality-attachment-group">
-                附件组
+                {t('quality.inspection.field.attachmentGroup')}
                 <Input
                   id="quality-attachment-group"
                   value={form.attachment_group_id}
@@ -1033,7 +1117,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
               </label>
 
               <Button htmlType="submit" loading={submitting} type="primary">
-                创建 QC 任务
+                {t('quality.inspection.modal.submitCreate')}
               </Button>
             </form>
           </div>
@@ -1042,12 +1126,15 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<LayoutDashboard size={18} />} title="QC 任务详情" />
+              <PanelTitle
+                icon={<LayoutDashboard size={18} />}
+                title={t('quality.inspection.panel.detailTitle')}
+              />
               <Button
                 icon={<ArrowLeft size={16} />}
                 onClick={() => onNavigate(qualityInspectionPath)}
               >
-                返回列表
+                {t('quality.inspection.action.backToList')}
               </Button>
             </div>
             {selectedInspection ? (
@@ -1059,9 +1146,10 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                 >
                   <strong>{eligibility?.reason ?? inboundReason(selectedInspection)}</strong>
                   <span>
-                    任务状态：{taskStatusLabel(selectedInspection.status)}
-                    {' / '}
-                    查验结果：{resultLabel(selectedInspection.result)}
+                    {t('quality.inspection.panel.taskSummary', {
+                      status: taskStatusLabel(selectedInspection.status),
+                      result: resultLabel(selectedInspection.result),
+                    })}
                   </span>
                 </div>
                 {selectedInspection.status === 'completed' &&
@@ -1077,22 +1165,22 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                             icon={<RotateCcw size={16} />}
                             title={
                               selectedInspection.issues.some((issue) => issue.status !== 'resolved')
-                                ? '请先关闭全部异常'
-                                : '创建新的复检任务'
+                                ? t('quality.inspection.action.closeIssuesFirst')
+                                : t('quality.inspection.action.createReinspectionHint')
                             }
                             type="primary"
                             onClick={openReinspection}
                           >
-                            发起复检
+                            {t('quality.inspection.action.reinspection')}
                           </Button>
                           {selectedInspection.issues.some(
                             (issue) => issue.status !== 'resolved',
                           ) ? (
-                            <span>关闭全部异常后才能发起复检</span>
+                            <span>{t('quality.inspection.panel.reinspectionBlocked')}</span>
                           ) : null}
                         </>
                       ) : (
-                        <span>该任务不是合同最新 QC，不能重复发起复检</span>
+                        <span>{t('quality.inspection.panel.reinspectionNotLatest')}</span>
                       )}
                     </div>
                   )
@@ -1100,76 +1188,84 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
 
                 <dl className="detail-list">
                   <div>
-                    <dt>QC 任务单号</dt>
+                    <dt>{t('quality.inspection.field.code')}</dt>
                     <dd>{selectedInspection.code}</dd>
                   </div>
                   <div>
-                    <dt>任务状态</dt>
+                    <dt>{t('quality.inspection.field.status')}</dt>
                     <dd>{taskStatusLabel(selectedInspection.status)}</dd>
                   </div>
                   <div>
-                    <dt>排期时间</dt>
+                    <dt>{t('quality.inspection.field.scheduledAt')}</dt>
                     <dd>{formatScheduledAt(selectedInspection.scheduled_at)}</dd>
                   </div>
                   <div>
-                    <dt>负责人</dt>
+                    <dt>{t('quality.inspection.field.inspector')}</dt>
                     <dd>{selectedInspection.inspector_name}</dd>
                   </div>
                   <div>
-                    <dt>采购合同</dt>
+                    <dt>{t('quality.inspection.field.contract')}</dt>
                     <dd>{selectedInspection.purchase_contract_no}</dd>
                   </div>
                   <div>
-                    <dt>供应商</dt>
+                    <dt>{t('quality.inspection.field.supplier')}</dt>
                     <dd>{selectedInspection.supplier_name}</dd>
                   </div>
                   <div>
-                    <dt>实际查验日期</dt>
+                    <dt>{t('quality.inspection.field.actualInspectedAt')}</dt>
                     <dd>
                       {selectedInspection.inspected_at
                         ? formatDate(selectedInspection.inspected_at)
-                        : '未开始'}
+                        : t('quality.inspection.panel.notStarted')}
                     </dd>
                   </div>
                   <div>
-                    <dt>查验结果</dt>
+                    <dt>{t('quality.inspection.field.result')}</dt>
                     <dd>{resultLabel(selectedInspection.result)}</dd>
                   </div>
                   <div>
-                    <dt>任务说明</dt>
+                    <dt>{t('quality.inspection.field.taskNote')}</dt>
                     <dd>{nullableText(selectedInspection.issue_summary)}</dd>
                   </div>
                   <div>
-                    <dt>附件组</dt>
+                    <dt>{t('quality.inspection.field.attachmentGroup')}</dt>
                     <dd>{nullableText(selectedInspection.attachment_group_id)}</dd>
                   </div>
                   {selectedInspection.parent_inspection_id ? (
                     <div>
-                      <dt>复检来源</dt>
-                      <dd>第 {selectedInspection.reinspection_no ?? 1} 次复检</dd>
+                      <dt>{t('quality.inspection.field.reinspectionSource')}</dt>
+                      <dd>
+                        {t('quality.inspection.panel.reinspectionAttempt', {
+                          no: selectedInspection.reinspection_no ?? 1,
+                        })}
+                      </dd>
                     </div>
                   ) : null}
                   {selectedInspection.cancel_reason ? (
                     <div>
-                      <dt>取消原因</dt>
+                      <dt>{t('quality.inspection.field.cancelReason')}</dt>
                       <dd>{selectedInspection.cancel_reason}</dd>
                     </div>
                   ) : null}
                 </dl>
 
                 <div className="accessory-heading">
-                  <strong>商品查验明细</strong>
-                  <span>{selectedInspection.lines.length} 行</span>
+                  <strong>{t('quality.inspection.panel.linesTitle')}</strong>
+                  <span>
+                    {t('quality.inspection.panel.linesCount', {
+                      count: selectedInspection.lines.length,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>商品</th>
-                      <th>查验数量</th>
-                      <th>不良数量</th>
-                      <th>单位</th>
-                      <th>结果</th>
-                      <th>备注</th>
+                      <th>{t('quality.inspection.table.product')}</th>
+                      <th>{t('quality.inspection.table.inspectedQuantity')}</th>
+                      <th>{t('quality.inspection.table.failedQuantity')}</th>
+                      <th>{t('quality.inspection.table.unit')}</th>
+                      <th>{t('quality.inspection.table.lineResult')}</th>
+                      <th>{t('quality.inspection.table.remark')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1186,7 +1282,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                     {selectedInspection.lines.length === 0 ? (
                       <tr>
                         <td className="empty-cell" colSpan={6}>
-                          任务尚未完成，暂无查验明细
+                          {t('quality.inspection.panel.linesEmpty')}
                         </td>
                       </tr>
                     ) : null}
@@ -1194,19 +1290,23 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                 </table>
 
                 <div className="accessory-heading">
-                  <strong>异常问题</strong>
-                  <span>{selectedInspection.issues.length} 条</span>
+                  <strong>{t('quality.inspection.panel.issuesTitle')}</strong>
+                  <span>
+                    {t('quality.inspection.panel.issuesCount', {
+                      count: selectedInspection.issues.length,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>类型</th>
-                      <th>严重度</th>
-                      <th>描述</th>
-                      <th>整改</th>
-                      <th>状态</th>
-                      <th>关闭说明</th>
-                      <th>操作</th>
+                      <th>{t('quality.inspection.table.issueType')}</th>
+                      <th>{t('quality.inspection.table.severity')}</th>
+                      <th>{t('quality.inspection.table.description')}</th>
+                      <th>{t('quality.inspection.table.rectification')}</th>
+                      <th>{t('quality.inspection.table.issueStatus')}</th>
+                      <th>{t('quality.inspection.table.resolutionNote')}</th>
+                      <th>{t('quality.inspection.table.operation')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1225,10 +1325,13 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                               size="small"
                               onClick={() => openIssueResolution(issue.id)}
                             >
-                              关闭异常
+                              {t('quality.inspection.action.closeIssue')}
                             </Button>
                           ) : (
-                            <span>{issue.resolved_by_name ?? '已关闭'}</span>
+                            <span>
+                              {issue.resolved_by_name ??
+                                t('quality.inspection.panel.issueClosed')}
+                            </span>
                           )}
                         </td>
                       </tr>
@@ -1236,7 +1339,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                     {selectedInspection.issues.length === 0 ? (
                       <tr>
                         <td className="empty-cell" colSpan={7}>
-                          暂无异常问题
+                          {t('quality.inspection.panel.issuesEmpty')}
                         </td>
                       </tr>
                     ) : null}
@@ -1244,33 +1347,45 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                 </table>
 
                 <div className="accessory-heading">
-                  <strong>凭证附件</strong>
-                  <span>{selectedInspection.attachments?.length ?? 0} 个</span>
+                  <strong>{t('quality.inspection.panel.attachmentsTitle')}</strong>
+                  <span>
+                    {t('quality.inspection.panel.attachmentsCount', {
+                      count: selectedInspection.attachments?.length ?? 0,
+                    })}
+                  </span>
                 </div>
                 <div className="quality-attachment-list">
                   {(selectedInspection.attachments ?? []).map((attachment) => (
                     <a href={attachment.url} key={attachment.id} rel="noreferrer" target="_blank">
                       <Paperclip size={14} />
                       {attachment.filename}
-                      <Tag>{attachment.category === 'resolution' ? '整改' : '查验'}</Tag>
+                      <Tag>
+                        {attachment.category === 'resolution'
+                          ? t('quality.inspection.panel.attachmentResolution')
+                          : t('quality.inspection.panel.attachmentInspection')}
+                      </Tag>
                     </a>
                   ))}
                   {(selectedInspection.attachments?.length ?? 0) === 0 ? (
-                    <span>暂无凭证附件</span>
+                    <span>{t('quality.inspection.panel.attachmentsEmpty')}</span>
                   ) : null}
                 </div>
 
                 <div className="accessory-heading">
-                  <strong>任务审计记录</strong>
-                  <span>{selectedInspection.events?.length ?? 0} 条</span>
+                  <strong>{t('quality.inspection.panel.eventsTitle')}</strong>
+                  <span>
+                    {t('quality.inspection.panel.eventsCount', {
+                      count: selectedInspection.events?.length ?? 0,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>时间</th>
-                      <th>动作</th>
-                      <th>操作人</th>
-                      <th>说明</th>
+                      <th>{t('quality.inspection.field.performedAt')}</th>
+                      <th>{t('quality.inspection.table.action')}</th>
+                      <th>{t('quality.inspection.field.actor')}</th>
+                      <th>{t('quality.inspection.field.notes')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1285,7 +1400,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                     {(selectedInspection.events?.length ?? 0) === 0 ? (
                       <tr>
                         <td className="empty-cell" colSpan={4}>
-                          暂无审计记录
+                          {t('quality.inspection.panel.eventsEmpty')}
                         </td>
                       </tr>
                     ) : null}
@@ -1295,8 +1410,8 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
             ) : (
               <div className="module-state panel-empty-state">
                 <ShieldCheck size={28} />
-                <strong>暂无 QC 任务</strong>
-                <span>请返回列表选择任务查看详情</span>
+                <strong>{t('quality.inspection.panel.emptyTitle')}</strong>
+                <span>{t('quality.inspection.panel.emptyDescription')}</span>
               </div>
             )}
           </section>
@@ -1307,14 +1422,14 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
         centered
         footer={null}
         open={Boolean(resolvingIssueId)}
-        title="关闭 QC 异常"
+        title={t('quality.inspection.modal.resolveTitle')}
         width={620}
         onCancel={() => setResolvingIssueId(null)}
       >
         <form className="record-form" onSubmit={submitIssueResolution}>
-          <Alert showIcon title="请确认整改已经完成，并填写可追溯的关闭说明" type="warning" />
+          <Alert showIcon title={t('quality.inspection.modal.resolveNotice')} type="warning" />
           <label htmlFor="quality-resolution-note">
-            <RequiredFieldLabel>关闭说明</RequiredFieldLabel>
+            <RequiredFieldLabel>{t('quality.inspection.field.resolutionNote')}</RequiredFieldLabel>
             <Input.TextArea
               id="quality-resolution-note"
               required
@@ -1324,10 +1439,10 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
             />
           </label>
           <label className="quality-file-upload" htmlFor="quality-resolution-evidence">
-            整改图片
+            {t('quality.inspection.modal.evidenceLabel')}
             <input
               accept="image/*"
-              aria-label="上传整改图片"
+              aria-label={t('quality.inspection.modal.evidenceAria')}
               id="quality-resolution-evidence"
               type="file"
               onChange={(event) => void uploadResolutionEvidence(event)}
@@ -1340,10 +1455,12 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                 {attachment.filename}
               </a>
             ))}
-            {uploadingEvidence ? <span>正在上传整改凭证...</span> : null}
+            {uploadingEvidence ? (
+              <span>{t('quality.inspection.modal.uploadingEvidence')}</span>
+            ) : null}
           </div>
           <Button htmlType="submit" loading={submitting} type="primary">
-            确认关闭异常
+            {t('quality.inspection.modal.submitResolve')}
           </Button>
         </form>
       </Modal>
@@ -1352,14 +1469,14 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
         centered
         footer={null}
         open={reinspectionOpen}
-        title="发起 QC 复检"
+        title={t('quality.inspection.modal.reinspectionTitle')}
         width={620}
         onCancel={() => setReinspectionOpen(false)}
       >
         <form className="record-form" onSubmit={submitReinspection}>
-          <Alert showIcon title="复检会生成一个新的待执行 QC 任务" type="info" />
+          <Alert showIcon title={t('quality.inspection.modal.reinspectionNotice')} type="info" />
           <label htmlFor="quality-reinspection-code">
-            <RequiredFieldLabel>复检任务单号</RequiredFieldLabel>
+            <RequiredFieldLabel>{t('quality.inspection.field.reinspectionCode')}</RequiredFieldLabel>
             <Input
               id="quality-reinspection-code"
               required
@@ -1368,7 +1485,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
             />
           </label>
           <label htmlFor="quality-reinspection-schedule">
-            <RequiredFieldLabel>复检排期</RequiredFieldLabel>
+            <RequiredFieldLabel>{t('quality.inspection.field.reinspectionSchedule')}</RequiredFieldLabel>
             <Input
               id="quality-reinspection-schedule"
               required
@@ -1378,7 +1495,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
             />
           </label>
           <label htmlFor="quality-reinspection-reason">
-            <RequiredFieldLabel>复检原因</RequiredFieldLabel>
+            <RequiredFieldLabel>{t('quality.inspection.field.reinspectionReason')}</RequiredFieldLabel>
             <Input.TextArea
               id="quality-reinspection-reason"
               required
@@ -1388,7 +1505,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
             />
           </label>
           <Button htmlType="submit" loading={submitting} type="primary">
-            创建复检任务
+            {t('quality.inspection.modal.submitReinspection')}
           </Button>
         </form>
       </Modal>
@@ -1400,7 +1517,7 @@ async function readFileAsDataUrl(file: File): Promise<string> {
   return await new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => resolve(String(reader.result))
-    reader.onerror = () => reject(reader.error ?? new Error('文件读取失败'))
+    reader.onerror = () => reject(reader.error ?? new Error(t('quality.inspection.message.fileReadFailed')))
     reader.readAsDataURL(file)
   })
 }
