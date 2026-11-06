@@ -241,7 +241,10 @@ export async function login(username: string, password: string): Promise<AuthSes
 
   const response = await fetch(`${apiBaseUrl}/auth/login`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept-Language': getRuntimeSettings().language,
+    },
     body: JSON.stringify({ username: nextUsername, password }),
   })
 

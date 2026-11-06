@@ -3,6 +3,7 @@ import {
   friendlyMessageFor,
   type ApiErrorDetail,
 } from '../shared/errors'
+import { getRuntimeSettings } from '../app/pages/appHelpers'
 
 export interface ApiResponse<T> {
   success: boolean
@@ -70,6 +71,7 @@ export async function request<T>(path: string, init: RequestInit = {}): Promise<
     ...init,
     headers: {
       'Content-Type': 'application/json',
+      'Accept-Language': getRuntimeSettings().language,
       ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
       ...(init.headers ?? {}),
     },

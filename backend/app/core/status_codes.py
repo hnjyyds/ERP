@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from enum import StrEnum
 
+from app.core.messages import status_message_key, translate
+
 
 class AppStatusCode(StrEnum):
     SUCCESS = "SUCCESS"
@@ -32,119 +34,124 @@ class StatusCodeDefinition:
     description: str
 
 
+def _zh_message(code: AppStatusCode) -> str:
+    """注册表保存稳定中文基准文案，运行时再按请求语言渲染。"""
+    return translate(status_message_key(code.value), "zh-CN")
+
+
 STATUS_CODE_REGISTRY: dict[AppStatusCode, StatusCodeDefinition] = {
     AppStatusCode.SUCCESS: StatusCodeDefinition(
         code=AppStatusCode.SUCCESS,
         http_status=200,
-        default_message="请求成功",
+        default_message=_zh_message(AppStatusCode.SUCCESS),
         description="通用成功响应，适用于查询、更新和删除等已完成的请求。",
     ),
     AppStatusCode.CREATED: StatusCodeDefinition(
         code=AppStatusCode.CREATED,
         http_status=201,
-        default_message="创建成功",
+        default_message=_zh_message(AppStatusCode.CREATED),
         description="资源已成功创建，例如新增用户、单据、日程或业务资料。",
     ),
     AppStatusCode.ACCEPTED: StatusCodeDefinition(
         code=AppStatusCode.ACCEPTED,
         http_status=202,
-        default_message="请求已接受",
+        default_message=_zh_message(AppStatusCode.ACCEPTED),
         description="请求已被接收但尚未完成，适用于异步任务或后台处理流程。",
     ),
     AppStatusCode.NO_CONTENT: StatusCodeDefinition(
         code=AppStatusCode.NO_CONTENT,
         http_status=204,
-        default_message="无返回内容",
+        default_message=_zh_message(AppStatusCode.NO_CONTENT),
         description="请求已成功处理且无需返回业务数据。",
     ),
     AppStatusCode.BAD_REQUEST: StatusCodeDefinition(
         code=AppStatusCode.BAD_REQUEST,
         http_status=400,
-        default_message="请求参数错误",
+        default_message=_zh_message(AppStatusCode.BAD_REQUEST),
         description="请求格式或基础参数不符合接口要求，服务端无法继续处理。",
     ),
     AppStatusCode.MISSING_CREDENTIALS: StatusCodeDefinition(
         code=AppStatusCode.MISSING_CREDENTIALS,
         http_status=401,
-        default_message="缺少登录凭证",
+        default_message=_zh_message(AppStatusCode.MISSING_CREDENTIALS),
         description="请求未携带 Bearer token 或 token 为空，需要先登录。",
     ),
     AppStatusCode.INVALID_CREDENTIALS: StatusCodeDefinition(
         code=AppStatusCode.INVALID_CREDENTIALS,
         http_status=401,
-        default_message="用户名或密码错误",
+        default_message=_zh_message(AppStatusCode.INVALID_CREDENTIALS),
         description="登录账号或密码不正确，不能返回更细的账号存在性信息。",
     ),
     AppStatusCode.TOKEN_EXPIRED: StatusCodeDefinition(
         code=AppStatusCode.TOKEN_EXPIRED,
         http_status=401,
-        default_message="登录已失效",
+        default_message=_zh_message(AppStatusCode.TOKEN_EXPIRED),
         description="登录 token 无效、过期或无法解析，需要重新登录。",
     ),
     AppStatusCode.UNAUTHORIZED: StatusCodeDefinition(
         code=AppStatusCode.UNAUTHORIZED,
         http_status=401,
-        default_message="未认证",
+        default_message=_zh_message(AppStatusCode.UNAUTHORIZED),
         description="通用未认证错误，适用于没有更具体认证原因的 401 响应。",
     ),
     AppStatusCode.PERMISSION_DENIED: StatusCodeDefinition(
         code=AppStatusCode.PERMISSION_DENIED,
         http_status=403,
-        default_message="无权限执行该操作",
+        default_message=_zh_message(AppStatusCode.PERMISSION_DENIED),
         description="用户已登录，但当前角色或权限不足以访问目标资源或操作。",
     ),
     AppStatusCode.NOT_FOUND: StatusCodeDefinition(
         code=AppStatusCode.NOT_FOUND,
         http_status=404,
-        default_message="资源不存在",
+        default_message=_zh_message(AppStatusCode.NOT_FOUND),
         description="目标资源、业务单据、用户或配置不存在，或当前用户不可见。",
     ),
     AppStatusCode.METHOD_NOT_ALLOWED: StatusCodeDefinition(
         code=AppStatusCode.METHOD_NOT_ALLOWED,
         http_status=405,
-        default_message="请求方法不允许",
+        default_message=_zh_message(AppStatusCode.METHOD_NOT_ALLOWED),
         description="接口路径存在，但当前 HTTP 方法不被该接口支持。",
     ),
     AppStatusCode.CONFLICT: StatusCodeDefinition(
         code=AppStatusCode.CONFLICT,
         http_status=409,
-        default_message="资源状态冲突",
+        default_message=_zh_message(AppStatusCode.CONFLICT),
         description="请求与当前业务状态冲突，例如用户名重复或不能操作当前账号。",
     ),
     AppStatusCode.VALIDATION_ERROR: StatusCodeDefinition(
         code=AppStatusCode.VALIDATION_ERROR,
         http_status=422,
-        default_message="请求参数校验失败",
+        default_message=_zh_message(AppStatusCode.VALIDATION_ERROR),
         description="请求体、路径参数或查询参数未通过 schema 校验。",
     ),
     AppStatusCode.BUSINESS_ERROR: StatusCodeDefinition(
         code=AppStatusCode.BUSINESS_ERROR,
         http_status=400,
-        default_message="业务规则不满足",
+        default_message=_zh_message(AppStatusCode.BUSINESS_ERROR),
         description="请求语义正确，但不满足当前业务规则或流程约束。",
     ),
     AppStatusCode.TOO_MANY_REQUESTS: StatusCodeDefinition(
         code=AppStatusCode.TOO_MANY_REQUESTS,
         http_status=429,
-        default_message="请求过于频繁",
+        default_message=_zh_message(AppStatusCode.TOO_MANY_REQUESTS),
         description="请求频率超过系统限制，需要稍后重试。",
     ),
     AppStatusCode.SERVER_ERROR: StatusCodeDefinition(
         code=AppStatusCode.SERVER_ERROR,
         http_status=500,
-        default_message="系统异常",
+        default_message=_zh_message(AppStatusCode.SERVER_ERROR),
         description="服务端发生未预期异常，需要记录日志并由开发或运维排查。",
     ),
     AppStatusCode.SERVICE_UNAVAILABLE: StatusCodeDefinition(
         code=AppStatusCode.SERVICE_UNAVAILABLE,
         http_status=503,
-        default_message="服务暂不可用",
+        default_message=_zh_message(AppStatusCode.SERVICE_UNAVAILABLE),
         description="服务维护、依赖不可用或容量不足导致暂时无法处理请求。",
     ),
     AppStatusCode.GATEWAY_TIMEOUT: StatusCodeDefinition(
         code=AppStatusCode.GATEWAY_TIMEOUT,
         http_status=504,
-        default_message="网关超时",
+        default_message=_zh_message(AppStatusCode.GATEWAY_TIMEOUT),
         description="上游或外部服务在限定时间内未响应。",
     ),
 }
@@ -184,5 +191,9 @@ def resolve_error_code(http_status: int, detail: object | None = None) -> AppSta
 
 def resolve_error_message(code: AppStatusCode, detail: object | None = None) -> str:
     if isinstance(detail, str) and detail.strip():
-        return detail.strip()
-    return get_status_definition(code).default_message
+        text = detail.strip()
+        known_code = DETAIL_MESSAGE_CODES.get(text)
+        if known_code is not None:
+            return translate(status_message_key(known_code.value))
+        return text
+    return translate(status_message_key(code.value))

@@ -2,6 +2,8 @@ from typing import NoReturn
 
 from fastapi import HTTPException, status
 
+from app.core.messages import translate
+
 
 def raise_bad_request(detail: str, *, cause: BaseException | None = None) -> NoReturn:
     raise HTTPException(
@@ -48,8 +50,8 @@ def raise_unprocessable(detail: str, *, cause: BaseException | None = None) -> N
 def raise_business_validation(
     exc: ValueError,
     *,
-    fallback_detail: str = "业务数据无效",
+    fallback_detail: str | None = None,
 ) -> NoReturn:
     """把服务层业务校验错误稳定映射为可理解的 422 响应。"""
-    detail = str(exc).strip() or fallback_detail
+    detail = str(exc).strip() or fallback_detail or translate("error.business_data_invalid")
     raise_unprocessable(detail, cause=exc)

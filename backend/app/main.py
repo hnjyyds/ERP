@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.api.error_handlers import register_error_handlers
+from app.api.language import LanguageMiddleware
 from app.api.pagination import PaginationMiddleware, configure_pagination_openapi
 from app.api.request_logging import RequestLoggingMiddleware
 from app.api.v1.router import api_router
@@ -98,6 +99,8 @@ def create_app(
         slow_request_ms=settings.log_slow_request_ms,
         log_health_requests=settings.log_health_requests,
     )
+    # 语言协商位于最外层，保证日志与异常处理阶段都能拿到当前请求语言。
+    app.add_middleware(LanguageMiddleware)
     app.include_router(api_router, prefix=settings.api_v1_prefix)
     configure_pagination_openapi(app)
     upload_dir = Path(settings.upload_dir)

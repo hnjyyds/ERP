@@ -9,6 +9,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.types import HTTPExceptionHandler
 
 from app.core.logging import get_request_id
+from app.core.messages import status_message_key, translate
 from app.core.status_codes import (
     AppStatusCode,
     get_status_definition,
@@ -19,61 +20,61 @@ from app.schemas.responses import ErrorResponse, ValidationIssue
 
 _http_logger = logging.getLogger("app.http")
 
-_MODULE_ENTITY_LABELS = {
-    "finance.fee_payments": "合作方费用付款",
-    "finance.misc_fees": "杂费",
-    "finance.payments": "付款",
-    "finance.port_data": "口岸数据",
-    "finance.receipts": "收款",
-    "finance.reimbursements": "报销单",
-    "finance.settlements": "财务结算",
-    "finance.tax_refunds": "退税单据",
-    "followup": "跟单任务",
-    "masterdata.customers": "客户",
-    "masterdata.document_parties": "单证主体",
-    "masterdata.partners": "合作方",
-    "masterdata.products": "商品",
-    "masterdata.suppliers": "供应商",
-    "purchase.contracts": "采购合同",
-    "purchase.inquiries": "采购询价",
-    "purchase.invoice_notices": "采购开票通知",
-    "quality.inspections": "QC 任务",
-    "sales.contracts": "出口合同",
-    "sales.quotations": "出口报价",
-    "sales.shipments": "出运计划",
-    "sample.deliveries": "寄样单",
-    "sample.records": "样品登记",
-    "sample.requests": "寄样申请",
-    "system.company": "公司信息",
-    "system.auth": "组织管理",
-    "system.dashboard": "工作台任务",
-    "system.files": "文件",
-    "system.mcp_settings": "MCP 配置",
-    "system.printing": "打印单据",
-    "warehouse.inbound_orders": "入库单",
-    "warehouse.inbound_plans": "入库计划",
-    "warehouse.outbound_orders": "出库单",
-    "warehouse.outbound_plans": "出库计划",
+_MODULE_ENTITY_KEYS = {
+    "finance.fee_payments": "entity.finance.fee_payments",
+    "finance.misc_fees": "entity.finance.misc_fees",
+    "finance.payments": "entity.finance.payments",
+    "finance.port_data": "entity.finance.port_data",
+    "finance.receipts": "entity.finance.receipts",
+    "finance.reimbursements": "entity.finance.reimbursements",
+    "finance.settlements": "entity.finance.settlements",
+    "finance.tax_refunds": "entity.finance.tax_refunds",
+    "followup": "entity.followup",
+    "masterdata.customers": "entity.masterdata.customers",
+    "masterdata.document_parties": "entity.masterdata.document_parties",
+    "masterdata.partners": "entity.masterdata.partners",
+    "masterdata.products": "entity.masterdata.products",
+    "masterdata.suppliers": "entity.masterdata.suppliers",
+    "purchase.contracts": "entity.purchase.contracts",
+    "purchase.inquiries": "entity.purchase.inquiries",
+    "purchase.invoice_notices": "entity.purchase.invoice_notices",
+    "quality.inspections": "entity.quality.inspections",
+    "sales.contracts": "entity.sales.contracts",
+    "sales.quotations": "entity.sales.quotations",
+    "sales.shipments": "entity.sales.shipments",
+    "sample.deliveries": "entity.sample.deliveries",
+    "sample.records": "entity.sample.records",
+    "sample.requests": "entity.sample.requests",
+    "system.company": "entity.system.company",
+    "system.auth": "entity.system.auth",
+    "system.dashboard": "entity.system.dashboard",
+    "system.files": "entity.system.files",
+    "system.mcp_settings": "entity.system.mcp_settings",
+    "system.printing": "entity.system.printing",
+    "warehouse.inbound_orders": "entity.warehouse.inbound_orders",
+    "warehouse.inbound_plans": "entity.warehouse.inbound_plans",
+    "warehouse.outbound_orders": "entity.warehouse.outbound_orders",
+    "warehouse.outbound_plans": "entity.warehouse.outbound_plans",
 }
 
-_EXCEPTION_DEFAULT_MESSAGES = {
-    "InvalidCredentialsError": "用户名或密码错误",
-    "InvalidTokenError": "登录已失效",
-    "McpDisabledError": "MCP 服务未启用",
-    "OrganizationDepartmentNameTakenError": "部门名称已存在",
-    "OrganizationDepartmentNotFoundError": "部门不存在",
-    "OrganizationDepartmentInUseError": "部门下已有用户，不能删除",
-    "OrganizationDepartmentRequiredError": "用户必须关联部门",
-    "OrganizationUsernameTakenError": "用户名已存在",
-    "OrganizationSelfDeactivateError": "不能停用当前登录账号",
-    "OrganizationSelfDemoteError": "不能移除当前账号的管理权限",
-    "OrganizationRoleCodeTakenError": "角色编码已存在",
-    "OrganizationRoleNotFoundError": "角色不存在",
-    "OrganizationRoleInUseError": "角色下已有用户，不能删除",
-    "OrganizationPermissionDeniedError": "缺少组织管理权限",
-    "OrganizationUserNotFoundError": "用户不存在",
-    "SampleRecordAlreadyCreatedError": "该寄样申请已生成样品登记，不能重复生成",
-    "SampleStockError": "样品库存不足",
+_EXCEPTION_DEFAULT_KEYS = {
+    "InvalidCredentialsError": "exception.InvalidCredentialsError",
+    "InvalidTokenError": "exception.InvalidTokenError",
+    "McpDisabledError": "exception.McpDisabledError",
+    "OrganizationDepartmentNameTakenError": "exception.OrganizationDepartmentNameTakenError",
+    "OrganizationDepartmentNotFoundError": "exception.OrganizationDepartmentNotFoundError",
+    "OrganizationDepartmentInUseError": "exception.OrganizationDepartmentInUseError",
+    "OrganizationDepartmentRequiredError": "exception.OrganizationDepartmentRequiredError",
+    "OrganizationUsernameTakenError": "exception.OrganizationUsernameTakenError",
+    "OrganizationSelfDeactivateError": "exception.OrganizationSelfDeactivateError",
+    "OrganizationSelfDemoteError": "exception.OrganizationSelfDemoteError",
+    "OrganizationRoleCodeTakenError": "exception.OrganizationRoleCodeTakenError",
+    "OrganizationRoleNotFoundError": "exception.OrganizationRoleNotFoundError",
+    "OrganizationRoleInUseError": "exception.OrganizationRoleInUseError",
+    "OrganizationPermissionDeniedError": "exception.OrganizationPermissionDeniedError",
+    "OrganizationUserNotFoundError": "exception.OrganizationUserNotFoundError",
+    "SampleRecordAlreadyCreatedError": "exception.SampleRecordAlreadyCreatedError",
+    "SampleStockError": "exception.SampleStockError",
 }
 
 
@@ -83,7 +84,7 @@ def error_response_body(
     details: list[ValidationIssue] | None = None,
 ) -> dict[str, object]:
     definition = get_status_definition(code)
-    final_message = message or definition.default_message
+    final_message = message or translate(status_message_key(code.value))
     error = ErrorResponse(
         code=definition.code.value,
         message=final_message,
@@ -109,23 +110,25 @@ def _validation_message(error: ErrorDetails) -> str:
     error_type = error["type"]
     context = error.get("ctx") or {}
     if error_type == "missing":
-        return "为必填项"
+        return translate("validation.required")
     if error_type == "string_too_short":
         minimum = context.get("min_length")
-        return "不能为空" if minimum == 1 else f"至少填写 {minimum} 个字符"
+        if minimum == 1:
+            return translate("validation.empty")
+        return translate("validation.min_length", min=minimum)
     if error_type == "string_too_long":
-        return f"不能超过 {context.get('max_length')} 个字符"
+        return translate("validation.max_length", max=context.get("max_length"))
     if error_type == "greater_than":
-        return f"必须大于 {context.get('gt')}"
+        return translate("validation.greater_than", value=context.get("gt"))
     if error_type == "greater_than_equal":
-        return f"不能小于 {context.get('ge')}"
+        return translate("validation.greater_than_equal", value=context.get("ge"))
     if error_type in {"decimal_parsing", "decimal_type", "float_parsing", "int_parsing"}:
-        return "请输入有效数字"
+        return translate("validation.number")
     if error_type in {"date_from_datetime_parsing", "date_type"}:
-        return "请输入有效日期"
+        return translate("validation.date")
     if error_type == "value_error":
         return error["msg"].removeprefix("Value error, ")
-    return "格式不正确"
+    return translate("validation.format")
 
 
 def _validation_issue(error: ErrorDetails) -> ValidationIssue:
@@ -185,7 +188,7 @@ def domain_exception_definition(
     if isinstance(exc, ValueError):
         return (
             AppStatusCode.VALIDATION_ERROR,
-            str(exc).strip() or "业务数据无效",
+            str(exc).strip() or translate("error.business_data_invalid"),
         )
     if not module_name.startswith(("app.modules.", "app.mcp.")) or not class_name.endswith("Error"):
         return None
@@ -216,21 +219,22 @@ def domain_exception_definition(
     else:
         code = AppStatusCode.VALIDATION_ERROR
 
-    message = str(exc).strip() or _EXCEPTION_DEFAULT_MESSAGES.get(class_name, "")
+    default_key = _EXCEPTION_DEFAULT_KEYS.get(class_name)
+    message = str(exc).strip() or (translate(default_key) if default_key else "")
     if message:
         return code, message
 
     module_parts = module_name.removeprefix("app.modules.").split(".")
     module_key = ".".join(module_parts[:2])
-    entity_label = _MODULE_ENTITY_LABELS.get(module_key, "业务资源")
+    entity_label = translate(_MODULE_ENTITY_KEYS.get(module_key, "entity.fallback"))
     if code == AppStatusCode.PERMISSION_DENIED:
-        message = f"缺少{entity_label}权限"
+        message = translate("error.permission_denied", entity=entity_label)
     elif code == AppStatusCode.NOT_FOUND:
-        message = f"{entity_label}不存在"
+        message = translate("error.not_found", entity=entity_label)
     elif code == AppStatusCode.CONFLICT:
-        message = f"{entity_label}状态冲突"
+        message = translate("error.conflict", entity=entity_label)
     else:
-        message = f"{entity_label}数据无效"
+        message = translate("error.entity_invalid", entity=entity_label)
     return code, message
 
 
@@ -250,7 +254,7 @@ async def domain_exception_handler(request: Request, exc: Exception) -> JSONResp
                 "error_type": type(exc).__name__,
             },
         )
-        message = get_status_definition(code).default_message
+        message = translate(status_message_key(code.value))
     else:
         code, message = domain_definition
         _http_logger.warning(
