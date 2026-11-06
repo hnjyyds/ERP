@@ -1,13 +1,42 @@
-import { reportingDocumentTypeOptions, reportingStatusOptions, exportContractStatusOptions } from '../../../shared/formOptions'
-import { Alert, Button, Descriptions as _Descriptions, Input, Modal as _Modal, Select as _Select, Skeleton as _Skeleton, Table, Tag } from 'antd'
-import { BarChart3, LayoutDashboard, Search, ShieldCheck , CheckCircle2} from 'lucide-react'
-import { useEffect, useMemo as _useMemo, useState , ReactNode} from 'react'
-import { getFinanceOverview as _getFinanceOverview, listReportingStatistics, drilldownFinanceReport as _drilldownFinanceReport, explainFinanceReport as _explainFinanceReport, type FinanceOverview as _FinanceOverview, type ReportingStatistics, type FinanceShipmentProfit as _FinanceShipmentProfit, type FinanceCurrencySummary as _FinanceCurrencySummary, type FinancePartnerTypeSummary as _FinancePartnerTypeSummary, type FinanceStatusAmount as _FinanceStatusAmount, type ReportDocumentStatistic, type StatusAmountStatistic, type SalesMonthlyShipmentStatistic, type CustomerShipmentStatistic, type MenuItem, type FinanceReportDrilldown as _FinanceReportDrilldown, type FinanceReportExplanation as _FinanceReportExplanation , ApprovalDocument, ApprovalQuery, ApprovalTypeSummary, ShipmentStatisticItem, listApprovalDocuments} from '../../../api'
-import { reportingPath as _reportingPath, type FinanceModule as _FinanceModule } from '../../routes'
-import { Metric, PanelTitle , FormSelect} from '../../../shared/ui'
+import {
+  type ApprovalDocument,
+  type ApprovalQuery,
+  type ApprovalTypeSummary,
+  type CustomerShipmentStatistic,
+  type MenuItem,
+  type ReportDocumentStatistic,
+  type ReportingStatistics,
+  type SalesMonthlyShipmentStatistic,
+  type ShipmentStatisticItem,
+  type StatusAmountStatistic,
+  listApprovalDocuments,
+  listReportingStatistics,
+} from '../../../api'
 import { showError } from '../../../shared/errors'
+import {
+  exportContractStatusOptions,
+  reportingDocumentTypeOptions,
+  reportingStatusOptions,
+} from '../../../shared/formOptions'
+import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { Alert, Button, Input, Table, Tag } from 'antd'
+import {
+  ArrowRight,
+  BarChart3,
+  CheckCircle2,
+  LayoutDashboard,
+  Search,
+  ShieldCheck,
+} from 'lucide-react'
+import { type ReactNode, useEffect, useState } from 'react'
 import { t } from '../../App'
-import { formatDate, formatFinanceAmount, formatMoney as _formatMoney, formatPercent as _formatPercent, nullableText, pageTitle as _pageTitle, statusTag as _statusTag, severityTag as _severityTag, partnerTypeLabel as _partnerTypeLabel, type ModuleNavigationProps } from '../appHelpers'
+import { exportContractPath, moduleDetailPath, purchaseContractPath } from '../../routes'
+import {
+  formatDate,
+  formatFinanceAmount,
+  nullableText,
+  type ModuleNavigationProps,
+} from '../appHelpers'
 
 type FollowupTemplateFormState = {
   name: string
@@ -26,7 +55,6 @@ type FollowupTemplateFormState = {
   outbound_days: string
   outbound_remind: string
 }
-
 
 function approvalDocumentTypeLabel(value: string): string {
   return reportingDocumentTypeOptions.find((item) => item.value === value)?.label ?? value
@@ -47,6 +75,15 @@ function sourcePathTag(value: string): ReactNode {
   return <Tag color="default">{value}</Tag>
 }
 
+function approvalDocumentPath(document: ApprovalDocument): string | null {
+  if (document.document_type === 'export_contract') {
+    return moduleDetailPath(exportContractPath, document.document_id)
+  }
+  if (document.document_type === 'purchase_contract') {
+    return moduleDetailPath(purchaseContractPath, document.document_id)
+  }
+  return null
+}
 
 export function FollowupTemplateNodeFields({
   daysKey,
@@ -82,7 +119,9 @@ export function FollowupTemplateNodeFields({
           min="0"
           type="number"
           value={String(templateForm[remindKey])}
-          onChange={(event) => setTemplateForm({ ...templateForm, [remindKey]: event.target.value })}
+          onChange={(event) =>
+            setTemplateForm({ ...templateForm, [remindKey]: event.target.value })
+          }
         />
       </label>
     </div>
@@ -111,7 +150,7 @@ export function AccessDeniedPage() {
   )
 }
 
-export function ReportingPage({ onNavigate: _onNavigate }: ModuleNavigationProps) {
+export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
   const [approvals, setApprovals] = useState<ApprovalQuery | null>(null)
   const [statistics, setStatistics] = useState<ReportingStatistics | null>(null)
   const [documentTypeFilter, setDocumentTypeFilter] = useState('')
@@ -205,7 +244,7 @@ export function ReportingPage({ onNavigate: _onNavigate }: ModuleNavigationProps
 
   return (
     <section className="reporting-page">
-<div className="summary-strip" aria-label="经理查询概览">
+      <div className="summary-strip" aria-label="经理查询概览">
         <Metric label="审批单据" value={approvals?.total ?? 0} />
         <Metric
           label="待审批"
@@ -224,7 +263,7 @@ export function ReportingPage({ onNavigate: _onNavigate }: ModuleNavigationProps
             <PanelTitle icon={<BarChart3 size={18} />} title="审批单据查询" />
           </div>
           <form
-            className="inline-filters"
+            className="inline-filters single-line-filter-toolbar"
             onSubmit={(event) => {
               event.preventDefault()
               void loadApprovals()
@@ -246,7 +285,10 @@ export function ReportingPage({ onNavigate: _onNavigate }: ModuleNavigationProps
             </label>
             <label>
               审批状态
-              <FormSelect value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+              <FormSelect
+                value={statusFilter}
+                onChange={(event) => setStatusFilter(event.target.value)}
+              >
                 <option value="">全部状态</option>
                 {reportingStatusOptions.map((item) => (
                   <option key={item.value} value={item.value}>
@@ -259,7 +301,7 @@ export function ReportingPage({ onNavigate: _onNavigate }: ModuleNavigationProps
               申请人标识
               <Input
                 value={applicantUserFilter}
-                placeholder="u-001"
+                placeholder="输入申请人编号"
                 onChange={(event) => setApplicantUserFilter(event.target.value)}
               />
             </label>
@@ -305,6 +347,25 @@ export function ReportingPage({ onNavigate: _onNavigate }: ModuleNavigationProps
                 title: '金额',
                 dataIndex: 'amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
+              },
+              {
+                title: '操作',
+                key: 'actions',
+                width: 112,
+                render: (_value: unknown, record) => {
+                  const targetPath = approvalDocumentPath(record)
+                  if (!targetPath) return <span className="muted-text">暂不支持</span>
+                  return (
+                    <Button
+                      type="link"
+                      size="small"
+                      icon={<ArrowRight size={14} />}
+                      onClick={() => onNavigate(targetPath)}
+                    >
+                      {record.status === 'submitted' ? '去审批' : '查看详情'}
+                    </Button>
+                  )
+                },
               },
             ]}
             dataSource={items}
@@ -379,7 +440,7 @@ export function ReportingPage({ onNavigate: _onNavigate }: ModuleNavigationProps
               客户标识
               <Input
                 value={statisticsCustomerFilter}
-                placeholder="customer-id"
+                placeholder="输入客户编号或名称"
                 onChange={(event) => setStatisticsCustomerFilter(event.target.value)}
               />
             </label>
@@ -387,7 +448,7 @@ export function ReportingPage({ onNavigate: _onNavigate }: ModuleNavigationProps
               供应商标识
               <Input
                 value={statisticsSupplierFilter}
-                placeholder="supplier-id"
+                placeholder="输入供应商编号或名称"
                 onChange={(event) => setStatisticsSupplierFilter(event.target.value)}
               />
             </label>
@@ -395,7 +456,7 @@ export function ReportingPage({ onNavigate: _onNavigate }: ModuleNavigationProps
               业务员标识
               <Input
                 value={statisticsSalesFilter}
-                placeholder="u-001"
+                placeholder="输入业务员编号"
                 onChange={(event) => setStatisticsSalesFilter(event.target.value)}
               />
             </label>
@@ -478,7 +539,9 @@ export function ReportingPage({ onNavigate: _onNavigate }: ModuleNavigationProps
             dataSource={statistics?.sales_monthly_shipments ?? []}
             loading={loadingStatistics}
             pagination={false}
-            rowKey={(record) => `${record.period}-${record.sales_user_id ?? '-'}-${record.currency}`}
+            rowKey={(record) =>
+              `${record.period}-${record.sales_user_id ?? '-'}-${record.currency}`
+            }
             size="small"
           />
         </section>
@@ -532,7 +595,11 @@ export function ReportingPage({ onNavigate: _onNavigate }: ModuleNavigationProps
           <div className="reporting-drilldown-stack">
             <Table<ShipmentStatisticItem>
               columns={[
-                { title: '出货单', dataIndex: 'shipment_no', render: (value: string) => <strong>{value}</strong> },
+                {
+                  title: '出货单',
+                  dataIndex: 'shipment_no',
+                  render: (value: string) => <strong>{value}</strong>,
+                },
                 { title: '客户', dataIndex: 'customer_name' },
                 { title: '状态', dataIndex: 'status', render: approvalStatusTag },
                 { title: '出货日', dataIndex: 'shipment_date', render: formatDate },
@@ -556,7 +623,11 @@ export function ReportingPage({ onNavigate: _onNavigate }: ModuleNavigationProps
             />
             <Table<ReportDocumentStatistic>
               columns={[
-                { title: '出口合同', dataIndex: 'document_no', render: (value: string) => <strong>{value}</strong> },
+                {
+                  title: '出口合同',
+                  dataIndex: 'document_no',
+                  render: (value: string) => <strong>{value}</strong>,
+                },
                 { title: '客户', dataIndex: 'party_name' },
                 { title: '业务员', dataIndex: 'business_user_name', render: nullableText },
                 { title: '状态', dataIndex: 'status', render: approvalStatusTag },
@@ -579,4 +650,3 @@ export function ReportingPage({ onNavigate: _onNavigate }: ModuleNavigationProps
     </section>
   )
 }
-
