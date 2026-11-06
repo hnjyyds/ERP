@@ -40,29 +40,36 @@ import {
 import { showError, showSuccess, showWarningDialog } from '../../../shared/errors'
 import { downloadCsv } from '../../../shared/print'
 import { Metric, PanelTitle, useColumnView, type ColumnOption } from '../../../shared/ui'
+import { t, type TranslationKey } from '../../appI18n'
 import { productDetailPath, productPath } from '../../routes'
 
-const productColumnOptions: ColumnOption[] = [
-  { key: 'code', title: '编号', required: true },
-  { key: 'cn_name', title: '中文名称' },
-  { key: 'en_name', title: '英文名称' },
-  { key: 'customs_code', title: '海关编码' },
-  { key: 'unit', title: '单位' },
-  { key: 'status', title: '状态' },
-  { key: 'accessories', title: '配件' },
-]
+function buildProductColumnOptions(): ColumnOption[] {
+  return [
+    { key: 'code', title: t('masterdata.product.field.code'), required: true },
+    { key: 'cn_name', title: t('masterdata.product.field.cnName') },
+    { key: 'en_name', title: t('masterdata.product.field.enName') },
+    { key: 'customs_code', title: t('masterdata.product.field.customsCode') },
+    { key: 'unit', title: t('masterdata.product.field.unit') },
+    { key: 'status', title: t('masterdata.product.field.status') },
+    { key: 'accessories', title: t('masterdata.product.field.accessories') },
+  ]
+}
 
-const productStatusOptions = [
-  { value: 'active', label: '启用' },
-  { value: 'inactive', label: '停用' },
-]
+function productStatusOptions() {
+  return [
+    { value: 'active', label: t('masterdata.product.status.active') },
+    { value: 'inactive', label: t('masterdata.product.status.inactive') },
+  ]
+}
 
 const maxProductImageBytes = 2_000_000
 
-const accessoryRuleOptions = [
-  { value: 'by_supplier', label: '按供应商分单' },
-  { value: 'by_accessory', label: '按配件分单' },
-]
+function accessoryRuleOptions() {
+  return [
+    { value: 'by_supplier', label: t('masterdata.product.accessoryRule.bySupplier') },
+    { value: 'by_accessory', label: t('masterdata.product.accessoryRule.byAccessory') },
+  ]
+}
 
 type ProductFormState = {
   code: string
@@ -122,7 +129,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
 
   const { isVisible: isColumnVisible, control: columnViewControl } = useColumnView(
     'masterdata-products',
-    productColumnOptions,
+    buildProductColumnOptions(),
   )
 
   const selectedProduct = useMemo(
@@ -187,7 +194,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
         null
       setSelectedProductId(nextSelectedId)
     } catch (caught) {
-      showError(caught, '商品资料加载失败')
+      showError(caught, t('masterdata.product.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -220,18 +227,18 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
     try {
       if (productModalMode === 'edit' && selectedProduct) {
         const updated = await updateProduct(selectedProduct.id, productUpdatePayload(form))
-        setMessage(`已保存商品 ${updated.code}`)
+        setMessage(t('masterdata.product.saved', { code: updated.code }))
         setProductModalMode(null)
         await loadProducts(updated.id)
         return
       }
       const created = await createProduct(productPayload(form))
-      setMessage(`已新增商品 ${created.code}`)
+      setMessage(t('masterdata.product.created', { code: created.code }))
       setForm(initialProductForm())
       setProductModalMode(null)
       await loadProducts(created.id)
     } catch (caught) {
-      showError(caught, '商品保存失败')
+      showError(caught, t('masterdata.product.saveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -242,11 +249,11 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
     event.target.value = ''
     if (!file) return
     if (!file.type.startsWith('image/')) {
-      showWarningDialog('请选择图片文件')
+      showWarningDialog(t('masterdata.product.imageTypeInvalid'))
       return
     }
     if (file.size > maxProductImageBytes) {
-      showWarningDialog('图片需小于 2MB')
+      showWarningDialog(t('masterdata.product.imageTooLarge'))
       return
     }
     void (async () => {
@@ -256,7 +263,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
         const uploaded = await uploadImage(file.name, dataUrl)
         setForm((current) => ({ ...current, image_url: uploaded.url }))
       } catch (caught) {
-        showError(caught, '图片上传失败')
+        showError(caught, t('masterdata.product.imageUploadFailed'))
       }
     })()
   }
@@ -269,10 +276,16 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
       const dataUrl = await readFileAsDataUrl(file)
       const result = await importProducts(file.name, dataUrl)
       setImportResult(result)
-      setMessage(`导入完成：新增 ${result.created}，更新 ${result.updated}，失败 ${result.failed}`)
+      setMessage(
+        t('masterdata.product.import.result', {
+          created: result.created,
+          updated: result.updated,
+          failed: result.failed,
+        }),
+      )
       await loadProducts()
     } catch (caught) {
-      showError(caught, '商品导入失败')
+      showError(caught, t('masterdata.product.import.failed'))
     } finally {
       setImporting(false)
     }
@@ -322,14 +335,14 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
       )
       setMessage(
         accessoryModalMode === 'edit'
-          ? `已保存配件 ${accessory.accessory_name}`
-          : `已追加配件 ${accessory.accessory_name}`,
+          ? t('masterdata.product.accessory.saved', { name: accessory.accessory_name })
+          : t('masterdata.product.accessory.added', { name: accessory.accessory_name }),
       )
       setAccessoryForm(initialProductAccessoryForm())
       setAccessoryModalMode(null)
       setEditingAccessoryId(null)
     } catch (caught) {
-      showError(caught, '配件保存失败')
+      showError(caught, t('masterdata.product.accessory.saveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -338,18 +351,18 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
   function confirmDeactivateProduct() {
     if (!selectedProduct) return
     Modal.confirm({
-      title: `停用商品 ${selectedProduct.code}`,
-      content: '停用后商品将不再出现在默认列表和业务选择中，历史单据仍可追溯。',
-      okText: '停用',
-      cancelText: '取消',
+      title: t('masterdata.product.deactivateTitle', { code: selectedProduct.code }),
+      content: t('masterdata.product.deactivateContent'),
+      okText: t('masterdata.product.deactivate'),
+      cancelText: t('common.cancel'),
       okButtonProps: { danger: true },
       onOk: async () => {
         try {
           const deactivated = await deactivateProduct(selectedProduct.id)
-          setMessage(`已停用商品 ${deactivated.code}`)
+          setMessage(t('masterdata.product.deactivated', { code: deactivated.code }))
           await loadProducts()
         } catch (caught) {
-          showError(caught, '商品停用失败')
+          showError(caught, t('masterdata.product.deactivateFailed'))
         }
       },
     })
@@ -358,10 +371,10 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
   function confirmDeleteAccessory(accessory: Product['accessories'][number]) {
     if (!selectedProduct) return
     Modal.confirm({
-      title: `删除配件 ${accessory.accessory_name}`,
-      content: '删除后该配件不会再参与商品配件拆分。',
-      okText: '删除',
-      cancelText: '取消',
+      title: t('masterdata.product.accessory.deleteTitle', { name: accessory.accessory_name }),
+      content: t('masterdata.product.accessory.deleteContent'),
+      okText: t('common.delete'),
+      cancelText: t('common.cancel'),
       okButtonProps: { danger: true },
       onOk: async () => {
         try {
@@ -376,9 +389,9 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
                 : product,
             ),
           )
-          setMessage(`已删除配件 ${accessory.accessory_name}`)
+          setMessage(t('masterdata.product.accessory.deleted', { name: accessory.accessory_name }))
         } catch (caught) {
-          showError(caught, '配件删除失败')
+          showError(caught, t('masterdata.product.accessory.deleteFailed'))
         }
       },
     })
@@ -390,18 +403,31 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
       ? products.filter((p) => selectedIds.has(p.id))
       : products
     if (toExport.length === 0) {
-      showWarningDialog('请先选择要导出的商品，或直接导出全部')
+      showWarningDialog(t('masterdata.product.exportEmpty'))
       return
     }
-    const headers = ['编号', '中文名称', '英文名称', '规格', '型号', '海关编码', '退税率', '包装信息', '单位', '状态']
+    const headers = [
+      t('masterdata.product.field.code'),
+      t('masterdata.product.field.cnName'),
+      t('masterdata.product.field.enName'),
+      t('masterdata.product.field.specification'),
+      t('masterdata.product.field.model'),
+      t('masterdata.product.field.customsCode'),
+      t('masterdata.product.field.rebateRate'),
+      t('masterdata.product.field.packageInfoExport'),
+      t('masterdata.product.field.unit'),
+      t('masterdata.product.field.status'),
+    ]
     const csvRows = toExport.map((p) => [
       p.code, p.cn_name, p.en_name, p.specification ?? '', p.model ?? '',
       p.customs_code, p.rebate_rate, p.package_info, p.unit,
-      p.status === 'active' ? '启用' : '停用',
+      p.status === 'active'
+        ? t('masterdata.product.status.active')
+        : t('masterdata.product.status.inactive'),
     ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(','))
     const csv = [headers.join(','), ...csvRows].join('\n')
-    downloadCsv('产品资料.csv', csv)
-    showSuccess(`已导出 ${toExport.length} 条商品`)
+    downloadCsv(t('masterdata.product.exportFileName'), csv)
+    showSuccess(t('masterdata.product.exportSuccess', { count: toExport.length }))
   }
 
   function openProductDetail(product: Product) {
@@ -416,11 +442,17 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
 
   return (
     <section className="masterdata-page product-page">
-      <div className="summary-strip" aria-label="商品资料概览">
-        <Metric label="商品" value={products.length} />
-        <Metric label="配件明细" value={products.reduce((sum, item) => sum + item.accessories.length, 0)} />
-        <Metric label="有图片" value={products.filter((item) => Boolean(item.image_url)).length} />
-        <Metric label="导出" value={exportResult ? 1 : 0} />
+      <div className="summary-strip" aria-label={t('masterdata.product.overviewAria')}>
+        <Metric label={t('masterdata.product.metric.products')} value={products.length} />
+        <Metric
+          label={t('masterdata.product.metric.accessories')}
+          value={products.reduce((sum, item) => sum + item.accessories.length, 0)}
+        />
+        <Metric
+          label={t('masterdata.product.metric.withImage')}
+          value={products.filter((item) => Boolean(item.image_url)).length}
+        />
+        <Metric label={t('masterdata.product.metric.exported')} value={exportResult ? 1 : 0} />
       </div>
 
       {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
@@ -436,7 +468,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
         {!detailId ? (
           <section className="workspace-panel list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title="商品列表" />
+              <PanelTitle icon={<Search size={18} />} title={t('masterdata.product.listTitle')} />
               <form
                 className="inline-filters product-list-filters"
                 onSubmit={(event) => {
@@ -445,28 +477,28 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
                 }}
               >
                 <label className="inline-filter-search">
-                  搜索
+                  {t('masterdata.product.searchLabel')}
                   <Input
                     value={search}
-                    placeholder="编号 / 中文 / 英文 / 海关编码"
+                    placeholder={t('masterdata.product.searchPlaceholder')}
                     onChange={(event) => setSearch(event.target.value)}
                   />
                 </label>
                 <div className="product-filter-actions">
-                  <Tooltip title="查询商品">
+                  <Tooltip title={t('masterdata.product.searchAction')}>
                     <Button
-                      aria-label="查询商品"
+                      aria-label={t('masterdata.product.searchAction')}
                       className="toolbar-icon-button"
                       htmlType="submit"
                       icon={<Search size={16} />}
                     />
                   </Tooltip>
                   <Button type="primary" icon={<Plus size={16} />} onClick={openCreateProduct}>
-                    新增商品
+                    {t('masterdata.product.create')}
                   </Button>
-                  <Tooltip title="导入商品">
+                  <Tooltip title={t('masterdata.product.importAction')}>
                     <Button
-                      aria-label="导入商品"
+                      aria-label={t('masterdata.product.importAction')}
                       className="toolbar-icon-button"
                       icon={<UploadIcon size={16} />}
                       onClick={() => {
@@ -475,9 +507,19 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
                       }}
                     />
                   </Tooltip>
-                  <Tooltip title={selectedRowKeys.length > 0 ? `导出已选 ${selectedRowKeys.length} 条商品` : '导出全部商品'}>
+                  <Tooltip
+                    title={
+                      selectedRowKeys.length > 0
+                        ? t('masterdata.product.exportSelected', { count: selectedRowKeys.length })
+                        : t('masterdata.product.exportAll')
+                    }
+                  >
                     <Button
-                      aria-label={selectedRowKeys.length > 0 ? `导出已选 ${selectedRowKeys.length} 条商品` : '导出全部商品'}
+                      aria-label={
+                        selectedRowKeys.length > 0
+                          ? t('masterdata.product.exportSelected', { count: selectedRowKeys.length })
+                          : t('masterdata.product.exportAll')
+                      }
                       className="toolbar-icon-button"
                       icon={<Download size={16} />}
                       onClick={exportSelectedCsv}
@@ -495,7 +537,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
               }}
               columns={[
                 {
-                  title: '编号',
+                  title: t('masterdata.product.field.code'),
                   dataIndex: 'code',
                   render: (value: string, record: Product) => (
                     <button
@@ -507,33 +549,35 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
                     </button>
                   ),
                 },
-                { title: '中文名称', dataIndex: 'cn_name' },
-                { title: '英文名称', dataIndex: 'en_name' },
-                { title: '海关编码', dataIndex: 'customs_code' },
-                { title: '单位', dataIndex: 'unit', width: 80 },
+                { title: t('masterdata.product.field.cnName'), dataIndex: 'cn_name' },
+                { title: t('masterdata.product.field.enName'), dataIndex: 'en_name' },
+                { title: t('masterdata.product.field.customsCode'), dataIndex: 'customs_code' },
+                { title: t('masterdata.product.field.unit'), dataIndex: 'unit', width: 80 },
                 {
-                  title: '状态',
+                  title: t('masterdata.product.field.status'),
                   dataIndex: 'status',
                   width: 90,
                   render: (value: string) => (
                     <Tag color={value === 'active' ? 'success' : 'default'}>
-                      {value === 'active' ? '启用' : '停用'}
+                      {value === 'active'
+                        ? t('masterdata.product.status.active')
+                        : t('masterdata.product.status.inactive')}
                     </Tag>
                   ),
                 },
                 {
-                  title: '配件',
+                  title: t('masterdata.product.field.accessories'),
                   dataIndex: 'accessories',
                   width: 80,
                   render: (_value: Product['accessories'], record: Product) => record.accessories.length,
                 },
                 {
-                  title: '入口',
+                  title: t('masterdata.product.field.entry'),
                   dataIndex: 'detail',
                   width: 110,
                   render: (_value: unknown, record: Product) => (
                     <Button size="small" onClick={(event) => stopAndOpenProductDetail(event, record)}>
-                      查看详情
+                      {t('masterdata.product.viewDetail')}
                     </Button>
                   ),
                 },
@@ -554,17 +598,20 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
         {detailId ? (
           <section className="workspace-panel detail-panel product-standalone-detail">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<LayoutDashboard size={18} />} title="商品明细" />
+              <PanelTitle
+                icon={<LayoutDashboard size={18} />}
+                title={t('masterdata.product.detailTitle')}
+              />
               {selectedProduct ? (
                 <div className="section-actions">
                   <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(productPath)}>
-                    返回列表
+                    {t('masterdata.product.backToList')}
                   </Button>
                   <Button icon={<FilePenLine size={16} />} onClick={openEditProduct}>
-                    编辑商品
+                    {t('masterdata.product.edit')}
                   </Button>
                   <Button danger icon={<Trash2 size={16} />} onClick={confirmDeactivateProduct}>
-                    停用
+                    {t('masterdata.product.deactivate')}
                   </Button>
                 </div>
               ) : null}
@@ -575,43 +622,50 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
                 <div className="product-photo">
                   {selectedProduct.image_url ? (
                     <Image
-                      alt={`${selectedProduct.cn_name} 商品图片`}
+                      alt={t('masterdata.product.imageAlt', { name: selectedProduct.cn_name })}
                       height="100%"
-                      preview={{ mask: '查看大图' }}
+                      preview={{ mask: t('masterdata.product.viewLargeImage') }}
                       src={selectedProduct.image_url}
                       width="100%"
                     />
                   ) : (
-                    <span>暂无图片</span>
+                    <span>{t('masterdata.product.noImage')}</span>
                   )}
                 </div>
                 <dl className="detail-list">
                   <div>
-                    <dt>中文名称</dt>
+                    <dt>{t('masterdata.product.field.cnName')}</dt>
                     <dd>{selectedProduct.cn_name}</dd>
                   </div>
                   <div>
-                    <dt>英文名称</dt>
+                    <dt>{t('masterdata.product.field.enName')}</dt>
                     <dd>{selectedProduct.en_name}</dd>
                   </div>
                   <div>
-                    <dt>规格/型号</dt>
-                    <dd>{selectedProduct.specification ?? '未填'} / {selectedProduct.model ?? '未填'}</dd>
+                    <dt>{t('masterdata.product.field.specificationModel')}</dt>
+                    <dd>
+                      {selectedProduct.specification ?? t('masterdata.product.notFilled')} /{' '}
+                      {selectedProduct.model ?? t('masterdata.product.notFilled')}
+                    </dd>
                   </div>
                   <div>
-                    <dt>海关编码</dt>
+                    <dt>{t('masterdata.product.field.customsCode')}</dt>
                     <dd>{selectedProduct.customs_code}</dd>
                   </div>
                   <div>
-                    <dt>税率/退税率</dt>
+                    <dt>{t('masterdata.product.field.taxRebateRate')}</dt>
                     <dd>{selectedProduct.tax_rate} / {selectedProduct.rebate_rate}</dd>
                   </div>
                   <div>
-                    <dt>状态</dt>
-                    <dd>{selectedProduct.status === 'active' ? '启用' : '停用'}</dd>
+                    <dt>{t('masterdata.product.field.status')}</dt>
+                    <dd>
+                      {selectedProduct.status === 'active'
+                        ? t('masterdata.product.status.active')
+                        : t('masterdata.product.status.inactive')}
+                    </dd>
                   </div>
                   <div>
-                    <dt>包装资料</dt>
+                    <dt>{t('masterdata.product.field.packageInfo')}</dt>
                     <dd>{selectedProduct.package_info}</dd>
                   </div>
                 </dl>
@@ -619,32 +673,35 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
 
               <div className="compact-section section-actions">
                 <Button icon={<Plus size={16} />} onClick={openCreateAccessory}>
-                  追加配件
+                  {t('masterdata.product.accessory.add')}
                 </Button>
               </div>
 
               <Table
                 className="compact-section"
                 columns={[
-                  { title: '配件名称', dataIndex: 'accessory_name' },
-                  { title: '单耗', dataIndex: 'unit_consumption' },
-                  { title: '单位', dataIndex: 'unit' },
-                  { title: '默认供应商', dataIndex: 'default_supplier_name' },
+                  { title: t('masterdata.product.field.accessoryName'), dataIndex: 'accessory_name' },
+                  { title: t('masterdata.product.field.unitConsumption'), dataIndex: 'unit_consumption' },
+                  { title: t('masterdata.product.field.unit'), dataIndex: 'unit' },
                   {
-                    title: '采购拆分',
+                    title: t('masterdata.product.field.defaultSupplier'),
+                    dataIndex: 'default_supplier_name',
+                  },
+                  {
+                    title: t('masterdata.product.field.purchaseSplit'),
                     dataIndex: 'purchase_split_rule',
                     render: accessoryRuleLabel,
                   },
                   {
-                    title: '操作',
+                    title: t('masterdata.product.field.actions'),
                     width: 150,
                     render: (_, record) => (
                       <div className="table-actions">
                         <Button size="small" onClick={() => openEditAccessory(record)}>
-                          编辑
+                          {t('common.edit')}
                         </Button>
                         <Button danger size="small" onClick={() => confirmDeleteAccessory(record)}>
-                          删除
+                          {t('common.delete')}
                         </Button>
                       </div>
                     ),
@@ -657,17 +714,33 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
               />
 
               <div className="compact-section">
-                <PanelTitle icon={<Users size={16} />} title="相关客户与交易" />
+                <PanelTitle icon={<Users size={16} />} title={t('masterdata.product.related.title')} />
                 <Table<ProductCustomer>
                   columns={[
-                    { title: '客户', dataIndex: 'customer_name' },
-                    { title: '合同数', dataIndex: 'contract_count', width: 90 },
-                    { title: '累计数量', dataIndex: 'total_quantity', width: 110 },
-                    { title: '累计金额', dataIndex: 'total_amount', width: 120 },
-                    { title: '最近合同', dataIndex: 'last_contract_date', width: 130 },
+                    { title: t('masterdata.product.related.customer'), dataIndex: 'customer_name' },
+                    {
+                      title: t('masterdata.product.related.contractCount'),
+                      dataIndex: 'contract_count',
+                      width: 90,
+                    },
+                    {
+                      title: t('masterdata.product.related.totalQuantity'),
+                      dataIndex: 'total_quantity',
+                      width: 110,
+                    },
+                    {
+                      title: t('masterdata.product.related.totalAmount'),
+                      dataIndex: 'total_amount',
+                      width: 120,
+                    },
+                    {
+                      title: t('masterdata.product.related.lastContract'),
+                      dataIndex: 'last_contract_date',
+                      width: 130,
+                    },
                   ]}
                   dataSource={relatedCustomers}
-                  locale={{ emptyText: '暂无关联客户，出口合同生成后自动汇总' }}
+                  locale={{ emptyText: t('masterdata.product.related.empty') }}
                   pagination={false}
                   rowKey={(record) => record.customer_id ?? record.customer_name}
                   size="small"
@@ -675,29 +748,51 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
               </div>
 
               <div className="compact-section">
-                <PanelTitle icon={<LayoutDashboard size={16} />} title="业务记录" />
+                <PanelTitle
+                  icon={<LayoutDashboard size={16} />}
+                  title={t('masterdata.product.transactions.title')}
+                />
                 <Table<ProductTransaction>
                   columns={[
                     {
-                      title: '来源',
+                      title: t('masterdata.product.transactions.source'),
                       dataIndex: 'source_type',
                       width: 110,
                       render: productTransactionSourceLabel,
                     },
-                    { title: '单号', dataIndex: 'source_code', width: 160 },
-                    { title: '日期', dataIndex: 'occurred_at', width: 120 },
-                    { title: '往来方', dataIndex: 'counterparty_name', width: 150 },
                     {
-                      title: '数量',
+                      title: t('masterdata.product.transactions.sourceCode'),
+                      dataIndex: 'source_code',
+                      width: 160,
+                    },
+                    {
+                      title: t('masterdata.product.transactions.date'),
+                      dataIndex: 'occurred_at',
+                      width: 120,
+                    },
+                    {
+                      title: t('masterdata.product.transactions.counterparty'),
+                      dataIndex: 'counterparty_name',
+                      width: 150,
+                    },
+                    {
+                      title: t('masterdata.product.transactions.quantity'),
                       width: 120,
                       render: (_, record) =>
                         record.quantity ? `${record.quantity} ${record.unit ?? ''}` : '-',
                     },
-                    { title: '金额', dataIndex: 'amount', width: 120 },
-                    { title: '摘要', dataIndex: 'summary' },
+                    {
+                      title: t('masterdata.product.transactions.amount'),
+                      dataIndex: 'amount',
+                      width: 120,
+                    },
+                    {
+                      title: t('masterdata.product.transactions.summary'),
+                      dataIndex: 'summary',
+                    },
                   ]}
                   dataSource={transactions}
-                  locale={{ emptyText: '暂无业务记录，报价/合同/出货/采购引用该商品后自动汇总' }}
+                  locale={{ emptyText: t('masterdata.product.transactions.empty') }}
                   pagination={false}
                   rowKey={(record) => `${record.source_type}-${record.source_code}-${record.occurred_at}`}
                   size="small"
@@ -714,8 +809,8 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
           ) : (
             <div className="module-state panel-empty-state">
               <LayoutDashboard size={28} />
-              <strong>暂无商品资料</strong>
-              <span>请返回列表选择商品查看详情</span>
+              <strong>{t('masterdata.product.empty.title')}</strong>
+              <span>{t('masterdata.product.empty.description')}</span>
             </div>
           )}
           </section>
@@ -726,56 +821,60 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
         centered
         footer={null}
         open={Boolean(productModalMode)}
-        title={productModalMode === 'edit' ? '编辑商品' : '新增商品'}
+        title={
+          productModalMode === 'edit'
+            ? t('masterdata.product.edit')
+            : t('masterdata.product.create')
+        }
         width={1040}
         onCancel={() => setProductModalMode(null)}
       >
         <form className="record-form entity-modal-form" onSubmit={submitProduct}>
           <div className="entity-modal-grid">
             <label>
-              产品编号
+              {t('masterdata.product.field.productCode')}
               <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
             </label>
             <label>
-              商品单位
+              {t('masterdata.product.field.productUnit')}
               <Input value={form.unit} onChange={(event) => setForm({ ...form, unit: event.target.value })} />
             </label>
             <label>
-              中文名称
+              {t('masterdata.product.field.cnName')}
               <Input value={form.cn_name} onChange={(event) => setForm({ ...form, cn_name: event.target.value })} />
             </label>
             <label>
-              英文名称
+              {t('masterdata.product.field.enName')}
               <Input value={form.en_name} onChange={(event) => setForm({ ...form, en_name: event.target.value })} />
             </label>
             <label>
-              规格
+              {t('masterdata.product.field.specification')}
               <Input
                 value={form.specification}
                 onChange={(event) => setForm({ ...form, specification: event.target.value })}
               />
             </label>
             <label>
-              型号
+              {t('masterdata.product.field.model')}
               <Input value={form.model} onChange={(event) => setForm({ ...form, model: event.target.value })} />
             </label>
             <label>
-              海关编码
+              {t('masterdata.product.field.customsCode')}
               <Input
                 value={form.customs_code}
                 onChange={(event) => setForm({ ...form, customs_code: event.target.value })}
               />
             </label>
             <label>
-              状态
+              {t('masterdata.product.field.status')}
               <Select
-                options={productStatusOptions}
+                options={productStatusOptions()}
                 value={form.status}
                 onChange={(value) => setForm({ ...form, status: value })}
               />
             </label>
             <label>
-              税率
+              {t('masterdata.product.field.taxRate')}
               <Input
                 type="number"
                 max="1"
@@ -786,7 +885,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
               />
             </label>
             <label>
-              退税率
+              {t('masterdata.product.field.rebateRate')}
               <Input
                 type="number"
                 max="1"
@@ -797,35 +896,45 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
               />
             </label>
             <div className="entity-modal-span product-image-field">
-              <span className="product-image-field-label">商品图片</span>
+              <span className="product-image-field-label">
+                {t('masterdata.product.field.image')}
+              </span>
               <div className="product-image-uploader">
                 {form.image_url ? (
                   <div className="product-image-preview">
-                    <img src={form.image_url} alt="商品图片预览" />
+                    <img src={form.image_url} alt={t('masterdata.product.imagePreviewAlt')} />
                     <button
                       className="product-image-remove"
                       type="button"
                       onClick={() => setForm({ ...form, image_url: '' })}
                     >
-                      移除图片
+                      {t('masterdata.product.removeImage')}
                     </button>
                   </div>
                 ) : null}
                 <label className="product-image-upload">
                   <input
                     accept="image/*"
-                    aria-label={form.image_url ? '更换商品图片' : '上传商品图片'}
+                    aria-label={
+                      form.image_url
+                        ? t('masterdata.product.changeImageAria')
+                        : t('masterdata.product.uploadImageAria')
+                    }
                     type="file"
                     onChange={handleImageFileChange}
                   />
                   <ImagePlus size={18} />
-                  <span>{form.image_url ? '更换图片' : '上传图片'}</span>
+                  <span>
+                    {form.image_url
+                      ? t('masterdata.product.changeImage')
+                      : t('masterdata.product.uploadImage')}
+                  </span>
                 </label>
-                <p className="product-image-hint">支持 PNG、JPG，图片需小于 2MB。</p>
+                <p className="product-image-hint">{t('masterdata.product.imageHint')}</p>
               </div>
             </div>
             <label className="entity-modal-span">
-              包装资料
+              {t('masterdata.product.field.packageInfo')}
               <Input.TextArea
                 rows={4}
                 value={form.package_info}
@@ -836,17 +945,17 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
 
           {productModalMode === 'create' ? (
             <div className="entity-modal-section">
-              <div className="form-divider">首个配件，可留空后续追加</div>
+              <div className="form-divider">{t('masterdata.product.accessory.firstHint')}</div>
               <div className="entity-modal-grid">
                 <label>
-                  配件名称
+                  {t('masterdata.product.field.accessoryName')}
                   <Input
                     value={form.accessory_name}
                     onChange={(event) => setForm({ ...form, accessory_name: event.target.value })}
                   />
                 </label>
                 <label>
-                  单耗
+                  {t('masterdata.product.field.unitConsumption')}
                   <Input
                     type="number"
                     min="0"
@@ -858,23 +967,23 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
                   />
                 </label>
                 <label>
-                  配件单位
+                  {t('masterdata.product.field.accessoryUnit')}
                   <Input
                     value={form.accessory_unit}
                     onChange={(event) => setForm({ ...form, accessory_unit: event.target.value })}
                   />
                 </label>
                 <label>
-                  默认供应商
+                  {t('masterdata.product.field.defaultSupplier')}
                   <Input
                     value={form.accessory_supplier}
                     onChange={(event) => setForm({ ...form, accessory_supplier: event.target.value })}
                   />
                 </label>
                 <label>
-                  采购拆分
+                  {t('masterdata.product.field.purchaseSplit')}
                   <Select
-                    options={accessoryRuleOptions}
+                    options={accessoryRuleOptions()}
                     value={form.accessory_rule}
                     onChange={(value) => setForm({ ...form, accessory_rule: value })}
                   />
@@ -885,10 +994,12 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
 
           <div className="modal-actions">
             <button className="secondary-inline" type="button" onClick={() => setProductModalMode(null)}>
-              取消
+              {t('common.cancel')}
             </button>
             <button className="inline-submit" disabled={submitting} type="submit">
-              {productModalMode === 'edit' ? '保存商品' : '新增商品'}
+              {productModalMode === 'edit'
+                ? t('masterdata.product.save')
+                : t('masterdata.product.create')}
             </button>
           </div>
         </form>
@@ -898,14 +1009,18 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
         centered
         footer={null}
         open={Boolean(accessoryModalMode)}
-        title={accessoryModalMode === 'edit' ? '编辑配件' : '追加配件'}
+        title={
+          accessoryModalMode === 'edit'
+            ? t('masterdata.product.accessory.edit')
+            : t('masterdata.product.accessory.add')
+        }
         width={720}
         onCancel={() => setAccessoryModalMode(null)}
       >
         <form className="record-form entity-modal-form" onSubmit={submitAccessory}>
           <div className="entity-modal-grid two">
             <label>
-              配件名称
+              {t('masterdata.product.field.accessoryName')}
               <Input
                 value={accessoryForm.accessory_name}
                 onChange={(event) =>
@@ -914,7 +1029,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
               />
             </label>
             <label>
-              单耗
+              {t('masterdata.product.field.unitConsumption')}
               <Input
                 type="number"
                 min="0"
@@ -926,23 +1041,23 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
               />
             </label>
             <label>
-              单位
+              {t('masterdata.product.field.unit')}
               <Input
                 value={accessoryForm.unit}
                 onChange={(event) => setAccessoryForm({ ...accessoryForm, unit: event.target.value })}
               />
             </label>
             <label>
-              默认供应商
+              {t('masterdata.product.field.defaultSupplier')}
               <Input
                 value={accessoryForm.supplier}
                 onChange={(event) => setAccessoryForm({ ...accessoryForm, supplier: event.target.value })}
               />
             </label>
             <label className="entity-modal-span">
-              采购拆分
+              {t('masterdata.product.field.purchaseSplit')}
               <Select
-                options={accessoryRuleOptions}
+                options={accessoryRuleOptions()}
                 value={accessoryForm.rule}
                 onChange={(value) => setAccessoryForm({ ...accessoryForm, rule: value })}
               />
@@ -950,10 +1065,12 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
           </div>
           <div className="modal-actions">
             <button className="secondary-inline" type="button" onClick={() => setAccessoryModalMode(null)}>
-              取消
+              {t('common.cancel')}
             </button>
             <button className="inline-submit" disabled={submitting} type="submit">
-              {accessoryModalMode === 'edit' ? '保存配件' : '追加配件'}
+              {accessoryModalMode === 'edit'
+                ? t('masterdata.product.accessory.save')
+                : t('masterdata.product.accessory.add')}
             </button>
           </div>
         </form>
@@ -963,15 +1080,12 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
         centered
         footer={null}
         open={importModalOpen}
-        title="导入商品资料"
+        title={t('masterdata.product.import.title')}
         width={680}
         onCancel={() => setImportModalOpen(false)}
       >
         <div className="record-form entity-modal-form">
-          <p className="product-image-hint">
-            支持 CSV 与 Excel(.xlsx)。表头需包含：code、cn_name、en_name、customs_code、
-            tax_rate、rebate_rate、package_info、unit；税率可写 0.13 或 13%。已存在的编号将被更新。
-          </p>
+          <p className="product-image-hint">{t('masterdata.product.import.hint')}</p>
           <Upload.Dragger
             accept=".csv,.xlsx"
             beforeUpload={(file) => {
@@ -986,7 +1100,9 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
               <UploadIcon size={28} />
             </p>
             <p className="ant-upload-text">
-              {importing ? '正在导入…' : '点击或拖拽 CSV / Excel 文件到此处'}
+              {importing
+                ? t('masterdata.product.import.importing')
+                : t('masterdata.product.import.drop')}
             </p>
           </Upload.Dragger>
 
@@ -995,15 +1111,23 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
               <Alert
                 type={importResult.failed > 0 ? 'warning' : 'success'}
                 showIcon
-                message={`新增 ${importResult.created} ｜ 更新 ${importResult.updated} ｜ 失败 ${importResult.failed}`}
+                message={t('masterdata.product.import.result', {
+                  created: importResult.created,
+                  updated: importResult.updated,
+                  failed: importResult.failed,
+                })}
               />
               {importResult.errors.length > 0 ? (
                 <Table
                   className="compact-section"
                   columns={[
-                    { title: '行号', dataIndex: 'row', width: 80 },
-                    { title: '编号', dataIndex: 'code', width: 140 },
-                    { title: '原因', dataIndex: 'message' },
+                    { title: t('masterdata.product.import.row'), dataIndex: 'row', width: 80 },
+                    {
+                      title: t('masterdata.product.field.code'),
+                      dataIndex: 'code',
+                      width: 140,
+                    },
+                    { title: t('masterdata.product.import.reason'), dataIndex: 'message' },
                   ]}
                   dataSource={importResult.errors}
                   pagination={false}
@@ -1024,19 +1148,19 @@ async function readFileAsDataUrl(file: File): Promise<string> {
     const reader = new FileReader()
     reader.onload = () => {
       if (typeof reader.result === 'string') resolve(reader.result)
-      else reject(new Error('文件读取失败'))
+      else reject(new Error(t('masterdata.product.fileReadFailed')))
     }
-    reader.onerror = () => reject(reader.error ?? new Error('文件读取失败'))
+    reader.onerror = () => reject(reader.error ?? new Error(t('masterdata.product.fileReadFailed')))
     reader.readAsDataURL(file)
   })
 }
 
 
 function validateProductForm(form: ProductFormState): string | null {
-  if (!form.code.trim()) return '请填写商品编号'
-  if (!form.cn_name.trim()) return '请填写商品中文名称'
-  if (!form.customs_code.trim()) return '请填写海关编码'
-  if (!form.unit.trim()) return '请填写商品单位'
+  if (!form.code.trim()) return t('masterdata.product.validation.codeRequired')
+  if (!form.cn_name.trim()) return t('masterdata.product.validation.cnNameRequired')
+  if (!form.customs_code.trim()) return t('masterdata.product.validation.customsCodeRequired')
+  if (!form.unit.trim()) return t('masterdata.product.validation.unitRequired')
   return null
 }
 
@@ -1161,19 +1285,22 @@ function accessoryPayload(form: ProductAccessoryFormState): ProductAccessoryPayl
 }
 
 function accessoryRuleLabel(value: string): string {
-  return value === 'by_accessory' ? '按配件分单' : '按供应商分单'
+  return value === 'by_accessory'
+    ? t('masterdata.product.accessoryRule.byAccessory')
+    : t('masterdata.product.accessoryRule.bySupplier')
 }
 
 function productTransactionSourceLabel(value: string): string {
-  const labels: Record<string, string> = {
-    export_quotation: '出口报价',
-    export_contract: '出口合同',
-    shipment: '出货明细',
-    purchase_inquiry: '采购询价',
-    purchase_contract: '采购合同',
-    inventory_ledger: '库存流水',
+  const labels: Record<string, TranslationKey> = {
+    export_quotation: 'masterdata.product.transactions.sourceType.exportQuotation',
+    export_contract: 'masterdata.product.transactions.sourceType.exportContract',
+    shipment: 'masterdata.product.transactions.sourceType.shipment',
+    purchase_inquiry: 'masterdata.product.transactions.sourceType.purchaseInquiry',
+    purchase_contract: 'masterdata.product.transactions.sourceType.purchaseContract',
+    inventory_ledger: 'masterdata.product.transactions.sourceType.inventoryLedger',
   }
-  return labels[value] ?? value
+  const key = labels[value]
+  return key ? t(key) : value
 }
 
 function emptyToNull(value: string): string | null {
