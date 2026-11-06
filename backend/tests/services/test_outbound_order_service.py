@@ -12,8 +12,8 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.auth.seed import seed_system_demo_data
-from app.modules.warehouse.inbound_orders.repositories import InboundOrderRepository
 from app.modules.warehouse.inventory.repositories import InventoryRepository
+from app.modules.warehouse.inventory.services import InventoryService
 from app.modules.warehouse.outbound_orders.repositories import OutboundOrderRepository
 from app.modules.warehouse.outbound_orders.schemas import (
     OutboundOrderApprove,
@@ -226,7 +226,7 @@ def _service(session: AsyncSession) -> OutboundOrderService:
     return OutboundOrderService(
         outbound_order_repository=OutboundOrderRepository(session),
         outbound_plan_repository=OutboundPlanRepository(session),
-        inventory_repository=InboundOrderRepository(session),
+        inventory_service=InventoryService(InventoryRepository(session)),
         shipment_repository=ShipmentPlanRepository(session),
         purchase_contract_repository=purchase_repository,
         followup_service=FollowupService(

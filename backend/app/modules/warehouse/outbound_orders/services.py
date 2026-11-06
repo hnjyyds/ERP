@@ -11,7 +11,7 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
-from app.modules.warehouse.inbound_orders.repositories import InboundOrderRepository
+from app.modules.warehouse.inventory.services import InventoryService
 from app.modules.warehouse.outbound_orders.repositories import (
     OutboundOrderLineRow,
     OutboundOrderRepository,
@@ -64,7 +64,7 @@ class OutboundOrderService:
         *,
         outbound_order_repository: OutboundOrderRepository,
         outbound_plan_repository: OutboundPlanRepository,
-        inventory_repository: InboundOrderRepository,
+        inventory_service: InventoryService,
         shipment_repository: ShipmentPlanRepository,
         purchase_contract_repository: PurchaseContractRepository,
         followup_service: FollowupService,
@@ -73,7 +73,7 @@ class OutboundOrderService:
     ) -> None:
         self._repository = outbound_order_repository
         self._outbound_plan_repository = outbound_plan_repository
-        self._inventory_repository = inventory_repository
+        self._inventory_service = inventory_service
         self._shipment_repository = shipment_repository
         self._purchase_contract_repository = purchase_contract_repository
         self._followup_service = followup_service
@@ -370,7 +370,7 @@ class OutboundOrderService:
         line: OutboundOrderLineRow,
         allow_negative: bool,
     ) -> None:
-        balance = await self._repository.decrease_available_balance(
+        balance = await self._inventory_service.decrease_available_balance(
             warehouse_id=order.warehouse_id,
             warehouse_name=order.warehouse_name,
             location_id=order.location_id,
@@ -384,7 +384,7 @@ class OutboundOrderService:
         )
         if balance is None:
             raise ValueError("库存不足，不能造成非授权负库存")
-        await self._repository.add_ledger(
+        await self._inventory_service.add_ledger(
             warehouse_id=order.warehouse_id,
             warehouse_name=order.warehouse_name,
             location_id=order.location_id,

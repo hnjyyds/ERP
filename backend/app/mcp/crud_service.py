@@ -28,6 +28,8 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.auth.services import AuthService, TokenService
+from app.modules.warehouse.inventory.repositories import InventoryRepository
+from app.modules.warehouse.inventory.services import InventoryService
 
 
 class ConfirmationRequiredError(Exception):
@@ -46,6 +48,12 @@ class ErpMcpCrudService:
         self._session_factory = session_factory
         self._token_service = token_service
 
+    def _product_service(self, session: AsyncSession) -> ProductService:
+        return ProductService(
+            ProductRepository(session),
+            InventoryService(InventoryRepository(session)),
+        )
+
     async def list_products(
         self,
         *,
@@ -56,7 +64,7 @@ class ErpMcpCrudService:
     ) -> ProductListResponse:
         async with self._session_factory() as session:
             current_user = await self._current_user(session, user_id)
-            return await ProductService(ProductRepository(session)).list_products(
+            return await self._product_service(session).list_products(
                 current_user=current_user,
                 q=q,
                 limit=limit,
@@ -66,7 +74,7 @@ class ErpMcpCrudService:
     async def get_product(self, *, user_id: str, product_id: str) -> ProductResponse:
         async with self._session_factory() as session:
             current_user = await self._current_user(session, user_id)
-            return await ProductService(ProductRepository(session)).get_product(
+            return await self._product_service(session).get_product(
                 current_user=current_user,
                 product_id=product_id,
             )
@@ -79,7 +87,7 @@ class ErpMcpCrudService:
     ) -> ProductResponse:
         async with self._session_factory() as session:
             current_user = await self._current_user(session, user_id)
-            return await ProductService(ProductRepository(session)).create_product(
+            return await self._product_service(session).create_product(
                 current_user=current_user,
                 payload=payload,
             )
@@ -93,7 +101,7 @@ class ErpMcpCrudService:
     ) -> ProductResponse:
         async with self._session_factory() as session:
             current_user = await self._current_user(session, user_id)
-            return await ProductService(ProductRepository(session)).update_product(
+            return await self._product_service(session).update_product(
                 current_user=current_user,
                 product_id=product_id,
                 payload=payload,
@@ -109,7 +117,7 @@ class ErpMcpCrudService:
         self._require_confirmation(confirm)
         async with self._session_factory() as session:
             current_user = await self._current_user(session, user_id)
-            return await ProductService(ProductRepository(session)).deactivate_product(
+            return await self._product_service(session).deactivate_product(
                 current_user=current_user,
                 product_id=product_id,
             )

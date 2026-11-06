@@ -12,7 +12,6 @@ from app.modules.purchase.inquiries.models import PurchaseInquiry, PurchaseInqui
 from app.modules.sales.contracts.models import ExportContract, ExportContractLine
 from app.modules.sales.quotations.models import ExportQuotation, ExportQuotationLine
 from app.modules.sales.shipments.models import ShipmentLine, ShipmentPlan
-from app.modules.warehouse.inventory.models import InventoryLedger
 
 
 @dataclass(frozen=True)
@@ -450,43 +449,6 @@ class ProductRepository:
                     unit=unit,
                     amount=Decimal(str(amount or 0)),
                     summary=f"采购合同 {code} · {supplier_name}（{currency}）",
-                )
-            )
-
-        ledgers = await self.session.execute(
-            select(
-                InventoryLedger.source_code,
-                InventoryLedger.occurred_at,
-                InventoryLedger.direction,
-                InventoryLedger.quantity,
-                InventoryLedger.unit,
-                InventoryLedger.warehouse_name,
-                InventoryLedger.location_name,
-            )
-            .where(InventoryLedger.product_id == product_id)
-            .order_by(InventoryLedger.occurred_at.desc(), InventoryLedger.created_at.desc())
-            .limit(resolve_limit(limit))
-        )
-        for (
-            source_code,
-            occurred_at,
-            direction,
-            quantity,
-            unit,
-            warehouse_name,
-            location_name,
-        ) in ledgers.all():
-            direction_label = "入库" if direction == "in" else "出库"
-            rows.append(
-                ProductTransactionRow(
-                    source_type="inventory_ledger",
-                    source_code=source_code,
-                    occurred_at=occurred_at.isoformat() if occurred_at else "",
-                    counterparty_name=f"{warehouse_name}/{location_name}",
-                    quantity=Decimal(str(quantity or 0)),
-                    unit=unit,
-                    amount=None,
-                    summary=f"库存流水 {source_code} · {direction_label}",
                 )
             )
 

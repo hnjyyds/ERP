@@ -32,7 +32,9 @@ from app.modules.masterdata.products.schemas import (
     ProductUpdate,
 )
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.warehouse.inventory.services import InventoryService
 
+_TRANSACTION_LIMIT = 100
 _IMPORT_COLUMNS = (
     "code",
     "cn_name",
@@ -69,8 +71,13 @@ class _ImportRowError(Exception):
 
 
 class ProductService:
-    def __init__(self, repository: ProductRepository) -> None:
+    def __init__(
+        self,
+        repository: ProductRepository,
+        inventory_service: InventoryService,
+    ) -> None:
         self._repository = repository
+        self._inventory_service = inventory_service
 
     async def create_product(
         self,
@@ -371,8 +378,29 @@ class ProductService:
         product = await self._repository.get_product(product_id)
         if product is None:
             raise ProductNotFoundError
-        rows = await self._repository.list_transactions(product_id=product_id)
-        items = [self._transaction_response(row) for row in rows]
+        rows = await self._repository.list_transactions(
+            product_id=product_id,
+            limit=_TRANSACTION_LIMIT,
+        )
+        for entry in await self._inventory_service.list_product_ledger_entries(
+            product_id=product_id,
+            limit=_TRANSACTION_LIMIT,
+        ):
+            direction_label = "入库" if entry.direction == "in" else "出库"
+            rows.append(
+                ProductTransactionRow(
+                    source_type="inventory_ledger",
+                    source_code=entry.source_code,
+                    occurred_at=entry.occurred_at.isoformat() if entry.occurred_at else "",
+                    counterparty_name=f"{entry.warehouse_name}/{entry.location_name}",
+                    quantity=entry.quantity,
+                    unit=entry.unit,
+                    amount=None,
+                    summary=f"库存流水 {entry.source_code} · {direction_label}",
+                )
+            )
+        rows.sort(key=lambda row: row.occurred_at, reverse=True)
+        items = [self._transaction_response(row) for row in rows[:_TRANSACTION_LIMIT]]
         return ProductTransactionListResponse(items=items, total=len(items))
 
     def _decode_import_content(self, content_base64: str) -> bytes:

@@ -62,7 +62,7 @@ async def test_outbound_order_repository_records_order_deducts_stock_and_ledger(
         )
         submitted = await repository.submit_order(order.id)
         approved = await repository.approve_order(order.id, date(2026, 9, 30), "业务主管")
-        balance = await repository.decrease_available_balance(
+        balance = await inventory_repository.decrease_available_balance(
             warehouse_id="wh-ningbo",
             warehouse_name="宁波总仓",
             location_id="loc-fg-01",
@@ -74,7 +74,7 @@ async def test_outbound_order_repository_records_order_deducts_stock_and_ledger(
             unit="pcs",
             allow_negative=False,
         )
-        await repository.add_ledger(
+        await inventory_repository.add_ledger(
             warehouse_id="wh-ningbo",
             warehouse_name="宁波总仓",
             location_id="loc-fg-01",
@@ -127,7 +127,6 @@ async def test_outbound_order_repository_rejects_insufficient_available_stock(
 ) -> None:
     async with session_factory() as session:
         inventory_repository = InventoryRepository(session)
-        repository = OutboundOrderRepository(session)
         await inventory_repository.increase_balance(
             warehouse_id="wh-ningbo",
             warehouse_name="宁波总仓",
@@ -141,7 +140,7 @@ async def test_outbound_order_repository_rejects_insufficient_available_stock(
             unit="pcs",
         )
 
-        balance = await repository.decrease_available_balance(
+        balance = await inventory_repository.decrease_available_balance(
             warehouse_id="wh-ningbo",
             warehouse_name="宁波总仓",
             location_id="loc-fg-01",

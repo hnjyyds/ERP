@@ -11,7 +11,8 @@ from app.modules.sales.shipments.repositories import ShipmentPlanRepository
 from app.modules.sample.records.repositories import SampleRecordRepository
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
-from app.modules.warehouse.inbound_orders.repositories import InboundOrderRepository
+from app.modules.warehouse.inventory.repositories import InventoryRepository
+from app.modules.warehouse.inventory.services import InventoryService
 from app.modules.warehouse.outbound_orders.repositories import OutboundOrderRepository
 from app.modules.warehouse.outbound_orders.services import OutboundOrderService
 from app.modules.warehouse.outbound_plans.repositories import OutboundPlanRepository
@@ -26,7 +27,7 @@ def get_outbound_order_service(
     return OutboundOrderService(
         outbound_order_repository=OutboundOrderRepository(session),
         outbound_plan_repository=OutboundPlanRepository(session),
-        inventory_repository=InboundOrderRepository(session),
+        inventory_service=InventoryService(InventoryRepository(session)),
         shipment_repository=ShipmentPlanRepository(session),
         purchase_contract_repository=purchase_contract_repository,
         followup_service=FollowupService(

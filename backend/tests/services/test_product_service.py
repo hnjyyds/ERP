@@ -5,6 +5,8 @@ from app.modules.masterdata.products.repositories import ProductRepository
 from app.modules.masterdata.products.schemas import ProductCreate, ProductUpdate
 from app.modules.masterdata.products.services import PermissionDeniedError, ProductService
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.warehouse.inventory.repositories import InventoryRepository
+from app.modules.warehouse.inventory.services import InventoryService
 
 
 def _user_with_permissions(permissions: list[str]) -> CurrentUserResponse:
@@ -22,7 +24,10 @@ async def test_product_service_creates_product_with_accessories(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = ProductService(ProductRepository(session))
+        service = ProductService(
+            ProductRepository(session),
+            InventoryService(InventoryRepository(session)),
+        )
         product = await service.create_product(
             current_user=_user_with_permissions(["masterdata:product:edit"]),
             payload=ProductCreate(
@@ -56,7 +61,10 @@ async def test_product_service_updates_and_deactivates_product(
 ) -> None:
     user = _user_with_permissions(["masterdata:product:edit", "masterdata:product:view"])
     async with session_factory() as session:
-        service = ProductService(ProductRepository(session))
+        service = ProductService(
+            ProductRepository(session),
+            InventoryService(InventoryRepository(session)),
+        )
         product = await service.create_product(
             current_user=user,
             payload=ProductCreate(
@@ -95,7 +103,10 @@ async def test_product_service_rejects_missing_permission(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        service = ProductService(ProductRepository(session))
+        service = ProductService(
+            ProductRepository(session),
+            InventoryService(InventoryRepository(session)),
+        )
         with pytest.raises(PermissionDeniedError):
             await service.list_products(
                 current_user=_user_with_permissions(["dashboard:view"]),

@@ -6,11 +6,6 @@ from sqlalchemy import Select, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.pagination import resolve_limit, resolve_offset
-from app.modules.warehouse.inventory.models import InventoryBalance, InventoryLedger
-from app.modules.warehouse.inventory.repositories import (
-    InventoryBalanceRow,
-    InventoryLedgerRow,
-)
 from app.modules.warehouse.outbound_orders.models import OutboundOrder, OutboundOrderLine
 
 
@@ -256,102 +251,6 @@ class OutboundOrderRepository:
         await self.session.flush()
         return self._map_order(order)
 
-    async def decrease_available_balance(
-        self,
-        *,
-        warehouse_id: str,
-        warehouse_name: str,
-        location_id: str,
-        location_name: str,
-        product_id: str | None,
-        product_code: str | None,
-        product_name: str,
-        quantity: Decimal | str,
-        unit: str,
-        allow_negative: bool,
-    ) -> InventoryBalanceRow | None:
-        statement = (
-            select(InventoryBalance)
-            .where(InventoryBalance.warehouse_id == warehouse_id)
-            .where(InventoryBalance.location_id == location_id)
-            .where(InventoryBalance.product_code == product_code)
-            .where(InventoryBalance.product_name == product_name)
-            .where(InventoryBalance.unit == unit)
-        )
-        if product_id is None:
-            statement = statement.where(InventoryBalance.product_id.is_(None))
-        else:
-            statement = statement.where(InventoryBalance.product_id == product_id)
-        balance = await self.session.scalar(statement)
-        quantity_decimal = Decimal(str(quantity))
-        if balance is None:
-            if not allow_negative:
-                return None
-            balance = InventoryBalance(
-                warehouse_id=warehouse_id,
-                warehouse_name=warehouse_name,
-                location_id=location_id,
-                location_name=location_name,
-                product_id=product_id,
-                product_code=product_code,
-                product_name=product_name,
-                available_quantity=Decimal("0"),
-                locked_quantity=Decimal("0"),
-                pending_inspection_quantity=Decimal("0"),
-                unit=unit,
-            )
-            self.session.add(balance)
-        if balance.available_quantity < quantity_decimal and not allow_negative:
-            return None
-        balance.warehouse_name = warehouse_name
-        balance.location_name = location_name
-        balance.product_name = product_name
-        balance.available_quantity -= quantity_decimal
-        await self.session.flush()
-        return self._map_balance(balance)
-
-    async def add_ledger(
-        self,
-        *,
-        warehouse_id: str,
-        warehouse_name: str,
-        location_id: str,
-        location_name: str,
-        product_id: str | None,
-        product_code: str | None,
-        product_name: str,
-        direction: str,
-        quantity: Decimal | str,
-        unit: str,
-        stock_status: str,
-        source_type: str,
-        source_id: str,
-        source_code: str,
-        occurred_at: date,
-        remark: str | None,
-    ) -> InventoryLedgerRow:
-        ledger = InventoryLedger(
-            warehouse_id=warehouse_id,
-            warehouse_name=warehouse_name,
-            location_id=location_id,
-            location_name=location_name,
-            product_id=product_id,
-            product_code=product_code,
-            product_name=product_name,
-            direction=direction,
-            quantity=Decimal(str(quantity)),
-            unit=unit,
-            stock_status=stock_status,
-            source_type=source_type,
-            source_id=source_id,
-            source_code=source_code,
-            occurred_at=occurred_at,
-            remark=remark,
-        )
-        self.session.add(ledger)
-        await self.session.flush()
-        return self._map_ledger(ledger)
-
     async def _order_scalars(self, statement: Select[tuple[OutboundOrder]]) -> list[OutboundOrder]:
         result = await self.session.scalars(statement)
         return list(result.unique())
@@ -400,45 +299,6 @@ class OutboundOrderRepository:
             stock_status=line.stock_status,
             remark=line.remark,
             created_at=line.created_at,
-        )
-
-    def _map_balance(self, balance: InventoryBalance) -> InventoryBalanceRow:
-        return InventoryBalanceRow(
-            id=balance.id,
-            warehouse_id=balance.warehouse_id,
-            warehouse_name=balance.warehouse_name,
-            location_id=balance.location_id,
-            location_name=balance.location_name,
-            product_id=balance.product_id,
-            product_code=balance.product_code,
-            product_name=balance.product_name,
-            available_quantity=self._quantity(balance.available_quantity),
-            locked_quantity=self._quantity(balance.locked_quantity),
-            pending_inspection_quantity=self._quantity(balance.pending_inspection_quantity),
-            unit=balance.unit,
-            created_at=balance.created_at,
-        )
-
-    def _map_ledger(self, ledger: InventoryLedger) -> InventoryLedgerRow:
-        return InventoryLedgerRow(
-            id=ledger.id,
-            warehouse_id=ledger.warehouse_id,
-            warehouse_name=ledger.warehouse_name,
-            location_id=ledger.location_id,
-            location_name=ledger.location_name,
-            product_id=ledger.product_id,
-            product_code=ledger.product_code,
-            product_name=ledger.product_name,
-            direction=ledger.direction,
-            quantity=self._quantity(ledger.quantity),
-            unit=ledger.unit,
-            stock_status=ledger.stock_status,
-            source_type=ledger.source_type,
-            source_id=ledger.source_id,
-            source_code=ledger.source_code,
-            occurred_at=ledger.occurred_at,
-            remark=ledger.remark,
-            created_at=ledger.created_at,
         )
 
     def _quantity(self, value: Decimal) -> str:
