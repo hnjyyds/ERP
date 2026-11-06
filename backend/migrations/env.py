@@ -17,8 +17,9 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name, disable_existing_loggers=False)
 
-# 数据库地址只从应用配置读取，避免 alembic.ini 与 .env 出现两份来源。
-config.set_main_option("sqlalchemy.url", get_settings().database_url)
+# 数据库地址默认从应用配置读取；调用方（测试/命令行）显式指定时以显式值为准。
+if not config.get_main_option("sqlalchemy.url"):
+    config.set_main_option("sqlalchemy.url", get_settings().database_url)
 
 target_metadata = Base.metadata
 
