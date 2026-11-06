@@ -49,10 +49,10 @@ vi.mock('../../../shared/print', () => ({
 
 vi.mock('../../../shared/formOptions', () => ({
   exportContractStatusOptions: [
-    { value: 'draft', label: '草稿' },
-    { value: 'submitted', label: '已提交' },
-    { value: 'approved', label: '已审批' },
-    { value: 'rejected', label: '已驳回' },
+    { value: 'draft', labelKey: 'sales.status.draft' },
+    { value: 'submitted', labelKey: 'sales.status.submitted' },
+    { value: 'approved', labelKey: 'sales.status.approved' },
+    { value: 'rejected', labelKey: 'sales.status.rejected' },
   ],
 }))
 

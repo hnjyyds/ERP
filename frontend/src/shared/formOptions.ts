@@ -110,26 +110,26 @@ export const sampleDeliveryTrackingStatusOptions = [
   { value: 'shipped', label: '已寄出' },
 ]
 
-export const exportQuotationStatusOptions = [
-  { value: 'draft', label: '草稿' },
-  { value: 'submitted', label: '待审批' },
-  { value: 'approved', label: '已审批' },
-  { value: 'contract_generated', label: '已生成合同' },
-  { value: 'rejected', label: '已退回' },
+export const exportQuotationStatusOptions: LocalizedOption[] = [
+  { value: 'draft', labelKey: 'sales.status.draft' },
+  { value: 'submitted', labelKey: 'sales.status.submitted' },
+  { value: 'approved', labelKey: 'sales.status.approved' },
+  { value: 'contract_generated', labelKey: 'sales.status.contractGenerated' },
+  { value: 'rejected', labelKey: 'sales.status.rejected' },
 ]
 
-export const exportContractStatusOptions = [
-  { value: 'draft', label: '草稿' },
-  { value: 'submitted', label: '待审批' },
-  { value: 'approved', label: '已审批' },
-  { value: 'rejected', label: '已退回' },
+export const exportContractStatusOptions: LocalizedOption[] = [
+  { value: 'draft', labelKey: 'sales.status.draft' },
+  { value: 'submitted', labelKey: 'sales.status.submitted' },
+  { value: 'approved', labelKey: 'sales.status.approved' },
+  { value: 'rejected', labelKey: 'sales.status.rejected' },
 ]
 
-export const shipmentStatusOptions = [
-  { value: 'draft', label: '草稿' },
-  { value: 'submitted', label: '待审批' },
-  { value: 'approved', label: '已审批' },
-  { value: 'rejected', label: '已退回' },
+export const shipmentStatusOptions: LocalizedOption[] = [
+  { value: 'draft', labelKey: 'sales.status.draft' },
+  { value: 'submitted', labelKey: 'sales.status.submitted' },
+  { value: 'approved', labelKey: 'sales.status.approved' },
+  { value: 'rejected', labelKey: 'sales.status.rejected' },
 ]
 
 export const receiptStatusOptions = [
@@ -382,9 +382,9 @@ export const outboundOrderModeOptions = [
   { value: 'exception', label: '异常出库' },
 ]
 
-export const freightMethodOptions = [
-  { value: 'sea', label: '海运' },
-  { value: 'air', label: '空运' },
-  { value: 'express', label: '快递' },
-  { value: 'rail', label: '铁路' },
+export const freightMethodOptions: LocalizedOption[] = [
+  { value: 'sea', labelKey: 'sales.freightMethod.sea' },
+  { value: 'air', labelKey: 'sales.freightMethod.air' },
+  { value: 'express', labelKey: 'sales.freightMethod.express' },
+  { value: 'rail', labelKey: 'sales.freightMethod.rail' },
 ]

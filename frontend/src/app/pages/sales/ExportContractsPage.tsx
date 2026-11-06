@@ -9,6 +9,7 @@ import { showError, showWarningDialog } from '../../../shared/errors'
 import { downloadCsv as _downloadCsv, openExportContractPrint } from '../../../shared/print'
 import { exportContractStatusOptions } from '../../../shared/formOptions'
 import { canApproveAssignedRecord, formatDate, formatMoney, formatPercent as _formatPercent, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { t } from '../../appI18n'
 import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
 
 function customerDisplayName(customer: Customer): string {
@@ -52,9 +53,9 @@ function renderAssignableUserOptions(users: AssignableUser[]): ReactNode {
 }
 
 function contractProgressStatusLabel(value: string): string {
-  if (value === 'completed') return '已完成'
-  if (value === 'partial') return '部分完成'
-  if (value === 'pending') return '未开始'
+  if (value === 'completed') return t('sales.contract.progress.completed')
+  if (value === 'partial') return t('sales.contract.progress.partial')
+  if (value === 'pending') return t('sales.contract.progress.pending')
   return value
 }
 
@@ -137,7 +138,7 @@ function initialExportContractForm(currentUser?: CurrentUser): ExportContractFor
 
 function initialExportContractApproveForm(): ExportContractApproveFormState {
   return {
-    reviewer_name: '演示业务主管',
+    reviewer_name: '',
     approved_at: todayInputValue(),
   }
 }
@@ -284,13 +285,14 @@ function exportContractAdvancePaymentPayload(
 }
 
 function exportContractStatusLabel(value: string): string {
-  return exportContractStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = exportContractStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function signatureStatusLabel(value: string): string {
-  if (value === 'signed') return '已回签'
-  if (value === 'not_signed') return '未回签'
-  if (value === 'pending') return '待回签'
+  if (value === 'signed') return t('sales.contract.signatureStatus.signed')
+  if (value === 'not_signed') return t('sales.contract.signatureStatus.notSigned')
+  if (value === 'pending') return t('sales.contract.signatureStatus.pending')
   return value
 }
 
@@ -399,7 +401,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
         null
       setSelectedContractId(nextSelectedId)
     } catch (caught) {
-      showError(caught, '出口合同加载失败')
+      showError(caught, t('sales.contract.list.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -411,7 +413,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
       const result = await listCustomers()
       setCustomers(result.items)
     } catch (caught) {
-      showError(caught, '客户资料加载失败')
+      showError(caught, t('sales.contract.list.customerLoadFailed'))
     } finally {
       setLoadingCustomers(false)
     }
@@ -423,7 +425,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
       const result = await listProducts()
       setProducts(result.items)
     } catch (caught) {
-      showError(caught, '商品资料加载失败')
+      showError(caught, t('sales.contract.list.productLoadFailed'))
     } finally {
       setLoadingProducts(false)
     }
@@ -435,7 +437,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
       const result = await listAssignableUsers('sales:contract:edit')
       setAssignableUsers(result.users)
     } catch (caught) {
-      showError(caught, '业务员列表加载失败')
+      showError(caught, t('sales.contract.list.salesUserLoadFailed'))
     } finally {
       setAssignableUsersLoaded(true)
       setLoadingAssignableUsers(false)
@@ -516,13 +518,13 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
       })
       setHistory(result.items)
     } catch (caught) {
-      showError(caught, '历史询报价参考加载失败')
+      showError(caught, t('sales.contract.detail.historyLoadFailed'))
     }
   }
 
   function syncExportContractActionForms(contract: ExportContract | null) {
     setApproveForm({
-      reviewer_name: contract?.reviewer_name ?? '演示业务主管',
+      reviewer_name: contract?.reviewer_name ?? '',
       approved_at: contract?.approved_at ?? todayInputValue(),
     })
     setSignatureForm({
@@ -579,7 +581,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
   async function submitContract(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (form.lines.length === 0) {
-      showWarningDialog('请至少添加一个商品，确保后续采购和 QC 流程可以正确关联')
+      showWarningDialog(t('sales.contract.validation.lineRequired'))
       return
     }
     const invalidLine = form.lines.find(
@@ -592,14 +594,20 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
         Number(line.unit_price) <= 0,
     )
     if (invalidLine) {
-      showWarningDialog(`请完善商品“${invalidLine.product_name || invalidLine.product_code}”的数量、单位和销售单价`)
+      showWarningDialog(
+        t('sales.contract.validation.lineIncomplete', {
+          name: invalidLine.product_name || invalidLine.product_code,
+        }),
+      )
       return
     }
     const invalidBarcodeLine = form.lines.find(
       (line) => line.barcode && !/^\d{1,64}$/.test(line.barcode),
     )
     if (invalidBarcodeLine) {
-      showWarningDialog(`商品“${invalidBarcodeLine.product_name}”的条形码只能填写 1 至 64 位数字`)
+      showWarningDialog(
+        t('sales.contract.validation.barcodeInvalid', { name: invalidBarcodeLine.product_name }),
+      )
       return
     }
     setSubmitting(true)
@@ -610,7 +618,11 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
       const saved = editingContractId
         ? await updateExportContract(editingContractId, exportContractPayload(form))
         : await createExportContract(exportContractPayload(form))
-      setMessage(editingContractId ? `已保存出口合同 ${saved.code}` : `已新增出口合同 ${saved.code}`)
+      setMessage(
+        editingContractId
+          ? t('sales.contract.message.saved', { code: saved.code })
+          : t('sales.contract.message.created', { code: saved.code }),
+      )
       setEditingContractId(null)
       setForm(initialExportContractForm(currentUser))
       setCreateModalOpen(false)
@@ -618,7 +630,12 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
       upsertContract(saved)
       await loadContracts(saved.id)
     } catch (caught) {
-      showError(caught, editingContractId ? '出口合同草稿保存失败' : '出口合同新增失败')
+      showError(
+        caught,
+        editingContractId
+          ? t('sales.contract.message.saveFailed')
+          : t('sales.contract.message.createFailed'),
+      )
     } finally {
       setSubmitting(false)
     }
@@ -627,7 +644,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
   async function submitContractForApproval() {
     if (!selectedContract) return
     if (!reviewerId) {
-      showError(new Error('请选择审批人'))
+      showError(new Error(t('sales.contract.validation.reviewerRequired')))
       return
     }
     setSubmitting(true)
@@ -635,11 +652,11 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
     setError('')
     try {
       const submitted = await submitExportContract(selectedContract.id, { reviewer_id: reviewerId })
-      setMessage(`已提交出口合同 ${submitted.code}`)
+      setMessage(t('sales.contract.message.submitted', { code: submitted.code }))
       upsertContract(submitted)
       await loadContracts(submitted.id)
     } catch (caught) {
-      showError(caught, '出口合同提交失败')
+      showError(caught, t('sales.contract.message.submitFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -648,7 +665,13 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
   async function approveContract() {
     if (!selectedContract) return
     if (!canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'sales:contract:approve')) {
-      showError(new Error(`该出口合同应由 ${selectedContract.reviewer_name ?? '指定审批人'} 审批`))
+      showError(
+        new Error(
+          t('sales.contract.action.approverMismatch', {
+            name: selectedContract.reviewer_name ?? t('sales.contract.action.defaultReviewer'),
+          }),
+        ),
+      )
       return
     }
     setSubmitting(true)
@@ -659,11 +682,11 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
         selectedContract.id,
         exportContractApprovePayload(approveForm),
       )
-      setMessage(`已审批出口合同 ${approved.code}`)
+      setMessage(t('sales.contract.message.approved', { code: approved.code }))
       upsertContract(approved)
       await loadContracts(approved.id)
     } catch (caught) {
-      showError(caught, '出口合同审批失败')
+      showError(caught, t('sales.contract.message.approveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -680,11 +703,11 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
         selectedContract.id,
         exportContractSignaturePayload(signatureForm),
       )
-      setMessage(`已登记合同回签 ${signed.code}`)
+      setMessage(t('sales.contract.message.signatureRegistered', { code: signed.code }))
       upsertContract(signed)
       await loadContracts(signed.id)
     } catch (caught) {
-      showError(caught, '合同回签登记失败')
+      showError(caught, t('sales.contract.message.signatureFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -711,7 +734,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
             : contract,
         ),
       )
-      setMessage(`已关联预收款 ${payment.payment_no}`)
+      setMessage(t('sales.contract.message.advancePaymentAdded', { no: payment.payment_no }))
       setAdvancePaymentForm({
         ...initialExportContractAdvancePaymentForm(),
         currency: selectedContract.currency,
@@ -719,7 +742,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
       })
       await loadContracts(selectedContract.id)
     } catch (caught) {
-      showError(caught, '预收款关联失败')
+      showError(caught, t('sales.contract.message.advancePaymentFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -733,9 +756,9 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
     try {
       const result = await exportExportContract(selectedContract.id, format)
       setExportPreview(result.content.split('\n').slice(0, 14).join('\n'))
-      setMessage(`已生成合同导出预览 ${result.filename}`)
+      setMessage(t('sales.contract.message.exportPreview', { filename: result.filename }))
     } catch (caught) {
-      showError(caught, '出口合同导出失败')
+      showError(caught, t('sales.contract.message.exportFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -750,12 +773,12 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
 
   return (
     <section className="export-contract-page">
-<div className="summary-strip" aria-label="出口合同概览">
-        <Metric label="合同数" value={contracts.length} />
-        <Metric label="待审批" value={contracts.filter((item) => item.approval_status === 'submitted').length} />
-        <Metric label="已审批" value={contracts.filter((item) => item.approval_status === 'approved').length} />
-        <Metric label="合同金额" value={formatMoney(totalAmount.toFixed(2), currency)} />
-        <Metric label="预收款" value={formatMoney(totalAdvance.toFixed(2), currency)} />
+<div className="summary-strip" aria-label={t('sales.contract.metric.overviewAria')}>
+        <Metric label={t('sales.contract.metric.contractCount')} value={contracts.length} />
+        <Metric label={t('sales.contract.metric.pendingApproval')} value={contracts.filter((item) => item.approval_status === 'submitted').length} />
+        <Metric label={t('sales.contract.metric.approvedCount')} value={contracts.filter((item) => item.approval_status === 'approved').length} />
+        <Metric label={t('sales.contract.metric.contractAmount')} value={formatMoney(totalAmount.toFixed(2), currency)} />
+        <Metric label={t('sales.contract.metric.advancePayment')} value={formatMoney(totalAdvance.toFixed(2), currency)} />
       </div>
 
       {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
@@ -765,7 +788,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel" style={{ gridColumn: '1 / -1' }}>
           <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="合同列表" />
+            <PanelTitle icon={<Search size={18} />} title={t('sales.contract.list.title')} />
           </div>
           <form
             className="inline-filters single-line-filter-toolbar"
@@ -775,36 +798,36 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
             }}
           >
             <label>
-              合同搜索
+              {t('sales.contract.list.searchLabel')}
               <Input
                 value={search}
-                placeholder="合同号 / 客户 / 产品 / 条款"
+                placeholder={t('sales.contract.list.searchPlaceholder')}
                 onChange={(event) => setSearch(event.target.value)}
               />
             </label>
             <label>
-              审批状态
+              {t('sales.contract.list.statusFilter')}
               <FormSelect
                 id="export-contract-status-filter"
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
               >
-                <option value="">全部状态</option>
+                <option value="">{t('sales.contract.list.allStatuses')}</option>
                 {exportContractStatusOptions.map((item) => (
                   <option key={item.value} value={item.value}>
-                    {item.label}
+                    {t(item.labelKey)}
                   </option>
                 ))}
               </FormSelect>
             </label>
             <label>
-              客户筛选
+              {t('sales.contract.list.customerFilter')}
               <Select
                 allowClear
                 showSearch
                 loading={loadingCustomers}
                 value={customerFilter || undefined}
-                placeholder="从客户资料筛选"
+                placeholder={t('sales.contract.list.customerFilterPlaceholder')}
                 optionLabelProp="label"
                 filterOption={(input, option) => {
                   const customer = customers.find((item) => item.id === option?.value)
@@ -812,7 +835,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                     ? customerOptionLabel(customer).toLocaleLowerCase().includes(input.toLocaleLowerCase())
                     : false
                 }}
-                notFoundContent={loadingCustomers ? '加载客户资料中' : '暂无客户资料'}
+                notFoundContent={loadingCustomers ? t('sales.contract.list.loadingCustomers') : t('sales.contract.list.noCustomers')}
                 placement="bottomRight"
                 popupMatchSelectWidth={360}
                 onChange={(value) => setCustomerFilter(value ?? '')}
@@ -821,17 +844,17 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
               </Select>
             </label>
             <Button htmlType="submit" icon={<Search size={16} />}>
-              查询
+              {t('sales.contract.list.query')}
             </Button>
             <Button type="primary" icon={<Plus size={16} />} onClick={openCreateContractModal}>
-              新增合同
+              {t('sales.contract.list.create')}
             </Button>
           </form>
 
           <Table<ExportContract>
             columns={[
               {
-                title: '合同号',
+                title: t('sales.contract.field.code'),
                 dataIndex: 'code',
                 render: (value: string, record: ExportContract) => (
                   <button
@@ -843,22 +866,22 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                   </button>
                 ),
               },
-              { title: '状态', dataIndex: 'approval_status', render: exportContractStatusLabel },
-              { title: '客户', dataIndex: 'customer_name' },
-              { title: '计划出运日', dataIndex: 'planned_ship_date', render: formatDate },
+              { title: t('sales.contract.field.status'), dataIndex: 'approval_status', render: exportContractStatusLabel },
+              { title: t('sales.contract.field.customer'), dataIndex: 'customer_name' },
+              { title: t('sales.contract.field.plannedShipDate'), dataIndex: 'planned_ship_date', render: formatDate },
               {
-                title: '金额',
+                title: t('sales.contract.field.amount'),
                 dataIndex: 'statistics',
                 render: (_, contract) => formatMoney(contract.statistics.total_amount, contract.currency),
               },
-              { title: '回签', dataIndex: 'signature_status', render: signatureStatusLabel },
+              { title: t('sales.contract.field.signature'), dataIndex: 'signature_status', render: signatureStatusLabel },
               {
-                title: '入口',
+                title: t('sales.contract.field.entry'),
                 key: 'detail',
                 width: 110,
                 render: (_: unknown, record: ExportContract) => (
                   <Button size="small" onClick={(event) => stopAndOpenContractDetail(event, record)}>
-                    查看详情
+                    {t('sales.contract.action.viewDetail')}
                   </Button>
                 ),
               },
@@ -880,7 +903,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
           centered
           footer={null}
           open={createModalOpen}
-          title={editingContractId ? '编辑出口合同' : '新增出口合同'}
+          title={editingContractId ? t('sales.contract.form.editTitle') : t('sales.contract.form.createTitle')}
           width={1160}
           onCancel={() => {
             closeProductDrawer()
@@ -891,11 +914,11 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
           <form className="record-form entity-modal-form contract-modal-form" onSubmit={submitContract}>
             <div className="form-row">
               <label>
-                合同号
+                {t('sales.contract.field.code')}
                 <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
               </label>
               <label>
-                合同日期
+                {t('sales.contract.field.contractDate')}
                 <Input
                   type="date"
                   value={form.contract_date}
@@ -903,14 +926,14 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                 />
               </label>
               <label>
-                业务员
+                {t('sales.contract.field.salesperson')}
                 <Select
                   allowClear
-                  aria-label="业务员"
+                  aria-label={t('sales.contract.field.salesperson')}
                   showSearch
                   loading={loadingAssignableUsers}
                   value={form.sales_user_id || undefined}
-                  placeholder={loadingAssignableUsers ? '正在加载业务员' : '请选择业务员'}
+                  placeholder={loadingAssignableUsers ? t('sales.contract.form.salespersonLoading') : t('sales.contract.form.salespersonPlaceholder')}
                   optionLabelProp="label"
                   filterOption={(input, option) => {
                     const user = assignableUsers.find((item) => item.id === option?.value)
@@ -920,7 +943,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                           .includes(input.toLocaleLowerCase())
                       : false
                   }}
-                  notFoundContent={loadingAssignableUsers ? '加载人员中' : '暂无可选业务员'}
+                  notFoundContent={loadingAssignableUsers ? t('sales.contract.form.loadingUsers') : t('sales.contract.form.noSalespersons')}
                   onChange={applySalesUserToContractForm}
                 >
                   {form.sales_user_id &&
@@ -931,7 +954,9 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                       label={form.sales_user_name || form.sales_user_id}
                       disabled
                     >
-                      {form.sales_user_name || form.sales_user_id} / 当前记录
+                      {t('sales.contract.form.currentRecord', {
+                        name: form.sales_user_name || form.sales_user_id,
+                      })}
                     </Select.Option>
                   ) : null}
                   {renderAssignableUserOptions(assignableUsers)}
@@ -940,13 +965,13 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
             </div>
             <div className="form-row">
               <label>
-                选择客户
+                {t('sales.contract.form.selectCustomer')}
                 <Select
                   allowClear
                   showSearch
                   loading={loadingCustomers}
                   value={form.customer_id || undefined}
-                  placeholder={customers.length > 0 ? '从客户资料选择' : '请先在客户资料录入'}
+                  placeholder={customers.length > 0 ? t('sales.contract.form.customerSelectPlaceholder') : t('sales.contract.form.customerMissing')}
                   optionLabelProp="label"
                   filterOption={(input, option) => {
                     const customer = customers.find((item) => item.id === option?.value)
@@ -954,18 +979,18 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                       ? customerOptionLabel(customer).toLocaleLowerCase().includes(input.toLocaleLowerCase())
                       : false
                   }}
-                  notFoundContent={loadingCustomers ? '加载客户资料中' : '暂无客户资料'}
+                  notFoundContent={loadingCustomers ? t('sales.contract.list.loadingCustomers') : t('sales.contract.list.noCustomers')}
                   onChange={applyCustomerToContractForm}
                 >
                   {renderCustomerOptions(customers)}
                 </Select>
               </label>
               <label>
-                客户名称
-                <Input value={form.customer_name} readOnly placeholder="选择客户后自动带出" />
+                {t('sales.contract.field.customerName')}
+                <Input value={form.customer_name} readOnly placeholder={t('sales.contract.form.customerNamePlaceholder')} />
               </label>
               <label>
-                币种
+                {t('sales.contract.field.currency')}
                 <Input
                   value={form.currency}
                   onChange={(event) => setForm({ ...form, currency: event.target.value })}
@@ -974,21 +999,21 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
             </div>
             <div className="form-row">
               <label>
-                贸易条款
+                {t('sales.contract.field.tradeTerm')}
                 <Input
                   value={form.trade_term}
                   onChange={(event) => setForm({ ...form, trade_term: event.target.value })}
                 />
               </label>
               <label>
-                付款条款
+                {t('sales.contract.field.paymentTerms')}
                 <Input
                   value={form.payment_terms}
                   onChange={(event) => setForm({ ...form, payment_terms: event.target.value })}
                 />
               </label>
               <label>
-                计划出运日
+                {t('sales.contract.field.plannedShipDate')}
                 <Input
                   type="date"
                   value={form.planned_ship_date}
@@ -998,7 +1023,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
             </div>
             <div className="form-row">
               <label>
-                合同备注
+                {t('sales.contract.field.remarks')}
                 <Input
                   value={form.remarks}
                   onChange={(event) => setForm({ ...form, remarks: event.target.value })}
@@ -1007,24 +1032,24 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
             </div>
             <div className="contract-line-toolbar">
               <div>
-                <div className="form-divider">合同商品明细</div>
-                <p>已添加 {form.lines.length} 个商品，可分别填写条形码并调整规格、数量和销售单价。</p>
+                <div className="form-divider">{t('sales.contract.form.linesTitle')}</div>
+                <p>{t('sales.contract.form.linesHint', { count: form.lines.length })}</p>
               </div>
               <Button icon={<Plus size={16} />} loading={loadingProducts} onClick={openProductDrawer}>
-                添加商品
+                {t('sales.contract.form.addProducts')}
               </Button>
             </div>
             <Table<ExportContractLineFormState>
               className="contract-lines-table"
               dataSource={form.lines}
-              locale={{ emptyText: '暂未添加商品，请点击“添加商品”批量选择' }}
+              locale={{ emptyText: t('sales.contract.form.linesEmpty') }}
               pagination={false}
               rowKey="key"
               scroll={{ x: 1200 }}
               size="small"
               columns={[
                 {
-                  title: '商品',
+                  title: t('sales.contract.field.product'),
                   key: 'product',
                   width: 210,
                   render: (_, line) => (
@@ -1035,16 +1060,16 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                   ),
                 },
                 {
-                  title: '条形码',
+                  title: t('sales.contract.field.barcode'),
                   key: 'barcode',
                   width: 220,
                   render: (_, line) => (
                     <Input
-                      aria-label={`${line.product_name}条形码`}
+                      aria-label={t('sales.contract.form.barcodeAria', { name: line.product_name })}
                       className="barcode-input"
                       inputMode="numeric"
                       maxLength={64}
-                      placeholder="仅输入数字"
+                      placeholder={t('sales.contract.form.barcodePlaceholder')}
                       value={line.barcode}
                       onChange={(event) =>
                         updateContractLine(line.key, 'barcode', event.target.value.replace(/\D/g, ''))
@@ -1053,20 +1078,20 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                   ),
                 },
                 {
-                  title: '规格 / 型号',
+                  title: t('sales.contract.form.specificationModel'),
                   key: 'specification',
                   width: 210,
                   render: (_, line) => (
                     <div className="contract-line-stacked-fields">
                       <Input
-                        aria-label={`${line.product_name}规格`}
-                        placeholder="规格"
+                        aria-label={t('sales.contract.form.specificationAria', { name: line.product_name })}
+                        placeholder={t('sales.contract.field.specification')}
                         value={line.specification}
                         onChange={(event) => updateContractLine(line.key, 'specification', event.target.value)}
                       />
                       <Input
-                        aria-label={`${line.product_name}型号`}
-                        placeholder="型号"
+                        aria-label={t('sales.contract.form.modelAria', { name: line.product_name })}
+                        placeholder={t('sales.contract.field.model')}
                         value={line.model}
                         onChange={(event) => updateContractLine(line.key, 'model', event.target.value)}
                       />
@@ -1074,12 +1099,12 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                   ),
                 },
                 {
-                  title: '数量',
+                  title: t('sales.contract.field.quantity'),
                   key: 'quantity',
                   width: 130,
                   render: (_, line) => (
                     <Input
-                      aria-label={`${line.product_name}数量`}
+                      aria-label={t('sales.contract.form.quantityAria', { name: line.product_name })}
                       min="0.0001"
                       step="0.0001"
                       type="number"
@@ -1089,24 +1114,24 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                   ),
                 },
                 {
-                  title: '单位',
+                  title: t('sales.contract.field.unit'),
                   key: 'unit',
                   width: 105,
                   render: (_, line) => (
                     <Input
-                      aria-label={`${line.product_name}单位`}
+                      aria-label={t('sales.contract.form.unitAria', { name: line.product_name })}
                       value={line.unit}
                       onChange={(event) => updateContractLine(line.key, 'unit', event.target.value)}
                     />
                   ),
                 },
                 {
-                  title: '销售单价',
+                  title: t('sales.contract.field.unitPrice'),
                   key: 'unit_price',
                   width: 140,
                   render: (_, line) => (
                     <Input
-                      aria-label={`${line.product_name}销售单价`}
+                      aria-label={t('sales.contract.form.unitPriceAria', { name: line.product_name })}
                       min="0.0001"
                       step="0.0001"
                       type="number"
@@ -1116,19 +1141,19 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                   ),
                 },
                 {
-                  title: '金额',
+                  title: t('sales.contract.field.amount'),
                   key: 'amount',
                   width: 140,
                   render: (_, line) =>
                     formatMoney((Number(line.quantity || 0) * Number(line.unit_price || 0)).toFixed(2), form.currency),
                 },
                 {
-                  title: '操作',
+                  title: t('sales.contract.field.actions'),
                   key: 'actions',
                   width: 80,
                   render: (_, line) => (
                     <Button danger size="small" onClick={() => removeContractLine(line.key)}>
-                      移除
+                      {t('sales.contract.action.remove')}
                     </Button>
                   ),
                 },
@@ -1140,10 +1165,10 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                 setCreateModalOpen(false)
                 setEditingContractId(null)
               }}>
-                取消
+                {t('common.cancel')}
               </Button>
               <Button className="inline-submit" htmlType="submit" type="primary" loading={submitting}>
-                {editingContractId ? '保存合同' : '新增出口合同'}
+                {editingContractId ? t('sales.contract.form.save') : t('sales.contract.form.createTitle')}
               </Button>
             </div>
           </form>
@@ -1153,30 +1178,30 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
           destroyOnHidden
           footer={(
             <div className="product-picker-actions">
-              <span>已选择 {pendingProductIds.length} 项</span>
+              <span>{t('sales.contract.form.selectedCount', { count: pendingProductIds.length })}</span>
               <div>
-                <Button onClick={closeProductDrawer}>取消</Button>
+                <Button onClick={closeProductDrawer}>{t('common.cancel')}</Button>
                 <Button
                   disabled={pendingProductIds.length === 0}
                   type="primary"
                   onClick={addPendingProducts}
                 >
-                  添加 {pendingProductIds.length} 项
+                  {t('sales.contract.form.addSelected', { count: pendingProductIds.length })}
                 </Button>
               </div>
             </div>
           )}
           open={productDrawerOpen}
           size="large"
-          title="选择合同商品"
+          title={t('sales.contract.form.productDrawerTitle')}
           zIndex={1100}
           onClose={closeProductDrawer}
         >
           <Input
             allowClear
-            aria-label="搜索商品"
+            aria-label={t('sales.contract.form.searchProductAria')}
             className="product-picker-search"
-            placeholder="搜索商品编号、名称、规格或型号"
+            placeholder={t('sales.contract.form.productSearchPlaceholder')}
             prefix={<Search size={16} />}
             value={productSearch}
             onChange={(event) => setProductSearch(event.target.value)}
@@ -1195,14 +1220,14 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                   >
                     <span className="product-picker-item-main">
                       <strong>{displayName}</strong>
-                      <span>{product.code} · {[product.specification, product.model].filter(Boolean).join(' · ') || '暂无规格型号'}</span>
+                      <span>{product.code} · {[product.specification, product.model].filter(Boolean).join(' · ') || t('sales.contract.form.noSpecification')}</span>
                     </span>
                   </Checkbox>
-                  {alreadyAdded ? <span className="product-picker-added-label">已添加</span> : null}
+                  {alreadyAdded ? <span className="product-picker-added-label">{t('sales.contract.form.added')}</span> : null}
                 </div>
               )
             }) : (
-              <div className="product-picker-empty">没有匹配的商品</div>
+              <div className="product-picker-empty">{t('sales.contract.form.noMatchingProducts')}</div>
             )}
           </div>
         </Drawer>
@@ -1210,53 +1235,53 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
           <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="合同明细" />
+            <PanelTitle icon={<LayoutDashboard size={18} />} title={t('sales.contract.detail.title')} />
             <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(exportContractPath)}>
-              返回列表
+              {t('sales.contract.action.backToList')}
             </Button>
           </div>
           {selectedContract ? (
             <>
               <dl className="detail-list">
                 <div>
-                  <dt>状态/回签</dt>
+                  <dt>{t('sales.contract.detail.statusSignature')}</dt>
                   <dd>{exportContractStatusLabel(selectedContract.approval_status)} / {signatureStatusLabel(selectedContract.signature_status)}</dd>
                 </div>
                 <div>
-                  <dt>客户</dt>
+                  <dt>{t('sales.contract.field.customer')}</dt>
                   <dd>{selectedContract.customer_name}</dd>
                 </div>
                 <div>
-                  <dt>业务员</dt>
-                  <dd>{selectedContract.sales_user_name ?? '未填'}</dd>
+                  <dt>{t('sales.contract.field.salesperson')}</dt>
+                  <dd>{selectedContract.sales_user_name ?? t('sales.contract.detail.notFilled')}</dd>
                 </div>
                 <div>
-                  <dt>贸易条款</dt>
+                  <dt>{t('sales.contract.field.tradeTerm')}</dt>
                   <dd>{selectedContract.trade_term}</dd>
                 </div>
                 <div>
-                  <dt>付款条款</dt>
+                  <dt>{t('sales.contract.field.paymentTerms')}</dt>
                   <dd>{selectedContract.payment_terms}</dd>
                 </div>
                 <div>
-                  <dt>合同金额</dt>
+                  <dt>{t('sales.contract.field.contractAmount')}</dt>
                   <dd>{formatMoney(selectedContract.statistics.total_amount, selectedContract.currency)}</dd>
                 </div>
                 <div>
-                  <dt>已采购/已出货</dt>
+                  <dt>{t('sales.contract.detail.purchasedShipped')}</dt>
                   <dd>
                     {selectedContract.statistics.purchased_quantity} / {selectedContract.statistics.shipped_quantity}
                   </dd>
                 </div>
                 <div>
-                  <dt>来源报价</dt>
-                  <dd>{selectedContract.source_quotation_no ?? '未关联'}</dd>
+                  <dt>{t('sales.contract.field.sourceQuotation')}</dt>
+                  <dd>{selectedContract.source_quotation_no ?? t('sales.contract.detail.notLinked')}</dd>
                 </div>
               </dl>
 
               <div className="transaction-box">
-                <strong>合同备注</strong>
-                <p>{selectedContract.remarks ?? '未填写合同备注'}</p>
+                <strong>{t('sales.contract.field.remarks')}</strong>
+                <p>{selectedContract.remarks ?? t('sales.contract.detail.noRemarks')}</p>
               </div>
 
               <div className="delivery-action-row">
@@ -1264,7 +1289,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                   disabled={selectedContract.approval_status !== 'draft'}
                   onClick={() => loadContractIntoForm(selectedContract)}
                 >
-                  载入编辑
+                  {t('sales.contract.action.loadForEdit')}
                 </Button>
                 {selectedContract.approval_status === 'draft' ? (
                   <ApprovalAssigneeSelect
@@ -1279,7 +1304,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                   loading={submitting}
                   onClick={() => void submitContractForApproval()}
                 >
-                  提交审批
+                  {t('sales.contract.action.submitForApproval')}
                 </Button>
                 <Button
                   disabled={
@@ -1290,18 +1315,20 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                   type="primary"
                   onClick={() => void approveContract()}
                 >
-                  审批通过
+                  {t('sales.contract.action.approve')}
                 </Button>
                 <Button loading={submitting} onClick={() => void exportContract('pdf')}>
-                  导出 PDF
+                  {t('sales.contract.action.exportPdf')}
                 </Button>
                 <Button onClick={() => void openExportContractPrint(selectedContract.id)}>
-                  打印单据
+                  {t('sales.contract.action.print')}
                 </Button>
               </div>
               {selectedContract.approval_status === 'submitted' && !canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'sales:contract:approve') ? (
                 <Alert
-                  message={`等待 ${selectedContract.reviewer_name ?? '指定审批人'} 审批`}
+                  message={t('sales.contract.action.waitingApproval', {
+                    name: selectedContract.reviewer_name ?? t('sales.contract.action.defaultReviewer'),
+                  })}
                   showIcon
                   type="info"
                 />
@@ -1309,17 +1336,17 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
 
               {exportPreview ? (
                 <div className="transaction-box export-preview">
-                  <strong>合同导出预览</strong>
+                  <strong>{t('sales.contract.detail.exportPreview')}</strong>
                   <pre>{exportPreview}</pre>
                 </div>
               ) : null}
 
               <div className="contract-detail-split">
                 <form className="record-form accessory-form" onSubmit={registerSignature}>
-                  <div className="form-divider">客户回签</div>
+                  <div className="form-divider">{t('sales.contract.detail.customerSignature')}</div>
                   <div className="form-pair two">
                     <label>
-                      回签人
+                      {t('sales.contract.field.signedBy')}
                       <Input
                         value={signatureForm.signed_by}
                         onChange={(event) =>
@@ -1328,7 +1355,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                       />
                     </label>
                     <label>
-                      回签日期
+                      {t('sales.contract.field.signedAt')}
                       <Input
                         type="date"
                         value={signatureForm.signed_at}
@@ -1340,7 +1367,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                   </div>
                   <div className="form-pair two">
                     <label>
-                      回签方式
+                      {t('sales.contract.field.signatureMethod')}
                       <Input
                         value={signatureForm.signature_method}
                         onChange={(event) =>
@@ -1349,7 +1376,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                       />
                     </label>
                     <label>
-                      回签文件号
+                      {t('sales.contract.field.signatureFileNo')}
                       <Input
                         value={signatureForm.file_no}
                         onChange={(event) =>
@@ -1359,22 +1386,22 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                     </label>
                   </div>
                   <label>
-                    回签备注
+                    {t('sales.contract.field.signatureRemark')}
                     <Input
                       value={signatureForm.remark}
                       onChange={(event) => setSignatureForm({ ...signatureForm, remark: event.target.value })}
                     />
                   </label>
                   <Button htmlType="submit" loading={submitting}>
-                    登记回签
+                    {t('sales.contract.action.registerSignature')}
                   </Button>
                 </form>
 
                 <form className="record-form accessory-form" onSubmit={addAdvancePayment}>
-                  <div className="form-divider">预收款</div>
+                  <div className="form-divider">{t('sales.contract.detail.advancePayment')}</div>
                   <div className="form-pair two">
                     <label>
-                      水单号
+                      {t('sales.contract.field.paymentNo')}
                       <Input
                         value={advancePaymentForm.payment_no}
                         onChange={(event) =>
@@ -1383,7 +1410,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                       />
                     </label>
                     <label>
-                      收款日期
+                      {t('sales.contract.field.receivedAt')}
                       <Input
                         type="date"
                         value={advancePaymentForm.received_at}
@@ -1395,7 +1422,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                   </div>
                   <div className="form-pair two">
                     <label>
-                      金额
+                      {t('sales.contract.field.amount')}
                       <Input
                         type="number"
                         min="0"
@@ -1407,7 +1434,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                       />
                     </label>
                     <label>
-                      付款方
+                      {t('sales.contract.field.payer')}
                       <Input
                         value={advancePaymentForm.payer_name}
                         onChange={(event) =>
@@ -1417,7 +1444,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                     </label>
                   </div>
                   <label>
-                    收款备注
+                    {t('sales.contract.field.paymentRemark')}
                     <Input
                       value={advancePaymentForm.remark}
                       onChange={(event) =>
@@ -1426,7 +1453,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                     />
                   </label>
                   <Button htmlType="submit" loading={submitting}>
-                    关联预收款
+                    {t('sales.contract.action.linkAdvancePayment')}
                   </Button>
                 </form>
               </div>
@@ -1434,27 +1461,27 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
               <Table<ExportContractLine>
                 className="compact-section"
                 columns={[
-                  { title: '商品编号', dataIndex: 'product_code', render: nullableText },
-                  { title: '商品名称', dataIndex: 'product_name' },
-                  { title: '条形码', dataIndex: 'barcode', render: nullableText },
-                  { title: '规格', dataIndex: 'specification', render: nullableText },
-                  { title: '型号', dataIndex: 'model', render: nullableText },
-                  { title: '数量', dataIndex: 'quantity', render: (_, line) => `${line.quantity} ${line.unit}` },
+                  { title: t('sales.contract.field.productCode'), dataIndex: 'product_code', render: nullableText },
+                  { title: t('sales.contract.field.productName'), dataIndex: 'product_name' },
+                  { title: t('sales.contract.field.barcode'), dataIndex: 'barcode', render: nullableText },
+                  { title: t('sales.contract.field.specification'), dataIndex: 'specification', render: nullableText },
+                  { title: t('sales.contract.field.model'), dataIndex: 'model', render: nullableText },
+                  { title: t('sales.contract.field.quantity'), dataIndex: 'quantity', render: (_, line) => `${line.quantity} ${line.unit}` },
                   {
-                    title: '销售单价',
+                    title: t('sales.contract.field.unitPrice'),
                     dataIndex: 'unit_price',
                     render: (_, line) => formatMoney(line.unit_price, selectedContract.currency),
                   },
                   {
-                    title: '金额',
+                    title: t('sales.contract.field.amount'),
                     dataIndex: 'amount',
                     render: (_, line) => formatMoney(line.amount, selectedContract.currency),
                   },
-                  { title: '已采购', dataIndex: 'purchased_quantity' },
-                  { title: '已出货', dataIndex: 'shipped_quantity' },
+                  { title: t('sales.contract.field.purchasedQuantity'), dataIndex: 'purchased_quantity' },
+                  { title: t('sales.contract.field.shippedQuantity'), dataIndex: 'shipped_quantity' },
                 ]}
                 dataSource={selectedContract.lines}
-                locale={{ emptyText: '暂无合同商品明细' }}
+                locale={{ emptyText: t('sales.contract.detail.noLines') }}
                 pagination={false}
                 rowKey="id"
                 size="small"
@@ -1465,130 +1492,130 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                   {selectedContract.lines[0]?.image_url ? (
                     <img src={selectedContract.lines[0].image_url} alt="" />
                   ) : (
-                    <span>暂无商品图片</span>
+                    <span>{t('sales.contract.detail.noImage')}</span>
                   )}
                 </div>
                 <dl className="detail-list compact-detail-list">
                   <div>
-                    <dt>未采购数量</dt>
+                    <dt>{t('sales.contract.field.unpurchasedQuantity')}</dt>
                     <dd>{selectedContract.statistics.unpurchased_quantity}</dd>
                   </div>
                   <div>
-                    <dt>未出货金额</dt>
+                    <dt>{t('sales.contract.field.unshippedAmount')}</dt>
                     <dd>{formatMoney(selectedContract.statistics.unshipped_amount, selectedContract.currency)}</dd>
                   </div>
                   <div>
-                    <dt>预收款合计</dt>
+                    <dt>{t('sales.contract.field.advancePaymentTotal')}</dt>
                     <dd>{formatMoney(selectedContract.statistics.advance_payment_amount, selectedContract.currency)}</dd>
                   </div>
                   <div>
-                    <dt>客户回签日</dt>
+                    <dt>{t('sales.contract.field.customerSignedAt')}</dt>
                     <dd>{formatDate(selectedContract.customer_signed_at)}</dd>
                   </div>
                 </dl>
               </div>
 
               <div className="accessory-heading">
-                <strong>历史询报价参考</strong>
-                <span>{history.length} 条</span>
+                <strong>{t('sales.contract.detail.historyTitle')}</strong>
+                <span>{t('sales.contract.detail.recordCount', { count: history.length })}</span>
               </div>
               <Table<ExportQuotation>
                 columns={[
-                  { title: '报价单', dataIndex: 'code' },
-                  { title: '客户', dataIndex: 'customer_name' },
-                  { title: '日期', dataIndex: 'quote_date', render: formatDate },
+                  { title: t('sales.contract.field.quotation'), dataIndex: 'code' },
+                  { title: t('sales.contract.field.customer'), dataIndex: 'customer_name' },
+                  { title: t('sales.contract.field.date'), dataIndex: 'quote_date', render: formatDate },
                   {
-                    title: '金额',
+                    title: t('sales.contract.field.amount'),
                     dataIndex: 'total_amount',
                     render: (_, quotation) => formatMoney(quotation.total_amount, quotation.currency),
                   },
                 ]}
                 dataSource={history}
-                locale={{ emptyText: '暂无历史询报价参考' }}
+                locale={{ emptyText: t('sales.contract.detail.noHistory') }}
                 pagination={false}
                 rowKey="id"
                 size="small"
               />
 
               <div className="accessory-heading">
-                <strong>合同采购情况</strong>
-                <span>{selectedContract.purchase_statuses.length} 条</span>
+                <strong>{t('sales.contract.detail.purchaseTitle')}</strong>
+                <span>{t('sales.contract.detail.recordCount', { count: selectedContract.purchase_statuses.length })}</span>
               </div>
               <Table<ExportContractPurchaseStatus>
                 columns={[
-                  { title: '商品编号', dataIndex: 'product_code', render: nullableText },
-                  { title: '商品名称', dataIndex: 'product_name' },
-                  { title: '合同数量', dataIndex: 'total_quantity' },
-                  { title: '已采购', dataIndex: 'purchased_quantity' },
-                  { title: '未采购', dataIndex: 'unpurchased_quantity' },
-                  { title: '状态', dataIndex: 'status', render: contractProgressStatusLabel },
+                  { title: t('sales.contract.field.productCode'), dataIndex: 'product_code', render: nullableText },
+                  { title: t('sales.contract.field.productName'), dataIndex: 'product_name' },
+                  { title: t('sales.contract.field.contractQuantity'), dataIndex: 'total_quantity' },
+                  { title: t('sales.contract.field.purchasedQuantity'), dataIndex: 'purchased_quantity' },
+                  { title: t('sales.contract.field.unpurchased'), dataIndex: 'unpurchased_quantity' },
+                  { title: t('sales.contract.field.status'), dataIndex: 'status', render: contractProgressStatusLabel },
                 ]}
                 dataSource={selectedContract.purchase_statuses}
-                locale={{ emptyText: '暂无采购履约情况' }}
+                locale={{ emptyText: t('sales.contract.detail.noPurchase') }}
                 pagination={false}
                 rowKey={(item) => `${item.product_id ?? item.product_code ?? item.product_name}-purchase`}
                 size="small"
               />
 
               <div className="accessory-heading">
-                <strong>合同出货情况</strong>
-                <span>{selectedContract.shipment_statuses.length} 条</span>
+                <strong>{t('sales.contract.detail.shipmentTitle')}</strong>
+                <span>{t('sales.contract.detail.recordCount', { count: selectedContract.shipment_statuses.length })}</span>
               </div>
               <Table<ExportContractShipmentStatus>
                 columns={[
-                  { title: '商品编号', dataIndex: 'product_code', render: nullableText },
-                  { title: '商品名称', dataIndex: 'product_name' },
-                  { title: '计划出运日', dataIndex: 'planned_ship_date', render: formatDate },
-                  { title: '合同数量', dataIndex: 'total_quantity' },
-                  { title: '已出货', dataIndex: 'shipped_quantity' },
-                  { title: '未出货', dataIndex: 'unshipped_quantity' },
+                  { title: t('sales.contract.field.productCode'), dataIndex: 'product_code', render: nullableText },
+                  { title: t('sales.contract.field.productName'), dataIndex: 'product_name' },
+                  { title: t('sales.contract.field.plannedShipDate'), dataIndex: 'planned_ship_date', render: formatDate },
+                  { title: t('sales.contract.field.contractQuantity'), dataIndex: 'total_quantity' },
+                  { title: t('sales.contract.field.shippedQuantity'), dataIndex: 'shipped_quantity' },
+                  { title: t('sales.contract.field.unshipped'), dataIndex: 'unshipped_quantity' },
                   {
-                    title: '未出货金额',
+                    title: t('sales.contract.field.unshippedAmount'),
                     dataIndex: 'unshipped_amount',
                     render: (_, item) => formatMoney(item.unshipped_amount, selectedContract.currency),
                   },
-                  { title: '状态', dataIndex: 'status', render: contractProgressStatusLabel },
+                  { title: t('sales.contract.field.status'), dataIndex: 'status', render: contractProgressStatusLabel },
                 ]}
                 dataSource={selectedContract.shipment_statuses}
-                locale={{ emptyText: '暂无出货履约情况' }}
+                locale={{ emptyText: t('sales.contract.detail.noShipment') }}
                 pagination={false}
                 rowKey={(item) => `${item.product_id ?? item.product_code ?? item.product_name}-shipment`}
                 size="small"
               />
 
               <div className="accessory-heading">
-                <strong>回签记录</strong>
-                <span>{selectedContract.signatures.length} 条</span>
+                <strong>{t('sales.contract.detail.signatureTitle')}</strong>
+                <span>{t('sales.contract.detail.recordCount', { count: selectedContract.signatures.length })}</span>
               </div>
               <Table<ExportContractSignature>
                 columns={[
-                  { title: '回签人', dataIndex: 'signed_by' },
-                  { title: '回签日期', dataIndex: 'signed_at', render: formatDate },
-                  { title: '方式', dataIndex: 'signature_method' },
-                  { title: '文件号', dataIndex: 'file_no', render: nullableText },
-                  { title: '备注', dataIndex: 'remark', render: nullableText },
+                  { title: t('sales.contract.field.signedBy'), dataIndex: 'signed_by' },
+                  { title: t('sales.contract.field.signedAt'), dataIndex: 'signed_at', render: formatDate },
+                  { title: t('sales.contract.field.method'), dataIndex: 'signature_method' },
+                  { title: t('sales.contract.field.fileNo'), dataIndex: 'file_no', render: nullableText },
+                  { title: t('sales.contract.field.remark'), dataIndex: 'remark', render: nullableText },
                 ]}
                 dataSource={selectedContract.signatures}
-                locale={{ emptyText: '暂无回签记录' }}
+                locale={{ emptyText: t('sales.contract.detail.noSignatures') }}
                 pagination={false}
                 rowKey="id"
                 size="small"
               />
 
               <div className="accessory-heading">
-                <strong>预收款记录</strong>
-                <span>{selectedContract.advance_payments.length} 条</span>
+                <strong>{t('sales.contract.detail.advancePaymentTitle')}</strong>
+                <span>{t('sales.contract.detail.recordCount', { count: selectedContract.advance_payments.length })}</span>
               </div>
               <Table<ExportContractAdvancePayment>
                 columns={[
-                  { title: '水单号', dataIndex: 'payment_no' },
-                  { title: '收款日期', dataIndex: 'received_at', render: formatDate },
-                  { title: '付款方', dataIndex: 'payer_name' },
-                  { title: '金额', dataIndex: 'amount', render: (_, payment) => formatMoney(payment.amount, payment.currency) },
-                  { title: '备注', dataIndex: 'remark', render: nullableText },
+                  { title: t('sales.contract.field.paymentNo'), dataIndex: 'payment_no' },
+                  { title: t('sales.contract.field.receivedAt'), dataIndex: 'received_at', render: formatDate },
+                  { title: t('sales.contract.field.payer'), dataIndex: 'payer_name' },
+                  { title: t('sales.contract.field.amount'), dataIndex: 'amount', render: (_, payment) => formatMoney(payment.amount, payment.currency) },
+                  { title: t('sales.contract.field.remark'), dataIndex: 'remark', render: nullableText },
                 ]}
                 dataSource={selectedContract.advance_payments}
-                locale={{ emptyText: '暂无预收款记录' }}
+                locale={{ emptyText: t('sales.contract.detail.noAdvancePayments') }}
                 pagination={false}
                 rowKey="id"
                 size="small"
@@ -1597,8 +1624,8 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
           ) : (
             <div className="module-state panel-empty-state">
               <FileStack size={28} />
-              <strong>暂无出口合同</strong>
-              <span>请返回列表选择合同查看详情</span>
+              <strong>{t('sales.contract.detail.emptyTitle')}</strong>
+              <span>{t('sales.contract.detail.emptyDescription')}</span>
             </div>
           )}
           </section>

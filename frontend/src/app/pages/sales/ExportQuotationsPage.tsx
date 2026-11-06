@@ -47,6 +47,7 @@ import {
   type RoutedDetailPageProps,
   emptyToNull,
 } from '../appHelpers'
+import { t } from '../../appI18n'
 import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
 
 function sampleDeliveryStatusLabel(value: string): string {
@@ -96,7 +97,7 @@ function initialExportQuotationForm(): ExportQuotationFormState {
     customer_id: '',
     customer_name: '',
     sales_user_id: '',
-    sales_user_name: '演示业务主管',
+    sales_user_name: '',
     currency: 'USD',
     trade_term: 'FOB Ningbo',
     valid_until: todayInputValue(),
@@ -119,7 +120,7 @@ function initialExportQuotationForm(): ExportQuotationFormState {
 
 function initialExportQuotationApproveForm(): ExportQuotationApproveFormState {
   return {
-    reviewer_name: '演示业务主管',
+    reviewer_name: '',
     approved_at: todayInputValue(),
   }
 }
@@ -211,11 +212,13 @@ function exportQuotationContractPayload(
 }
 
 function exportQuotationStatusLabel(value: string): string {
-  return exportQuotationStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = exportQuotationStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function freightMethodLabel(value: string): string {
-  return freightMethodOptions.find((item) => item.value === value)?.label ?? value
+  const option = freightMethodOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function customerDisplayName(customer: Customer): string {
@@ -368,7 +371,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
         null
       setSelectedQuotationId(nextSelectedId)
     } catch (caught) {
-      showError(caught, '出口报价加载失败')
+      showError(caught, t('sales.quotation.list.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -380,7 +383,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
       const result = await listCustomers()
       setCustomers(result.items)
     } catch (caught) {
-      showError(caught, '客户资料加载失败')
+      showError(caught, t('sales.quotation.list.customerLoadFailed'))
     } finally {
       setLoadingCustomers(false)
     }
@@ -418,13 +421,13 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
       setPurchaseReferences(referenceResult.items)
       setSampleDeliveries(deliveryResult.items)
     } catch (caught) {
-      showError(caught, '报价参考资料加载失败')
+      showError(caught, t('sales.quotation.list.referenceLoadFailed'))
     }
   }
 
   function syncExportQuotationActionForms(quotation: ExportQuotation | null) {
     setApproveForm({
-      reviewer_name: '演示业务主管',
+      reviewer_name: '',
       approved_at: quotation?.quote_date ?? todayInputValue(),
     })
     setContractForm({
@@ -475,7 +478,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
     setExportPreview('')
     try {
       const created = await createExportQuotation(exportQuotationPayload(form))
-      setMessage(`已新增出口报价 ${created.code}`)
+      setMessage(t('sales.quotation.message.created', { code: created.code }))
       setForm(initialExportQuotationForm())
       upsertQuotation(created)
       await loadQuotations(created.id)
@@ -485,7 +488,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
       setSelectedQuotationId(created.id)
       setFormOpen(false)
     } catch (caught) {
-      showError(caught, '出口报价新增失败')
+      showError(caught, t('sales.quotation.message.createFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -501,12 +504,12 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
         selectedQuotation.id,
         exportQuotationPayload(form),
       )
-      setMessage(`已保存出口报价 ${updated.code}`)
+      setMessage(t('sales.quotation.message.saved', { code: updated.code }))
       upsertQuotation(updated)
       await loadQuotations(updated.id)
       setFormOpen(false)
     } catch (caught) {
-      showError(caught, '出口报价草稿保存失败')
+      showError(caught, t('sales.quotation.message.saveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -515,7 +518,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
   async function submitQuotationForApproval() {
     if (!selectedQuotation) return
     if (!reviewerId) {
-      showError(new Error('请选择审批人'))
+      showError(new Error(t('sales.quotation.validation.reviewerRequired')))
       return
     }
     setSubmitting(true)
@@ -525,11 +528,11 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
       const submitted = await submitExportQuotation(selectedQuotation.id, {
         reviewer_id: reviewerId,
       })
-      setMessage(`已提交出口报价 ${submitted.code}`)
+      setMessage(t('sales.quotation.message.submitted', { code: submitted.code }))
       upsertQuotation(submitted)
       await loadQuotations(submitted.id)
     } catch (caught) {
-      showError(caught, '出口报价提交失败')
+      showError(caught, t('sales.quotation.message.submitFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -544,7 +547,15 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
         'sales:quotation:approve',
       )
     ) {
-      showError(new Error(`该报价单应由 ${selectedQuotation.reviewer_name ?? '指定审批人'} 审批`))
+      showError(
+        new Error(
+          t('sales.quotation.action.approverMismatch', {
+            name:
+              selectedQuotation.reviewer_name ??
+              t('sales.quotation.action.defaultReviewer'),
+          }),
+        ),
+      )
       return
     }
     setSubmitting(true)
@@ -555,11 +566,11 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
         selectedQuotation.id,
         exportQuotationApprovePayload(approveForm),
       )
-      setMessage(`已审批出口报价 ${approved.code}`)
+      setMessage(t('sales.quotation.message.approved', { code: approved.code }))
       upsertQuotation(approved)
       await loadQuotations(approved.id)
     } catch (caught) {
-      showError(caught, '出口报价审批失败')
+      showError(caught, t('sales.quotation.message.approveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -573,9 +584,9 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
     try {
       const result = await exportExportQuotation(selectedQuotation.id, format)
       setExportPreview(result.content.split('\n').slice(0, 10).join('\n'))
-      setMessage(`已生成导出预览 ${result.filename}`)
+      setMessage(t('sales.quotation.message.exportPreview', { filename: result.filename }))
     } catch (caught) {
-      showError(caught, '出口报价导出失败')
+      showError(caught, t('sales.quotation.message.exportFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -593,10 +604,10 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
         exportQuotationContractPayload(contractForm),
       )
       setGeneratedContract(contract)
-      setMessage(`已生成出口合同 ${contract.contract_no}`)
+      setMessage(t('sales.quotation.message.contractGenerated', { contractNo: contract.contract_no }))
       await loadQuotations(selectedQuotation.id)
     } catch (caught) {
-      showError(caught, '出口合同生成失败')
+      showError(caught, t('sales.quotation.message.contractGenerateFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -607,21 +618,24 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
 
   return (
     <section className="export-quotation-page">
-      <div className="summary-strip" aria-label="出口报价概览">
-        <Metric label="报价单" value={quotations.length} />
+      <div className="summary-strip" aria-label={t('sales.quotation.metric.overviewAria')}>
+        <Metric label={t('sales.quotation.metric.quotationCount')} value={quotations.length} />
         <Metric
-          label="待审批"
+          label={t('sales.quotation.metric.pendingApproval')}
           value={quotations.filter((item) => item.approval_status === 'submitted').length}
         />
         <Metric
-          label="已审批"
+          label={t('sales.quotation.metric.approvedCount')}
           value={
             quotations.filter((item) =>
               ['approved', 'contract_generated'].includes(item.approval_status),
             ).length
           }
         />
-        <Metric label="报价金额" value={formatMoney(totalAmount.toFixed(2), currency)} />
+        <Metric
+          label={t('sales.quotation.metric.quotationAmount')}
+          value={formatMoney(totalAmount.toFixed(2), currency)}
+        />
       </div>
 
       {message ? (
@@ -633,7 +647,10 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title="报价单列表" />
+              <PanelTitle
+                icon={<Search size={18} />}
+                title={t('sales.quotation.list.title')}
+              />
               <form
                 className="inline-filters"
                 onSubmit={(event) => {
@@ -642,49 +659,53 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                 }}
               >
                 <label>
-                  报价搜索
+                  {t('sales.quotation.list.searchLabel')}
                   <Input
                     value={search}
-                    placeholder="单号 / 客户 / 产品 / 条款"
+                    placeholder={t('sales.quotation.list.searchPlaceholder')}
                     onChange={(event) => setSearch(event.target.value)}
                   />
                 </label>
                 <label>
-                  审批状态
+                  {t('sales.quotation.list.statusFilter')}
                   <FormSelect
                     value={statusFilter}
                     onChange={(event) => setStatusFilter(event.target.value)}
                   >
-                    <option value="">全部状态</option>
+                    <option value="">{t('sales.quotation.list.allStatuses')}</option>
                     {exportQuotationStatusOptions
                       .filter((item) => item.value !== 'rejected')
                       .map((item) => (
                         <option key={item.value} value={item.value}>
-                          {item.label}
+                          {t(item.labelKey)}
                         </option>
                       ))}
                   </FormSelect>
                 </label>
                 <label>
-                  客户筛选
+                  {t('sales.quotation.list.customerFilter')}
                   <Select
                     allowClear
                     showSearch
                     loading={loadingCustomers}
                     value={customerFilter || undefined}
-                    placeholder="从客户资料筛选"
+                    placeholder={t('sales.quotation.list.customerFilterPlaceholder')}
                     optionFilterProp="label"
-                    notFoundContent={loadingCustomers ? '加载客户资料中' : '暂无客户资料'}
+                    notFoundContent={
+                      loadingCustomers
+                        ? t('sales.quotation.list.loadingCustomers')
+                        : t('sales.quotation.list.noCustomers')
+                    }
                     onChange={(value) => setCustomerFilter(value ?? '')}
                   >
                     {renderCustomerOptions(customers)}
                   </Select>
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('sales.quotation.list.query')}
                 </Button>
                 <Button icon={<Plus size={16} />} type="primary" onClick={openNewQuotationForm}>
-                  新增出口报价
+                  {t('sales.quotation.list.create')}
                 </Button>
               </form>
             </div>
@@ -692,7 +713,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
             <Table<ExportQuotation>
               columns={[
                 {
-                  title: '报价单号',
+                  title: t('sales.quotation.field.code'),
                   dataIndex: 'code',
                   render: (value: string, record: ExportQuotation) => (
                     <button
@@ -704,17 +725,25 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                     </button>
                   ),
                 },
-                { title: '状态', dataIndex: 'approval_status', render: exportQuotationStatusLabel },
-                { title: '客户', dataIndex: 'customer_name' },
-                { title: '贸易条款', dataIndex: 'trade_term' },
                 {
-                  title: '金额',
+                  title: t('sales.quotation.field.status'),
+                  dataIndex: 'approval_status',
+                  render: exportQuotationStatusLabel,
+                },
+                { title: t('sales.quotation.field.customer'), dataIndex: 'customer_name' },
+                { title: t('sales.quotation.field.tradeTerm'), dataIndex: 'trade_term' },
+                {
+                  title: t('sales.quotation.field.amount'),
                   dataIndex: 'total_amount',
                   render: (_, quotation) => formatMoney(quotation.total_amount, quotation.currency),
                 },
-                { title: '合同', dataIndex: 'generated_contract_no', render: nullableText },
                 {
-                  title: '入口',
+                  title: t('sales.quotation.field.contract'),
+                  dataIndex: 'generated_contract_no',
+                  render: nullableText,
+                },
+                {
+                  title: t('sales.quotation.field.entry'),
                   key: 'detail',
                   width: 110,
                   render: (_: unknown, record: ExportQuotation) => (
@@ -722,7 +751,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                       size="small"
                       onClick={(event) => stopAndOpenQuotationDetail(event, record)}
                     >
-                      查看详情
+                      {t('sales.quotation.action.viewDetail')}
                     </Button>
                   ),
                 },
@@ -745,21 +774,21 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
             destroyOnHidden
             footer={null}
             open={formOpen}
-            title="新增或编辑出口报价"
+            title={t('sales.quotation.form.title')}
             width={920}
             onCancel={() => setFormOpen(false)}
           >
             <form className="record-form modal-record-form" onSubmit={submitQuotation}>
               <div className="form-pair two">
                 <label>
-                  报价单号
+                  {t('sales.quotation.field.code')}
                   <Input
                     value={form.code}
                     onChange={(event) => setForm({ ...form, code: event.target.value })}
                   />
                 </label>
                 <label>
-                  报价日期
+                  {t('sales.quotation.field.quoteDate')}
                   <Input
                     type="date"
                     value={form.quote_date}
@@ -769,39 +798,55 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
               </div>
               <div className="form-pair two">
                 <label>
-                  选择客户
+                  {t('sales.quotation.form.selectCustomer')}
                   <Select
                     allowClear
                     showSearch
                     loading={loadingCustomers}
                     value={form.customer_id || undefined}
-                    placeholder={customers.length > 0 ? '从客户资料选择' : '请先在客户资料录入'}
+                    placeholder={
+                      customers.length > 0
+                        ? t('sales.quotation.form.customerSelectPlaceholder')
+                        : t('sales.quotation.form.customerMissing')
+                    }
                     optionFilterProp="label"
-                    notFoundContent={loadingCustomers ? '加载客户资料中' : '暂无客户资料'}
+                    notFoundContent={
+                      loadingCustomers
+                        ? t('sales.quotation.list.loadingCustomers')
+                        : t('sales.quotation.list.noCustomers')
+                    }
                     onChange={applyCustomerToQuotationForm}
                   >
                     {renderCustomerOptions(customers)}
                   </Select>
                 </label>
                 <label>
-                  客户标识
-                  <Input value={form.customer_id} readOnly placeholder="选择客户后自动带出" />
+                  {t('sales.quotation.field.customerId')}
+                  <Input
+                    value={form.customer_id}
+                    readOnly
+                    placeholder={t('sales.quotation.form.customerNamePlaceholder')}
+                  />
                 </label>
               </div>
               <label>
-                客户名称
-                <Input value={form.customer_name} readOnly placeholder="选择客户后自动带出" />
+                {t('sales.quotation.field.customerName')}
+                <Input
+                  value={form.customer_name}
+                  readOnly
+                  placeholder={t('sales.quotation.form.customerNamePlaceholder')}
+                />
               </label>
               <div className="form-pair two">
                 <label>
-                  业务员
+                  {t('sales.quotation.field.salesperson')}
                   <Input
                     value={form.sales_user_name}
                     onChange={(event) => setForm({ ...form, sales_user_name: event.target.value })}
                   />
                 </label>
                 <label>
-                  币种
+                  {t('sales.quotation.field.currency')}
                   <Input
                     value={form.currency}
                     onChange={(event) => setForm({ ...form, currency: event.target.value })}
@@ -810,14 +855,14 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
               </div>
               <div className="form-pair two">
                 <label>
-                  贸易条款
+                  {t('sales.quotation.field.tradeTerm')}
                   <Input
                     value={form.trade_term}
                     onChange={(event) => setForm({ ...form, trade_term: event.target.value })}
                   />
                 </label>
                 <label>
-                  有效期
+                  {t('sales.quotation.field.validUntil')}
                   <Input
                     type="date"
                     value={form.valid_until}
@@ -826,24 +871,24 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                 </label>
               </div>
               <label>
-                报价描述
+                {t('sales.quotation.field.description')}
                 <Input.TextArea
                   rows={2}
                   value={form.description}
                   onChange={(event) => setForm({ ...form, description: event.target.value })}
                 />
               </label>
-              <div className="form-divider">报价商品明细</div>
+              <div className="form-divider">{t('sales.quotation.form.linesTitle')}</div>
               <div className="form-pair two">
                 <label>
-                  商品标识
+                  {t('sales.quotation.field.productId')}
                   <Input
                     value={form.product_id}
                     onChange={(event) => setForm({ ...form, product_id: event.target.value })}
                   />
                 </label>
                 <label>
-                  商品编号
+                  {t('sales.quotation.field.productCode')}
                   <Input
                     value={form.product_code}
                     onChange={(event) => setForm({ ...form, product_code: event.target.value })}
@@ -851,7 +896,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                 </label>
               </div>
               <label>
-                商品名称
+                {t('sales.quotation.field.productName')}
                 <Input
                   value={form.product_name}
                   onChange={(event) => setForm({ ...form, product_name: event.target.value })}
@@ -859,14 +904,14 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
               </label>
               <div className="form-pair two">
                 <label>
-                  规格
+                  {t('sales.quotation.field.specification')}
                   <Input
                     value={form.specification}
                     onChange={(event) => setForm({ ...form, specification: event.target.value })}
                   />
                 </label>
                 <label>
-                  型号
+                  {t('sales.quotation.field.model')}
                   <Input
                     value={form.model}
                     onChange={(event) => setForm({ ...form, model: event.target.value })}
@@ -875,7 +920,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
               </div>
               <div className="form-pair three">
                 <label>
-                  数量
+                  {t('sales.quotation.field.quantity')}
                   <Input
                     type="number"
                     min="0.0001"
@@ -885,14 +930,14 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                   />
                 </label>
                 <label>
-                  单位
+                  {t('sales.quotation.field.unit')}
                   <Input
                     value={form.unit}
                     onChange={(event) => setForm({ ...form, unit: event.target.value })}
                   />
                 </label>
                 <label>
-                  销售单价
+                  {t('sales.quotation.field.unitPrice')}
                   <Input
                     type="number"
                     min="0.0001"
@@ -904,20 +949,20 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
               </div>
               <div className="form-pair two">
                 <label>
-                  货运方式
+                  {t('sales.quotation.field.freightMethod')}
                   <FormSelect
                     value={form.freight_method}
                     onChange={(event) => setForm({ ...form, freight_method: event.target.value })}
                   >
                     {freightMethodOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label>
-                  运费
+                  {t('sales.quotation.field.freightAmount')}
                   <Input
                     type="number"
                     min="0"
@@ -929,7 +974,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
               </div>
               <div className="form-pair two">
                 <label>
-                  采购参考供应商
+                  {t('sales.quotation.field.purchaseReferenceSupplier')}
                   <Input
                     value={form.purchase_reference_supplier_name}
                     onChange={(event) =>
@@ -938,7 +983,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                   />
                 </label>
                 <label>
-                  采购参考价
+                  {t('sales.quotation.field.purchaseReferencePrice')}
                   <Input
                     type="number"
                     min="0"
@@ -951,23 +996,23 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                 </label>
               </div>
               <label>
-                明细备注
+                {t('sales.quotation.field.lineRemark')}
                 <Input
                   value={form.line_remark}
                   onChange={(event) => setForm({ ...form, line_remark: event.target.value })}
                 />
               </label>
               <div className="modal-actions">
-                <Button onClick={() => setFormOpen(false)}>取消</Button>
+                <Button onClick={() => setFormOpen(false)}>{t('common.cancel')}</Button>
                 <Button
                   disabled={!selectedQuotation || selectedQuotation.approval_status !== 'draft'}
                   loading={submitting}
                   onClick={() => void saveQuotationDraft()}
                 >
-                  保存草稿编辑
+                  {t('sales.quotation.action.saveDraft')}
                 </Button>
                 <Button htmlType="submit" loading={submitting} type="primary">
-                  新增出口报价
+                  {t('sales.quotation.action.create')}
                 </Button>
               </div>
             </form>
@@ -977,63 +1022,66 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<LayoutDashboard size={18} />} title="报价单明细" />
+              <PanelTitle
+                icon={<LayoutDashboard size={18} />}
+                title={t('sales.quotation.detail.title')}
+              />
               <Button
                 icon={<ArrowLeft size={16} />}
                 onClick={() => onNavigate(exportQuotationPath)}
               >
-                返回列表
+                {t('sales.quotation.action.backToList')}
               </Button>
             </div>
             {selectedQuotation ? (
               <>
                 <dl className="detail-list">
                   <div>
-                    <dt>状态/日期</dt>
+                    <dt>{t('sales.quotation.detail.statusDate')}</dt>
                     <dd>
                       {exportQuotationStatusLabel(selectedQuotation.approval_status)} /{' '}
                       {formatDate(selectedQuotation.quote_date)}
                     </dd>
                   </div>
                   <div>
-                    <dt>客户</dt>
+                    <dt>{t('sales.quotation.field.customer')}</dt>
                     <dd>{selectedQuotation.customer_name}</dd>
                   </div>
                   <div>
-                    <dt>业务员</dt>
-                    <dd>{selectedQuotation.sales_user_name ?? '未填'}</dd>
+                    <dt>{t('sales.quotation.field.salesperson')}</dt>
+                    <dd>{selectedQuotation.sales_user_name ?? t('sales.quotation.detail.notFilled')}</dd>
                   </div>
                   <div>
-                    <dt>贸易条款</dt>
+                    <dt>{t('sales.quotation.field.tradeTerm')}</dt>
                     <dd>{selectedQuotation.trade_term}</dd>
                   </div>
                   <div>
-                    <dt>报价金额</dt>
+                    <dt>{t('sales.quotation.metric.quotationAmount')}</dt>
                     <dd>
                       {formatMoney(selectedQuotation.total_amount, selectedQuotation.currency)}
                     </dd>
                   </div>
                   <div>
-                    <dt>审核人</dt>
-                    <dd>{selectedQuotation.reviewer_name ?? '未审批'}</dd>
+                    <dt>{t('sales.quotation.field.reviewer')}</dt>
+                    <dd>{selectedQuotation.reviewer_name ?? t('sales.quotation.detail.notApproved')}</dd>
                   </div>
                   <div>
-                    <dt>合同号</dt>
+                    <dt>{t('sales.quotation.field.contractNo')}</dt>
                     <dd>
                       {selectedQuotation.generated_contract_no ??
                         generatedContract?.contract_no ??
-                        '未生成'}
+                        t('sales.quotation.detail.notGenerated')}
                     </dd>
                   </div>
                   <div>
-                    <dt>有效期</dt>
+                    <dt>{t('sales.quotation.field.validUntil')}</dt>
                     <dd>{formatDate(selectedQuotation.valid_until)}</dd>
                   </div>
                 </dl>
 
                 <div className="transaction-box">
-                  <strong>报价描述</strong>
-                  <p>{selectedQuotation.description ?? '未填写报价描述'}</p>
+                  <strong>{t('sales.quotation.field.description')}</strong>
+                  <p>{selectedQuotation.description ?? t('sales.quotation.detail.noDescription')}</p>
                 </div>
 
                 <div className="delivery-action-row">
@@ -1041,7 +1089,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                     disabled={selectedQuotation.approval_status !== 'draft'}
                     onClick={() => loadQuotationIntoForm(selectedQuotation)}
                   >
-                    载入编辑
+                    {t('sales.quotation.action.loadForEdit')}
                   </Button>
                   {selectedQuotation.approval_status === 'draft' ? (
                     <ApprovalAssigneeSelect
@@ -1056,7 +1104,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                     loading={submitting}
                     onClick={() => void submitQuotationForApproval()}
                   >
-                    提交审批
+                    {t('sales.quotation.action.submitForApproval')}
                   </Button>
                   <Button
                     disabled={
@@ -1071,10 +1119,10 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                     type="primary"
                     onClick={() => void approveQuotation()}
                   >
-                    审批通过
+                    {t('sales.quotation.action.approve')}
                   </Button>
                   <Button loading={submitting} onClick={() => void exportQuotation('pdf')}>
-                    导出 PDF
+                    {t('sales.quotation.action.exportPdf')}
                   </Button>
                 </div>
                 {selectedQuotation.approval_status === 'submitted' &&
@@ -1084,17 +1132,21 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                   'sales:quotation:approve',
                 ) ? (
                   <Alert
-                    message={`等待 ${selectedQuotation.reviewer_name ?? '指定审批人'} 审批`}
+                    message={t('sales.quotation.action.waitingApproval', {
+                      name:
+                        selectedQuotation.reviewer_name ??
+                        t('sales.quotation.action.defaultReviewer'),
+                    })}
                     showIcon
                     type="info"
                   />
                 ) : null}
 
                 <form className="record-form accessory-form" onSubmit={confirmContract}>
-                  <div className="form-divider">报价确认生成出口合同</div>
+                  <div className="form-divider">{t('sales.quotation.detail.generateContractTitle')}</div>
                   <div className="form-pair two">
                     <label>
-                      确认日期
+                      {t('sales.quotation.field.confirmedAt')}
                       <Input
                         type="date"
                         value={contractForm.confirmed_at}
@@ -1104,7 +1156,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                       />
                     </label>
                     <label>
-                      合同号
+                      {t('sales.quotation.field.contractNo')}
                       <Input
                         value={contractForm.contract_no}
                         onChange={(event) =>
@@ -1122,13 +1174,13 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                       )
                     }
                   >
-                    生成出口合同
+                    {t('sales.quotation.action.generateContract')}
                   </Button>
                 </form>
 
                 {generatedContract ? (
                   <div className="transaction-box">
-                    <strong>已生成出口合同</strong>
+                    <strong>{t('sales.quotation.detail.generatedContract')}</strong>
                     <p>
                       {generatedContract.contract_no} /{' '}
                       {formatMoney(generatedContract.total_amount, generatedContract.currency)}
@@ -1138,7 +1190,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
 
                 {exportPreview ? (
                   <div className="transaction-box export-preview">
-                    <strong>导出预览</strong>
+                    <strong>{t('sales.quotation.detail.exportPreview')}</strong>
                     <pre>{exportPreview}</pre>
                   </div>
                 ) : null}
@@ -1146,66 +1198,88 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                 <Table<ExportQuotationLine>
                   className="compact-section"
                   columns={[
-                    { title: '商品编号', dataIndex: 'product_code', render: nullableText },
-                    { title: '商品名称', dataIndex: 'product_name' },
-                    { title: '规格', dataIndex: 'specification', render: nullableText },
-                    { title: '型号', dataIndex: 'model', render: nullableText },
                     {
-                      title: '数量',
+                      title: t('sales.quotation.field.productCode'),
+                      dataIndex: 'product_code',
+                      render: nullableText,
+                    },
+                    { title: t('sales.quotation.field.productName'), dataIndex: 'product_name' },
+                    {
+                      title: t('sales.quotation.field.specification'),
+                      dataIndex: 'specification',
+                      render: nullableText,
+                    },
+                    {
+                      title: t('sales.quotation.field.model'),
+                      dataIndex: 'model',
+                      render: nullableText,
+                    },
+                    {
+                      title: t('sales.quotation.field.quantity'),
                       dataIndex: 'quantity',
                       render: (_, line) => `${line.quantity} ${line.unit}`,
                     },
-                    { title: '销售单价', dataIndex: 'unit_price' },
-                    { title: '金额', dataIndex: 'amount' },
-                    { title: '货运方式', dataIndex: 'freight_method', render: freightMethodLabel },
-                    { title: '运费', dataIndex: 'freight_amount' },
+                    { title: t('sales.quotation.field.unitPrice'), dataIndex: 'unit_price' },
+                    { title: t('sales.quotation.field.amount'), dataIndex: 'amount' },
+                    {
+                      title: t('sales.quotation.field.freightMethod'),
+                      dataIndex: 'freight_method',
+                      render: freightMethodLabel,
+                    },
+                    { title: t('sales.quotation.field.freightAmount'), dataIndex: 'freight_amount' },
                   ]}
                   dataSource={selectedQuotation.lines}
-                  locale={{ emptyText: '暂无报价商品明细' }}
+                  locale={{ emptyText: t('sales.quotation.detail.noLines') }}
                   pagination={false}
                   rowKey="id"
                   size="small"
                 />
 
                 <div className="accessory-heading">
-                  <strong>历史报价</strong>
-                  <span>{history.length} 条</span>
+                  <strong>{t('sales.quotation.detail.historyTitle')}</strong>
+                  <span>{t('sales.quotation.detail.recordCount', { count: history.length })}</span>
                 </div>
                 <Table<ExportQuotation>
                   columns={[
-                    { title: '报价单', dataIndex: 'code' },
-                    { title: '客户', dataIndex: 'customer_name' },
-                    { title: '日期', dataIndex: 'quote_date', render: formatDate },
+                    { title: t('sales.quotation.field.quotation'), dataIndex: 'code' },
+                    { title: t('sales.quotation.field.customer'), dataIndex: 'customer_name' },
                     {
-                      title: '状态',
+                      title: t('sales.quotation.field.date'),
+                      dataIndex: 'quote_date',
+                      render: formatDate,
+                    },
+                    {
+                      title: t('sales.quotation.field.status'),
                       dataIndex: 'approval_status',
                       render: exportQuotationStatusLabel,
                     },
                     {
-                      title: '金额',
+                      title: t('sales.quotation.field.amount'),
                       dataIndex: 'total_amount',
                       render: (_, quotation) =>
                         formatMoney(quotation.total_amount, quotation.currency),
                     },
                   ]}
                   dataSource={history}
-                  locale={{ emptyText: '暂无历史报价' }}
+                  locale={{ emptyText: t('sales.quotation.detail.noHistory') }}
                   pagination={false}
                   rowKey="id"
                   size="small"
                 />
 
                 <div className="accessory-heading">
-                  <strong>采购询价参考</strong>
-                  <span>{purchaseReferences.length} 条</span>
+                  <strong>{t('sales.quotation.detail.purchaseTitle')}</strong>
+                  <span>
+                    {t('sales.quotation.detail.recordCount', { count: purchaseReferences.length })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>供应商</th>
-                      <th>参考价</th>
-                      <th>日期</th>
-                      <th>来源单号</th>
+                      <th>{t('sales.quotation.field.supplier')}</th>
+                      <th>{t('sales.quotation.field.referencePrice')}</th>
+                      <th>{t('sales.quotation.field.date')}</th>
+                      <th>{t('sales.quotation.field.sourceNo')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1220,7 +1294,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                     {purchaseReferences.length === 0 ? (
                       <tr>
                         <td className="empty-cell" colSpan={4}>
-                          暂无采购询价参考
+                          {t('sales.quotation.detail.noPurchase')}
                         </td>
                       </tr>
                     ) : null}
@@ -1228,24 +1302,34 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                 </table>
 
                 <div className="accessory-heading">
-                  <strong>寄样关联</strong>
-                  <span>{sampleDeliveries.length} 条</span>
+                  <strong>{t('sales.quotation.detail.sampleTitle')}</strong>
+                  <span>
+                    {t('sales.quotation.detail.recordCount', { count: sampleDeliveries.length })}
+                  </span>
                 </div>
                 <Table<SampleDelivery>
                   columns={[
-                    { title: '寄样单', dataIndex: 'code' },
-                    { title: '客户', dataIndex: 'customer_name' },
-                    { title: '日期', dataIndex: 'delivery_date', render: formatDate },
-                    { title: '状态', dataIndex: 'status', render: sampleDeliveryStatusLabel },
+                    { title: t('sales.quotation.field.sampleDeliveryNo'), dataIndex: 'code' },
+                    { title: t('sales.quotation.field.customer'), dataIndex: 'customer_name' },
                     {
-                      title: '快递',
+                      title: t('sales.quotation.field.date'),
+                      dataIndex: 'delivery_date',
+                      render: formatDate,
+                    },
+                    {
+                      title: t('sales.quotation.field.status'),
+                      dataIndex: 'status',
+                      render: sampleDeliveryStatusLabel,
+                    },
+                    {
+                      title: t('sales.quotation.field.express'),
                       dataIndex: 'express_company',
                       render: (_, delivery) =>
-                        `${delivery.express_company} / ${delivery.tracking_no ?? '未填'}`,
+                        `${delivery.express_company} / ${delivery.tracking_no ?? t('sales.quotation.detail.notFilled')}`,
                     },
                   ]}
                   dataSource={sampleDeliveries}
-                  locale={{ emptyText: '暂无寄样关联' }}
+                  locale={{ emptyText: t('sales.quotation.detail.noSamples') }}
                   pagination={false}
                   rowKey="id"
                   size="small"
@@ -1254,8 +1338,8 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
             ) : (
               <div className="module-state panel-empty-state">
                 <FileText size={28} />
-                <strong>暂无出口报价</strong>
-                <span>请返回列表选择报价单查看详情</span>
+                <strong>{t('sales.quotation.detail.emptyTitle')}</strong>
+                <span>{t('sales.quotation.detail.emptyDescription')}</span>
               </div>
             )}
           </section>

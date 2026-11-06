@@ -13,6 +13,7 @@ import {
   listReportingStatistics,
 } from '../../../api'
 import { showError } from '../../../shared/errors'
+import { t } from '../../appI18n'
 import {
   exportContractStatusOptions,
   reportingDocumentTypeOptions,
@@ -29,7 +30,6 @@ import {
   ShieldCheck,
 } from 'lucide-react'
 import { type ReactNode, useEffect, useState } from 'react'
-import { t } from '../../appI18n'
 import { exportContractPath, moduleDetailPath, purchaseContractPath } from '../../routes'
 import {
   formatDate,
@@ -431,7 +431,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
                 <option value="">全部状态</option>
                 {exportContractStatusOptions.map((item) => (
                   <option key={item.value} value={item.value}>
-                    {item.label}
+                    {t(item.labelKey)}
                   </option>
                 ))}
               </FormSelect>

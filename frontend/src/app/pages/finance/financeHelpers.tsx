@@ -51,13 +51,15 @@ import type {
   CustomsReceiptCollectionReport,
   TaxRefundStatisticsReport,
 } from '../../../api'
-import { daysFromTodayInputValue, emptyToNull, todayInputValue } from '../appHelpers'
+import { translate } from '../../../locales'
+import { daysFromTodayInputValue, emptyToNull, getRuntimeSettings, todayInputValue } from '../appHelpers'
 import { allocationTypeOptions, feePaymentRequestStatusOptions, feeTypeOptions, miscFeeAllocationMethodOptions, miscFeeCategoryOptions, miscFeeItemStatusOptions, partnerFeeInvoiceStatusOptions, paymentRequestStatusOptions, paymentTypeOptions, profitCostTypeOptions, purchaseInvoiceNoticeStatusOptions, receiptStatusOptions, receiptTypeOptions, reportingDocumentTypeOptions, reportingStatusOptions, sampleFeeTypeOptions, settlementStatusOptions, shipmentStatusOptions, supplierInvoiceStatusOptions, verificationDocumentStatusOptions, verificationReminderStatusOptions } from '../../../shared/formOptions'
 
 import type { FinanceModule } from '../../routes'
 
 export function shipmentStatusLabel(value: string): string {
-  return shipmentStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = shipmentStatusOptions.find((item) => item.value === value)
+  return option ? translate(getRuntimeSettings().language, option.labelKey) : value
 }
 
 export function purchaseInvoiceNoticeStatusLabel(value: string): string {
