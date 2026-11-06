@@ -1,8 +1,14 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 
 import type { CurrentUser } from '../../../api'
-import { canApproveAssignedRecord, severityTag } from '../appHelpers'
+import { t } from '../../appI18n'
+import {
+  canApproveAssignedRecord,
+  formatDate,
+  severityTag,
+  setRuntimeSettings,
+} from '../appHelpers'
 
 function currentUser(permissions: string[]): CurrentUser {
   return {
@@ -45,3 +51,22 @@ describe('severityTag', () => {
     expect(screen.getByText('提醒')).toBeInTheDocument()
   })
 })
+
+describe('runtime settings', () => {
+  afterEach(() => {
+    setRuntimeSettings({ language: 'zh-CN', timeZone: 'Asia/Shanghai' })
+  })
+
+  it('让 t 跟随运行时语言设置', () => {
+    setRuntimeSettings({ language: 'en-US', timeZone: 'UTC' })
+    expect(t('settings.title')).toBe('Settings')
+  })
+
+  it('让日期格式化跟随运行时设置的时区', () => {
+    const value = '2024-01-01T20:00:00Z'
+    expect(formatDate(value)).toBe('2024-01-02')
+    setRuntimeSettings({ language: 'en-US', timeZone: 'UTC' })
+    expect(formatDate(value)).toBe('2024-01-01')
+  })
+})
+

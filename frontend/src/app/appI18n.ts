@@ -1,4 +1,5 @@
 import { type AppLanguage, type AppTimeZone, type I18nConfig } from '../api'
+import { getRuntimeSettings } from './pages/appHelpers'
 
 export type AppSettings = {
   language: AppLanguage
@@ -267,6 +268,6 @@ const en: Record<string, string> = {
   'todo.selfCreated': 'Created by me',
 }
 
-export function t(key: string, settings: AppSettings = normalizeSettings(null)) {
+export function t(key: string, settings: AppSettings = getRuntimeSettings()) {
   return (settings.language === 'en-US' ? en[key] : zh[key]) ?? key
 }
