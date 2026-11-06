@@ -585,6 +585,468 @@
       }
     }
   },
+  "warehouse": {
+    "inboundPlan": {
+      "status": {
+        "planned": "Planned",
+        "scheduled": "Slot assigned",
+        "closed": "Closed",
+        "cancelled": "Cancelled"
+      },
+      "type": {
+        "materialInbound": "Material inbound",
+        "purchaseInbound": "Purchase inbound",
+        "processingInbound": "Processing inbound",
+        "productionInbound": "Production inbound",
+        "packagingInbound": "Packaging inbound",
+        "sterilizationInbound": "Sterilization inbound"
+      },
+      "metric": {
+        "overviewAria": "Inbound plan overview",
+        "planCount": "Inbound plans",
+        "plannedCount": "To schedule",
+        "scheduledCount": "Slot assigned",
+        "pendingQuantity": "Pending inbound qty",
+        "typeCount": "Inbound types"
+      },
+      "list": {
+        "title": "Pending inbound plans",
+        "searchLabel": "Plan search",
+        "searchPlaceholder": "Plan no. / purchase contract / product",
+        "statusFilter": "Inbound status",
+        "allStatuses": "All statuses",
+        "typeFilter": "Inbound type",
+        "allTypes": "All types",
+        "supplierFilter": "Supplier",
+        "supplierFilterPlaceholder": "Enter supplier code or name",
+        "contractFilter": "Purchase contract ID",
+        "contractFilterPlaceholder": "Enter purchase contract no.",
+        "query": "Search",
+        "generateSchedule": "Generate / assign location",
+        "loadFailed": "Failed to load inbound plans"
+      },
+      "field": {
+        "code": "Plan no.",
+        "status": "Status",
+        "type": "Type",
+        "purchaseContract": "Purchase contract",
+        "supplier": "Supplier",
+        "plannedDate": "Planned inbound date",
+        "quantity": "Quantity",
+        "entry": "Entry",
+        "inboundType": "Inbound type",
+        "planStatus": "Plan status",
+        "warehouseId": "Warehouse ID",
+        "warehouse": "Warehouse",
+        "locationId": "Location ID",
+        "location": "Warehouse location",
+        "operator": "Operator",
+        "product": "Product",
+        "specification": "Specification",
+        "plannedQuantity": "Planned quantity",
+        "receivedQuantity": "Received"
+      },
+      "detail": {
+        "title": "Plan details",
+        "lineStatusPending": "Pending inbound",
+        "lineStatusPartial": "Partially received",
+        "lineStatusCompleted": "Received",
+        "lineStatusCancelled": "Cancelled",
+        "unassigned": "Not assigned",
+        "linesTitle": "Pending inbound items",
+        "lineCount_one": "{count} item",
+        "lineCount_other": "{count} items",
+        "noLines": "No plan lines",
+        "emptyTitle": "No inbound plans",
+        "emptyDescription": "Go back to the list and select an inbound plan to view details"
+      },
+      "form": {
+        "modalTitle": "Generate inbound plan and assign location",
+        "sectionTitle": "Plan generation and location assignment",
+        "fromContract": "Generate from purchase contract",
+        "contractSearchPlaceholder": "Search by contract no. or supplier",
+        "contractOptionDescription": "Signed {signed}  Delivery {delivery}",
+        "scheduleSection": "Pre-arrange location"
+      },
+      "action": {
+        "viewDetail": "View details",
+        "generate": "Generate inbound plan",
+        "saveSchedule": "Save location assignment",
+        "backToList": "Back to list"
+      },
+      "message": {
+        "generated": "Inbound plan {code} generated",
+        "generateFailed": "Failed to generate inbound plan",
+        "scheduled": "Scheduled {warehouse} / {location}",
+        "scheduleFailed": "Failed to save location assignment"
+      }
+    },
+    "inboundOrder": {
+      "status": {
+        "draft": "Draft",
+        "submitted": "Pending approval",
+        "approved": "Approved",
+        "cancelled": "Cancelled"
+      },
+      "mode": {
+        "formal": "Formal inbound",
+        "pendingInspection": "Pending inspection"
+      },
+      "metric": {
+        "overviewAria": "Inbound order overview",
+        "orderCount": "Inbound orders",
+        "draftCount": "Draft",
+        "submittedCount": "Pending approval",
+        "approvedCount": "Approved",
+        "availableQuantity": "Available stock",
+        "pendingQuantity": "Pending inspection stock"
+      },
+      "list": {
+        "title": "Inbound orders",
+        "searchLabel": "Inbound search",
+        "searchPlaceholder": "Inbound order / Purchase contract / Product",
+        "statusFilter": "Order status",
+        "allStatuses": "All statuses",
+        "modeFilter": "Inbound mode",
+        "allModes": "All modes",
+        "supplierFilter": "Supplier",
+        "supplierFilterAria": "Supplier filter",
+        "supplierFilterPlaceholder": "Enter supplier code or name",
+        "contractFilter": "Purchase contract",
+        "contractFilterAria": "Purchase contract filter",
+        "contractFilterPlaceholder": "Enter contract no. or supplier",
+        "query": "Search",
+        "generateOrApprove": "Generate / approve inbound order",
+        "loadFailed": "Failed to load inbound orders",
+        "supplierOptionDescription": "Linked to approved contract {code}",
+        "contractOptionDescription": "{supplier} · Ordered {orderDate} · Delivery {deliveryDate}"
+      },
+      "field": {
+        "code": "Inbound order",
+        "status": "Status",
+        "mode": "Mode",
+        "inboundMode": "Inbound mode",
+        "purchaseContract": "Purchase contract",
+        "supplier": "Supplier",
+        "inboundDate": "Inbound date",
+        "inboundAt": "Inbound date",
+        "location": "Location",
+        "entry": "Entry",
+        "purchaseOrderNo": "Purchase order no.",
+        "warehouseId": "Warehouse ID",
+        "warehouse": "Warehouse",
+        "locationId": "Location ID",
+        "operator": "Handled by",
+        "reviewer": "Approver",
+        "approvedAt": "Approval date",
+        "product": "Product",
+        "specification": "Specification",
+        "quantity": "Quantity",
+        "stockStatus": "Stock status",
+        "available": "Available",
+        "pendingInspection": "Pending inspection",
+        "locked": "Locked",
+        "date": "Date",
+        "direction": "Direction",
+        "source": "Source"
+      },
+      "detail": {
+        "title": "Details and stock",
+        "linesTitle": "Inbound lines",
+        "lineCount_one": "{count} line",
+        "lineCount_other": "{count} lines",
+        "noLines": "No inbound lines",
+        "balancesTitle": "Stock balances",
+        "balanceCount_one": "{count} record",
+        "balanceCount_other": "{count} records",
+        "noBalances": "No stock balances",
+        "ledgersTitle": "Stock ledger",
+        "ledgerCount_one": "{count} record",
+        "ledgerCount_other": "{count} records",
+        "noLedgers": "No stock ledger entries",
+        "inventorySearchLabel": "Stock search",
+        "inventorySearchPlaceholder": "Product code / Product name / Warehouse",
+        "stockStatusAvailable": "Available",
+        "stockStatusPendingInspection": "Pending inspection",
+        "directionIn": "Inbound",
+        "directionOut": "Outbound",
+        "emptyTitle": "No inbound orders",
+        "emptyDescription": "Return to the list and select an inbound order to view details and stock",
+        "reviewerFallback": "designated approver"
+      },
+      "form": {
+        "modalTitle": "Generate and approve inbound order",
+        "sectionTitle": "Inbound registration",
+        "fromPlan": "Generate from inbound plan",
+        "planSearchPlaceholder": "Enter purchase order no. or supplier",
+        "noAvailablePurchaseOrders": "No available purchase orders",
+        "currentOrderLink": "Linked record of this inbound order",
+        "planOptionDescription": "{supplier} · Inbound plan {code} · {status}",
+        "submitSection": "Submit and approve",
+        "reviewerPlaceholder": "Select an employee",
+        "reviewerLoading": "Loading employees",
+        "reviewerHistorical": "{name} / historical record, please select again",
+        "reviewerHistoricalLabel": "{name} / historical record",
+        "reviewerLoadingOptions": "Loading employees",
+        "reviewerEmpty": "No employees available"
+      },
+      "action": {
+        "viewDetail": "View details",
+        "generate": "Generate inbound order",
+        "submit": "Submit for approval",
+        "approve": "Approve inbound",
+        "backToList": "Back to list",
+        "searchInventory": "Search stock"
+      },
+      "validation": {
+        "reviewerRequired": "Please select an approver",
+        "reviewerMismatch": "This inbound order must be approved by {name}"
+      },
+      "message": {
+        "generated": "Inbound order {code} generated",
+        "generateFailed": "Failed to generate inbound order",
+        "submitted": "{code} submitted for approval",
+        "submitFailed": "Failed to submit inbound order",
+        "approvedFormal": "{code} formally received; stock and purchase follow-up updated",
+        "approvedInspection": "{code} recorded as pending inspection stock",
+        "approveFailed": "Failed to approve inbound order",
+        "waitingApproval": "Waiting for {name} to approve",
+        "reviewerLoadFailed": "Failed to load approvers",
+        "inventoryLoadFailed": "Failed to load stock snapshot"
+      }
+    },
+    "outboundPlan": {
+      "status": {
+        "planned": "Planned",
+        "scheduled": "Slot assigned",
+        "closed": "Closed",
+        "cancelled": "Cancelled"
+      },
+      "type": {
+        "materialOutbound": "Material outbound",
+        "productionOutbound": "Production outbound",
+        "finishedGoodsOutbound": "Finished goods outbound",
+        "processingOutbound": "Processing issue"
+      },
+      "sourceType": {
+        "shipmentPlan": "Shipment plan",
+        "productionRequisition": "Production requisition",
+        "processingIssue": "Processing issue"
+      },
+      "metric": {
+        "overviewAria": "Outbound plan overview",
+        "planCount": "Outbound plans",
+        "plannedCount": "To schedule",
+        "scheduledCount": "Slot assigned",
+        "pendingQuantity": "Pending outbound qty",
+        "shipmentSourceCount": "Shipment sources"
+      },
+      "list": {
+        "title": "Outbound plans",
+        "searchLabel": "Plan search",
+        "searchPlaceholder": "Plan no. / source order / product",
+        "statusFilter": "Outbound status",
+        "allStatuses": "All statuses",
+        "typeFilter": "Outbound type",
+        "allTypes": "All types",
+        "sourceTypeFilter": "Source type",
+        "allSourceTypes": "All sources",
+        "customerFilter": "Customer",
+        "customerFilterPlaceholder": "Enter customer code or name",
+        "sourceIdFilter": "Source order ID",
+        "sourceIdFilterPlaceholder": "Enter shipment order no.",
+        "query": "Search",
+        "generateSchedule": "Generate / assign location",
+        "loadFailed": "Failed to load outbound plans"
+      },
+      "field": {
+        "code": "Plan no.",
+        "status": "Status",
+        "type": "Type",
+        "sourceCode": "Source order",
+        "customer": "Customer",
+        "plannedDate": "Planned outbound date",
+        "quantity": "Quantity",
+        "entry": "Entry",
+        "outboundType": "Outbound type",
+        "planStatus": "Plan status",
+        "shipmentPlan": "Shipment plan",
+        "sourceDocument": "Source document",
+        "warehouseId": "Warehouse ID",
+        "warehouse": "Warehouse",
+        "locationId": "Location ID",
+        "location": "Warehouse location",
+        "operator": "Operator",
+        "product": "Product",
+        "specification": "Specification",
+        "plannedQuantity": "Planned quantity",
+        "outboundQuantity": "Outbound qty"
+      },
+      "detail": {
+        "title": "Pending outbound list",
+        "lineStatusPending": "Pending outbound",
+        "lineStatusPartial": "Partially outbound",
+        "lineStatusCompleted": "Outbound",
+        "lineStatusCancelled": "Cancelled",
+        "customerNotSet": "Customer not set",
+        "unassigned": "Not assigned",
+        "linesTitle": "Pending outbound items",
+        "lineCount_one": "{count} item",
+        "lineCount_other": "{count} items",
+        "noLines": "No pending outbound lines",
+        "emptyTitle": "No outbound plans",
+        "emptyDescription": "Go back to the list and select an outbound plan to view the pending outbound list"
+      },
+      "form": {
+        "modalTitle": "Generate outbound plan and assign location",
+        "sectionTitle": "Plan generation and location assignment",
+        "fromShipment": "Generate from shipment plan",
+        "selectApprovedShipment": "Select an approved shipment plan",
+        "scheduleSection": "Pre-arrange location"
+      },
+      "action": {
+        "viewDetail": "View details",
+        "generate": "Generate outbound plan",
+        "saveSchedule": "Save location assignment",
+        "backToList": "Back to list"
+      },
+      "message": {
+        "generated": "Outbound plan {code} generated",
+        "generateFailed": "Failed to generate outbound plan",
+        "scheduled": "Scheduled {warehouse} / {location}",
+        "scheduleFailed": "Failed to save location assignment"
+      }
+    },
+    "outboundOrder": {
+      "status": {
+        "draft": "Draft",
+        "submitted": "Pending approval",
+        "approved": "Outbound completed",
+        "cancelled": "Cancelled"
+      },
+      "mode": {
+        "formal": "Formal outbound",
+        "exception": "Exception outbound"
+      },
+      "metric": {
+        "overviewAria": "Outbound order overview",
+        "orderCount": "Outbound orders",
+        "draftCount": "Draft",
+        "submittedCount": "Pending approval",
+        "approvedCount": "Outbound completed",
+        "outboundQuantity": "Outbound quantity",
+        "availableQuantity": "Available stock"
+      },
+      "list": {
+        "title": "Outbound orders",
+        "searchLabel": "Outbound search",
+        "searchPlaceholder": "Outbound order / Source order / Product",
+        "statusFilter": "Order status",
+        "allStatuses": "All statuses",
+        "modeFilter": "Outbound mode",
+        "allModes": "All modes",
+        "typeFilter": "Outbound type",
+        "allTypes": "All types",
+        "customerFilter": "Customer ID",
+        "customerFilterPlaceholder": "Enter customer code or name",
+        "sourceIdFilter": "Source order ID",
+        "sourceIdFilterPlaceholder": "Enter shipment no.",
+        "query": "Search",
+        "generateOrApprove": "Generate / approve outbound order",
+        "loadFailed": "Failed to load outbound orders"
+      },
+      "field": {
+        "code": "Outbound order",
+        "codeNo": "Outbound order no.",
+        "status": "Status",
+        "mode": "Mode",
+        "outboundType": "Outbound type",
+        "sourceCode": "Source order",
+        "customer": "Customer",
+        "outboundDate": "Outbound date",
+        "quantity": "Quantity",
+        "entry": "Entry",
+        "outboundPlan": "Outbound plan",
+        "outboundMode": "Outbound mode",
+        "outboundAt": "Outbound date",
+        "warehouseId": "Warehouse ID",
+        "warehouse": "Warehouse",
+        "locationId": "Location ID",
+        "location": "Location",
+        "operator": "Handled by",
+        "exceptionReason": "Exception reason",
+        "reviewer": "Approver",
+        "approvedAt": "Approval date",
+        "allowNegative": "Authorize outbound with negative stock",
+        "product": "Product",
+        "specification": "Specification",
+        "stockStatus": "Stock status",
+        "available": "Available",
+        "pendingInspection": "Pending inspection",
+        "locked": "Locked",
+        "date": "Date",
+        "direction": "Direction",
+        "source": "Source",
+        "sourceDocument": "Source document"
+      },
+      "detail": {
+        "title": "Outbound details and stock ledger",
+        "linesTitle": "Outbound lines",
+        "lineCount_one": "{count} line",
+        "lineCount_other": "{count} lines",
+        "noLines": "No outbound lines",
+        "balancesTitle": "Stock balances",
+        "balanceCount_one": "{count} record",
+        "balanceCount_other": "{count} records",
+        "noBalances": "No stock balances",
+        "ledgersTitle": "Outbound ledger",
+        "ledgerCount_one": "{count} record",
+        "ledgerCount_other": "{count} records",
+        "noLedgers": "No outbound ledger entries",
+        "inventorySearchLabel": "Stock search",
+        "inventorySearchPlaceholder": "Product code / Product name / Warehouse",
+        "stockStatusAvailable": "Available",
+        "stockStatusPendingInspection": "Pending inspection",
+        "directionIn": "Inbound",
+        "directionOut": "Outbound",
+        "customerNotSet": "Customer not set",
+        "notSet": "Not set",
+        "emptyTitle": "No outbound orders",
+        "emptyDescription": "Return to the list and select an outbound order to view details and stock ledger",
+        "reviewerFallback": "designated approver"
+      },
+      "form": {
+        "modalTitle": "Generate and approve outbound order",
+        "sectionTitle": "Outbound registration",
+        "fromPlan": "Generate from outbound plan",
+        "selectPlan": "Select an outbound plan",
+        "submitSection": "Submit and approve"
+      },
+      "action": {
+        "viewDetail": "View details",
+        "generate": "Generate outbound order",
+        "submit": "Submit for approval",
+        "approve": "Approve outbound",
+        "backToList": "Back to list",
+        "searchInventory": "Search stock"
+      },
+      "validation": {
+        "reviewerRequired": "Please select an approver",
+        "reviewerMismatch": "This outbound order must be approved by {name}"
+      },
+      "message": {
+        "generated": "Outbound order {code} generated",
+        "generateFailed": "Failed to generate outbound order",
+        "submitted": "{code} submitted for approval",
+        "submitFailed": "Failed to submit outbound order",
+        "approvedFormal": "{code} formally issued; stock and purchase follow-up updated",
+        "approvedException": "{code} recorded as exception outbound",
+        "approveFailed": "Failed to approve outbound order",
+        "waitingApproval": "Waiting for {name} to approve",
+        "inventoryLoadFailed": "Failed to load stock snapshot"
+      }
+    }
+  },
   "purchase": {
     "inquiry": {
       "status": {

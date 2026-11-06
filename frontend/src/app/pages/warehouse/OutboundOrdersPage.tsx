@@ -59,28 +59,33 @@ import {
   trimDecimal,
 } from '../appHelpers'
 import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
+import { t } from '../../appI18n'
 
 function outboundPlanStatusLabel(value: string): string {
-  return outboundPlanStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = outboundPlanStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function outboundPlanTypeLabel(value: string): string {
-  return outboundPlanTypeOptions.find((item) => item.value === value)?.label ?? value
+  const option = outboundPlanTypeOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function outboundPlanSourceTypeLabel(value: string): string {
-  return outboundPlanSourceTypeOptions.find((item) => item.value === value)?.label ?? value
+  const option = outboundPlanSourceTypeOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function stockStatusLabel(value: string): string {
-  if (value === 'available') return '可用'
-  if (value === 'pending_inspection') return '待检'
+  if (value === 'available') return t('warehouse.outboundOrder.detail.stockStatusAvailable')
+  if (value === 'pending_inspection')
+    return t('warehouse.outboundOrder.detail.stockStatusPendingInspection')
   return value
 }
 
 function inventoryDirectionLabel(value: string): string {
-  if (value === 'in') return '入库'
-  if (value === 'out') return '出库'
+  if (value === 'in') return t('warehouse.outboundOrder.detail.directionIn')
+  if (value === 'out') return t('warehouse.outboundOrder.detail.directionOut')
   return value
 }
 
@@ -110,17 +115,17 @@ function initialOutboundOrderForm(): OutboundOrderFormState {
     outbound_mode: 'formal',
     outbound_at: todayInputValue(),
     warehouse_id: 'wh-ningbo',
-    warehouse_name: '宁波总仓',
+    warehouse_name: '',
     location_id: 'loc-fg-01',
-    location_name: '成品区 A-01',
-    operator_name: '仓库主管',
+    location_name: '',
+    operator_name: '',
     exception_reason: '',
   }
 }
 
 function initialOutboundOrderApprovalForm(): OutboundOrderApprovalFormState {
   return {
-    reviewer_name: '演示业务主管',
+    reviewer_name: '',
     approved_at: todayInputValue(),
     allow_negative: false,
   }
@@ -135,10 +140,10 @@ function outboundOrderFormForPlan(
     plan_id: plan.id,
     outbound_at: plan.planned_date,
     warehouse_id: plan.warehouse_id ?? 'wh-ningbo',
-    warehouse_name: plan.warehouse_name ?? '宁波总仓',
+    warehouse_name: plan.warehouse_name ?? '',
     location_id: plan.location_id ?? 'loc-fg-01',
-    location_name: plan.location_name ?? '成品区 A-01',
-    operator_name: plan.operator_name ?? '仓库主管',
+    location_name: plan.location_name ?? '',
+    operator_name: plan.operator_name ?? '',
   }
 }
 
@@ -184,11 +189,13 @@ function outboundOrderApprovePayload(
 }
 
 function outboundOrderModeLabel(value: string): string {
-  return outboundOrderModeOptions.find((item) => item.value === value)?.label ?? value
+  const option = outboundOrderModeOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function outboundOrderStatusLabel(value: string): string {
-  return outboundOrderStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = outboundOrderStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function outboundOrderTotalQuantity(order: OutboundOrder): number {
@@ -235,7 +242,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
     setForm(outboundOrderToForm(selectedOrder))
     setApprovalForm((current) => ({
       ...current,
-      reviewer_name: selectedOrder.reviewer_name ?? '演示业务主管',
+      reviewer_name: selectedOrder.reviewer_name ?? '',
       approved_at: selectedOrder.approved_at ?? selectedOrder.outbound_at,
     }))
     setReviewerId(selectedOrder.reviewer_id ?? '')
@@ -283,7 +290,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
       }
       await loadOutboundInventorySnapshot(nextOrder, inventoryQuery)
     } catch (caught) {
-      showError(caught, '货物出库加载失败')
+      showError(caught, t('warehouse.outboundOrder.list.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -330,7 +337,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
     try {
       await loadOutboundInventorySnapshot(selectedOrder)
     } catch (caught) {
-      showError(caught, '库存快照加载失败')
+      showError(caught, t('warehouse.outboundOrder.message.inventoryLoadFailed'))
     }
   }
 
@@ -378,9 +385,9 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
       upsertOutboundOrder(order)
       setOutboundOrderModalOpen(false)
       await loadOutboundOrders(order.id, order, inventoryQuery)
-      setMessage(`已生成出库单 ${order.code}`)
+      setMessage(t('warehouse.outboundOrder.message.generated', { code: order.code }))
     } catch (caught) {
-      showError(caught, '出库单生成失败')
+      showError(caught, t('warehouse.outboundOrder.message.generateFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -389,7 +396,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
   async function submitSelectedOutboundOrder() {
     if (!selectedOrder) return
     if (!reviewerId) {
-      showError(new Error('请选择审批人'))
+      showError(new Error(t('warehouse.outboundOrder.validation.reviewerRequired')))
       return
     }
     setSubmitting(true)
@@ -400,9 +407,9 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
       const inventoryQuery = order.lines[0]?.product_code ?? order.lines[0]?.product_name ?? ''
       upsertOutboundOrder(order)
       await loadOutboundOrders(order.id, order, inventoryQuery)
-      setMessage(`${order.code} 已提交审批`)
+      setMessage(t('warehouse.outboundOrder.message.submitted', { code: order.code }))
     } catch (caught) {
-      showError(caught, '出库单提交失败')
+      showError(caught, t('warehouse.outboundOrder.message.submitFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -419,7 +426,15 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
         'warehouse:outbound_order:approve',
       )
     ) {
-      showError(new Error(`该出库单应由 ${selectedOrder.reviewer_name ?? '指定审批人'} 审批`))
+      showError(
+        new Error(
+          t('warehouse.outboundOrder.validation.reviewerMismatch', {
+            name:
+              selectedOrder.reviewer_name ??
+              t('warehouse.outboundOrder.detail.reviewerFallback'),
+          }),
+        ),
+      )
       return
     }
     setSubmitting(true)
@@ -438,11 +453,11 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
       await loadOutboundOrders(order.id, order, inventoryQuery)
       setMessage(
         order.outbound_mode === 'formal'
-          ? `${order.code} 已正式出库，库存和采购跟单已回写`
-          : `${order.code} 已记录异常出库`,
+          ? t('warehouse.outboundOrder.message.approvedFormal', { code: order.code })
+          : t('warehouse.outboundOrder.message.approvedException', { code: order.code }),
       )
     } catch (caught) {
-      showError(caught, '出库审批失败')
+      showError(caught, t('warehouse.outboundOrder.message.approveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -459,17 +474,23 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
 
   return (
     <section className="outbound-order-page">
-      <div className="summary-strip" aria-label="货物出库概览">
-        <Metric label="出库单" value={orders.length} />
-        <Metric label="草稿" value={draftCount} />
+      <div className="summary-strip" aria-label={t('warehouse.outboundOrder.metric.overviewAria')}>
+        <Metric label={t('warehouse.outboundOrder.metric.orderCount')} value={orders.length} />
+        <Metric label={t('warehouse.outboundOrder.metric.draftCount')} value={draftCount} />
         <Metric
-          label="待审批"
+          label={t('warehouse.outboundOrder.metric.submittedCount')}
           value={submittedCount}
           intent={submittedCount > 0 ? 'warning' : 'normal'}
         />
-        <Metric label="已出库" value={approvedCount} />
-        <Metric label="出库数量" value={outboundQuantity.toFixed(2)} />
-        <Metric label="可用库存" value={availableQuantity.toFixed(2)} />
+        <Metric label={t('warehouse.outboundOrder.metric.approvedCount')} value={approvedCount} />
+        <Metric
+          label={t('warehouse.outboundOrder.metric.outboundQuantity')}
+          value={outboundQuantity.toFixed(2)}
+        />
+        <Metric
+          label={t('warehouse.outboundOrder.metric.availableQuantity')}
+          value={availableQuantity.toFixed(2)}
+        />
       </div>
 
       {message ? (
@@ -481,7 +502,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title="出库单" />
+              <PanelTitle icon={<Search size={18} />} title={t('warehouse.outboundOrder.list.title')} />
               <form
                 className="inline-filters"
                 onSubmit={(event) => {
@@ -490,76 +511,76 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                 }}
               >
                 <label>
-                  出库搜索
+                  {t('warehouse.outboundOrder.list.searchLabel')}
                   <Input
                     value={search}
-                    placeholder="出库单 / 来源单 / 商品"
+                    placeholder={t('warehouse.outboundOrder.list.searchPlaceholder')}
                     onChange={(event) => setSearch(event.target.value)}
                   />
                 </label>
                 <label htmlFor="outbound-order-status-filter">
-                  单据状态
+                  {t('warehouse.outboundOrder.list.statusFilter')}
                   <FormSelect
                     id="outbound-order-status-filter"
                     value={statusFilter}
                     onChange={(event) => setStatusFilter(event.target.value)}
                   >
-                    <option value="">全部状态</option>
+                    <option value="">{t('warehouse.outboundOrder.list.allStatuses')}</option>
                     {outboundOrderStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label htmlFor="outbound-order-mode-filter">
-                  出库模式
+                  {t('warehouse.outboundOrder.list.modeFilter')}
                   <FormSelect
                     id="outbound-order-mode-filter"
                     value={modeFilter}
                     onChange={(event) => setModeFilter(event.target.value)}
                   >
-                    <option value="">全部模式</option>
+                    <option value="">{t('warehouse.outboundOrder.list.allModes')}</option>
                     {outboundOrderModeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label htmlFor="outbound-order-type-filter">
-                  出库类型
+                  {t('warehouse.outboundOrder.list.typeFilter')}
                   <FormSelect
                     id="outbound-order-type-filter"
                     value={typeFilter}
                     onChange={(event) => setTypeFilter(event.target.value)}
                   >
-                    <option value="">全部类型</option>
+                    <option value="">{t('warehouse.outboundOrder.list.allTypes')}</option>
                     {outboundPlanTypeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label>
-                  客户标识
+                  {t('warehouse.outboundOrder.list.customerFilter')}
                   <Input
                     value={customerFilter}
-                    placeholder="输入客户编号或名称"
+                    placeholder={t('warehouse.outboundOrder.list.customerFilterPlaceholder')}
                     onChange={(event) => setCustomerFilter(event.target.value)}
                   />
                 </label>
                 <label>
-                  来源单 ID
+                  {t('warehouse.outboundOrder.list.sourceIdFilter')}
                   <Input
                     value={sourceIdFilter}
-                    placeholder="输入出货单号"
+                    placeholder={t('warehouse.outboundOrder.list.sourceIdFilterPlaceholder')}
                     onChange={(event) => setSourceIdFilter(event.target.value)}
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('warehouse.outboundOrder.list.query')}
                 </Button>
                 <Button
                   htmlType="button"
@@ -567,7 +588,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                   icon={<Plus size={16} />}
                   onClick={() => setOutboundOrderModalOpen(true)}
                 >
-                  生成/审批出库单
+                  {t('warehouse.outboundOrder.list.generateOrApprove')}
                 </Button>
               </form>
             </div>
@@ -575,7 +596,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
             <Table<OutboundOrder>
               columns={[
                 {
-                  title: '出库单',
+                  title: t('warehouse.outboundOrder.field.code'),
                   dataIndex: 'code',
                   render: (value: string, record: OutboundOrder) => (
                     <button
@@ -587,19 +608,39 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                     </button>
                   ),
                 },
-                { title: '状态', dataIndex: 'status', render: outboundOrderStatusLabel },
-                { title: '模式', dataIndex: 'outbound_mode', render: outboundOrderModeLabel },
-                { title: '出库类型', dataIndex: 'outbound_type', render: outboundPlanTypeLabel },
-                { title: '来源单', dataIndex: 'source_code' },
-                { title: '客户', dataIndex: 'customer_name', render: nullableText },
-                { title: '出库日', dataIndex: 'outbound_at', render: formatDate },
                 {
-                  title: '数量',
+                  title: t('warehouse.outboundOrder.field.status'),
+                  dataIndex: 'status',
+                  render: outboundOrderStatusLabel,
+                },
+                {
+                  title: t('warehouse.outboundOrder.field.mode'),
+                  dataIndex: 'outbound_mode',
+                  render: outboundOrderModeLabel,
+                },
+                {
+                  title: t('warehouse.outboundOrder.field.outboundType'),
+                  dataIndex: 'outbound_type',
+                  render: outboundPlanTypeLabel,
+                },
+                { title: t('warehouse.outboundOrder.field.sourceCode'), dataIndex: 'source_code' },
+                {
+                  title: t('warehouse.outboundOrder.field.customer'),
+                  dataIndex: 'customer_name',
+                  render: nullableText,
+                },
+                {
+                  title: t('warehouse.outboundOrder.field.outboundDate'),
+                  dataIndex: 'outbound_at',
+                  render: formatDate,
+                },
+                {
+                  title: t('warehouse.outboundOrder.field.quantity'),
                   dataIndex: 'lines',
                   render: (_, order) => outboundOrderTotalQuantity(order).toFixed(2),
                 },
                 {
-                  title: '入口',
+                  title: t('warehouse.outboundOrder.field.entry'),
                   key: 'detail',
                   width: 110,
                   render: (_: unknown, record: OutboundOrder) => (
@@ -607,7 +648,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                       size="small"
                       onClick={(event) => stopAndOpenOutboundOrderDetail(event, record)}
                     >
-                      查看详情
+                      {t('warehouse.outboundOrder.action.viewDetail')}
                     </Button>
                   ),
                 },
@@ -629,23 +670,23 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
           centered
           footer={null}
           open={outboundOrderModalOpen}
-          title="出库单生成和审批"
+          title={t('warehouse.outboundOrder.form.modalTitle')}
           width={980}
           onCancel={() => setOutboundOrderModalOpen(false)}
         >
           <div className="workflow-modal-content entity-modal-form">
-            <PanelTitle icon={<Warehouse size={18} />} title="出库登记" />
+            <PanelTitle icon={<Warehouse size={18} />} title={t('warehouse.outboundOrder.form.sectionTitle')} />
             <form className="record-form" onSubmit={generateOutboundOrder}>
-              <div className="form-divider">从出库计划生成</div>
+              <div className="form-divider">{t('warehouse.outboundOrder.form.fromPlan')}</div>
               <label htmlFor="outbound-order-plan-id">
-                出库计划
+                {t('warehouse.outboundOrder.field.outboundPlan')}
                 <FormSelect
                   id="outbound-order-plan-id"
                   required
                   value={form.plan_id}
                   onChange={(event) => handleOutboundOrderPlanChange(event.target.value)}
                 >
-                  <option value="">选择出库计划</option>
+                  <option value="">{t('warehouse.outboundOrder.form.selectPlan')}</option>
                   {outboundPlans.map((plan) => (
                     <option key={plan.id} value={plan.id}>
                       {plan.code} / {plan.source_code} / {outboundPlanStatusLabel(plan.status)}
@@ -654,7 +695,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                 </FormSelect>
               </label>
               <label htmlFor="outbound-order-code">
-                出库单号
+                {t('warehouse.outboundOrder.field.codeNo')}
                 <Input
                   id="outbound-order-code"
                   required
@@ -664,7 +705,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
               </label>
               <div className="form-pair two">
                 <label htmlFor="outbound-order-mode">
-                  出库模式
+                  {t('warehouse.outboundOrder.field.outboundMode')}
                   <FormSelect
                     id="outbound-order-mode"
                     value={form.outbound_mode}
@@ -672,13 +713,13 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                   >
                     {outboundOrderModeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label htmlFor="outbound-order-date">
-                  出库日期
+                  {t('warehouse.outboundOrder.field.outboundAt')}
                   <Input
                     id="outbound-order-date"
                     required
@@ -690,7 +731,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
               </div>
               <div className="form-pair two">
                 <label htmlFor="outbound-order-warehouse-id">
-                  仓库 ID
+                  {t('warehouse.outboundOrder.field.warehouseId')}
                   <Input
                     id="outbound-order-warehouse-id"
                     required
@@ -699,7 +740,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                   />
                 </label>
                 <label htmlFor="outbound-order-warehouse-name">
-                  仓库
+                  {t('warehouse.outboundOrder.field.warehouse')}
                   <Input
                     id="outbound-order-warehouse-name"
                     required
@@ -710,7 +751,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
               </div>
               <div className="form-pair two">
                 <label htmlFor="outbound-order-location-id">
-                  库位 ID
+                  {t('warehouse.outboundOrder.field.locationId')}
                   <Input
                     id="outbound-order-location-id"
                     required
@@ -719,7 +760,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                   />
                 </label>
                 <label htmlFor="outbound-order-location-name">
-                  库位
+                  {t('warehouse.outboundOrder.field.location')}
                   <Input
                     id="outbound-order-location-name"
                     required
@@ -729,7 +770,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                 </label>
               </div>
               <label htmlFor="outbound-order-operator">
-                经办人
+                {t('warehouse.outboundOrder.field.operator')}
                 <Input
                   id="outbound-order-operator"
                   required
@@ -738,7 +779,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                 />
               </label>
               <label htmlFor="outbound-exception-reason">
-                异常原因
+                {t('warehouse.outboundOrder.field.exceptionReason')}
                 <Input.TextArea
                   id="outbound-exception-reason"
                   rows={3}
@@ -752,7 +793,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                 icon={<PackagePlus size={16} />}
                 loading={submitting}
               >
-                生成出库单
+                {t('warehouse.outboundOrder.action.generate')}
               </Button>
             </form>
 
@@ -760,10 +801,11 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
               className="record-form accessory-form generation-form"
               onSubmit={approveSelectedOutboundOrder}
             >
-              <div className="form-divider">提交和审批</div>
+              <div className="form-divider">{t('warehouse.outboundOrder.form.submitSection')}</div>
               {selectedOrder?.status === 'draft' ? (
                 <ApprovalAssigneeSelect
                   currentUserId={currentUser.id}
+                  label={t('warehouse.outboundOrder.field.reviewer')}
                   onChange={setReviewerId}
                   requiredPermission="warehouse:outbound_order:approve"
                   value={reviewerId}
@@ -776,11 +818,11 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                 loading={submitting}
                 onClick={() => void submitSelectedOutboundOrder()}
               >
-                提交审批
+                {t('warehouse.outboundOrder.action.submit')}
               </Button>
               <div className="form-pair two">
                 <label htmlFor="outbound-reviewer-name">
-                  审批人
+                  {t('warehouse.outboundOrder.field.reviewer')}
                   <Input
                     id="outbound-reviewer-name"
                     disabled
@@ -788,7 +830,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                   />
                 </label>
                 <label htmlFor="outbound-approved-at">
-                  审批日期
+                  {t('warehouse.outboundOrder.field.approvedAt')}
                   <Input
                     id="outbound-approved-at"
                     required
@@ -802,7 +844,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
               </div>
               <label className="checkbox-line" htmlFor="outbound-allow-negative">
                 <input
-                  aria-label="授权负库存出库"
+                  aria-label={t('warehouse.outboundOrder.field.allowNegative')}
                   id="outbound-allow-negative"
                   type="checkbox"
                   checked={approvalForm.allow_negative}
@@ -810,7 +852,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                     setApprovalForm({ ...approvalForm, allow_negative: event.target.checked })
                   }
                 />
-                授权负库存出库
+                {t('warehouse.outboundOrder.field.allowNegative')}
               </label>
               <Button
                 disabled={
@@ -827,7 +869,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                 loading={submitting}
                 type="primary"
               >
-                审批出库
+                {t('warehouse.outboundOrder.action.approve')}
               </Button>
               {selectedOrder?.status === 'submitted' &&
               !canApproveAssignedRecord(
@@ -836,7 +878,11 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                 'warehouse:outbound_order:approve',
               ) ? (
                 <Alert
-                  message={`等待 ${selectedOrder.reviewer_name ?? '指定审批人'} 审批`}
+                  message={t('warehouse.outboundOrder.message.waitingApproval', {
+                    name:
+                      selectedOrder.reviewer_name ??
+                      t('warehouse.outboundOrder.detail.reviewerFallback'),
+                  })}
                   showIcon
                   type="info"
                 />
@@ -848,42 +894,45 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<LayoutDashboard size={18} />} title="出库明细和库存流水" />
+              <PanelTitle icon={<LayoutDashboard size={18} />} title={t('warehouse.outboundOrder.detail.title')} />
               <Button
                 icon={<ArrowLeft size={16} />}
                 onClick={() => onNavigate(warehouseOutboundOrderPath)}
               >
-                返回列表
+                {t('warehouse.outboundOrder.action.backToList')}
               </Button>
             </div>
             {selectedOrder ? (
               <>
                 <dl className="detail-list">
                   <div>
-                    <dt>来源单据</dt>
+                    <dt>{t('warehouse.outboundOrder.field.sourceDocument')}</dt>
                     <dd>
                       {outboundPlanSourceTypeLabel(selectedOrder.source_type)} /{' '}
                       {selectedOrder.source_code}
                     </dd>
                   </div>
                   <div>
-                    <dt>客户</dt>
-                    <dd>{selectedOrder.customer_name ?? '未设置客户'}</dd>
+                    <dt>{t('warehouse.outboundOrder.field.customer')}</dt>
+                    <dd>
+                      {selectedOrder.customer_name ??
+                        t('warehouse.outboundOrder.detail.customerNotSet')}
+                    </dd>
                   </div>
                   <div>
-                    <dt>出库模式</dt>
+                    <dt>{t('warehouse.outboundOrder.field.outboundMode')}</dt>
                     <dd>{outboundOrderModeLabel(selectedOrder.outbound_mode)}</dd>
                   </div>
                   <div>
-                    <dt>单据状态</dt>
+                    <dt>{t('warehouse.outboundOrder.field.status')}</dt>
                     <dd>{outboundOrderStatusLabel(selectedOrder.status)}</dd>
                   </div>
                   <div>
-                    <dt>出库日期</dt>
+                    <dt>{t('warehouse.outboundOrder.field.outboundAt')}</dt>
                     <dd>{formatDate(selectedOrder.outbound_at)}</dd>
                   </div>
                   <div>
-                    <dt>库位</dt>
+                    <dt>{t('warehouse.outboundOrder.field.location')}</dt>
                     <dd>
                       {selectedOrder.warehouse_name} / {selectedOrder.location_name}
                     </dd>
@@ -891,16 +940,20 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                 </dl>
 
                 <div className="accessory-heading">
-                  <strong>出库明细</strong>
-                  <span>{selectedOrder.lines.length} 条</span>
+                  <strong>{t('warehouse.outboundOrder.detail.linesTitle')}</strong>
+                  <span>
+                    {t('warehouse.outboundOrder.detail.lineCount', {
+                      count: selectedOrder.lines.length,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>商品</th>
-                      <th>规格</th>
-                      <th>数量</th>
-                      <th>库存状态</th>
+                      <th>{t('warehouse.outboundOrder.field.product')}</th>
+                      <th>{t('warehouse.outboundOrder.field.specification')}</th>
+                      <th>{t('warehouse.outboundOrder.field.quantity')}</th>
+                      <th>{t('warehouse.outboundOrder.field.stockStatus')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -909,7 +962,11 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                         <td>
                           {line.product_code ?? '-'} {line.product_name}
                         </td>
-                        <td>{line.specification ?? line.model ?? '未设置'}</td>
+                        <td>
+                          {line.specification ??
+                            line.model ??
+                            t('warehouse.outboundOrder.detail.notSet')}
+                        </td>
                         <td>
                           {trimDecimal(line.quantity)} {line.unit}
                         </td>
@@ -919,7 +976,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                     {selectedOrder.lines.length === 0 ? (
                       <tr>
                         <td className="empty-cell" colSpan={4}>
-                          暂无出库明细
+                          {t('warehouse.outboundOrder.detail.noLines')}
                         </td>
                       </tr>
                     ) : null}
@@ -931,30 +988,34 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                   onSubmit={refreshOutboundInventorySnapshot}
                 >
                   <label>
-                    库存搜索
+                    {t('warehouse.outboundOrder.detail.inventorySearchLabel')}
                     <Input
                       value={inventorySearch}
-                      placeholder="商品编码 / 商品名称 / 仓库"
+                      placeholder={t('warehouse.outboundOrder.detail.inventorySearchPlaceholder')}
                       onChange={(event) => setInventorySearch(event.target.value)}
                     />
                   </label>
                   <Button htmlType="submit" icon={<Search size={16} />}>
-                    查库存
+                    {t('warehouse.outboundOrder.action.searchInventory')}
                   </Button>
                 </form>
 
                 <div className="accessory-heading">
-                  <strong>库存余额</strong>
-                  <span>{inventoryBalances.length} 条</span>
+                  <strong>{t('warehouse.outboundOrder.detail.balancesTitle')}</strong>
+                  <span>
+                    {t('warehouse.outboundOrder.detail.balanceCount', {
+                      count: inventoryBalances.length,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>商品</th>
-                      <th>库位</th>
-                      <th>可用</th>
-                      <th>待检</th>
-                      <th>锁定</th>
+                      <th>{t('warehouse.outboundOrder.field.product')}</th>
+                      <th>{t('warehouse.outboundOrder.field.location')}</th>
+                      <th>{t('warehouse.outboundOrder.field.available')}</th>
+                      <th>{t('warehouse.outboundOrder.field.pendingInspection')}</th>
+                      <th>{t('warehouse.outboundOrder.field.locked')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -980,7 +1041,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                     {inventoryBalances.length === 0 ? (
                       <tr>
                         <td className="empty-cell" colSpan={5}>
-                          暂无库存余额
+                          {t('warehouse.outboundOrder.detail.noBalances')}
                         </td>
                       </tr>
                     ) : null}
@@ -988,17 +1049,21 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                 </table>
 
                 <div className="accessory-heading">
-                  <strong>出库流水</strong>
-                  <span>{inventoryLedgers.length} 条</span>
+                  <strong>{t('warehouse.outboundOrder.detail.ledgersTitle')}</strong>
+                  <span>
+                    {t('warehouse.outboundOrder.detail.ledgerCount', {
+                      count: inventoryLedgers.length,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>日期</th>
-                      <th>方向</th>
-                      <th>商品</th>
-                      <th>数量</th>
-                      <th>来源</th>
+                      <th>{t('warehouse.outboundOrder.field.date')}</th>
+                      <th>{t('warehouse.outboundOrder.field.direction')}</th>
+                      <th>{t('warehouse.outboundOrder.field.product')}</th>
+                      <th>{t('warehouse.outboundOrder.field.quantity')}</th>
+                      <th>{t('warehouse.outboundOrder.field.source')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1021,7 +1086,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                     {inventoryLedgers.length === 0 ? (
                       <tr>
                         <td className="empty-cell" colSpan={5}>
-                          暂无出库流水
+                          {t('warehouse.outboundOrder.detail.noLedgers')}
                         </td>
                       </tr>
                     ) : null}
@@ -1031,8 +1096,8 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
             ) : (
               <div className="module-state panel-empty-state">
                 <Package size={28} />
-                <strong>暂无出库单</strong>
-                <span>请返回列表选择出库单查看明细和库存流水</span>
+                <strong>{t('warehouse.outboundOrder.detail.emptyTitle')}</strong>
+                <span>{t('warehouse.outboundOrder.detail.emptyDescription')}</span>
               </div>
             )}
           </section>

@@ -40,6 +40,7 @@ import {
   emptyToNull,
   trimDecimal,
 } from '../appHelpers'
+import { t } from '../../appI18n'
 
 type OutboundPlanGenerateFormState = {
   shipment_plan_id: string
@@ -86,11 +87,11 @@ function initialOutboundPlanGenerateForm(): OutboundPlanGenerateFormState {
 function initialOutboundPlanScheduleForm(): OutboundPlanScheduleFormState {
   return {
     planned_date: daysFromTodayInputValue(7),
-    warehouse_id: 'wh-ningbo',
-    warehouse_name: '宁波总仓',
-    location_id: 'loc-fg-b02',
-    location_name: '成品区 B-02',
-    operator_name: '仓库主管',
+    warehouse_id: '',
+    warehouse_name: '',
+    location_id: '',
+    location_name: '',
+    operator_name: '',
   }
 }
 
@@ -108,11 +109,11 @@ function outboundPlanGenerateFormForShipment(
 function outboundPlanToScheduleForm(plan: OutboundPlan): OutboundPlanScheduleFormState {
   return {
     planned_date: plan.planned_date,
-    warehouse_id: plan.warehouse_id ?? 'wh-ningbo',
-    warehouse_name: plan.warehouse_name ?? '宁波总仓',
-    location_id: plan.location_id ?? 'loc-fg-b02',
-    location_name: plan.location_name ?? '成品区 B-02',
-    operator_name: plan.operator_name ?? '仓库主管',
+    warehouse_id: plan.warehouse_id ?? '',
+    warehouse_name: plan.warehouse_name ?? '',
+    location_id: plan.location_id ?? '',
+    location_name: plan.location_name ?? '',
+    operator_name: plan.operator_name ?? '',
   }
 }
 
@@ -140,22 +141,25 @@ function outboundPlanSchedulePayload(
 }
 
 function outboundPlanStatusLabel(value: string): string {
-  return outboundPlanStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = outboundPlanStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function outboundPlanTypeLabel(value: string): string {
-  return outboundPlanTypeOptions.find((item) => item.value === value)?.label ?? value
+  const option = outboundPlanTypeOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function outboundPlanSourceTypeLabel(value: string): string {
-  return outboundPlanSourceTypeOptions.find((item) => item.value === value)?.label ?? value
+  const option = outboundPlanSourceTypeOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function outboundPlanLineStatusLabel(value: string): string {
-  if (value === 'pending') return '待出库'
-  if (value === 'partial') return '部分出库'
-  if (value === 'completed') return '已出库'
-  if (value === 'cancelled') return '已取消'
+  if (value === 'pending') return t('warehouse.outboundPlan.detail.lineStatusPending')
+  if (value === 'partial') return t('warehouse.outboundPlan.detail.lineStatusPartial')
+  if (value === 'completed') return t('warehouse.outboundPlan.detail.lineStatusCompleted')
+  if (value === 'cancelled') return t('warehouse.outboundPlan.detail.lineStatusCancelled')
   return value
 }
 
@@ -246,7 +250,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
         )
       }
     } catch (caught) {
-      showError(caught, '出库计划加载失败')
+      showError(caught, t('warehouse.outboundPlan.list.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -309,9 +313,9 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
       upsertOutboundPlan(plan)
       setOutboundPlanModalOpen(false)
       await loadOutboundPlans(plan.id, plan)
-      setMessage(`已生成出库计划 ${plan.code}`)
+      setMessage(t('warehouse.outboundPlan.message.generated', { code: plan.code }))
     } catch (caught) {
-      showError(caught, '出库计划生成失败')
+      showError(caught, t('warehouse.outboundPlan.message.generateFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -331,9 +335,14 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
       upsertOutboundPlan(plan)
       setOutboundPlanModalOpen(false)
       await loadOutboundPlans(plan.id, plan)
-      setMessage(`已安排 ${plan.warehouse_name ?? ''} / ${plan.location_name ?? ''}`)
+      setMessage(
+        t('warehouse.outboundPlan.message.scheduled', {
+          warehouse: plan.warehouse_name ?? '',
+          location: plan.location_name ?? '',
+        }),
+      )
     } catch (caught) {
-      showError(caught, '库位安排保存失败')
+      showError(caught, t('warehouse.outboundPlan.message.scheduleFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -346,16 +355,22 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
 
   return (
     <section className="outbound-plan-page">
-      <div className="summary-strip" aria-label="出库计划概览">
-        <Metric label="出库计划" value={plans.length} />
+      <div className="summary-strip" aria-label={t('warehouse.outboundPlan.metric.overviewAria')}>
+        <Metric label={t('warehouse.outboundPlan.metric.planCount')} value={plans.length} />
         <Metric
-          label="待安排"
+          label={t('warehouse.outboundPlan.metric.plannedCount')}
           value={plannedCount}
           intent={plannedCount > 0 ? 'warning' : 'normal'}
         />
-        <Metric label="已排库位" value={scheduledCount} />
-        <Metric label="待出库数量" value={totalQuantity.toFixed(2)} />
-        <Metric label="发货来源" value={shipmentSourceCount} />
+        <Metric label={t('warehouse.outboundPlan.metric.scheduledCount')} value={scheduledCount} />
+        <Metric
+          label={t('warehouse.outboundPlan.metric.pendingQuantity')}
+          value={totalQuantity.toFixed(2)}
+        />
+        <Metric
+          label={t('warehouse.outboundPlan.metric.shipmentSourceCount')}
+          value={shipmentSourceCount}
+        />
       </div>
 
       {message ? (
@@ -367,7 +382,10 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title="出库计划" />
+              <PanelTitle
+                icon={<Search size={18} />}
+                title={t('warehouse.outboundPlan.list.title')}
+              />
               <form
                 className="inline-filters"
                 onSubmit={(event) => {
@@ -376,76 +394,76 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                 }}
               >
                 <label>
-                  计划搜索
+                  {t('warehouse.outboundPlan.list.searchLabel')}
                   <Input
                     value={search}
-                    placeholder="计划号 / 来源单 / 商品"
+                    placeholder={t('warehouse.outboundPlan.list.searchPlaceholder')}
                     onChange={(event) => setSearch(event.target.value)}
                   />
                 </label>
                 <label htmlFor="outbound-status-filter">
-                  出库状态
+                  {t('warehouse.outboundPlan.list.statusFilter')}
                   <FormSelect
                     id="outbound-status-filter"
                     value={statusFilter}
                     onChange={(event) => setStatusFilter(event.target.value)}
                   >
-                    <option value="">全部状态</option>
+                    <option value="">{t('warehouse.outboundPlan.list.allStatuses')}</option>
                     {outboundPlanStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label htmlFor="outbound-type-filter">
-                  出库类型
+                  {t('warehouse.outboundPlan.list.typeFilter')}
                   <FormSelect
                     id="outbound-type-filter"
                     value={typeFilter}
                     onChange={(event) => setTypeFilter(event.target.value)}
                   >
-                    <option value="">全部类型</option>
+                    <option value="">{t('warehouse.outboundPlan.list.allTypes')}</option>
                     {outboundPlanTypeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label htmlFor="outbound-source-filter">
-                  来源类型
+                  {t('warehouse.outboundPlan.list.sourceTypeFilter')}
                   <FormSelect
                     id="outbound-source-filter"
                     value={sourceFilter}
                     onChange={(event) => setSourceFilter(event.target.value)}
                   >
-                    <option value="">全部来源</option>
+                    <option value="">{t('warehouse.outboundPlan.list.allSourceTypes')}</option>
                     {outboundPlanSourceTypeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label>
-                  客户标识
+                  {t('warehouse.outboundPlan.list.customerFilter')}
                   <Input
                     value={customerFilter}
-                    placeholder="输入客户编号或名称"
+                    placeholder={t('warehouse.outboundPlan.list.customerFilterPlaceholder')}
                     onChange={(event) => setCustomerFilter(event.target.value)}
                   />
                 </label>
                 <label>
-                  来源单 ID
+                  {t('warehouse.outboundPlan.list.sourceIdFilter')}
                   <Input
                     value={sourceIdFilter}
-                    placeholder="输入出货单号"
+                    placeholder={t('warehouse.outboundPlan.list.sourceIdFilterPlaceholder')}
                     onChange={(event) => setSourceIdFilter(event.target.value)}
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('warehouse.outboundPlan.list.query')}
                 </Button>
                 <Button
                   htmlType="button"
@@ -453,7 +471,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                   icon={<Plus size={16} />}
                   onClick={() => setOutboundPlanModalOpen(true)}
                 >
-                  生成/排库位
+                  {t('warehouse.outboundPlan.list.generateSchedule')}
                 </Button>
               </form>
             </div>
@@ -461,7 +479,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
             <Table<OutboundPlan>
               columns={[
                 {
-                  title: '计划号',
+                  title: t('warehouse.outboundPlan.field.code'),
                   dataIndex: 'code',
                   render: (value: string, record: OutboundPlan) => (
                     <button
@@ -473,18 +491,34 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                     </button>
                   ),
                 },
-                { title: '状态', dataIndex: 'status', render: outboundPlanStatusLabel },
-                { title: '类型', dataIndex: 'outbound_type', render: outboundPlanTypeLabel },
-                { title: '来源单', dataIndex: 'source_code' },
-                { title: '客户', dataIndex: 'customer_name', render: nullableText },
-                { title: '计划出库日', dataIndex: 'planned_date', render: formatDate },
                 {
-                  title: '数量',
+                  title: t('warehouse.outboundPlan.field.status'),
+                  dataIndex: 'status',
+                  render: outboundPlanStatusLabel,
+                },
+                {
+                  title: t('warehouse.outboundPlan.field.type'),
+                  dataIndex: 'outbound_type',
+                  render: outboundPlanTypeLabel,
+                },
+                { title: t('warehouse.outboundPlan.field.sourceCode'), dataIndex: 'source_code' },
+                {
+                  title: t('warehouse.outboundPlan.field.customer'),
+                  dataIndex: 'customer_name',
+                  render: nullableText,
+                },
+                {
+                  title: t('warehouse.outboundPlan.field.plannedDate'),
+                  dataIndex: 'planned_date',
+                  render: formatDate,
+                },
+                {
+                  title: t('warehouse.outboundPlan.field.quantity'),
                   dataIndex: 'lines',
                   render: (_, plan) => outboundPlanTotalQuantity(plan).toFixed(2),
                 },
                 {
-                  title: '入口',
+                  title: t('warehouse.outboundPlan.field.entry'),
                   key: 'detail',
                   width: 110,
                   render: (_: unknown, record: OutboundPlan) => (
@@ -492,7 +526,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                       size="small"
                       onClick={(event) => stopAndOpenOutboundPlanDetail(event, record)}
                     >
-                      查看详情
+                      {t('warehouse.outboundPlan.action.viewDetail')}
                     </Button>
                   ),
                 },
@@ -514,34 +548,40 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
           centered
           footer={null}
           open={outboundPlanModalOpen}
-          title="出库计划生成和排库位"
+          title={t('warehouse.outboundPlan.form.modalTitle')}
           width={980}
           onCancel={() => setOutboundPlanModalOpen(false)}
         >
           <div className="workflow-modal-content entity-modal-form">
-            <PanelTitle icon={<Warehouse size={18} />} title="计划生成和排库位" />
+            <PanelTitle
+              icon={<Warehouse size={18} />}
+              title={t('warehouse.outboundPlan.form.sectionTitle')}
+            />
             <form className="record-form" onSubmit={generateOutboundPlan}>
-              <div className="form-divider">从发货计划生成</div>
+              <div className="form-divider">{t('warehouse.outboundPlan.form.fromShipment')}</div>
               <label htmlFor="outbound-plan-shipment-id">
-                发货计划
+                {t('warehouse.outboundPlan.field.shipmentPlan')}
                 <FormSelect
                   id="outbound-plan-shipment-id"
                   required
                   value={generateForm.shipment_plan_id}
                   onChange={(event) => handleOutboundShipmentChange(event.target.value)}
                 >
-                  <option value="">选择已审批发货计划</option>
+                  <option value="">
+                    {t('warehouse.outboundPlan.form.selectApprovedShipment')}
+                  </option>
                   {shipments.map((shipment) => (
                     <option key={shipment.id} value={shipment.id}>
-                      {shipment.code} / {shipment.customer_name ?? '未设置客户'} /{' '}
-                      {formatDate(shipment.planned_ship_date)}
+                      {shipment.code} /{' '}
+                      {shipment.customer_name ?? t('warehouse.outboundPlan.detail.customerNotSet')}{' '}
+                      / {formatDate(shipment.planned_ship_date)}
                     </option>
                   ))}
                 </FormSelect>
               </label>
               <div className="form-pair two">
                 <label htmlFor="outbound-plan-type">
-                  出库类型
+                  {t('warehouse.outboundPlan.field.outboundType')}
                   <FormSelect
                     id="outbound-plan-type"
                     value={generateForm.outbound_type}
@@ -551,13 +591,13 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                   >
                     {outboundPlanTypeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label htmlFor="outbound-plan-date">
-                  计划出库日
+                  {t('warehouse.outboundPlan.field.plannedDate')}
                   <Input
                     id="outbound-plan-date"
                     type="date"
@@ -574,7 +614,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                 icon={<PackagePlus size={16} />}
                 loading={submitting}
               >
-                生成出库计划
+                {t('warehouse.outboundPlan.action.generate')}
               </Button>
             </form>
 
@@ -582,9 +622,9 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
               className="record-form accessory-form generation-form"
               onSubmit={scheduleSelectedOutboundPlan}
             >
-              <div className="form-divider">库位预安排</div>
+              <div className="form-divider">{t('warehouse.outboundPlan.form.scheduleSection')}</div>
               <label htmlFor="outbound-schedule-date">
-                计划出库日
+                {t('warehouse.outboundPlan.field.plannedDate')}
                 <Input
                   id="outbound-schedule-date"
                   required
@@ -597,7 +637,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
               </label>
               <div className="form-pair two">
                 <label htmlFor="outbound-warehouse-id">
-                  仓库 ID
+                  {t('warehouse.outboundPlan.field.warehouseId')}
                   <Input
                     id="outbound-warehouse-id"
                     required
@@ -608,7 +648,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                   />
                 </label>
                 <label htmlFor="outbound-warehouse-name">
-                  仓库
+                  {t('warehouse.outboundPlan.field.warehouse')}
                   <Input
                     id="outbound-warehouse-name"
                     required
@@ -621,7 +661,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
               </div>
               <div className="form-pair two">
                 <label htmlFor="outbound-location-id">
-                  库位 ID
+                  {t('warehouse.outboundPlan.field.locationId')}
                   <Input
                     id="outbound-location-id"
                     required
@@ -632,7 +672,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                   />
                 </label>
                 <label htmlFor="outbound-location-name">
-                  库位
+                  {t('warehouse.outboundPlan.field.location')}
                   <Input
                     id="outbound-location-name"
                     required
@@ -644,7 +684,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                 </label>
               </div>
               <label htmlFor="outbound-operator-name">
-                经办人
+                {t('warehouse.outboundPlan.field.operator')}
                 <Input
                   id="outbound-operator-name"
                   required
@@ -661,7 +701,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                 loading={submitting}
                 type="primary"
               >
-                保存库位安排
+                {t('warehouse.outboundPlan.action.saveSchedule')}
               </Button>
             </form>
           </div>
@@ -670,61 +710,72 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<LayoutDashboard size={18} />} title="待出库清单" />
+              <PanelTitle
+                icon={<LayoutDashboard size={18} />}
+                title={t('warehouse.outboundPlan.detail.title')}
+              />
               <Button
                 icon={<ArrowLeft size={16} />}
                 onClick={() => onNavigate(warehouseOutboundPlanPath)}
               >
-                返回列表
+                {t('warehouse.outboundPlan.action.backToList')}
               </Button>
             </div>
             {selectedPlan ? (
               <>
                 <dl className="detail-list">
                   <div>
-                    <dt>来源单据</dt>
+                    <dt>{t('warehouse.outboundPlan.field.sourceDocument')}</dt>
                     <dd>
                       {outboundPlanSourceTypeLabel(selectedPlan.source_type)} /{' '}
                       {selectedPlan.source_code}
                     </dd>
                   </div>
                   <div>
-                    <dt>客户</dt>
-                    <dd>{selectedPlan.customer_name ?? '未设置客户'}</dd>
+                    <dt>{t('warehouse.outboundPlan.field.customer')}</dt>
+                    <dd>
+                      {selectedPlan.customer_name ??
+                        t('warehouse.outboundPlan.detail.customerNotSet')}
+                    </dd>
                   </div>
                   <div>
-                    <dt>出库类型</dt>
+                    <dt>{t('warehouse.outboundPlan.field.outboundType')}</dt>
                     <dd>{outboundPlanTypeLabel(selectedPlan.outbound_type)}</dd>
                   </div>
                   <div>
-                    <dt>计划状态</dt>
+                    <dt>{t('warehouse.outboundPlan.field.planStatus')}</dt>
                     <dd>{outboundPlanStatusLabel(selectedPlan.status)}</dd>
                   </div>
                   <div>
-                    <dt>计划出库日</dt>
+                    <dt>{t('warehouse.outboundPlan.field.plannedDate')}</dt>
                     <dd>{formatDate(selectedPlan.planned_date)}</dd>
                   </div>
                   <div>
-                    <dt>库位</dt>
+                    <dt>{t('warehouse.outboundPlan.field.location')}</dt>
                     <dd>
-                      {selectedPlan.warehouse_name ?? '未安排'} /{' '}
-                      {selectedPlan.location_name ?? '未安排'}
+                      {selectedPlan.warehouse_name ?? t('warehouse.outboundPlan.detail.unassigned')}{' '}
+                      /{' '}
+                      {selectedPlan.location_name ?? t('warehouse.outboundPlan.detail.unassigned')}
                     </dd>
                   </div>
                 </dl>
 
                 <div className="accessory-heading">
-                  <strong>待出库商品</strong>
-                  <span>{selectedPlan.lines.length} 条</span>
+                  <strong>{t('warehouse.outboundPlan.detail.linesTitle')}</strong>
+                  <span>
+                    {t('warehouse.outboundPlan.detail.lineCount', {
+                      count: selectedPlan.lines.length,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>商品</th>
-                      <th>规格</th>
-                      <th>计划数量</th>
-                      <th>已出库</th>
-                      <th>状态</th>
+                      <th>{t('warehouse.outboundPlan.field.product')}</th>
+                      <th>{t('warehouse.outboundPlan.field.specification')}</th>
+                      <th>{t('warehouse.outboundPlan.field.plannedQuantity')}</th>
+                      <th>{t('warehouse.outboundPlan.field.outboundQuantity')}</th>
+                      <th>{t('warehouse.outboundPlan.field.status')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -733,7 +784,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                         <td>
                           {line.product_code ?? '-'} {line.product_name}
                         </td>
-                        <td>{line.specification ?? line.model ?? '未设置'}</td>
+                        <td>{line.specification ?? line.model ?? t('common.notSet')}</td>
                         <td>
                           {trimDecimal(line.planned_quantity)} {line.unit}
                         </td>
@@ -746,7 +797,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                     {selectedPlan.lines.length === 0 ? (
                       <tr>
                         <td className="empty-cell" colSpan={5}>
-                          暂无待出库明细
+                          {t('warehouse.outboundPlan.detail.noLines')}
                         </td>
                       </tr>
                     ) : null}
@@ -756,8 +807,8 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
             ) : (
               <div className="module-state panel-empty-state">
                 <Send size={28} />
-                <strong>暂无出库计划</strong>
-                <span>请返回列表选择出库计划查看待出库清单</span>
+                <strong>{t('warehouse.outboundPlan.detail.emptyTitle')}</strong>
+                <span>{t('warehouse.outboundPlan.detail.emptyDescription')}</span>
               </div>
             )}
           </section>

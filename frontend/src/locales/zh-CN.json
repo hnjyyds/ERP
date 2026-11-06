@@ -585,6 +585,468 @@
       }
     }
   },
+  "warehouse": {
+    "inboundPlan": {
+      "status": {
+        "planned": "待安排",
+        "scheduled": "已排库位",
+        "closed": "已关闭",
+        "cancelled": "已取消"
+      },
+      "type": {
+        "materialInbound": "配料入库",
+        "purchaseInbound": "采购入库",
+        "processingInbound": "加工入库",
+        "productionInbound": "生产入库",
+        "packagingInbound": "包装入库",
+        "sterilizationInbound": "灭菌入库"
+      },
+      "metric": {
+        "overviewAria": "入库计划概览",
+        "planCount": "入库计划",
+        "plannedCount": "待安排",
+        "scheduledCount": "已排库位",
+        "pendingQuantity": "待入库数量",
+        "typeCount": "入库类型"
+      },
+      "list": {
+        "title": "待入库计划",
+        "searchLabel": "计划搜索",
+        "searchPlaceholder": "计划号 / 采购合同 / 商品",
+        "statusFilter": "入库状态",
+        "allStatuses": "全部状态",
+        "typeFilter": "入库类型",
+        "allTypes": "全部类型",
+        "supplierFilter": "供应商标识",
+        "supplierFilterPlaceholder": "输入供应商编号或名称",
+        "contractFilter": "采购合同 ID",
+        "contractFilterPlaceholder": "输入采购合同号",
+        "query": "查询",
+        "generateSchedule": "生成/排库位",
+        "loadFailed": "入库计划加载失败"
+      },
+      "field": {
+        "code": "计划号",
+        "status": "状态",
+        "type": "类型",
+        "purchaseContract": "采购合同",
+        "supplier": "供应商",
+        "plannedDate": "计划入库日",
+        "quantity": "数量",
+        "entry": "入口",
+        "inboundType": "入库类型",
+        "planStatus": "计划状态",
+        "warehouseId": "仓库 ID",
+        "warehouse": "仓库",
+        "locationId": "库位 ID",
+        "location": "库位",
+        "operator": "经办人",
+        "product": "商品",
+        "specification": "规格",
+        "plannedQuantity": "计划数量",
+        "receivedQuantity": "已入库"
+      },
+      "detail": {
+        "title": "计划明细",
+        "lineStatusPending": "待入库",
+        "lineStatusPartial": "部分入库",
+        "lineStatusCompleted": "已入库",
+        "lineStatusCancelled": "已取消",
+        "unassigned": "未安排",
+        "linesTitle": "待入库商品",
+        "lineCount_one": "{count} 条",
+        "lineCount_other": "{count} 条",
+        "noLines": "暂无计划明细",
+        "emptyTitle": "暂无入库计划",
+        "emptyDescription": "请返回列表选择入库计划查看详情"
+      },
+      "form": {
+        "modalTitle": "入库计划生成和排库位",
+        "sectionTitle": "计划生成和排库位",
+        "fromContract": "从采购合同生成",
+        "contractSearchPlaceholder": "输入合同号或供应商搜索",
+        "contractOptionDescription": "签订 {signed}  交货 {delivery}",
+        "scheduleSection": "库位预安排"
+      },
+      "action": {
+        "viewDetail": "查看详情",
+        "generate": "生成入库计划",
+        "saveSchedule": "保存库位安排",
+        "backToList": "返回列表"
+      },
+      "message": {
+        "generated": "已生成入库计划 {code}",
+        "generateFailed": "入库计划生成失败",
+        "scheduled": "已安排 {warehouse} / {location}",
+        "scheduleFailed": "库位安排保存失败"
+      }
+    },
+    "inboundOrder": {
+      "status": {
+        "draft": "草稿",
+        "submitted": "待审批",
+        "approved": "已审批",
+        "cancelled": "已取消"
+      },
+      "mode": {
+        "formal": "正式入库",
+        "pendingInspection": "待检入库"
+      },
+      "metric": {
+        "overviewAria": "货物入库概览",
+        "orderCount": "入库单",
+        "draftCount": "草稿",
+        "submittedCount": "待审批",
+        "approvedCount": "已审批",
+        "availableQuantity": "可用库存",
+        "pendingQuantity": "待检库存"
+      },
+      "list": {
+        "title": "入库单",
+        "searchLabel": "入库搜索",
+        "searchPlaceholder": "入库单 / 采购合同 / 商品",
+        "statusFilter": "单据状态",
+        "allStatuses": "全部状态",
+        "modeFilter": "入库模式",
+        "allModes": "全部模式",
+        "supplierFilter": "供应商",
+        "supplierFilterAria": "供应商筛选",
+        "supplierFilterPlaceholder": "输入供应商编号或名称",
+        "contractFilter": "采购合同",
+        "contractFilterAria": "采购合同筛选",
+        "contractFilterPlaceholder": "输入合同号或供应商",
+        "query": "查询",
+        "generateOrApprove": "生成/审批入库单",
+        "loadFailed": "货物入库加载失败",
+        "supplierOptionDescription": "关联已审批合同 {code}",
+        "contractOptionDescription": "{supplier} · 下单 {orderDate} · 交货 {deliveryDate}"
+      },
+      "field": {
+        "code": "入库单",
+        "status": "状态",
+        "mode": "模式",
+        "inboundMode": "入库模式",
+        "purchaseContract": "采购合同",
+        "supplier": "供应商",
+        "inboundDate": "入库日",
+        "inboundAt": "入库日期",
+        "location": "库位",
+        "entry": "入口",
+        "purchaseOrderNo": "采购订单号",
+        "warehouseId": "仓库 ID",
+        "warehouse": "仓库",
+        "locationId": "库位 ID",
+        "operator": "经办人",
+        "reviewer": "审批人",
+        "approvedAt": "审批日期",
+        "product": "商品",
+        "specification": "规格",
+        "quantity": "数量",
+        "stockStatus": "库存状态",
+        "available": "可用",
+        "pendingInspection": "待检",
+        "locked": "锁定",
+        "date": "日期",
+        "direction": "方向",
+        "source": "来源"
+      },
+      "detail": {
+        "title": "明细和库存",
+        "linesTitle": "入库明细",
+        "lineCount_one": "{count} 条",
+        "lineCount_other": "{count} 条",
+        "noLines": "暂无入库明细",
+        "balancesTitle": "库存余额",
+        "balanceCount_one": "{count} 条",
+        "balanceCount_other": "{count} 条",
+        "noBalances": "暂无库存余额",
+        "ledgersTitle": "库存流水",
+        "ledgerCount_one": "{count} 条",
+        "ledgerCount_other": "{count} 条",
+        "noLedgers": "暂无库存流水",
+        "inventorySearchLabel": "库存搜索",
+        "inventorySearchPlaceholder": "商品编码 / 商品名称 / 仓库",
+        "stockStatusAvailable": "可用",
+        "stockStatusPendingInspection": "待检",
+        "directionIn": "入库",
+        "directionOut": "出库",
+        "emptyTitle": "暂无入库单",
+        "emptyDescription": "请返回列表选择入库单查看明细和库存",
+        "reviewerFallback": "指定审批人"
+      },
+      "form": {
+        "modalTitle": "入库单生成和审批",
+        "sectionTitle": "入库登记",
+        "fromPlan": "从入库计划生成",
+        "planSearchPlaceholder": "输入采购订单号或供应商",
+        "noAvailablePurchaseOrders": "暂无可用采购订单",
+        "currentOrderLink": "当前入库单关联记录",
+        "planOptionDescription": "{supplier} · 入库计划 {code} · {status}",
+        "submitSection": "提交和审批",
+        "reviewerPlaceholder": "请选择系统员工",
+        "reviewerLoading": "正在加载员工",
+        "reviewerHistorical": "{name} / 历史记录，请重新选择",
+        "reviewerHistoricalLabel": "{name} / 历史记录",
+        "reviewerLoadingOptions": "加载人员中",
+        "reviewerEmpty": "暂无可选员工"
+      },
+      "action": {
+        "viewDetail": "查看详情",
+        "generate": "生成入库单",
+        "submit": "提交审批",
+        "approve": "审批入库",
+        "backToList": "返回列表",
+        "searchInventory": "查库存"
+      },
+      "validation": {
+        "reviewerRequired": "请选择审批人",
+        "reviewerMismatch": "该入库单应由 {name} 审批"
+      },
+      "message": {
+        "generated": "已生成入库单 {code}",
+        "generateFailed": "入库单生成失败",
+        "submitted": "{code} 已提交审批",
+        "submitFailed": "入库单提交失败",
+        "approvedFormal": "{code} 已正式入库，库存和采购跟单已回写",
+        "approvedInspection": "{code} 已登记待检库存",
+        "approveFailed": "入库审批失败",
+        "waitingApproval": "等待 {name} 审批",
+        "reviewerLoadFailed": "审批人员列表加载失败",
+        "inventoryLoadFailed": "库存快照加载失败"
+      }
+    },
+    "outboundPlan": {
+      "status": {
+        "planned": "待安排",
+        "scheduled": "已排库位",
+        "closed": "已关闭",
+        "cancelled": "已取消"
+      },
+      "type": {
+        "materialOutbound": "配料出库",
+        "productionOutbound": "生产出库",
+        "finishedGoodsOutbound": "成品出库",
+        "processingOutbound": "加工发料"
+      },
+      "sourceType": {
+        "shipmentPlan": "发货计划",
+        "productionRequisition": "生产领料",
+        "processingIssue": "加工发料"
+      },
+      "metric": {
+        "overviewAria": "出库计划概览",
+        "planCount": "出库计划",
+        "plannedCount": "待安排",
+        "scheduledCount": "已排库位",
+        "pendingQuantity": "待出库数量",
+        "shipmentSourceCount": "发货来源"
+      },
+      "list": {
+        "title": "出库计划",
+        "searchLabel": "计划搜索",
+        "searchPlaceholder": "计划号 / 来源单 / 商品",
+        "statusFilter": "出库状态",
+        "allStatuses": "全部状态",
+        "typeFilter": "出库类型",
+        "allTypes": "全部类型",
+        "sourceTypeFilter": "来源类型",
+        "allSourceTypes": "全部来源",
+        "customerFilter": "客户标识",
+        "customerFilterPlaceholder": "输入客户编号或名称",
+        "sourceIdFilter": "来源单 ID",
+        "sourceIdFilterPlaceholder": "输入出货单号",
+        "query": "查询",
+        "generateSchedule": "生成/排库位",
+        "loadFailed": "出库计划加载失败"
+      },
+      "field": {
+        "code": "计划号",
+        "status": "状态",
+        "type": "类型",
+        "sourceCode": "来源单",
+        "customer": "客户",
+        "plannedDate": "计划出库日",
+        "quantity": "数量",
+        "entry": "入口",
+        "outboundType": "出库类型",
+        "planStatus": "计划状态",
+        "shipmentPlan": "发货计划",
+        "sourceDocument": "来源单据",
+        "warehouseId": "仓库 ID",
+        "warehouse": "仓库",
+        "locationId": "库位 ID",
+        "location": "库位",
+        "operator": "经办人",
+        "product": "商品",
+        "specification": "规格",
+        "plannedQuantity": "计划数量",
+        "outboundQuantity": "已出库"
+      },
+      "detail": {
+        "title": "待出库清单",
+        "lineStatusPending": "待出库",
+        "lineStatusPartial": "部分出库",
+        "lineStatusCompleted": "已出库",
+        "lineStatusCancelled": "已取消",
+        "customerNotSet": "未设置客户",
+        "unassigned": "未安排",
+        "linesTitle": "待出库商品",
+        "lineCount_one": "{count} 条",
+        "lineCount_other": "{count} 条",
+        "noLines": "暂无待出库明细",
+        "emptyTitle": "暂无出库计划",
+        "emptyDescription": "请返回列表选择出库计划查看待出库清单"
+      },
+      "form": {
+        "modalTitle": "出库计划生成和排库位",
+        "sectionTitle": "计划生成和排库位",
+        "fromShipment": "从发货计划生成",
+        "selectApprovedShipment": "选择已审批发货计划",
+        "scheduleSection": "库位预安排"
+      },
+      "action": {
+        "viewDetail": "查看详情",
+        "generate": "生成出库计划",
+        "saveSchedule": "保存库位安排",
+        "backToList": "返回列表"
+      },
+      "message": {
+        "generated": "已生成出库计划 {code}",
+        "generateFailed": "出库计划生成失败",
+        "scheduled": "已安排 {warehouse} / {location}",
+        "scheduleFailed": "库位安排保存失败"
+      }
+    },
+    "outboundOrder": {
+      "status": {
+        "draft": "草稿",
+        "submitted": "待审批",
+        "approved": "已出库",
+        "cancelled": "已取消"
+      },
+      "mode": {
+        "formal": "正式出库",
+        "exception": "异常出库"
+      },
+      "metric": {
+        "overviewAria": "货物出库概览",
+        "orderCount": "出库单",
+        "draftCount": "草稿",
+        "submittedCount": "待审批",
+        "approvedCount": "已出库",
+        "outboundQuantity": "出库数量",
+        "availableQuantity": "可用库存"
+      },
+      "list": {
+        "title": "出库单",
+        "searchLabel": "出库搜索",
+        "searchPlaceholder": "出库单 / 来源单 / 商品",
+        "statusFilter": "单据状态",
+        "allStatuses": "全部状态",
+        "modeFilter": "出库模式",
+        "allModes": "全部模式",
+        "typeFilter": "出库类型",
+        "allTypes": "全部类型",
+        "customerFilter": "客户标识",
+        "customerFilterPlaceholder": "输入客户编号或名称",
+        "sourceIdFilter": "来源单 ID",
+        "sourceIdFilterPlaceholder": "输入出货单号",
+        "query": "查询",
+        "generateOrApprove": "生成/审批出库单",
+        "loadFailed": "货物出库加载失败"
+      },
+      "field": {
+        "code": "出库单",
+        "codeNo": "出库单号",
+        "status": "状态",
+        "mode": "模式",
+        "outboundType": "出库类型",
+        "sourceCode": "来源单",
+        "customer": "客户",
+        "outboundDate": "出库日",
+        "quantity": "数量",
+        "entry": "入口",
+        "outboundPlan": "出库计划",
+        "outboundMode": "出库模式",
+        "outboundAt": "出库日期",
+        "warehouseId": "仓库 ID",
+        "warehouse": "仓库",
+        "locationId": "库位 ID",
+        "location": "库位",
+        "operator": "经办人",
+        "exceptionReason": "异常原因",
+        "reviewer": "审批人",
+        "approvedAt": "审批日期",
+        "allowNegative": "授权负库存出库",
+        "product": "商品",
+        "specification": "规格",
+        "stockStatus": "库存状态",
+        "available": "可用",
+        "pendingInspection": "待检",
+        "locked": "锁定",
+        "date": "日期",
+        "direction": "方向",
+        "source": "来源",
+        "sourceDocument": "来源单据"
+      },
+      "detail": {
+        "title": "出库明细和库存流水",
+        "linesTitle": "出库明细",
+        "lineCount_one": "{count} 条",
+        "lineCount_other": "{count} 条",
+        "noLines": "暂无出库明细",
+        "balancesTitle": "库存余额",
+        "balanceCount_one": "{count} 条",
+        "balanceCount_other": "{count} 条",
+        "noBalances": "暂无库存余额",
+        "ledgersTitle": "出库流水",
+        "ledgerCount_one": "{count} 条",
+        "ledgerCount_other": "{count} 条",
+        "noLedgers": "暂无出库流水",
+        "inventorySearchLabel": "库存搜索",
+        "inventorySearchPlaceholder": "商品编码 / 商品名称 / 仓库",
+        "stockStatusAvailable": "可用",
+        "stockStatusPendingInspection": "待检",
+        "directionIn": "入库",
+        "directionOut": "出库",
+        "customerNotSet": "未设置客户",
+        "notSet": "未设置",
+        "emptyTitle": "暂无出库单",
+        "emptyDescription": "请返回列表选择出库单查看明细和库存流水",
+        "reviewerFallback": "指定审批人"
+      },
+      "form": {
+        "modalTitle": "出库单生成和审批",
+        "sectionTitle": "出库登记",
+        "fromPlan": "从出库计划生成",
+        "selectPlan": "选择出库计划",
+        "submitSection": "提交和审批"
+      },
+      "action": {
+        "viewDetail": "查看详情",
+        "generate": "生成出库单",
+        "submit": "提交审批",
+        "approve": "审批出库",
+        "backToList": "返回列表",
+        "searchInventory": "查库存"
+      },
+      "validation": {
+        "reviewerRequired": "请选择审批人",
+        "reviewerMismatch": "该出库单应由 {name} 审批"
+      },
+      "message": {
+        "generated": "已生成出库单 {code}",
+        "generateFailed": "出库单生成失败",
+        "submitted": "{code} 已提交审批",
+        "submitFailed": "出库单提交失败",
+        "approvedFormal": "{code} 已正式出库，库存和采购跟单已回写",
+        "approvedException": "{code} 已记录异常出库",
+        "approveFailed": "出库审批失败",
+        "waitingApproval": "等待 {name} 审批",
+        "inventoryLoadFailed": "库存快照加载失败"
+      }
+    }
+  },
   "purchase": {
     "inquiry": {
       "status": {

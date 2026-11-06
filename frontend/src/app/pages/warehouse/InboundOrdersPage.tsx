@@ -8,9 +8,11 @@ import { FormSelect, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui
 import { showError } from '../../../shared/errors'
 import { inboundOrderStatusOptions, inboundOrderModeOptions , inboundPlanStatusOptions} from '../../../shared/formOptions'
 import { formatDate, formatMoney as _formatMoney, formatQuantity as _formatQuantity, nullableText as _nullableText, todayInputValue, type RoutedDetailPageProps , trimDecimal} from '../appHelpers'
+import { t } from '../../appI18n'
 
 function inboundPlanStatusLabel(value: string): string {
-  return inboundPlanStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = inboundPlanStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function inboundPlanOptionSearchText(plan: InboundPlan): string {
@@ -60,8 +62,8 @@ function initialInboundOrderForm(): InboundOrderFormState {
     warehouse_id: 'wh-company',
     warehouse_name: '公司仓库',
     location_id: 'loc-a-01',
-    location_name: 'A-01',
-    operator_name: '仓库主管',
+    location_name: '',
+    operator_name: '',
   }
 }
 
@@ -89,8 +91,8 @@ function inboundOrderFormForPlan(
     warehouse_id: warehouse.value,
     warehouse_name: warehouse.label,
     location_id: plan.location_id ?? 'loc-a-01',
-    location_name: plan.location_name ?? 'A-01',
-    operator_name: plan.operator_name ?? '仓库主管',
+    location_name: plan.location_name ?? '',
+    operator_name: plan.operator_name ?? '',
   }
 }
 
@@ -133,22 +135,25 @@ function inboundOrderApprovePayload(
 }
 
 function inboundOrderModeLabel(value: string): string {
-  return inboundOrderModeOptions.find((item) => item.value === value)?.label ?? value
+  const option = inboundOrderModeOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function inboundOrderStatusLabel(value: string): string {
-  return inboundOrderStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = inboundOrderStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function stockStatusLabel(value: string): string {
-  if (value === 'available') return '可用'
-  if (value === 'pending_inspection') return '待检'
+  if (value === 'available') return t('warehouse.inboundOrder.detail.stockStatusAvailable')
+  if (value === 'pending_inspection')
+    return t('warehouse.inboundOrder.detail.stockStatusPendingInspection')
   return value
 }
 
 function inventoryDirectionLabel(value: string): string {
-  if (value === 'in') return '入库'
-  if (value === 'out') return '出库'
+  if (value === 'in') return t('warehouse.inboundOrder.detail.directionIn')
+  if (value === 'out') return t('warehouse.inboundOrder.detail.directionOut')
   return value
 }
 
@@ -193,7 +198,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
       suppliers.set(item.supplier_id, {
         value: item.supplier_id,
         label: item.supplier_name,
-        description: `关联已审批合同 ${item.code}`,
+        description: t('warehouse.inboundOrder.list.supplierOptionDescription', { code: item.code }),
       })
     })
     return [...suppliers.values()].slice(0, 20)
@@ -209,7 +214,11 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
       return result.items.slice(0, 20).map((item) => ({
         value: item.id,
         label: item.code,
-        description: `${item.supplier_name} · 下单 ${item.contract_date} · 交货 ${item.delivery_date}`,
+        description: t('warehouse.inboundOrder.list.contractOptionDescription', {
+          supplier: item.supplier_name,
+          orderDate: item.contract_date,
+          deliveryDate: item.delivery_date,
+        }),
       }))
     },
     [supplierFilter],
@@ -290,7 +299,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
       }
       await loadInventorySnapshotForOrder(nextOrder, inventoryQuery)
     } catch (caught) {
-      showError(caught, '货物入库加载失败')
+      showError(caught, t('warehouse.inboundOrder.list.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -315,7 +324,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
       const result = await listAssignableUsers('warehouse:inbound_order:approve')
       setAssignableUsers(result.users)
     } catch (caught) {
-      showError(caught, '审批人员列表加载失败')
+      showError(caught, t('warehouse.inboundOrder.message.reviewerLoadFailed'))
     } finally {
       setAssignableUsersLoaded(true)
       setLoadingAssignableUsers(false)
@@ -359,7 +368,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
     try {
       await loadInventorySnapshotForOrder(selectedOrder)
     } catch (caught) {
-      showError(caught, '库存快照加载失败')
+      showError(caught, t('warehouse.inboundOrder.message.inventoryLoadFailed'))
     }
   }
 
@@ -410,9 +419,9 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
       upsertInboundOrder(order)
       setInboundOrderModalOpen(false)
       await loadInboundOrders(order.id, order, inventoryQuery)
-      setMessage(`已生成入库单 ${order.code}`)
+      setMessage(t('warehouse.inboundOrder.message.generated', { code: order.code }))
     } catch (caught) {
-      showError(caught, '入库单生成失败')
+      showError(caught, t('warehouse.inboundOrder.message.generateFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -421,7 +430,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
   async function submitSelectedInboundOrder() {
     if (!selectedOrder) return
     if (!approvalForm.reviewer_id) {
-      showError(new Error('请选择审批人'))
+      showError(new Error(t('warehouse.inboundOrder.validation.reviewerRequired')))
       return
     }
     setSubmitting(true)
@@ -434,9 +443,9 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
       const inventoryQuery = order.lines[0]?.product_code ?? order.lines[0]?.product_name ?? ''
       upsertInboundOrder(order)
       await loadInboundOrders(order.id, order, inventoryQuery)
-      setMessage(`${order.code} 已提交审批`)
+      setMessage(t('warehouse.inboundOrder.message.submitted', { code: order.code }))
     } catch (caught) {
-      showError(caught, '入库单提交失败')
+      showError(caught, t('warehouse.inboundOrder.message.submitFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -447,7 +456,13 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
     if (!selectedOrder) return
     if (selectedOrder.status !== 'submitted') return
     if (selectedOrder.reviewer_id !== currentUser.id) {
-      showError(new Error(`该入库单应由 ${selectedOrder.reviewer_name ?? '指定审批人'} 审批`))
+      showError(
+        new Error(
+          t('warehouse.inboundOrder.validation.reviewerMismatch', {
+            name: selectedOrder.reviewer_name ?? t('warehouse.inboundOrder.detail.reviewerFallback'),
+          }),
+        ),
+      )
       return
     }
     setSubmitting(true)
@@ -463,11 +478,11 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
       await loadInboundOrders(order.id, order, inventoryQuery)
       setMessage(
         order.inbound_mode === 'formal'
-          ? `${order.code} 已正式入库，库存和采购跟单已回写`
-          : `${order.code} 已登记待检库存`,
+          ? t('warehouse.inboundOrder.message.approvedFormal', { code: order.code })
+          : t('warehouse.inboundOrder.message.approvedInspection', { code: order.code }),
       )
     } catch (caught) {
-      showError(caught, '入库审批失败')
+      showError(caught, t('warehouse.inboundOrder.message.approveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -487,13 +502,13 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
 
   return (
     <section className="inbound-order-page">
-<div className="summary-strip" aria-label="货物入库概览">
-        <Metric label="入库单" value={orders.length} />
-        <Metric label="草稿" value={draftCount} />
-        <Metric label="待审批" value={submittedCount} intent={submittedCount > 0 ? 'warning' : 'normal'} />
-        <Metric label="已审批" value={approvedCount} />
-        <Metric label="可用库存" value={availableQuantity.toFixed(2)} />
-        <Metric label="待检库存" value={pendingQuantity.toFixed(2)} />
+<div className="summary-strip" aria-label={t('warehouse.inboundOrder.metric.overviewAria')}>
+        <Metric label={t('warehouse.inboundOrder.metric.orderCount')} value={orders.length} />
+        <Metric label={t('warehouse.inboundOrder.metric.draftCount')} value={draftCount} />
+        <Metric label={t('warehouse.inboundOrder.metric.submittedCount')} value={submittedCount} intent={submittedCount > 0 ? 'warning' : 'normal'} />
+        <Metric label={t('warehouse.inboundOrder.metric.approvedCount')} value={approvedCount} />
+        <Metric label={t('warehouse.inboundOrder.metric.availableQuantity')} value={availableQuantity.toFixed(2)} />
+        <Metric label={t('warehouse.inboundOrder.metric.pendingQuantity')} value={pendingQuantity.toFixed(2)} />
       </div>
 
       {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
@@ -503,7 +518,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
           <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="入库单" />
+            <PanelTitle icon={<Search size={18} />} title={t('warehouse.inboundOrder.list.title')} />
             <form
               className="inline-filters single-line-filter-toolbar"
               onSubmit={(event) => {
@@ -512,49 +527,49 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
               }}
             >
               <label>
-                入库搜索
+                {t('warehouse.inboundOrder.list.searchLabel')}
                 <Input
                   value={search}
-                  placeholder="入库单 / 采购合同 / 商品"
+                  placeholder={t('warehouse.inboundOrder.list.searchPlaceholder')}
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </label>
               <label htmlFor="inbound-order-status-filter">
-                单据状态
+                {t('warehouse.inboundOrder.list.statusFilter')}
                 <FormSelect
                   id="inbound-order-status-filter"
                   value={statusFilter}
                   onChange={(event) => setStatusFilter(event.target.value)}
                 >
-                  <option value="">全部状态</option>
+                  <option value="">{t('warehouse.inboundOrder.list.allStatuses')}</option>
                   {inboundOrderStatusOptions.map((item) => (
                     <option key={item.value} value={item.value}>
-                      {item.label}
+                      {t(item.labelKey)}
                     </option>
                   ))}
                 </FormSelect>
               </label>
               <label htmlFor="inbound-order-mode-filter">
-                入库模式
+                {t('warehouse.inboundOrder.list.modeFilter')}
                 <FormSelect
                   id="inbound-order-mode-filter"
                   value={modeFilter}
                   onChange={(event) => setModeFilter(event.target.value)}
                 >
-                  <option value="">全部模式</option>
+                  <option value="">{t('warehouse.inboundOrder.list.allModes')}</option>
                   {inboundOrderModeOptions.map((item) => (
                     <option key={item.value} value={item.value}>
-                      {item.label}
+                      {t(item.labelKey)}
                     </option>
                   ))}
                 </FormSelect>
               </label>
               <label className="entity-search-filter">
-                供应商
+                {t('warehouse.inboundOrder.list.supplierFilter')}
                 <RemoteSelect
-                  ariaLabel="供应商筛选"
+                  ariaLabel={t('warehouse.inboundOrder.list.supplierFilterAria')}
                   fetchOptions={fetchSupplierOptions}
-                  placeholder="输入供应商编号或名称"
+                  placeholder={t('warehouse.inboundOrder.list.supplierFilterPlaceholder')}
                   value={supplierFilter || null}
                   onChange={(value) => {
                     setSupplierFilter(value)
@@ -563,20 +578,20 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
                 />
               </label>
               <label className="entity-search-filter">
-                采购合同
+                {t('warehouse.inboundOrder.list.contractFilter')}
                 <RemoteSelect
-                  ariaLabel="采购合同筛选"
+                  ariaLabel={t('warehouse.inboundOrder.list.contractFilterAria')}
                   fetchOptions={fetchContractOptions}
-                  placeholder="输入合同号或供应商"
+                  placeholder={t('warehouse.inboundOrder.list.contractFilterPlaceholder')}
                   value={contractFilter || null}
                   onChange={setContractFilter}
                 />
               </label>
               <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
+                {t('warehouse.inboundOrder.list.query')}
               </Button>
               <Button htmlType="button" type="primary" icon={<Plus size={16} />} onClick={() => setInboundOrderModalOpen(true)}>
-                生成/审批入库单
+                {t('warehouse.inboundOrder.list.generateOrApprove')}
               </Button>
             </form>
           </div>
@@ -584,7 +599,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
           <Table<InboundOrder>
             columns={[
               {
-                title: '入库单',
+                title: t('warehouse.inboundOrder.field.code'),
                 dataIndex: 'code',
                 render: (value: string, record: InboundOrder) => (
                   <button
@@ -596,23 +611,38 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
                   </button>
                 ),
               },
-              { title: '状态', dataIndex: 'status', render: inboundOrderStatusLabel },
-              { title: '模式', dataIndex: 'inbound_mode', render: inboundOrderModeLabel },
-              { title: '采购合同', dataIndex: 'purchase_contract_no' },
-              { title: '供应商', dataIndex: 'supplier_name' },
-              { title: '入库日', dataIndex: 'inbound_at', render: formatDate },
               {
-                title: '库位',
+                title: t('warehouse.inboundOrder.field.status'),
+                dataIndex: 'status',
+                render: inboundOrderStatusLabel,
+              },
+              {
+                title: t('warehouse.inboundOrder.field.mode'),
+                dataIndex: 'inbound_mode',
+                render: inboundOrderModeLabel,
+              },
+              {
+                title: t('warehouse.inboundOrder.field.purchaseContract'),
+                dataIndex: 'purchase_contract_no',
+              },
+              { title: t('warehouse.inboundOrder.field.supplier'), dataIndex: 'supplier_name' },
+              {
+                title: t('warehouse.inboundOrder.field.inboundDate'),
+                dataIndex: 'inbound_at',
+                render: formatDate,
+              },
+              {
+                title: t('warehouse.inboundOrder.field.location'),
                 dataIndex: 'location_name',
                 render: (_, order) => `${order.warehouse_name} / ${order.location_name}`,
               },
               {
-                title: '入口',
+                title: t('warehouse.inboundOrder.field.entry'),
                 key: 'detail',
                 width: 110,
                 render: (_: unknown, record: InboundOrder) => (
                   <Button size="small" onClick={(event) => stopAndOpenInboundOrderDetail(event, record)}>
-                    查看详情
+                    {t('warehouse.inboundOrder.action.viewDetail')}
                   </Button>
                 ),
               },
@@ -634,23 +664,23 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
           centered
           footer={null}
           open={inboundOrderModalOpen}
-          title="入库单生成和审批"
+          title={t('warehouse.inboundOrder.form.modalTitle')}
           width={980}
           onCancel={() => setInboundOrderModalOpen(false)}
         >
           <div className="workflow-modal-content entity-modal-form">
-          <PanelTitle icon={<Warehouse size={18} />} title="入库登记" />
+          <PanelTitle icon={<Warehouse size={18} />} title={t('warehouse.inboundOrder.form.sectionTitle')} />
           <form className="record-form" onSubmit={generateInboundOrder}>
-            <div className="form-divider">从入库计划生成</div>
+            <div className="form-divider">{t('warehouse.inboundOrder.form.fromPlan')}</div>
             <label htmlFor="inbound-order-plan-id">
-              采购订单号
+              {t('warehouse.inboundOrder.field.purchaseOrderNo')}
               <Select
                 allowClear
-                aria-label="采购订单号"
+                aria-label={t('warehouse.inboundOrder.field.purchaseOrderNo')}
                 id="inbound-order-plan-id"
                 showSearch
                 value={form.plan_id || undefined}
-                placeholder="输入采购订单号或供应商"
+                placeholder={t('warehouse.inboundOrder.form.planSearchPlaceholder')}
                 optionLabelProp="label"
                 filterOption={(input, option) => {
                   const plan = inboundPlans.find((item) => item.id === option?.value)
@@ -659,7 +689,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
                     .toLocaleLowerCase()
                     .includes(input.toLocaleLowerCase()) ?? false
                 }}
-                notFoundContent="暂无可用采购订单"
+                notFoundContent={t('warehouse.inboundOrder.form.noAvailablePurchaseOrders')}
                 onChange={(value) => handleInboundOrderPlanChange(value ?? '')}
               >
                 {form.plan_id &&
@@ -675,7 +705,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
                       <span className="remote-select-option-title">
                         {selectedOrder.purchase_contract_no}
                       </span>
-                      <span className="remote-select-option-desc">当前入库单关联记录</span>
+                      <span className="remote-select-option-desc">{t('warehouse.inboundOrder.form.currentOrderLink')}</span>
                     </div>
                   </Select.Option>
                 ) : null}
@@ -689,7 +719,11 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
                     <div className="remote-select-option">
                       <span className="remote-select-option-title">{plan.purchase_contract_no}</span>
                       <span className="remote-select-option-desc">
-                        {plan.supplier_name} · 入库计划 {plan.code} · {inboundPlanStatusLabel(plan.status)}
+                        {t('warehouse.inboundOrder.form.planOptionDescription', {
+                          supplier: plan.supplier_name,
+                          code: plan.code,
+                          status: inboundPlanStatusLabel(plan.status),
+                        })}
                       </span>
                     </div>
                   </Select.Option>
@@ -697,7 +731,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
               </Select>
             </label>
             <label htmlFor="inbound-order-code">
-              入库单号
+              {t('warehouse.inboundOrder.field.code')}
               <Input
                 id="inbound-order-code"
                 required
@@ -707,7 +741,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
             </label>
             <div className="form-pair two">
               <label htmlFor="inbound-order-mode">
-                入库模式
+                {t('warehouse.inboundOrder.field.inboundMode')}
                 <FormSelect
                   id="inbound-order-mode"
                   value={form.inbound_mode}
@@ -715,13 +749,13 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
                 >
                   {inboundOrderModeOptions.map((item) => (
                     <option key={item.value} value={item.value}>
-                      {item.label}
+                      {t(item.labelKey)}
                     </option>
                   ))}
                 </FormSelect>
               </label>
               <label htmlFor="inbound-order-date">
-                入库日期
+                {t('warehouse.inboundOrder.field.inboundAt')}
                 <Input
                   id="inbound-order-date"
                   required
@@ -733,7 +767,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
             </div>
             <div className="form-pair two">
               <label htmlFor="inbound-order-warehouse-id">
-                仓库 ID
+                {t('warehouse.inboundOrder.field.warehouseId')}
                 <Input
                   id="inbound-order-warehouse-id"
                   readOnly
@@ -742,7 +776,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
                 />
               </label>
               <label htmlFor="inbound-order-warehouse-name">
-                仓库
+                {t('warehouse.inboundOrder.field.warehouse')}
                 <FormSelect
                   id="inbound-order-warehouse-name"
                   required
@@ -759,7 +793,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
             </div>
             <div className="form-pair two">
               <label htmlFor="inbound-order-location-id">
-                库位 ID
+                {t('warehouse.inboundOrder.field.locationId')}
                 <Input
                   id="inbound-order-location-id"
                   required
@@ -768,7 +802,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
                 />
               </label>
               <label htmlFor="inbound-order-location-name">
-                库位
+                {t('warehouse.inboundOrder.field.location')}
                 <Input
                   id="inbound-order-location-name"
                   required
@@ -778,7 +812,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
               </label>
             </div>
             <label htmlFor="inbound-order-operator">
-              经办人
+              {t('warehouse.inboundOrder.field.operator')}
               <Input
                 id="inbound-order-operator"
                 required
@@ -792,12 +826,12 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
               icon={<PackagePlus size={16} />}
               loading={submitting}
             >
-              生成入库单
+              {t('warehouse.inboundOrder.action.generate')}
             </Button>
           </form>
 
           <form className="record-form accessory-form generation-form" onSubmit={approveSelectedInboundOrder}>
-            <div className="form-divider">提交和审批</div>
+            <div className="form-divider">{t('warehouse.inboundOrder.form.submitSection')}</div>
             <Button
               disabled={!selectedOrder || selectedOrder.status !== 'draft'}
               htmlType="button"
@@ -805,27 +839,33 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
               loading={submitting}
               onClick={() => void submitSelectedInboundOrder()}
             >
-              提交审批
+              {t('warehouse.inboundOrder.action.submit')}
             </Button>
             <div className="form-pair two">
               <label htmlFor="inbound-order-reviewer">
-                审批人
+                {t('warehouse.inboundOrder.field.reviewer')}
                 <Select
                   id="inbound-order-reviewer"
-                  aria-label="审批人"
+                  aria-label={t('warehouse.inboundOrder.field.reviewer')}
                   showSearch
                   loading={loadingAssignableUsers}
                   disabled={selectedOrder?.status !== 'draft'}
                   value={approvalForm.reviewer_id || undefined}
                   placeholder={
                     loadingAssignableUsers
-                      ? '正在加载员工'
+                      ? t('warehouse.inboundOrder.form.reviewerLoading')
                       : approvalForm.reviewer_name
-                        ? `${approvalForm.reviewer_name} / 历史记录，请重新选择`
-                        : '请选择系统员工'
+                        ? t('warehouse.inboundOrder.form.reviewerHistorical', {
+                            name: approvalForm.reviewer_name,
+                          })
+                        : t('warehouse.inboundOrder.form.reviewerPlaceholder')
                   }
                   optionFilterProp="label"
-                  notFoundContent={loadingAssignableUsers ? '加载人员中' : '暂无可选员工'}
+                  notFoundContent={
+                    loadingAssignableUsers
+                      ? t('warehouse.inboundOrder.form.reviewerLoadingOptions')
+                      : t('warehouse.inboundOrder.form.reviewerEmpty')
+                  }
                   onChange={applyReviewer}
                 >
                   {approvalForm.reviewer_id &&
@@ -833,10 +873,14 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
                     <Select.Option
                       key={approvalForm.reviewer_id}
                       value={approvalForm.reviewer_id}
-                      label={`${approvalForm.reviewer_name} / 历史记录`}
+                      label={t('warehouse.inboundOrder.form.reviewerHistoricalLabel', {
+                        name: approvalForm.reviewer_name,
+                      })}
                       disabled
                     >
-                      {approvalForm.reviewer_name} / 历史记录
+                      {t('warehouse.inboundOrder.form.reviewerHistoricalLabel', {
+                        name: approvalForm.reviewer_name,
+                      })}
                     </Select.Option>
                   ) : null}
                   {assignableUsers.map((user) => {
@@ -850,7 +894,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
                 </Select>
               </label>
               <label htmlFor="inbound-order-approved-at">
-                审批日期
+                {t('warehouse.inboundOrder.field.approvedAt')}
                 <Input
                   id="inbound-order-approved-at"
                   required
@@ -873,14 +917,18 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
               loading={submitting}
               type="primary"
             >
-              审批入库
+              {t('warehouse.inboundOrder.action.approve')}
             </Button>
             {selectedOrder?.status === 'submitted' &&
             selectedOrder.reviewer_id !== currentUser.id ? (
               <Alert
                 showIcon
                 type="info"
-                message={`等待 ${selectedOrder.reviewer_name ?? '指定审批人'} 审批`}
+                message={t('warehouse.inboundOrder.message.waitingApproval', {
+                  name:
+                    selectedOrder.reviewer_name ??
+                    t('warehouse.inboundOrder.detail.reviewerFallback'),
+                })}
               />
             ) : null}
           </form>
@@ -890,58 +938,62 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
           <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="明细和库存" />
+            <PanelTitle icon={<LayoutDashboard size={18} />} title={t('warehouse.inboundOrder.detail.title')} />
             <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(warehouseInboundOrderPath)}>
-              返回列表
+              {t('warehouse.inboundOrder.action.backToList')}
             </Button>
           </div>
           {selectedOrder ? (
             <>
               <dl className="detail-list">
                 <div>
-                  <dt>采购合同</dt>
+                  <dt>{t('warehouse.inboundOrder.field.purchaseContract')}</dt>
                   <dd>{selectedOrder.purchase_contract_no}</dd>
                 </div>
                 <div>
-                  <dt>供应商</dt>
+                  <dt>{t('warehouse.inboundOrder.field.supplier')}</dt>
                   <dd>{selectedOrder.supplier_name}</dd>
                 </div>
                 <div>
-                  <dt>入库模式</dt>
+                  <dt>{t('warehouse.inboundOrder.field.inboundMode')}</dt>
                   <dd>{inboundOrderModeLabel(selectedOrder.inbound_mode)}</dd>
                 </div>
                 <div>
-                  <dt>单据状态</dt>
+                  <dt>{t('warehouse.inboundOrder.list.statusFilter')}</dt>
                   <dd>{inboundOrderStatusLabel(selectedOrder.status)}</dd>
                 </div>
                 <div>
-                  <dt>入库日期</dt>
+                  <dt>{t('warehouse.inboundOrder.field.inboundAt')}</dt>
                   <dd>{formatDate(selectedOrder.inbound_at)}</dd>
                 </div>
                 <div>
-                  <dt>库位</dt>
+                  <dt>{t('warehouse.inboundOrder.field.location')}</dt>
                   <dd>{selectedOrder.warehouse_name} / {selectedOrder.location_name}</dd>
                 </div>
               </dl>
 
               <div className="accessory-heading">
-                <strong>入库明细</strong>
-                <span>{selectedOrder.lines.length} 条</span>
+                <strong>{t('warehouse.inboundOrder.detail.linesTitle')}</strong>
+                <span>
+                  {t('warehouse.inboundOrder.detail.lineCount', {
+                    count: selectedOrder.lines.length,
+                  })}
+                </span>
               </div>
               <table className="data-table compact-table">
                 <thead>
                   <tr>
-                    <th>商品</th>
-                    <th>规格</th>
-                    <th>数量</th>
-                    <th>库存状态</th>
+                    <th>{t('warehouse.inboundOrder.field.product')}</th>
+                    <th>{t('warehouse.inboundOrder.field.specification')}</th>
+                    <th>{t('warehouse.inboundOrder.field.quantity')}</th>
+                    <th>{t('warehouse.inboundOrder.field.stockStatus')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {selectedOrder.lines.map((line) => (
                     <tr key={line.id}>
                       <td>{line.product_code ?? '-'} {line.product_name}</td>
-                      <td>{line.specification ?? line.model ?? '未设置'}</td>
+                      <td>{line.specification ?? line.model ?? t('common.notSet')}</td>
                       <td>{trimDecimal(line.quantity)} {line.unit}</td>
                       <td>{stockStatusLabel(line.stock_status)}</td>
                     </tr>
@@ -949,7 +1001,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
                   {selectedOrder.lines.length === 0 ? (
                     <tr>
                       <td className="empty-cell" colSpan={4}>
-                        暂无入库明细
+                        {t('warehouse.inboundOrder.detail.noLines')}
                       </td>
                     </tr>
                   ) : null}
@@ -958,30 +1010,34 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
 
               <form className="inline-filters inline-search inventory-search-form" onSubmit={refreshInventorySnapshot}>
                 <label>
-                  库存搜索
+                  {t('warehouse.inboundOrder.detail.inventorySearchLabel')}
                   <Input
                     value={inventorySearch}
-                    placeholder="商品编码 / 商品名称 / 仓库"
+                    placeholder={t('warehouse.inboundOrder.detail.inventorySearchPlaceholder')}
                     onChange={(event) => setInventorySearch(event.target.value)}
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查库存
+                  {t('warehouse.inboundOrder.action.searchInventory')}
                 </Button>
               </form>
 
               <div className="accessory-heading">
-                <strong>库存余额</strong>
-                <span>{inventoryBalances.length} 条</span>
+                <strong>{t('warehouse.inboundOrder.detail.balancesTitle')}</strong>
+                <span>
+                  {t('warehouse.inboundOrder.detail.balanceCount', {
+                    count: inventoryBalances.length,
+                  })}
+                </span>
               </div>
               <table className="data-table compact-table">
                 <thead>
                   <tr>
-                    <th>商品</th>
-                    <th>库位</th>
-                    <th>可用</th>
-                    <th>待检</th>
-                    <th>锁定</th>
+                    <th>{t('warehouse.inboundOrder.field.product')}</th>
+                    <th>{t('warehouse.inboundOrder.field.location')}</th>
+                    <th>{t('warehouse.inboundOrder.field.available')}</th>
+                    <th>{t('warehouse.inboundOrder.field.pendingInspection')}</th>
+                    <th>{t('warehouse.inboundOrder.field.locked')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -997,7 +1053,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
                   {inventoryBalances.length === 0 ? (
                     <tr>
                       <td className="empty-cell" colSpan={5}>
-                        暂无库存余额
+                        {t('warehouse.inboundOrder.detail.noBalances')}
                       </td>
                     </tr>
                   ) : null}
@@ -1005,17 +1061,21 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
               </table>
 
               <div className="accessory-heading">
-                <strong>库存流水</strong>
-                <span>{inventoryLedgers.length} 条</span>
+                <strong>{t('warehouse.inboundOrder.detail.ledgersTitle')}</strong>
+                <span>
+                  {t('warehouse.inboundOrder.detail.ledgerCount', {
+                    count: inventoryLedgers.length,
+                  })}
+                </span>
               </div>
               <table className="data-table compact-table">
                 <thead>
                   <tr>
-                    <th>日期</th>
-                    <th>方向</th>
-                    <th>商品</th>
-                    <th>数量</th>
-                    <th>来源</th>
+                    <th>{t('warehouse.inboundOrder.field.date')}</th>
+                    <th>{t('warehouse.inboundOrder.field.direction')}</th>
+                    <th>{t('warehouse.inboundOrder.field.product')}</th>
+                    <th>{t('warehouse.inboundOrder.field.quantity')}</th>
+                    <th>{t('warehouse.inboundOrder.field.source')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1031,7 +1091,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
                   {inventoryLedgers.length === 0 ? (
                     <tr>
                       <td className="empty-cell" colSpan={5}>
-                        暂无库存流水
+                        {t('warehouse.inboundOrder.detail.noLedgers')}
                       </td>
                     </tr>
                   ) : null}
@@ -1041,8 +1101,8 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
           ) : (
             <div className="module-state panel-empty-state">
               <Warehouse size={28} />
-              <strong>暂无入库单</strong>
-              <span>请返回列表选择入库单查看明细和库存</span>
+              <strong>{t('warehouse.inboundOrder.detail.emptyTitle')}</strong>
+              <span>{t('warehouse.inboundOrder.detail.emptyDescription')}</span>
             </div>
           )}
           </section>

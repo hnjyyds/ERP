@@ -33,6 +33,7 @@ import {
   type RoutedDetailPageProps,
   emptyToNull,
 } from '../appHelpers'
+import { t } from '../../appI18n'
 
 type InboundPlanGenerateFormState = {
   purchase_contract_id: string
@@ -77,22 +78,22 @@ function initialInboundPlanGenerateForm(): InboundPlanGenerateFormState {
 function initialInboundPlanScheduleForm(): InboundPlanScheduleFormState {
   return {
     planned_date: daysFromTodayInputValue(7),
-    warehouse_id: 'wh-ningbo',
-    warehouse_name: '宁波总仓',
-    location_id: 'loc-a-01',
-    location_name: 'A-01',
-    operator_name: '仓库主管',
+    warehouse_id: '',
+    warehouse_name: '',
+    location_id: '',
+    location_name: '',
+    operator_name: '',
   }
 }
 
 function inboundPlanToScheduleForm(plan: InboundPlan): InboundPlanScheduleFormState {
   return {
     planned_date: plan.planned_date,
-    warehouse_id: plan.warehouse_id ?? 'wh-ningbo',
-    warehouse_name: plan.warehouse_name ?? '宁波总仓',
-    location_id: plan.location_id ?? 'loc-a-01',
-    location_name: plan.location_name ?? 'A-01',
-    operator_name: plan.operator_name ?? '仓库主管',
+    warehouse_id: plan.warehouse_id ?? '',
+    warehouse_name: plan.warehouse_name ?? '',
+    location_id: plan.location_id ?? '',
+    location_name: plan.location_name ?? '',
+    operator_name: plan.operator_name ?? '',
   }
 }
 
@@ -120,18 +121,20 @@ function inboundPlanSchedulePayload(
 }
 
 function inboundPlanTypeLabel(value: string): string {
-  return inboundPlanTypeOptions.find((item) => item.value === value)?.label ?? value
+  const option = inboundPlanTypeOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function inboundPlanStatusLabel(value: string): string {
-  return inboundPlanStatusOptions.find((item) => item.value === value)?.label ?? value
+  const option = inboundPlanStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
 }
 
 function inboundPlanLineStatusLabel(value: string): string {
-  if (value === 'pending') return '待入库'
-  if (value === 'partial') return '部分入库'
-  if (value === 'completed') return '已入库'
-  if (value === 'cancelled') return '已取消'
+  if (value === 'pending') return t('warehouse.inboundPlan.detail.lineStatusPending')
+  if (value === 'partial') return t('warehouse.inboundPlan.detail.lineStatusPartial')
+  if (value === 'completed') return t('warehouse.inboundPlan.detail.lineStatusCompleted')
+  if (value === 'cancelled') return t('warehouse.inboundPlan.detail.lineStatusCancelled')
   return value
 }
 
@@ -173,7 +176,10 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
     return result.items.slice(0, 20).map((contract) => ({
       value: contract.id,
       label: `${contract.code} / ${contract.supplier_name}`,
-      description: `签订 ${formatDate(contract.contract_date)}  交货 ${formatDate(contract.delivery_date)}`,
+      description: t('warehouse.inboundPlan.form.contractOptionDescription', {
+        signed: formatDate(contract.contract_date),
+        delivery: formatDate(contract.delivery_date),
+      }),
     }))
   }, [])
 
@@ -232,7 +238,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
         null
       setSelectedPlanId(nextId)
     } catch (caught) {
-      showError(caught, '入库计划加载失败')
+      showError(caught, t('warehouse.inboundPlan.list.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -252,9 +258,9 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
       setSelectedPlanId(plan.id)
       setInboundPlanModalOpen(false)
       await loadInboundPlans(plan.id)
-      setMessage(`已生成入库计划 ${plan.code}`)
+      setMessage(t('warehouse.inboundPlan.message.generated', { code: plan.code }))
     } catch (caught) {
-      showError(caught, '入库计划生成失败')
+      showError(caught, t('warehouse.inboundPlan.message.generateFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -274,9 +280,14 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
       setSelectedPlanId(plan.id)
       setInboundPlanModalOpen(false)
       await loadInboundPlans(plan.id)
-      setMessage(`已安排 ${plan.warehouse_name ?? ''} / ${plan.location_name ?? ''}`)
+      setMessage(
+        t('warehouse.inboundPlan.message.scheduled', {
+          warehouse: plan.warehouse_name ?? '',
+          location: plan.location_name ?? '',
+        }),
+      )
     } catch (caught) {
-      showError(caught, '库位安排保存失败')
+      showError(caught, t('warehouse.inboundPlan.message.scheduleFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -289,16 +300,19 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
 
   return (
     <section className="inbound-plan-page">
-      <div className="summary-strip" aria-label="入库计划概览">
-        <Metric label="入库计划" value={plans.length} />
+      <div className="summary-strip" aria-label={t('warehouse.inboundPlan.metric.overviewAria')}>
+        <Metric label={t('warehouse.inboundPlan.metric.planCount')} value={plans.length} />
         <Metric
-          label="待安排"
+          label={t('warehouse.inboundPlan.metric.plannedCount')}
           value={plannedCount}
           intent={plannedCount > 0 ? 'warning' : 'normal'}
         />
-        <Metric label="已排库位" value={scheduledCount} />
-        <Metric label="待入库数量" value={totalQuantity.toFixed(2)} />
-        <Metric label="入库类型" value={typeCount} />
+        <Metric label={t('warehouse.inboundPlan.metric.scheduledCount')} value={scheduledCount} />
+        <Metric
+          label={t('warehouse.inboundPlan.metric.pendingQuantity')}
+          value={totalQuantity.toFixed(2)}
+        />
+        <Metric label={t('warehouse.inboundPlan.metric.typeCount')} value={typeCount} />
       </div>
 
       {message ? (
@@ -310,7 +324,10 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title="待入库计划" />
+              <PanelTitle
+                icon={<Search size={18} />}
+                title={t('warehouse.inboundPlan.list.title')}
+              />
               <form
                 className="inline-filters"
                 onSubmit={(event) => {
@@ -319,61 +336,61 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                 }}
               >
                 <label>
-                  计划搜索
+                  {t('warehouse.inboundPlan.list.searchLabel')}
                   <Input
                     value={search}
-                    placeholder="计划号 / 采购合同 / 商品"
+                    placeholder={t('warehouse.inboundPlan.list.searchPlaceholder')}
                     onChange={(event) => setSearch(event.target.value)}
                   />
                 </label>
                 <label htmlFor="inbound-status-filter">
-                  入库状态
+                  {t('warehouse.inboundPlan.list.statusFilter')}
                   <FormSelect
                     id="inbound-status-filter"
                     value={statusFilter}
                     onChange={(event) => setStatusFilter(event.target.value)}
                   >
-                    <option value="">全部状态</option>
+                    <option value="">{t('warehouse.inboundPlan.list.allStatuses')}</option>
                     {inboundPlanStatusOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label htmlFor="inbound-type-filter">
-                  入库类型
+                  {t('warehouse.inboundPlan.list.typeFilter')}
                   <FormSelect
                     id="inbound-type-filter"
                     value={typeFilter}
                     onChange={(event) => setTypeFilter(event.target.value)}
                   >
-                    <option value="">全部类型</option>
+                    <option value="">{t('warehouse.inboundPlan.list.allTypes')}</option>
                     {inboundPlanTypeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label>
-                  供应商标识
+                  {t('warehouse.inboundPlan.list.supplierFilter')}
                   <Input
                     value={supplierFilter}
-                    placeholder="输入供应商编号或名称"
+                    placeholder={t('warehouse.inboundPlan.list.supplierFilterPlaceholder')}
                     onChange={(event) => setSupplierFilter(event.target.value)}
                   />
                 </label>
                 <label>
-                  采购合同 ID
+                  {t('warehouse.inboundPlan.list.contractFilter')}
                   <Input
                     value={contractFilter}
-                    placeholder="输入采购合同号"
+                    placeholder={t('warehouse.inboundPlan.list.contractFilterPlaceholder')}
                     onChange={(event) => setContractFilter(event.target.value)}
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>
-                  查询
+                  {t('warehouse.inboundPlan.list.query')}
                 </Button>
                 <Button
                   htmlType="button"
@@ -381,7 +398,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                   icon={<Plus size={16} />}
                   onClick={() => setInboundPlanModalOpen(true)}
                 >
-                  生成/排库位
+                  {t('warehouse.inboundPlan.list.generateSchedule')}
                 </Button>
               </form>
             </div>
@@ -389,7 +406,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
             <Table<InboundPlan>
               columns={[
                 {
-                  title: '计划号',
+                  title: t('warehouse.inboundPlan.field.code'),
                   dataIndex: 'code',
                   render: (value: string, record: InboundPlan) => (
                     <button
@@ -401,18 +418,33 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                     </button>
                   ),
                 },
-                { title: '状态', dataIndex: 'status', render: inboundPlanStatusLabel },
-                { title: '类型', dataIndex: 'inbound_type', render: inboundPlanTypeLabel },
-                { title: '采购合同', dataIndex: 'purchase_contract_no' },
-                { title: '供应商', dataIndex: 'supplier_name' },
-                { title: '计划入库日', dataIndex: 'planned_date', render: formatDate },
                 {
-                  title: '数量',
+                  title: t('warehouse.inboundPlan.field.status'),
+                  dataIndex: 'status',
+                  render: inboundPlanStatusLabel,
+                },
+                {
+                  title: t('warehouse.inboundPlan.field.type'),
+                  dataIndex: 'inbound_type',
+                  render: inboundPlanTypeLabel,
+                },
+                {
+                  title: t('warehouse.inboundPlan.field.purchaseContract'),
+                  dataIndex: 'purchase_contract_no',
+                },
+                { title: t('warehouse.inboundPlan.field.supplier'), dataIndex: 'supplier_name' },
+                {
+                  title: t('warehouse.inboundPlan.field.plannedDate'),
+                  dataIndex: 'planned_date',
+                  render: formatDate,
+                },
+                {
+                  title: t('warehouse.inboundPlan.field.quantity'),
                   dataIndex: 'lines',
                   render: (_, plan) => inboundPlanTotalQuantity(plan).toFixed(2),
                 },
                 {
-                  title: '入口',
+                  title: t('warehouse.inboundPlan.field.entry'),
                   key: 'detail',
                   width: 110,
                   render: (_: unknown, record: InboundPlan) => (
@@ -420,7 +452,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                       size="small"
                       onClick={(event) => stopAndOpenInboundPlanDetail(event, record)}
                     >
-                      查看详情
+                      {t('warehouse.inboundPlan.action.viewDetail')}
                     </Button>
                   ),
                 },
@@ -442,21 +474,24 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
           centered
           footer={null}
           open={inboundPlanModalOpen}
-          title="入库计划生成和排库位"
+          title={t('warehouse.inboundPlan.form.modalTitle')}
           width={980}
           onCancel={() => setInboundPlanModalOpen(false)}
         >
           <div className="workflow-modal-content entity-modal-form">
-            <PanelTitle icon={<Warehouse size={18} />} title="计划生成和排库位" />
+            <PanelTitle
+              icon={<Warehouse size={18} />}
+              title={t('warehouse.inboundPlan.form.sectionTitle')}
+            />
             <form className="record-form" onSubmit={generateInboundPlan}>
-              <div className="form-divider">从采购合同生成</div>
+              <div className="form-divider">{t('warehouse.inboundPlan.form.fromContract')}</div>
               <label htmlFor="inbound-plan-contract-id">
-                采购合同
+                {t('warehouse.inboundPlan.field.purchaseContract')}
                 <RemoteSelect
-                  ariaLabel="采购合同"
+                  ariaLabel={t('warehouse.inboundPlan.field.purchaseContract')}
                   fetchOptions={fetchPurchaseContractOptions}
                   id="inbound-plan-contract-id"
-                  placeholder="输入合同号或供应商搜索"
+                  placeholder={t('warehouse.inboundPlan.form.contractSearchPlaceholder')}
                   required
                   value={generateForm.purchase_contract_id || null}
                   onChange={(value) =>
@@ -466,7 +501,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
               </label>
               <div className="form-pair two">
                 <label htmlFor="inbound-plan-type">
-                  入库类型
+                  {t('warehouse.inboundPlan.field.inboundType')}
                   <FormSelect
                     id="inbound-plan-type"
                     value={generateForm.inbound_type}
@@ -476,13 +511,13 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                   >
                     {inboundPlanTypeOptions.map((item) => (
                       <option key={item.value} value={item.value}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </option>
                     ))}
                   </FormSelect>
                 </label>
                 <label htmlFor="inbound-plan-date">
-                  计划入库日
+                  {t('warehouse.inboundPlan.field.plannedDate')}
                   <Input
                     id="inbound-plan-date"
                     type="date"
@@ -494,7 +529,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                 </label>
               </div>
               <Button htmlType="submit" icon={<PackagePlus size={16} />} loading={submitting}>
-                生成入库计划
+                {t('warehouse.inboundPlan.action.generate')}
               </Button>
             </form>
 
@@ -502,9 +537,9 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
               className="record-form accessory-form generation-form"
               onSubmit={scheduleSelectedInboundPlan}
             >
-              <div className="form-divider">库位预安排</div>
+              <div className="form-divider">{t('warehouse.inboundPlan.form.scheduleSection')}</div>
               <label htmlFor="inbound-schedule-date">
-                计划入库日
+                {t('warehouse.inboundPlan.field.plannedDate')}
                 <Input
                   id="inbound-schedule-date"
                   required
@@ -517,7 +552,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
               </label>
               <div className="form-pair two">
                 <label htmlFor="inbound-warehouse-id">
-                  仓库 ID
+                  {t('warehouse.inboundPlan.field.warehouseId')}
                   <Input
                     id="inbound-warehouse-id"
                     required
@@ -528,7 +563,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                   />
                 </label>
                 <label htmlFor="inbound-warehouse-name">
-                  仓库
+                  {t('warehouse.inboundPlan.field.warehouse')}
                   <Input
                     id="inbound-warehouse-name"
                     required
@@ -541,7 +576,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
               </div>
               <div className="form-pair two">
                 <label htmlFor="inbound-location-id">
-                  库位 ID
+                  {t('warehouse.inboundPlan.field.locationId')}
                   <Input
                     id="inbound-location-id"
                     required
@@ -552,7 +587,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                   />
                 </label>
                 <label htmlFor="inbound-location-name">
-                  库位
+                  {t('warehouse.inboundPlan.field.location')}
                   <Input
                     id="inbound-location-name"
                     required
@@ -564,7 +599,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                 </label>
               </div>
               <label htmlFor="inbound-operator-name">
-                经办人
+                {t('warehouse.inboundPlan.field.operator')}
                 <Input
                   id="inbound-operator-name"
                   required
@@ -581,7 +616,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                 loading={submitting}
                 type="primary"
               >
-                保存库位安排
+                {t('warehouse.inboundPlan.action.saveSchedule')}
               </Button>
             </form>
           </div>
@@ -590,65 +625,72 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
             <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<LayoutDashboard size={18} />} title="计划明细" />
+              <PanelTitle
+                icon={<LayoutDashboard size={18} />}
+                title={t('warehouse.inboundPlan.detail.title')}
+              />
               <Button
                 icon={<ArrowLeft size={16} />}
                 onClick={() => onNavigate(warehouseInboundPlanPath)}
               >
-                返回列表
+                {t('warehouse.inboundPlan.action.backToList')}
               </Button>
             </div>
             {selectedPlan ? (
               <>
                 <dl className="detail-list">
                   <div>
-                    <dt>采购合同</dt>
+                    <dt>{t('warehouse.inboundPlan.field.purchaseContract')}</dt>
                     <dd>{selectedPlan.purchase_contract_no}</dd>
                   </div>
                   <div>
-                    <dt>供应商</dt>
+                    <dt>{t('warehouse.inboundPlan.field.supplier')}</dt>
                     <dd>{selectedPlan.supplier_name}</dd>
                   </div>
                   <div>
-                    <dt>入库类型</dt>
+                    <dt>{t('warehouse.inboundPlan.field.inboundType')}</dt>
                     <dd>{inboundPlanTypeLabel(selectedPlan.inbound_type)}</dd>
                   </div>
                   <div>
-                    <dt>计划状态</dt>
+                    <dt>{t('warehouse.inboundPlan.field.planStatus')}</dt>
                     <dd>{inboundPlanStatusLabel(selectedPlan.status)}</dd>
                   </div>
                   <div>
-                    <dt>计划入库日</dt>
+                    <dt>{t('warehouse.inboundPlan.field.plannedDate')}</dt>
                     <dd>{formatDate(selectedPlan.planned_date)}</dd>
                   </div>
                   <div>
-                    <dt>库位</dt>
+                    <dt>{t('warehouse.inboundPlan.field.location')}</dt>
                     <dd>
-                      {selectedPlan.warehouse_name ?? '未安排'} /{' '}
-                      {selectedPlan.location_name ?? '未安排'}
+                      {selectedPlan.warehouse_name ?? t('warehouse.inboundPlan.detail.unassigned')}{' '}
+                      / {selectedPlan.location_name ?? t('warehouse.inboundPlan.detail.unassigned')}
                     </dd>
                   </div>
                 </dl>
 
                 <div className="accessory-heading">
-                  <strong>待入库商品</strong>
-                  <span>{selectedPlan.lines.length} 条</span>
+                  <strong>{t('warehouse.inboundPlan.detail.linesTitle')}</strong>
+                  <span>
+                    {t('warehouse.inboundPlan.detail.lineCount', {
+                      count: selectedPlan.lines.length,
+                    })}
+                  </span>
                 </div>
                 <table className="data-table compact-table">
                   <thead>
                     <tr>
-                      <th>商品</th>
-                      <th>规格</th>
-                      <th>计划数量</th>
-                      <th>已入库</th>
-                      <th>状态</th>
+                      <th>{t('warehouse.inboundPlan.field.product')}</th>
+                      <th>{t('warehouse.inboundPlan.field.specification')}</th>
+                      <th>{t('warehouse.inboundPlan.field.plannedQuantity')}</th>
+                      <th>{t('warehouse.inboundPlan.field.receivedQuantity')}</th>
+                      <th>{t('warehouse.inboundPlan.field.status')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {selectedPlan.lines.map((line) => (
                       <tr key={line.id}>
                         <td>{`${line.product_code ?? '-'} ${line.product_name}`}</td>
-                        <td>{line.specification ?? line.model ?? '未设置'}</td>
+                        <td>{line.specification ?? line.model ?? t('common.notSet')}</td>
                         <td>{`${trimDecimal(line.planned_quantity)} ${line.unit}`}</td>
                         <td>{`${trimDecimal(line.received_quantity)} ${line.unit}`}</td>
                         <td>{inboundPlanLineStatusLabel(line.status)}</td>
@@ -657,7 +699,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                     {selectedPlan.lines.length === 0 ? (
                       <tr>
                         <td className="empty-cell" colSpan={5}>
-                          暂无计划明细
+                          {t('warehouse.inboundPlan.detail.noLines')}
                         </td>
                       </tr>
                     ) : null}
@@ -667,8 +709,8 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
             ) : (
               <div className="module-state panel-empty-state">
                 <PackagePlus size={28} />
-                <strong>暂无入库计划</strong>
-                <span>请返回列表选择入库计划查看详情</span>
+                <strong>{t('warehouse.inboundPlan.detail.emptyTitle')}</strong>
+                <span>{t('warehouse.inboundPlan.detail.emptyDescription')}</span>
               </div>
             )}
           </section>

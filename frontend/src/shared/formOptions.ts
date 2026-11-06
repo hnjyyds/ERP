@@ -318,64 +318,70 @@ export const qualityIssueStatusOptions = [
   { value: 'closed', label: '已关闭' },
 ]
 
-export const inboundPlanStatusOptions = [
-  { value: 'planned', label: '待安排' },
-  { value: 'scheduled', label: '已排库位' },
-  { value: 'closed', label: '已关闭' },
-  { value: 'cancelled', label: '已取消' },
+export const inboundPlanStatusOptions: LocalizedOption[] = [
+  { value: 'planned', labelKey: 'warehouse.inboundPlan.status.planned' },
+  { value: 'scheduled', labelKey: 'warehouse.inboundPlan.status.scheduled' },
+  { value: 'closed', labelKey: 'warehouse.inboundPlan.status.closed' },
+  { value: 'cancelled', labelKey: 'warehouse.inboundPlan.status.cancelled' },
 ]
 
-export const inboundPlanTypeOptions = [
-  { value: 'material_inbound', label: '配料入库' },
-  { value: 'purchase_inbound', label: '采购入库' },
-  { value: 'processing_inbound', label: '加工入库' },
-  { value: 'production_inbound', label: '生产入库' },
-  { value: 'packaging_inbound', label: '包装入库' },
-  { value: 'sterilization_inbound', label: '灭菌入库' },
+export const inboundPlanTypeOptions: LocalizedOption[] = [
+  { value: 'material_inbound', labelKey: 'warehouse.inboundPlan.type.materialInbound' },
+  { value: 'purchase_inbound', labelKey: 'warehouse.inboundPlan.type.purchaseInbound' },
+  { value: 'processing_inbound', labelKey: 'warehouse.inboundPlan.type.processingInbound' },
+  { value: 'production_inbound', labelKey: 'warehouse.inboundPlan.type.productionInbound' },
+  { value: 'packaging_inbound', labelKey: 'warehouse.inboundPlan.type.packagingInbound' },
+  { value: 'sterilization_inbound', labelKey: 'warehouse.inboundPlan.type.sterilizationInbound' },
 ]
 
-export const inboundOrderStatusOptions = [
-  { value: 'draft', label: '草稿' },
-  { value: 'submitted', label: '待审批' },
-  { value: 'approved', label: '已审批' },
-  { value: 'cancelled', label: '已取消' },
+export const inboundOrderStatusOptions: LocalizedOption[] = [
+  { value: 'draft', labelKey: 'warehouse.inboundOrder.status.draft' },
+  { value: 'submitted', labelKey: 'warehouse.inboundOrder.status.submitted' },
+  { value: 'approved', labelKey: 'warehouse.inboundOrder.status.approved' },
+  { value: 'cancelled', labelKey: 'warehouse.inboundOrder.status.cancelled' },
 ]
 
-export const inboundOrderModeOptions = [
-  { value: 'formal', label: '正式入库' },
-  { value: 'pending_inspection', label: '待检入库' },
+export const inboundOrderModeOptions: LocalizedOption[] = [
+  { value: 'formal', labelKey: 'warehouse.inboundOrder.mode.formal' },
+  { value: 'pending_inspection', labelKey: 'warehouse.inboundOrder.mode.pendingInspection' },
 ]
 
-export const outboundPlanStatusOptions = [
-  { value: 'planned', label: '待安排' },
-  { value: 'scheduled', label: '已排库位' },
-  { value: 'closed', label: '已关闭' },
-  { value: 'cancelled', label: '已取消' },
+export const outboundPlanStatusOptions: LocalizedOption[] = [
+  { value: 'planned', labelKey: 'warehouse.outboundPlan.status.planned' },
+  { value: 'scheduled', labelKey: 'warehouse.outboundPlan.status.scheduled' },
+  { value: 'closed', labelKey: 'warehouse.outboundPlan.status.closed' },
+  { value: 'cancelled', labelKey: 'warehouse.outboundPlan.status.cancelled' },
 ]
 
-export const outboundPlanTypeOptions = [
-  { value: 'material_outbound', label: '配料出库' },
-  { value: 'production_outbound', label: '生产出库' },
-  { value: 'finished_goods_outbound', label: '成品出库' },
-  { value: 'processing_outbound', label: '加工发料' },
+export const outboundPlanTypeOptions: LocalizedOption[] = [
+  { value: 'material_outbound', labelKey: 'warehouse.outboundPlan.type.materialOutbound' },
+  { value: 'production_outbound', labelKey: 'warehouse.outboundPlan.type.productionOutbound' },
+  {
+    value: 'finished_goods_outbound',
+    labelKey: 'warehouse.outboundPlan.type.finishedGoodsOutbound',
+  },
+  { value: 'processing_outbound', labelKey: 'warehouse.outboundPlan.type.processingOutbound' },
 ]
 
-export const outboundPlanSourceTypeOptions = [
-  { value: 'shipment_plan', label: '发货计划' },
-  { value: 'production_requisition', label: '生产领料' },
-  { value: 'processing_issue', label: '加工发料' },
+export const outboundPlanSourceTypeOptions: LocalizedOption[] = [
+  { value: 'shipment_plan', labelKey: 'warehouse.outboundPlan.sourceType.shipmentPlan' },
+  {
+    value: 'production_requisition',
+    labelKey: 'warehouse.outboundPlan.sourceType.productionRequisition',
+  },
+  { value: 'processing_issue', labelKey: 'warehouse.outboundPlan.sourceType.processingIssue' },
 ]
 
-export const outboundOrderStatusOptions = [
-  { value: 'draft', label: '草稿' },
-  { value: 'submitted', label: '待审批' },
-  { value: 'approved', label: '已出库' },
-  { value: 'cancelled', label: '已取消' },
+export const outboundOrderStatusOptions: LocalizedOption[] = [
+  { value: 'draft', labelKey: 'warehouse.outboundOrder.status.draft' },
+  { value: 'submitted', labelKey: 'warehouse.outboundOrder.status.submitted' },
+  { value: 'approved', labelKey: 'warehouse.outboundOrder.status.approved' },
+  { value: 'cancelled', labelKey: 'warehouse.outboundOrder.status.cancelled' },
 ]
 
-export const outboundOrderModeOptions = [
-  { value: 'formal', label: '正式出库' },
-  { value: 'exception', label: '异常出库' },
+export const outboundOrderModeOptions: LocalizedOption[] = [
+  { value: 'formal', labelKey: 'warehouse.outboundOrder.mode.formal' },
+  { value: 'exception', labelKey: 'warehouse.outboundOrder.mode.exception' },
 ]
 
 export const freightMethodOptions: LocalizedOption[] = [
