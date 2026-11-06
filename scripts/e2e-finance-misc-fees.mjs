@@ -38,7 +38,7 @@ try {
 
   const shipment = await page.evaluate(
     async ({ contractNo, shipmentNo }) => {
-      const token = window.localStorage.getItem('yuanjing_access_token')
+      const token = window.localStorage.getItem('xinpei_access_token')
       const headers = {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),

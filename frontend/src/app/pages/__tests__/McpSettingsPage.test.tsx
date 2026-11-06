@@ -18,7 +18,7 @@ const api = await vi.importMock<Record<string, ReturnType<typeof vi.fn>>>('../..
 
 const disabledSettings = {
   enabled: false,
-  server_name: 'Yuanjing Trade ERP',
+  server_name: 'Xinpei Trade ERP',
   transport: 'streamable_http',
   endpoint_path: '/mcp',
   token_parameter: 'Authorization',

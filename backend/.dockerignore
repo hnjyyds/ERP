@@ -6,4 +6,4 @@
 .venv
 __pycache__
 *.pyc
-yuanjing_trade_backend.egg-info
+xinpei_trade_backend.egg-info

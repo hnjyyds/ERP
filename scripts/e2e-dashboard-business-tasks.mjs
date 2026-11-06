@@ -70,7 +70,7 @@ async function login(username, password) {
 async function api(path, { method = 'GET', body } = {}) {
   return page.evaluate(
     async ({ path, method, body }) => {
-      const token = window.localStorage.getItem('yuanjing_access_token')
+      const token = window.localStorage.getItem('xinpei_access_token')
       const response = await fetch(path, {
         method,
         headers: {

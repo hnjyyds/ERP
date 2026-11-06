@@ -1,4 +1,4 @@
-name: yuanjing-trade
+name: xinpei-trade
 
 # Container layer: cap local json-file logs so diagnostics cannot exhaust the host disk.
 x-logging: &default-logging
@@ -14,7 +14,7 @@ services:
       context: ./backend
     environment:
       AUTH_SECRET_KEY: ${AUTH_SECRET_KEY:?AUTH_SECRET_KEY must be set}
-      DATABASE_URL: sqlite+aiosqlite:////app/.data/yuanjing.db
+      DATABASE_URL: sqlite+aiosqlite:////app/.data/xinpei.db
       SEED_DEMO_DATA: ${SEED_DEMO_DATA:-false}
       # Application observability is configured at deployment time, not in business code.
       LOG_LEVEL: ${LOG_LEVEL:-INFO}

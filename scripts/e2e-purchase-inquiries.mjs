@@ -36,7 +36,7 @@ try {
   await loginResponse
 
   await page.evaluate(async ({ sampleCode }) => {
-    const token = window.localStorage.getItem('yuanjing_access_token')
+    const token = window.localStorage.getItem('xinpei_access_token')
     const response = await fetch('/api/v1/sample/records', {
       method: 'POST',
       headers: {
@@ -189,7 +189,7 @@ try {
     .waitFor()
 
   await page.evaluate(async ({ quoteNo }) => {
-    const token = window.localStorage.getItem('yuanjing_access_token')
+    const token = window.localStorage.getItem('xinpei_access_token')
     const headers = {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),

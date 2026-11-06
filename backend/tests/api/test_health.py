@@ -10,6 +10,6 @@ async def test_health_endpoint_returns_stable_api_response(api_client: AsyncClie
         "success": True,
         "code": "SUCCESS",
         "message": "请求成功",
-        "data": {"status": "ok", "service": "yuanjing-trade-api"},
+        "data": {"status": "ok", "service": "xinpei-trade-api"},
         "error": None,
     }

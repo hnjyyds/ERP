@@ -39,7 +39,7 @@ try {
 
   const fixtures = await page.evaluate(
     async ({ exportContractNoA, exportContractNoB, productCode }) => {
-      const token = window.localStorage.getItem('yuanjing_access_token')
+      const token = window.localStorage.getItem('xinpei_access_token')
       const headers = {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -70,7 +70,7 @@ try {
               accessory_name: '棉绳',
               unit_consumption: '0.45',
               unit: 'm',
-              default_supplier_name: '远景辅料供应商',
+              default_supplier_name: '新裴辅料供应商',
               purchase_split_rule: 'by_supplier',
             },
           ],
@@ -153,7 +153,7 @@ try {
   await generateForm.getByLabel('出口合同 ID A', { exact: true }).fill(fixtures.contractA.id)
   await generateForm.getByLabel('出口合同 ID B', { exact: true }).fill(fixtures.contractB.id)
   await generateForm.getByLabel('供应商标识', { exact: true }).fill('supplier-accessory-a')
-  await generateForm.getByLabel('供应商', { exact: true }).fill('远景辅料供应商')
+  await generateForm.getByLabel('供应商', { exact: true }).fill('新裴辅料供应商')
   await generateForm.getByLabel('币种', { exact: true }).fill('USD')
   await generateForm.getByLabel('交货日期', { exact: true }).fill('2026-08-24')
   await generateForm.getByLabel('配件单价', { exact: true }).fill('0.12')
@@ -182,7 +182,7 @@ try {
   await detailPanel.getByRole('button', { name: '载入编辑' }).click()
   await formPanel.getByRole('heading', { name: '编辑采购合同' }).waitFor()
   const manualForm = formPanel.locator('form').filter({ hasText: '合同商品明细' })
-  await manualForm.getByLabel('供应商', { exact: true }).fill('远景辅料供应商-编辑')
+  await manualForm.getByLabel('供应商', { exact: true }).fill('新裴辅料供应商-编辑')
   await manualForm.getByLabel('合同备注', { exact: true }).fill('E2E 编辑后的采购合同备注')
   const updateResponse = page.waitForResponse((response) =>
     response.url().includes('/api/v1/purchase/contracts/') &&
@@ -191,7 +191,7 @@ try {
   )
   await manualForm.getByRole('button', { name: '保存采购合同' }).click()
   await updateResponse
-  await detailPanel.getByText('远景辅料供应商-编辑').waitFor()
+  await detailPanel.getByText('新裴辅料供应商-编辑').waitFor()
   await detailPanel.getByText('E2E 编辑后的采购合同备注').waitFor()
 
   const submitResponse = page.waitForResponse((response) =>
@@ -215,7 +215,7 @@ try {
   await page.getByRole('cell', { name: '已审批' }).first().waitFor()
 
   const purchaseProgress = await page.evaluate(async ({ contractAId, contractBId }) => {
-    const token = window.localStorage.getItem('yuanjing_access_token')
+    const token = window.localStorage.getItem('xinpei_access_token')
     const headers = token ? { Authorization: `Bearer ${token}` } : {}
     async function getContract(contractId) {
       const response = await fetch(`/api/v1/sales/contracts/${contractId}`, { headers })

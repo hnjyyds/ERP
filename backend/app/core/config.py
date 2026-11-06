@@ -12,9 +12,9 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    app_name: str = "Yuanjing Trade Management API"
+    app_name: str = "Xinpei Trade Management API"
     api_v1_prefix: str = "/api/v1"
-    database_url: str = "sqlite+aiosqlite:///./.data/yuanjing.db"
+    database_url: str = "sqlite+aiosqlite:///./.data/xinpei.db"
     seed_demo_data: bool = False
     demo_user_id: str = "u-001"
     auth_secret_key: str = "dev-only-change-me"

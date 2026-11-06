@@ -36,7 +36,7 @@ try {
 
   const fixtures = await page.evaluate(
     async ({ purchaseContractNo }) => {
-      const token = window.localStorage.getItem('yuanjing_access_token')
+      const token = window.localStorage.getItem('xinpei_access_token')
       const headers = {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -139,7 +139,7 @@ try {
   await page.getByText('QC 已通过').waitFor()
 
   const followupCheck = await page.evaluate(async ({ purchaseContractNo }) => {
-    const token = window.localStorage.getItem('yuanjing_access_token')
+    const token = window.localStorage.getItem('xinpei_access_token')
     const headers = token ? { Authorization: `Bearer ${token}` } : {}
     const response = await fetch(`/api/v1/followup/plans?q=${purchaseContractNo}`, { headers })
     if (!response.ok) throw new Error(await response.text())

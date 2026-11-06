@@ -77,7 +77,7 @@ class McpCredentialTokenService:
         return f"{_TOKEN_PREFIX}:{claims.user_id}:{claims.version}:{claims.expires_at}"
 
     def _sign(self, payload: str) -> str:
-        scoped_payload = f"yuanjing-mcp-credential:{payload}"
+        scoped_payload = f"xinpei-mcp-credential:{payload}"
         return hmac.new(
             self._secret_key.encode(),
             scoped_payload.encode(),
@@ -111,7 +111,7 @@ class McpCredentialVerifier:
             return None
         return AccessToken(
             token=token,
-            client_id="yuanjing-trade-erp-mcp",
+            client_id="xinpei-trade-erp-mcp",
             scopes=[MCP_SCOPE],
             expires_at=claims.expires_at,
             subject=claims.user_id,

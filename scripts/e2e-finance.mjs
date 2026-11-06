@@ -39,7 +39,7 @@ try {
 
   const seeded = await page.evaluate(
     async ({ contractNo, shipmentNo, invoiceNoticeNo, sampleRequestNo, partnerCode }) => {
-      const token = window.localStorage.getItem('yuanjing_access_token')
+      const token = window.localStorage.getItem('xinpei_access_token')
       const headers = {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),

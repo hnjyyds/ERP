@@ -153,7 +153,7 @@ function initialPurchaseContractGenerateForm(): PurchaseContractGenerateFormStat
     source_contract_id_a: '',
     source_contract_id_b: '',
     supplier_id: 'supplier-accessory-a',
-    supplier_name: '远景辅料供应商',
+    supplier_name: '新裴辅料供应商',
     buyer_user_id: 'u-001',
     buyer_user_name: '演示业务主管',
     qc_user_id: '',

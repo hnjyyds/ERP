@@ -35,7 +35,7 @@ try {
 
   const fixtures = await page.evaluate(
     async ({ purchaseContractNo }) => {
-      const token = window.localStorage.getItem('yuanjing_access_token')
+      const token = window.localStorage.getItem('xinpei_access_token')
       const headers = {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -164,7 +164,7 @@ try {
   await detailPanel.getByText('宁波总仓 / A-01').waitFor()
 
   const apiCheck = await page.evaluate(async ({ purchaseContractNo }) => {
-    const token = window.localStorage.getItem('yuanjing_access_token')
+    const token = window.localStorage.getItem('xinpei_access_token')
     const headers = token ? { Authorization: `Bearer ${token}` } : {}
     const response = await fetch(`/api/v1/warehouse/inbound-plans?q=${purchaseContractNo}`, {
       headers,

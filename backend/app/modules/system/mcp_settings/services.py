@@ -128,7 +128,7 @@ class McpSettingsService:
         )
         return McpSettingsResponse(
             enabled=row.enabled if row is not None else False,
-            server_name="Yuanjing Trade ERP",
+            server_name="Xinpei Trade ERP",
             transport="streamable_http",
             endpoint_path="/mcp",
             token_parameter="Authorization",

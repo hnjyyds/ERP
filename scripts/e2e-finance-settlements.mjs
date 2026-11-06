@@ -39,7 +39,7 @@ try {
 
   const shipment = await page.evaluate(
     async ({ contractNo, shipmentNo, runId }) => {
-      const token = window.localStorage.getItem('yuanjing_access_token')
+      const token = window.localStorage.getItem('xinpei_access_token')
       const headers = {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -158,7 +158,7 @@ try {
 
   const financeFixtures = await page.evaluate(
     async ({ miscFeeCode, runId, shipment }) => {
-      const token = window.localStorage.getItem('yuanjing_access_token')
+      const token = window.localStorage.getItem('xinpei_access_token')
       const headers = {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),

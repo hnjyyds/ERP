@@ -431,7 +431,7 @@ export default function App() {
         const res = await getCurrentSession()
         if (cancelled) return
         const s: AuthSession = {
-          access_token: localStorage.getItem('yuanjing_access_token') ?? '',
+          access_token: localStorage.getItem('xinpei_access_token') ?? '',
           token_type: 'bearer',
           user: res.user,
           menus: res.menus,

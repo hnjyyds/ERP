@@ -34,7 +34,7 @@ async def test_super_admin_can_update_company_info(
         "/api/v1/organization/company",
         headers=headers,
         json={
-            "name": "远景国际贸易有限公司",
+            "name": "新裴国际贸易有限公司",
             "name_en": "Vision Trading Co., Ltd.",
             "letterhead": "VISION TRADING CO., LTD.",
             "email": "info@vision.com",
@@ -43,14 +43,14 @@ async def test_super_admin_can_update_company_info(
     )
     assert update_response.status_code == 200
     data = update_response.json()["data"]
-    assert data["name"] == "远景国际贸易有限公司"
+    assert data["name"] == "新裴国际贸易有限公司"
     assert data["name_en"] == "Vision Trading Co., Ltd."
     assert data["email"] == "info@vision.com"
     assert data["updated_at"] is not None
 
     # 再次读取应拿到已保存数据（单例持久化）。
     read_response = await api_client.get("/api/v1/organization/company", headers=headers)
-    assert read_response.json()["data"]["name"] == "远景国际贸易有限公司"
+    assert read_response.json()["data"]["name"] == "新裴国际贸易有限公司"
     assert read_response.json()["data"]["bank_account"] == "6222001234567890"
 
     # 部分更新不应清空其他字段。
@@ -61,7 +61,7 @@ async def test_super_admin_can_update_company_info(
     )
     assert partial_response.status_code == 200
     assert partial_response.json()["data"]["phone"] == "+86-21-12345678"
-    assert partial_response.json()["data"]["name"] == "远景国际贸易有限公司"
+    assert partial_response.json()["data"]["name"] == "新裴国际贸易有限公司"
 
 
 async def test_invalid_email_is_rejected(

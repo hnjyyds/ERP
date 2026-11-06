@@ -38,7 +38,7 @@ try {
 
   await page.getByRole('heading', { name: '待办、提醒和日程' }).waitFor()
   await page.getByText('演示业务主管').waitFor()
-  await page.getByText('审批出口合同 YJ-EC-202606-001').waitFor()
+  await page.getByText('审批出口合同 XP-EC-202606-001').waitFor()
   await page.getByText('采购跟单节点临期').waitFor()
   await page.getByText('查看供应商大货样').waitFor()
   assert.ok(

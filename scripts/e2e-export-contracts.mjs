@@ -38,7 +38,7 @@ try {
   await loginResponse
 
   await page.evaluate(async ({ quoteNo }) => {
-    const token = window.localStorage.getItem('yuanjing_access_token')
+    const token = window.localStorage.getItem('xinpei_access_token')
     const headers = {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),

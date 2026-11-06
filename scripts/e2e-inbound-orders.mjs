@@ -39,7 +39,7 @@ try {
 
   const fixtures = await page.evaluate(
     async ({ purchaseContractNo, productCode, productName }) => {
-      const token = window.localStorage.getItem('yuanjing_access_token')
+      const token = window.localStorage.getItem('xinpei_access_token')
       const headers = {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -212,7 +212,7 @@ try {
 
   const apiCheck = await page.evaluate(
     async ({ purchaseContractNo, inboundOrderNo, productCode }) => {
-      const token = window.localStorage.getItem('yuanjing_access_token')
+      const token = window.localStorage.getItem('xinpei_access_token')
       const headers = token ? { Authorization: `Bearer ${token}` } : {}
 
       async function request(path) {
@@ -257,7 +257,7 @@ try {
 
   const blockedStatus = await page.evaluate(
     async ({ failedPurchaseContractNo }) => {
-      const token = window.localStorage.getItem('yuanjing_access_token')
+      const token = window.localStorage.getItem('xinpei_access_token')
       const headers = {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),

@@ -3,7 +3,7 @@ import { Button, Dropdown, Menu, type MenuProps } from 'antd'
 import { SlidersHorizontal } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
 
-const STORAGE_PREFIX = 'yuanjing_view_columns:'
+const STORAGE_PREFIX = 'xinpei_view_columns:'
 
 export type ColumnOption = {
   key: string

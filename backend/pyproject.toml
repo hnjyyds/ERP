@@ -1,7 +1,7 @@
 [project]
-name = "yuanjing-trade-backend"
+name = "xinpei-trade-backend"
 version = "0.1.0"
-description = "FastAPI backend for Yuanjing foreign trade management system"
+description = "FastAPI backend for Xinpei foreign trade management system"
 requires-python = ">=3.12"
 dependencies = [
     "aiosqlite>=0.20.0",

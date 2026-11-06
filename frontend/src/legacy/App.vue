@@ -469,7 +469,7 @@ const productForm = reactive({
   accessory_name: '棉绳',
   accessory_unit_consumption: '0.45',
   accessory_unit: 'm',
-  accessory_supplier: '远景辅料供应商',
+  accessory_supplier: '新裴辅料供应商',
   accessory_rule: 'by_supplier',
 })
 
@@ -915,7 +915,7 @@ const purchaseContractForm = reactive({
   code: nextPurchaseContractCode(),
   contract_date: '2026-08-03',
   supplier_id: 'supplier-accessory-a',
-  supplier_name: '远景辅料供应商',
+  supplier_name: '新裴辅料供应商',
   buyer_user_id: 'u-001',
   buyer_user_name: '演示业务主管',
   currency: 'USD',
@@ -941,7 +941,7 @@ const purchaseContractGenerateForm = reactive({
   code: nextPurchaseContractCode(),
   contract_date: '2026-08-04',
   supplier_id: 'supplier-accessory-a',
-  supplier_name: '远景辅料供应商',
+  supplier_name: '新裴辅料供应商',
   buyer_user_id: 'u-001',
   buyer_user_name: '演示业务主管',
   currency: 'USD',
@@ -4586,7 +4586,7 @@ function resetPurchaseContractForm(): void {
   purchaseContractForm.code = nextPurchaseContractCode()
   purchaseContractForm.contract_date = '2026-08-03'
   purchaseContractForm.supplier_id = 'supplier-accessory-a'
-  purchaseContractForm.supplier_name = '远景辅料供应商'
+  purchaseContractForm.supplier_name = '新裴辅料供应商'
   purchaseContractForm.buyer_user_id = currentUser.value?.id ?? 'u-001'
   purchaseContractForm.buyer_user_name = currentUser.value?.display_name ?? '演示业务主管'
   purchaseContractForm.currency = 'USD'
@@ -4612,7 +4612,7 @@ function resetPurchaseContractGenerateForm(): void {
   purchaseContractGenerateForm.code = nextPurchaseContractCode()
   purchaseContractGenerateForm.contract_date = '2026-08-04'
   purchaseContractGenerateForm.supplier_id = 'supplier-accessory-a'
-  purchaseContractGenerateForm.supplier_name = '远景辅料供应商'
+  purchaseContractGenerateForm.supplier_name = '新裴辅料供应商'
   purchaseContractGenerateForm.buyer_user_id = currentUser.value?.id ?? 'u-001'
   purchaseContractGenerateForm.buyer_user_name = currentUser.value?.display_name ?? '演示业务主管'
   purchaseContractGenerateForm.currency = 'USD'

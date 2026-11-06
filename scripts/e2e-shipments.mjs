@@ -38,7 +38,7 @@ try {
   await loginResponse
 
   const [contractA, contractB] = await page.evaluate(async ({ contractNoA, contractNoB }) => {
-    const token = window.localStorage.getItem('yuanjing_access_token')
+    const token = window.localStorage.getItem('xinpei_access_token')
     const headers = {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -209,7 +209,7 @@ try {
   await detailPanel.getByText('已完成').first().waitFor()
 
   const refreshedContracts = await page.evaluate(async ({ contractAId, contractBId }) => {
-    const token = window.localStorage.getItem('yuanjing_access_token')
+    const token = window.localStorage.getItem('xinpei_access_token')
     const headers = token ? { Authorization: `Bearer ${token}` } : {}
     const [responseA, responseB] = await Promise.all([
       fetch(`/api/v1/sales/contracts/${contractAId}`, { headers }),

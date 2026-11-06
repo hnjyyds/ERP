@@ -37,7 +37,7 @@ def _product_payload(code: str = "P-BAG-001") -> dict[str, object]:
                 "accessory_name": "棉绳",
                 "unit_consumption": "0.45",
                 "unit": "m",
-                "default_supplier_name": "远景辅料供应商",
+                "default_supplier_name": "新裴辅料供应商",
                 "purchase_split_rule": "by_supplier",
             }
         ],
@@ -192,7 +192,7 @@ async def test_product_accessory_can_be_updated_and_deleted(
             "accessory_name": "棉绳-更新",
             "unit_consumption": "0.55",
             "unit": "m",
-            "default_supplier_name": "远景辅料供应商",
+            "default_supplier_name": "新裴辅料供应商",
             "purchase_split_rule": "by_accessory",
         },
     )

@@ -3653,18 +3653,18 @@ export interface PurchaseInquiryTemplatePayload {
 }
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? '/api/v1'
-export const authExpiredEventName = 'yuanjing-auth-expired'
+export const authExpiredEventName = 'xinpei-auth-expired'
 
-let authToken = localStorage.getItem('yuanjing_access_token') ?? ''
+let authToken = localStorage.getItem('xinpei_access_token') ?? ''
 
 export function setAuthToken(token: string): void {
   authToken = token
-  localStorage.setItem('yuanjing_access_token', token)
+  localStorage.setItem('xinpei_access_token', token)
 }
 
 export function clearAuthToken(): void {
   authToken = ''
-  localStorage.removeItem('yuanjing_access_token')
+  localStorage.removeItem('xinpei_access_token')
 }
 
 export function hasAuthToken(): boolean {

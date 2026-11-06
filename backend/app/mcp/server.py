@@ -198,9 +198,9 @@ def _authenticated_user_id() -> str:
 
 def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
     server = FastMCP(
-        "Yuanjing Trade ERP",
+        "Xinpei Trade ERP",
         instructions=(
-            "用于查询和维护远景外贸 ERP 的商品、客户和出口订单。"
+            "用于查询和维护新裴贸易 ERP 的商品、客户和出口订单。"
             "连接时必须通过 Authorization Bearer 传入 MCP 专用令牌；"
             "删除工具必须显式传 confirm=true。"
         ),

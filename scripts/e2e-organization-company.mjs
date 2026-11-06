@@ -141,7 +141,7 @@ await page.route('**/api/v1/organization/company', async (route) => {
 
 try {
   await page.goto(frontendUrl, { waitUntil: 'domcontentloaded' })
-  await page.evaluate(() => window.localStorage.setItem('yuanjing_access_token', 'e2e-admin-token'))
+  await page.evaluate(() => window.localStorage.setItem('xinpei_access_token', 'e2e-admin-token'))
   await page.goto(new URL('/organization/users', frontendUrl).toString())
   await page.getByRole('heading', { name: '公司信息' }).waitFor()
   await page.getByRole('button', { name: '编辑公司信息' }).waitFor()

@@ -41,7 +41,7 @@ try {
 
   const fixtures = await page.evaluate(
     async ({ exportContractNo, purchaseContractNo, shipmentNo, productId, productCode, productName }) => {
-      const token = window.localStorage.getItem('yuanjing_access_token')
+      const token = window.localStorage.getItem('xinpei_access_token')
       const headers = {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -313,7 +313,7 @@ try {
   await ledgerTable.getByRole('cell', { name: '出库 / 可用', exact: true }).waitFor()
 
   const apiCheck = await page.evaluate(async ({ outboundOrderNo, productCode }) => {
-    const token = window.localStorage.getItem('yuanjing_access_token')
+    const token = window.localStorage.getItem('xinpei_access_token')
     const headers = token ? { Authorization: `Bearer ${token}` } : {}
     const [ordersResponse, balancesResponse] = await Promise.all([
       fetch(`/api/v1/warehouse/outbound-orders?q=${encodeURIComponent(outboundOrderNo)}&status=approved`, { headers }),

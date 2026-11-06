@@ -35,7 +35,7 @@ async function login() {
 
 async function api(path) {
   return page.evaluate(async (requestPath) => {
-    const token = window.localStorage.getItem('yuanjing_access_token')
+    const token = window.localStorage.getItem('xinpei_access_token')
     const response = await fetch(requestPath, {
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     })

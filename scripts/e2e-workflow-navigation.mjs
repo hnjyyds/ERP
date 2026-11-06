@@ -158,7 +158,7 @@ await page.route('**/api/v1/system/i18n', async (route) => route.continue())
 
 try {
   await page.goto(frontendUrl, { waitUntil: 'domcontentloaded' })
-  await page.evaluate(() => window.localStorage.setItem('yuanjing_access_token', 'e2e-workflow-token'))
+  await page.evaluate(() => window.localStorage.setItem('xinpei_access_token', 'e2e-workflow-token'))
   await page.reload({ waitUntil: 'domcontentloaded' })
 
   const nav = page.getByLabel('主导航')

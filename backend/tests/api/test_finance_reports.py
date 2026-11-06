@@ -255,7 +255,7 @@ async def test_finance_report_special_filters_are_exposed_by_api(
             "date_from": "2026-01-01",
             "date_to": "2026-12-31",
             "currency": "USD",
-            "partner_name": "宁波远景物流",
+            "partner_name": "宁波新裴物流",
             "fee_type": "ocean_freight",
             "sales_user_id": "u-001",
             "status": "submitted",

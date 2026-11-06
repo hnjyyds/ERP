@@ -27,7 +27,7 @@ async def test_super_admin_can_read_and_update_mcp_settings(
     assert response.status_code == 200
     settings = response.json()["data"]
     assert settings["enabled"] is False
-    assert settings["server_name"] == "Yuanjing Trade ERP"
+    assert settings["server_name"] == "Xinpei Trade ERP"
     assert settings["transport"] == "streamable_http"
     assert settings["endpoint_path"] == "/mcp"
     assert settings["token_parameter"] == "Authorization"
