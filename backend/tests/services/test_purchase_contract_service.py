@@ -300,6 +300,62 @@ async def test_purchase_contract_service_claims_legacy_unassigned_approval(
     assert approved.reviewer_name == "测试用户"
 
 
+async def test_purchase_contract_service_allows_super_admin_to_override_assigned_reviewer(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        service = _make_service(session)
+        owner = _user_with_permissions(
+            ["purchase:contract:edit", "purchase:contract:view"],
+            user_id="u-001",
+        )
+        contract = await service.create_contract(
+            current_user=owner,
+            payload=_stock_purchase_payload("PC-SVC-BOSS-OVERRIDE"),
+        )
+        await service.submit_contract(
+            current_user=owner,
+            contract_id=contract.id,
+            payload=PurchaseContractSubmit(reviewer_id="u-admin"),
+        )
+        other_approver = _user_with_permissions(
+            ["purchase:contract:approve", "purchase:contract:view"],
+            user_id="u-other",
+            data_scope="all",
+        )
+        with pytest.raises(PermissionDeniedError):
+            await service.approve_contract(
+                current_user=other_approver,
+                contract_id=contract.id,
+                payload=PurchaseContractApprove(
+                    decision="approved",
+                    approved_at=date(2026, 8, 5),
+                ),
+            )
+
+        boss = _user_with_permissions(
+            [
+                "system:super_admin",
+                "purchase:contract:approve",
+                "purchase:contract:view",
+            ],
+            user_id="u-boss",
+            data_scope="all",
+        )
+        approved = await service.approve_contract(
+            current_user=boss,
+            contract_id=contract.id,
+            payload=PurchaseContractApprove(
+                decision="approved",
+                approved_at=date(2026, 8, 5),
+            ),
+        )
+
+    assert approved.approval_status == "approved"
+    assert approved.reviewer_id == "u-boss"
+
+
 async def test_purchase_generation_resolves_legacy_export_product_by_code(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:

@@ -28,6 +28,7 @@ from app.modules.sales.contracts.repositories import (
 )
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
+from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
@@ -301,7 +302,11 @@ class PurchaseContractService:
         )
         if contract.approval_status != "submitted":
             raise ValueError("只有已提交采购合同可以审批")
-        if contract.reviewer_id is not None and contract.reviewer_id != current_user.id:
+        if not can_approve_assigned_record(
+            current_user_id=current_user.id,
+            reviewer_id=contract.reviewer_id,
+            permissions=current_user.permissions,
+        ):
             raise PermissionDeniedError
         async with UnitOfWork(self._repository.session):
             reviewed = await self._repository.review_contract(

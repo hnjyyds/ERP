@@ -1,14 +1,57 @@
 import { downloadBase64File } from '../../../shared/print'
-import { Alert, Button, Descriptions as _Descriptions, Input, Modal, Table, Tag as _Tag , Select} from 'antd'
-import { ArrowLeft, LayoutDashboard, Plus, Search , FileSpreadsheet, FileStack} from 'lucide-react'
-import type { FormEvent, MouseEvent , ReactNode} from 'react'
+import {
+  Alert,
+  Button,
+  Descriptions as _Descriptions,
+  Input,
+  Modal,
+  Table,
+  Tag as _Tag,
+  Select,
+} from 'antd'
+import { ArrowLeft, LayoutDashboard, Plus, Search, FileSpreadsheet, FileStack } from 'lucide-react'
+import type { FormEvent, MouseEvent, ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { approvePurchaseContract, createPurchaseContract, generatePurchaseContractFromExportContracts, generatePurchaseContractTemplate, listPurchaseContractReminders, listPurchaseContracts, submitPurchaseContract, updatePurchaseContract, type CurrentUser, type PurchaseContract, type PurchaseContractApprovePayload, type PurchaseContractCreatePayload, type PurchaseContractGeneratePayload, type PurchaseContractLine as _PurchaseContractLine, type PurchaseContractReminder, type PurchaseContractSourceLink as _PurchaseContractSourceLink, type Supplier , AssignableUser, Product, listAssignableUsers, listProducts, listSuppliers} from '../../../api'
+import {
+  approvePurchaseContract,
+  createPurchaseContract,
+  generatePurchaseContractFromExportContracts,
+  generatePurchaseContractTemplate,
+  listPurchaseContractReminders,
+  listPurchaseContracts,
+  submitPurchaseContract,
+  updatePurchaseContract,
+  type CurrentUser,
+  type PurchaseContract,
+  type PurchaseContractApprovePayload,
+  type PurchaseContractCreatePayload,
+  type PurchaseContractGeneratePayload,
+  type PurchaseContractLine as _PurchaseContractLine,
+  type PurchaseContractReminder,
+  type PurchaseContractSourceLink as _PurchaseContractSourceLink,
+  type Supplier,
+  AssignableUser,
+  Product,
+  listAssignableUsers,
+  listProducts,
+  listSuppliers,
+} from '../../../api'
 import { purchaseContractPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError, showWarningDialog } from '../../../shared/errors'
-import { purchaseContractStatusOptions, purchaseContractSourceTypeOptions } from '../../../shared/formOptions'
-import { canApproveAssignedRecord, formatDate, formatMoney, nullableText as _nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import {
+  purchaseContractStatusOptions,
+  purchaseContractSourceTypeOptions,
+} from '../../../shared/formOptions'
+import {
+  canApproveAssignedRecord,
+  formatDate,
+  formatMoney,
+  nullableText as _nullableText,
+  todayInputValue,
+  type RoutedDetailPageProps,
+  emptyToNull,
+} from '../appHelpers'
 import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
 
 function supplierOptionLabel(supplier: Supplier): string {
@@ -62,7 +105,6 @@ function mergePurchaseLineRemark(current: string, addition: string): string {
   return `${current}; ${addition}`
 }
 
-
 type PurchaseContractFormState = {
   code: string
   contract_date: string
@@ -114,7 +156,6 @@ type PurchaseContractApproveFormState = {
   approved_at: string
   rejection_reason: string
 }
-
 
 function initialPurchaseContractForm(): PurchaseContractFormState {
   return {
@@ -297,7 +338,6 @@ function purchaseReminderStatusLabel(value: string): string {
   return value
 }
 
-
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 
 export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Props) {
@@ -331,13 +371,10 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
     initialPurchaseContractApproveForm(),
   )
 
-  const selectedContract = useMemo(
-    () => {
-      if (detailId) return contracts.find((item) => item.id === detailId) ?? null
-      return contracts.find((item) => item.id === selectedContractId) ?? contracts[0] ?? null
-    },
-    [contracts, detailId, selectedContractId],
-  )
+  const selectedContract = useMemo(() => {
+    if (detailId) return contracts.find((item) => item.id === detailId) ?? null
+    return contracts.find((item) => item.id === selectedContractId) ?? contracts[0] ?? null
+  }, [contracts, detailId, selectedContractId])
 
   useEffect(() => {
     void loadContracts()
@@ -350,7 +387,8 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
   useEffect(() => {
     setApproveForm({
       reviewer_name: selectedContract?.reviewer_name ?? '演示业务主管',
-      approved_at: selectedContract?.approved_at ?? selectedContract?.contract_date ?? todayInputValue(),
+      approved_at:
+        selectedContract?.approved_at ?? selectedContract?.contract_date ?? todayInputValue(),
       rejection_reason: selectedContract?.rejection_reason ?? '',
     })
     setReviewerId(selectedContract?.reviewer_id ?? '')
@@ -387,10 +425,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
         source_type: sourceFilter || undefined,
       })
       const items = preferredContract
-        ? [
-            preferredContract,
-            ...result.items.filter((item) => item.id !== preferredContract.id),
-          ]
+        ? [preferredContract, ...result.items.filter((item) => item.id !== preferredContract.id)]
         : result.items
       setContracts(items)
       const nextSelectedId =
@@ -484,7 +519,10 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
     onNavigate(moduleDetailPath(purchaseContractPath, contract.id))
   }
 
-  function stopAndOpenPurchaseContractDetail(event: MouseEvent<HTMLElement>, contract: PurchaseContract) {
+  function stopAndOpenPurchaseContractDetail(
+    event: MouseEvent<HTMLElement>,
+    contract: PurchaseContract,
+  ) {
     event.stopPropagation()
     openPurchaseContractDetail(contract)
   }
@@ -540,7 +578,9 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
       const saved = editingContractId
         ? await updatePurchaseContract(editingContractId, payload)
         : await createPurchaseContract(payload)
-      setMessage(editingContractId ? `已保存采购合同 ${saved.code}` : `已新增采购合同 ${saved.code}`)
+      setMessage(
+        editingContractId ? `已保存采购合同 ${saved.code}` : `已新增采购合同 ${saved.code}`,
+      )
       setEditingContractId(null)
       setContractModalMode('manual')
       setForm(initialPurchaseContractForm())
@@ -560,9 +600,11 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
     setSubmitting(true)
     setMessage('')
     setError('')
-    const sources = [generateForm.source_contract_id_a, generateForm.source_contract_id_b].map((item) => item.trim()).filter(Boolean)
+    const sources = [generateForm.source_contract_id_a, generateForm.source_contract_id_b]
+      .map((item) => item.trim())
+      .filter(Boolean)
     if (sources.length === 0) {
-      showWarningDialog("请至少填写一个出口合同 ID")
+      showWarningDialog('请至少填写一个出口合同 ID')
       setSubmitting(false)
       return
     }
@@ -593,7 +635,9 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
     setMessage('')
     setError('')
     try {
-      const submitted = await submitPurchaseContract(selectedContract.id, { reviewer_id: reviewerId })
+      const submitted = await submitPurchaseContract(selectedContract.id, {
+        reviewer_id: reviewerId,
+      })
       setMessage(`已提交采购合同 ${submitted.code}`)
       upsertContract(submitted)
       await Promise.all([loadContracts(submitted.id, submitted), loadContractReminders()])
@@ -606,7 +650,13 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
 
   async function reviewSelectedContract(decision: PurchaseContractApprovePayload['decision']) {
     if (!selectedContract) return
-    if (!canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'purchase:contract:approve')) {
+    if (
+      !canApproveAssignedRecord(
+        currentUser,
+        selectedContract.reviewer_id,
+        'purchase:contract:approve',
+      )
+    ) {
       showError(new Error(`该采购合同应由 ${selectedContract.reviewer_name ?? '指定审批人'} 审批`))
       return
     }
@@ -709,135 +759,164 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
 
   return (
     <section className="purchase-contract-page">
-<div className="summary-strip" aria-label="采购合同概览">
+      <div className="summary-strip" aria-label="采购合同概览">
         <Metric label="采购合同" value={contracts.length} />
-        <Metric label="待审批" value={contracts.filter((item) => item.approval_status === 'submitted').length} />
-        <Metric label="已审批" value={contracts.filter((item) => item.approval_status === 'approved').length} />
+        <Metric
+          label="待审批"
+          value={contracts.filter((item) => item.approval_status === 'submitted').length}
+        />
+        <Metric
+          label="已审批"
+          value={contracts.filter((item) => item.approval_status === 'approved').length}
+        />
         <Metric label="合同金额" value={formatMoney(totalAmount.toFixed(2), currency)} />
         <Metric label="待办提醒" value={openReminders} />
       </div>
 
-      {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
+      {message ? (
+        <Alert className="workspace-alert" title={message} type="success" showIcon />
+      ) : null}
       {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid purchase-contract-grid">
         {!detailId ? (
           <section className="workspace-panel list-panel product-list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title="采购合同列表" />
-            <form
-              className="inline-filters"
-              onSubmit={(event) => {
-                event.preventDefault()
-                void loadContracts()
-              }}
-            >
-              <label>
-                合同搜索
-                <Input
-                  value={search}
-                  placeholder="合同号 / 供应商 / 商品 / 备注"
-                  onChange={(event) => setSearch(event.target.value)}
-                />
-              </label>
-              <label>
-                审批状态
-                <FormSelect
-                value={statusFilter}
-                onChange={(event) => setStatusFilter(event.target.value)}
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<Search size={18} />} title="采购合同列表" />
+              <form
+                className="inline-filters single-line-filter-toolbar"
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  void loadContracts()
+                }}
               >
-                <option value="">全部状态</option>
-                {purchaseContractStatusOptions.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </FormSelect>
-            </label>
-              <label>
-                来源类型
-              <FormSelect
-                value={sourceFilter}
-                onChange={(event) => setSourceFilter(event.target.value)}
-              >
-                <option value="">全部来源</option>
-                {purchaseContractSourceTypeOptions.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </FormSelect>
-              </label>
-              <label>
-                供应商标识
-                <Input
-                  value={supplierFilter}
-                  placeholder="supplier-id"
-                  onChange={(event) => setSupplierFilter(event.target.value)}
-                />
-              </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                查询
-              </Button>
-              <Button htmlType="button" icon={<Plus size={16} />} onClick={openCreateContract}>
-                新增采购合同
-              </Button>
-              <Button htmlType="button" icon={<FileStack size={16} />} onClick={openGenerateContract}>
-                从出口合同生成
-              </Button>
-            </form>
-          </div>
-
-          <Table<PurchaseContract>
-            columns={[
-              {
-                title: '采购合同',
-                dataIndex: 'code',
-                render: (value: string, record: PurchaseContract) => (
-                  <button
-                    className="row-button"
-                    type="button"
-                    onClick={(event) => stopAndOpenPurchaseContractDetail(event, record)}
+                <label>
+                  合同搜索
+                  <Input
+                    value={search}
+                    placeholder="合同号 / 供应商 / 商品 / 备注"
+                    onChange={(event) => setSearch(event.target.value)}
+                  />
+                </label>
+                <label>
+                  审批状态
+                  <FormSelect
+                    value={statusFilter}
+                    onChange={(event) => setStatusFilter(event.target.value)}
                   >
-                    {value}
-                  </button>
-                ),
-              },
-              { title: '状态', dataIndex: 'approval_status', render: purchaseContractStatusLabel },
-              { title: '来源', dataIndex: 'source_type', render: purchaseContractSourceTypeLabel },
-              { title: '供应商', dataIndex: 'supplier_name' },
-              {
-                title: 'QC 负责人',
-                dataIndex: 'qc_user_name',
-                render: (value: string | null) => value ?? '未指定',
-              },
-              { title: '交货日', dataIndex: 'delivery_date', render: formatDate },
-              {
-                title: '金额',
-                dataIndex: 'statistics',
-                render: (_, contract) => formatMoney(contract.statistics.total_amount, contract.currency),
-              },
-              {
-                title: '入口',
-                key: 'detail',
-                width: 110,
-                render: (_: unknown, record: PurchaseContract) => (
-                  <Button size="small" onClick={(event) => stopAndOpenPurchaseContractDetail(event, record)}>
-                    查看详情
-                  </Button>
-                ),
-              },
-            ]}
-            dataSource={contracts}
-            loading={loading}
-            pagination={false}
-            rowClassName={(record) => (record.id === selectedContract?.id ? 'selected-row' : '')}
-            rowKey="id"
-            size="small"
-            onRow={(record) => ({
-              onClick: () => setSelectedContractId(record.id),
-            })}
-          />
+                    <option value="">全部状态</option>
+                    {purchaseContractStatusOptions.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </FormSelect>
+                </label>
+                <label>
+                  来源类型
+                  <FormSelect
+                    value={sourceFilter}
+                    onChange={(event) => setSourceFilter(event.target.value)}
+                  >
+                    <option value="">全部来源</option>
+                    {purchaseContractSourceTypeOptions.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </FormSelect>
+                </label>
+                <label>
+                  供应商标识
+                  <Input
+                    value={supplierFilter}
+                    placeholder="输入供应商编号或名称"
+                    onChange={(event) => setSupplierFilter(event.target.value)}
+                  />
+                </label>
+                <Button htmlType="submit" icon={<Search size={16} />}>
+                  查询
+                </Button>
+                <Button
+                  htmlType="button"
+                  type="primary"
+                  icon={<Plus size={16} />}
+                  onClick={openCreateContract}
+                >
+                  新增采购合同
+                </Button>
+                <Button
+                  htmlType="button"
+                  icon={<FileStack size={16} />}
+                  onClick={openGenerateContract}
+                >
+                  从出口合同生成
+                </Button>
+              </form>
+            </div>
+
+            <Table<PurchaseContract>
+              columns={[
+                {
+                  title: '采购合同',
+                  dataIndex: 'code',
+                  render: (value: string, record: PurchaseContract) => (
+                    <button
+                      className="row-button"
+                      type="button"
+                      onClick={(event) => stopAndOpenPurchaseContractDetail(event, record)}
+                    >
+                      {value}
+                    </button>
+                  ),
+                },
+                {
+                  title: '状态',
+                  dataIndex: 'approval_status',
+                  render: purchaseContractStatusLabel,
+                },
+                {
+                  title: '来源',
+                  dataIndex: 'source_type',
+                  render: purchaseContractSourceTypeLabel,
+                },
+                { title: '供应商', dataIndex: 'supplier_name' },
+                {
+                  title: 'QC 负责人',
+                  dataIndex: 'qc_user_name',
+                  render: (value: string | null) => value ?? '未指定',
+                },
+                { title: '交货日', dataIndex: 'delivery_date', render: formatDate },
+                {
+                  title: '金额',
+                  dataIndex: 'statistics',
+                  render: (_, contract) =>
+                    formatMoney(contract.statistics.total_amount, contract.currency),
+                },
+                {
+                  title: '入口',
+                  key: 'detail',
+                  width: 110,
+                  render: (_: unknown, record: PurchaseContract) => (
+                    <Button
+                      size="small"
+                      onClick={(event) => stopAndOpenPurchaseContractDetail(event, record)}
+                    >
+                      查看详情
+                    </Button>
+                  ),
+                },
+              ]}
+              dataSource={contracts}
+              loading={loading}
+              pagination={false}
+              rowClassName={(record) => (record.id === selectedContract?.id ? 'selected-row' : '')}
+              rowKey="id"
+              size="small"
+              onRow={(record) => ({
+                onClick: () => setSelectedContractId(record.id),
+              })}
+            />
           </section>
         ) : null}
 
@@ -856,764 +935,888 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
           onCancel={cancelContractEdit}
         >
           <div className="workflow-modal-content entity-modal-form">
-          {contractModalMode === 'manual' ? (
-            <>
-          <PanelTitle icon={<LayoutDashboard size={18} />} title={editingContractId ? '编辑采购合同' : '库存/手工采购合同'} />
-          <form className="record-form" onSubmit={submitContractForm}>
-            <div className="form-pair two">
-              <label>
-                合同号
-                <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
-              </label>
-              <label>
-                合同日期
-                <Input
-                  type="date"
-                  value={form.contract_date}
-                  onInput={(event) => setForm({ ...form, contract_date: event.currentTarget.value })}
+            {contractModalMode === 'manual' ? (
+              <>
+                <PanelTitle
+                  icon={<LayoutDashboard size={18} />}
+                  title={editingContractId ? '编辑采购合同' : '库存/手工采购合同'}
                 />
-              </label>
-            </div>
-            <div className="form-pair three">
-              <label>
-                选择工厂
-                <Select
-                  showSearch
-                  loading={loadingSuppliers}
-                  value={form.supplier_id || undefined}
-                  placeholder={suppliers.length > 0 ? '从工厂资料选择' : '请先在工厂资料录入'}
-                  optionFilterProp="label"
-                  notFoundContent={loadingSuppliers ? '加载工厂资料中' : '暂无工厂资料'}
-                  onChange={applySupplierToPurchaseContractForm}
+                <form className="record-form" onSubmit={submitContractForm}>
+                  <div className="form-pair two">
+                    <label>
+                      合同号
+                      <Input
+                        value={form.code}
+                        onChange={(event) => setForm({ ...form, code: event.target.value })}
+                      />
+                    </label>
+                    <label>
+                      合同日期
+                      <Input
+                        type="date"
+                        value={form.contract_date}
+                        onInput={(event) =>
+                          setForm({ ...form, contract_date: event.currentTarget.value })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="form-pair three">
+                    <label>
+                      选择工厂
+                      <Select
+                        showSearch
+                        loading={loadingSuppliers}
+                        value={form.supplier_id || undefined}
+                        placeholder={suppliers.length > 0 ? '从工厂资料选择' : '请先在工厂资料录入'}
+                        optionFilterProp="label"
+                        notFoundContent={loadingSuppliers ? '加载工厂资料中' : '暂无工厂资料'}
+                        onChange={applySupplierToPurchaseContractForm}
+                      >
+                        {renderSupplierOptions(suppliers)}
+                      </Select>
+                    </label>
+                    <label>
+                      工厂标识
+                      <Input value={form.supplier_id} readOnly placeholder="选择工厂后自动带出" />
+                    </label>
+                    <label>
+                      工厂名称
+                      <Input
+                        value={form.supplier_name}
+                        onChange={(event) =>
+                          setForm({ ...form, supplier_name: event.target.value })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="form-pair two">
+                    <label>
+                      采购员
+                      <Input
+                        value={form.buyer_user_name}
+                        onChange={(event) =>
+                          setForm({ ...form, buyer_user_name: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      采购员标识
+                      <Input
+                        value={form.buyer_user_id}
+                        onChange={(event) =>
+                          setForm({ ...form, buyer_user_id: event.target.value })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="form-pair two">
+                    <label>
+                      QC 负责人
+                      <Select
+                        showSearch
+                        loading={loadingAssignableUsers}
+                        value={form.qc_user_id || undefined}
+                        placeholder={assignableUsers.length > 0 ? '从系统用户选择' : '暂无可选用户'}
+                        optionFilterProp="label"
+                        notFoundContent={loadingAssignableUsers ? '加载人员中' : '暂无可选用户'}
+                        onChange={applyQcUserToPurchaseContractForm}
+                      >
+                        {renderAssignableUserOptions(assignableUsers)}
+                      </Select>
+                    </label>
+                  </div>
+                  <div className="form-pair three">
+                    <label>
+                      币种
+                      <Input
+                        value={form.currency}
+                        onChange={(event) => setForm({ ...form, currency: event.target.value })}
+                      />
+                    </label>
+                    <label>
+                      交货日期
+                      <Input
+                        type="date"
+                        value={form.delivery_date}
+                        onInput={(event) =>
+                          setForm({ ...form, delivery_date: event.currentTarget.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      来源
+                      <FormSelect
+                        value={form.source_type}
+                        onChange={(event) =>
+                          setForm({
+                            ...form,
+                            source_type: event.target
+                              .value as PurchaseContractCreatePayload['source_type'],
+                          })
+                        }
+                      >
+                        {purchaseContractSourceTypeOptions.map((item) => (
+                          <option key={item.value} value={item.value}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </FormSelect>
+                    </label>
+                  </div>
+                  <label>
+                    付款条款
+                    <Input
+                      value={form.payment_terms}
+                      onChange={(event) => setForm({ ...form, payment_terms: event.target.value })}
+                    />
+                  </label>
+
+                  <div className="form-divider">合同商品明细</div>
+                  <div className="form-pair two">
+                    <label>
+                      选择商品
+                      <Select
+                        showSearch
+                        loading={loadingProducts}
+                        value={form.product_id || undefined}
+                        placeholder={products.length > 0 ? '从商品资料选择' : '请先在商品资料录入'}
+                        optionFilterProp="label"
+                        notFoundContent={loadingProducts ? '加载商品资料中' : '暂无商品资料'}
+                        onChange={applyProductToPurchaseContractForm}
+                      >
+                        {renderProductOptions(products)}
+                      </Select>
+                    </label>
+                    <label>
+                      商品编号
+                      <Input
+                        value={form.product_code}
+                        onChange={(event) => setForm({ ...form, product_code: event.target.value })}
+                      />
+                    </label>
+                  </div>
+                  <label>
+                    商品名称
+                    <Input
+                      value={form.product_name}
+                      onChange={(event) => setForm({ ...form, product_name: event.target.value })}
+                    />
+                  </label>
+                  <label>
+                    商品标识
+                    <Input value={form.product_id} readOnly placeholder="选择商品后自动带出" />
+                  </label>
+                  <div className="form-pair two">
+                    <label>
+                      规格
+                      <Input
+                        value={form.specification}
+                        onChange={(event) =>
+                          setForm({ ...form, specification: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      型号
+                      <Input
+                        value={form.model}
+                        onChange={(event) => setForm({ ...form, model: event.target.value })}
+                      />
+                    </label>
+                  </div>
+                  <div className="form-pair three">
+                    <label>
+                      数量
+                      <Input
+                        type="number"
+                        min="0.0001"
+                        step="0.0001"
+                        value={form.quantity}
+                        onChange={(event) => setForm({ ...form, quantity: event.target.value })}
+                      />
+                    </label>
+                    <label>
+                      单位
+                      <Input
+                        value={form.unit}
+                        onChange={(event) => setForm({ ...form, unit: event.target.value })}
+                      />
+                    </label>
+                    <label>
+                      单价
+                      <Input
+                        type="number"
+                        min="0"
+                        step="0.0001"
+                        value={form.unit_price}
+                        onChange={(event) => setForm({ ...form, unit_price: event.target.value })}
+                      />
+                    </label>
+                  </div>
+                  <div className="form-pair three">
+                    <label>
+                      来源出口合同 ID
+                      <Input
+                        value={form.source_export_contract_id}
+                        onChange={(event) =>
+                          setForm({ ...form, source_export_contract_id: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      来源合同号
+                      <Input
+                        value={form.source_export_contract_no}
+                        onChange={(event) =>
+                          setForm({ ...form, source_export_contract_no: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      来源明细 ID
+                      <Input
+                        value={form.source_export_contract_line_id}
+                        onChange={(event) =>
+                          setForm({ ...form, source_export_contract_line_id: event.target.value })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <label>
+                    行备注
+                    <Input
+                      value={form.line_remark}
+                      onChange={(event) => setForm({ ...form, line_remark: event.target.value })}
+                    />
+                  </label>
+                  <label>
+                    合同备注
+                    <Input.TextArea
+                      rows={2}
+                      value={form.remarks}
+                      onChange={(event) => setForm({ ...form, remarks: event.target.value })}
+                    />
+                  </label>
+                  <Button htmlType="submit" loading={submitting} type="primary">
+                    {editingContractId ? '保存采购合同' : '新增采购合同'}
+                  </Button>
+                  {editingContractId ? (
+                    <Button onClick={cancelContractEdit}>取消编辑</Button>
+                  ) : null}
+                </form>
+              </>
+            ) : (
+              <>
+                <PanelTitle icon={<FileStack size={18} />} title="从已审批出口合同生成" />
+
+                <form
+                  className="record-form accessory-form generation-form"
+                  onSubmit={generateContractFromSources}
                 >
-                  {renderSupplierOptions(suppliers)}
-                </Select>
-              </label>
-              <label>
-                工厂标识
-                <Input value={form.supplier_id} readOnly placeholder="选择工厂后自动带出" />
-              </label>
-              <label>
-                工厂名称
-                <Input
-                  value={form.supplier_name}
-                  onChange={(event) => setForm({ ...form, supplier_name: event.target.value })}
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                采购员
-                <Input
-                  value={form.buyer_user_name}
-                  onChange={(event) => setForm({ ...form, buyer_user_name: event.target.value })}
-                />
-              </label>
-              <label>
-                采购员标识
-                <Input
-                  value={form.buyer_user_id}
-                  onChange={(event) => setForm({ ...form, buyer_user_id: event.target.value })}
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                QC 负责人
-                <Select
-
-                  showSearch
-                  loading={loadingAssignableUsers}
-                  value={form.qc_user_id || undefined}
-                  placeholder={assignableUsers.length > 0 ? '从系统用户选择' : '暂无可选用户'}
-                  optionFilterProp="label"
-                  notFoundContent={loadingAssignableUsers ? '加载人员中' : '暂无可选用户'}
-                  onChange={applyQcUserToPurchaseContractForm}
-                >
-                  {renderAssignableUserOptions(assignableUsers)}
-                </Select>
-              </label>
-            </div>
-            <div className="form-pair three">
-              <label>
-                币种
-                <Input
-                  value={form.currency}
-                  onChange={(event) => setForm({ ...form, currency: event.target.value })}
-                />
-              </label>
-              <label>
-                交货日期
-                <Input
-                  type="date"
-                  value={form.delivery_date}
-                  onInput={(event) => setForm({ ...form, delivery_date: event.currentTarget.value })}
-                />
-              </label>
-              <label>
-                来源
-              <FormSelect
-                value={form.source_type}
-                onChange={(event) =>
-                  setForm({
-                    ...form,
-                    source_type: event.target.value as PurchaseContractCreatePayload['source_type'],
-                  })
-                }
-              >
-                {purchaseContractSourceTypeOptions.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </FormSelect>
-              </label>
-            </div>
-            <label>
-              付款条款
-              <Input
-                value={form.payment_terms}
-                onChange={(event) => setForm({ ...form, payment_terms: event.target.value })}
-              />
-            </label>
-
-            <div className="form-divider">合同商品明细</div>
-            <div className="form-pair two">
-              <label>
-                选择商品
-                <Select
-
-                  showSearch
-                  loading={loadingProducts}
-                  value={form.product_id || undefined}
-                  placeholder={products.length > 0 ? '从商品资料选择' : '请先在商品资料录入'}
-                  optionFilterProp="label"
-                  notFoundContent={loadingProducts ? '加载商品资料中' : '暂无商品资料'}
-                  onChange={applyProductToPurchaseContractForm}
-                >
-                  {renderProductOptions(products)}
-                </Select>
-              </label>
-              <label>
-                商品编号
-                <Input
-                  value={form.product_code}
-                  onChange={(event) => setForm({ ...form, product_code: event.target.value })}
-                />
-              </label>
-            </div>
-            <label>
-              商品名称
-              <Input
-                value={form.product_name}
-                onChange={(event) => setForm({ ...form, product_name: event.target.value })}
-              />
-            </label>
-            <label>
-              商品标识
-              <Input value={form.product_id} readOnly placeholder="选择商品后自动带出" />
-            </label>
-            <div className="form-pair two">
-              <label>
-                规格
-                <Input
-                  value={form.specification}
-                  onChange={(event) => setForm({ ...form, specification: event.target.value })}
-                />
-              </label>
-              <label>
-                型号
-                <Input value={form.model} onChange={(event) => setForm({ ...form, model: event.target.value })} />
-              </label>
-            </div>
-            <div className="form-pair three">
-              <label>
-                数量
-                <Input
-                  type="number"
-                  min="0.0001"
-                  step="0.0001"
-                  value={form.quantity}
-                  onChange={(event) => setForm({ ...form, quantity: event.target.value })}
-                />
-              </label>
-              <label>
-                单位
-                <Input value={form.unit} onChange={(event) => setForm({ ...form, unit: event.target.value })} />
-              </label>
-              <label>
-                单价
-                <Input
-                  type="number"
-                  min="0"
-                  step="0.0001"
-                  value={form.unit_price}
-                  onChange={(event) => setForm({ ...form, unit_price: event.target.value })}
-                />
-              </label>
-            </div>
-            <div className="form-pair three">
-              <label>
-                来源出口合同 ID
-                <Input
-                  value={form.source_export_contract_id}
-                  onChange={(event) =>
-                    setForm({ ...form, source_export_contract_id: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                来源合同号
-                <Input
-                  value={form.source_export_contract_no}
-                  onChange={(event) =>
-                    setForm({ ...form, source_export_contract_no: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                来源明细 ID
-                <Input
-                  value={form.source_export_contract_line_id}
-                  onChange={(event) =>
-                    setForm({ ...form, source_export_contract_line_id: event.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <label>
-              行备注
-              <Input
-                value={form.line_remark}
-                onChange={(event) => setForm({ ...form, line_remark: event.target.value })}
-              />
-            </label>
-            <label>
-              合同备注
-              <Input.TextArea
-                rows={2}
-                value={form.remarks}
-                onChange={(event) => setForm({ ...form, remarks: event.target.value })}
-              />
-            </label>
-            <Button htmlType="submit" loading={submitting} type="primary">
-              {editingContractId ? '保存采购合同' : '新增采购合同'}
-            </Button>
-            {editingContractId ? (
-              <Button onClick={cancelContractEdit}>
-                取消编辑
-              </Button>
-            ) : null}
-          </form>
-            </>
-          ) : (
-            <>
-          <PanelTitle icon={<FileStack size={18} />} title="从已审批出口合同生成" />
-
-          <form className="record-form accessory-form generation-form" onSubmit={generateContractFromSources}>
-            <div className="form-divider">从已审批出口合同生成</div>
-            <div className="form-pair two">
-              <label>
-                采购合同号
-                <Input
-                  value={generateForm.code}
-                  onChange={(event) => setGenerateForm({ ...generateForm, code: event.target.value })}
-                />
-              </label>
-              <label>
-                合同日期
-                <Input
-                  type="date"
-                  value={generateForm.contract_date}
-                  onInput={(event) =>
-                    setGenerateForm({ ...generateForm, contract_date: event.currentTarget.value })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                出口合同 ID A
-                <Input
-                  value={generateForm.source_contract_id_a}
-                  onChange={(event) =>
-                    setGenerateForm({ ...generateForm, source_contract_id_a: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                出口合同 ID B
-                <Input
-                  value={generateForm.source_contract_id_b}
-                  onChange={(event) =>
-                    setGenerateForm({ ...generateForm, source_contract_id_b: event.target.value })
-                  }
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                供应商标识
-                <Input
-                  value={generateForm.supplier_id}
-                  onChange={(event) => setGenerateForm({ ...generateForm, supplier_id: event.target.value })}
-                />
-              </label>
-              <label>
-                供应商
-                <Input
-                  value={generateForm.supplier_name}
-                  onChange={(event) => setGenerateForm({ ...generateForm, supplier_name: event.target.value })}
-                />
-              </label>
-            </div>
-            <div className="form-pair three">
-              <label>
-                币种
-                <Input
-                  value={generateForm.currency}
-                  onChange={(event) => setGenerateForm({ ...generateForm, currency: event.target.value })}
-                />
-              </label>
-              <label>
-                交货日期
-                <Input
-                  type="date"
-                  value={generateForm.delivery_date}
-                  onInput={(event) =>
-                    setGenerateForm({ ...generateForm, delivery_date: event.currentTarget.value })
-                  }
-                />
-              </label>
-              <label>
-                配件单价
-                <Input
-                  type="number"
-                  min="0"
-                  step="0.0001"
-                  value={generateForm.unit_price}
-                  onChange={(event) => setGenerateForm({ ...generateForm, unit_price: event.target.value })}
-                />
-              </label>
-            </div>
-            <div className="form-pair two">
-              <label>
-                QC 负责人
-                <Select
-
-                  showSearch
-                  loading={loadingAssignableUsers}
-                  value={generateForm.qc_user_id || undefined}
-                  placeholder={assignableUsers.length > 0 ? '从系统用户选择' : '暂无可选用户'}
-                  optionFilterProp="label"
-                  notFoundContent={loadingAssignableUsers ? '加载人员中' : '暂无可选用户'}
-                  onChange={applyQcUserToPurchaseContractGenerateForm}
-                >
-                  {renderAssignableUserOptions(assignableUsers)}
-                </Select>
-              </label>
-            </div>
-            <label>
-              付款条款
-              <Input
-                value={generateForm.payment_terms}
-                onChange={(event) => setGenerateForm({ ...generateForm, payment_terms: event.target.value })}
-              />
-            </label>
-            <label>
-              生成备注
-              <Input
-                value={generateForm.remarks}
-                onChange={(event) => setGenerateForm({ ...generateForm, remarks: event.target.value })}
-              />
-            </label>
-            <Button htmlType="submit" loading={submitting} type="primary">
-              生成采购合同
-            </Button>
-          </form>
-            </>
-          )}
+                  <div className="form-divider">从已审批出口合同生成</div>
+                  <div className="form-pair two">
+                    <label>
+                      采购合同号
+                      <Input
+                        value={generateForm.code}
+                        onChange={(event) =>
+                          setGenerateForm({ ...generateForm, code: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      合同日期
+                      <Input
+                        type="date"
+                        value={generateForm.contract_date}
+                        onInput={(event) =>
+                          setGenerateForm({
+                            ...generateForm,
+                            contract_date: event.currentTarget.value,
+                          })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="form-pair two">
+                    <label>
+                      出口合同 ID A
+                      <Input
+                        value={generateForm.source_contract_id_a}
+                        onChange={(event) =>
+                          setGenerateForm({
+                            ...generateForm,
+                            source_contract_id_a: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      出口合同 ID B
+                      <Input
+                        value={generateForm.source_contract_id_b}
+                        onChange={(event) =>
+                          setGenerateForm({
+                            ...generateForm,
+                            source_contract_id_b: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="form-pair two">
+                    <label>
+                      供应商标识
+                      <Input
+                        value={generateForm.supplier_id}
+                        onChange={(event) =>
+                          setGenerateForm({ ...generateForm, supplier_id: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      供应商
+                      <Input
+                        value={generateForm.supplier_name}
+                        onChange={(event) =>
+                          setGenerateForm({ ...generateForm, supplier_name: event.target.value })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="form-pair three">
+                    <label>
+                      币种
+                      <Input
+                        value={generateForm.currency}
+                        onChange={(event) =>
+                          setGenerateForm({ ...generateForm, currency: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      交货日期
+                      <Input
+                        type="date"
+                        value={generateForm.delivery_date}
+                        onInput={(event) =>
+                          setGenerateForm({
+                            ...generateForm,
+                            delivery_date: event.currentTarget.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      配件单价
+                      <Input
+                        type="number"
+                        min="0"
+                        step="0.0001"
+                        value={generateForm.unit_price}
+                        onChange={(event) =>
+                          setGenerateForm({ ...generateForm, unit_price: event.target.value })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="form-pair two">
+                    <label>
+                      QC 负责人
+                      <Select
+                        showSearch
+                        loading={loadingAssignableUsers}
+                        value={generateForm.qc_user_id || undefined}
+                        placeholder={assignableUsers.length > 0 ? '从系统用户选择' : '暂无可选用户'}
+                        optionFilterProp="label"
+                        notFoundContent={loadingAssignableUsers ? '加载人员中' : '暂无可选用户'}
+                        onChange={applyQcUserToPurchaseContractGenerateForm}
+                      >
+                        {renderAssignableUserOptions(assignableUsers)}
+                      </Select>
+                    </label>
+                  </div>
+                  <label>
+                    付款条款
+                    <Input
+                      value={generateForm.payment_terms}
+                      onChange={(event) =>
+                        setGenerateForm({ ...generateForm, payment_terms: event.target.value })
+                      }
+                    />
+                  </label>
+                  <label>
+                    生成备注
+                    <Input
+                      value={generateForm.remarks}
+                      onChange={(event) =>
+                        setGenerateForm({ ...generateForm, remarks: event.target.value })
+                      }
+                    />
+                  </label>
+                  <Button htmlType="submit" loading={submitting} type="primary">
+                    生成采购合同
+                  </Button>
+                </form>
+              </>
+            )}
           </div>
         </Modal>
 
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<LayoutDashboard size={18} />} title="采购合同明细" />
-            {selectedContract ? <span className="panel-kicker contract-code-label">{selectedContract.code}</span> : null}
-            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(purchaseContractPath)}>
-              返回列表
-            </Button>
-          </div>
-          {selectedContract ? (
-            <>
-              <div className="contract-summary-intro">
-                <strong>合同摘要</strong>
-                <span>快速确认合同来源、执行节点、责任人和付款进度。</span>
-              </div>
-
-              <div className="contract-summary-sections">
-                <section className="contract-summary-section">
-                  <div className="contract-summary-section-heading">
-                    <div>
-                      <h3>合同概况</h3>
-                      <p>合同从哪里生成，以及当前处于哪个审批阶段</p>
-                    </div>
-                  </div>
-                  <dl className="contract-summary-grid">
-                    <div>
-                      <dt>合同状态</dt>
-                      <dd>
-                        <span className="contract-status-chip" data-status={selectedContract.approval_status}>
-                          {purchaseContractStatusLabel(selectedContract.approval_status)}
-                        </span>
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>合同日期</dt>
-                      <dd>{formatDate(selectedContract.contract_date)}</dd>
-                    </div>
-                    <div>
-                      <dt>合同来源</dt>
-                      <dd>{purchaseContractSourceTypeLabel(selectedContract.source_type)}</dd>
-                    </div>
-                    <div>
-                      <dt>供应商</dt>
-                      <dd>{selectedContract.supplier_name}</dd>
-                    </div>
-                  </dl>
-                </section>
-
-                <section className="contract-summary-section">
-                  <div className="contract-summary-section-heading">
-                    <div>
-                      <h3>履约安排</h3>
-                      <p>负责采购与查验的人员，以及计划交货时间</p>
-                    </div>
-                  </div>
-                  <dl className="contract-summary-grid">
-                    <div>
-                      <dt>采购负责人</dt>
-                      <dd>{selectedContract.buyer_user_name ?? '未指定'}</dd>
-                    </div>
-                    <div>
-                      <dt>QC 负责人</dt>
-                      <dd>{selectedContract.qc_user_name ?? '未指定'}</dd>
-                    </div>
-                    <div>
-                      <dt>预计交货日期</dt>
-                      <dd>{formatDate(selectedContract.delivery_date)}</dd>
-                    </div>
-                  </dl>
-                </section>
-
-                <section className="contract-summary-section">
-                  <div className="contract-summary-section-heading">
-                    <div>
-                      <h3>金额与审批</h3>
-                      <p>金额均按合同币种显示，待付款金额为尚未支付的部分</p>
-                    </div>
-                  </div>
-                  <dl className="contract-summary-grid">
-                    <div>
-                      <dt>合同金额</dt>
-                      <dd>{formatMoney(selectedContract.statistics.total_amount, selectedContract.currency)}</dd>
-                    </div>
-                    <div>
-                      <dt>待付款金额</dt>
-                      <dd>{formatMoney(selectedContract.statistics.unpaid_amount, selectedContract.currency)}</dd>
-                    </div>
-                    <div>
-                      <dt>审批人</dt>
-                      <dd>{selectedContract.reviewer_name ?? '未审批'}</dd>
-                    </div>
-                  </dl>
-                </section>
-              </div>
-
-              <div className="transaction-box">
-                <strong>付款条款</strong>
-                <p>{selectedContract.payment_terms}</p>
-              </div>
-              <div className="transaction-box">
-                <strong>合同备注</strong>
-                <p>{selectedContract.remarks ?? '未填写'}</p>
-              </div>
-
-              {selectedContract.approval_status === 'rejected' ? (
-                <Alert
-                  className="purchase-contract-rejection-alert"
-                  description={selectedContract.rejection_reason ?? '未记录驳回原因'}
-                  showIcon
-                  title={`合同已于 ${formatDate(selectedContract.rejected_at)} 驳回`}
-                  type="error"
-                />
+            <div className="panel-heading toolbar-heading">
+              <PanelTitle icon={<LayoutDashboard size={18} />} title="采购合同明细" />
+              {selectedContract ? (
+                <span className="panel-kicker contract-code-label">{selectedContract.code}</span>
               ) : null}
+              <Button
+                icon={<ArrowLeft size={16} />}
+                onClick={() => onNavigate(purchaseContractPath)}
+              >
+                返回列表
+              </Button>
+            </div>
+            {selectedContract ? (
+              <>
+                <div className="contract-summary-intro">
+                  <strong>合同摘要</strong>
+                  <span>快速确认合同来源、执行节点、责任人和付款进度。</span>
+                </div>
 
-              <div className="delivery-action-row">
-                <Button
-                  disabled={!['draft', 'rejected'].includes(selectedContract.approval_status)}
-                  onClick={loadSelectedContractForEdit}
-                >
-                  编辑合同
-                </Button>
-                {selectedContract.approval_status === 'draft' ? (
-                  <ApprovalAssigneeSelect
-                    currentUserId={currentUser.id}
-                    onChange={setReviewerId}
-                    requiredPermission="purchase:contract:approve"
-                    value={reviewerId}
+                <div className="contract-summary-sections">
+                  <section className="contract-summary-section">
+                    <div className="contract-summary-section-heading">
+                      <div>
+                        <h3>合同概况</h3>
+                        <p>合同从哪里生成，以及当前处于哪个审批阶段</p>
+                      </div>
+                    </div>
+                    <dl className="contract-summary-grid">
+                      <div>
+                        <dt>合同状态</dt>
+                        <dd>
+                          <span
+                            className="contract-status-chip"
+                            data-status={selectedContract.approval_status}
+                          >
+                            {purchaseContractStatusLabel(selectedContract.approval_status)}
+                          </span>
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>合同日期</dt>
+                        <dd>{formatDate(selectedContract.contract_date)}</dd>
+                      </div>
+                      <div>
+                        <dt>合同来源</dt>
+                        <dd>{purchaseContractSourceTypeLabel(selectedContract.source_type)}</dd>
+                      </div>
+                      <div>
+                        <dt>供应商</dt>
+                        <dd>{selectedContract.supplier_name}</dd>
+                      </div>
+                    </dl>
+                  </section>
+
+                  <section className="contract-summary-section">
+                    <div className="contract-summary-section-heading">
+                      <div>
+                        <h3>履约安排</h3>
+                        <p>负责采购与查验的人员，以及计划交货时间</p>
+                      </div>
+                    </div>
+                    <dl className="contract-summary-grid">
+                      <div>
+                        <dt>采购负责人</dt>
+                        <dd>{selectedContract.buyer_user_name ?? '未指定'}</dd>
+                      </div>
+                      <div>
+                        <dt>QC 负责人</dt>
+                        <dd>{selectedContract.qc_user_name ?? '未指定'}</dd>
+                      </div>
+                      <div>
+                        <dt>预计交货日期</dt>
+                        <dd>{formatDate(selectedContract.delivery_date)}</dd>
+                      </div>
+                    </dl>
+                  </section>
+
+                  <section className="contract-summary-section">
+                    <div className="contract-summary-section-heading">
+                      <div>
+                        <h3>金额与审批</h3>
+                        <p>金额均按合同币种显示，待付款金额为尚未支付的部分</p>
+                      </div>
+                    </div>
+                    <dl className="contract-summary-grid">
+                      <div>
+                        <dt>合同金额</dt>
+                        <dd>
+                          {formatMoney(
+                            selectedContract.statistics.total_amount,
+                            selectedContract.currency,
+                          )}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>待付款金额</dt>
+                        <dd>
+                          {formatMoney(
+                            selectedContract.statistics.unpaid_amount,
+                            selectedContract.currency,
+                          )}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>审批人</dt>
+                        <dd>{selectedContract.reviewer_name ?? '未审批'}</dd>
+                      </div>
+                    </dl>
+                  </section>
+                </div>
+
+                <div className="transaction-box">
+                  <strong>付款条款</strong>
+                  <p>{selectedContract.payment_terms}</p>
+                </div>
+                <div className="transaction-box">
+                  <strong>合同备注</strong>
+                  <p>{selectedContract.remarks ?? '未填写'}</p>
+                </div>
+
+                {selectedContract.approval_status === 'rejected' ? (
+                  <Alert
+                    className="purchase-contract-rejection-alert"
+                    description={selectedContract.rejection_reason ?? '未记录驳回原因'}
+                    showIcon
+                    title={`合同已于 ${formatDate(selectedContract.rejected_at)} 驳回`}
+                    type="error"
                   />
                 ) : null}
-                <Button
-                  disabled={selectedContract.approval_status !== 'draft' || !reviewerId}
-                  loading={submitting}
-                  onClick={() => void submitSelectedContract()}
-                >
-                  提交采购合同
-                </Button>
-                <Button
-                  disabled={
-                    selectedContract.approval_status !== 'submitted' ||
-                    !canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'purchase:contract:approve')
-                  }
-                  onClick={() => setContractApprovalModalOpen(true)}
-                >
-                  审批采购合同
-                </Button>
-                <Button
-                  icon={<FileSpreadsheet size={16} />}
-                  loading={submitting}
-                  onClick={() => void generateSelectedContractTemplate()}
-                >
-                  用合同模板生成
-                </Button>
-              </div>
-              {selectedContract.approval_status === 'submitted' && !canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'purchase:contract:approve') ? (
-                <Alert
-                  message={`等待 ${selectedContract.reviewer_name ?? '指定审批人'} 审批`}
-                  showIcon
-                  type="info"
-                />
-              ) : null}
 
-              <Modal
-                centered
-                footer={null}
-                open={contractApprovalModalOpen}
-                title="审批采购合同"
-                width={720}
-                onCancel={() => setContractApprovalModalOpen(false)}
-              >
-                <div className="workflow-modal-content entity-modal-form">
-                  <div className="record-form accessory-form approval-form">
-                    <div className="form-divider">采购合同审批</div>
-                    <div className="form-pair two">
-                      <label>
-                        审批人
-                        <Input disabled value={selectedContract.reviewer_name ?? ''} />
-                      </label>
-                      <label>
-                        审批日期
-                        <Input
-                          type="date"
-                          value={approveForm.approved_at}
-                          onInput={(event) =>
-                            setApproveForm({ ...approveForm, approved_at: event.currentTarget.value })
+                <div className="delivery-action-row">
+                  <Button
+                    disabled={!['draft', 'rejected'].includes(selectedContract.approval_status)}
+                    onClick={loadSelectedContractForEdit}
+                  >
+                    编辑合同
+                  </Button>
+                  {selectedContract.approval_status === 'draft' ? (
+                    <ApprovalAssigneeSelect
+                      currentUserId={currentUser.id}
+                      onChange={setReviewerId}
+                      requiredPermission="purchase:contract:approve"
+                      value={reviewerId}
+                    />
+                  ) : null}
+                  <Button
+                    disabled={selectedContract.approval_status !== 'draft' || !reviewerId}
+                    loading={submitting}
+                    onClick={() => void submitSelectedContract()}
+                  >
+                    提交采购合同
+                  </Button>
+                  <Button
+                    disabled={
+                      selectedContract.approval_status !== 'submitted' ||
+                      !canApproveAssignedRecord(
+                        currentUser,
+                        selectedContract.reviewer_id,
+                        'purchase:contract:approve',
+                      )
+                    }
+                    onClick={() => setContractApprovalModalOpen(true)}
+                  >
+                    审批采购合同
+                  </Button>
+                  <Button
+                    icon={<FileSpreadsheet size={16} />}
+                    loading={submitting}
+                    onClick={() => void generateSelectedContractTemplate()}
+                  >
+                    用合同模板生成
+                  </Button>
+                </div>
+                {selectedContract.approval_status === 'submitted' &&
+                !canApproveAssignedRecord(
+                  currentUser,
+                  selectedContract.reviewer_id,
+                  'purchase:contract:approve',
+                ) ? (
+                  <Alert
+                    message={`等待 ${selectedContract.reviewer_name ?? '指定审批人'} 审批`}
+                    showIcon
+                    type="info"
+                  />
+                ) : null}
+
+                <Modal
+                  centered
+                  footer={null}
+                  open={contractApprovalModalOpen}
+                  title="审批采购合同"
+                  width={720}
+                  onCancel={() => setContractApprovalModalOpen(false)}
+                >
+                  <div className="workflow-modal-content entity-modal-form">
+                    <div className="record-form accessory-form approval-form">
+                      <div className="form-divider">采购合同审批</div>
+                      <div className="form-pair two">
+                        <label>
+                          审批人
+                          <Input disabled value={selectedContract.reviewer_name ?? ''} />
+                        </label>
+                        <label>
+                          审批日期
+                          <Input
+                            type="date"
+                            value={approveForm.approved_at}
+                            onInput={(event) =>
+                              setApproveForm({
+                                ...approveForm,
+                                approved_at: event.currentTarget.value,
+                              })
+                            }
+                          />
+                        </label>
+                      </div>
+                      <label className="approval-rejection-reason">
+                        <span>
+                          驳回原因 <i aria-hidden="true">*</i>
+                        </span>
+                        <Input.TextArea
+                          aria-label="驳回原因"
+                          maxLength={2000}
+                          placeholder="请说明需要修改的合同内容"
+                          required
+                          rows={3}
+                          value={approveForm.rejection_reason}
+                          onChange={(event) =>
+                            setApproveForm({
+                              ...approveForm,
+                              rejection_reason: event.currentTarget.value,
+                            })
                           }
                         />
                       </label>
-                    </div>
-                    <label className="approval-rejection-reason">
-                      <span>驳回原因 <i aria-hidden="true">*</i></span>
-                      <Input.TextArea
-                        aria-label="驳回原因"
-                        maxLength={2000}
-                        placeholder="请说明需要修改的合同内容"
-                        required
-                        rows={3}
-                        value={approveForm.rejection_reason}
-                        onChange={(event) =>
-                          setApproveForm({ ...approveForm, rejection_reason: event.currentTarget.value })
-                        }
-                      />
-                    </label>
-                    <div className="approval-action-row">
-                      <Button
-                        danger
-                        disabled={
-                          selectedContract.approval_status !== 'submitted' ||
-                          !canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'purchase:contract:approve')
-                        }
-                        loading={submitting}
-                        onClick={confirmRejectSelectedContract}
-                      >
-                        驳回合同
-                      </Button>
-                      <Button
-                        disabled={
-                          selectedContract.approval_status !== 'submitted' ||
-                          !canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'purchase:contract:approve')
-                        }
-                        loading={submitting}
-                        type="primary"
-                        onClick={() => void reviewSelectedContract('approved')}
-                      >
-                        通过审批
-                      </Button>
+                      <div className="approval-action-row">
+                        <Button
+                          danger
+                          disabled={
+                            selectedContract.approval_status !== 'submitted' ||
+                            !canApproveAssignedRecord(
+                              currentUser,
+                              selectedContract.reviewer_id,
+                              'purchase:contract:approve',
+                            )
+                          }
+                          loading={submitting}
+                          onClick={confirmRejectSelectedContract}
+                        >
+                          驳回合同
+                        </Button>
+                        <Button
+                          disabled={
+                            selectedContract.approval_status !== 'submitted' ||
+                            !canApproveAssignedRecord(
+                              currentUser,
+                              selectedContract.reviewer_id,
+                              'purchase:contract:approve',
+                            )
+                          }
+                          loading={submitting}
+                          type="primary"
+                          onClick={() => void reviewSelectedContract('approved')}
+                        >
+                          通过审批
+                        </Button>
+                      </div>
                     </div>
                   </div>
+                </Modal>
+
+                <div className="accessory-heading">
+                  <strong>合同商品明细</strong>
+                  <span>{selectedContract.lines.length} 行</span>
                 </div>
-              </Modal>
-
-              <div className="accessory-heading">
-                <strong>合同商品明细</strong>
-                <span>{selectedContract.lines.length} 行</span>
-              </div>
-              <table className="data-table compact-table">
-                <thead>
-                  <tr>
-                    <th>商品</th>
-                    <th>规格/型号</th>
-                    <th>数量</th>
-                    <th>单价</th>
-                    <th>金额</th>
-                    <th>未收</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedContract.lines.map((line) => (
-                    <tr key={line.id}>
-                      <td>{line.product_code ?? '未填'} / {line.product_name}</td>
-                      <td>{line.specification ?? '未填'} / {line.model ?? '未填'}</td>
-                      <td>{line.quantity} {line.unit}</td>
-                      <td>{formatMoney(line.unit_price, selectedContract.currency)}</td>
-                      <td>{formatMoney(line.amount, selectedContract.currency)}</td>
-                      <td>{line.unreceived_quantity} {line.unit}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <div className="accessory-heading">
-                <strong>来源出口合同</strong>
-                <span>{selectedContract.source_links.length} 条</span>
-              </div>
-              <table className="data-table compact-table">
-                <thead>
-                  <tr>
-                    <th>出口合同</th>
-                    <th>客户</th>
-                    <th>商品</th>
-                    <th>需求数量</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedContract.source_links.map((source) => (
-                    <tr key={source.id}>
-                      <td>{source.export_contract_no}</td>
-                      <td>{source.customer_name}</td>
-                      <td>{source.product_code ?? '未填'}</td>
-                      <td>{source.demand_quantity} {source.unit}</td>
-                    </tr>
-                  ))}
-                  {selectedContract.source_links.length === 0 ? (
+                <table className="data-table compact-table">
+                  <thead>
                     <tr>
-                      <td className="empty-cell" colSpan={4}>库存采购或手工采购，无来源出口合同</td>
+                      <th>商品</th>
+                      <th>规格/型号</th>
+                      <th>数量</th>
+                      <th>单价</th>
+                      <th>金额</th>
+                      <th>未收</th>
                     </tr>
-                  ) : null}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {selectedContract.lines.map((line) => (
+                      <tr key={line.id}>
+                        <td>
+                          {line.product_code ?? '未填'} / {line.product_name}
+                        </td>
+                        <td>
+                          {line.specification ?? '未填'} / {line.model ?? '未填'}
+                        </td>
+                        <td>
+                          {line.quantity} {line.unit}
+                        </td>
+                        <td>{formatMoney(line.unit_price, selectedContract.currency)}</td>
+                        <td>{formatMoney(line.amount, selectedContract.currency)}</td>
+                        <td>
+                          {line.unreceived_quantity} {line.unit}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
 
-              <div className="accessory-heading">
-                <strong>付款和交货提醒</strong>
-                <span>{selectedContract.reminders.length} 条</span>
-              </div>
-              <table className="data-table compact-table">
-                <thead>
-                  <tr>
-                    <th>类型</th>
-                    <th>标题</th>
-                    <th>到期日</th>
-                    <th>金额</th>
-                    <th>状态</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedContract.reminders.map((reminder) => (
-                    <tr key={reminder.id}>
-                      <td>{purchaseReminderTypeLabel(reminder.reminder_type)}</td>
-                      <td>{reminder.title}</td>
-                      <td>{formatDate(reminder.due_date)}</td>
-                      <td>{reminder.amount ? formatMoney(reminder.amount, reminder.currency) : '无金额'}</td>
-                      <td>{purchaseReminderStatusLabel(reminder.status)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <div className="accessory-heading">
-                <strong>进度概览</strong>
-                <span>{selectedContract.statistics.unreceived_quantity} 未收</span>
-              </div>
-              <table className="data-table compact-table">
-                <thead>
-                  <tr>
-                    <th>总数量</th>
-                    <th>已收</th>
-                    <th>未收</th>
-                    <th>已付</th>
-                    <th>未付</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{selectedContract.statistics.total_quantity}</td>
-                    <td>{selectedContract.statistics.received_quantity}</td>
-                    <td>{selectedContract.statistics.unreceived_quantity}</td>
-                    <td>{formatMoney(selectedContract.statistics.paid_amount, selectedContract.currency)}</td>
-                    <td>{formatMoney(selectedContract.statistics.unpaid_amount, selectedContract.currency)}</td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <div className="accessory-heading">
-                <strong>全局采购提醒</strong>
-                <span>{reminders.length} 条</span>
-              </div>
-              <table className="data-table compact-table">
-                <thead>
-                  <tr>
-                    <th>类型</th>
-                    <th>标题</th>
-                    <th>到期日</th>
-                    <th>金额</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {reminders.map((reminder) => (
-                    <tr key={reminder.id}>
-                      <td>{purchaseReminderTypeLabel(reminder.reminder_type)}</td>
-                      <td>{reminder.title}</td>
-                      <td>{formatDate(reminder.due_date)}</td>
-                      <td>{reminder.amount ? formatMoney(reminder.amount, reminder.currency) : '无金额'}</td>
-                    </tr>
-                  ))}
-                  {reminders.length === 0 ? (
+                <div className="accessory-heading">
+                  <strong>来源出口合同</strong>
+                  <span>{selectedContract.source_links.length} 条</span>
+                </div>
+                <table className="data-table compact-table">
+                  <thead>
                     <tr>
-                      <td className="empty-cell" colSpan={4}>暂无采购提醒</td>
+                      <th>出口合同</th>
+                      <th>客户</th>
+                      <th>商品</th>
+                      <th>需求数量</th>
                     </tr>
-                  ) : null}
-                </tbody>
-              </table>
-            </>
-          ) : (
-            <div className="module-state panel-empty-state">
-              <FileStack size={28} />
-              <strong>暂无采购合同</strong>
-              <span>请返回列表选择采购合同查看详情</span>
-            </div>
-          )}
+                  </thead>
+                  <tbody>
+                    {selectedContract.source_links.map((source) => (
+                      <tr key={source.id}>
+                        <td>{source.export_contract_no}</td>
+                        <td>{source.customer_name}</td>
+                        <td>{source.product_code ?? '未填'}</td>
+                        <td>
+                          {source.demand_quantity} {source.unit}
+                        </td>
+                      </tr>
+                    ))}
+                    {selectedContract.source_links.length === 0 ? (
+                      <tr>
+                        <td className="empty-cell" colSpan={4}>
+                          库存采购或手工采购，无来源出口合同
+                        </td>
+                      </tr>
+                    ) : null}
+                  </tbody>
+                </table>
+
+                <div className="accessory-heading">
+                  <strong>付款和交货提醒</strong>
+                  <span>{selectedContract.reminders.length} 条</span>
+                </div>
+                <table className="data-table compact-table">
+                  <thead>
+                    <tr>
+                      <th>类型</th>
+                      <th>标题</th>
+                      <th>到期日</th>
+                      <th>金额</th>
+                      <th>状态</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedContract.reminders.map((reminder) => (
+                      <tr key={reminder.id}>
+                        <td>{purchaseReminderTypeLabel(reminder.reminder_type)}</td>
+                        <td>{reminder.title}</td>
+                        <td>{formatDate(reminder.due_date)}</td>
+                        <td>
+                          {reminder.amount
+                            ? formatMoney(reminder.amount, reminder.currency)
+                            : '无金额'}
+                        </td>
+                        <td>{purchaseReminderStatusLabel(reminder.status)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                <div className="accessory-heading">
+                  <strong>进度概览</strong>
+                  <span>{selectedContract.statistics.unreceived_quantity} 未收</span>
+                </div>
+                <table className="data-table compact-table">
+                  <thead>
+                    <tr>
+                      <th>总数量</th>
+                      <th>已收</th>
+                      <th>未收</th>
+                      <th>已付</th>
+                      <th>未付</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{selectedContract.statistics.total_quantity}</td>
+                      <td>{selectedContract.statistics.received_quantity}</td>
+                      <td>{selectedContract.statistics.unreceived_quantity}</td>
+                      <td>
+                        {formatMoney(
+                          selectedContract.statistics.paid_amount,
+                          selectedContract.currency,
+                        )}
+                      </td>
+                      <td>
+                        {formatMoney(
+                          selectedContract.statistics.unpaid_amount,
+                          selectedContract.currency,
+                        )}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div className="accessory-heading">
+                  <strong>全局采购提醒</strong>
+                  <span>{reminders.length} 条</span>
+                </div>
+                <table className="data-table compact-table">
+                  <thead>
+                    <tr>
+                      <th>类型</th>
+                      <th>标题</th>
+                      <th>到期日</th>
+                      <th>金额</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reminders.map((reminder) => (
+                      <tr key={reminder.id}>
+                        <td>{purchaseReminderTypeLabel(reminder.reminder_type)}</td>
+                        <td>{reminder.title}</td>
+                        <td>{formatDate(reminder.due_date)}</td>
+                        <td>
+                          {reminder.amount
+                            ? formatMoney(reminder.amount, reminder.currency)
+                            : '无金额'}
+                        </td>
+                      </tr>
+                    ))}
+                    {reminders.length === 0 ? (
+                      <tr>
+                        <td className="empty-cell" colSpan={4}>
+                          暂无采购提醒
+                        </td>
+                      </tr>
+                    ) : null}
+                  </tbody>
+                </table>
+              </>
+            ) : (
+              <div className="module-state panel-empty-state">
+                <FileStack size={28} />
+                <strong>暂无采购合同</strong>
+                <span>请返回列表选择采购合同查看详情</span>
+              </div>
+            )}
           </section>
         ) : null}
       </section>

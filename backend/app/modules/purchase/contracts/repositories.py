@@ -545,9 +545,9 @@ class PurchaseContractRepository:
         if contract is None:
             return None
         contract.approval_status = decision
-        if reviewer_id is not None and contract.reviewer_id is None:
+        if reviewer_id is not None:
             contract.reviewer_id = reviewer_id
-        if reviewer_name is not None and contract.reviewer_name is None:
+        if reviewer_name is not None:
             contract.reviewer_name = reviewer_name
         if decision == "approved":
             contract.approved_at = reviewed_at
