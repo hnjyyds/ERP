@@ -23,6 +23,7 @@ import { shipmentPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { shipmentStatusOptions, freightMethodOptions } from '../../../shared/formOptions'
+import { useFormModal } from '../../../shared/useFormModal'
 import {
   canApproveAssignedRecord,
   formatDate,
@@ -169,8 +170,15 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [form, setForm] = useState<ShipmentFormState>(() => initialShipmentForm())
-  const [formOpen, setFormOpen] = useState(false)
+  const {
+    open: formOpen,
+    form,
+    setForm,
+    submitting: submittingGenerate,
+    openWith: openShipmentForm,
+    close: closeShipmentForm,
+    runSubmit: runShipmentSubmit,
+  } = useFormModal(initialShipmentForm)
   const [reviewerId, setReviewerId] = useState('')
   const [approveForm, setApproveForm] = useState<ShipmentApproveFormState>(() =>
     initialShipmentApproveForm(),
@@ -269,20 +277,17 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
 
   async function submitGeneratedShipment(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setSubmitting(true)
     setMessage('')
-    try {
-      const created = await generateShipmentFromContracts(shipmentGeneratePayload(form))
-      setMessage(t('sales.shipment.message.generated', { code: created.code }))
-      setForm(initialShipmentForm())
-      upsertShipment(created)
-      await Promise.all([loadShipments(created.id), loadReminders()])
-      setFormOpen(false)
-    } catch (caught) {
-      showError(caught, t('sales.shipment.message.generateFailed'))
-    } finally {
-      setSubmitting(false)
-    }
+    const saved = await runShipmentSubmit(
+      async () => {
+        const created = await generateShipmentFromContracts(shipmentGeneratePayload(form))
+        setMessage(t('sales.shipment.message.generated', { code: created.code }))
+        upsertShipment(created)
+        await Promise.all([loadShipments(created.id), loadReminders()])
+      },
+      (caught) => showError(caught, t('sales.shipment.message.generateFailed')),
+    )
+    if (saved) closeShipmentForm()
   }
 
   async function submitShipmentForApproval() {
@@ -445,10 +450,7 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
                 <Button
                   icon={<Plus size={16} />}
                   type="primary"
-                  onClick={() => {
-                    setForm(initialShipmentForm())
-                    setFormOpen(true)
-                  }}
+                  onClick={() => openShipmentForm()}
                 >
                   {t('sales.shipment.action.generate')}
                 </Button>
@@ -521,7 +523,7 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
             open={formOpen}
             title={t('sales.shipment.form.generateTitle')}
             width={880}
-            onCancel={() => setFormOpen(false)}
+            onCancel={closeShipmentForm}
           >
             <form className="record-form modal-record-form" onSubmit={submitGeneratedShipment}>
               <div className="form-pair two">
@@ -691,8 +693,8 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
                 />
               </label>
               <div className="modal-actions">
-                <Button onClick={() => setFormOpen(false)}>{t('common.cancel')}</Button>
-                <Button htmlType="submit" loading={submitting} type="primary">
+                <Button onClick={closeShipmentForm}>{t('common.cancel')}</Button>
+                <Button htmlType="submit" loading={submittingGenerate} type="primary">
                   {t('sales.shipment.action.generate')}
                 </Button>
               </div>

@@ -24,6 +24,7 @@ import {
 } from '../../../api'
 import { showError, showWarningDialog } from '../../../shared/errors'
 import { documentPartyTypeOptions, type LocalizedOption } from '../../../shared/formOptions'
+import { useFormModal } from '../../../shared/useFormModal'
 import { Metric, PanelTitle } from '../../../shared/ui'
 import { t } from '../../appI18n'
 import { documentPartyPath, moduleDetailPath } from '../../routes'
@@ -65,10 +66,17 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
   const [typeFilter, setTypeFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [loading, setLoading] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [modalMode, setModalMode] = useState<'create' | 'edit' | null>(null)
-  const [form, setForm] = useState<DocumentPartyFormState>(() => initialDocumentPartyForm())
+  const [editingPartyId, setEditingPartyId] = useState<string | null>(null)
+  const {
+    open: partyModalOpen,
+    form,
+    setForm,
+    submitting,
+    openWith: openPartyModal,
+    close: closePartyModal,
+    runSubmit: runPartySubmit,
+  } = useFormModal(initialDocumentPartyForm)
 
   const typeFilterOptions = [
     { value: '', label: t('masterdata.documentParty.allTypes') },
@@ -149,43 +157,51 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
     }
   }
 
+  function closePartyForm() {
+    setEditingPartyId(null)
+    closePartyModal()
+  }
+
   function openCreate() {
-    setForm(initialDocumentPartyForm())
-    setModalMode('create')
+    setEditingPartyId(null)
+    setMessage('')
+    openPartyModal()
   }
 
   function openEdit() {
     if (!selectedParty) return
-    setForm(documentPartyToForm(selectedParty))
-    setModalMode('edit')
+    setEditingPartyId(selectedParty.id)
+    openPartyModal(documentPartyToForm(selectedParty))
   }
 
   async function submitParty(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setMessage('')
-    const validationMessage = validateDocumentPartyForm(form, modalMode === 'create')
+    const isCreate = !editingPartyId
+    const validationMessage = validateDocumentPartyForm(form, isCreate)
     if (validationMessage) {
       showWarningDialog(validationMessage)
       return
     }
-    setSubmitting(true)
-    try {
-      if (modalMode === 'edit' && selectedParty) {
-        const updated = await updateDocumentParty(selectedParty.id, documentPartyUpdatePayload(form))
-        setParties((current) => current.map((item) => (item.id === updated.id ? updated : item)))
-        setMessage(t('masterdata.documentParty.saved'))
-      } else {
-        const created = await createDocumentParty(documentPartyPayload(form))
-        setParties((current) => [created, ...current])
-        setSelectedId(created.id)
-        setMessage(t('masterdata.documentParty.created'))
-      }
-      setModalMode(null)
-    } catch (caught) {
-      showError(caught, t('masterdata.documentParty.saveFailed'))
-    } finally {
-      setSubmitting(false)
-    }
+    const saved = await runPartySubmit(
+      async () => {
+        if (editingPartyId) {
+          const updated = await updateDocumentParty(
+            editingPartyId,
+            documentPartyUpdatePayload(form),
+          )
+          setParties((current) => current.map((item) => (item.id === updated.id ? updated : item)))
+          setMessage(t('masterdata.documentParty.saved'))
+        } else {
+          const created = await createDocumentParty(documentPartyPayload(form))
+          setParties((current) => [created, ...current])
+          setSelectedId(created.id)
+          setMessage(t('masterdata.documentParty.created'))
+        }
+      },
+      (caught) => showError(caught, t('masterdata.documentParty.saveFailed')),
+    )
+    if (saved) closePartyForm()
   }
 
   function confirmDeactivate() {
@@ -442,21 +458,21 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
       <Modal
         centered
         footer={null}
-        open={Boolean(modalMode)}
+        open={partyModalOpen}
         title={
-          modalMode === 'edit'
+          editingPartyId
             ? t('masterdata.documentParty.editTitle')
             : t('masterdata.documentParty.createTitle')
         }
         width={1040}
-        onCancel={() => setModalMode(null)}
+        onCancel={closePartyForm}
       >
         <form className="record-form entity-modal-form" onSubmit={submitParty}>
           <div className="entity-modal-grid">
             <label>
               {t('masterdata.field.code')}
               <Input
-                disabled={modalMode === 'edit'}
+                disabled={Boolean(editingPartyId)}
                 value={form.code}
                 onChange={(event) => setForm({ ...form, code: event.target.value })}
               />
@@ -572,11 +588,11 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
           </div>
 
           <div className="modal-actions">
-            <button className="secondary-inline" type="button" onClick={() => setModalMode(null)}>
+            <button className="secondary-inline" type="button" onClick={closePartyForm}>
               {t('common.cancel')}
             </button>
             <button className="inline-submit" disabled={submitting} type="submit">
-              {modalMode === 'edit'
+              {editingPartyId
                 ? t('masterdata.documentParty.saveButton')
                 : t('masterdata.documentParty.create')}
             </button>

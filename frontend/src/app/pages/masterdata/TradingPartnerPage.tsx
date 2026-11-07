@@ -17,6 +17,7 @@ import type { FormEvent, MouseEvent } from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { showError, showWarningDialog } from '../../../shared/errors'
+import { useFormModal } from '../../../shared/useFormModal'
 import { Metric, PanelTitle, useColumnView, type ColumnOption } from '../../../shared/ui'
 import { t } from '../../appI18n'
 import {
@@ -32,12 +33,10 @@ import {
   partnerUpdatePayload,
   statusOptions,
   validatePartnerForm,
-  type ContactFormState,
   type PartnerContact,
   type PartnerContactPayload,
   type PartnerCreatePayload,
   type PartnerEntity,
-  type PartnerFormState,
   type PartnerListResult,
   type PartnerTransaction,
   type PartnerUpdatePayload,
@@ -120,13 +119,27 @@ export function TradingPartnerPage({
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [transactionLoading, setTransactionLoading] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [entityModalMode, setEntityModalMode] = useState<'create' | 'edit' | null>(null)
-  const [contactModalOpen, setContactModalOpen] = useState(false)
+  const [editingEntityId, setEditingEntityId] = useState<string | null>(null)
   const [editingContactId, setEditingContactId] = useState<string | null>(null)
-  const [form, setForm] = useState<PartnerFormState>(() => initialPartnerForm(createPrefix))
-  const [contactForm, setContactForm] = useState<ContactFormState>(() => initialContactForm())
+  const {
+    open: entityModalOpen,
+    form,
+    setForm,
+    submitting: submittingEntity,
+    openWith: openEntityModal,
+    close: closeEntityModal,
+    runSubmit: runEntitySubmit,
+  } = useFormModal(() => initialPartnerForm(createPrefix))
+  const {
+    open: contactModalOpen,
+    form: contactForm,
+    setForm: setContactForm,
+    submitting: submittingContact,
+    openWith: openContactModal,
+    close: closeContactModal,
+    runSubmit: runContactSubmit,
+  } = useFormModal(initialContactForm)
   const columnOptions =
     kind === 'partner'
       ? buildColumnOptions()
@@ -329,56 +342,64 @@ export function TradingPartnerPage({
     void loadRows({ q: search.trim() || undefined })
   }
 
+  function closeEntityForm() {
+    setEditingEntityId(null)
+    closeEntityModal()
+  }
+
   function openCreate() {
-    setForm(initialPartnerForm(createPrefix))
-    setEntityModalMode('create')
+    setEditingEntityId(null)
+    setMessage('')
+    openEntityModal()
   }
 
   function openEdit() {
     if (!selected) return
-    setForm(entityToForm(selected))
-    setEntityModalMode('edit')
+    setEditingEntityId(selected.id)
+    openEntityModal(entityToForm(selected))
   }
 
-  function openContactModal() {
+  function openCreateContact() {
     if (!selected) return
-    setContactForm(initialContactForm())
     setEditingContactId(null)
-    setContactModalOpen(true)
+    openContactModal()
   }
 
   function openEditContact(contact: PartnerContact) {
-    setContactForm(initialContactForm(contact))
     setEditingContactId(contact.id)
-    setContactModalOpen(true)
+    openContactModal(initialContactForm(contact))
+  }
+
+  function closeContactForm() {
+    setEditingContactId(null)
+    closeContactModal()
   }
 
   async function submitEntity(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setMessage('')
-    const validationMessage = validatePartnerForm(form, entityModalMode === 'create', kind)
+    const isCreate = !editingEntityId
+    const validationMessage = validatePartnerForm(form, isCreate, kind)
     if (validationMessage) {
       showWarningDialog(validationMessage)
       return
     }
-    setSubmitting(true)
-    try {
-      if (entityModalMode === 'edit' && selected) {
-        const updated = await updateEntity(selected.id, partnerUpdatePayload(form, kind))
-        setRows((current) => current.map((item) => (item.id === updated.id ? updated : item)))
-        setMessage(t('masterdata.tradingPartner.saved', { entity: entityLabel }))
-      } else {
-        const created = await createEntity(partnerCreatePayload(form, kind))
-        setRows((current) => [created, ...current])
-        setSelectedId(created.id)
-        setMessage(t('masterdata.tradingPartner.created', { entity: entityLabel }))
-      }
-      setEntityModalMode(null)
-    } catch (caught) {
-      showError(caught, t('masterdata.tradingPartner.saveFailed', { entity: entityLabel }))
-    } finally {
-      setSubmitting(false)
-    }
+    const saved = await runEntitySubmit(
+      async () => {
+        if (editingEntityId && selected) {
+          const updated = await updateEntity(editingEntityId, partnerUpdatePayload(form, kind))
+          setRows((current) => current.map((item) => (item.id === updated.id ? updated : item)))
+          setMessage(t('masterdata.tradingPartner.saved', { entity: entityLabel }))
+        } else {
+          const created = await createEntity(partnerCreatePayload(form, kind))
+          setRows((current) => [created, ...current])
+          setSelectedId(created.id)
+          setMessage(t('masterdata.tradingPartner.created', { entity: entityLabel }))
+        }
+      },
+      (caught) => showError(caught, t('masterdata.tradingPartner.saveFailed', { entity: entityLabel })),
+    )
+    if (saved) closeEntityForm()
   }
 
   async function submitContact(event: FormEvent<HTMLFormElement>) {
@@ -389,26 +410,23 @@ export function TradingPartnerPage({
       showWarningDialog(t('masterdata.tradingPartner.contactNameRequired'))
       return
     }
-    setSubmitting(true)
-    try {
-      if (editingContactId) {
-        await updateContact(selected.id, editingContactId, contactPayload(contactForm))
-      } else {
-        await addContact(selected.id, contactPayload(contactForm))
-      }
-      setContactModalOpen(false)
-      setEditingContactId(null)
-      setMessage(
-        editingContactId
-          ? t('masterdata.tradingPartner.contactSaved')
-          : t('masterdata.tradingPartner.contactCreated'),
-      )
-      await loadRows()
-    } catch (caught) {
-      showError(caught, t('masterdata.tradingPartner.contactSaveFailed'))
-    } finally {
-      setSubmitting(false)
-    }
+    const saved = await runContactSubmit(
+      async () => {
+        if (editingContactId) {
+          await updateContact(selected.id, editingContactId, contactPayload(contactForm))
+        } else {
+          await addContact(selected.id, contactPayload(contactForm))
+        }
+        setMessage(
+          editingContactId
+            ? t('masterdata.tradingPartner.contactSaved')
+            : t('masterdata.tradingPartner.contactCreated'),
+        )
+        await loadRows()
+      },
+      (caught) => showError(caught, t('masterdata.tradingPartner.contactSaveFailed')),
+    )
+    if (saved) closeContactForm()
   }
 
   function confirmDeleteContact(contact: PartnerContact) {
@@ -654,7 +672,7 @@ export function TradingPartnerPage({
                 >
                   {t('masterdata.action.backToList')}
                 </Button>
-                <Button icon={<Plus size={16} />} onClick={openContactModal}>
+                <Button icon={<Plus size={16} />} onClick={openCreateContact}>
                   {t('masterdata.tradingPartner.addContact')}
                 </Button>
                 <Button icon={<FilePenLine size={16} />} onClick={openEdit}>
@@ -839,21 +857,21 @@ export function TradingPartnerPage({
       <Modal
         centered
         footer={null}
-        open={Boolean(entityModalMode)}
+        open={entityModalOpen}
         title={
-          entityModalMode === 'edit'
+          editingEntityId
             ? t('masterdata.tradingPartner.editTitle', { entity: entityLabel })
             : t('masterdata.tradingPartner.createTitle', { entity: entityLabel })
         }
         width={1040}
-        onCancel={() => setEntityModalMode(null)}
+        onCancel={closeEntityForm}
       >
         <form className="record-form entity-modal-form" onSubmit={submitEntity}>
           <div className="entity-modal-grid">
             <label>
               {t('masterdata.field.code')}
               <Input
-                disabled={entityModalMode === 'edit'}
+                disabled={Boolean(editingEntityId)}
                 value={form.code}
                 onChange={(event) => setForm({ ...form, code: event.target.value })}
               />
@@ -946,7 +964,7 @@ export function TradingPartnerPage({
             </div>
           ) : null}
 
-          {entityModalMode === 'create' ? (
+          {!editingEntityId ? (
             <div className="entity-modal-section">
               <div className="form-divider">{t('masterdata.tradingPartner.firstContact')}</div>
               <div className="entity-modal-grid">
@@ -992,11 +1010,11 @@ export function TradingPartnerPage({
           ) : null}
 
           <div className="modal-actions">
-            <button className="secondary-inline" type="button" onClick={() => setEntityModalMode(null)}>
+            <button className="secondary-inline" type="button" onClick={closeEntityForm}>
               {t('common.cancel')}
             </button>
-            <button className="inline-submit" disabled={submitting} type="submit">
-              {entityModalMode === 'edit'
+            <button className="inline-submit" disabled={submittingEntity} type="submit">
+              {editingEntityId
                 ? t('masterdata.tradingPartner.saveButton', { entity: entityLabel })
                 : t('masterdata.tradingPartner.create', { entity: entityLabel })}
             </button>
@@ -1014,10 +1032,7 @@ export function TradingPartnerPage({
             : t('masterdata.tradingPartner.createContactTitle', { entity: entityLabel })
         }
         width={760}
-        onCancel={() => {
-          setContactModalOpen(false)
-          setEditingContactId(null)
-        }}
+        onCancel={closeContactForm}
       >
         <form className="record-form entity-modal-form" onSubmit={submitContact}>
           <div className="entity-modal-grid two">
@@ -1063,14 +1078,11 @@ export function TradingPartnerPage({
             <button
               className="secondary-inline"
               type="button"
-              onClick={() => {
-                setContactModalOpen(false)
-                setEditingContactId(null)
-              }}
+              onClick={closeContactForm}
             >
               {t('common.cancel')}
             </button>
-            <button className="inline-submit" disabled={submitting} type="submit">
+            <button className="inline-submit" disabled={submittingContact} type="submit">
               {editingContactId
                 ? t('masterdata.tradingPartner.saveContact')
                 : t('masterdata.tradingPartner.addContact')}
