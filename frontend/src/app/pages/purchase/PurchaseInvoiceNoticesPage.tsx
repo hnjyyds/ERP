@@ -76,8 +76,8 @@ type PurchaseInvoiceNoticeReceiveFormState = {
 
 function initialPurchaseInvoiceNoticeForm(): PurchaseInvoiceNoticeFormState {
   return {
-    customs_declaration_id: `customs-${Date.now().toString().slice(-6)}`,
-    customs_declaration_no: `CD-${Date.now().toString().slice(-6)}`,
+    customs_declaration_id: crypto.randomUUID(),
+    customs_declaration_no: '',
     declaration_date: todayInputValue(),
     notice_date: todayInputValue(),
     currency: 'CNY',
@@ -227,6 +227,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [invoiceModalOpen, setInvoiceModalOpen] = useState(false)
+  const [customsDeclarationNoError, setCustomsDeclarationNoError] = useState('')
   const [invoiceActionModal, setInvoiceActionModal] = useState<'send' | 'receive' | null>(null)
   const [form, setForm] = useState<PurchaseInvoiceNoticeFormState>(() =>
     initialPurchaseInvoiceNoticeForm(),
@@ -319,6 +320,13 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
 
   async function generateFromCustoms(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (!form.customs_declaration_no.trim()) {
+      setCustomsDeclarationNoError(
+        t('purchase.invoiceNotice.validation.customsDeclarationNoRequired'),
+      )
+      return
+    }
+    setCustomsDeclarationNoError('')
     setSubmitting(true)
     setMessage('')
     try {
@@ -471,6 +479,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                   icon={<Plus size={16} />}
                   onClick={() => {
                     setForm(initialPurchaseInvoiceNoticeForm())
+                    setCustomsDeclarationNoError('')
                     setInvoiceModalOpen(true)
                   }}
                 >
@@ -574,11 +583,19 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                   <Input
                     id="purchase-invoice-customs-no"
                     required
+                    aria-invalid={Boolean(customsDeclarationNoError)}
+                    aria-describedby="purchase-invoice-customs-no-error"
                     value={form.customs_declaration_no}
-                    onChange={(event) =>
+                    onChange={(event) => {
+                      setCustomsDeclarationNoError('')
                       setForm({ ...form, customs_declaration_no: event.target.value })
-                    }
+                    }}
                   />
+                  {customsDeclarationNoError ? (
+                    <span className="form-field-error" id="purchase-invoice-customs-no-error">
+                      {customsDeclarationNoError}
+                    </span>
+                  ) : null}
                 </label>
               </div>
               <div className="form-pair three">

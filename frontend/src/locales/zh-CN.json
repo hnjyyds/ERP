@@ -1615,6 +1615,9 @@
       }
     },
     "invoiceNotice": {
+      "validation": {
+        "customsDeclarationNoRequired": "请填写报关单号"
+      },
       "status": {
         "draft": "草稿",
         "sent": "已发送",
@@ -2288,7 +2291,8 @@
       },
       "validation": {
         "reviewerRequired": "请选择审批人",
-        "approverMismatch": "该付款申请应由 {reviewer} 审批"
+        "approverMismatch": "该付款申请应由 {reviewer} 审批",
+        "invoiceNoRequired": "请填写供应商发票号"
       }
     },
     "receipt": {
@@ -2489,11 +2493,16 @@
       },
       "validation": {
         "reviewerRequired": "请选择审批人",
-        "approverMismatch": "该付费申请应由 {reviewer} 审批"
+        "approverMismatch": "该付费申请应由 {reviewer} 审批",
+        "invoiceNoRequired": "请填写合作伙伴费用发票号"
       }
     },
     "tax": {
       "title": "核销退税",
+      "validation": {
+        "customsDeclarationNoRequired": "请填写报关单号",
+        "customsReceiptNoRequired": "请填写报关收据号"
+      },
       "panel": {
         "documentList": "核销单列表",
         "process": "回单、核销和退税登记",

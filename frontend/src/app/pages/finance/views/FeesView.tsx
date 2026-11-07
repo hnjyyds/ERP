@@ -52,6 +52,7 @@ export function FeesView({ model, shell }: Props) {
     loadingFeePaymentRequests,
     loadingPartnerFeeInvoices,
     partnerFeeInvoiceForm,
+    partnerFeeInvoiceNoError,
     partnerFeeInvoices,
     selectedFeePaymentRequest,
     selectedFeePaymentRequestCanApprove,
@@ -60,6 +61,7 @@ export function FeesView({ model, shell }: Props) {
     setFeeInvoicePartnerFilter,
     setFeeInvoiceSearch,
     setFeeInvoiceShipmentFilter,
+    setPartnerFeeInvoiceNoError,
     setFeeInvoiceStatusFilter,
     setFeeInvoiceTypeFilter,
     setFeePayablePartnerFilter,
@@ -230,25 +232,27 @@ export function FeesView({ model, shell }: Props) {
             width={760}
             onCancel={() => setFeeInvoiceModalOpen(false)}
           >
-            <form
-              className="record-form"
-              onSubmit={(e) => {
-                submitPartnerFeeInvoice(e)
-                setFeeInvoiceModalOpen(false)
-              }}
-            >
+            <form className="record-form" onSubmit={submitPartnerFeeInvoice}>
               <div className="form-pair two">
                 <label>
                   {t('finance.fee.field.feeInvoiceNo')}
                   <Input
+                    aria-invalid={Boolean(partnerFeeInvoiceNoError)}
+                    aria-describedby="partner-fee-invoice-no-error"
                     value={partnerFeeInvoiceForm.invoice_no}
-                    onChange={(event) =>
+                    onChange={(event) => {
+                      setPartnerFeeInvoiceNoError('')
                       setPartnerFeeInvoiceForm({
                         ...partnerFeeInvoiceForm,
                         invoice_no: event.target.value,
                       })
-                    }
+                    }}
                   />
+                  {partnerFeeInvoiceNoError ? (
+                    <span className="form-field-error" id="partner-fee-invoice-no-error">
+                      {partnerFeeInvoiceNoError}
+                    </span>
+                  ) : null}
                 </label>
                 <label>
                   {t('finance.fee.field.invoiceDate')}

@@ -93,6 +93,8 @@ export function useFeesModule(env: FinanceModuleEnv) {
 
   const [submittingPartnerFeeInvoice, setSubmittingPartnerFeeInvoice] = useState(false)
 
+  const [partnerFeeInvoiceNoError, setPartnerFeeInvoiceNoError] = useState('')
+
   const [submittingFeePaymentRequest, setSubmittingFeePaymentRequest] = useState(false)
 
   const [submittingFeePaymentApproval, setSubmittingFeePaymentApproval] = useState(false)
@@ -217,6 +219,11 @@ export function useFeesModule(env: FinanceModuleEnv) {
 
   async function submitPartnerFeeInvoice(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (!partnerFeeInvoiceForm.invoice_no.trim()) {
+      setPartnerFeeInvoiceNoError(t('finance.fee.validation.invoiceNoRequired'))
+      return
+    }
+    setPartnerFeeInvoiceNoError('')
     setSubmittingPartnerFeeInvoice(true)
     setMessage('')
     setError('')
@@ -224,6 +231,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
       const created = await createPartnerFeeInvoice(partnerFeeInvoicePayload(partnerFeeInvoiceForm))
       setMessage(t('finance.fee.message.invoiceCreated', { code: created.invoice_no }))
       setPartnerFeeInvoiceForm(initialPartnerFeeInvoiceForm())
+      setFeeInvoiceModalOpen(false)
       await loadPartnerFeeInvoices(created.id)
       await loadFeePayables()
     } catch (caught) {
@@ -324,6 +332,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
     loadingFeePaymentRequests,
     loadingPartnerFeeInvoices,
     partnerFeeInvoiceForm,
+    partnerFeeInvoiceNoError,
     partnerFeeInvoices,
     selectedFeePaymentRequest,
     selectedFeePaymentRequestCanApprove,
@@ -342,6 +351,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
     setFeePaymentApprovalForm,
     setFeePaymentRequestForm,
     setPartnerFeeInvoiceForm,
+    setPartnerFeeInvoiceNoError,
     setSelectedFeePaymentRequestId,
     setSelectedPartnerFeeInvoiceId,
     submitFeePaymentApproval,

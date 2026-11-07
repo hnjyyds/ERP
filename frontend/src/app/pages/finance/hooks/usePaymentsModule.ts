@@ -83,6 +83,8 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
 
   const [submittingSupplierInvoice, setSubmittingSupplierInvoice] = useState(false)
 
+  const [supplierInvoiceNoError, setSupplierInvoiceNoError] = useState('')
+
   const [invoiceModalOpen, setInvoiceModalOpen] = useState(false)
 
   const [submittingPaymentRequest, setSubmittingPaymentRequest] = useState(false)
@@ -205,6 +207,11 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
 
   async function submitSupplierInvoice(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (!supplierInvoiceForm.invoice_no.trim()) {
+      setSupplierInvoiceNoError(t('finance.payment.validation.invoiceNoRequired'))
+      return
+    }
+    setSupplierInvoiceNoError('')
     setSubmittingSupplierInvoice(true)
     setMessage('')
     setError('')
@@ -212,6 +219,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
       const created = await createSupplierInvoice(supplierInvoicePayload(supplierInvoiceForm))
       setMessage(t('finance.payment.message.supplierInvoiceCreated', { code: created.invoice_no }))
       setSupplierInvoiceForm(initialSupplierInvoiceForm())
+      setInvoiceModalOpen(false)
       await loadSupplierInvoices(created.id)
       await loadPayables()
     } catch (caught) {
@@ -322,6 +330,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     setSelectedPaymentRequestId,
     setSelectedSupplierInvoiceId,
     setSupplierInvoiceForm,
+    setSupplierInvoiceNoError,
     submitPaymentApproval,
     submitPaymentRequest,
     submitSupplierInvoice,
@@ -329,6 +338,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     submittingPaymentRequest,
     submittingSupplierInvoice,
     supplierInvoiceForm,
+    supplierInvoiceNoError,
     supplierInvoices,
   }
 }

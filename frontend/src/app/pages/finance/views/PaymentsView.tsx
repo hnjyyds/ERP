@@ -63,6 +63,7 @@ export function PaymentsView({ model, shell }: Props) {
     setSelectedPaymentRequestId,
     setSelectedSupplierInvoiceId,
     setSupplierInvoiceForm,
+    setSupplierInvoiceNoError,
     submitPaymentApproval,
     submitPaymentRequest,
     submitSupplierInvoice,
@@ -70,6 +71,7 @@ export function PaymentsView({ model, shell }: Props) {
     submittingPaymentRequest,
     submittingSupplierInvoice,
     supplierInvoiceForm,
+    supplierInvoiceNoError,
     supplierInvoices,
   } = model
   const { detailId, goModule, goDetail, moduleAlerts, moduleHeader, currentUser } = shell
@@ -147,7 +149,10 @@ export function PaymentsView({ model, shell }: Props) {
                 <Button
                   type="primary"
                   icon={<Plus size={16} />}
-                  onClick={() => setInvoiceModalOpen(true)}
+                  onClick={() => {
+                    setSupplierInvoiceNoError('')
+                    setInvoiceModalOpen(true)
+                  }}
                 >
                   {t('finance.payment.action.registerInvoice')}
                 </Button>
@@ -209,25 +214,27 @@ export function PaymentsView({ model, shell }: Props) {
             width={760}
             onCancel={() => setInvoiceModalOpen(false)}
           >
-            <form
-              className="record-form"
-              onSubmit={(e) => {
-                submitSupplierInvoice(e)
-                setInvoiceModalOpen(false)
-              }}
-            >
+            <form className="record-form" onSubmit={submitSupplierInvoice}>
               <div className="form-pair two">
                 <label>
                   {t('finance.payment.field.supplierInvoiceNo')}
                   <Input
+                    aria-invalid={Boolean(supplierInvoiceNoError)}
+                    aria-describedby="supplier-invoice-no-error"
                     value={supplierInvoiceForm.invoice_no}
-                    onChange={(event) =>
+                    onChange={(event) => {
+                      setSupplierInvoiceNoError('')
                       setSupplierInvoiceForm({
                         ...supplierInvoiceForm,
                         invoice_no: event.target.value,
                       })
-                    }
+                    }}
                   />
+                  {supplierInvoiceNoError ? (
+                    <span className="form-field-error" id="supplier-invoice-no-error">
+                      {supplierInvoiceNoError}
+                    </span>
+                  ) : null}
                 </label>
                 <label>
                   {t('finance.payment.field.invoiceDate')}

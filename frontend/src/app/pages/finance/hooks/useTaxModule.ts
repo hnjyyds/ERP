@@ -82,6 +82,11 @@ export function useTaxModule(env: FinanceModuleEnv) {
 
   const [submittingCustomsReceipt, setSubmittingCustomsReceipt] = useState(false)
 
+  const [customsReceiptErrors, setCustomsReceiptErrors] = useState<{
+    customs_declaration_no?: string
+    customs_receipt_no?: string
+  }>({})
+
   const [submittingVerificationRegister, setSubmittingVerificationRegister] = useState(false)
 
   const [submittingTaxRefund, setSubmittingTaxRefund] = useState(false)
@@ -182,6 +187,18 @@ export function useTaxModule(env: FinanceModuleEnv) {
   async function submitCustomsReceipt(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!selectedVerificationDocument) return
+    const nextErrors: typeof customsReceiptErrors = {}
+    if (!customsReceiptForm.customs_declaration_no.trim()) {
+      nextErrors.customs_declaration_no = t('finance.tax.validation.customsDeclarationNoRequired')
+    }
+    if (!customsReceiptForm.customs_receipt_no.trim()) {
+      nextErrors.customs_receipt_no = t('finance.tax.validation.customsReceiptNoRequired')
+    }
+    if (Object.keys(nextErrors).length > 0) {
+      setCustomsReceiptErrors(nextErrors)
+      return
+    }
+    setCustomsReceiptErrors({})
     setSubmittingCustomsReceipt(true)
     setMessage('')
     setError('')
@@ -264,6 +281,7 @@ export function useTaxModule(env: FinanceModuleEnv) {
       Number(selectedVerificationDocument.unrefunded_amount) > 0)
 
   return {
+    customsReceiptErrors,
     customsReceiptForm,
     loadVerificationDocuments,
     loadVerificationUsage,
@@ -273,6 +291,7 @@ export function useTaxModule(env: FinanceModuleEnv) {
     selectedVerificationCanRegisterCustoms,
     selectedVerificationCanVerify,
     selectedVerificationDocument,
+    setCustomsReceiptErrors,
     setCustomsReceiptForm,
     setSelectedVerificationDocumentId,
     setTaxDocumentModalOpen,

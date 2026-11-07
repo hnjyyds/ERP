@@ -32,6 +32,7 @@ type Props = {
 
 export function TaxView({ model, shell }: Props) {
   const {
+    customsReceiptErrors,
     customsReceiptForm,
     loadVerificationDocuments,
     loadVerificationUsage,
@@ -41,6 +42,7 @@ export function TaxView({ model, shell }: Props) {
     selectedVerificationCanRegisterCustoms,
     selectedVerificationCanVerify,
     selectedVerificationDocument,
+    setCustomsReceiptErrors,
     setCustomsReceiptForm,
     setSelectedVerificationDocumentId,
     setTaxDocumentModalOpen,
@@ -449,26 +451,42 @@ export function TaxView({ model, shell }: Props) {
                   <label>
                     {t('finance.tax.field.customsDeclarationNo')}
                     <Input
+                      aria-invalid={Boolean(customsReceiptErrors.customs_declaration_no)}
+                      aria-describedby="customs-declaration-no-error"
                       value={customsReceiptForm.customs_declaration_no}
-                      onChange={(event) =>
+                      onChange={(event) => {
+                        setCustomsReceiptErrors({})
                         setCustomsReceiptForm({
                           ...customsReceiptForm,
                           customs_declaration_no: event.target.value,
                         })
-                      }
+                      }}
                     />
+                    {customsReceiptErrors.customs_declaration_no ? (
+                      <span className="form-field-error" id="customs-declaration-no-error">
+                        {customsReceiptErrors.customs_declaration_no}
+                      </span>
+                    ) : null}
                   </label>
                   <label>
                     {t('finance.tax.field.customsReceiptNo')}
                     <Input
+                      aria-invalid={Boolean(customsReceiptErrors.customs_receipt_no)}
+                      aria-describedby="customs-receipt-no-error"
                       value={customsReceiptForm.customs_receipt_no}
-                      onChange={(event) =>
+                      onChange={(event) => {
+                        setCustomsReceiptErrors({})
                         setCustomsReceiptForm({
                           ...customsReceiptForm,
                           customs_receipt_no: event.target.value,
                         })
-                      }
+                      }}
                     />
+                    {customsReceiptErrors.customs_receipt_no ? (
+                      <span className="form-field-error" id="customs-receipt-no-error">
+                        {customsReceiptErrors.customs_receipt_no}
+                      </span>
+                    ) : null}
                   </label>
                 </div>
                 <div className="form-pair two">

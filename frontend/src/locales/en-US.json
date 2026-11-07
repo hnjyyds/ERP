@@ -1615,6 +1615,9 @@
       }
     },
     "invoiceNotice": {
+      "validation": {
+        "customsDeclarationNoRequired": "Enter the customs declaration number"
+      },
       "status": {
         "draft": "Draft",
         "sent": "Sent",
@@ -2288,7 +2291,8 @@
       },
       "validation": {
         "reviewerRequired": "Please select an approver",
-        "approverMismatch": "This payment request must be approved by {reviewer}"
+        "approverMismatch": "This payment request must be approved by {reviewer}",
+        "invoiceNoRequired": "Enter the supplier invoice number"
       }
     },
     "receipt": {
@@ -2489,11 +2493,16 @@
       },
       "validation": {
         "reviewerRequired": "Please select an approver",
-        "approverMismatch": "This payment request must be approved by {reviewer}"
+        "approverMismatch": "This payment request must be approved by {reviewer}",
+        "invoiceNoRequired": "Enter the partner fee invoice number"
       }
     },
     "tax": {
       "title": "Tax Verification & Refund",
+      "validation": {
+        "customsDeclarationNoRequired": "Enter the customs declaration number",
+        "customsReceiptNoRequired": "Enter the customs receipt number"
+      },
       "panel": {
         "documentList": "Verification Documents",
         "process": "Customs Receipt, Verification & Refund Registration",

@@ -372,7 +372,7 @@ export function receivableStatusTag(value: string): ReactNode {
 
 export function initialSupplierInvoiceForm(): SupplierInvoiceFormState {
   return {
-    invoice_no: `SI-${Date.now().toString().slice(-6)}`,
+    invoice_no: '',
     invoice_date: todayInputValue(),
     supplier_id: '',
     supplier_name: '',
@@ -475,7 +475,7 @@ export function paymentTypeLabel(value: string): string {
 
 export function initialPartnerFeeInvoiceForm(): PartnerFeeInvoiceFormState {
   return {
-    invoice_no: `PFI-${Date.now().toString().slice(-6)}`,
+    invoice_no: '',
     invoice_date: todayInputValue(),
     partner_id: '',
     partner_name: '',
@@ -596,8 +596,8 @@ export function initialVerificationDocumentForm(): VerificationDocumentFormState
 
 export function initialCustomsReceiptForm(): CustomsReceiptFormState {
   return {
-    customs_declaration_no: `CD-${Date.now().toString().slice(-6)}`,
-    customs_receipt_no: `CR-${Date.now().toString().slice(-6)}`,
+    customs_declaration_no: '',
+    customs_receipt_no: '',
     received_at: todayInputValue(),
     remark: '',
   }
