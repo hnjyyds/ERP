@@ -27,7 +27,7 @@ class InboundOrderGenerateFromPlan(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     plan_id: str = Field(min_length=1, max_length=36)
-    code: str = Field(min_length=1, max_length=80)
+    code: str | None = Field(default=None, max_length=80)
     inbound_mode: Literal["pending_inspection", "formal"]
     inbound_at: date
     warehouse_id: str = Field(min_length=1, max_length=36)

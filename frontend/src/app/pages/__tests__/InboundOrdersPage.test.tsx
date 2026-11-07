@@ -207,6 +207,7 @@ describe('InboundOrdersPage', () => {
     await user.click(screen.getByText('生成/审批入库单'))
 
     const modal = within(screen.getByRole('dialog'))
+    expect(modal.getByPlaceholderText('系统自动生成')).toHaveAttribute('readonly')
     const purchaseOrderSelect = modal.getByRole('combobox', { name: '采购订单号' })
     expect(purchaseOrderSelect.closest('.ant-select')?.textContent).toContain('PC-TEST-001')
 
@@ -223,6 +224,7 @@ describe('InboundOrdersPage', () => {
         expect.objectContaining({ plan_id: 'inbound-plan-2' }),
       )
     })
+    expect(vi.mocked(generateInboundOrderFromPlan).mock.calls[0][0]).not.toHaveProperty('code')
   })
 
   it('shows selected dropdown values and keeps warehouse id in sync', async () => {

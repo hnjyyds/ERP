@@ -9,6 +9,7 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.numbering.generator import create_with_generated_code
 from app.modules.warehouse.inbound_orders.repositories import (
     InboundOrderLineRow,
     InboundOrderRepository,
@@ -99,40 +100,45 @@ class InboundOrderService:
             raise ValueError("已关闭或已取消的入库计划不能生成入库单")
         line_drafts = await self._build_line_drafts(plan=plan, received_lines=payload.lines)
         stock_status = "available" if payload.inbound_mode == "formal" else "pending_inspection"
-        async with UnitOfWork(self._repository.session):
-            order = await self._repository.create_order(
-                code=payload.code,
-                plan_id=plan.id,
-                purchase_contract_id=plan.purchase_contract_id,
-                purchase_contract_no=plan.purchase_contract_no,
-                supplier_id=plan.supplier_id,
-                supplier_name=plan.supplier_name,
-                inbound_type=plan.inbound_type,
-                inbound_mode=payload.inbound_mode,
-                inbound_at=payload.inbound_at,
-                warehouse_id=payload.warehouse_id,
-                warehouse_name=payload.warehouse_name,
-                location_id=payload.location_id,
-                location_name=payload.location_name,
-                operator_name=payload.operator_name,
-                status="draft",
-                owner_user_id=plan.owner_user_id,
-            )
-            for draft in line_drafts:
-                await self._repository.add_line(
-                    order_id=order.id,
-                    plan_line_id=draft.plan_line.id,
-                    purchase_contract_line_id=draft.plan_line.purchase_contract_line_id,
-                    product_id=draft.product_id,
-                    product_code=draft.product_code,
-                    product_name=draft.product_name,
-                    specification=draft.plan_line.specification,
-                    model=draft.plan_line.model,
-                    quantity=draft.quantity,
-                    unit=draft.unit,
-                    stock_status=stock_status,
-                    remark=draft.remark,
+
+        async def create_order(code: str) -> InboundOrderRow:
+            async with UnitOfWork(self._repository.session):
+                order = await self._repository.create_order(
+                    code=code,
+                    plan_id=plan.id,
+                    purchase_contract_id=plan.purchase_contract_id,
+                    purchase_contract_no=plan.purchase_contract_no,
+                    supplier_id=plan.supplier_id,
+                    supplier_name=plan.supplier_name,
+                    inbound_type=plan.inbound_type,
+                    inbound_mode=payload.inbound_mode,
+                    inbound_at=payload.inbound_at,
+                    warehouse_id=payload.warehouse_id,
+                    warehouse_name=payload.warehouse_name,
+                    location_id=payload.location_id,
+                    location_name=payload.location_name,
+                    operator_name=payload.operator_name,
+                    status="draft",
+                    owner_user_id=plan.owner_user_id,
                 )
+                for draft in line_drafts:
+                    await self._repository.add_line(
+                        order_id=order.id,
+                        plan_line_id=draft.plan_line.id,
+                        purchase_contract_line_id=draft.plan_line.purchase_contract_line_id,
+                        product_id=draft.product_id,
+                        product_code=draft.product_code,
+                        product_name=draft.product_name,
+                        specification=draft.plan_line.specification,
+                        model=draft.plan_line.model,
+                        quantity=draft.quantity,
+                        unit=draft.unit,
+                        stock_status=stock_status,
+                        remark=draft.remark,
+                    )
+                return order
+
+        order = await create_with_generated_code("warehouse.inbound_order", create_order)
         return await self._order_response(order)
 
     async def submit_order(

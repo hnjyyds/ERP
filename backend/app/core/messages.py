@@ -47,6 +47,7 @@ MESSAGE_CATALOG: dict[str, dict[str, str]] = {
         "exception.OrganizationUserNotFoundError": "用户不存在",
         "exception.SampleRecordAlreadyCreatedError": "该寄样申请已生成样品登记，不能重复生成",
         "exception.SampleStockError": "样品库存不足",
+        "exception.DocumentNumberConflictError": "单号生成失败，请重试",
         # 模块实体名称
         "entity.finance.fee_payments": "合作方费用付款",
         "entity.finance.misc_fees": "杂费",
@@ -145,6 +146,9 @@ MESSAGE_CATALOG: dict[str, dict[str, str]] = {
             "A sample record has already been created from this request"
         ),
         "exception.SampleStockError": "Insufficient sample stock",
+        "exception.DocumentNumberConflictError": (
+            "Failed to generate a unique document number, please retry"
+        ),
         "entity.finance.fee_payments": "Partner fee payment",
         "entity.finance.misc_fees": "Miscellaneous fee",
         "entity.finance.payments": "Payment",

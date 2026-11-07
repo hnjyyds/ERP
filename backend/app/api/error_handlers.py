@@ -75,6 +75,7 @@ _EXCEPTION_DEFAULT_KEYS = {
     "OrganizationUserNotFoundError": "exception.OrganizationUserNotFoundError",
     "SampleRecordAlreadyCreatedError": "exception.SampleRecordAlreadyCreatedError",
     "SampleStockError": "exception.SampleStockError",
+    "DocumentNumberConflictError": "exception.DocumentNumberConflictError",
 }
 
 
@@ -207,6 +208,8 @@ def domain_exception_definition(
         code = AppStatusCode.CONFLICT
     elif class_name == "McpDisabledError":
         code = AppStatusCode.SERVICE_UNAVAILABLE
+    elif class_name == "DocumentNumberConflictError":
+        code = AppStatusCode.CONFLICT
     elif class_name in {
         "FileTooLargeError",
         "UnsupportedFileError",

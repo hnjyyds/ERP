@@ -662,9 +662,9 @@ async def test_product_transactions_include_inventory_ledger_after_inbound_appro
     assert transactions_response.status_code == 200
     transactions = transactions_response.json()["data"]["items"]
     by_type = {item["source_type"]: item for item in transactions}
-    assert by_type["inventory_ledger"]["source_code"] == "IO-PRODUCT-TXN-001"
+    assert by_type["inventory_ledger"]["source_code"] == inbound_order["code"]
     assert by_type["inventory_ledger"]["quantity"] == "1000.0000"
-    assert by_type["inventory_ledger"]["summary"] == "库存流水 IO-PRODUCT-TXN-001 · 入库"
+    assert by_type["inventory_ledger"]["summary"] == f"库存流水 {inbound_order['code']} · 入库"
 
 
 async def test_product_endpoints_require_login(

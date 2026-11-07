@@ -1,3 +1,5 @@
+import re
+
 from httpx import AsyncClient
 
 
@@ -125,6 +127,8 @@ async def test_inbound_order_api_formal_inbound_posts_inventory_and_supplier_rec
     assert generate_response.status_code == 201
     order = generate_response.json()["data"]
     assert order["status"] == "draft"
+    assert order["code"] != "IO-API-001"
+    assert re.fullmatch(r"XP-IN-[A-Z2-9]{6}", order["code"])
 
     warehouse_token = await _login_token(
         api_client,

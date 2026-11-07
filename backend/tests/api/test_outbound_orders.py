@@ -1,3 +1,5 @@
+import re
+
 from httpx import AsyncClient
 
 
@@ -308,6 +310,8 @@ async def test_outbound_order_api_formal_outbound_deducts_stock_and_records(
     assert generate_response.status_code == 201
     order = generate_response.json()["data"]
     assert order["status"] == "draft"
+    assert order["code"] != "OO-API-001"
+    assert re.fullmatch(r"XP-OUT-[A-Z2-9]{6}", order["code"])
     assert order["lines"][0]["quantity"] == "300"
 
     submit_response = await api_client.post(
@@ -350,7 +354,7 @@ async def test_outbound_order_api_formal_outbound_deducts_stock_and_records(
     records_response = await api_client.get(
         "/api/v1/warehouse/outbound-orders",
         headers=headers,
-        params={"q": "OO-API-001", "status": "approved"},
+        params={"q": order["code"], "status": "approved"},
     )
     assert records_response.status_code == 200
     assert records_response.json()["data"]["total"] == 1

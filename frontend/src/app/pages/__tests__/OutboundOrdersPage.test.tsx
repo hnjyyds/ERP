@@ -45,6 +45,7 @@ describe('OutboundOrdersPage', () => {
     const openButton = screen.getByText('生成/审批出库单')
     await user.click(openButton)
     expect(screen.getByText('出库单生成和审批')).toBeTruthy()
+    expect(screen.getByPlaceholderText('系统自动生成')).toHaveAttribute('readonly')
   })
 
   it('renders without detail view when no detailId', () => {

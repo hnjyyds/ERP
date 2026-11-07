@@ -11,6 +11,7 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.numbering.generator import create_with_generated_code
 from app.modules.warehouse.inventory.services import InventoryService
 from app.modules.warehouse.outbound_orders.repositories import (
     OutboundOrderLineRow,
@@ -96,41 +97,46 @@ class OutboundOrderService:
         if plan.status in {"closed", "cancelled"}:
             raise ValueError("已关闭或已取消的出库计划不能生成出库单")
         line_drafts = await self._build_line_drafts(plan=plan, shipped_lines=payload.lines)
-        async with UnitOfWork(self._repository.session):
-            order = await self._repository.create_order(
-                code=payload.code,
-                plan_id=plan.id,
-                source_type=plan.source_type,
-                source_id=plan.source_id,
-                source_code=plan.source_code,
-                outbound_type=plan.outbound_type,
-                customer_id=plan.customer_id,
-                customer_name=plan.customer_name,
-                outbound_mode=payload.outbound_mode,
-                outbound_at=payload.outbound_at,
-                warehouse_id=payload.warehouse_id,
-                warehouse_name=payload.warehouse_name,
-                location_id=payload.location_id,
-                location_name=payload.location_name,
-                operator_name=payload.operator_name,
-                status="draft",
-                exception_reason=payload.exception_reason,
-                owner_user_id=plan.owner_user_id,
-            )
-            for draft in line_drafts:
-                await self._repository.add_line(
-                    order_id=order.id,
-                    plan_line_id=draft.plan_line.id,
-                    source_line_id=draft.plan_line.source_line_id,
-                    product_id=draft.product_id,
-                    product_code=draft.product_code,
-                    product_name=draft.product_name,
-                    specification=draft.plan_line.specification,
-                    model=draft.plan_line.model,
-                    quantity=draft.quantity,
-                    unit=draft.unit,
-                    remark=draft.remark,
+
+        async def create_order(code: str) -> OutboundOrderRow:
+            async with UnitOfWork(self._repository.session):
+                order = await self._repository.create_order(
+                    code=code,
+                    plan_id=plan.id,
+                    source_type=plan.source_type,
+                    source_id=plan.source_id,
+                    source_code=plan.source_code,
+                    outbound_type=plan.outbound_type,
+                    customer_id=plan.customer_id,
+                    customer_name=plan.customer_name,
+                    outbound_mode=payload.outbound_mode,
+                    outbound_at=payload.outbound_at,
+                    warehouse_id=payload.warehouse_id,
+                    warehouse_name=payload.warehouse_name,
+                    location_id=payload.location_id,
+                    location_name=payload.location_name,
+                    operator_name=payload.operator_name,
+                    status="draft",
+                    exception_reason=payload.exception_reason,
+                    owner_user_id=plan.owner_user_id,
                 )
+                for draft in line_drafts:
+                    await self._repository.add_line(
+                        order_id=order.id,
+                        plan_line_id=draft.plan_line.id,
+                        source_line_id=draft.plan_line.source_line_id,
+                        product_id=draft.product_id,
+                        product_code=draft.product_code,
+                        product_name=draft.product_name,
+                        specification=draft.plan_line.specification,
+                        model=draft.plan_line.model,
+                        quantity=draft.quantity,
+                        unit=draft.unit,
+                        remark=draft.remark,
+                    )
+                return order
+
+        order = await create_with_generated_code("warehouse.outbound_order", create_order)
         return await self._order_response(order)
 
     async def submit_order(

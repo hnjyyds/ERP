@@ -114,7 +114,6 @@ export interface InboundOrderLinePayload {
 
 export interface InboundOrderGeneratePayload {
   plan_id: string
-  code: string
   inbound_mode: string
   inbound_at: string
   warehouse_id: string
@@ -249,7 +248,6 @@ export interface OutboundOrderLinePayload {
 
 export interface OutboundOrderGeneratePayload {
   plan_id: string
-  code: string
   outbound_mode: string
   outbound_at: string
   warehouse_id: string
