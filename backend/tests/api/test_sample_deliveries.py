@@ -150,6 +150,7 @@ async def test_sample_delivery_review_stock_fee_statistics_and_histories(
     assert sample_detail["stock_summary"]["delivered_quantity"] == "2"
     assert sample_detail["stock_summary"]["retained_quantity"] == "3"
     assert sample_detail["stock_events"][0]["delivery_no"] == "SD-E2E-001"
+    assert sample_detail["stock_events"][0]["note"] is None
 
     stats_response = await api_client.get(
         "/api/v1/sample/deliveries/fee-statistics",

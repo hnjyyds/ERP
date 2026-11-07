@@ -69,6 +69,8 @@ async def test_sample_record_create_search_image_stock_and_delivery_link(
     assert record["stock_summary"]["delivered_quantity"] == "0"
     assert record["stock_summary"]["retained_quantity"] == "5"
     assert record["images"][0]["is_primary"] is True
+    assert record["stock_events"][0]["event_type"] == "received"
+    assert record["stock_events"][0]["note"] is None
     assert record["followup_events"][0]["node_code"] == "confirm_sample_submitted"
     assert record["followup_events"][0]["actual_date"] == "2026-06-23"
 
@@ -216,6 +218,7 @@ async def test_sample_record_import_export_and_followup_sync(
     imported = import_response.json()["data"]
     assert imported["created_count"] == 2
     assert imported["records"][0]["code"] == "SM-IMPORT-001"
+    assert imported["records"][0]["stock_events"][0]["note"] is None
     assert imported["records"][1]["followup_events"][0]["node_code"] == "bulk_sample_submitted"
 
     export_response = await api_client.get(

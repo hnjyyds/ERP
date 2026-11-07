@@ -250,7 +250,7 @@ class SampleDeliveryService:
                     occurred_at=approved.delivery_date,
                     delivery_no=approved.code,
                     recipient=approved.recipient_company or approved.customer_name,
-                    note="寄样审核通过",
+                    note=None,
                 )
         return await self._delivery_response(approved)
 

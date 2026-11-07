@@ -98,7 +98,7 @@ class SampleRecordService:
                 occurred_at=payload.received_at,
                 delivery_no=None,
                 recipient=payload.supplier_name,
-                note="样品登记收样",
+                note=None,
             )
             for image in payload.images:
                 await self._add_image_without_transaction(record.id, image)
@@ -228,7 +228,7 @@ class SampleRecordService:
                     occurred_at=record_payload.received_at,
                     delivery_no=None,
                     recipient=record_payload.supplier_name,
-                    note="样品批量导入收样",
+                    note=None,
                 )
                 for image in record_payload.images:
                     await self._repository.add_image(
