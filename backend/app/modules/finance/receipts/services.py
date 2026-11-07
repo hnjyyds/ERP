@@ -25,6 +25,7 @@ from app.modules.finance.receipts.schemas import (
 )
 from app.modules.sales.contracts.repositories import ExportContractRepository, ExportContractRow
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.numbering.generator import create_with_generated_code
 
 
 class PermissionDeniedError(Exception):
@@ -52,23 +53,27 @@ class ReceiptService:
     ) -> BankReceiptResponse:
         self._require_finance(current_user)
         self._validate_receipt_type(payload.receipt_type)
-        async with UnitOfWork(self._repository.session):
-            receipt = await self._repository.create_receipt(
-                receipt_no=payload.receipt_no,
-                received_at=payload.received_at,
-                payer_name=payload.payer_name,
-                customer_id=payload.customer_id,
-                customer_name=payload.customer_name,
-                amount=payload.amount,
-                currency=payload.currency,
-                bank_account=payload.bank_account,
-                reference_no=payload.reference_no,
-                receipt_type=payload.receipt_type,
-                claim_message=f"银行水单 {payload.receipt_no} 待业务员认领",
-                remark=payload.remark,
-                created_by_user_id=current_user.id,
-                created_by_user_name=current_user.display_name,
-            )
+
+        async def create(receipt_no: str) -> BankReceiptRow:
+            async with UnitOfWork(self._repository.session):
+                return await self._repository.create_receipt(
+                    receipt_no=receipt_no,
+                    received_at=payload.received_at,
+                    payer_name=payload.payer_name,
+                    customer_id=payload.customer_id,
+                    customer_name=payload.customer_name,
+                    amount=payload.amount,
+                    currency=payload.currency,
+                    bank_account=payload.bank_account,
+                    reference_no=payload.reference_no,
+                    receipt_type=payload.receipt_type,
+                    claim_message=f"银行水单 {receipt_no} 待业务员认领",
+                    remark=payload.remark,
+                    created_by_user_id=current_user.id,
+                    created_by_user_name=current_user.display_name,
+                )
+
+        receipt = await create_with_generated_code("finance.bank_receipt", create)
         return await self._receipt_response(receipt)
 
     async def list_receipts(

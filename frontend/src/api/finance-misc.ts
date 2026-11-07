@@ -57,7 +57,6 @@ export interface MiscFeeAllocationList {
 }
 
 export interface MiscFeeAllocationCreatePayload {
-  allocation_no: string
   item_id: string
   shipment_plan_id: string
   shipment_no?: string | null

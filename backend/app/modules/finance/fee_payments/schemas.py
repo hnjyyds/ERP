@@ -32,7 +32,7 @@ class PartnerFeeInvoiceCreate(BaseModel):
 class FeePaymentRequestCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    request_no: str = Field(min_length=1, max_length=120)
+    request_no: str | None = Field(default=None, max_length=120)
     partner_fee_invoice_id: str = Field(min_length=1, max_length=36)
     request_date: date
     requested_amount: Decimal = Field(gt=0)

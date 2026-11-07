@@ -194,7 +194,6 @@ async def test_finance_fee_payment_flow_invoice_request_approve_and_payables(
         "/api/v1/finance/fee-payment-requests",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
-            "request_no": "FPR-FEE-API-001",
             "partner_fee_invoice_id": invoice["id"],
             "request_date": "2026-10-28",
             "requested_amount": "400.00",
@@ -296,7 +295,6 @@ async def test_finance_fee_payment_rejects_excess_amount_and_permissions(
         "/api/v1/finance/fee-payment-requests",
         headers={"Authorization": f"Bearer {business_token}"},
         json={
-            "request_no": "FPR-FORBIDDEN",
             "partner_fee_invoice_id": invoice["id"],
             "request_date": "2026-10-28",
             "requested_amount": "100.00",
@@ -311,7 +309,6 @@ async def test_finance_fee_payment_rejects_excess_amount_and_permissions(
         "/api/v1/finance/fee-payment-requests",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
-            "request_no": "FPR-FEE-API-OVER",
             "partner_fee_invoice_id": invoice["id"],
             "request_date": "2026-10-28",
             "requested_amount": "1200.00",

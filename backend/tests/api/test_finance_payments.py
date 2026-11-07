@@ -111,7 +111,6 @@ async def test_finance_payment_flow_invoice_request_approve_and_payables(
         "/api/v1/finance/payment-requests",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
-            "request_no": "PR-PAY-API-001",
             "supplier_invoice_id": invoice["id"],
             "payment_type": "goods_payment",
             "request_date": "2026-09-10",
@@ -190,7 +189,6 @@ async def test_finance_payment_flow_invoice_request_approve_and_payables(
         "/api/v1/finance/payment-requests",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
-            "request_no": "PR-PAY-API-002",
             "supplier_invoice_id": invoice["id"],
             "payment_type": "goods_payment",
             "request_date": "2026-09-12",
@@ -256,7 +254,6 @@ async def test_finance_payment_rejects_excess_amount_and_permissions(
         "/api/v1/finance/payment-requests",
         headers={"Authorization": f"Bearer {business_token}"},
         json={
-            "request_no": "PR-FORBIDDEN",
             "supplier_invoice_id": invoice["id"],
             "payment_type": "goods_payment",
             "request_date": "2026-09-10",
@@ -272,7 +269,6 @@ async def test_finance_payment_rejects_excess_amount_and_permissions(
         "/api/v1/finance/payment-requests",
         headers={"Authorization": f"Bearer {finance_manager_token}"},
         json={
-            "request_no": "PR-PAY-API-OVER",
             "supplier_invoice_id": invoice["id"],
             "payment_type": "goods_payment",
             "request_date": "2026-09-10",

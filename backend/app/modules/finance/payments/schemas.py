@@ -30,7 +30,7 @@ class SupplierInvoiceCreate(BaseModel):
 class PaymentRequestCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    request_no: str = Field(min_length=1, max_length=120)
+    request_no: str | None = Field(default=None, max_length=120)
     supplier_invoice_id: str = Field(min_length=1, max_length=36)
     payment_type: str = Field(min_length=1, max_length=40)
     request_date: date

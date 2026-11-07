@@ -51,7 +51,6 @@ export interface BankReceiptList {
 }
 
 export interface BankReceiptCreatePayload {
-  receipt_no: string
   received_at: string
   payer_name: string
   customer_id?: string | null
@@ -181,7 +180,6 @@ export interface SupplierInvoiceCreatePayload {
 }
 
 export interface PaymentRequestCreatePayload {
-  request_no: string
   supplier_invoice_id: string
   payment_type: string
   request_date: string

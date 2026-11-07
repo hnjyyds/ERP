@@ -86,7 +86,6 @@ export interface PartnerFeeInvoiceCreatePayload {
 }
 
 export interface FeePaymentRequestCreatePayload {
-  request_no: string
   partner_fee_invoice_id: string
   request_date: string
   requested_amount: string

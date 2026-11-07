@@ -134,7 +134,6 @@ async def test_finance_misc_fee_item_allocation_and_profit(
         "/api/v1/finance/misc-fee-allocations",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
-            "allocation_no": "MFA-API-001",
             "item_id": item["id"],
             "shipment_plan_id": shipment["id"],
             "shipment_no": shipment["code"],
@@ -150,6 +149,7 @@ async def test_finance_misc_fee_item_allocation_and_profit(
     )
     assert allocation_response.status_code == 201
     allocation = allocation_response.json()["data"]
+    assert allocation["allocation_no"].startswith("MFA-")
     assert allocation["item_name"] == "办公费用"
     assert allocation["amount"] == "36.00"
     assert allocation["status"] == "allocated"
@@ -163,7 +163,7 @@ async def test_finance_misc_fee_item_allocation_and_profit(
     summary = summary_response.json()["data"]
     assert summary["total"] == 1
     assert summary["total_allocated_amount"] == "36.00"
-    assert summary["items"][0]["allocation_no"] == "MFA-API-001"
+    assert summary["items"][0]["allocation_no"] == allocation["allocation_no"]
 
     overview_response = await api_client.get(
         "/api/v1/finance/overview",
@@ -219,7 +219,6 @@ async def test_finance_misc_fee_rejects_invalid_allocation_and_permissions(
         "/api/v1/finance/misc-fee-allocations",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
-            "allocation_no": "MFA-CURRENCY-API",
             "item_id": item["id"],
             "shipment_plan_id": shipment["id"],
             "shipment_no": shipment["code"],
@@ -250,7 +249,6 @@ async def test_finance_misc_fee_rejects_invalid_allocation_and_permissions(
         "/api/v1/finance/misc-fee-allocations",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
-            "allocation_no": "MFA-INACTIVE-API",
             "item_id": inactive_item["id"],
             "shipment_plan_id": shipment["id"],
             "shipment_no": shipment["code"],

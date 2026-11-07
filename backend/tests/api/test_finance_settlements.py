@@ -182,7 +182,6 @@ async def _create_misc_fee(
         "/api/v1/finance/misc-fee-allocations",
         headers={"Authorization": f"Bearer {token}"},
         json={
-            "allocation_no": allocation_no,
             "item_id": item["id"],
             "shipment_plan_id": shipment["id"],
             "shipment_no": shipment["code"],
@@ -226,7 +225,6 @@ async def test_finance_settlement_locks_profit_by_settlement_date_and_manual_cos
         "/api/v1/finance/settlements",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
-            "settlement_no": "FS-SETTLE-API-001",
             "shipment_plan_id": shipment["id"],
             "shipment_no": shipment["code"],
             "settlement_date": "2027-01-22",
@@ -235,7 +233,7 @@ async def test_finance_settlement_locks_profit_by_settlement_date_and_manual_cos
     )
     assert response.status_code == 201
     settlement = response.json()["data"]
-    assert settlement["settlement_no"] == "FS-SETTLE-API-001"
+    assert settlement["settlement_no"].startswith("FS-")
     assert settlement["status"] == "locked"
     assert settlement["sales_income"] == "600.00"
     assert settlement["purchase_cost_amount"] == "420.00"
@@ -251,7 +249,6 @@ async def test_finance_settlement_locks_profit_by_settlement_date_and_manual_cos
         f"/api/v1/finance/settlements/{settlement['id']}/manual-costs",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
-            "cost_no": "MC-SETTLE-API-001",
             "cost_type": "other_cost",
             "cost_date": "2027-01-22",
             "amount": "18.00",
@@ -267,6 +264,7 @@ async def test_finance_settlement_locks_profit_by_settlement_date_and_manual_cos
     assert updated["gross_profit"] == "222.00"
     assert updated["gross_profit_rate"] == "37.00"
     manual_cost = next(item for item in updated["cost_items"] if item["cost_type"] == "other_cost")
+    assert manual_cost["cost_no"].startswith("MC-")
     assert manual_cost["amount"] == "18.00"
     assert manual_cost["source_no"] == "OFFICE-ADJ-001"
 
@@ -278,7 +276,7 @@ async def test_finance_settlement_locks_profit_by_settlement_date_and_manual_cos
     assert profit_response.status_code == 200
     profits = profit_response.json()["data"]
     assert profits["total"] == 1
-    assert profits["items"][0]["settlement_no"] == "FS-SETTLE-API-001"
+    assert profits["items"][0]["settlement_no"] == settlement["settlement_no"]
     assert profits["items"][0]["gross_profit"] == "222.00"
 
 
@@ -299,7 +297,6 @@ async def test_finance_settlement_rejects_permissions_and_invalid_inputs(
         "/api/v1/finance/settlements",
         headers={"Authorization": f"Bearer {business_token}"},
         json={
-            "settlement_no": "FS-DENIED",
             "shipment_plan_id": shipment["id"],
             "shipment_no": shipment["code"],
             "settlement_date": "2027-01-22",
@@ -314,7 +311,6 @@ async def test_finance_settlement_rejects_permissions_and_invalid_inputs(
         "/api/v1/finance/settlements",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
-            "settlement_no": "FS-EARLY",
             "shipment_plan_id": shipment["id"],
             "shipment_no": shipment["code"],
             "settlement_date": "2027-01-10",
@@ -326,7 +322,6 @@ async def test_finance_settlement_rejects_permissions_and_invalid_inputs(
         "/api/v1/finance/settlements",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
-            "settlement_no": "FS-SETTLE-API-002",
             "shipment_plan_id": shipment["id"],
             "shipment_no": shipment["code"],
             "settlement_date": "2027-01-22",
@@ -339,7 +334,6 @@ async def test_finance_settlement_rejects_permissions_and_invalid_inputs(
         f"/api/v1/finance/settlements/{settlement['id']}/manual-costs",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
-            "cost_no": "MC-CURRENCY",
             "cost_type": "other_cost",
             "cost_date": "2027-01-22",
             "amount": "18.00",

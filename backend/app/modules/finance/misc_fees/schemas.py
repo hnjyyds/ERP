@@ -30,7 +30,7 @@ class MiscFeeItemCreate(BaseModel):
 class MiscFeeAllocationCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    allocation_no: str = Field(min_length=1, max_length=120)
+    allocation_no: str | None = Field(default=None, max_length=120)
     item_id: str = Field(min_length=1, max_length=36)
     shipment_plan_id: str = Field(min_length=1, max_length=36)
     shipment_no: str | None = Field(default=None, max_length=80)

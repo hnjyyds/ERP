@@ -59,7 +59,6 @@ export interface ProfitCalculationList {
 }
 
 export interface FinancialSettlementCreatePayload {
-  settlement_no: string
   shipment_plan_id: string
   shipment_no?: string | null
   settlement_date: string
@@ -67,7 +66,6 @@ export interface FinancialSettlementCreatePayload {
 }
 
 export interface ManualProfitCostCreatePayload {
-  cost_no: string
   cost_type: string
   cost_date: string
   amount: string

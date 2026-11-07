@@ -23,6 +23,7 @@ from app.modules.finance.tax_refunds.schemas import (
 )
 from app.modules.sales.shipments.repositories import ShipmentPlanRepository, ShipmentPlanRow
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.numbering.generator import create_with_generated_code
 
 
 class PermissionDeniedError(Exception):
@@ -52,24 +53,30 @@ class TaxRefundService:
         if payload.valid_until < payload.received_at:
             raise ValueError("核销单有效期不能早于领用日期")
         shipment = await self._resolve_shipment(payload)
-        async with UnitOfWork(self._repository.session):
-            document = await self._repository.create_document(
-                document_no=payload.document_no,
-                received_at=payload.received_at,
-                owner_user_id=payload.owner_user_id,
-                owner_user_name=payload.owner_user_name,
-                shipment_plan_id=shipment.id if shipment is not None else payload.shipment_plan_id,
-                shipment_no=shipment.code if shipment is not None else payload.shipment_no,
-                customer_name=(
-                    shipment.customer_name if shipment is not None else payload.customer_name
-                ),
-                currency=payload.currency,
-                refundable_amount=payload.refundable_amount,
-                valid_until=payload.valid_until,
-                remark=payload.remark,
-                created_by_user_id=current_user.id,
-                created_by_user_name=current_user.display_name,
-            )
+
+        async def create(document_no: str) -> VerificationDocumentRow:
+            async with UnitOfWork(self._repository.session):
+                return await self._repository.create_document(
+                    document_no=document_no,
+                    received_at=payload.received_at,
+                    owner_user_id=payload.owner_user_id,
+                    owner_user_name=payload.owner_user_name,
+                    shipment_plan_id=(
+                        shipment.id if shipment is not None else payload.shipment_plan_id
+                    ),
+                    shipment_no=shipment.code if shipment is not None else payload.shipment_no,
+                    customer_name=(
+                        shipment.customer_name if shipment is not None else payload.customer_name
+                    ),
+                    currency=payload.currency,
+                    refundable_amount=payload.refundable_amount,
+                    valid_until=payload.valid_until,
+                    remark=payload.remark,
+                    created_by_user_id=current_user.id,
+                    created_by_user_name=current_user.display_name,
+                )
+
+        document = await create_with_generated_code("finance.verification_document", create)
         return await self._document_response(document)
 
     async def list_documents(
@@ -130,15 +137,20 @@ class TaxRefundService:
         document = await self._get_document(document_id)
         if document.status not in ("customs_receipt_registered", "verified"):
             raise ValueError("报关回单登记后才能核销")
-        async with UnitOfWork(self._repository.session):
-            updated = await self._repository.register_verification(
-                document_id=document.id,
-                verification_no=payload.verification_no,
-                verified_at=payload.verified_at,
-                remark=payload.remark,
-            )
-            if updated is None:
-                raise TaxRefundNotFoundError
+
+        async def register(verification_no: str) -> VerificationDocumentRow:
+            async with UnitOfWork(self._repository.session):
+                updated = await self._repository.register_verification(
+                    document_id=document_id,
+                    verification_no=verification_no,
+                    verified_at=payload.verified_at,
+                    remark=payload.remark,
+                )
+                if updated is None:
+                    raise TaxRefundNotFoundError
+                return updated
+
+        updated = await create_with_generated_code("finance.verification_register", register)
         return await self._document_response(updated)
 
     async def register_tax_refund(
@@ -151,24 +163,29 @@ class TaxRefundService:
         self._require_finance(current_user)
         document = await self._get_document(document_id)
         self._validate_refund(document, payload)
-        async with UnitOfWork(self._repository.session):
-            await self._repository.add_tax_refund(
-                document_id=document.id,
-                refund_no=payload.refund_no,
-                refunded_at=payload.refunded_at,
-                amount=payload.amount,
-                currency=payload.currency,
-                bank_receipt_no=payload.bank_receipt_no,
-                remark=payload.remark,
-            )
-            updated = await self._repository.refresh_refund_status(document.id)
-            if updated is None:
-                raise TaxRefundNotFoundError
-            if document.shipment_plan_id is not None:
-                await self._repository.add_refund_to_shipment_profit(
-                    shipment_plan_id=document.shipment_plan_id,
+
+        async def register(refund_no: str) -> VerificationDocumentRow:
+            async with UnitOfWork(self._repository.session):
+                await self._repository.add_tax_refund(
+                    document_id=document_id,
+                    refund_no=refund_no,
+                    refunded_at=payload.refunded_at,
                     amount=payload.amount,
+                    currency=payload.currency,
+                    bank_receipt_no=payload.bank_receipt_no,
+                    remark=payload.remark,
                 )
+                updated = await self._repository.refresh_refund_status(document_id)
+                if updated is None:
+                    raise TaxRefundNotFoundError
+                if document.shipment_plan_id is not None:
+                    await self._repository.add_refund_to_shipment_profit(
+                        shipment_plan_id=document.shipment_plan_id,
+                        amount=payload.amount,
+                    )
+                return updated
+
+        updated = await create_with_generated_code("finance.tax_refund", register)
         return await self._document_response(updated)
 
     async def list_usage(

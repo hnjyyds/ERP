@@ -46,7 +46,6 @@ export interface VerificationDocumentList {
 }
 
 export interface VerificationDocumentCreatePayload {
-  document_no: string
   received_at: string
   owner_user_id?: string | null
   owner_user_name?: string | null
@@ -67,13 +66,11 @@ export interface CustomsReceiptRegisterPayload {
 }
 
 export interface VerificationRegisterPayload {
-  verification_no: string
   verified_at: string
   remark?: string | null
 }
 
 export interface TaxRefundRegisterPayload {
-  refund_no: string
   refunded_at: string
   amount: string
   currency: string

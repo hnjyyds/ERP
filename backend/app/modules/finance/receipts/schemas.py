@@ -13,7 +13,7 @@ VALID_ALLOCATION_TYPES = ("contract", "invoice", "advance")
 class BankReceiptCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    receipt_no: str = Field(min_length=1, max_length=80)
+    receipt_no: str | None = Field(default=None, max_length=80)
     received_at: date
     payer_name: str = Field(min_length=1, max_length=240)
     customer_id: str | None = Field(default=None, max_length=36)

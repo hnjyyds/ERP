@@ -20,6 +20,7 @@ from app.modules.finance.settlements.schemas import (
     ProfitCostItemResponse,
 )
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.numbering.generator import create_with_generated_code
 
 
 class PermissionDeniedError(Exception):
@@ -55,24 +56,28 @@ class FinancialSettlementService:
             self._decimal(source_amounts.sales_income),
         )
 
-        async with UnitOfWork(self._repository.session):
-            settlement = await self._repository.create_settlement(
-                settlement_no=payload.settlement_no,
-                shipment=shipment,
-                settlement_date=payload.settlement_date,
-                source_amounts=source_amounts,
-                gross_profit=gross_profit,
-                gross_profit_rate=gross_profit_rate,
-                remark=payload.remark,
-                created_by_user_id=current_user.id,
-                created_by_user_name=current_user.display_name,
-            )
-            await self._create_snapshot_cost_items(
-                settlement=settlement,
-                shipment=shipment,
-                source_amounts=source_amounts,
-                current_user=current_user,
-            )
+        async def create(settlement_no: str) -> FinancialSettlementRow:
+            async with UnitOfWork(self._repository.session):
+                settlement = await self._repository.create_settlement(
+                    settlement_no=settlement_no,
+                    shipment=shipment,
+                    settlement_date=payload.settlement_date,
+                    source_amounts=source_amounts,
+                    gross_profit=gross_profit,
+                    gross_profit_rate=gross_profit_rate,
+                    remark=payload.remark,
+                    created_by_user_id=current_user.id,
+                    created_by_user_name=current_user.display_name,
+                )
+                await self._create_snapshot_cost_items(
+                    settlement=settlement,
+                    shipment=shipment,
+                    source_amounts=source_amounts,
+                    current_user=current_user,
+                )
+                return settlement
+
+        settlement = await create_with_generated_code("finance.financial_settlement", create)
         return await self._settlement_response(settlement)
 
     async def list_settlements(
@@ -113,26 +118,30 @@ class FinancialSettlementService:
         if payload.cost_date > settlement.settlement_date:
             raise ValueError("手工成本日期不能晚于结算日期")
 
-        async with UnitOfWork(self._repository.session):
-            await self._repository.create_cost_item(
-                settlement=settlement,
-                cost_no=payload.cost_no,
-                cost_type=payload.cost_type,
-                source_type="manual_cost",
-                source_id=None,
-                source_no=payload.source_no,
-                cost_date=payload.cost_date,
-                amount=payload.amount,
-                currency=payload.currency,
-                direction="cost",
-                reason=payload.reason,
-                remark=payload.remark,
-                created_by_user_id=current_user.id,
-                created_by_user_name=current_user.display_name,
-            )
-            refreshed = await self._repository.refresh_settlement_profit(settlement.id)
-            if refreshed is None:
-                raise FinancialSettlementNotFoundError
+        async def create(cost_no: str) -> FinancialSettlementRow:
+            async with UnitOfWork(self._repository.session):
+                await self._repository.create_cost_item(
+                    settlement=settlement,
+                    cost_no=cost_no,
+                    cost_type=payload.cost_type,
+                    source_type="manual_cost",
+                    source_id=None,
+                    source_no=payload.source_no,
+                    cost_date=payload.cost_date,
+                    amount=payload.amount,
+                    currency=payload.currency,
+                    direction="cost",
+                    reason=payload.reason,
+                    remark=payload.remark,
+                    created_by_user_id=current_user.id,
+                    created_by_user_name=current_user.display_name,
+                )
+                refreshed = await self._repository.refresh_settlement_profit(settlement.id)
+                if refreshed is None:
+                    raise FinancialSettlementNotFoundError
+                return refreshed
+
+        refreshed = await create_with_generated_code("finance.manual_cost", create)
         return await self._settlement_response(refreshed)
 
     async def list_profit_calculations(

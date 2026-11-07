@@ -21,6 +21,7 @@ from app.modules.finance.misc_fees.schemas import (
 )
 from app.modules.sales.shipments.repositories import ShipmentPlanRepository, ShipmentPlanRow
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.numbering.generator import create_with_generated_code
 
 
 class PermissionDeniedError(Exception):
@@ -93,28 +94,33 @@ class MiscFeeService:
         if not item.is_active:
             raise ValueError("停用杂费项目不能分摊")
         shipment = await self._resolve_shipment(payload)
-        async with UnitOfWork(self._repository.session):
-            allocation = await self._repository.create_allocation(
-                allocation_no=payload.allocation_no,
-                item=item,
-                shipment_plan_id=shipment.id,
-                shipment_no=shipment.code,
-                customer_name=shipment.customer_name,
-                sales_user_id=payload.sales_user_id,
-                sales_user_name=payload.sales_user_name,
-                allocated_at=payload.allocated_at,
-                amount=payload.amount,
-                currency=payload.currency,
-                allocation_method=payload.allocation_method,
-                basis=payload.basis,
-                remark=payload.remark,
-                created_by_user_id=current_user.id,
-                created_by_user_name=current_user.display_name,
-            )
-            await self._repository.subtract_allocation_from_shipment_profit(
-                shipment_plan_id=shipment.id,
-                amount=payload.amount,
-            )
+
+        async def create(allocation_no: str) -> MiscFeeAllocationRow:
+            async with UnitOfWork(self._repository.session):
+                allocation = await self._repository.create_allocation(
+                    allocation_no=allocation_no,
+                    item=item,
+                    shipment_plan_id=shipment.id,
+                    shipment_no=shipment.code,
+                    customer_name=shipment.customer_name,
+                    sales_user_id=payload.sales_user_id,
+                    sales_user_name=payload.sales_user_name,
+                    allocated_at=payload.allocated_at,
+                    amount=payload.amount,
+                    currency=payload.currency,
+                    allocation_method=payload.allocation_method,
+                    basis=payload.basis,
+                    remark=payload.remark,
+                    created_by_user_id=current_user.id,
+                    created_by_user_name=current_user.display_name,
+                )
+                await self._repository.subtract_allocation_from_shipment_profit(
+                    shipment_plan_id=shipment.id,
+                    amount=payload.amount,
+                )
+                return allocation
+
+        allocation = await create_with_generated_code("finance.misc_fee_allocation", create)
         return self._allocation_response(allocation)
 
     async def list_allocations(

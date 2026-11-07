@@ -152,9 +152,10 @@ export function useSettlementModule(env: FinanceModuleEnv) {
         selectedFinancialSettlement.id,
         manualProfitCostPayload(manualProfitCostForm),
       )
-      setMessage(
-        t('finance.settlement.message.manualCostLinked', { code: manualProfitCostForm.cost_no }),
-      )
+      const manualCostNo =
+        updated.cost_items.filter((item) => item.source_type === 'manual_cost').at(-1)?.cost_no ??
+        updated.settlement_no
+      setMessage(t('finance.settlement.message.manualCostLinked', { code: manualCostNo }))
       setManualProfitCostForm(
         initialManualProfitCostForm(updated.currency, updated.settlement_date),
       )

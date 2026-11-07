@@ -32,6 +32,7 @@ from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.numbering.generator import create_with_generated_code
 
 
 class PermissionDeniedError(Exception):
@@ -125,20 +126,24 @@ class PaymentService:
             permission_error="所选员工没有财务审批权限",
             excluded_user_id=current_user.id,
         )
-        async with UnitOfWork(self._repository.session):
-            payment_request = await self._repository.create_payment_request(
-                request_no=payload.request_no,
-                invoice=invoice,
-                payment_type=payload.payment_type,
-                request_date=payload.request_date,
-                requested_amount=payload.requested_amount,
-                currency=payload.currency,
-                requester_user_id=current_user.id,
-                requester_user_name=current_user.display_name,
-                reviewer_id=reviewer.id,
-                reviewer_name=reviewer.display_name,
-                remark=payload.remark,
-            )
+
+        async def create(request_no: str) -> PaymentRequestRow:
+            async with UnitOfWork(self._repository.session):
+                return await self._repository.create_payment_request(
+                    request_no=request_no,
+                    invoice=invoice,
+                    payment_type=payload.payment_type,
+                    request_date=payload.request_date,
+                    requested_amount=payload.requested_amount,
+                    currency=payload.currency,
+                    requester_user_id=current_user.id,
+                    requester_user_name=current_user.display_name,
+                    reviewer_id=reviewer.id,
+                    reviewer_name=reviewer.display_name,
+                    remark=payload.remark,
+                )
+
+        payment_request = await create_with_generated_code("finance.payment_request", create)
         return self._payment_request_response(payment_request)
 
     async def list_payment_requests(

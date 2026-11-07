@@ -261,7 +261,7 @@ export type ManualProfitCostFormState = {
 
 export function initialBankReceiptForm(): BankReceiptFormState {
   return {
-    receipt_no: `BR-${Date.now().toString().slice(-6)}`,
+    receipt_no: '',
     received_at: todayInputValue(),
     payer_name: '',
     customer_id: '',
@@ -299,7 +299,6 @@ export function initialReceiptAllocationForm(currency = 'USD'): ReceiptAllocatio
 
 export function bankReceiptPayload(form: BankReceiptFormState): BankReceiptCreatePayload {
   return {
-    receipt_no: form.receipt_no.trim(),
     received_at: form.received_at,
     payer_name: form.payer_name.trim(),
     customer_id: emptyToNull(form.customer_id),
@@ -390,7 +389,7 @@ export function initialSupplierInvoiceForm(): SupplierInvoiceFormState {
 
 export function initialPaymentRequestForm(invoice?: SupplierInvoice): PaymentRequestFormState {
   return {
-    request_no: `PR-${Date.now().toString().slice(-6)}`,
+    request_no: '',
     supplier_invoice_id: invoice?.id ?? '',
     payment_type: 'goods_payment',
     request_date: todayInputValue(),
@@ -433,7 +432,6 @@ export function supplierInvoicePayload(form: SupplierInvoiceFormState): Supplier
 
 export function paymentRequestPayload(form: PaymentRequestFormState): PaymentRequestCreatePayload {
   return {
-    request_no: form.request_no.trim(),
     supplier_invoice_id: form.supplier_invoice_id.trim(),
     payment_type: form.payment_type,
     request_date: form.request_date,
@@ -496,7 +494,7 @@ export function initialPartnerFeeInvoiceForm(): PartnerFeeInvoiceFormState {
 
 export function initialFeePaymentRequestForm(invoice?: PartnerFeeInvoice): FeePaymentRequestFormState {
   return {
-    request_no: `FPR-${Date.now().toString().slice(-6)}`,
+    request_no: '',
     partner_fee_invoice_id: invoice?.id ?? '',
     request_date: todayInputValue(),
     requested_amount: invoice?.unpaid_amount ?? '',
@@ -540,7 +538,6 @@ export function partnerFeeInvoicePayload(form: PartnerFeeInvoiceFormState): Part
 
 export function feePaymentRequestPayload(form: FeePaymentRequestFormState): FeePaymentRequestCreatePayload {
   return {
-    request_no: form.request_no.trim(),
     partner_fee_invoice_id: form.partner_fee_invoice_id.trim(),
     request_date: form.request_date,
     requested_amount: form.requested_amount.trim(),
@@ -583,7 +580,7 @@ export function feeTypeLabel(value: string): string {
 
 export function initialVerificationDocumentForm(): VerificationDocumentFormState {
   return {
-    document_no: `VD-${Date.now().toString().slice(-6)}`,
+    document_no: '',
     received_at: todayInputValue(),
     owner_user_id: '',
     owner_user_name: '',
@@ -608,7 +605,7 @@ export function initialCustomsReceiptForm(): CustomsReceiptFormState {
 
 export function initialVerificationRegisterForm(): VerificationRegisterFormState {
   return {
-    verification_no: `VERIFY-${Date.now().toString().slice(-6)}`,
+    verification_no: '',
     verified_at: todayInputValue(),
     remark: '',
   }
@@ -616,7 +613,7 @@ export function initialVerificationRegisterForm(): VerificationRegisterFormState
 
 export function initialTaxRefundForm(currency = 'USD', amount = ''): TaxRefundFormState {
   return {
-    refund_no: `TR-${Date.now().toString().slice(-6)}`,
+    refund_no: '',
     refunded_at: todayInputValue(),
     amount,
     currency,
@@ -629,7 +626,6 @@ export function verificationDocumentPayload(
   form: VerificationDocumentFormState,
 ): VerificationDocumentCreatePayload {
   return {
-    document_no: form.document_no.trim(),
     received_at: form.received_at,
     owner_user_id: emptyToNull(form.owner_user_id),
     owner_user_name: emptyToNull(form.owner_user_name),
@@ -654,7 +650,6 @@ export function customsReceiptPayload(form: CustomsReceiptFormState): CustomsRec
 
 export function verificationRegisterPayload(form: VerificationRegisterFormState): VerificationRegisterPayload {
   return {
-    verification_no: form.verification_no.trim(),
     verified_at: form.verified_at,
     remark: emptyToNull(form.remark),
   }
@@ -662,7 +657,6 @@ export function verificationRegisterPayload(form: VerificationRegisterFormState)
 
 export function taxRefundPayload(form: TaxRefundFormState): TaxRefundRegisterPayload {
   return {
-    refund_no: form.refund_no.trim(),
     refunded_at: form.refunded_at,
     amount: form.amount.trim(),
     currency: form.currency.trim(),
@@ -709,7 +703,7 @@ export function initialMiscFeeItemForm(): MiscFeeItemFormState {
 
 export function initialMiscFeeAllocationForm(item?: MiscFeeItem): MiscFeeAllocationFormState {
   return {
-    allocation_no: `MFA-${Date.now().toString().slice(-6)}`,
+    allocation_no: '',
     item_id: item?.id ?? '',
     shipment_plan_id: '',
     shipment_no: '',
@@ -740,7 +734,6 @@ export function miscFeeAllocationPayload(
   selectedItem: MiscFeeItem | null,
 ): MiscFeeAllocationCreatePayload {
   return {
-    allocation_no: form.allocation_no.trim(),
     item_id: form.item_id.trim() || selectedItem?.id || '',
     shipment_plan_id: form.shipment_plan_id.trim(),
     shipment_no: emptyToNull(form.shipment_no),
@@ -797,7 +790,7 @@ export function reimbursementStatusTag(value: string): ReactNode {
 
 export function initialFinancialSettlementForm(): FinancialSettlementFormState {
   return {
-    settlement_no: `FS-${Date.now().toString().slice(-6)}`,
+    settlement_no: '',
     shipment_plan_id: '',
     shipment_no: '',
     settlement_date: todayInputValue(),
@@ -810,7 +803,7 @@ export function initialManualProfitCostForm(
   settlementDate = todayInputValue(),
 ): ManualProfitCostFormState {
   return {
-    cost_no: `MC-${Date.now().toString().slice(-6)}`,
+    cost_no: '',
     cost_type: 'other_cost',
     cost_date: settlementDate,
     amount: '',
@@ -825,7 +818,6 @@ export function financialSettlementPayload(
   form: FinancialSettlementFormState,
 ): FinancialSettlementCreatePayload {
   return {
-    settlement_no: form.settlement_no.trim(),
     shipment_plan_id: form.shipment_plan_id.trim(),
     shipment_no: emptyToNull(form.shipment_no),
     settlement_date: form.settlement_date,
@@ -837,7 +829,6 @@ export function manualProfitCostPayload(
   form: ManualProfitCostFormState,
 ): ManualProfitCostCreatePayload {
   return {
-    cost_no: form.cost_no.trim(),
     cost_type: form.cost_type,
     cost_date: form.cost_date,
     amount: form.amount.trim(),

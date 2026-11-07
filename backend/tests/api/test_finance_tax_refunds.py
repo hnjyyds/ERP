@@ -109,14 +109,11 @@ async def _create_verification_document(
     api_client: AsyncClient,
     token: str,
     shipment: dict[str, object],
-    *,
-    document_no: str = "VD-TAX-API-001",
 ) -> dict[str, object]:
     response = await api_client.post(
         "/api/v1/finance/verification-documents",
         headers={"Authorization": f"Bearer {token}"},
         json={
-            "document_no": document_no,
             "received_at": "2026-11-27",
             "owner_user_id": "u-001",
             "owner_user_name": "演示业务主管",
@@ -143,11 +140,11 @@ async def test_finance_tax_refund_document_lifecycle_and_profit(
     original_profit = "180.00"
 
     document = await _create_verification_document(api_client, finance_token, shipment)
-    assert document["document_no"] == "VD-TAX-API-001"
+    assert document["document_no"].startswith("VD-")
     assert document["status"] == "issued"
     assert document["reminder_date"] == "2026-12-20"
     assert document["reminder_status"] == "pending"
-    assert document["reminder_message"] == "核销单 VD-TAX-API-001 将于 2026-12-27 到期"
+    assert document["reminder_message"] == f"核销单 {document['document_no']} 将于 2026-12-27 到期"
     assert document["refundable_amount"] == "96.00"
     assert document["refunded_amount"] == "0.00"
 
@@ -159,7 +156,7 @@ async def test_finance_tax_refund_document_lifecycle_and_profit(
     assert usage_response.status_code == 200
     usage = usage_response.json()["data"]
     assert usage["total"] == 1
-    assert usage["items"][0]["document_no"] == "VD-TAX-API-001"
+    assert usage["items"][0]["document_no"] == document["document_no"]
     assert usage["items"][0]["status"] == "issued"
 
     customs_response = await api_client.post(
@@ -181,7 +178,6 @@ async def test_finance_tax_refund_document_lifecycle_and_profit(
         f"/api/v1/finance/verification-documents/{document['id']}/verify",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
-            "verification_no": "VERIFY-TAX-API-001",
             "verified_at": "2026-12-01",
             "remark": "核销登记",
         },
@@ -189,14 +185,13 @@ async def test_finance_tax_refund_document_lifecycle_and_profit(
     assert verify_response.status_code == 200
     verified = verify_response.json()["data"]
     assert verified["status"] == "verified"
-    assert verified["verification_no"] == "VERIFY-TAX-API-001"
+    assert verified["verification_no"].startswith("VERIFY-")
     assert verified["reminder_status"] == "done"
 
     refund_response = await api_client.post(
         f"/api/v1/finance/verification-documents/{document['id']}/tax-refunds",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
-            "refund_no": "TR-TAX-API-001",
             "refunded_at": "2026-12-08",
             "amount": "96.00",
             "currency": "USD",
@@ -208,7 +203,7 @@ async def test_finance_tax_refund_document_lifecycle_and_profit(
     refunded = refund_response.json()["data"]
     assert refunded["status"] == "refunded"
     assert refunded["refunded_amount"] == "96.00"
-    assert refunded["refunds"][0]["refund_no"] == "TR-TAX-API-001"
+    assert refunded["refunds"][0]["refund_no"].startswith("TR-")
 
     overview_response = await api_client.get(
         "/api/v1/finance/overview",
@@ -238,14 +233,12 @@ async def test_finance_tax_refund_rejects_excess_amount_and_permissions(
         api_client,
         finance_token,
         shipment,
-        document_no="VD-TAX-API-002",
     )
 
     denied_response = await api_client.post(
         f"/api/v1/finance/verification-documents/{document['id']}/tax-refunds",
         headers={"Authorization": f"Bearer {business_token}"},
         json={
-            "refund_no": "TR-TAX-DENIED",
             "refunded_at": "2026-12-08",
             "amount": "12.00",
             "currency": "USD",
@@ -269,7 +262,6 @@ async def test_finance_tax_refund_rejects_excess_amount_and_permissions(
         f"/api/v1/finance/verification-documents/{document['id']}/verify",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
-            "verification_no": "VERIFY-TAX-API-002",
             "verified_at": "2026-12-01",
         },
     )
@@ -277,7 +269,6 @@ async def test_finance_tax_refund_rejects_excess_amount_and_permissions(
         f"/api/v1/finance/verification-documents/{document['id']}/tax-refunds",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
-            "refund_no": "TR-TAX-EXCESS",
             "refunded_at": "2026-12-08",
             "amount": "120.00",
             "currency": "USD",

@@ -17,7 +17,7 @@ VALID_VERIFICATION_REMINDER_STATUSES = ("pending", "done", "overdue")
 class VerificationDocumentCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    document_no: str = Field(min_length=1, max_length=120)
+    document_no: str | None = Field(default=None, max_length=120)
     received_at: date
     owner_user_id: str | None = Field(default=None, max_length=64)
     owner_user_name: str | None = Field(default=None, max_length=160)
@@ -42,7 +42,7 @@ class CustomsReceiptRegister(BaseModel):
 class VerificationRegister(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    verification_no: str = Field(min_length=1, max_length=120)
+    verification_no: str | None = Field(default=None, max_length=120)
     verified_at: date
     remark: str | None = Field(default=None, max_length=2000)
 
@@ -50,7 +50,7 @@ class VerificationRegister(BaseModel):
 class TaxRefundRegister(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    refund_no: str = Field(min_length=1, max_length=120)
+    refund_no: str | None = Field(default=None, max_length=120)
     refunded_at: date
     amount: Decimal = Field(gt=0)
     currency: str = Field(min_length=1, max_length=10)

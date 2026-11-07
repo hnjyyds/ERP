@@ -30,6 +30,15 @@ DOCUMENT_PREFIXES: dict[str, str] = {
     "sample.delivery": "SD",
     "quality.inspection": "QC",
     "quality.reinspection": "QC-R",
+    "finance.bank_receipt": "BR",
+    "finance.payment_request": "PR",
+    "finance.fee_payment_request": "FPR",
+    "finance.verification_document": "VD",
+    "finance.verification_register": "VERIFY",
+    "finance.tax_refund": "TR",
+    "finance.misc_fee_allocation": "MFA",
+    "finance.financial_settlement": "FS",
+    "finance.manual_cost": "MC",
 }
 
 

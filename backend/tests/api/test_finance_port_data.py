@@ -142,7 +142,6 @@ async def test_finance_port_data_matches_customs_receipts_to_verification_docume
         "/api/v1/finance/verification-documents",
         headers={"Authorization": f"Bearer {finance_token}"},
         json={
-            "document_no": "VD-PORT-MATCH-001",
             "received_at": "2026-12-01",
             "owner_user_id": "u-001",
             "owner_user_name": "演示业务主管",
@@ -187,25 +186,27 @@ async def test_finance_port_data_matches_customs_receipts_to_verification_docume
     match_result = match_response.json()["data"]
     assert match_result["matched_count"] == 1
     assert match_result["unmatched_count"] == 0
-    assert match_result["matched_records"][0]["verification_document_no"] == "VD-PORT-MATCH-001"
+    assert (
+        match_result["matched_records"][0]["verification_document_no"] == document["document_no"]
+    )
 
     refreshed_response = await api_client.get(
         "/api/v1/finance/verification-documents",
         headers={"Authorization": f"Bearer {finance_token}"},
-        params={"q": "VD-PORT-MATCH-001"},
+        params={"q": document["document_no"]},
     )
     assert refreshed_response.status_code == 200
     refreshed = refreshed_response.json()["data"]["items"][0]
     assert refreshed["status"] == "customs_receipt_registered"
-    assert refreshed["customs_declaration_no"] == "VD-PORT-MATCH-001"
+    assert refreshed["customs_declaration_no"] == document["document_no"]
     assert refreshed["customs_receipt_no"] == "HD-MATCH-001"
 
     records_response = await api_client.get(
         "/api/v1/finance/customs-declaration-records",
         headers={"Authorization": f"Bearer {finance_token}"},
-        params={"declaration_no": "VD-PORT-MATCH-001"},
+        params={"declaration_no": document["document_no"]},
     )
     assert records_response.status_code == 200
     record = records_response.json()["data"]["items"][0]
     assert record["match_status"] == "matched"
-    assert record["verification_document_no"] == "VD-PORT-MATCH-001"
+    assert record["verification_document_no"] == document["document_no"]

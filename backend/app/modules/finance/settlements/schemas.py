@@ -21,7 +21,7 @@ VALID_PROFIT_COST_DIRECTIONS = ("income", "cost")
 class FinancialSettlementCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    settlement_no: str = Field(min_length=1, max_length=120)
+    settlement_no: str | None = Field(default=None, max_length=120)
     shipment_plan_id: str = Field(min_length=1, max_length=36)
     shipment_no: str | None = Field(default=None, max_length=80)
     settlement_date: date
@@ -31,7 +31,7 @@ class FinancialSettlementCreate(BaseModel):
 class ManualProfitCostCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    cost_no: str = Field(min_length=1, max_length=120)
+    cost_no: str | None = Field(default=None, max_length=120)
     cost_type: str = Field(min_length=1, max_length=40)
     cost_date: date
     amount: Decimal = Field(gt=0)

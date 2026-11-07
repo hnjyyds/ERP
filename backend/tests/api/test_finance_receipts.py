@@ -82,7 +82,6 @@ async def _create_receipt(
         "/api/v1/finance/receipts",
         headers={"Authorization": f"Bearer {token}"},
         json={
-            "receipt_no": receipt_no,
             "received_at": "2026-08-01",
             "payer_name": "Euro Home Retail Ltd.",
             "customer_id": "customer-euro-home",
@@ -109,10 +108,11 @@ async def test_finance_receipt_flow_claim_allocate_and_receivables(
 
     receipt = await _create_receipt(api_client, finance_token)
 
+    assert receipt["receipt_no"].startswith("BR-")
     assert receipt["status"] == "unclaimed"
     assert receipt["allocated_amount"] == "0.00"
     assert receipt["unallocated_amount"] == "500.00"
-    assert receipt["claim_message"] == "银行水单 BR-API-001 待业务员认领"
+    assert receipt["claim_message"] == f"银行水单 {receipt['receipt_no']} 待业务员认领"
 
     claim_response = await api_client.post(
         f"/api/v1/finance/receipts/{receipt['id']}/claim",
