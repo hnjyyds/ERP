@@ -238,7 +238,6 @@ async def test_customer_transactions_close_sales_chain_from_quotation_to_shipmen
         "/api/v1/sales/quotations",
         headers={"Authorization": f"Bearer {token}"},
         json={
-            "code": "QT-CUST-CHAIN-001",
             "quote_date": "2026-07-01",
             "customer_id": customer_id,
             "customer_name": customer["cn_name"],
@@ -269,6 +268,7 @@ async def test_customer_transactions_close_sales_chain_from_quotation_to_shipmen
     )
     assert quotation_response.status_code == 201
     quotation = quotation_response.json()["data"]
+    quotation_code = quotation["code"]
     quotation_id = quotation["id"]
     await api_client.post(
         f"/api/v1/sales/quotations/{quotation_id}/submit",
@@ -284,10 +284,12 @@ async def test_customer_transactions_close_sales_chain_from_quotation_to_shipmen
     contract_response = await api_client.post(
         f"/api/v1/sales/quotations/{quotation_id}/confirm-contract",
         headers={"Authorization": f"Bearer {token}"},
-        json={"confirmed_at": "2026-07-03", "contract_no": "EC-CUST-CHAIN-001"},
+        json={"confirmed_at": "2026-07-03"},
     )
     assert contract_response.status_code == 200
-    contract_id = contract_response.json()["data"]["contract_id"]
+    contract = contract_response.json()["data"]
+    contract_id = contract["contract_id"]
+    contract_code = contract["contract_no"]
 
     submit_contract_response = await api_client.post(
         f"/api/v1/sales/contracts/{contract_id}/submit",
@@ -306,7 +308,6 @@ async def test_customer_transactions_close_sales_chain_from_quotation_to_shipmen
         "/api/v1/sales/shipments/from-contracts",
         headers={"Authorization": f"Bearer {token}"},
         json={
-            "code": "SP-CUST-CHAIN-001",
             "shipment_date": "2026-08-18",
             "planned_ship_date": "2026-08-20",
             "shipping_method": "sea",
@@ -322,7 +323,9 @@ async def test_customer_transactions_close_sales_chain_from_quotation_to_shipmen
         },
     )
     assert shipment_response.status_code == 201
-    shipment_id = shipment_response.json()["data"]["id"]
+    shipment = shipment_response.json()["data"]
+    shipment_id = shipment["id"]
+    shipment_code = shipment["code"]
     await api_client.post(
         f"/api/v1/sales/shipments/{shipment_id}/submit",
         headers={"Authorization": f"Bearer {token}"},
@@ -342,10 +345,10 @@ async def test_customer_transactions_close_sales_chain_from_quotation_to_shipmen
     assert transactions_response.status_code == 200
     transactions = transactions_response.json()["data"]["items"]
     by_type = {item["source_type"]: item for item in transactions}
-    assert by_type["export_quotation"]["source_code"] == "QT-CUST-CHAIN-001"
+    assert by_type["export_quotation"]["source_code"] == quotation_code
     assert by_type["export_quotation"]["amount"] == "1370.00"
-    assert by_type["export_contract"]["source_code"] == "EC-CUST-CHAIN-001"
-    assert by_type["shipment"]["source_code"] == "SP-CUST-CHAIN-001"
+    assert by_type["export_contract"]["source_code"] == contract_code
+    assert by_type["shipment"]["source_code"] == shipment_code
 
 
 async def test_customer_endpoints_require_login(

@@ -132,21 +132,21 @@ async def test_export_quotation_service_approval_contract_export_and_history(
             quotation_id=quotation.id,
             payload=ExportQuotationConfirmContract(
                 confirmed_at=date(2026, 7, 3),
-                contract_no="EC-SVC-001",
             ),
         )
 
     assert quotation.approval_status == "draft"
+    assert quotation.code.startswith("QT-")
     assert quotation.total_amount == "1370.00"
     assert submitted.approval_status == "submitted"
     assert approved.approval_status == "approved"
     assert approved.reviewer_id == "u-boss"
     assert history.total == 1
-    assert history.items[0].code == "QT-SVC-001"
+    assert history.items[0].code == quotation.code
     assert references.items[0].reference_price == "0.82"
-    assert export.filename == "QT-SVC-001.csv"
-    assert "QT-SVC-001" in export.content
-    assert contract.contract_no == "EC-SVC-001"
+    assert export.filename == f"{quotation.code}.csv"
+    assert quotation.code in export.content
+    assert contract.contract_no.startswith("EC-")
     assert contract.total_amount == "1370.00"
 
 

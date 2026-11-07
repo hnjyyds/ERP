@@ -342,7 +342,6 @@ async def test_product_transactions_collect_sales_purchase_and_shipment(
         "/api/v1/sales/quotations",
         headers=headers,
         json={
-            "code": "QT-PRODUCT-TXN-001",
             "quote_date": "2026-07-01",
             "customer_id": "customer-product-txn",
             "customer_name": "商品交易客户",
@@ -372,12 +371,13 @@ async def test_product_transactions_collect_sales_purchase_and_shipment(
         },
     )
     assert quotation_response.status_code == 201
+    quotation = quotation_response.json()["data"]
+    quotation_code = quotation["code"]
 
     contract_response = await api_client.post(
         "/api/v1/sales/contracts",
         headers=headers,
         json={
-            "code": "EC-PRODUCT-TXN-001",
             "contract_date": "2026-07-03",
             "customer_id": "customer-product-txn",
             "customer_name": "商品交易客户",
@@ -388,7 +388,7 @@ async def test_product_transactions_collect_sales_purchase_and_shipment(
             "planned_ship_date": "2026-08-10",
             "payment_terms": "30% T/T",
             "source_quotation_id": None,
-            "source_quotation_no": "QT-PRODUCT-TXN-001",
+            "source_quotation_no": quotation_code,
             "remarks": "商品交易记录合同",
             "lines": [
                 {
@@ -409,7 +409,9 @@ async def test_product_transactions_collect_sales_purchase_and_shipment(
         },
     )
     assert contract_response.status_code == 201
-    contract_id = contract_response.json()["data"]["id"]
+    contract = contract_response.json()["data"]
+    contract_id = contract["id"]
+    contract_code = contract["code"]
     await api_client.post(
         f"/api/v1/sales/contracts/{contract_id}/submit",
         headers=headers,
@@ -426,7 +428,6 @@ async def test_product_transactions_collect_sales_purchase_and_shipment(
         "/api/v1/sales/shipments/from-contracts",
         headers=headers,
         json={
-            "code": "SP-PRODUCT-TXN-001",
             "shipment_date": "2026-08-18",
             "planned_ship_date": "2026-08-20",
             "shipping_method": "sea",
@@ -442,7 +443,8 @@ async def test_product_transactions_collect_sales_purchase_and_shipment(
         },
     )
     assert shipment_response.status_code == 201
-
+    shipment = shipment_response.json()["data"]
+    shipment_code = shipment["code"]
     inquiry_response = await api_client.post(
         "/api/v1/purchase/inquiries",
         headers=headers,
@@ -511,10 +513,10 @@ async def test_product_transactions_collect_sales_purchase_and_shipment(
     assert transactions_response.status_code == 200
     transactions = transactions_response.json()["data"]["items"]
     by_type = {item["source_type"]: item for item in transactions}
-    assert by_type["export_quotation"]["source_code"] == "QT-PRODUCT-TXN-001"
+    assert by_type["export_quotation"]["source_code"] == quotation_code
     assert by_type["export_quotation"]["amount"] == "1250.00"
-    assert by_type["export_contract"]["source_code"] == "EC-PRODUCT-TXN-001"
-    assert by_type["shipment"]["source_code"] == "SP-PRODUCT-TXN-001"
+    assert by_type["export_contract"]["source_code"] == contract_code
+    assert by_type["shipment"]["source_code"] == shipment_code
     assert by_type["purchase_inquiry"]["source_code"] == inquiry["code"]
     assert by_type["purchase_inquiry"]["amount"] is None
     assert by_type["purchase_contract"]["source_code"] == purchase_contract["code"]

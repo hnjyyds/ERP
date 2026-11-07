@@ -192,7 +192,7 @@ async def test_reporting_approval_query_filters_approved_documents_and_permissio
     assert approvals["total"] == 1
     assert approvals["pending_count"] == 0
     assert approvals["approved_count"] == 1
-    assert approvals["items"][0]["document_no"] == "EC-REPORT-APPROVAL-002"
+    assert approvals["items"][0]["document_no"] == submitted["code"]
     assert approvals["items"][0]["status"] == "approved"
     assert approvals["items"][0]["approved_at"] == "2027-02-06"
     assert approvals["items"][0]["source_path"] == f"/sales/contracts/{submitted['id']}"

@@ -68,7 +68,6 @@ export interface ExportQuotationLinePayload {
 }
 
 export interface ExportQuotationCreatePayload {
-  code: string
   quote_date: string
   customer_id?: string | null
   customer_name: string
@@ -88,7 +87,6 @@ export interface ExportQuotationApprovePayload {
 
 export interface ExportQuotationConfirmContractPayload {
   confirmed_at: string
-  contract_no: string
 }
 
 export interface ExportQuotationPurchaseReference {
@@ -260,7 +258,6 @@ export interface ExportContractLinePayload {
 }
 
 export interface ExportContractCreatePayload {
-  code: string
   contract_date: string
   customer_id?: string | null
   customer_name: string
@@ -389,7 +386,6 @@ export interface ShipmentContractSelectionPayload {
 }
 
 export interface ShipmentPlanGeneratePayload {
-  code: string
   shipment_date: string
   planned_ship_date: string
   shipping_method: string

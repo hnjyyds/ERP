@@ -111,7 +111,6 @@ class ExportQuotationRepository:
         self,
         *,
         quotation_id: str,
-        code: str,
         quote_date: date,
         customer_id: str | None,
         customer_name: str,
@@ -127,7 +126,6 @@ class ExportQuotationRepository:
         )
         if quotation is None:
             return None
-        quotation.code = code
         quotation.quote_date = quote_date
         quotation.customer_id = customer_id
         quotation.customer_name = customer_name

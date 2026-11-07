@@ -70,7 +70,6 @@ class ExportContractRepository:
         self,
         *,
         contract_id: str,
-        code: str,
         contract_date: date,
         customer_id: str | None,
         customer_name: str,
@@ -89,7 +88,6 @@ class ExportContractRepository:
         )
         if contract is None:
             return None
-        contract.code = code
         contract.contract_date = contract_date
         contract.customer_id = customer_id
         contract.customer_name = customer_name

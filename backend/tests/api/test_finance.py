@@ -270,7 +270,7 @@ async def test_finance_overview_aggregates_cross_module_amounts_for_finance_user
         {"partner_type": "freight_forwarder", "count": 1}
     ]
     assert data["shipment_profit_items"][0]["id"] == shipment["id"]
-    assert data["shipment_profit_items"][0]["code"] == "SP-FIN-API-001"
+    assert data["shipment_profit_items"][0]["code"] == shipment["code"]
     assert data["shipment_profit_items"][0]["profit_amount"] == "80.00"
 
 

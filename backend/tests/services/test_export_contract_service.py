@@ -174,7 +174,7 @@ async def test_export_contract_service_approval_signature_payment_export_and_eve
     assert approved.approval_status == "approved"
     assert approved.statistics.advance_payment_amount == "300.00"
     assert events[0].event_type == "ExportContractApproved"
-    assert export.filename == "EC-SVC-001.pdf"
+    assert export.filename == f"{contract.code}.pdf"
     assert "EXPORT CONTRACT" in export.content
 
 

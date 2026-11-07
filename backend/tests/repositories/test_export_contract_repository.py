@@ -134,7 +134,6 @@ async def test_export_contract_repository_updates_draft_and_replaces_lines(
         contract_id = await _create_contract(repository)
         updated = await repository.update_contract(
             contract_id=contract_id,
-            code="EC-REPO-001",
             contract_date=date(2026, 7, 4),
             customer_id="customer-a",
             customer_name="客户 A",
@@ -169,6 +168,7 @@ async def test_export_contract_repository_updates_draft_and_replaces_lines(
         lines = await repository.list_lines(contract_id)
 
     assert updated is not None
+    assert updated.code == "EC-REPO-001"
     assert updated.trade_term == "CIF Hamburg"
     assert updated.planned_ship_date == date(2026, 8, 20)
     assert len(lines) == 1

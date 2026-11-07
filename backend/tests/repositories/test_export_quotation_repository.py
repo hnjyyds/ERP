@@ -95,7 +95,6 @@ async def test_export_quotation_repository_updates_header_and_replaces_lines(
         quotation_id = await _create_quotation(repository)
         updated = await repository.update_quotation(
             quotation_id=quotation_id,
-            code="QT-REPO-001",
             quote_date=date(2026, 7, 2),
             customer_id="customer-a",
             customer_name="客户 A",
@@ -127,6 +126,7 @@ async def test_export_quotation_repository_updates_header_and_replaces_lines(
         lines = await repository.list_lines(quotation_id)
 
     assert updated is not None
+    assert updated.code == "QT-REPO-001"
     assert updated.trade_term == "CIF Hamburg"
     assert updated.quote_date == date(2026, 7, 2)
     assert len(lines) == 1

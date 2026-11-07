@@ -131,7 +131,7 @@ async def test_outbound_plan_api_generates_from_shipment_and_schedules(
     )
     assert create_response.status_code == 201
     plan = create_response.json()["data"]
-    assert plan["source_code"] == "SP-OP-API"
+    assert plan["source_code"] == shipment["code"]
     assert plan["status"] == "planned"
     assert plan["planned_date"] == "2026-08-20"
     assert plan["lines"][0]["planned_quantity"] == "300"

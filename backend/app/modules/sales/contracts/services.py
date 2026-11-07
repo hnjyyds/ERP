@@ -36,6 +36,7 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.numbering.generator import create_with_generated_code
 
 
 class PermissionDeniedError(Exception):
@@ -69,27 +70,32 @@ class ExportContractService:
         payload: ExportContractCreate,
     ) -> ExportContractResponse:
         self._require(current_user, "sales:contract:edit")
-        async with UnitOfWork(self._repository.session):
-            contract = await self._repository.create_contract(
-                code=payload.code,
-                contract_date=payload.contract_date,
-                customer_id=payload.customer_id,
-                customer_name=payload.customer_name,
-                sales_user_id=payload.sales_user_id,
-                sales_user_name=payload.sales_user_name,
-                currency=payload.currency,
-                trade_term=payload.trade_term,
-                planned_ship_date=payload.planned_ship_date,
-                payment_terms=payload.payment_terms,
-                source_quotation_id=payload.source_quotation_id,
-                source_quotation_no=payload.source_quotation_no,
-                remarks=payload.remarks,
-                approval_status="draft",
-                owner_user_id=current_user.id,
-            )
-            updated = await self._replace_lines(contract.id, payload)
-            if updated is None:
-                raise ExportContractNotFoundError
+
+        async def create_contract_row(code: str) -> ExportContractRow:
+            async with UnitOfWork(self._repository.session):
+                contract = await self._repository.create_contract(
+                    code=code,
+                    contract_date=payload.contract_date,
+                    customer_id=payload.customer_id,
+                    customer_name=payload.customer_name,
+                    sales_user_id=payload.sales_user_id,
+                    sales_user_name=payload.sales_user_name,
+                    currency=payload.currency,
+                    trade_term=payload.trade_term,
+                    planned_ship_date=payload.planned_ship_date,
+                    payment_terms=payload.payment_terms,
+                    source_quotation_id=payload.source_quotation_id,
+                    source_quotation_no=payload.source_quotation_no,
+                    remarks=payload.remarks,
+                    approval_status="draft",
+                    owner_user_id=current_user.id,
+                )
+                updated = await self._replace_lines(contract.id, payload)
+                if updated is None:
+                    raise ExportContractNotFoundError
+                return updated
+
+        updated = await create_with_generated_code("sales.contract", create_contract_row)
         return await self._contract_response(updated)
 
     async def update_contract(
@@ -109,7 +115,6 @@ class ExportContractService:
         async with UnitOfWork(self._repository.session):
             updated = await self._repository.update_contract(
                 contract_id=contract.id,
-                code=payload.code,
                 contract_date=payload.contract_date,
                 customer_id=payload.customer_id,
                 customer_name=payload.customer_name,

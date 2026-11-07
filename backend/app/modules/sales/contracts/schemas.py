@@ -108,10 +108,10 @@ class ExportContractCreate(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    code: str = Field(
-        min_length=1,
+    code: str | None = Field(
+        default=None,
         max_length=80,
-        description="ERP 内唯一的出口订单号（出口合同号）。",
+        description="ERP 内唯一的出口订单号（出口合同号）；服务端生成，客户端传值会被忽略。",
         examples=["EC-2026-001"],
     )
     contract_date: date = Field(

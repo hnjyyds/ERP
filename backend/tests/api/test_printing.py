@@ -50,7 +50,6 @@ async def test_print_export_contract_includes_primary_contact(
         "/api/v1/sales/contracts",
         headers=headers,
         json={
-            "code": "EC-PRINT-001",
             "contract_date": "2026-07-03",
             "customer_id": customer_id,
             "customer_name": "打印测试客户",
@@ -74,7 +73,8 @@ async def test_print_export_contract_includes_primary_contact(
             ],
         },
     )
-    contract_id = contract_response.json()["data"]["id"]
+    contract = contract_response.json()["data"]
+    contract_id = contract["id"]
 
     response = await api_client.get(
         f"/api/v1/printing/export-contracts/{contract_id}",
@@ -83,7 +83,7 @@ async def test_print_export_contract_includes_primary_contact(
     assert response.status_code == 200
     data = response.json()["data"]
     assert data["document_type"] == "export_contract"
-    assert data["document_code"] == "EC-PRINT-001"
+    assert data["document_code"] == contract["code"]
     assert "Anna Schmidt" in data["html"]
     assert "Eco Shopping Bag" in data["html"]
 

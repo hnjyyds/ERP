@@ -22,6 +22,9 @@ DOCUMENT_PREFIXES: dict[str, str] = {
     "warehouse.outbound_order": "XP-OUT",
     "purchase.inquiry": "PI",
     "purchase.contract": "PC",
+    "sales.quotation": "QT",
+    "sales.contract": "EC",
+    "sales.shipment": "SP",
 }
 
 

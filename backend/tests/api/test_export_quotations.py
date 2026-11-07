@@ -142,24 +142,24 @@ async def test_export_quotation_flow_history_references_samples_export_and_contr
 ) -> None:
     token = await _login_token(api_client)
     reviewer_token = await _login_token(api_client, "admin", "admin123")
-    quote_no = "QT-E2E-001"
-    await _create_sample_delivery_for_quote(api_client, token, quote_no=quote_no)
 
     create_response = await api_client.post(
         "/api/v1/sales/quotations",
         headers={"Authorization": f"Bearer {token}"},
-        json=_quotation_payload(quote_no),
+        json=_quotation_payload(),
     )
     assert create_response.status_code == 201
     quotation = create_response.json()["data"]
-    assert quotation["code"] == quote_no
+    quote_no = quotation["code"]
+    assert quote_no.startswith("QT-")
+    await _create_sample_delivery_for_quote(api_client, token, quote_no=quote_no)
     assert quotation["approval_status"] == "draft"
     assert quotation["lines"][0]["amount"] == "1250.00"
     assert quotation["lines"][0]["freight_amount"] == "120.00"
     assert quotation["total_amount"] == "1370.00"
 
     quotation_id = quotation["id"]
-    payload = _quotation_payload(quote_no)
+    payload = _quotation_payload()
     payload["description"] = "草稿编辑后的报价说明"
     payload["lines"][0]["unit_price"] = "1.30"
     update_response = await api_client.put(
@@ -220,19 +220,19 @@ async def test_export_quotation_flow_history_references_samples_export_and_contr
     )
     assert export_response.status_code == 200
     export = export_response.json()["data"]
-    assert export["filename"] == "QT-E2E-001.pdf"
+    assert export["filename"] == f"{quote_no}.pdf"
     assert export["content_type"] == "application/pdf"
     assert quote_no in export["content"]
 
     contract_response = await api_client.post(
         f"/api/v1/sales/quotations/{quotation_id}/confirm-contract",
         headers={"Authorization": f"Bearer {token}"},
-        json={"confirmed_at": "2026-07-03", "contract_no": "EC-E2E-001"},
+        json={"confirmed_at": "2026-07-03"},
     )
     assert contract_response.status_code == 200
     contract = contract_response.json()["data"]
     assert contract["quotation_id"] == quotation_id
-    assert contract["contract_no"] == "EC-E2E-001"
+    assert contract["contract_no"].startswith("EC-")
     assert contract["total_amount"] == "1420.00"
 
 

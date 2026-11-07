@@ -132,7 +132,7 @@ async def test_shipment_flow_from_contracts_approval_reminder_and_contract_write
     )
     assert create_response.status_code == 201
     shipment = create_response.json()["data"]
-    assert shipment["code"] == "SP-API-001"
+    assert shipment["code"].startswith("SP-")
     assert shipment["approval_status"] == "draft"
     assert len(shipment["lines"]) == 2
     assert shipment["finance_overview"]["receivable_amount"] == "840.00"
@@ -143,7 +143,7 @@ async def test_shipment_flow_from_contracts_approval_reminder_and_contract_write
     list_response = await api_client.get(
         "/api/v1/sales/shipments",
         headers={"Authorization": f"Bearer {token}"},
-        params={"contract_id": contract_a["id"], "q": "SP-API-001"},
+        params={"contract_id": contract_a["id"], "q": shipment["code"]},
     )
     assert list_response.status_code == 200
     assert list_response.json()["data"]["total"] == 1
@@ -171,7 +171,7 @@ async def test_shipment_flow_from_contracts_approval_reminder_and_contract_write
         headers={"Authorization": f"Bearer {token}"},
     )
     assert reminders_response.status_code == 200
-    assert reminders_response.json()["data"]["items"][0]["shipment_no"] == "SP-API-001"
+    assert reminders_response.json()["data"]["items"][0]["shipment_no"] == shipment["code"]
 
     contract_response = await api_client.get(
         f"/api/v1/sales/contracts/{contract_a['id']}",

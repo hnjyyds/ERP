@@ -49,6 +49,7 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.numbering.generator import create_with_generated_code
 
 
 class PermissionDeniedError(Exception):
@@ -86,28 +87,36 @@ class ExportQuotationService:
         payload: ExportQuotationCreate,
     ) -> ExportQuotationResponse:
         self._require(current_user, "sales:quotation:edit")
-        async with UnitOfWork(self._repository.session):
-            quotation = await self._repository.create_quotation(
-                code=payload.code,
-                quote_date=payload.quote_date,
-                customer_id=payload.customer_id,
-                customer_name=payload.customer_name,
-                sales_user_id=payload.sales_user_id,
-                sales_user_name=payload.sales_user_name,
-                currency=payload.currency,
-                trade_term=payload.trade_term,
-                valid_until=payload.valid_until,
-                description=payload.description,
-                approval_status="draft",
-                owner_user_id=current_user.id,
-            )
-            total_amount = await self._replace_lines(quotation.id, payload)
-            updated_quotation = await self._repository.set_total_amount(
-                quotation_id=quotation.id,
-                total_amount=total_amount,
-            )
-            if updated_quotation is None:
-                raise ExportQuotationNotFoundError
+
+        async def create_quotation_row(code: str) -> ExportQuotationRow:
+            async with UnitOfWork(self._repository.session):
+                quotation = await self._repository.create_quotation(
+                    code=code,
+                    quote_date=payload.quote_date,
+                    customer_id=payload.customer_id,
+                    customer_name=payload.customer_name,
+                    sales_user_id=payload.sales_user_id,
+                    sales_user_name=payload.sales_user_name,
+                    currency=payload.currency,
+                    trade_term=payload.trade_term,
+                    valid_until=payload.valid_until,
+                    description=payload.description,
+                    approval_status="draft",
+                    owner_user_id=current_user.id,
+                )
+                total_amount = await self._replace_lines(quotation.id, payload)
+                updated_quotation = await self._repository.set_total_amount(
+                    quotation_id=quotation.id,
+                    total_amount=total_amount,
+                )
+                if updated_quotation is None:
+                    raise ExportQuotationNotFoundError
+                return updated_quotation
+
+        updated_quotation = await create_with_generated_code(
+            "sales.quotation",
+            create_quotation_row,
+        )
         return await self._quotation_response(updated_quotation)
 
     async def update_quotation(
@@ -127,7 +136,6 @@ class ExportQuotationService:
         async with UnitOfWork(self._repository.session):
             updated = await self._repository.update_quotation(
                 quotation_id=quotation.id,
-                code=payload.code,
                 quote_date=payload.quote_date,
                 customer_id=payload.customer_id,
                 customer_name=payload.customer_name,
@@ -263,24 +271,30 @@ class ExportQuotationService:
         if quotation.approval_status != "approved":
             raise ValueError("只有已审批报价可以生成出口合同")
         lines = await self._repository.list_lines(quotation.id)
-        async with UnitOfWork(self._repository.session):
-            contract_id = None
-            if self._export_contract_repository is not None:
-                contract = await self._create_contract_from_quotation(
-                    current_user=current_user,
-                    quotation=quotation,
-                    lines=lines,
-                    payload=payload,
+
+        async def confirm(code: str) -> ExportQuotationRow:
+            async with UnitOfWork(self._repository.session):
+                contract_id = None
+                if self._export_contract_repository is not None:
+                    contract = await self._create_contract_from_quotation(
+                        current_user=current_user,
+                        quotation=quotation,
+                        lines=lines,
+                        payload=payload,
+                        code=code,
+                    )
+                    contract_id = contract.id
+                confirmed = await self._repository.confirm_contract(
+                    quotation_id=quotation.id,
+                    confirmed_at=payload.confirmed_at,
+                    contract_no=code,
+                    contract_id=contract_id,
                 )
-                contract_id = contract.id
-            confirmed = await self._repository.confirm_contract(
-                quotation_id=quotation.id,
-                confirmed_at=payload.confirmed_at,
-                contract_no=payload.contract_no,
-                contract_id=contract_id,
-            )
-            if confirmed is None:
-                raise ExportQuotationNotFoundError
+                if confirmed is None:
+                    raise ExportQuotationNotFoundError
+                return confirmed
+
+        confirmed = await create_with_generated_code("sales.contract", confirm)
         return self._contract_response(confirmed)
 
     async def _create_contract_from_quotation(
@@ -290,11 +304,12 @@ class ExportQuotationService:
         quotation: ExportQuotationRow,
         lines: list[ExportQuotationLineRow],
         payload: ExportQuotationConfirmContract,
+        code: str,
     ) -> ExportContractRow:
         if self._export_contract_repository is None:
             raise ExportQuotationNotFoundError
         contract = await self._export_contract_repository.create_contract(
-            code=payload.contract_no,
+            code=code,
             contract_date=payload.confirmed_at,
             customer_id=quotation.customer_id,
             customer_name=quotation.customer_name,

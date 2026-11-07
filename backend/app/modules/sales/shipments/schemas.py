@@ -23,7 +23,7 @@ class ShipmentContractSelection(BaseModel):
 class ShipmentPlanGenerate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    code: str = Field(min_length=1, max_length=80)
+    code: str | None = Field(default=None, max_length=80)
     shipment_date: date
     planned_ship_date: date
     shipping_method: str = Field(min_length=1, max_length=80)

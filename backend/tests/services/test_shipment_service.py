@@ -197,7 +197,7 @@ async def test_shipment_service_generates_combined_plan_and_updates_contract_shi
     assert refreshed_b is not None
     assert refreshed_b.shipped_quantity == "200"
     assert reminders.total == 1
-    assert reminders.items[0].shipment_no == "SP-SVC-001"
+    assert reminders.items[0].shipment_no == plan.code
 
 
 async def test_shipment_service_rejects_unapproved_contract(

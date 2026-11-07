@@ -34,6 +34,7 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.numbering.generator import create_with_generated_code
 
 
 class PermissionDeniedError(Exception):
@@ -70,46 +71,51 @@ class ShipmentPlanService:
         selected = await self._load_contract_selections(current_user, payload)
         first_contract = selected[0][0]
         customer_id, customer_name = self._resolve_customer(selected)
-        async with UnitOfWork(self._repository.session):
-            plan = await self._repository.create_plan(
-                code=payload.code,
-                shipment_date=payload.shipment_date,
-                planned_ship_date=payload.planned_ship_date,
-                customer_id=customer_id,
-                customer_name=customer_name,
-                currency=first_contract.currency,
-                shipping_method=payload.shipping_method,
-                port_of_loading=payload.port_of_loading,
-                port_of_destination=payload.port_of_destination,
-                vessel_name=payload.vessel_name,
-                container_no=payload.container_no,
-                booking_no=payload.booking_no,
-                document_owner_name=payload.document_owner_name,
-                payable_amount=payload.estimated_payable_amount,
-                remarks=payload.remarks,
-                approval_status="draft",
-                owner_user_id=current_user.id,
-            )
-            for contract, line, quantity in selected:
-                await self._repository.add_line(
-                    shipment_id=plan.id,
-                    contract_id=contract.id,
-                    contract_no=contract.code,
-                    contract_line_id=line.id,
-                    product_id=line.product_id,
-                    product_code=line.product_code,
-                    product_name=line.product_name,
-                    specification=line.specification,
-                    model=line.model,
-                    quantity=quantity,
-                    unit=line.unit,
-                    unit_price=line.unit_price,
-                    amount=quantity * line.unit_price,
-                    planned_ship_date=contract.planned_ship_date,
+
+        async def create_plan_row(code: str) -> ShipmentPlanRow:
+            async with UnitOfWork(self._repository.session):
+                plan = await self._repository.create_plan(
+                    code=code,
+                    shipment_date=payload.shipment_date,
+                    planned_ship_date=payload.planned_ship_date,
+                    customer_id=customer_id,
+                    customer_name=customer_name,
+                    currency=first_contract.currency,
+                    shipping_method=payload.shipping_method,
+                    port_of_loading=payload.port_of_loading,
+                    port_of_destination=payload.port_of_destination,
+                    vessel_name=payload.vessel_name,
+                    container_no=payload.container_no,
+                    booking_no=payload.booking_no,
+                    document_owner_name=payload.document_owner_name,
+                    payable_amount=payload.estimated_payable_amount,
+                    remarks=payload.remarks,
+                    approval_status="draft",
+                    owner_user_id=current_user.id,
                 )
-            refreshed = await self._repository.refresh_finance(plan.id)
-            if refreshed is None:
-                raise ShipmentNotFoundError
+                for contract, line, quantity in selected:
+                    await self._repository.add_line(
+                        shipment_id=plan.id,
+                        contract_id=contract.id,
+                        contract_no=contract.code,
+                        contract_line_id=line.id,
+                        product_id=line.product_id,
+                        product_code=line.product_code,
+                        product_name=line.product_name,
+                        specification=line.specification,
+                        model=line.model,
+                        quantity=quantity,
+                        unit=line.unit,
+                        unit_price=line.unit_price,
+                        amount=quantity * line.unit_price,
+                        planned_ship_date=contract.planned_ship_date,
+                    )
+                refreshed = await self._repository.refresh_finance(plan.id)
+                if refreshed is None:
+                    raise ShipmentNotFoundError
+                return refreshed
+
+        refreshed = await create_with_generated_code("sales.shipment", create_plan_row)
         return await self._shipment_response(refreshed)
 
     async def list_shipments(

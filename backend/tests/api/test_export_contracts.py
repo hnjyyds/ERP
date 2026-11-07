@@ -93,7 +93,8 @@ async def test_export_contract_flow_signature_payment_statistics_export_and_even
     )
     assert create_response.status_code == 201
     contract = create_response.json()["data"]
-    assert contract["code"] == "EC-E2E-001"
+    contract_code = contract["code"]
+    assert contract_code.startswith("EC-")
     assert contract["approval_status"] == "draft"
     assert contract["lines"][0]["barcode"] == "000123456789012345678901234567890123456789"
     assert contract["statistics"]["total_quantity"] == "1000"
@@ -171,7 +172,7 @@ async def test_export_contract_flow_signature_payment_statistics_export_and_even
     )
     assert export_response.status_code == 200
     export = export_response.json()["data"]
-    assert export["filename"] == "EC-E2E-001.pdf"
+    assert export["filename"] == f"{contract_code}.pdf"
     assert export["content_type"] == "application/pdf"
     assert "EXPORT CONTRACT" in export["content"]
 
@@ -182,13 +183,14 @@ async def test_export_quotation_confirm_creates_real_export_contract(
 ) -> None:
     token = await _login_token(api_client)
     reviewer_token = await _login_token(api_client, "admin", "admin123")
-    quote_no = "QT-CONTRACT-E2E-001"
     create_quote = await api_client.post(
         "/api/v1/sales/quotations",
         headers={"Authorization": f"Bearer {token}"},
-        json=_quotation_payload(quote_no),
+        json=_quotation_payload("QT-CONTRACT-E2E-001"),
     )
-    quotation_id = create_quote.json()["data"]["id"]
+    quotation = create_quote.json()["data"]
+    quote_no = quotation["code"]
+    quotation_id = quotation["id"]
     await api_client.post(
         f"/api/v1/sales/quotations/{quotation_id}/submit",
         headers={"Authorization": f"Bearer {token}"},
@@ -203,15 +205,16 @@ async def test_export_quotation_confirm_creates_real_export_contract(
     contract_response = await api_client.post(
         f"/api/v1/sales/quotations/{quotation_id}/confirm-contract",
         headers={"Authorization": f"Bearer {token}"},
-        json={"confirmed_at": "2026-07-03", "contract_no": "EC-FROM-QT-E2E-001"},
+        json={"confirmed_at": "2026-07-03"},
     )
     assert contract_response.status_code == 200
     generated = contract_response.json()["data"]
+    assert generated["contract_no"].startswith("EC-")
 
     list_response = await api_client.get(
         "/api/v1/sales/contracts",
         headers={"Authorization": f"Bearer {token}"},
-        params={"q": "EC-FROM-QT-E2E-001"},
+        params={"q": generated["contract_no"]},
     )
     assert list_response.status_code == 200
     contract = list_response.json()["data"]["items"][0]

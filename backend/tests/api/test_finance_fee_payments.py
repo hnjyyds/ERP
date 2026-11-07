@@ -188,7 +188,7 @@ async def test_finance_fee_payment_flow_invoice_request_approve_and_payables(
     assert invoice["total_amount"] == "980.00"
     assert invoice["paid_amount"] == "0.00"
     assert invoice["unpaid_amount"] == "980.00"
-    assert invoice["shipment_no"] == "SP-FEE-API-001"
+    assert invoice["shipment_no"] == shipment["code"]
 
     request_response = await api_client.post(
         "/api/v1/finance/fee-payment-requests",
@@ -254,7 +254,7 @@ async def test_finance_fee_payment_flow_invoice_request_approve_and_payables(
         headers={"Authorization": f"Bearer {finance_token}"},
         params={
             "partner_id": partner["id"],
-            "shipment_no": "SP-FEE-API-001",
+            "shipment_no": shipment["code"],
             "fee_type": "freight",
         },
     )
@@ -264,7 +264,7 @@ async def test_finance_fee_payment_flow_invoice_request_approve_and_payables(
     assert payables["total_payable_amount"] == "580.00"
     assert payables["items"][0]["invoice_no"] == "PFI-FEE-API-001"
     assert payables["items"][0]["partner_name"] == "远航国际货代"
-    assert payables["items"][0]["shipment_no"] == "SP-FEE-API-001"
+    assert payables["items"][0]["shipment_no"] == shipment["code"]
     assert payables["items"][0]["fee_type"] == "freight"
     assert payables["items"][0]["paid_amount"] == "400.00"
     assert payables["items"][0]["payable_amount"] == "580.00"

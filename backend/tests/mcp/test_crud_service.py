@@ -168,7 +168,7 @@ async def test_mcp_service_supports_product_customer_and_export_order_crud(
     )
     order_page = await service.list_export_orders(
         user_id=user_id,
-        q="MCP-EC-001",
+        q=order.code,
         approval_status="draft",
         customer_id=None,
         limit=10,

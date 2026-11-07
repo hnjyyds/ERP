@@ -37,7 +37,7 @@ class ExportQuotationLineCreate(BaseModel):
 class ExportQuotationCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    code: str = Field(min_length=1, max_length=80)
+    code: str | None = Field(default=None, max_length=80)
     quote_date: date
     customer_id: str | None = Field(default=None, max_length=36)
     customer_name: str = Field(min_length=1, max_length=240)
@@ -65,7 +65,7 @@ class ExportQuotationConfirmContract(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     confirmed_at: date
-    contract_no: str = Field(min_length=1, max_length=80)
+    contract_no: str | None = Field(default=None, max_length=80)
 
 
 class ExportQuotationLineResponse(BaseModel):
