@@ -31,6 +31,7 @@ import {
 } from '../../../api'
 import type { LocalizedOption } from '../../../shared/formOptions'
 import { ApiError, showError, showWarningDialog } from '../../../shared/errors'
+import { useFormModal } from '../../../shared/useFormModal'
 import { FormSelect, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
 import { t, type TranslationKey } from '../../appI18n'
 import { moduleDetailPath, qualityInspectionPath } from '../../routes'
@@ -323,12 +324,19 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
   const [contractFilter, setContractFilter] = useState('')
   const [assigneeFilter, setAssigneeFilter] = useState<QualityInspectionAssigneeFilter>('all')
   const [eligibility, setEligibility] = useState<QualityInspectionInboundEligibility | null>(null)
-  const [form, setForm] = useState<QualityTaskFormState>(() => initialTaskForm(currentUser))
+  const {
+    open: taskModalOpen,
+    form,
+    setForm,
+    submitting: taskSubmitting,
+    openWith: openTaskModal,
+    close: closeTaskModal,
+    runSubmit: runTaskSubmit,
+  } = useFormModal<QualityTaskFormState>(() => initialTaskForm(currentUser))
   const [fieldErrors, setFieldErrors] = useState<QualityTaskFormErrors>({})
   const [assignableUsers, setAssignableUsers] = useState<AssignableUser[]>([])
   const [assignableUsersLoaded, setAssignableUsersLoaded] = useState(false)
   const [loadingAssignableUsers, setLoadingAssignableUsers] = useState(false)
-  const [taskModalOpen, setTaskModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
@@ -501,11 +509,10 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
   }
 
   function startNewTask() {
-    setForm(initialTaskForm(currentUser))
     setFieldErrors({})
     setMessage('')
     if (assignableUsers.length === 0) setAssignableUsersLoaded(false)
-    setTaskModalOpen(true)
+    openTaskModal()
   }
 
   function updateFormField<Field extends keyof QualityTaskFormState>(
@@ -574,22 +581,22 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
       applyValidationErrors(errors)
       return
     }
-    setSubmitting(true)
-    try {
-      const task = await createQualityInspection(taskPayload(form))
-      setTaskModalOpen(false)
-      setMessage(t('quality.inspection.message.created', { code: task.code }))
-      await loadQualityInspections(task.id)
-    } catch (caught) {
-      const backendErrors = validationErrorsFromApi(caught)
-      if (validationOrder.some((field) => backendErrors[field])) {
-        applyValidationErrors(backendErrors)
-      } else {
-        showError(caught, t('quality.inspection.message.createFailed'))
-      }
-    } finally {
-      setSubmitting(false)
-    }
+    await runTaskSubmit(
+      async () => {
+        const task = await createQualityInspection(taskPayload(form))
+        closeTaskModal()
+        setMessage(t('quality.inspection.message.created', { code: task.code }))
+        await loadQualityInspections(task.id)
+      },
+      (caught) => {
+        const backendErrors = validationErrorsFromApi(caught)
+        if (validationOrder.some((field) => backendErrors[field])) {
+          applyValidationErrors(backendErrors)
+        } else {
+          showError(caught, t('quality.inspection.message.createFailed'))
+        }
+      },
+    )
   }
 
   function openDetail(event: MouseEvent<HTMLElement>, inspection: QualityInspection) {
@@ -935,7 +942,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
           width={860}
           onCancel={() => {
             setFieldErrors({})
-            setTaskModalOpen(false)
+            closeTaskModal()
           }}
         >
           <div className="workflow-modal-content entity-modal-form">
@@ -1105,7 +1112,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                 />
               </label>
 
-              <Button htmlType="submit" loading={submitting} type="primary">
+              <Button htmlType="submit" loading={taskSubmitting} type="primary">
                 {t('quality.inspection.modal.submitCreate')}
               </Button>
             </form>

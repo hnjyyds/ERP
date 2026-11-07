@@ -33,6 +33,7 @@ import { sampleRequestPath, moduleDetailPath } from '../../routes'
 import { t } from '../../appI18n'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
+import { useFormModal } from '../../../shared/useFormModal'
 import { openSampleRequestPrint } from '../../../shared/print'
 import {
   sampleStatusOptions,
@@ -347,8 +348,15 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [form, setForm] = useState<SampleRequestFormState>(() => initialSampleRequestForm())
-  const [requestModalOpen, setRequestModalOpen] = useState(false)
+  const {
+    open: requestModalOpen,
+    form,
+    setForm,
+    submitting: requestSubmitting,
+    openWith: openRequestModal,
+    close: closeRequestModal,
+    runSubmit: runRequestSubmit,
+  } = useFormModal(initialSampleRequestForm)
   const [progressForm, setProgressForm] = useState<SampleProgressFormState>(() =>
     initialSampleProgressForm(),
   )
@@ -408,25 +416,21 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
   }
 
   function openCreateRequest() {
-    setForm(initialSampleRequestForm())
-    setRequestModalOpen(true)
+    openRequestModal()
   }
 
   async function submitRequest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setSubmitting(true)
     setMessage('')
-    try {
-      const created = await createSampleRequest(sampleRequestPayload(form))
-      setMessage(t('sample.request.message.created', { code: created.code }))
-      setForm(initialSampleRequestForm())
-      setRequestModalOpen(false)
-      await loadRequests(created.id)
-    } catch (caught) {
-      showError(caught, t('sample.request.message.createFailed'))
-    } finally {
-      setSubmitting(false)
-    }
+    await runRequestSubmit(
+      async () => {
+        const created = await createSampleRequest(sampleRequestPayload(form))
+        setMessage(t('sample.request.message.created', { code: created.code }))
+        closeRequestModal()
+        await loadRequests(created.id)
+      },
+      (caught) => showError(caught, t('sample.request.message.createFailed')),
+    )
   }
 
   async function submitProgress(event: FormEvent<HTMLFormElement>) {
@@ -708,7 +712,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
           open={requestModalOpen}
           title={t('sample.request.modal.createTitle')}
           width={980}
-          onCancel={() => setRequestModalOpen(false)}
+          onCancel={closeRequestModal}
         >
           <form
             className="record-form entity-modal-form sample-modal-form"
@@ -866,11 +870,11 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
               <button
                 className="secondary-inline"
                 type="button"
-                onClick={() => setRequestModalOpen(false)}
+                onClick={closeRequestModal}
               >
                 {t('sample.request.action.cancel')}
               </button>
-              <button className="inline-submit" disabled={submitting} type="submit">
+              <button className="inline-submit" disabled={requestSubmitting} type="submit">
                 {t('sample.request.action.create')}
               </button>
             </div>

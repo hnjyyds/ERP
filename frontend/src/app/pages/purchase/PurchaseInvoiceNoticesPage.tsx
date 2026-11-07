@@ -19,6 +19,7 @@ import { purchaseInvoiceNoticePath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { t } from '../../appI18n'
 import { showError } from '../../../shared/errors'
+import { useFormModal } from '../../../shared/useFormModal'
 import { purchaseInvoiceNoticeStatusOptions } from '../../../shared/formOptions'
 import {
   formatDate,
@@ -226,12 +227,17 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [invoiceModalOpen, setInvoiceModalOpen] = useState(false)
   const [customsDeclarationNoError, setCustomsDeclarationNoError] = useState('')
   const [invoiceActionModal, setInvoiceActionModal] = useState<'send' | 'receive' | null>(null)
-  const [form, setForm] = useState<PurchaseInvoiceNoticeFormState>(() =>
-    initialPurchaseInvoiceNoticeForm(),
-  )
+  const {
+    open: invoiceModalOpen,
+    form,
+    setForm,
+    submitting: invoiceSubmitting,
+    openWith: openInvoiceModal,
+    close: closeInvoiceModal,
+    runSubmit: runInvoiceSubmit,
+  } = useFormModal(initialPurchaseInvoiceNoticeForm)
   const [sendForm, setSendForm] = useState<PurchaseInvoiceNoticeSendFormState>(() =>
     initialPurchaseInvoiceNoticeSendForm(),
   )
@@ -327,28 +333,25 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
       return
     }
     setCustomsDeclarationNoError('')
-    setSubmitting(true)
     setMessage('')
-    try {
-      const customsId = form.customs_declaration_id.trim()
-      const result = await generatePurchaseInvoiceNoticesFromDeclaration(
-        purchaseInvoiceNoticeGeneratePayload(form),
-      )
-      const firstNotice = result.items[0] ?? null
-      setSearch('')
-      setStatusFilter('')
-      setSupplierFilter('')
-      setCustomsFilter(customsId)
-      setMessage(t('purchase.invoiceNotice.message.generated', { count: result.total }))
-      setForm(initialPurchaseInvoiceNoticeForm())
-      setInvoiceModalOpen(false)
-      if (firstNotice) upsertNotice(firstNotice)
-      await loadNotices(firstNotice?.id, customsId)
-    } catch (caught) {
-      showError(caught, t('purchase.invoiceNotice.message.generateFailed'))
-    } finally {
-      setSubmitting(false)
-    }
+    await runInvoiceSubmit(
+      async () => {
+        const customsId = form.customs_declaration_id.trim()
+        const result = await generatePurchaseInvoiceNoticesFromDeclaration(
+          purchaseInvoiceNoticeGeneratePayload(form),
+        )
+        const firstNotice = result.items[0] ?? null
+        setSearch('')
+        setStatusFilter('')
+        setSupplierFilter('')
+        setCustomsFilter(customsId)
+        setMessage(t('purchase.invoiceNotice.message.generated', { count: result.total }))
+        closeInvoiceModal()
+        if (firstNotice) upsertNotice(firstNotice)
+        await loadNotices(firstNotice?.id, customsId)
+      },
+      (caught) => showError(caught, t('purchase.invoiceNotice.message.generateFailed')),
+    )
   }
 
   async function sendSelectedNotice(event: FormEvent<HTMLFormElement>) {
@@ -480,7 +483,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                   onClick={() => {
                     setForm(initialPurchaseInvoiceNoticeForm())
                     setCustomsDeclarationNoError('')
-                    setInvoiceModalOpen(true)
+                    openInvoiceModal()
                   }}
                 >
                   {t('purchase.invoiceNotice.list.generate')}
@@ -559,7 +562,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
           open={invoiceModalOpen}
           title={t('purchase.invoiceNotice.form.generateTitle')}
           width={1040}
-          onCancel={() => setInvoiceModalOpen(false)}
+          onCancel={closeInvoiceModal}
         >
           <div className="workflow-modal-content entity-modal-form">
             <PanelTitle
@@ -652,7 +655,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                 title={t('purchase.invoiceNotice.form.supplierSectionB')}
               />
 
-              <Button htmlType="submit" loading={submitting} type="primary">
+              <Button htmlType="submit" loading={invoiceSubmitting} type="primary">
                 {t('purchase.invoiceNotice.action.generate')}
               </Button>
             </form>
