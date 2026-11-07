@@ -14,7 +14,6 @@ import {
   Handshake,
   Images,
   LayoutDashboard,
-  LockKeyhole,
   Menu,
   Package,
   Search,
@@ -27,7 +26,6 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import type { MenuItem } from '../../../api'
-import { lockedWorkflowPaths } from '../../pages/appHelpers'
 import { t } from '../../appI18n'
 import type { SidebarGroup, SidebarItem as _SidebarItem } from './sidebarNavigation'
 
@@ -61,19 +59,6 @@ const menuIcons: Record<string, LucideIcon> = {
   users: Users,
   wallet: Wallet,
   warehouse: Warehouse,
-}
-
-function getLockedState(groupId: string) {
-  if (groupId === 'legacyPurchase') {
-    return {
-      label: t('nav.locked.deferredLabel'),
-      description: t('nav.locked.deferredDescription'),
-    }
-  }
-  return {
-    label: t('nav.locked.nonPrimaryLabel'),
-    description: t('nav.locked.nonPrimaryDescription'),
-  }
 }
 
 export function AppSidebar({ activePath, dashboardMenu, sidebarMenuGroups, onNavigate }: Props) {
@@ -133,7 +118,7 @@ export function AppSidebar({ activePath, dashboardMenu, sidebarMenuGroups, onNav
         <div className="nav-groups" aria-label={t('page.businessModule')}>
           {sidebarMenuGroups.map((group) => {
             const GroupIcon = group.icon
-            const isGroupActive = group.items.some((item) => !lockedWorkflowPaths.has(item.path) && isActive(item.path, activePath))
+            const isGroupActive = group.items.some((item) => isActive(item.path, activePath))
             return (
               <details className="nav-group" key={group.id} open={isGroupActive || undefined}>
                 <summary className="nav-group-summary">
@@ -143,31 +128,10 @@ export function AppSidebar({ activePath, dashboardMenu, sidebarMenuGroups, onNav
                 </summary>
                 <div className="nav-group-items">
                   {group.items.map((item) => {
-                    const isLocked = lockedWorkflowPaths.has(item.path)
                     const hasChildren = item.children && item.children.length > 0
-                    const active = !isLocked && isActive(item.path, activePath)
+                    const active = isActive(item.path, activePath)
                     const childActive = hasChildren && item.children!.some((child) => isActive(child.path, activePath))
                     const Icon = menuIcons[item.icon] ?? LayoutDashboard
-
-                    if (isLocked) {
-                      const lockedState = getLockedState(group.id)
-                      return (
-                        <span
-                          key={item.id}
-                          aria-disabled="true"
-                          aria-label={`${item.label}, ${lockedState.description}`}
-                          className="nav-link nav-link-locked"
-                          role="link"
-                          tabIndex={0}
-                          title={lockedState.description}
-                        >
-                          <Icon className="nav-link-icon" size={16} strokeWidth={2} />
-                          <span className="nav-link-label">{item.label}</span>
-                          <span className="nav-state-label">{lockedState.label}</span>
-                          <LockKeyhole aria-hidden="true" className="nav-lock-icon" size={13} strokeWidth={2.2} />
-                        </span>
-                      )
-                    }
 
                     if (hasChildren) {
                       return (

@@ -1,5 +1,4 @@
 import { Tag } from 'antd'
-import { LockKeyhole as _LockKeyhole } from 'lucide-react'
 import type { ReactNode as _ReactNode } from 'react'
 import type { AppLanguage, AppTimeZone, CurrentUser, MenuItem } from '../../api'
 import { translate, type TranslationKey } from '../../locales'
@@ -7,35 +6,22 @@ import { partnerTypeOptions } from '../../shared/formOptions'
 import {
   customerPath,
   detailRootPath,
-  documentPartyPath,
   exportContractPath,
-  exportQuotationPath,
   financePath,
   financeReceiptsPath as _financeReceiptsPath,
   financePaymentsPath as _financePaymentsPath,
   financeSettlementPath as _financeSettlementPath,
   followupPath,
   isFinancePath,
-  organizationUsersPath,
   mcpSettingsPath,
   parseFinanceView,
-  partnerPath,
   productPath,
   purchaseContractPath,
-  purchaseInquiryPath,
-  purchaseInvoiceNoticePath,
   qualityInspectionPath,
   myQualityTasksPath,
   reportingPath,
-  sampleDeliveryPath,
-  sampleRecordPath,
-  sampleRequestPath,
-  shipmentPath,
   supplierPath,
   warehouseInboundOrderPath,
-  warehouseInboundPlanPath,
-  warehouseOutboundOrderPath,
-  warehouseOutboundPlanPath,
   type FinanceModule,
 } from '../routes'
 
@@ -309,19 +295,3 @@ export type ModuleNavigationProps = {
 export type RoutedDetailPageProps = ModuleNavigationProps & {
   detailId: string | null
 }
-
-export const lockedWorkflowPaths = new Set([
-  organizationUsersPath,
-  partnerPath,
-  documentPartyPath,
-  sampleRequestPath,
-  sampleRecordPath,
-  sampleDeliveryPath,
-  exportQuotationPath,
-  shipmentPath,
-  purchaseInquiryPath,
-  purchaseInvoiceNoticePath,
-  warehouseInboundPlanPath,
-  warehouseOutboundPlanPath,
-  warehouseOutboundOrderPath,
-])

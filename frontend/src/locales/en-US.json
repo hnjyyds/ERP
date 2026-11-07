@@ -7,7 +7,6 @@
       "warehouse": "Warehouse",
       "finance": "Finance",
       "system": "System Settings",
-      "legacyPurchase": "Deferred Modules",
       "other": "Other"
     },
     "item": {
@@ -46,12 +45,6 @@
       "customers": "Customers and order requirements",
       "warehouseInboundOrders": "Inbound and inventory confirmation",
       "mcpSettings": "MCP and AI data access"
-    },
-    "locked": {
-      "deferredLabel": "Deferred",
-      "deferredDescription": "This module has been deferred and is not available yet",
-      "nonPrimaryLabel": "Non-primary",
-      "nonPrimaryDescription": "This module is not part of the primary workflow"
     },
     "aria": {
       "businessNavigation": "Business navigation",

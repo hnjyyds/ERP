@@ -36,39 +36,6 @@ const sidebarMenuGroups = [
   },
 ]
 
-const lockedMenuGroups = [
-  {
-    id: 'sample',
-    label: '样品管理',
-    icon: Package,
-    items: [
-      {
-        id: 'sample-requests',
-        label: '样品申请',
-        path: '/sample/requests',
-        icon: 'package',
-        required_permission: 'sample:view',
-        sort_order: 1,
-      },
-    ],
-  },
-  {
-    id: 'legacyPurchase',
-    label: '暂缓模块',
-    icon: Package,
-    items: [
-      {
-        id: 'purchase-inquiries',
-        label: '采购询价',
-        path: '/purchase/inquiries',
-        icon: 'search',
-        required_permission: 'purchase:view',
-        sort_order: 1,
-      },
-    ],
-  },
-]
-
 describe('AppSidebar', () => {
   it('keeps mobile navigation collapsed until the user opens it', async () => {
     const user = userEvent.setup()
@@ -107,33 +74,5 @@ describe('AppSidebar', () => {
 
     expect(onNavigate).toHaveBeenCalledWith('/')
     expect(toggle).toHaveAttribute('aria-expanded', 'false')
-  })
-
-  it('explains why locked workflow entries are unavailable without navigating', async () => {
-    const user = userEvent.setup()
-    const onNavigate = vi.fn()
-    render(
-      <AppSidebar
-        activePath="/"
-        dashboardMenu={dashboardMenu}
-        sidebarMenuGroups={lockedMenuGroups}
-        onNavigate={onNavigate}
-      />,
-    )
-
-    const outOfFlowItem = screen.getByRole('link', {
-      name: '样品申请, nav.locked.nonPrimaryDescription',
-    })
-    const deferredItem = screen.getByRole('link', {
-      name: '采购询价, nav.locked.deferredDescription',
-    })
-
-    expect(outOfFlowItem).toHaveAttribute('aria-disabled', 'true')
-    expect(outOfFlowItem).toHaveAttribute('title', 'nav.locked.nonPrimaryDescription')
-    expect(outOfFlowItem).toHaveTextContent('nav.locked.nonPrimaryLabel')
-    expect(deferredItem).toHaveTextContent('nav.locked.deferredLabel')
-
-    await user.click(outOfFlowItem)
-    expect(onNavigate).not.toHaveBeenCalled()
   })
 })

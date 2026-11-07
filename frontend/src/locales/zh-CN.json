@@ -7,7 +7,6 @@
       "warehouse": "仓库",
       "finance": "财务经营",
       "system": "系统设置",
-      "legacyPurchase": "暂缓模块",
       "other": "其他"
     },
     "item": {
@@ -46,12 +45,6 @@
       "customers": "客户资料和订单要求",
       "warehouseInboundOrders": "入仓和库存确认",
       "mcpSettings": "MCP 与 AI 数据接入"
-    },
-    "locked": {
-      "deferredLabel": "暂缓",
-      "deferredDescription": "该功能已列入暂缓模块，当前暂不开放",
-      "nonPrimaryLabel": "非主流程",
-      "nonPrimaryDescription": "该功能当前不纳入主业务流程"
     },
     "aria": {
       "businessNavigation": "业务导航",
