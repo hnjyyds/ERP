@@ -44,6 +44,13 @@ describe('PurchaseContractsPage', () => {
       rejection_reason: null,
       reviewer_id: 'u-admin',
       reviewer_name: '管理员',
+      cancelled_at: null,
+      cancelled_by_id: null,
+      cancelled_by_name: null,
+      cancel_reason: null,
+      reissued_from_id: null,
+      reissued_from_code: null,
+      reissue_reason: null,
       owner_user_id: 'u-001',
       statistics: {
         total_quantity: '100',

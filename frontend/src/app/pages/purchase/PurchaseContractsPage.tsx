@@ -14,11 +14,13 @@ import type { FormEvent, MouseEvent, ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import {
   approvePurchaseContract,
+  cancelPurchaseContract,
   createPurchaseContract,
   generatePurchaseContractFromExportContracts,
   generatePurchaseContractTemplate,
   listPurchaseContractReminders,
   listPurchaseContracts,
+  reissuePurchaseContract,
   submitPurchaseContract,
   updatePurchaseContract,
   type CurrentUser,
@@ -362,6 +364,12 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
   const [loadingAssignableUsers, setLoadingAssignableUsers] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
+  const [cancelModalOpen, setCancelModalOpen] = useState(false)
+  const [cancelReason, setCancelReason] = useState('')
+  const [cancelReasonError, setCancelReasonError] = useState('')
+  const [reissueModalOpen, setReissueModalOpen] = useState(false)
+  const [reissueReason, setReissueReason] = useState('')
+  const [reissueReasonError, setReissueReasonError] = useState('')
   const [form, setForm] = useState<PurchaseContractFormState>(() => initialPurchaseContractForm())
   const [reviewerId, setReviewerId] = useState('')
   const [generateForm, setGenerateForm] = useState<PurchaseContractGenerateFormState>(() =>
@@ -688,6 +696,67 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
       await Promise.all([loadContracts(reviewed.id, reviewed), loadContractReminders()])
     } catch (caught) {
       showError(caught, t('purchase.contract.message.approveFailed'))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  function openCancelModal() {
+    setCancelReason('')
+    setCancelReasonError('')
+    setCancelModalOpen(true)
+  }
+
+  async function submitContractCancellation(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!selectedContract) return
+    if (!cancelReason.trim()) {
+      setCancelReasonError(t('purchase.contract.cancel.reasonRequired'))
+      return
+    }
+    setSubmitting(true)
+    setMessage('')
+    try {
+      const cancelled = await cancelPurchaseContract(selectedContract.id, {
+        reason: cancelReason.trim(),
+      })
+      setCancelModalOpen(false)
+      setMessage(t('purchase.contract.cancel.success', { code: cancelled.code }))
+      upsertContract(cancelled)
+      await Promise.all([loadContracts(cancelled.id, cancelled), loadContractReminders()])
+    } catch (caught) {
+      showError(caught, t('purchase.contract.message.saveFailed'))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  function openReissueModal() {
+    setReissueReason('')
+    setReissueReasonError('')
+    setReissueModalOpen(true)
+  }
+
+  async function submitContractReissue(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!selectedContract) return
+    if (!reissueReason.trim()) {
+      setReissueReasonError(t('purchase.contract.cancel.reissueReasonRequired'))
+      return
+    }
+    setSubmitting(true)
+    setMessage('')
+    try {
+      const reissued = await reissuePurchaseContract(selectedContract.id, {
+        reason: reissueReason.trim(),
+      })
+      setReissueModalOpen(false)
+      setMessage(t('purchase.contract.cancel.reissueSuccess', { code: reissued.code }))
+      upsertContract(reissued)
+      await Promise.all([loadContracts(reissued.id, reissued), loadContractReminders()])
+      onNavigate(moduleDetailPath(purchaseContractPath, reissued.id))
+    } catch (caught) {
+      showError(caught, t('purchase.contract.message.saveFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -1445,6 +1514,35 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
             </div>
             {selectedContract ? (
               <>
+                {selectedContract.approval_status === 'cancelled' ? (
+                  <Alert
+                    description={
+                      selectedContract.cancel_reason ?? t('purchase.contract.detail.notFilled')
+                    }
+                    showIcon
+                    title={t('purchase.contract.detail.cancelledBanner', {
+                      date: selectedContract.cancelled_at
+                        ? formatDate(selectedContract.cancelled_at)
+                        : t('purchase.contract.detail.notFilled'),
+                      name:
+                        selectedContract.cancelled_by_name ??
+                        t('purchase.contract.detail.notFilled'),
+                    })}
+                    type="warning"
+                  />
+                ) : null}
+                {selectedContract.reissued_from_code ? (
+                  <Alert
+                    description={
+                      selectedContract.reissue_reason ?? t('purchase.contract.detail.notFilled')
+                    }
+                    showIcon
+                    title={t('purchase.contract.detail.reissuedFromBanner', {
+                      code: selectedContract.reissued_from_code,
+                    })}
+                    type="info"
+                  />
+                ) : null}
                 <div className="contract-summary-intro">
                   <strong>{t('purchase.contract.detail.summaryTitle')}</strong>
                   <span>{t('purchase.contract.detail.summaryDescription')}</span>
@@ -1611,6 +1709,18 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   >
                     {t('purchase.contract.action.generateTemplate')}
                   </Button>
+                  {['draft', 'approved', 'rejected'].includes(
+                    selectedContract.approval_status,
+                  ) ? (
+                    <Button danger onClick={openCancelModal}>
+                      {t('purchase.contract.action.cancel')}
+                    </Button>
+                  ) : null}
+                  {selectedContract.approval_status === 'cancelled' ? (
+                    <Button type="primary" onClick={openReissueModal}>
+                      {t('purchase.contract.action.reissue')}
+                    </Button>
+                  ) : null}
                 </div>
                 {selectedContract.approval_status === 'submitted' &&
                 !canApproveAssignedRecord(
@@ -1714,6 +1824,86 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                       </div>
                     </div>
                   </div>
+                </Modal>
+
+                <Modal
+                  centered
+                  footer={null}
+                  open={cancelModalOpen}
+                  title={t('purchase.contract.cancel.title')}
+                  onCancel={() => setCancelModalOpen(false)}
+                >
+                  <form className="record-form" onSubmit={submitContractCancellation}>
+                    <Alert message={t('purchase.contract.cancel.hint')} showIcon type="warning" />
+                    <label htmlFor="purchase-contract-cancel-reason">
+                      {t('purchase.contract.cancel.reason')}
+                      <Input.TextArea
+                        aria-describedby={
+                          cancelReasonError ? 'purchase-contract-cancel-error' : undefined
+                        }
+                        aria-invalid={Boolean(cancelReasonError)}
+                        id="purchase-contract-cancel-reason"
+                        placeholder={t('purchase.contract.cancel.reasonPlaceholder')}
+                        rows={4}
+                        value={cancelReason}
+                        onChange={(event) => {
+                          setCancelReason(event.currentTarget.value)
+                          setCancelReasonError('')
+                        }}
+                      />
+                    </label>
+                    {cancelReasonError ? (
+                      <span className="form-field-error" id="purchase-contract-cancel-error">
+                        {cancelReasonError}
+                      </span>
+                    ) : null}
+                    <div className="modal-actions">
+                      <Button onClick={() => setCancelModalOpen(false)}>{t('common.cancel')}</Button>
+                      <Button danger htmlType="submit" loading={submitting}>
+                        {t('purchase.contract.cancel.confirm')}
+                      </Button>
+                    </div>
+                  </form>
+                </Modal>
+
+                <Modal
+                  centered
+                  footer={null}
+                  open={reissueModalOpen}
+                  title={t('purchase.contract.cancel.reissueTitle')}
+                  onCancel={() => setReissueModalOpen(false)}
+                >
+                  <form className="record-form" onSubmit={submitContractReissue}>
+                    <Alert message={t('purchase.contract.cancel.reissueHint')} showIcon type="info" />
+                    <label htmlFor="purchase-contract-reissue-reason">
+                      {t('purchase.contract.cancel.reissueReason')}
+                      <Input.TextArea
+                        aria-describedby={
+                          reissueReasonError ? 'purchase-contract-reissue-error' : undefined
+                        }
+                        aria-invalid={Boolean(reissueReasonError)}
+                        id="purchase-contract-reissue-reason"
+                        placeholder={t('purchase.contract.cancel.reissuePlaceholder')}
+                        rows={4}
+                        value={reissueReason}
+                        onChange={(event) => {
+                          setReissueReason(event.currentTarget.value)
+                          setReissueReasonError('')
+                        }}
+                      />
+                    </label>
+                    {reissueReasonError ? (
+                      <span className="form-field-error" id="purchase-contract-reissue-error">
+                        {reissueReasonError}
+                      </span>
+                    ) : null}
+                    <div className="modal-actions">
+                      <Button onClick={() => setReissueModalOpen(false)}>{t('common.cancel')}</Button>
+                      <Button htmlType="submit" loading={submitting} type="primary">
+                        {t('purchase.contract.cancel.reissueConfirm')}
+                      </Button>
+                    </div>
+                  </form>
                 </Modal>
 
                 <div className="accessory-heading">

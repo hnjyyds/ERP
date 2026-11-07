@@ -355,7 +355,8 @@
       "submitted": "待审批",
       "approved": "已审批",
       "contractGenerated": "已生成合同",
-      "rejected": "已退回"
+      "rejected": "已退回",
+      "cancelled": "已作废"
     },
     "freightMethod": {
       "sea": "海运",
@@ -498,10 +499,28 @@
         "print": "打印单据",
         "registerSignature": "登记回签",
         "linkAdvancePayment": "关联预收款",
+        "cancel": "作废合同",
+        "reissue": "作废重开",
         "remove": "移除",
         "waitingApproval": "等待 {name} 审批",
         "approverMismatch": "该出口合同应由 {name} 审批",
         "defaultReviewer": "指定审批人"
+      },
+      "cancel": {
+        "title": "作废出口合同",
+        "hint": "作废后保留原合同和原单号，状态标记为已作废；存在出货、采购合同或收款等下游单据时不允许作废。",
+        "reason": "作废原因",
+        "reasonPlaceholder": "请填写作废原因，至少 1 个字",
+        "confirm": "确认作废",
+        "reasonRequired": "请填写作废原因",
+        "success": "{code} 已作废",
+        "reissueTitle": "重开出口合同",
+        "reissueHint": "将基于已作废合同生成一份新草稿，新合同使用新的随机单号，并关联原合同号。",
+        "reissueReason": "重开原因",
+        "reissuePlaceholder": "请填写重开原因，至少 1 个字",
+        "reissueConfirm": "重开为新合同",
+        "reissueReasonRequired": "请填写重开原因",
+        "reissueSuccess": "已重开为 {code}"
       },
       "detail": {
         "title": "合同明细",
@@ -529,7 +548,11 @@
         "emptyDescription": "请返回列表选择合同查看详情",
         "historyLoadFailed": "历史询报价参考加载失败",
         "recordCount_one": "{count} 条",
-        "recordCount_other": "{count} 条"
+        "recordCount_other": "{count} 条",
+        "cancelledBanner": "该合同已于 {date} 由 {name} 作废",
+        "cancelReasonLabel": "作废原因",
+        "reissuedFromBanner": "由 {code} 作废重开",
+        "reissueReasonLabel": "重开原因"
       },
       "validation": {
         "lineRequired": "请至少添加一个商品，确保后续采购和 QC 流程可以正确关联",
@@ -1415,7 +1438,8 @@
         "draft": "草稿",
         "submitted": "待审批",
         "approved": "已审批",
-        "rejected": "已驳回"
+        "rejected": "已驳回",
+        "cancelled": "已作废"
       },
       "source": {
         "exportContract": "出口合同生成",
@@ -1485,7 +1509,11 @@
         "reminderTypePayment": "付款提醒",
         "reminderTypeDelivery": "交货提醒",
         "reminderStatusOpen": "待处理",
-        "reminderStatusClosed": "已完成"
+        "reminderStatusClosed": "已完成",
+        "cancelledBanner": "该合同已于 {date} 由 {name} 作废",
+        "cancelReasonLabel": "作废原因",
+        "reissuedFromBanner": "由 {code} 作废重开",
+        "reissueReasonLabel": "重开原因"
       },
       "form": {
         "createTitle": "新增采购合同",
@@ -1589,7 +1617,25 @@
         "defaultReviewer": "指定审批人",
         "confirmRejectTitle": "确认驳回采购合同？",
         "confirmRejectContent": "驳回后，申请人可以根据驳回原因修改合同并重新提交。",
-        "confirmReject": "确认驳回"
+        "confirmReject": "确认驳回",
+        "cancel": "作废合同",
+        "reissue": "作废重开"
+      },
+      "cancel": {
+        "title": "作废采购合同",
+        "hint": "作废后保留原合同和原单号，状态标记为已作废；存在入库、质检、开票或付款等下游单据时不允许作废。",
+        "reason": "作废原因",
+        "reasonPlaceholder": "请填写作废原因，至少 1 个字",
+        "confirm": "确认作废",
+        "reasonRequired": "请填写作废原因",
+        "success": "{code} 已作废",
+        "reissueTitle": "重开采购合同",
+        "reissueHint": "将基于已作废合同生成一份新草稿，新合同使用新的随机单号，并关联原合同号。",
+        "reissueReason": "重开原因",
+        "reissuePlaceholder": "请填写重开原因，至少 1 个字",
+        "reissueConfirm": "重开为新合同",
+        "reissueReasonRequired": "请填写重开原因",
+        "reissueSuccess": "已重开为 {code}"
       },
       "validation": {
         "exportContractRequired": "请至少填写一个出口合同 ID",

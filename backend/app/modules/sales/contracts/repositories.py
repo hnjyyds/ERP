@@ -44,6 +44,9 @@ class ExportContractRepository:
         remarks: str | None,
         approval_status: str,
         owner_user_id: str,
+        reissued_from_id: str | None = None,
+        reissued_from_code: str | None = None,
+        reissue_reason: str | None = None,
     ) -> ExportContractRow:
         contract = ExportContract(
             code=code,
@@ -61,6 +64,9 @@ class ExportContractRepository:
             remarks=remarks,
             approval_status=approval_status,
             owner_user_id=owner_user_id,
+            reissued_from_id=reissued_from_id,
+            reissued_from_code=reissued_from_code,
+            reissue_reason=reissue_reason,
         )
         self.session.add(contract)
         await self.session.flush()
@@ -337,6 +343,8 @@ class ExportContractRepository:
             )
         if approval_status:
             conditions.append(ExportContract.approval_status == approval_status)
+        else:
+            conditions.append(ExportContract.approval_status != "cancelled")
         if customer_id:
             conditions.append(ExportContract.customer_id == customer_id)
         if owner_user_ids is not None:
@@ -537,6 +545,13 @@ class ExportContractRepository:
             reviewer_name=contract.reviewer_name,
             signature_status=contract.signature_status,
             customer_signed_at=contract.customer_signed_at,
+            cancelled_at=contract.cancelled_at,
+            cancelled_by_id=contract.cancelled_by_id,
+            cancelled_by_name=contract.cancelled_by_name,
+            cancel_reason=contract.cancel_reason,
+            reissued_from_id=contract.reissued_from_id,
+            reissued_from_code=contract.reissued_from_code,
+            reissue_reason=contract.reissue_reason,
             owner_user_id=contract.owner_user_id,
             created_at=contract.created_at,
         )

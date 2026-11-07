@@ -8,9 +8,11 @@ from app.modules.sales.contracts.schemas import (
     ExportContractAdvancePaymentCreate,
     ExportContractAdvancePaymentResponse,
     ExportContractApprove,
+    ExportContractCancel,
     ExportContractCreate,
     ExportContractExportResponse,
     ExportContractListResponse,
+    ExportContractReissue,
     ExportContractResponse,
     ExportContractSignatureCreate,
     ExportContractSubmit,
@@ -102,6 +104,36 @@ async def approve_export_contract(
     service: Annotated[ExportContractService, Depends(get_export_contract_service)],
 ) -> ApiResponse[ExportContractResponse]:
     contract = await service.approve_contract(
+        current_user=user,
+        contract_id=contract_id,
+        payload=payload,
+    )
+    return ApiResponse(data=contract)
+
+
+@router.post("/{contract_id}/cancel", response_model=ApiResponse[ExportContractResponse])
+async def cancel_export_contract(
+    contract_id: str,
+    payload: ExportContractCancel,
+    user: CurrentUserDep,
+    service: Annotated[ExportContractService, Depends(get_export_contract_service)],
+) -> ApiResponse[ExportContractResponse]:
+    contract = await service.cancel_contract(
+        current_user=user,
+        contract_id=contract_id,
+        payload=payload,
+    )
+    return ApiResponse(data=contract)
+
+
+@router.post("/{contract_id}/reissue", response_model=ApiResponse[ExportContractResponse])
+async def reissue_export_contract(
+    contract_id: str,
+    payload: ExportContractReissue,
+    user: CurrentUserDep,
+    service: Annotated[ExportContractService, Depends(get_export_contract_service)],
+) -> ApiResponse[ExportContractResponse]:
+    contract = await service.reissue_contract(
         current_user=user,
         contract_id=contract_id,
         payload=payload,

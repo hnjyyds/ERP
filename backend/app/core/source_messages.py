@@ -82,6 +82,20 @@ SOURCE_MESSAGES: dict[str, str] = {
     ),
     "采购合同审批状态无效": "Invalid purchase contract approval status",
     "采购合同来源类型无效": "Invalid purchase contract source type",
+    "出口合同已作废，不能重复作废": "The export contract is already cancelled",
+    "审批中的出口合同不能作废，请先完成审批": (
+        "An export contract under approval cannot be cancelled; complete the approval first"
+    ),
+    "当前状态的出口合同不能作废": "The export contract cannot be cancelled in its current status",
+    "只有已作废的出口合同可以重开": "Only cancelled export contracts can be reissued",
+    "采购合同已作废，不能重复作废": "The purchase contract is already cancelled",
+    "审批中的采购合同不能作废，请先完成审批": (
+        "A purchase contract under approval cannot be cancelled; complete the approval first"
+    ),
+    "当前状态的采购合同不能作废": "The purchase contract cannot be cancelled in its current status",
+    "只有已作废的采购合同可以重开": "Only cancelled purchase contracts can be reissued",
+    "作废原因不能为空": "Cancellation reason must not be empty",
+    "重开原因不能为空": "Reissue reason must not be empty",
     "采购合同没有明细，无法生成入库计划": (
         "The purchase contract has no line items; cannot generate an inbound plan"
     ),
@@ -583,6 +597,22 @@ ROLE_NAMES: dict[str, str] = {
 
 # 动态文案模板：仅在静态匹配未命中后使用，保持顺序稳定。
 DYNAMIC_PATTERNS: list[tuple[re.Pattern[str], str]] = [
+    (
+        re.compile(r"^出口合同存在下游单据，不能作废：(?P<reasons>.+)$"),
+        "The export contract has downstream documents and cannot be cancelled: {reasons}",
+    ),
+    (
+        re.compile(r"^采购合同存在下游单据，不能作废：(?P<reasons>.+)$"),
+        "The purchase contract has downstream documents and cannot be cancelled: {reasons}",
+    ),
+    (
+        re.compile(r"^该出口合同已重开为 (?P<code>.+)，不能重复重开$"),
+        "This export contract has already been reissued as {code}",
+    ),
+    (
+        re.compile(r"^该采购合同已重开为 (?P<code>.+)，不能重复重开$"),
+        "This purchase contract has already been reissued as {code}",
+    ),
     (re.compile(r"^缺少必填字段：(?P<fields>.+)$"), "Missing required fields: {fields}"),
     (
         re.compile(r"^(?P<field>\S+) 必须在 0 到 1（或 0%-100%）之间$"),

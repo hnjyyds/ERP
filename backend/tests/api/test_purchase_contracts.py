@@ -484,3 +484,186 @@ async def test_purchase_generation_returns_specific_missing_product_message(
 
     assert response.status_code == 422
     assert response.json()["message"] == "商品编码 BAG-40 未关联商品资料，请先选择商品后重试"
+
+
+async def test_purchase_contract_cancel_and_reissue(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    create_response = await api_client.post(
+        "/api/v1/purchase/contracts",
+        headers=headers,
+        json=_stock_purchase_payload("PC-CANCEL-001"),
+    )
+    assert create_response.status_code == 201
+    contract = create_response.json()["data"]
+    contract_id = contract["id"]
+    contract_code = contract["code"]
+
+    blank_response = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/cancel",
+        headers=headers,
+        json={"reason": "   "},
+    )
+    assert blank_response.status_code == 422
+    assert "作废原因不能为空" in blank_response.text
+
+    cancel_response = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/cancel",
+        headers=headers,
+        json={"reason": "供应商停产，取消采购"},
+    )
+    assert cancel_response.status_code == 200
+    cancelled = cancel_response.json()["data"]
+    assert cancelled["approval_status"] == "cancelled"
+    assert cancelled["code"] == contract_code
+    assert cancelled["cancel_reason"] == "供应商停产，取消采购"
+    assert cancelled["cancelled_by_name"] == "演示业务主管"
+    assert cancelled["cancelled_at"] is not None
+
+    repeat_cancel = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/cancel",
+        headers=headers,
+        json={"reason": "重复作废"},
+    )
+    assert repeat_cancel.status_code == 422
+    assert "已作废" in repeat_cancel.text
+
+    default_list = await api_client.get(
+        "/api/v1/purchase/contracts",
+        headers=headers,
+        params={"q": contract_code},
+    )
+    assert default_list.status_code == 200
+    assert default_list.json()["data"]["total"] == 0
+
+    cancelled_list = await api_client.get(
+        "/api/v1/purchase/contracts",
+        headers=headers,
+        params={"q": contract_code, "approval_status": "cancelled"},
+    )
+    assert cancelled_list.status_code == 200
+    assert cancelled_list.json()["data"]["total"] == 1
+
+    reissue_response = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/reissue",
+        headers=headers,
+        json={"reason": "更换供应商后重开"},
+    )
+    assert reissue_response.status_code == 200
+    reissued = reissue_response.json()["data"]
+    assert reissued["id"] != contract_id
+    assert reissued["code"] != contract_code
+    assert reissued["code"].startswith("PC-")
+    assert reissued["approval_status"] == "draft"
+    assert reissued["reissued_from_id"] == contract_id
+    assert reissued["reissued_from_code"] == contract_code
+    assert reissued["reissue_reason"] == "更换供应商后重开"
+    assert reissued["lines"][0]["quantity"] == "450"
+    assert reissued["lines"][0]["received_quantity"] == "0"
+    assert {item["reminder_type"] for item in reissued["reminders"]} == {
+        "delivery",
+        "payment",
+    }
+
+    repeat_reissue = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/reissue",
+        headers=headers,
+        json={"reason": "重复重开"},
+    )
+    assert repeat_reissue.status_code == 422
+    assert "已重开为" in repeat_reissue.text
+
+
+async def test_purchase_contract_cancel_reverses_progress_and_cleans_plans(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    reviewer_token = await _login_token(api_client, "purchase", "purchase123")
+    product_response = await api_client.post(
+        "/api/v1/masterdata/products",
+        headers=headers,
+        json=_product_payload("BAG-CANCEL-FLOW"),
+    )
+    product_id = product_response.json()["data"]["id"]
+    export_id = await _create_approved_export_contract(
+        api_client,
+        token,
+        code="EC-CANCEL-FLOW",
+        product_id=product_id,
+        quantity="1000",
+    )
+
+    generate_response = await api_client.post(
+        "/api/v1/purchase/contracts/generate-from-export-contracts",
+        headers=headers,
+        json={
+            "code": "PC-CANCEL-FLOW",
+            "contract_date": "2026-08-06",
+            "supplier_id": "supplier-pack-a",
+            "supplier_name": "华东包装制品厂",
+            "buyer_user_id": "u-001",
+            "buyer_user_name": "演示业务主管",
+            "currency": "USD",
+            "delivery_date": "2026-08-30",
+            "payment_terms": "30% 预付，70% 出货前",
+            "unit_price": "0.12",
+            "sources": [{"export_contract_id": export_id}],
+        },
+    )
+    assert generate_response.status_code == 201
+    generated_contract = generate_response.json()["data"]
+    contract_id = generated_contract["id"]
+    contract_code = generated_contract["code"]
+
+    await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/submit",
+        headers=headers,
+        json={"reviewer_id": "u-purchase"},
+    )
+    approve_response = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/approve",
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-08-07"},
+    )
+    assert approve_response.status_code == 200
+
+    progress_response = await api_client.get(
+        f"/api/v1/sales/contracts/{export_id}",
+        headers=headers,
+    )
+    assert progress_response.json()["data"]["purchase_statuses"][0]["purchased_quantity"] == "1000"
+
+    plans_response = await api_client.get(
+        "/api/v1/warehouse/inbound-plans",
+        headers=headers,
+        params={"q": contract_code},
+    )
+    assert plans_response.json()["data"]["total"] == 1
+
+    cancel_response = await api_client.post(
+        f"/api/v1/purchase/contracts/{contract_id}/cancel",
+        headers=headers,
+        json={"reason": "供应商无法按期交货"},
+    )
+    assert cancel_response.status_code == 200, cancel_response.text
+
+    progress_after_cancel = await api_client.get(
+        f"/api/v1/sales/contracts/{export_id}",
+        headers=headers,
+    )
+    assert (
+        progress_after_cancel.json()["data"]["purchase_statuses"][0]["purchased_quantity"]
+        == "0"
+    )
+
+    plans_after_cancel = await api_client.get(
+        "/api/v1/warehouse/inbound-plans",
+        headers=headers,
+        params={"q": contract_code},
+    )
+    assert plans_after_cancel.json()["data"]["total"] == 0

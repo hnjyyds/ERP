@@ -224,6 +224,138 @@ async def test_export_quotation_confirm_creates_real_export_contract(
     assert contract["payment_terms"] == ""
 
 
+async def test_export_contract_cancel_and_reissue(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    create_response = await api_client.post(
+        "/api/v1/sales/contracts",
+        headers=headers,
+        json=_contract_payload("EC-CANCEL-001"),
+    )
+    assert create_response.status_code == 201
+    contract = create_response.json()["data"]
+    contract_id = contract["id"]
+    contract_code = contract["code"]
+
+    blank_response = await api_client.post(
+        f"/api/v1/sales/contracts/{contract_id}/cancel",
+        headers=headers,
+        json={"reason": "   "},
+    )
+    assert blank_response.status_code == 422
+    assert "作废原因不能为空" in blank_response.text
+
+    cancel_response = await api_client.post(
+        f"/api/v1/sales/contracts/{contract_id}/cancel",
+        headers=headers,
+        json={"reason": "客户取消首单"},
+    )
+    assert cancel_response.status_code == 200
+    cancelled = cancel_response.json()["data"]
+    assert cancelled["approval_status"] == "cancelled"
+    assert cancelled["code"] == contract_code
+    assert cancelled["cancel_reason"] == "客户取消首单"
+    assert cancelled["cancelled_by_name"] == "演示业务主管"
+    assert cancelled["cancelled_at"] is not None
+
+    repeat_cancel = await api_client.post(
+        f"/api/v1/sales/contracts/{contract_id}/cancel",
+        headers=headers,
+        json={"reason": "重复作废"},
+    )
+    assert repeat_cancel.status_code == 422
+    assert "已作废" in repeat_cancel.text
+
+    default_list = await api_client.get(
+        "/api/v1/sales/contracts",
+        headers=headers,
+        params={"q": contract_code},
+    )
+    assert default_list.status_code == 200
+    assert default_list.json()["data"]["total"] == 0
+
+    cancelled_list = await api_client.get(
+        "/api/v1/sales/contracts",
+        headers=headers,
+        params={"q": contract_code, "approval_status": "cancelled"},
+    )
+    assert cancelled_list.status_code == 200
+    assert cancelled_list.json()["data"]["total"] == 1
+
+    reissue_response = await api_client.post(
+        f"/api/v1/sales/contracts/{contract_id}/reissue",
+        headers=headers,
+        json={"reason": "客户恢复订单，按新价格重开"},
+    )
+    assert reissue_response.status_code == 200
+    reissued = reissue_response.json()["data"]
+    assert reissued["id"] != contract_id
+    assert reissued["code"] != contract_code
+    assert reissued["code"].startswith("EC-")
+    assert reissued["approval_status"] == "draft"
+    assert reissued["reissued_from_id"] == contract_id
+    assert reissued["reissued_from_code"] == contract_code
+    assert reissued["reissue_reason"] == "客户恢复订单，按新价格重开"
+    assert reissued["lines"][0]["quantity"] == "1000"
+    assert reissued["lines"][0]["purchased_quantity"] == "0"
+    assert reissued["lines"][0]["shipped_quantity"] == "0"
+
+    repeat_reissue = await api_client.post(
+        f"/api/v1/sales/contracts/{contract_id}/reissue",
+        headers=headers,
+        json={"reason": "重复重开"},
+    )
+    assert repeat_reissue.status_code == 422
+    assert "已重开为" in repeat_reissue.text
+
+
+async def test_export_contract_cancel_blocked_by_advance_payment(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    create_response = await api_client.post(
+        "/api/v1/sales/contracts",
+        headers=headers,
+        json=_contract_payload("EC-CANCEL-002"),
+    )
+    contract = create_response.json()["data"]
+    contract_id = contract["id"]
+
+    payment_response = await api_client.post(
+        f"/api/v1/sales/contracts/{contract_id}/advance-payments",
+        headers=headers,
+        json={
+            "payment_no": "AR-CANCEL-001",
+            "received_at": "2026-07-05",
+            "amount": "300.00",
+            "currency": "USD",
+            "payer_name": "Euro Home Retail Ltd.",
+            "remark": "作废拦截前置预收款",
+        },
+    )
+    assert payment_response.status_code == 201
+
+    cancel_response = await api_client.post(
+        f"/api/v1/sales/contracts/{contract_id}/cancel",
+        headers=headers,
+        json={"reason": "尝试作废"},
+    )
+    assert cancel_response.status_code == 422
+    assert "已登记预收款" in cancel_response.text
+
+    detail_response = await api_client.get(
+        f"/api/v1/sales/contracts/{contract_id}",
+        headers=headers,
+    )
+    assert detail_response.status_code == 200
+    assert detail_response.json()["data"]["approval_status"] == "draft"
+
+
 async def test_export_contract_endpoints_require_login(
     api_client: AsyncClient,
     seeded_system: None,

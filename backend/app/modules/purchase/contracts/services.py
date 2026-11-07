@@ -4,19 +4,29 @@ from decimal import Decimal
 
 from app.db.uow import UnitOfWork
 from app.modules.masterdata.products.repositories import ProductAccessoryRow, ProductRepository
+from app.modules.purchase.contracts.cancellation import (
+    cancel_purchase_contract,
+    reissue_purchase_contract,
+)
+from app.modules.purchase.contracts.errors import (
+    PermissionDeniedError,
+    PurchaseContractNotFoundError,
+)
 from app.modules.purchase.contracts.repositories import (
     PurchaseContractRepository,
-    PurchaseContractRow,
 )
 from app.modules.purchase.contracts.response_builder import PurchaseContractResponseBuilder
+from app.modules.purchase.contracts.rows import PurchaseContractRow
 from app.modules.purchase.contracts.schemas import (
     VALID_PURCHASE_CONTRACT_SOURCE_TYPES,
     VALID_PURCHASE_CONTRACT_STATUSES,
     PurchaseContractApprove,
+    PurchaseContractCancel,
     PurchaseContractCreate,
     PurchaseContractGenerateFromExportContracts,
     PurchaseContractLineCreate,
     PurchaseContractListResponse,
+    PurchaseContractReissue,
     PurchaseContractReminderListResponse,
     PurchaseContractResponse,
     PurchaseContractSubmit,
@@ -32,14 +42,6 @@ from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.numbering.generator import create_with_generated_code
-
-
-class PermissionDeniedError(Exception):
-    pass
-
-
-class PurchaseContractNotFoundError(Exception):
-    pass
 
 
 @dataclass(frozen=True)
@@ -348,6 +350,34 @@ class PurchaseContractService:
         return PurchaseContractReminderListResponse(
             items=[self._response_builder.reminder_response(row) for row in rows],
             total=len(rows),
+        )
+
+    async def cancel_contract(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        contract_id: str,
+        payload: PurchaseContractCancel,
+    ) -> PurchaseContractResponse:
+        return await cancel_purchase_contract(
+            self,
+            current_user=current_user,
+            contract_id=contract_id,
+            payload=payload,
+        )
+
+    async def reissue_contract(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        contract_id: str,
+        payload: PurchaseContractReissue,
+    ) -> PurchaseContractResponse:
+        return await reissue_purchase_contract(
+            self,
+            current_user=current_user,
+            contract_id=contract_id,
+            payload=payload,
         )
 
     async def _replace_lines(

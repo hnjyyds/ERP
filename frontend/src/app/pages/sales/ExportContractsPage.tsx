@@ -2,7 +2,7 @@ import { Alert, Button, Checkbox, Descriptions as _Descriptions, Drawer, Input, 
 import { ArrowLeft, LayoutDashboard, Plus, Search , FileStack} from 'lucide-react'
 import type { FormEvent, MouseEvent , ReactNode} from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { addExportContractAdvancePayment, approveExportContract, createExportContract, exportExportContract, listExportContracts, registerExportContractSignature, submitExportContract, updateExportContract, type AssignableUser, type CurrentUser, type ExportContract, type ExportContractAdvancePayment, type ExportContractAdvancePaymentPayload, type ExportContractApprovePayload, type ExportContractCreatePayload, type ExportContractLine, type ExportContractSignature, type ExportContractSignaturePayload, type Customer, type Product , ExportContractPurchaseStatus, ExportContractShipmentStatus, ExportQuotation, listAssignableUsers, listCustomers, listProducts, getExportQuotationHistory} from '../../../api'
+import { addExportContractAdvancePayment, approveExportContract, cancelExportContract, createExportContract, exportExportContract, listExportContracts, registerExportContractSignature, reissueExportContract, submitExportContract, updateExportContract, type AssignableUser, type CurrentUser, type ExportContract, type ExportContractAdvancePayment, type ExportContractAdvancePaymentPayload, type ExportContractApprovePayload, type ExportContractCreatePayload, type ExportContractLine, type ExportContractSignature, type ExportContractSignaturePayload, type Customer, type Product , ExportContractPurchaseStatus, ExportContractShipmentStatus, ExportQuotation, listAssignableUsers, listCustomers, listProducts, getExportQuotationHistory} from '../../../api'
 import { exportContractPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError, showWarningDialog } from '../../../shared/errors'
@@ -331,6 +331,12 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
   )
   const [advancePaymentForm, setAdvancePaymentForm] =
     useState<ExportContractAdvancePaymentFormState>(() => initialExportContractAdvancePaymentForm())
+  const [cancelModalOpen, setCancelModalOpen] = useState(false)
+  const [cancelReason, setCancelReason] = useState('')
+  const [cancelReasonError, setCancelReasonError] = useState('')
+  const [reissueModalOpen, setReissueModalOpen] = useState(false)
+  const [reissueReason, setReissueReason] = useState('')
+  const [reissueReasonError, setReissueReasonError] = useState('')
 
   const selectedContract = useMemo(
     () => {
@@ -737,6 +743,67 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
       await loadContracts(selectedContract.id)
     } catch (caught) {
       showError(caught, t('sales.contract.message.advancePaymentFailed'))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  function openCancelModal() {
+    setCancelReason('')
+    setCancelReasonError('')
+    setCancelModalOpen(true)
+  }
+
+  async function submitContractCancellation(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!selectedContract) return
+    if (!cancelReason.trim()) {
+      setCancelReasonError(t('sales.contract.cancel.reasonRequired'))
+      return
+    }
+    setSubmitting(true)
+    setMessage('')
+    try {
+      const cancelled = await cancelExportContract(selectedContract.id, {
+        reason: cancelReason.trim(),
+      })
+      setCancelModalOpen(false)
+      setMessage(t('sales.contract.cancel.success', { code: cancelled.code }))
+      upsertContract(cancelled)
+      await loadContracts(cancelled.id)
+    } catch (caught) {
+      showError(caught, t('sales.contract.message.saveFailed'))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  function openReissueModal() {
+    setReissueReason('')
+    setReissueReasonError('')
+    setReissueModalOpen(true)
+  }
+
+  async function submitContractReissue(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!selectedContract) return
+    if (!reissueReason.trim()) {
+      setReissueReasonError(t('sales.contract.cancel.reissueReasonRequired'))
+      return
+    }
+    setSubmitting(true)
+    setMessage('')
+    try {
+      const reissued = await reissueExportContract(selectedContract.id, {
+        reason: reissueReason.trim(),
+      })
+      setReissueModalOpen(false)
+      setMessage(t('sales.contract.cancel.reissueSuccess', { code: reissued.code }))
+      upsertContract(reissued)
+      await loadContracts(reissued.id)
+      onNavigate(moduleDetailPath(exportContractPath, reissued.id))
+    } catch (caught) {
+      showError(caught, t('sales.contract.message.createFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -1238,6 +1305,30 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
           </div>
           {selectedContract ? (
             <>
+              {selectedContract.approval_status === 'cancelled' ? (
+                <Alert
+                  showIcon
+                  description={selectedContract.cancel_reason ?? t('sales.contract.detail.notFilled')}
+                  message={t('sales.contract.detail.cancelledBanner', {
+                    date: selectedContract.cancelled_at
+                      ? formatDate(selectedContract.cancelled_at)
+                      : t('sales.contract.detail.notFilled'),
+                    name: selectedContract.cancelled_by_name ?? t('sales.contract.detail.notFilled'),
+                  })}
+                  type="warning"
+                />
+              ) : null}
+              {selectedContract.reissued_from_code ? (
+                <Alert
+                  showIcon
+                  description={selectedContract.reissue_reason ?? t('sales.contract.detail.notFilled')}
+                  message={t('sales.contract.detail.reissuedFromBanner', {
+                    code: selectedContract.reissued_from_code,
+                  })}
+                  type="info"
+                />
+              ) : null}
+
               <dl className="detail-list">
                 <div>
                   <dt>{t('sales.contract.detail.statusSignature')}</dt>
@@ -1319,6 +1410,16 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
                 <Button onClick={() => void openExportContractPrint(selectedContract.id)}>
                   {t('sales.contract.action.print')}
                 </Button>
+                {['draft', 'approved', 'rejected'].includes(selectedContract.approval_status) ? (
+                  <Button danger onClick={openCancelModal}>
+                    {t('sales.contract.action.cancel')}
+                  </Button>
+                ) : null}
+                {selectedContract.approval_status === 'cancelled' ? (
+                  <Button type="primary" onClick={openReissueModal}>
+                    {t('sales.contract.action.reissue')}
+                  </Button>
+                ) : null}
               </div>
               {selectedContract.approval_status === 'submitted' && !canApproveAssignedRecord(currentUser, selectedContract.reviewer_id, 'sales:contract:approve') ? (
                 <Alert
@@ -1621,6 +1722,82 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
           )}
           </section>
         ) : null}
+
+        <Modal
+          destroyOnHidden
+          footer={null}
+          open={cancelModalOpen}
+          title={t('sales.contract.cancel.title')}
+          onCancel={() => setCancelModalOpen(false)}
+        >
+          <form className="record-form" onSubmit={submitContractCancellation}>
+            <Alert message={t('sales.contract.cancel.hint')} showIcon type="warning" />
+            <label htmlFor="export-contract-cancel-reason">
+              {t('sales.contract.cancel.reason')}
+              <Input.TextArea
+                aria-describedby={cancelReasonError ? 'export-contract-cancel-error' : undefined}
+                aria-invalid={Boolean(cancelReasonError)}
+                id="export-contract-cancel-reason"
+                placeholder={t('sales.contract.cancel.reasonPlaceholder')}
+                rows={4}
+                value={cancelReason}
+                onChange={(event) => {
+                  setCancelReason(event.target.value)
+                  setCancelReasonError('')
+                }}
+              />
+            </label>
+            {cancelReasonError ? (
+              <span className="form-field-error" id="export-contract-cancel-error">
+                {cancelReasonError}
+              </span>
+            ) : null}
+            <div className="modal-actions">
+              <Button onClick={() => setCancelModalOpen(false)}>{t('common.cancel')}</Button>
+              <Button danger htmlType="submit" loading={submitting}>
+                {t('sales.contract.cancel.confirm')}
+              </Button>
+            </div>
+          </form>
+        </Modal>
+
+        <Modal
+          destroyOnHidden
+          footer={null}
+          open={reissueModalOpen}
+          title={t('sales.contract.cancel.reissueTitle')}
+          onCancel={() => setReissueModalOpen(false)}
+        >
+          <form className="record-form" onSubmit={submitContractReissue}>
+            <Alert message={t('sales.contract.cancel.reissueHint')} showIcon type="info" />
+            <label htmlFor="export-contract-reissue-reason">
+              {t('sales.contract.cancel.reissueReason')}
+              <Input.TextArea
+                aria-describedby={reissueReasonError ? 'export-contract-reissue-error' : undefined}
+                aria-invalid={Boolean(reissueReasonError)}
+                id="export-contract-reissue-reason"
+                placeholder={t('sales.contract.cancel.reissuePlaceholder')}
+                rows={4}
+                value={reissueReason}
+                onChange={(event) => {
+                  setReissueReason(event.target.value)
+                  setReissueReasonError('')
+                }}
+              />
+            </label>
+            {reissueReasonError ? (
+              <span className="form-field-error" id="export-contract-reissue-error">
+                {reissueReasonError}
+              </span>
+            ) : null}
+            <div className="modal-actions">
+              <Button onClick={() => setReissueModalOpen(false)}>{t('common.cancel')}</Button>
+              <Button htmlType="submit" loading={submitting} type="primary">
+                {t('sales.contract.cancel.reissueConfirm')}
+              </Button>
+            </div>
+          </form>
+        </Modal>
       </section>
     </section>
   )

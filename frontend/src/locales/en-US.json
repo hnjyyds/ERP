@@ -355,7 +355,8 @@
       "submitted": "Pending approval",
       "approved": "Approved",
       "contractGenerated": "Contract generated",
-      "rejected": "Rejected"
+      "rejected": "Rejected",
+      "cancelled": "Cancelled"
     },
     "freightMethod": {
       "sea": "Sea",
@@ -498,10 +499,28 @@
         "print": "Print document",
         "registerSignature": "Register signature",
         "linkAdvancePayment": "Link advance payment",
+        "cancel": "Cancel contract",
+        "reissue": "Reissue contract",
         "remove": "Remove",
         "waitingApproval": "Waiting for {name} to approve",
         "approverMismatch": "This export contract should be approved by {name}",
         "defaultReviewer": "the assigned approver"
+      },
+      "cancel": {
+        "title": "Cancel export contract",
+        "hint": "The original contract and code are kept and marked as cancelled. Contracts with shipments, purchase contracts, or receipts cannot be cancelled.",
+        "reason": "Cancellation reason",
+        "reasonPlaceholder": "Enter the cancellation reason (at least 1 character)",
+        "confirm": "Confirm cancellation",
+        "reasonRequired": "Enter the cancellation reason",
+        "success": "{code} cancelled",
+        "reissueTitle": "Reissue export contract",
+        "reissueHint": "A new draft will be created from the cancelled contract with a new generated code linked to the original code.",
+        "reissueReason": "Reissue reason",
+        "reissuePlaceholder": "Enter the reissue reason (at least 1 character)",
+        "reissueConfirm": "Reissue as new contract",
+        "reissueReasonRequired": "Enter the reissue reason",
+        "reissueSuccess": "Reissued as {code}"
       },
       "detail": {
         "title": "Contract detail",
@@ -529,7 +548,11 @@
         "emptyDescription": "Return to the list and select a contract to view details",
         "historyLoadFailed": "Failed to load historical quotation reference",
         "recordCount_one": "{count} record",
-        "recordCount_other": "{count} records"
+        "recordCount_other": "{count} records",
+        "cancelledBanner": "This contract was cancelled on {date} by {name}",
+        "cancelReasonLabel": "Cancellation reason",
+        "reissuedFromBanner": "Reissued from {code}",
+        "reissueReasonLabel": "Reissue reason"
       },
       "validation": {
         "lineRequired": "Add at least one product so the purchasing and QC processes can be linked correctly",
@@ -1415,7 +1438,8 @@
         "draft": "Draft",
         "submitted": "Pending approval",
         "approved": "Approved",
-        "rejected": "Rejected"
+        "rejected": "Rejected",
+        "cancelled": "Cancelled"
       },
       "source": {
         "exportContract": "Generated from export contract",
@@ -1485,7 +1509,11 @@
         "reminderTypePayment": "Payment reminder",
         "reminderTypeDelivery": "Delivery reminder",
         "reminderStatusOpen": "Open",
-        "reminderStatusClosed": "Completed"
+        "reminderStatusClosed": "Completed",
+        "cancelledBanner": "This contract was cancelled on {date} by {name}",
+        "cancelReasonLabel": "Cancellation reason",
+        "reissuedFromBanner": "Reissued from {code}",
+        "reissueReasonLabel": "Reissue reason"
       },
       "form": {
         "createTitle": "New purchase contract",
@@ -1589,7 +1617,25 @@
         "defaultReviewer": "the assigned approver",
         "confirmRejectTitle": "Reject this purchase contract?",
         "confirmRejectContent": "After rejection, the requester can revise the contract based on the rejection reason and resubmit it.",
-        "confirmReject": "Confirm rejection"
+        "confirmReject": "Confirm rejection",
+        "cancel": "Cancel contract",
+        "reissue": "Reissue contract"
+      },
+      "cancel": {
+        "title": "Cancel purchase contract",
+        "hint": "The original contract and code are kept and marked as cancelled. Contracts with inbound, quality, invoicing, or payment documents cannot be cancelled.",
+        "reason": "Cancellation reason",
+        "reasonPlaceholder": "Enter the cancellation reason (at least 1 character)",
+        "confirm": "Confirm cancellation",
+        "reasonRequired": "Enter the cancellation reason",
+        "success": "{code} cancelled",
+        "reissueTitle": "Reissue purchase contract",
+        "reissueHint": "A new draft will be created from the cancelled contract with a new generated code linked to the original code.",
+        "reissueReason": "Reissue reason",
+        "reissuePlaceholder": "Enter the reissue reason (at least 1 character)",
+        "reissueConfirm": "Reissue as new contract",
+        "reissueReasonRequired": "Enter the reissue reason",
+        "reissueSuccess": "Reissued as {code}"
       },
       "validation": {
         "exportContractRequired": "Enter at least one export contract ID",

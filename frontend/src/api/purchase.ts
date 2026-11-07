@@ -76,6 +76,13 @@ export interface PurchaseContract {
   rejection_reason: string | null
   reviewer_id: string | null
   reviewer_name: string | null
+  cancelled_at: string | null
+  cancelled_by_id: string | null
+  cancelled_by_name: string | null
+  cancel_reason: string | null
+  reissued_from_id: string | null
+  reissued_from_code: string | null
+  reissue_reason: string | null
   owner_user_id: string
   statistics: PurchaseContractStatistics
   lines: PurchaseContractLine[]
@@ -428,6 +435,26 @@ export function approvePurchaseContract(
   payload: PurchaseContractApprovePayload,
 ): Promise<PurchaseContract> {
   return request<PurchaseContract>(`/purchase/contracts/${contractId}/approve`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function cancelPurchaseContract(
+  contractId: string,
+  payload: { reason: string },
+): Promise<PurchaseContract> {
+  return request<PurchaseContract>(`/purchase/contracts/${contractId}/cancel`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function reissuePurchaseContract(
+  contractId: string,
+  payload: { reason: string },
+): Promise<PurchaseContract> {
+  return request<PurchaseContract>(`/purchase/contracts/${contractId}/reissue`, {
     method: 'POST',
     body: JSON.stringify(payload),
   })

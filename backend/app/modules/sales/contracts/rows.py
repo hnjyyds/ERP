@@ -37,6 +37,13 @@ class ExportContractRow:
     reviewer_name: str | None
     signature_status: str
     customer_signed_at: date | None
+    cancelled_at: datetime | None
+    cancelled_by_id: str | None
+    cancelled_by_name: str | None
+    cancel_reason: str | None
+    reissued_from_id: str | None
+    reissued_from_code: str | None
+    reissue_reason: str | None
     owner_user_id: str
     created_at: datetime
 

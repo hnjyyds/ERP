@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Self
 
@@ -7,7 +7,7 @@ from pydantic import ConfigDict, Field, model_validator
 from app.schemas.approvals import ApprovalSubmit
 from app.schemas.base import BaseModel
 
-VALID_CONTRACT_STATUSES = ("draft", "submitted", "approved", "rejected")
+VALID_CONTRACT_STATUSES = ("draft", "submitted", "approved", "rejected", "cancelled")
 VALID_CONTRACT_EXPORT_FORMATS = ("pdf", "excel")
 
 
@@ -199,6 +199,30 @@ class ExportContractSubmit(ApprovalSubmit):
     """Submit an export contract to one designated reviewer."""
 
 
+class ExportContractCancel(BaseModel):
+    """Cancel an export contract while keeping the original record and code."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    reason: str = Field(
+        min_length=1,
+        max_length=2000,
+        description="作废原因；必填，用于审计和列表说明。",
+    )
+
+
+class ExportContractReissue(BaseModel):
+    """Reopen a cancelled export contract as a new draft with a new code."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    reason: str = Field(
+        min_length=1,
+        max_length=2000,
+        description="重开原因；必填，会记录到新合同上。",
+    )
+
+
 class ExportContractSignatureCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -353,6 +377,13 @@ class ExportContractResponse(BaseModel):
     reviewer_name: str | None = Field(default=None, description="审批人姓名。")
     signature_status: str = Field(description="客户签章状态。")
     customer_signed_at: date | None = Field(description="客户签章日期。")
+    cancelled_at: datetime | None = Field(default=None, description="作废时间；未作废为空。")
+    cancelled_by_id: str | None = Field(default=None, description="作废操作人的用户 ID。")
+    cancelled_by_name: str | None = Field(default=None, description="作废操作人姓名。")
+    cancel_reason: str | None = Field(default=None, description="作废原因。")
+    reissued_from_id: str | None = Field(default=None, description="被重开的原合同 ID。")
+    reissued_from_code: str | None = Field(default=None, description="被重开的原合同号。")
+    reissue_reason: str | None = Field(default=None, description="重开原因。")
     owner_user_id: str = Field(description="订单归属业务员的用户 ID。")
     statistics: ExportContractStatisticsResponse = Field(description="订单履约汇总统计。")
     lines: list[ExportContractLineResponse] = Field(description="出口订单商品明细。")

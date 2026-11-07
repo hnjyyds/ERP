@@ -6,9 +6,11 @@ from app.api.auth_dependencies import CurrentUserDep
 from app.modules.purchase.contracts.providers import get_purchase_contract_service
 from app.modules.purchase.contracts.schemas import (
     PurchaseContractApprove,
+    PurchaseContractCancel,
     PurchaseContractCreate,
     PurchaseContractGenerateFromExportContracts,
     PurchaseContractListResponse,
+    PurchaseContractReissue,
     PurchaseContractReminderListResponse,
     PurchaseContractResponse,
     PurchaseContractSubmit,
@@ -116,6 +118,36 @@ async def submit_purchase_contract(
     service: Annotated[PurchaseContractService, Depends(get_purchase_contract_service)],
 ) -> ApiResponse[PurchaseContractResponse]:
     contract = await service.submit_contract(
+        current_user=user,
+        contract_id=contract_id,
+        payload=payload,
+    )
+    return ApiResponse(data=contract)
+
+
+@router.post("/{contract_id}/cancel", response_model=ApiResponse[PurchaseContractResponse])
+async def cancel_purchase_contract(
+    contract_id: str,
+    payload: PurchaseContractCancel,
+    user: CurrentUserDep,
+    service: Annotated[PurchaseContractService, Depends(get_purchase_contract_service)],
+) -> ApiResponse[PurchaseContractResponse]:
+    contract = await service.cancel_contract(
+        current_user=user,
+        contract_id=contract_id,
+        payload=payload,
+    )
+    return ApiResponse(data=contract)
+
+
+@router.post("/{contract_id}/reissue", response_model=ApiResponse[PurchaseContractResponse])
+async def reissue_purchase_contract(
+    contract_id: str,
+    payload: PurchaseContractReissue,
+    user: CurrentUserDep,
+    service: Annotated[PurchaseContractService, Depends(get_purchase_contract_service)],
+) -> ApiResponse[PurchaseContractResponse]:
+    contract = await service.reissue_contract(
         current_user=user,
         contract_id=contract_id,
         payload=payload,

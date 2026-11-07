@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
 
@@ -12,98 +11,13 @@ from app.modules.purchase.contracts.models import (
     PurchaseContractReminder,
     PurchaseContractSourceLink,
 )
-
-
-@dataclass(frozen=True)
-class PurchaseContractRow:
-    id: str
-    code: str
-    contract_date: date
-    supplier_id: str | None
-    supplier_name: str
-    buyer_user_id: str | None
-    buyer_user_name: str | None
-    qc_user_id: str | None
-    qc_user_name: str | None
-    currency: str
-    delivery_date: date
-    payment_terms: str
-    source_type: str
-    remarks: str | None
-    approval_status: str
-    submitted_at: date | None
-    approved_at: date | None
-    rejected_at: date | None
-    rejection_reason: str | None
-    reviewer_id: str | None
-    reviewer_name: str | None
-    total_quantity: str
-    total_amount: str
-    received_quantity: str
-    unreceived_quantity: str
-    paid_amount: str
-    unpaid_amount: str
-    owner_user_id: str
-    created_at: datetime
-
-
-@dataclass(frozen=True)
-class PurchaseContractLineRow:
-    id: str
-    contract_id: str
-    product_id: str | None
-    product_code: str | None
-    product_name: str
-    specification: str | None
-    model: str | None
-    quantity: Decimal
-    unit: str
-    unit_price: Decimal
-    amount: str
-    received_quantity: Decimal
-    unreceived_quantity: str
-    source_export_contract_id: str | None
-    source_export_contract_no: str | None
-    source_export_contract_line_id: str | None
-    remark: str | None
-    created_at: datetime
-
-
-@dataclass(frozen=True)
-class PurchaseContractSourceLinkRow:
-    id: str
-    contract_id: str
-    export_contract_id: str
-    export_contract_no: str
-    export_contract_line_id: str
-    customer_name: str
-    product_id: str | None
-    product_code: str | None
-    demand_quantity: str
-    unit: str
-    created_at: datetime
-
-
-@dataclass(frozen=True)
-class PurchaseContractReminderRow:
-    id: str
-    contract_id: str
-    reminder_type: str
-    title: str
-    due_date: date
-    amount: str | None
-    currency: str
-    status: str
-    created_at: datetime
-
-
-@dataclass
-class PurchaseContractDetails:
-    """Child rows loaded in batches for purchase-contract responses."""
-
-    lines: list[PurchaseContractLineRow]
-    source_links: list[PurchaseContractSourceLinkRow]
-    reminders: list[PurchaseContractReminderRow]
+from app.modules.purchase.contracts.rows import (
+    PurchaseContractDetails,
+    PurchaseContractLineRow,
+    PurchaseContractReminderRow,
+    PurchaseContractRow,
+    PurchaseContractSourceLinkRow,
+)
 
 
 class PurchaseContractRepository:
@@ -128,6 +42,9 @@ class PurchaseContractRepository:
         owner_user_id: str,
         qc_user_id: str | None = None,
         qc_user_name: str | None = None,
+        reissued_from_id: str | None = None,
+        reissued_from_code: str | None = None,
+        reissue_reason: str | None = None,
     ) -> PurchaseContractRow:
         contract = PurchaseContract(
             code=code,
@@ -145,6 +62,9 @@ class PurchaseContractRepository:
             remarks=remarks,
             approval_status=approval_status,
             owner_user_id=owner_user_id,
+            reissued_from_id=reissued_from_id,
+            reissued_from_code=reissued_from_code,
+            reissue_reason=reissue_reason,
         )
         self.session.add(contract)
         await self.session.flush()
@@ -491,6 +411,8 @@ class PurchaseContractRepository:
             )
         if approval_status:
             conditions.append(PurchaseContract.approval_status == approval_status)
+        else:
+            conditions.append(PurchaseContract.approval_status != "cancelled")
         if supplier_id:
             conditions.append(PurchaseContract.supplier_id == supplier_id)
         if source_type:
@@ -575,6 +497,39 @@ class PurchaseContractRepository:
             reviewer_name=reviewer_name,
         )
 
+    async def cancel_contract(
+        self,
+        *,
+        contract_id: str,
+        cancel_reason: str,
+        cancelled_by_id: str,
+        cancelled_by_name: str,
+        cancelled_at: datetime,
+    ) -> PurchaseContractRow | None:
+        contract = await self._get_contract_model(contract_id)
+        if contract is None:
+            return None
+        contract.approval_status = "cancelled"
+        contract.cancel_reason = cancel_reason
+        contract.cancelled_by_id = cancelled_by_id
+        contract.cancelled_by_name = cancelled_by_name
+        contract.cancelled_at = cancelled_at
+        await self.session.flush()
+        return self._map_contract(contract)
+
+    async def get_reissued_contract(
+        self,
+        *,
+        source_contract_id: str,
+    ) -> PurchaseContractRow | None:
+        contract = await self.session.scalar(
+            select(PurchaseContract)
+            .where(PurchaseContract.reissued_from_id == source_contract_id)
+            .order_by(PurchaseContract.created_at.asc())
+            .limit(1)
+        )
+        return self._map_contract(contract) if contract is not None else None
+
     async def has_other_approved_purchase_for_source_line(
         self,
         *,
@@ -633,6 +588,13 @@ class PurchaseContractRepository:
             unreceived_quantity=self._quantity(unreceived_quantity),
             paid_amount=self._money(contract.paid_amount),
             unpaid_amount=self._money(unpaid_amount),
+            cancelled_at=contract.cancelled_at,
+            cancelled_by_id=contract.cancelled_by_id,
+            cancelled_by_name=contract.cancelled_by_name,
+            cancel_reason=contract.cancel_reason,
+            reissued_from_id=contract.reissued_from_id,
+            reissued_from_code=contract.reissued_from_code,
+            reissue_reason=contract.reissue_reason,
             owner_user_id=contract.owner_user_id,
             created_at=contract.created_at,
         )

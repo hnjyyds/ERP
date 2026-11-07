@@ -227,6 +227,13 @@ export interface ExportContract {
   reviewer_name: string | null
   signature_status: string
   customer_signed_at: string | null
+  cancelled_at: string | null
+  cancelled_by_id: string | null
+  cancelled_by_name: string | null
+  cancel_reason: string | null
+  reissued_from_id: string | null
+  reissued_from_code: string | null
+  reissue_reason: string | null
   owner_user_id: string
   statistics: ExportContractStatistics
   lines: ExportContractLine[]
@@ -549,6 +556,26 @@ export function approveExportContract(
   payload: ExportContractApprovePayload,
 ): Promise<ExportContract> {
   return request<ExportContract>(`/sales/contracts/${contractId}/approve`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function cancelExportContract(
+  contractId: string,
+  payload: { reason: string },
+): Promise<ExportContract> {
+  return request<ExportContract>(`/sales/contracts/${contractId}/cancel`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function reissueExportContract(
+  contractId: string,
+  payload: { reason: string },
+): Promise<ExportContract> {
+  return request<ExportContract>(`/sales/contracts/${contractId}/reissue`, {
     method: 'POST',
     body: JSON.stringify(payload),
   })

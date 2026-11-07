@@ -123,6 +123,7 @@ export const exportContractStatusOptions: LocalizedOption[] = [
   { value: 'submitted', labelKey: 'sales.status.submitted' },
   { value: 'approved', labelKey: 'sales.status.approved' },
   { value: 'rejected', labelKey: 'sales.status.rejected' },
+  { value: 'cancelled', labelKey: 'sales.status.cancelled' },
 ]
 
 export const shipmentStatusOptions: LocalizedOption[] = [
@@ -248,6 +249,7 @@ export const purchaseContractStatusOptions: LocalizedOption[] = [
   { value: 'submitted', labelKey: 'purchase.contract.status.submitted' },
   { value: 'approved', labelKey: 'purchase.contract.status.approved' },
   { value: 'rejected', labelKey: 'purchase.contract.status.rejected' },
+  { value: 'cancelled', labelKey: 'purchase.contract.status.cancelled' },
 ]
 
 export const purchaseContractSourceTypeOptions: LocalizedOption[] = [

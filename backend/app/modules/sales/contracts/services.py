@@ -4,6 +4,14 @@ from decimal import Decimal
 from io import StringIO
 
 from app.db.uow import UnitOfWork
+from app.modules.sales.contracts.cancellation import (
+    cancel_export_contract,
+    reissue_export_contract,
+)
+from app.modules.sales.contracts.errors import (
+    ExportContractNotFoundError,
+    PermissionDeniedError,
+)
 from app.modules.sales.contracts.references import ExportContractReferenceRepository
 from app.modules.sales.contracts.repositories import (
     ExportContractAdvancePaymentRow,
@@ -19,11 +27,13 @@ from app.modules.sales.contracts.schemas import (
     ExportContractAdvancePaymentCreate,
     ExportContractAdvancePaymentResponse,
     ExportContractApprove,
+    ExportContractCancel,
     ExportContractCreate,
     ExportContractExportResponse,
     ExportContractLineResponse,
     ExportContractListResponse,
     ExportContractPurchaseStatusResponse,
+    ExportContractReissue,
     ExportContractResponse,
     ExportContractShipmentStatusResponse,
     ExportContractSignatureCreate,
@@ -37,14 +47,6 @@ from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.numbering.generator import create_with_generated_code
-
-
-class PermissionDeniedError(Exception):
-    pass
-
-
-class ExportContractNotFoundError(Exception):
-    pass
 
 
 class ExportContractService:
@@ -274,6 +276,34 @@ class ExportContractService:
             )
         return await self._contract_response(approved)
 
+    async def cancel_contract(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        contract_id: str,
+        payload: ExportContractCancel,
+    ) -> ExportContractResponse:
+        return await cancel_export_contract(
+            self,
+            current_user=current_user,
+            contract_id=contract_id,
+            payload=payload,
+        )
+
+    async def reissue_contract(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        contract_id: str,
+        payload: ExportContractReissue,
+    ) -> ExportContractResponse:
+        return await reissue_export_contract(
+            self,
+            current_user=current_user,
+            contract_id=contract_id,
+            payload=payload,
+        )
+
     async def register_signature(
         self,
         *,
@@ -444,6 +474,13 @@ class ExportContractService:
             reviewer_name=contract.reviewer_name,
             signature_status=contract.signature_status,
             customer_signed_at=contract.customer_signed_at,
+            cancelled_at=contract.cancelled_at,
+            cancelled_by_id=contract.cancelled_by_id,
+            cancelled_by_name=contract.cancelled_by_name,
+            cancel_reason=contract.cancel_reason,
+            reissued_from_id=contract.reissued_from_id,
+            reissued_from_code=contract.reissued_from_code,
+            reissue_reason=contract.reissue_reason,
             owner_user_id=contract.owner_user_id,
             statistics=self._statistics_response(contract),
             lines=[self._line_response(line) for line in lines],
