@@ -66,6 +66,9 @@
     "logout": "退出登录"
   },
   "common": {
+    "pagination": {
+      "total": "共 {count} 条"
+    },
     "cancel": "取消",
     "close": "关闭",
     "create": "新建",

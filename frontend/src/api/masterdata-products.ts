@@ -109,9 +109,15 @@ export interface ProductTransactionList {
   total: number
 }
 
-export function listProducts(q?: string): Promise<ProductList> {
-  const params = q ? `?q=${encodeURIComponent(q)}` : ''
-  return request<ProductList>(`/masterdata/products${params}`)
+export function listProducts(
+  filters: { q?: string; limit?: number; offset?: number } = {},
+): Promise<ProductList> {
+  const params = new URLSearchParams()
+  if (filters.q) params.set('q', filters.q)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
+  const suffix = params.size > 0 ? `?${params.toString()}` : ''
+  return request<ProductList>(`/masterdata/products${suffix}`)
 }
 
 export function createProduct(payload: ProductCreatePayload): Promise<Product> {

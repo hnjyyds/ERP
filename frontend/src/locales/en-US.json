@@ -66,6 +66,9 @@
     "logout": "Logout"
   },
   "common": {
+    "pagination": {
+      "total": "{count} items"
+    },
     "cancel": "Cancel",
     "close": "Close",
     "create": "Create",

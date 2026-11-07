@@ -40,6 +40,7 @@ import {
 import { showError, showSuccess, showWarningDialog } from '../../../shared/errors'
 import { downloadCsv } from '../../../shared/print'
 import { Metric, PanelTitle, useColumnView, type ColumnOption } from '../../../shared/ui'
+import { useTablePagination } from '../../../shared/useTablePagination'
 import { t, type TranslationKey } from '../../appI18n'
 import { productDetailPath, productPath } from '../../routes'
 
@@ -125,6 +126,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
   const [importing, setImporting] = useState(false)
   const [relatedCustomers, setRelatedCustomers] = useState<ProductCustomer[]>([])
   const [transactions, setTransactions] = useState<ProductTransaction[]>([])
+  const { page, pageSize, setTotal, setPage, changePage, pagination } = useTablePagination()
 
   const { isVisible: isColumnVisible, control: columnViewControl } = useColumnView(
     'masterdata-products',
@@ -180,10 +182,23 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
     }
   }, [detailId, onNavigate, products])
 
-  async function loadProducts(preferredId?: string) {
+  async function loadProducts(preferredId?: string, pageOverride?: number, pageSizeOverride?: number) {
+    const resolvedPage = pageOverride ?? page
+    const resolvedPageSize = pageSizeOverride ?? pageSize
     setLoading(true)
     try {
-      const result = await listProducts(search.trim() || undefined)
+      const result = await listProducts({
+        q: search.trim() || undefined,
+        limit: resolvedPageSize,
+        offset: (resolvedPage - 1) * resolvedPageSize,
+      })
+      setTotal(result.total)
+      if (result.items.length === 0 && resolvedPage > 1) {
+        const prevPage = resolvedPage - 1
+        setPage(prevPage)
+        await loadProducts(preferredId, prevPage, resolvedPageSize)
+        return
+      }
       setProducts(result.items)
       const nextSelectedId =
         preferredId ??
@@ -233,7 +248,8 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
       setMessage(t('masterdata.product.created', { code: created.code }))
       setForm(initialProductForm())
       setProductModalMode(null)
-      await loadProducts(created.id)
+      setPage(1)
+      await loadProducts(created.id, 1)
     } catch (caught) {
       showError(caught, t('masterdata.product.saveFailed'))
     } finally {
@@ -467,7 +483,8 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
                 className="inline-filters product-list-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadProducts()
+                  setPage(1)
+                  void loadProducts(undefined, 1)
                 }}
               >
                 <label className="inline-filter-search">
@@ -578,7 +595,13 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
               ].filter((column) => column.dataIndex === 'detail' || isColumnVisible(column.dataIndex as string))}
               dataSource={products}
               loading={loading}
-              pagination={false}
+              pagination={{
+                ...pagination,
+                onChange: (nextPage, nextPageSize) => {
+                  const next = changePage(nextPage, nextPageSize)
+                  void loadProducts(undefined, next.page, next.pageSize)
+                },
+              }}
               rowClassName={(record) => (record.id === selectedProduct?.id ? 'selected-row' : '')}
               rowKey="id"
               size="small"

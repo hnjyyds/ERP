@@ -421,6 +421,8 @@ export function listSampleRequests(filters: {
   customer_id?: string
   date_from?: string
   date_to?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<SampleRequestList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
@@ -428,6 +430,8 @@ export function listSampleRequests(filters: {
   if (filters.customer_id) params.set('customer_id', filters.customer_id)
   if (filters.date_from) params.set('date_from', filters.date_from)
   if (filters.date_to) params.set('date_to', filters.date_to)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<SampleRequestList>(`/sample/requests${suffix}`)
 }

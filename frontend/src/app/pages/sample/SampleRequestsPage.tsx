@@ -34,6 +34,7 @@ import { t } from '../../appI18n'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { useFormModal } from '../../../shared/useFormModal'
+import { useTablePagination } from '../../../shared/useTablePagination'
 import { openSampleRequestPrint } from '../../../shared/print'
 import {
   sampleStatusOptions,
@@ -365,6 +366,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
   const [recordForm, setRecordForm] = useState<SampleRecordFormState>(() =>
     initialSampleRecordForm(),
   )
+  const { page, pageSize, setTotal, setPage, changePage, pagination } = useTablePagination()
 
   const selectedRequest = useMemo(() => {
     if (detailId) return requests.find((item) => item.id === detailId) ?? null
@@ -391,7 +393,9 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
     openRequestDetail(request)
   }
 
-  async function loadRequests(preferredId?: string) {
+  async function loadRequests(preferredId?: string, pageOverride?: number, pageSizeOverride?: number) {
+    const resolvedPage = pageOverride ?? page
+    const resolvedPageSize = pageSizeOverride ?? pageSize
     setLoading(true)
     try {
       const result = await listSampleRequests({
@@ -400,7 +404,16 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
         customer_id: customerFilter.trim() || undefined,
         date_from: dateFromFilter || undefined,
         date_to: dateToFilter || undefined,
+        limit: resolvedPageSize,
+        offset: (resolvedPage - 1) * resolvedPageSize,
       })
+      setTotal(result.total)
+      if (result.items.length === 0 && resolvedPage > 1) {
+        const prevPage = resolvedPage - 1
+        setPage(prevPage)
+        await loadRequests(preferredId, prevPage, resolvedPageSize)
+        return
+      }
       setRequests(result.items)
       const nextSelectedId =
         preferredId ??
@@ -427,7 +440,8 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
         const created = await createSampleRequest(sampleRequestPayload(form))
         setMessage(t('sample.request.message.created', { code: created.code }))
         closeRequestModal()
-        await loadRequests(created.id)
+        setPage(1)
+        await loadRequests(created.id, 1)
       },
       (caught) => showError(caught, t('sample.request.message.createFailed')),
     )
@@ -580,7 +594,8 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                 className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadRequests()
+                  setPage(1)
+                  void loadRequests(undefined, 1)
                 }}
               >
                 <label className="inline-filter-search">
@@ -695,7 +710,13 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
               ]}
               dataSource={requests}
               loading={loading}
-              pagination={false}
+              pagination={{
+                ...pagination,
+                onChange: (nextPage, nextPageSize) => {
+                  const next = changePage(nextPage, nextPageSize)
+                  void loadRequests(undefined, next.page, next.pageSize)
+                },
+              }}
               rowClassName={(record) => (record.id === selectedRequest?.id ? 'selected-row' : '')}
               rowKey="id"
               size="small"
