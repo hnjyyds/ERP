@@ -1,300 +1,40 @@
-import { Alert, Button, Checkbox, Descriptions as _Descriptions, Drawer, Input, Modal, Table, Tag as _Tag , Select} from 'antd'
+import { Alert, Button, Checkbox, Descriptions as _Descriptions, Drawer, Input, Table, Tag as _Tag , Select} from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search , FileStack} from 'lucide-react'
-import type { FormEvent, MouseEvent , ReactNode} from 'react'
+import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { addExportContractAdvancePayment, approveExportContract, cancelExportContract, createExportContract, exportExportContract, listExportContracts, registerExportContractSignature, reissueExportContract, submitExportContract, updateExportContract, type AssignableUser, type CurrentUser, type ExportContract, type ExportContractAdvancePayment, type ExportContractAdvancePaymentPayload, type ExportContractApprovePayload, type ExportContractCreatePayload, type ExportContractLine, type ExportContractSignature, type ExportContractSignaturePayload, type Customer, type Product , ExportContractPurchaseStatus, ExportContractShipmentStatus, ExportQuotation, listAssignableUsers, listCustomers, listProducts, getExportQuotationHistory} from '../../../api'
+import { addExportContractAdvancePayment, approveExportContract, cancelExportContract, createExportContract, exportExportContract, listExportContracts, registerExportContractSignature, reissueExportContract, submitExportContract, updateExportContract, type AssignableUser, type CurrentUser, type ExportContract, type ExportContractAdvancePayment, type ExportContractLine, type ExportContractSignature, type Customer, type Product , ExportContractPurchaseStatus, ExportContractShipmentStatus, ExportQuotation, listAssignableUsers, listCustomers, listProducts, getExportQuotationHistory} from '../../../api'
 import { exportContractPath, moduleDetailPath } from '../../routes'
 import { FormModal, FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError, showWarningDialog } from '../../../shared/errors'
 import { downloadCsv as _downloadCsv, openExportContractPrint } from '../../../shared/print'
 import { exportContractStatusOptions } from '../../../shared/formOptions'
-import { canApproveAssignedRecord, formatDate, formatMoney, formatPercent as _formatPercent, nullableText, todayInputValue, type RoutedDetailPageProps , emptyToNull} from '../appHelpers'
+import { canApproveAssignedRecord, formatDate, formatMoney, formatPercent as _formatPercent, nullableText, todayInputValue, type RoutedDetailPageProps } from '../appHelpers'
 import { t } from '../../appI18n'
 import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
-
-function customerDisplayName(customer: Customer): string {
-  return customer.cn_name || customer.en_name || customer.code
-}
-
-function customerOptionLabel(customer: Customer): string {
-  return [customer.code, customerDisplayName(customer), customer.country].filter(Boolean).join(' / ')
-}
-
-function renderCustomerOptions(customers: Customer[]): ReactNode {
-  return customers.map((customer) => {
-    const displayName = customerDisplayName(customer)
-    const description = [customer.code, customer.country].filter(Boolean).join(' · ')
-    return (
-      <Select.Option key={customer.id} value={customer.id} label={displayName}>
-        <div className="remote-select-option">
-          <span className="remote-select-option-title">{displayName}</span>
-          <span className="remote-select-option-desc">{description}</span>
-        </div>
-      </Select.Option>
-    )
-  })
-}
-
-function assignableUserOptionLabel(user: AssignableUser): string {
-  return [user.display_name, user.username, user.department_name].filter(Boolean).join(' / ')
-}
-
-function renderAssignableUserOptions(users: AssignableUser[]): ReactNode {
-  return users.map((user) => (
-    <Select.Option key={user.id} value={user.id} label={user.display_name}>
-      <div className="remote-select-option">
-        <span className="remote-select-option-title">{user.display_name}</span>
-        <span className="remote-select-option-desc">
-          {[user.username, user.department_name].filter(Boolean).join(' · ')}
-        </span>
-      </div>
-    </Select.Option>
-  ))
-}
-
-function contractProgressStatusLabel(value: string): string {
-  if (value === 'completed') return t('sales.contract.progress.completed')
-  if (value === 'partial') return t('sales.contract.progress.partial')
-  if (value === 'pending') return t('sales.contract.progress.pending')
-  return value
-}
-
-
-type ExportContractLineFormState = {
-  key: string
-  product_id: string
-  product_code: string
-  product_name: string
-  barcode: string
-  specification: string
-  model: string
-  quantity: string
-  unit: string
-  unit_price: string
-  purchased_quantity: string
-  shipped_quantity: string
-  image_url: string
-  line_remark: string
-}
-
-type ExportContractFormState = {
-  code: string
-  contract_date: string
-  customer_id: string
-  customer_name: string
-  sales_user_id: string
-  sales_user_name: string
-  currency: string
-  trade_term: string
-  planned_ship_date: string
-  payment_terms: string
-  source_quotation_id: string
-  source_quotation_no: string
-  remarks: string
-  lines: ExportContractLineFormState[]
-}
-
-type ExportContractApproveFormState = {
-  reviewer_name: string
-  approved_at: string
-}
-
-type ExportContractSignatureFormState = {
-  signed_by: string
-  signed_at: string
-  signature_method: string
-  file_no: string
-  remark: string
-}
-
-type ExportContractAdvancePaymentFormState = {
-  payment_no: string
-  received_at: string
-  amount: string
-  currency: string
-  payer_name: string
-  remark: string
-}
-
-
-function initialExportContractForm(currentUser?: CurrentUser): ExportContractFormState {
-  return {
-    code: '',
-    contract_date: todayInputValue(),
-    customer_id: '',
-    customer_name: '',
-    sales_user_id: currentUser?.id ?? '',
-    sales_user_name: currentUser?.display_name ?? '',
-    currency: 'USD',
-    trade_term: 'FOB Ningbo',
-    planned_ship_date: todayInputValue(),
-    payment_terms: '30% T/T in advance, balance before shipment',
-    source_quotation_id: '',
-    source_quotation_no: '',
-    remarks: '',
-    lines: [],
-  }
-}
-
-function initialExportContractApproveForm(): ExportContractApproveFormState {
-  return {
-    reviewer_name: '',
-    approved_at: todayInputValue(),
-  }
-}
-
-function initialExportContractSignatureForm(): ExportContractSignatureFormState {
-  return {
-    signed_by: '',
-    signed_at: todayInputValue(),
-    signature_method: 'email_scan',
-    file_no: '',
-    remark: '',
-  }
-}
-
-function initialExportContractAdvancePaymentForm(): ExportContractAdvancePaymentFormState {
-  return {
-    payment_no: '',
-    received_at: todayInputValue(),
-    amount: '',
-    currency: 'USD',
-    payer_name: '',
-    remark: '',
-  }
-}
-
-function exportContractToForm(contract: ExportContract): ExportContractFormState {
-  return {
-    code: contract.code,
-    contract_date: contract.contract_date,
-    customer_id: contract.customer_id ?? '',
-    customer_name: contract.customer_name,
-    sales_user_id: contract.sales_user_id ?? '',
-    sales_user_name: contract.sales_user_name ?? '',
-    currency: contract.currency,
-    trade_term: contract.trade_term,
-    planned_ship_date: contract.planned_ship_date,
-    payment_terms: contract.payment_terms,
-    source_quotation_id: contract.source_quotation_id ?? '',
-    source_quotation_no: contract.source_quotation_no ?? '',
-    remarks: contract.remarks ?? '',
-    lines: contract.lines.map((line, index) => ({
-      key: line.id || `${line.product_id ?? 'line'}-${index}`,
-      product_id: line.product_id ?? '',
-      product_code: line.product_code ?? '',
-      product_name: line.product_name,
-      barcode: line.barcode ?? '',
-      specification: line.specification ?? '',
-      model: line.model ?? '',
-      quantity: line.quantity,
-      unit: line.unit,
-      unit_price: line.unit_price,
-      purchased_quantity: line.purchased_quantity,
-      shipped_quantity: line.shipped_quantity,
-      image_url: line.image_url ?? '',
-      line_remark: line.remark ?? '',
-    })),
-  }
-}
-
-function exportContractPayload(form: ExportContractFormState): ExportContractCreatePayload {
-  return {
-    contract_date: form.contract_date,
-    customer_id: emptyToNull(form.customer_id),
-    customer_name: form.customer_name.trim(),
-    sales_user_id: emptyToNull(form.sales_user_id),
-    sales_user_name: emptyToNull(form.sales_user_name),
-    currency: form.currency.trim(),
-    trade_term: form.trade_term.trim(),
-    planned_ship_date: form.planned_ship_date,
-    payment_terms: form.payment_terms.trim(),
-    source_quotation_id: emptyToNull(form.source_quotation_id),
-    source_quotation_no: emptyToNull(form.source_quotation_no),
-    remarks: emptyToNull(form.remarks),
-    lines: form.lines.map((line) => ({
-      product_id: emptyToNull(line.product_id),
-      product_code: emptyToNull(line.product_code),
-      product_name: line.product_name.trim(),
-      barcode: emptyToNull(line.barcode),
-      specification: emptyToNull(line.specification),
-      model: emptyToNull(line.model),
-      quantity: line.quantity,
-      unit: line.unit.trim(),
-      unit_price: line.unit_price,
-      purchased_quantity: line.purchased_quantity || '0',
-      shipped_quantity: line.shipped_quantity || '0',
-      image_url: emptyToNull(line.image_url),
-      remark: emptyToNull(line.line_remark),
-    })),
-  }
-}
-
-function productToContractLine(product: Product): ExportContractLineFormState {
-  return {
-    key: product.id,
-    product_id: product.id,
-    product_code: product.code,
-    product_name: product.cn_name || product.en_name || product.code,
-    barcode: '',
-    specification: product.specification ?? '',
-    model: product.model ?? '',
-    quantity: '1',
-    unit: product.unit || 'pcs',
-    unit_price: '1.00',
-    purchased_quantity: '0',
-    shipped_quantity: '0',
-    image_url: product.image_url ?? '',
-    line_remark: product.package_info ? `包装: ${product.package_info}` : '',
-  }
-}
-
-function exportContractApprovePayload(
-  form: ExportContractApproveFormState,
-): ExportContractApprovePayload {
-  return {
-    reviewer_name: form.reviewer_name.trim(),
-    approved_at: form.approved_at,
-  }
-}
-
-function exportContractSignaturePayload(
-  form: ExportContractSignatureFormState,
-): ExportContractSignaturePayload {
-  return {
-    signed_by: form.signed_by.trim(),
-    signed_at: form.signed_at,
-    signature_method: form.signature_method.trim(),
-    file_no: emptyToNull(form.file_no),
-    remark: emptyToNull(form.remark),
-  }
-}
-
-function exportContractAdvancePaymentPayload(
-  form: ExportContractAdvancePaymentFormState,
-): ExportContractAdvancePaymentPayload {
-  return {
-    payment_no: form.payment_no.trim(),
-    received_at: form.received_at,
-    amount: form.amount,
-    currency: form.currency.trim(),
-    payer_name: form.payer_name.trim(),
-    remark: emptyToNull(form.remark),
-  }
-}
-
-function exportContractStatusLabel(value: string): string {
-  const option = exportContractStatusOptions.find((item) => item.value === value)
-  return option ? t(option.labelKey) : value
-}
-
-function signatureStatusLabel(value: string): string {
-  if (value === 'signed') return t('sales.contract.signatureStatus.signed')
-  if (value === 'not_signed') return t('sales.contract.signatureStatus.notSigned')
-  if (value === 'pending') return t('sales.contract.signatureStatus.pending')
-  return value
-}
-
+import { ExportContractFormModal } from './components/ExportContractFormModal'
+import {
+  contractProgressStatusLabel,
+  customerDisplayName,
+  customerOptionLabel,
+  exportContractAdvancePaymentPayload,
+  exportContractApprovePayload,
+  exportContractPayload,
+  exportContractSignaturePayload,
+  exportContractStatusLabel,
+  exportContractToForm,
+  initialExportContractAdvancePaymentForm,
+  initialExportContractApproveForm,
+  initialExportContractForm,
+  initialExportContractSignatureForm,
+  productToContractLine,
+  renderCustomerOptions,
+  signatureStatusLabel,
+  type ExportContractAdvancePaymentFormState,
+  type ExportContractApproveFormState,
+  type ExportContractFormState,
+  type ExportContractLineFormState,
+  type ExportContractSignatureFormState,
+} from './exportContractHelpers'
 
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 
@@ -958,284 +698,29 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
           </section>
         ) : null}
 
-        <Modal
-          centered
-          footer={null}
+        <ExportContractFormModal
           open={createModalOpen}
-          title={editingContractId ? t('sales.contract.form.editTitle') : t('sales.contract.form.createTitle')}
-          width={1160}
-          onCancel={() => {
+          editingContractId={editingContractId}
+          form={form}
+          setForm={setForm}
+          customers={customers}
+          assignableUsers={assignableUsers}
+          loadingCustomers={loadingCustomers}
+          loadingAssignableUsers={loadingAssignableUsers}
+          loadingProducts={loadingProducts}
+          submitting={submitting}
+          onClose={() => {
             closeProductDrawer()
             setCreateModalOpen(false)
             setEditingContractId(null)
           }}
-        >
-          <form className="record-form entity-modal-form contract-modal-form" onSubmit={submitContract}>
-            <div className="form-row">
-              <label>
-                {t('sales.contract.field.code')}
-                <Input
-                  readOnly
-                  value={form.code}
-                  placeholder={t('sales.contract.form.codeAutoGenerated')}
-                />
-              </label>
-              <label>
-                {t('sales.contract.field.contractDate')}
-                <Input
-                  type="date"
-                  value={form.contract_date}
-                  onInput={(event) => setForm({ ...form, contract_date: event.currentTarget.value })}
-                />
-              </label>
-              <label>
-                {t('sales.contract.field.salesperson')}
-                <Select
-                  allowClear
-                  aria-label={t('sales.contract.field.salesperson')}
-                  showSearch
-                  loading={loadingAssignableUsers}
-                  value={form.sales_user_id || undefined}
-                  placeholder={loadingAssignableUsers ? t('sales.contract.form.salespersonLoading') : t('sales.contract.form.salespersonPlaceholder')}
-                  optionLabelProp="label"
-                  filterOption={(input, option) => {
-                    const user = assignableUsers.find((item) => item.id === option?.value)
-                    return user
-                      ? assignableUserOptionLabel(user)
-                          .toLocaleLowerCase()
-                          .includes(input.toLocaleLowerCase())
-                      : false
-                  }}
-                  notFoundContent={loadingAssignableUsers ? t('sales.contract.form.loadingUsers') : t('sales.contract.form.noSalespersons')}
-                  onChange={applySalesUserToContractForm}
-                >
-                  {form.sales_user_id &&
-                  !assignableUsers.some((user) => user.id === form.sales_user_id) ? (
-                    <Select.Option
-                      key={form.sales_user_id}
-                      value={form.sales_user_id}
-                      label={form.sales_user_name || form.sales_user_id}
-                      disabled
-                    >
-                      {t('sales.contract.form.currentRecord', {
-                        name: form.sales_user_name || form.sales_user_id,
-                      })}
-                    </Select.Option>
-                  ) : null}
-                  {renderAssignableUserOptions(assignableUsers)}
-                </Select>
-              </label>
-            </div>
-            <div className="form-row">
-              <label>
-                {t('sales.contract.form.selectCustomer')}
-                <Select
-                  allowClear
-                  showSearch
-                  loading={loadingCustomers}
-                  value={form.customer_id || undefined}
-                  placeholder={customers.length > 0 ? t('sales.contract.form.customerSelectPlaceholder') : t('sales.contract.form.customerMissing')}
-                  optionLabelProp="label"
-                  filterOption={(input, option) => {
-                    const customer = customers.find((item) => item.id === option?.value)
-                    return customer
-                      ? customerOptionLabel(customer).toLocaleLowerCase().includes(input.toLocaleLowerCase())
-                      : false
-                  }}
-                  notFoundContent={loadingCustomers ? t('sales.contract.list.loadingCustomers') : t('sales.contract.list.noCustomers')}
-                  onChange={applyCustomerToContractForm}
-                >
-                  {renderCustomerOptions(customers)}
-                </Select>
-              </label>
-              <label>
-                {t('sales.contract.field.customerName')}
-                <Input value={form.customer_name} readOnly placeholder={t('sales.contract.form.customerNamePlaceholder')} />
-              </label>
-              <label>
-                {t('sales.contract.field.currency')}
-                <Input
-                  value={form.currency}
-                  onChange={(event) => setForm({ ...form, currency: event.target.value })}
-                />
-              </label>
-            </div>
-            <div className="form-row">
-              <label>
-                {t('sales.contract.field.tradeTerm')}
-                <Input
-                  value={form.trade_term}
-                  onChange={(event) => setForm({ ...form, trade_term: event.target.value })}
-                />
-              </label>
-              <label>
-                {t('sales.contract.field.paymentTerms')}
-                <Input
-                  value={form.payment_terms}
-                  onChange={(event) => setForm({ ...form, payment_terms: event.target.value })}
-                />
-              </label>
-              <label>
-                {t('sales.contract.field.plannedShipDate')}
-                <Input
-                  type="date"
-                  value={form.planned_ship_date}
-                  onInput={(event) => setForm({ ...form, planned_ship_date: event.currentTarget.value })}
-                />
-              </label>
-            </div>
-            <div className="form-row">
-              <label>
-                {t('sales.contract.field.remarks')}
-                <Input
-                  value={form.remarks}
-                  onChange={(event) => setForm({ ...form, remarks: event.target.value })}
-                />
-              </label>
-            </div>
-            <div className="contract-line-toolbar">
-              <div>
-                <div className="form-divider">{t('sales.contract.form.linesTitle')}</div>
-                <p>{t('sales.contract.form.linesHint', { count: form.lines.length })}</p>
-              </div>
-              <Button icon={<Plus size={16} />} loading={loadingProducts} onClick={openProductDrawer}>
-                {t('sales.contract.form.addProducts')}
-              </Button>
-            </div>
-            <Table<ExportContractLineFormState>
-              className="contract-lines-table"
-              dataSource={form.lines}
-              locale={{ emptyText: t('sales.contract.form.linesEmpty') }}
-              pagination={false}
-              rowKey="key"
-              scroll={{ x: 1200 }}
-              size="small"
-              columns={[
-                {
-                  title: t('sales.contract.field.product'),
-                  key: 'product',
-                  width: 210,
-                  render: (_, line) => (
-                    <div className="contract-line-product">
-                      <strong>{line.product_name}</strong>
-                      <span>{line.product_code}</span>
-                    </div>
-                  ),
-                },
-                {
-                  title: t('sales.contract.field.barcode'),
-                  key: 'barcode',
-                  width: 220,
-                  render: (_, line) => (
-                    <Input
-                      aria-label={t('sales.contract.form.barcodeAria', { name: line.product_name })}
-                      className="barcode-input"
-                      inputMode="numeric"
-                      maxLength={64}
-                      placeholder={t('sales.contract.form.barcodePlaceholder')}
-                      value={line.barcode}
-                      onChange={(event) =>
-                        updateContractLine(line.key, 'barcode', event.target.value.replace(/\D/g, ''))
-                      }
-                    />
-                  ),
-                },
-                {
-                  title: t('sales.contract.form.specificationModel'),
-                  key: 'specification',
-                  width: 210,
-                  render: (_, line) => (
-                    <div className="contract-line-stacked-fields">
-                      <Input
-                        aria-label={t('sales.contract.form.specificationAria', { name: line.product_name })}
-                        placeholder={t('sales.contract.field.specification')}
-                        value={line.specification}
-                        onChange={(event) => updateContractLine(line.key, 'specification', event.target.value)}
-                      />
-                      <Input
-                        aria-label={t('sales.contract.form.modelAria', { name: line.product_name })}
-                        placeholder={t('sales.contract.field.model')}
-                        value={line.model}
-                        onChange={(event) => updateContractLine(line.key, 'model', event.target.value)}
-                      />
-                    </div>
-                  ),
-                },
-                {
-                  title: t('sales.contract.field.quantity'),
-                  key: 'quantity',
-                  width: 130,
-                  render: (_, line) => (
-                    <Input
-                      aria-label={t('sales.contract.form.quantityAria', { name: line.product_name })}
-                      min="0.0001"
-                      step="0.0001"
-                      type="number"
-                      value={line.quantity}
-                      onChange={(event) => updateContractLine(line.key, 'quantity', event.target.value)}
-                    />
-                  ),
-                },
-                {
-                  title: t('sales.contract.field.unit'),
-                  key: 'unit',
-                  width: 105,
-                  render: (_, line) => (
-                    <Input
-                      aria-label={t('sales.contract.form.unitAria', { name: line.product_name })}
-                      value={line.unit}
-                      onChange={(event) => updateContractLine(line.key, 'unit', event.target.value)}
-                    />
-                  ),
-                },
-                {
-                  title: t('sales.contract.field.unitPrice'),
-                  key: 'unit_price',
-                  width: 140,
-                  render: (_, line) => (
-                    <Input
-                      aria-label={t('sales.contract.form.unitPriceAria', { name: line.product_name })}
-                      min="0.0001"
-                      step="0.0001"
-                      type="number"
-                      value={line.unit_price}
-                      onChange={(event) => updateContractLine(line.key, 'unit_price', event.target.value)}
-                    />
-                  ),
-                },
-                {
-                  title: t('sales.contract.field.amount'),
-                  key: 'amount',
-                  width: 140,
-                  render: (_, line) =>
-                    formatMoney((Number(line.quantity || 0) * Number(line.unit_price || 0)).toFixed(2), form.currency),
-                },
-                {
-                  title: t('sales.contract.field.actions'),
-                  key: 'actions',
-                  width: 80,
-                  render: (_, line) => (
-                    <Button danger size="small" onClick={() => removeContractLine(line.key)}>
-                      {t('sales.contract.action.remove')}
-                    </Button>
-                  ),
-                },
-              ]}
-            />
-            <div className="modal-actions">
-              <Button onClick={() => {
-                closeProductDrawer()
-                setCreateModalOpen(false)
-                setEditingContractId(null)
-              }}>
-                {t('common.cancel')}
-              </Button>
-              <Button className="inline-submit" htmlType="submit" type="primary" loading={submitting}>
-                {editingContractId ? t('sales.contract.form.save') : t('sales.contract.form.createTitle')}
-              </Button>
-            </div>
-          </form>
-        </Modal>
+          onSubmit={submitContract}
+          applyCustomerToContractForm={applyCustomerToContractForm}
+          applySalesUserToContractForm={applySalesUserToContractForm}
+          removeContractLine={removeContractLine}
+          updateContractLine={updateContractLine}
+          openProductDrawer={openProductDrawer}
+        />
 
         <Drawer
           destroyOnHidden
