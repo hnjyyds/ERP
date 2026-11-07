@@ -30,16 +30,20 @@ describe('LoginPage', () => {
     expect(screen.getByText('会话已过期')).toBeInTheDocument()
   })
 
-  it('shows validation error when submitting with empty fields', async () => {
+  it('does not show the required hint before the user submits', () => {
     render(<LoginPage error="" onLogin={onLogin} />)
 
-    // Clear the default username
-    const usernameInput = screen.getByLabelText('用户名')
-    await userEvent.clear(usernameInput)
+    expect(screen.queryByText('请填写用户名和密码')).not.toBeInTheDocument()
+  })
+
+  it('shows validation error when submitting with empty fields', async () => {
+    render(<LoginPage error="" onLogin={onLogin} />)
 
     const submitButton = screen.getByRole('button', { name: /登录/ })
     await userEvent.click(submitButton)
 
-    expect(screen.getByText('请填写用户名和密码')).toBeInTheDocument()
+    expect(
+      screen.getByText('请填写用户名和密码', { selector: '.login-form-hint' }),
+    ).toBeInTheDocument()
   })
 })

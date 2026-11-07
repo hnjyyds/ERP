@@ -17,6 +17,7 @@ export function LoginPage({
   const [password, setPassword] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [formError, setFormError] = useState(error)
+  const [submitAttempted, setSubmitAttempted] = useState(false)
   const usernameValue = username.trim()
   const missingUsername = usernameValue.length === 0
   const missingPassword = password.length === 0
@@ -28,11 +29,13 @@ export function LoginPage({
         : missingPassword
           ? t('auth.validation.passwordRequired')
           : ''
-  const canSubmit = !requiredMessage && !submitting
+  const showRequiredMessage = submitAttempted && Boolean(requiredMessage)
+  const canSubmit = !submitting
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (requiredMessage) {
+      setSubmitAttempted(true)
       setFormError(requiredMessage)
       return
     }
@@ -122,7 +125,7 @@ export function LoginPage({
                 }}
               />
             </label>
-            {requiredMessage ? <p className="login-form-hint">{requiredMessage}</p> : null}
+            {showRequiredMessage ? <p className="login-form-hint">{requiredMessage}</p> : null}
             <SemiButton
               block
               className="login-submit"
