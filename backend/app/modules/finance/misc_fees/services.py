@@ -50,6 +50,8 @@ class MiscFeeService:
         self._require_finance(current_user)
         self._validate_category(payload.category)
         self._validate_allocation_method(payload.default_allocation_method)
+        if await self._repository.get_item_by_code(payload.code) is not None:
+            raise ValueError("杂费项目编码已存在")
         async with UnitOfWork(self._repository.session):
             item = await self._repository.create_item(
                 code=payload.code,

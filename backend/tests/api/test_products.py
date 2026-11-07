@@ -92,6 +92,24 @@ async def test_product_create_detail_search_and_export(
     assert "4202920000" in export_data["content"]
 
 
+async def test_product_create_rejects_duplicate_code(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    payload = _product_payload(code="P-DUP-001")
+
+    first = await api_client.post("/api/v1/masterdata/products", headers=headers, json=payload)
+    assert first.status_code == 201
+
+    duplicate = await api_client.post(
+        "/api/v1/masterdata/products", headers=headers, json=payload
+    )
+    assert duplicate.status_code == 422
+    assert "商品编码已存在" in duplicate.text
+
+
 async def test_product_accessory_can_be_added_after_create(
     api_client: AsyncClient,
     seeded_system: None,

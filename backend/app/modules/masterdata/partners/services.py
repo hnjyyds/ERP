@@ -50,6 +50,8 @@ class PartnerService:
     ) -> PartnerResponse:
         self._require(current_user, "masterdata:partner:edit")
         self._validate_partner_type(payload.partner_type)
+        if await self._repository.get_partner_by_code(payload.code) is not None:
+            raise ValueError("合作伙伴编码已存在")
         async with UnitOfWork(self._repository.session):
             partner = await self._repository.create_partner(
                 code=payload.code,

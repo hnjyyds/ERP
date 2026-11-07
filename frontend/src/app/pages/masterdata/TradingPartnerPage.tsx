@@ -93,7 +93,6 @@ export function TradingPartnerPage({
   entityLabel,
   pageTitle,
   searchPlaceholder,
-  createPrefix,
   kind,
   detailId,
   listPath,
@@ -130,7 +129,7 @@ export function TradingPartnerPage({
     openWith: openEntityModal,
     close: closeEntityModal,
     runSubmit: runEntitySubmit,
-  } = useFormModal(() => initialPartnerForm(createPrefix))
+  } = useFormModal(() => initialPartnerForm())
   const {
     open: contactModalOpen,
     form: contactForm,

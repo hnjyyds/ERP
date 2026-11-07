@@ -177,6 +177,33 @@ async def test_finance_misc_fee_item_allocation_and_profit(
     assert shipment_profit["profit_amount"] == "144.00"
 
 
+async def test_finance_misc_fee_item_rejects_duplicate_code(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    finance_token = await _login_token(api_client, "finance", "finance123")
+    headers = {"Authorization": f"Bearer {finance_token}"}
+    payload = {
+        "code": "OFFICE-DUP",
+        "name": "办公费用",
+        "category": "office",
+        "default_allocation_method": "manual",
+        "is_active": True,
+        "remark": "日常办公费用分摊",
+    }
+
+    first = await api_client.post(
+        "/api/v1/finance/misc-fee-items", headers=headers, json=payload
+    )
+    assert first.status_code == 201
+
+    duplicate = await api_client.post(
+        "/api/v1/finance/misc-fee-items", headers=headers, json=payload
+    )
+    assert duplicate.status_code == 422
+    assert "杂费项目编码已存在" in duplicate.text
+
+
 async def test_finance_misc_fee_rejects_invalid_allocation_and_permissions(
     api_client: AsyncClient,
     seeded_system: None,

@@ -692,7 +692,7 @@ export function verificationReminderStatusTag(value: string): ReactNode {
 
 export function initialMiscFeeItemForm(): MiscFeeItemFormState {
   return {
-    code: `MISC-${Date.now().toString().slice(-6)}`,
+    code: '',
     name: '',
     category: 'office',
     default_allocation_method: 'manual',

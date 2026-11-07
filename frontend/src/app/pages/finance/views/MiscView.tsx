@@ -39,6 +39,7 @@ export function MiscView({ model, shell }: Props) {
     miscFeeAllocationShipmentFilter,
     miscFeeAllocations,
     miscFeeItemCategoryFilter,
+    miscFeeItemCodeError,
     miscFeeItemForm,
     miscFeeItemSearch,
     miscFeeItemStatusFilter,
@@ -51,6 +52,7 @@ export function MiscView({ model, shell }: Props) {
     setMiscFeeAllocationSearch,
     setMiscFeeAllocationShipmentFilter,
     setMiscFeeItemCategoryFilter,
+    setMiscFeeItemCodeError,
     setMiscFeeItemForm,
     setMiscFeeItemSearch,
     setMiscFeeItemStatusFilter,
@@ -138,7 +140,10 @@ export function MiscView({ model, shell }: Props) {
                 <Button
                   type="primary"
                   icon={<Plus size={16} />}
-                  onClick={() => setMiscItemModalOpen(true)}
+                  onClick={() => {
+                    setMiscFeeItemCodeError('')
+                    setMiscItemModalOpen(true)
+                  }}
                 >
                   {t('finance.misc.action.createMisc')}
                 </Button>
@@ -211,11 +216,19 @@ export function MiscView({ model, shell }: Props) {
                 <label>
                   {t('finance.misc.field.code')}
                   <Input
+                    aria-invalid={Boolean(miscFeeItemCodeError)}
+                    aria-describedby="misc-fee-item-code-error"
                     value={miscFeeItemForm.code}
-                    onChange={(event) =>
+                    onChange={(event) => {
+                      setMiscFeeItemCodeError('')
                       setMiscFeeItemForm({ ...miscFeeItemForm, code: event.target.value })
-                    }
+                    }}
                   />
+                  {miscFeeItemCodeError ? (
+                    <span className="form-field-error" id="misc-fee-item-code-error">
+                      {miscFeeItemCodeError}
+                    </span>
+                  ) : null}
                 </label>
                 <label>
                   {t('finance.misc.field.name')}

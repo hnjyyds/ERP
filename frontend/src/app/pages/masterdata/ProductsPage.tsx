@@ -1160,7 +1160,7 @@ function validateProductForm(form: ProductFormState): string | null {
 
 function initialProductForm(): ProductFormState {
   return {
-    code: `P-${Date.now().toString().slice(-6)}`,
+    code: '',
     cn_name: '',
     en_name: '',
     specification: '',

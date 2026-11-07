@@ -101,9 +101,9 @@ function translateMasterdata(key: TranslationKey): string {
   return translate(getRuntimeSettings().language, key)
 }
 
-export function initialPartnerForm(prefix: string): PartnerFormState {
+export function initialPartnerForm(): PartnerFormState {
   return {
-    code: `${prefix}-${Date.now().toString().slice(-6)}`,
+    code: '',
     cn_name: '',
     en_name: '',
     partner_type: 'freight_forwarder',

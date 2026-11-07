@@ -36,6 +36,12 @@ class DocumentPartyRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
+    async def get_party_by_code(self, code: str) -> DocumentPartyRow | None:
+        party = await self.session.scalar(select(DocumentParty).where(DocumentParty.code == code))
+        if party is None:
+            return None
+        return self._map_party(party)
+
     async def create_party(
         self,
         *,

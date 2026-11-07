@@ -2598,6 +2598,9 @@
     },
     "misc": {
       "title": "杂费管理",
+      "validation": {
+        "codeRequired": "请填写杂费项目编码"
+      },
       "category": {
         "office": "办公费用",
         "capitalInterest": "资金占用利息",

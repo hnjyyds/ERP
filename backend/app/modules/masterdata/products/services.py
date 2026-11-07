@@ -86,6 +86,8 @@ class ProductService:
         payload: ProductCreate,
     ) -> ProductResponse:
         self._require(current_user, "masterdata:product:edit")
+        if await self._repository.get_product_by_code(payload.code) is not None:
+            raise ValueError("商品编码已存在")
         async with UnitOfWork(self._repository.session):
             product = await self._repository.create_product(
                 code=payload.code,
@@ -122,6 +124,9 @@ class ProductService:
         payload: ProductUpdate,
     ) -> ProductResponse:
         self._require(current_user, "masterdata:product:edit")
+        existing = await self._repository.get_product_by_code(payload.code)
+        if existing is not None and existing.id != product_id:
+            raise ValueError("商品编码已存在")
         async with UnitOfWork(self._repository.session):
             product = await self._repository.update_product(
                 product_id=product_id,

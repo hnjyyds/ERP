@@ -2598,6 +2598,9 @@
     },
     "misc": {
       "title": "Misc. Fee Management",
+      "validation": {
+        "codeRequired": "Enter the misc. fee item code"
+      },
       "category": {
         "office": "Office Expenses",
         "capitalInterest": "Capital Occupation Interest",

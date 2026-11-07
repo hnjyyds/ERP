@@ -96,6 +96,26 @@ async def test_partner_create_detail_search_update_and_fee_records(
     assert fees_response.json()["data"] == {"items": [], "total": 0}
 
 
+async def test_partner_rejects_duplicate_code(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    payload = _partner_payload(code="P-DUP-001")
+
+    first = await api_client.post(
+        "/api/v1/masterdata/partners", headers=headers, json=payload
+    )
+    assert first.status_code == 201
+
+    duplicate = await api_client.post(
+        "/api/v1/masterdata/partners", headers=headers, json=payload
+    )
+    assert duplicate.status_code == 422
+    assert "合作伙伴编码已存在" in duplicate.text
+
+
 async def test_partner_primary_contact_can_be_replaced(
     api_client: AsyncClient,
     seeded_system: None,

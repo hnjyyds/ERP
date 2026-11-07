@@ -129,6 +129,26 @@ async def test_document_party_create_detail_search_update_and_lookup(
     assert inactive_lookup_response.json()["data"]["total"] == 0
 
 
+async def test_document_party_rejects_duplicate_code(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    payload = _party_payload(code="DP-DUP-001")
+
+    first = await api_client.post(
+        "/api/v1/masterdata/document-parties", headers=headers, json=payload
+    )
+    assert first.status_code == 201
+
+    duplicate = await api_client.post(
+        "/api/v1/masterdata/document-parties", headers=headers, json=payload
+    )
+    assert duplicate.status_code == 422
+    assert "单证资料编码已存在" in duplicate.text
+
+
 async def test_document_party_rejects_unknown_type(
     api_client: AsyncClient,
     seeded_system: None,

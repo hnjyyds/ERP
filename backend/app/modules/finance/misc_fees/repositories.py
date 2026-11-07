@@ -81,6 +81,12 @@ class MiscFeeRepository:
         await self.session.flush()
         return self._map_item(item)
 
+    async def get_item_by_code(self, code: str) -> MiscFeeItemRow | None:
+        item = await self.session.scalar(select(MiscFeeItem).where(MiscFeeItem.code == code))
+        if item is None:
+            return None
+        return self._map_item(item)
+
     async def get_item(self, item_id: str) -> MiscFeeItemRow | None:
         item = await self.session.get(MiscFeeItem, item_id)
         if item is None:

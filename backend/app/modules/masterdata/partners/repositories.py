@@ -50,6 +50,12 @@ class PartnerRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
+    async def get_partner_by_code(self, code: str) -> PartnerRow | None:
+        partner = await self.session.scalar(select(Partner).where(Partner.code == code))
+        if partner is None:
+            return None
+        return self._map_partner(partner)
+
     async def create_partner(
         self,
         *,

@@ -40,6 +40,8 @@ class DocumentPartyService:
     ) -> DocumentPartyResponse:
         self._require(current_user, "masterdata:document_party:edit")
         self._validate_party_type(payload.party_type)
+        if await self._repository.get_party_by_code(payload.code) is not None:
+            raise ValueError("单证资料编码已存在")
         async with UnitOfWork(self._repository.session):
             party = await self._repository.create_party(
                 code=payload.code,

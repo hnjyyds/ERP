@@ -39,6 +39,8 @@ export function useMiscModule(env: FinanceModuleEnv) {
 
   const [miscFeeItemStatusFilter, setMiscFeeItemStatusFilter] = useState('')
 
+  const [miscFeeItemCodeError, setMiscFeeItemCodeError] = useState('')
+
   const [miscFeeAllocationSearch, setMiscFeeAllocationSearch] = useState('')
 
   const [miscFeeAllocationCategoryFilter, setMiscFeeAllocationCategoryFilter] = useState('')
@@ -149,6 +151,11 @@ export function useMiscModule(env: FinanceModuleEnv) {
 
   async function submitMiscFeeItem(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (!miscFeeItemForm.code.trim()) {
+      setMiscFeeItemCodeError(t('finance.misc.validation.codeRequired'))
+      return
+    }
+    setMiscFeeItemCodeError('')
     setSubmittingMiscFeeItem(true)
     setMessage('')
     setError('')
@@ -204,6 +211,7 @@ export function useMiscModule(env: FinanceModuleEnv) {
     miscFeeAllocationShipmentFilter,
     miscFeeAllocations,
     miscFeeItemCategoryFilter,
+    miscFeeItemCodeError,
     miscFeeItemForm,
     miscFeeItemSearch,
     miscFeeItemStatusFilter,
@@ -216,6 +224,7 @@ export function useMiscModule(env: FinanceModuleEnv) {
     setMiscFeeAllocationSearch,
     setMiscFeeAllocationShipmentFilter,
     setMiscFeeItemCategoryFilter,
+    setMiscFeeItemCodeError,
     setMiscFeeItemForm,
     setMiscFeeItemSearch,
     setMiscFeeItemStatusFilter,

@@ -613,7 +613,7 @@ function StatusTag({ value }: { value: string }) {
 
 function initialDocumentPartyForm(): DocumentPartyFormState {
   return {
-    code: `DP-${Date.now().toString().slice(-6)}`,
+    code: '',
     party_type: 'consignee',
     display_name: '',
     customer_id: '',

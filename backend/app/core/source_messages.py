@@ -46,7 +46,11 @@ SOURCE_MESSAGES: dict[str, str] = {
     "文件没有可导入的数据行": "The file contains no data rows to import",
     "文件缺少表头行": "The file is missing the header row",
     "合作伙伴类型无效": "Invalid partner type",
+    "合作伙伴编码已存在": "The partner code already exists",
     "单证资料类型无效": "Invalid document type",
+    "单证资料编码已存在": "The document party code already exists",
+    # 商品资料与导入
+    "商品编码已存在": "The product code already exists",
     # 采购
     "供应商报价不存在": "Supplier quotation not found",
     "供应商报价明细不属于该询价单": (
@@ -376,6 +380,7 @@ SOURCE_MESSAGES: dict[str, str] = {
     "杂费分摊状态无效": "Invalid miscellaneous fee allocation status",
     "杂费项目分类无效": "Invalid miscellaneous fee category",
     "杂费项目状态无效": "Invalid miscellaneous fee item status",
+    "杂费项目编码已存在": "The miscellaneous fee item code already exists",
     # 财务：结算
     "只有已审批出运单可以财务结算": "Only approved shipments can be financially settled",
     "手工成本币种必须和结算单币种一致": (
