@@ -145,7 +145,7 @@ async def _approved_purchase_contract_with_stock(
     plans_response = await api_client.get(
         "/api/v1/warehouse/inbound-plans",
         headers=headers,
-        params={"q": "PC-OO-API"},
+        params={"q": contract["code"]},
     )
     assert plans_response.status_code == 200
     inbound_plan = plans_response.json()["data"]["items"][0]

@@ -20,6 +20,8 @@ MAX_ATTEMPTS = 3
 DOCUMENT_PREFIXES: dict[str, str] = {
     "warehouse.inbound_order": "XP-IN",
     "warehouse.outbound_order": "XP-OUT",
+    "purchase.inquiry": "PI",
+    "purchase.contract": "PC",
 }
 
 

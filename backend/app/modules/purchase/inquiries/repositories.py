@@ -135,7 +135,6 @@ class PurchaseInquiryRepository:
         self,
         *,
         inquiry_id: str,
-        code: str,
         inquiry_date: date,
         buyer_user_id: str | None,
         buyer_user_name: str | None,
@@ -144,7 +143,6 @@ class PurchaseInquiryRepository:
         inquiry = await self._get_inquiry_model(inquiry_id)
         if inquiry is None:
             return None
-        inquiry.code = code
         inquiry.inquiry_date = inquiry_date
         inquiry.buyer_user_id = buyer_user_id
         inquiry.buyer_user_name = buyer_user_name

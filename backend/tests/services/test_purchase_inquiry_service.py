@@ -196,15 +196,17 @@ async def test_purchase_inquiry_service_create_quote_template_and_reference(
         )
 
     assert inquiry.status == "draft"
+    assert inquiry.code.startswith("PI-")
+    assert len(inquiry.code) == len("PI-") + 6
     assert quote_a.quotations[0].has_sample is True
     assert quote_b.quotations[1].unit_price == "0.82"
-    assert "PI-SVC-001" in template.content
+    assert inquiry.code in template.content
     assert template.content_type == "text/plain"
     assert refreshed.status == "quoted"
     assert len(refreshed.quotations) == 2
     assert samples.items[0].sample_code == "SM-PI-SVC-001"
     assert references.items[0].reference_price == "0.78"
-    assert references.items[0].source_inquiry_no == "PI-SVC-001"
+    assert references.items[0].source_inquiry_no == inquiry.code
 
 
 async def test_purchase_inquiry_service_updates_draft_and_blocks_after_quote(
@@ -254,6 +256,7 @@ async def test_purchase_inquiry_service_updates_draft_and_blocks_after_quote(
             )
 
     assert updated.inquiry_date == date(2026, 8, 3)
+    assert updated.code == inquiry.code
     assert updated.buyer_user_name == "采购专员"
     assert updated.lines[0].quantity == "1200"
     assert updated.status == "draft"

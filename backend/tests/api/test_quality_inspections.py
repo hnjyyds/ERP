@@ -114,7 +114,7 @@ async def test_quality_inspection_api_creates_record_and_updates_followup(
     assert inspection_response.status_code == 201
     inspection = inspection_response.json()["data"]
     assert inspection["result"] == "passed"
-    assert inspection["purchase_contract_no"] == "PC-QC-API"
+    assert inspection["purchase_contract_no"] == contract["code"]
     assert inspection["qc_user_id"] is None
     assert inspection["qc_user_name"] is None
     assert inspection["lines"][0]["inspected_quantity"] == "120"
@@ -140,7 +140,7 @@ async def test_quality_inspection_api_creates_record_and_updates_followup(
     followup_response = await api_client.get(
         "/api/v1/followup/plans",
         headers=headers,
-        params={"q": "PC-QC-API"},
+        params={"q": contract["code"]},
     )
     assert followup_response.status_code == 200
     plan = followup_response.json()["data"]["items"][0]
@@ -231,7 +231,7 @@ async def test_quality_inspection_api_creates_a_scheduled_pending_task_without_r
     followup_response = await api_client.get(
         "/api/v1/followup/plans",
         headers=headers,
-        params={"q": "PC-QC-TASK-API"},
+        params={"q": contract["code"]},
     )
     assert followup_response.status_code == 200
     plan = followup_response.json()["data"]["items"][0]
@@ -294,7 +294,7 @@ async def test_quality_inspection_api_creates_a_scheduled_pending_task_without_r
     completed_followup_response = await api_client.get(
         "/api/v1/followup/plans",
         headers=headers,
-        params={"q": "PC-QC-TASK-API"},
+        params={"q": contract["code"]},
     )
     completed_plan = completed_followup_response.json()["data"]["items"][0]
     completed_qc_node = next(

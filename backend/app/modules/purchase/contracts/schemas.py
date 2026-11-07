@@ -31,7 +31,7 @@ class PurchaseContractLineCreate(BaseModel):
 class PurchaseContractCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    code: str = Field(min_length=1, max_length=80)
+    code: str | None = Field(default=None, max_length=80)
     contract_date: date
     supplier_id: str | None = Field(default=None, max_length=36)
     supplier_name: str = Field(min_length=1, max_length=240)
@@ -56,7 +56,7 @@ class PurchaseContractSourceSelection(BaseModel):
 class PurchaseContractGenerateFromExportContracts(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    code: str = Field(min_length=1, max_length=80)
+    code: str | None = Field(default=None, max_length=80)
     contract_date: date
     supplier_id: str | None = Field(default=None, max_length=36)
     supplier_name: str = Field(min_length=1, max_length=240)

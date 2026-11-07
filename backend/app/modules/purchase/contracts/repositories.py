@@ -154,7 +154,6 @@ class PurchaseContractRepository:
         self,
         *,
         contract_id: str,
-        code: str,
         contract_date: date,
         supplier_id: str | None,
         supplier_name: str,
@@ -171,7 +170,6 @@ class PurchaseContractRepository:
         contract = await self._get_contract_model(contract_id)
         if contract is None:
             return None
-        contract.code = code
         contract.contract_date = contract_date
         contract.supplier_id = supplier_id
         contract.supplier_name = supplier_name

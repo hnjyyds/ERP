@@ -75,7 +75,7 @@ async def test_inbound_order_api_formal_inbound_posts_inventory_and_supplier_rec
     plans_response = await api_client.get(
         "/api/v1/warehouse/inbound-plans",
         headers=headers,
-        params={"q": "PC-IO-API"},
+        params={"q": contract["code"]},
     )
     plan = plans_response.json()["data"]["items"][0]
     qc_response = await api_client.post(

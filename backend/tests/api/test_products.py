@@ -466,6 +466,7 @@ async def test_product_transactions_collect_sales_purchase_and_shipment(
         },
     )
     assert inquiry_response.status_code == 201
+    inquiry = inquiry_response.json()["data"]
 
     purchase_contract_response = await api_client.post(
         "/api/v1/purchase/contracts",
@@ -501,6 +502,7 @@ async def test_product_transactions_collect_sales_purchase_and_shipment(
         },
     )
     assert purchase_contract_response.status_code == 201
+    purchase_contract = purchase_contract_response.json()["data"]
 
     transactions_response = await api_client.get(
         f"/api/v1/masterdata/products/{product_id}/transactions",
@@ -513,9 +515,9 @@ async def test_product_transactions_collect_sales_purchase_and_shipment(
     assert by_type["export_quotation"]["amount"] == "1250.00"
     assert by_type["export_contract"]["source_code"] == "EC-PRODUCT-TXN-001"
     assert by_type["shipment"]["source_code"] == "SP-PRODUCT-TXN-001"
-    assert by_type["purchase_inquiry"]["source_code"] == "PI-PRODUCT-TXN-001"
+    assert by_type["purchase_inquiry"]["source_code"] == inquiry["code"]
     assert by_type["purchase_inquiry"]["amount"] is None
-    assert by_type["purchase_contract"]["source_code"] == "PC-PRODUCT-TXN-001"
+    assert by_type["purchase_contract"]["source_code"] == purchase_contract["code"]
     assert by_type["purchase_contract"]["counterparty_name"] == "商品交易供应商"
 
 

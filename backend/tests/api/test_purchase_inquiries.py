@@ -1,3 +1,5 @@
+import re
+
 from httpx import AsyncClient
 
 
@@ -74,7 +76,8 @@ async def test_purchase_inquiry_flow_quotes_samples_template_and_sales_reference
     )
     assert create_response.status_code == 201
     inquiry = create_response.json()["data"]
-    assert inquiry["code"] == "PI-API-001"
+    assert inquiry["code"] != "PI-API-001"
+    assert re.fullmatch(r"PI-[A-Z2-9]{6}", inquiry["code"])
     assert inquiry["status"] == "draft"
     assert inquiry["lines"][0]["quantity"] == "1000"
     inquiry_id = inquiry["id"]
@@ -97,6 +100,7 @@ async def test_purchase_inquiry_flow_quotes_samples_template_and_sales_reference
     )
     assert update_response.status_code == 200
     updated = update_response.json()["data"]
+    assert updated["code"] == inquiry["code"]
     assert updated["buyer_user_name"] == "采购专员"
     assert updated["lines"][0]["quantity"] == "1200"
     line_id = updated["lines"][0]["id"]
@@ -111,7 +115,7 @@ async def test_purchase_inquiry_flow_quotes_samples_template_and_sales_reference
     )
     assert template_response.status_code == 200
     template = template_response.json()["data"]
-    assert template["filename"] == "PI-API-001-inquiry.txt"
+    assert template["filename"] == f"{inquiry['code']}-inquiry.txt"
     assert "Eco Shopping Bag" in template["content"]
 
     quote_response = await api_client.post(
@@ -186,7 +190,7 @@ async def test_purchase_inquiry_flow_quotes_samples_template_and_sales_reference
     reference = sales_references_response.json()["data"]["items"][0]
     assert reference["supplier_name"] == "华东包装制品厂"
     assert reference["reference_price"] == "0.78"
-    assert reference["source_quotation_no"] == "PI-API-001"
+    assert reference["source_quotation_no"] == inquiry["code"]
 
 
 async def test_purchase_inquiry_endpoints_require_login(

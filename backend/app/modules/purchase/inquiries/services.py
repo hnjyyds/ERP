@@ -29,6 +29,7 @@ from app.modules.purchase.inquiries.schemas import (
 )
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.numbering.generator import create_with_generated_code
 
 
 class PermissionDeniedError(Exception):
@@ -56,27 +57,32 @@ class PurchaseInquiryService:
         payload: PurchaseInquiryCreate,
     ) -> PurchaseInquiryResponse:
         self._require(current_user, "purchase:inquiry:edit")
-        async with UnitOfWork(self._repository.session):
-            inquiry = await self._repository.create_inquiry(
-                code=payload.code,
-                inquiry_date=payload.inquiry_date,
-                buyer_user_id=payload.buyer_user_id,
-                buyer_user_name=payload.buyer_user_name,
-                status="draft",
-                remarks=payload.remarks,
-                owner_user_id=current_user.id,
-            )
-            for line in payload.lines:
-                await self._repository.add_line(
-                    inquiry_id=inquiry.id,
-                    product_id=line.product_id,
-                    product_code=line.product_code,
-                    product_name=line.product_name,
-                    specification=line.specification,
-                    model=line.model,
-                    quantity=line.quantity,
-                    unit=line.unit,
+
+        async def create_inquiry_row(code: str) -> PurchaseInquiryRow:
+            async with UnitOfWork(self._repository.session):
+                inquiry = await self._repository.create_inquiry(
+                    code=code,
+                    inquiry_date=payload.inquiry_date,
+                    buyer_user_id=payload.buyer_user_id,
+                    buyer_user_name=payload.buyer_user_name,
+                    status="draft",
+                    remarks=payload.remarks,
+                    owner_user_id=current_user.id,
                 )
+                for line in payload.lines:
+                    await self._repository.add_line(
+                        inquiry_id=inquiry.id,
+                        product_id=line.product_id,
+                        product_code=line.product_code,
+                        product_name=line.product_name,
+                        specification=line.specification,
+                        model=line.model,
+                        quantity=line.quantity,
+                        unit=line.unit,
+                    )
+                return inquiry
+
+        inquiry = await create_with_generated_code("purchase.inquiry", create_inquiry_row)
         return await self._inquiry_response(inquiry)
 
     async def update_inquiry(
@@ -98,7 +104,6 @@ class PurchaseInquiryService:
         async with UnitOfWork(self._repository.session):
             updated = await self._repository.update_inquiry(
                 inquiry_id=inquiry.id,
-                code=payload.code,
                 inquiry_date=payload.inquiry_date,
                 buyer_user_id=payload.buyer_user_id,
                 buyer_user_name=payload.buyer_user_name,

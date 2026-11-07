@@ -75,13 +75,13 @@ async def test_inbound_plan_api_auto_generates_on_purchase_approval_and_schedule
     list_response = await api_client.get(
         "/api/v1/warehouse/inbound-plans",
         headers=headers,
-        params={"q": "PC-INP-API"},
+        params={"q": contract["code"]},
     )
     assert list_response.status_code == 200
     plans = list_response.json()["data"]
     assert plans["total"] == 1
     plan = plans["items"][0]
-    assert plan["purchase_contract_no"] == "PC-INP-API"
+    assert plan["purchase_contract_no"] == contract["code"]
     assert plan["planned_date"] == "2026-08-30"
     assert plan["inbound_type"] == "purchase_inbound"
     assert plan["status"] == "planned"

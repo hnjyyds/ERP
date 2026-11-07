@@ -58,7 +58,8 @@ async def test_followup_api_generates_plan_on_purchase_approval_and_syncs_source
         json=_purchase_contract_payload(),
     )
     assert create_response.status_code == 201
-    contract_id = create_response.json()["data"]["id"]
+    contract = create_response.json()["data"]
+    contract_id = contract["id"]
     submit_response = await api_client.post(
         f"/api/v1/purchase/contracts/{contract_id}/submit",
         headers=headers,
@@ -75,13 +76,13 @@ async def test_followup_api_generates_plan_on_purchase_approval_and_syncs_source
     list_response = await api_client.get(
         "/api/v1/followup/plans",
         headers=headers,
-        params={"q": "PC-FUP-API"},
+        params={"q": contract["code"]},
     )
     assert list_response.status_code == 200
     plans = list_response.json()["data"]
     assert plans["total"] == 1
     plan = plans["items"][0]
-    assert plan["purchase_contract_no"] == "PC-FUP-API"
+    assert plan["purchase_contract_no"] == contract["code"]
     assert len(plan["nodes"]) == 6
     assert plan["nodes"][0]["status"] == "completed"
 
@@ -113,7 +114,7 @@ async def test_followup_api_generates_plan_on_purchase_approval_and_syncs_source
     assert overdue_response.status_code == 200
     overdue = overdue_response.json()["data"]
     assert overdue["total"] >= 1
-    assert any(item["purchase_contract_no"] == "PC-FUP-API" for item in overdue["items"])
+    assert any(item["purchase_contract_no"] == contract["code"] for item in overdue["items"])
 
 
 async def test_followup_api_rejects_finance_role(

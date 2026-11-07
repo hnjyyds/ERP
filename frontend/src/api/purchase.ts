@@ -109,7 +109,6 @@ export interface PurchaseContractLinePayload {
 }
 
 export interface PurchaseContractCreatePayload {
-  code: string
   contract_date: string
   supplier_id?: string | null
   supplier_name: string
@@ -126,7 +125,6 @@ export interface PurchaseContractCreatePayload {
 }
 
 export interface PurchaseContractGeneratePayload {
-  code: string
   contract_date: string
   supplier_id?: string | null
   supplier_name: string
@@ -347,7 +345,6 @@ export interface PurchaseInquiryLinePayload {
 }
 
 export interface PurchaseInquiryCreatePayload {
-  code: string
   inquiry_date: string
   buyer_user_id?: string | null
   buyer_user_name?: string | null

@@ -253,7 +253,8 @@ async def test_generate_purchase_contract_template_uses_contract_company_and_pro
         },
     )
     assert contract_response.status_code == 201
-    contract_id = contract_response.json()["data"]["id"]
+    contract = contract_response.json()["data"]
+    contract_id = contract["id"]
 
     response = await api_client.get(
         f"/api/v1/printing/purchase-contracts/{contract_id}/template",
@@ -264,14 +265,14 @@ async def test_generate_purchase_contract_template_uses_contract_company_and_pro
     data = response.json()["data"]
     content = base64.b64decode(data["content_base64"])
     assert data["document_type"] == "purchase_contract_template"
-    assert data["document_code"] == "NL2502085"
-    assert data["filename"] == "NL2502085-采购合同.xls"
+    assert data["document_code"] == contract["code"]
+    assert data["filename"] == f"{contract['code']}-采购合同.xls"
     assert data["content_type"] == "application/vnd.ms-excel"
     assert len(content) > 50_000
 
     workbook = xlrd.open_workbook(file_contents=content, formatting_info=True)
     sheet = workbook.sheet_by_index(0)
-    assert sheet.cell_value(13, 2) == "NL2502085"
+    assert sheet.cell_value(13, 2) == contract["code"]
     assert sheet.cell_value(13, 5) == "贝斯特针织"
     assert "义乌市新裴贸易有限公司" in sheet.cell_value(13, 8)
     company_runs = sheet.rich_text_runlist_map[(13, 8)]

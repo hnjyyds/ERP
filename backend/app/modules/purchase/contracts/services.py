@@ -31,6 +31,7 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.numbering.generator import create_with_generated_code
 
 
 class PermissionDeniedError(Exception):
@@ -90,34 +91,39 @@ class PurchaseContractService:
     ) -> PurchaseContractResponse:
         self._require(current_user, "purchase:contract:edit")
         qc_user_id, qc_user_name = await self._resolve_qc_assignee(payload.qc_user_id)
-        async with UnitOfWork(self._repository.session):
-            contract = await self._repository.create_contract(
-                code=payload.code,
-                contract_date=payload.contract_date,
-                supplier_id=payload.supplier_id,
-                supplier_name=payload.supplier_name,
-                buyer_user_id=payload.buyer_user_id,
-                buyer_user_name=payload.buyer_user_name,
-                qc_user_id=qc_user_id,
-                qc_user_name=qc_user_name,
-                currency=payload.currency,
-                delivery_date=payload.delivery_date,
-                payment_terms=payload.payment_terms,
-                source_type=payload.source_type,
-                remarks=payload.remarks,
-                approval_status="draft",
-                owner_user_id=current_user.id,
-            )
-            updated = await self._replace_lines(contract.id, payload.lines)
-            if updated is None:
-                raise PurchaseContractNotFoundError
-            await self._sync_source_links_from_lines(
-                contract_id=contract.id,
-                source_type=payload.source_type,
-                lines=payload.lines,
-                preserve_existing_when_empty=False,
-            )
-            await self._rebuild_reminders(updated)
+
+        async def create_contract_row(code: str) -> PurchaseContractRow:
+            async with UnitOfWork(self._repository.session):
+                contract = await self._repository.create_contract(
+                    code=code,
+                    contract_date=payload.contract_date,
+                    supplier_id=payload.supplier_id,
+                    supplier_name=payload.supplier_name,
+                    buyer_user_id=payload.buyer_user_id,
+                    buyer_user_name=payload.buyer_user_name,
+                    qc_user_id=qc_user_id,
+                    qc_user_name=qc_user_name,
+                    currency=payload.currency,
+                    delivery_date=payload.delivery_date,
+                    payment_terms=payload.payment_terms,
+                    source_type=payload.source_type,
+                    remarks=payload.remarks,
+                    approval_status="draft",
+                    owner_user_id=current_user.id,
+                )
+                updated = await self._replace_lines(contract.id, payload.lines)
+                if updated is None:
+                    raise PurchaseContractNotFoundError
+                await self._sync_source_links_from_lines(
+                    contract_id=contract.id,
+                    source_type=payload.source_type,
+                    lines=payload.lines,
+                    preserve_existing_when_empty=False,
+                )
+                await self._rebuild_reminders(updated)
+                return updated
+
+        updated = await create_with_generated_code("purchase.contract", create_contract_row)
         return await self._response_builder.build(updated)
 
     async def update_contract(
@@ -138,7 +144,6 @@ class PurchaseContractService:
         async with UnitOfWork(self._repository.session):
             updated = await self._repository.update_contract(
                 contract_id=contract.id,
-                code=payload.code,
                 contract_date=payload.contract_date,
                 supplier_id=payload.supplier_id,
                 supplier_name=payload.supplier_name,
@@ -179,40 +184,48 @@ class PurchaseContractService:
             unit_price=payload.unit_price,
         )
         qc_user_id, qc_user_name = await self._resolve_qc_assignee(payload.qc_user_id)
-        async with UnitOfWork(self._repository.session):
-            contract = await self._repository.create_contract(
-                code=payload.code,
-                contract_date=payload.contract_date,
-                supplier_id=payload.supplier_id,
-                supplier_name=payload.supplier_name,
-                buyer_user_id=payload.buyer_user_id,
-                buyer_user_name=payload.buyer_user_name,
-                qc_user_id=qc_user_id,
-                qc_user_name=qc_user_name,
-                currency=payload.currency,
-                delivery_date=payload.delivery_date,
-                payment_terms=payload.payment_terms,
-                source_type="export_contract",
-                remarks=payload.remarks,
-                approval_status="draft",
-                owner_user_id=current_user.id,
-            )
-            for source in source_lines:
-                await self._repository.add_source_link(
-                    contract_id=contract.id,
-                    export_contract_id=source.contract.id,
-                    export_contract_no=source.contract.code,
-                    export_contract_line_id=source.line.id,
-                    customer_name=source.contract.customer_name,
-                    product_id=source.resolved_product_id,
-                    product_code=source.line.product_code,
-                    demand_quantity=source.line.quantity,
-                    unit=source.line.unit,
+
+        async def create_generated_contract_row(code: str) -> PurchaseContractRow:
+            async with UnitOfWork(self._repository.session):
+                contract = await self._repository.create_contract(
+                    code=code,
+                    contract_date=payload.contract_date,
+                    supplier_id=payload.supplier_id,
+                    supplier_name=payload.supplier_name,
+                    buyer_user_id=payload.buyer_user_id,
+                    buyer_user_name=payload.buyer_user_name,
+                    qc_user_id=qc_user_id,
+                    qc_user_name=qc_user_name,
+                    currency=payload.currency,
+                    delivery_date=payload.delivery_date,
+                    payment_terms=payload.payment_terms,
+                    source_type="export_contract",
+                    remarks=payload.remarks,
+                    approval_status="draft",
+                    owner_user_id=current_user.id,
                 )
-            updated = await self._replace_generated_lines(contract.id, generated_lines)
-            if updated is None:
-                raise PurchaseContractNotFoundError
-            await self._rebuild_reminders(updated)
+                for source in source_lines:
+                    await self._repository.add_source_link(
+                        contract_id=contract.id,
+                        export_contract_id=source.contract.id,
+                        export_contract_no=source.contract.code,
+                        export_contract_line_id=source.line.id,
+                        customer_name=source.contract.customer_name,
+                        product_id=source.resolved_product_id,
+                        product_code=source.line.product_code,
+                        demand_quantity=source.line.quantity,
+                        unit=source.line.unit,
+                    )
+                updated = await self._replace_generated_lines(contract.id, generated_lines)
+                if updated is None:
+                    raise PurchaseContractNotFoundError
+                await self._rebuild_reminders(updated)
+                return updated
+
+        updated = await create_with_generated_code(
+            "purchase.contract",
+            create_generated_contract_row,
+        )
         return await self._response_builder.build(updated)
 
     async def list_contracts(

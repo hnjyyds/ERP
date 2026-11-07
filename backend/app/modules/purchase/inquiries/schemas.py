@@ -23,7 +23,7 @@ class PurchaseInquiryLineCreate(BaseModel):
 class PurchaseInquiryCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    code: str = Field(min_length=1, max_length=80)
+    code: str | None = Field(default=None, max_length=80)
     inquiry_date: date
     buyer_user_id: str | None = Field(default=None, max_length=36)
     buyer_user_name: str | None = Field(default=None, max_length=160)

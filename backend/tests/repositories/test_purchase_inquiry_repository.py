@@ -148,7 +148,6 @@ async def test_purchase_inquiry_repository_updates_header_and_replaces_lines(
 
         updated = await repository.update_inquiry(
             inquiry_id=inquiry.id,
-            code="PI-REPO-EDIT",
             inquiry_date=date(2026, 8, 3),
             buyer_user_id="u-002",
             buyer_user_name="采购专员",
@@ -173,6 +172,7 @@ async def test_purchase_inquiry_repository_updates_header_and_replaces_lines(
         lines = await repository.list_lines(inquiry.id)
 
     assert updated is not None
+    assert updated.code == inquiry.code
     assert updated.inquiry_date == date(2026, 8, 3)
     assert updated.buyer_user_name == "采购专员"
     assert len(replaced_lines) == 1

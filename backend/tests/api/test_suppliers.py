@@ -314,7 +314,7 @@ async def test_supplier_transactions_collect_supplier_quotation_and_purchase_con
         },
     )
     assert purchase_contract_response.status_code == 201
-
+    purchase_contract = purchase_contract_response.json()["data"]
     transactions_response = await api_client.get(
         f"/api/v1/masterdata/suppliers/{supplier_id}/transactions",
         headers=headers,
@@ -322,9 +322,9 @@ async def test_supplier_transactions_collect_supplier_quotation_and_purchase_con
     assert transactions_response.status_code == 200
     transactions = transactions_response.json()["data"]["items"]
     by_type = {item["source_type"]: item for item in transactions}
-    assert by_type["supplier_quotation"]["source_code"] == "PI-SUPPLIER-TXN-001"
+    assert by_type["supplier_quotation"]["source_code"] == inquiry["code"]
     assert by_type["supplier_quotation"]["amount"] == "820.00"
-    assert by_type["purchase_contract"]["source_code"] == "PC-SUPPLIER-TXN-001"
+    assert by_type["purchase_contract"]["source_code"] == purchase_contract["code"]
     assert by_type["purchase_contract"]["amount"] == "820.00"
 
 
