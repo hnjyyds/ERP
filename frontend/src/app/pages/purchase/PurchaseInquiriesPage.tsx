@@ -23,6 +23,7 @@ import {
 import { purchaseInquiryPath, moduleDetailPath } from '../../routes'
 import { t } from '../../appI18n'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { useFormModal } from '../../../shared/useFormModal'
 import { showError } from '../../../shared/errors'
 import { purchaseInquiryStatusOptions } from '../../../shared/formOptions'
 import {
@@ -198,7 +199,15 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
   const [inquiries, setInquiries] = useState<PurchaseInquiry[]>([])
   const [selectedInquiryId, setSelectedInquiryId] = useState<string | null>(null)
   const [editingInquiryId, setEditingInquiryId] = useState<string | null>(null)
-  const [inquiryModalOpen, setInquiryModalOpen] = useState(false)
+  const {
+    open: inquiryModalOpen,
+    form,
+    setForm,
+    submitting: submittingInquiry,
+    openWith: openInquiryModal,
+    close: closeInquiryModal,
+    runSubmit: runInquirySubmit,
+  } = useFormModal(initialPurchaseInquiryForm)
   const [inquiryActionModal, setInquiryActionModal] = useState<'template' | 'quotation' | null>(
     null,
   )
@@ -212,7 +221,6 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [form, setForm] = useState<PurchaseInquiryFormState>(() => initialPurchaseInquiryForm())
   const [quotationForm, setQuotationForm] = useState<PurchaseQuotationFormState>(() =>
     initialPurchaseQuotationForm(),
   )
@@ -330,28 +338,25 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
 
   async function submitInquiry(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setSubmitting(true)
     setMessage('')
-    try {
-      const payload = purchaseInquiryPayload(form)
-      const saved = editingInquiryId
-        ? await updatePurchaseInquiry(editingInquiryId, payload)
-        : await createPurchaseInquiry(payload)
-      setMessage(
-        editingInquiryId
-          ? t('purchase.inquiry.message.saved', { code: saved.code })
-          : t('purchase.inquiry.message.created', { code: saved.code }),
-      )
-      setEditingInquiryId(null)
-      setForm(initialPurchaseInquiryForm())
-      setInquiryModalOpen(false)
-      upsertInquiry(saved)
-      await loadInquiries(saved.id)
-    } catch (caught) {
-      showError(caught, t('purchase.inquiry.message.saveFailed'))
-    } finally {
-      setSubmitting(false)
-    }
+    const saved = await runInquirySubmit(
+      async () => {
+        const payload = purchaseInquiryPayload(form)
+        const inquiry = editingInquiryId
+          ? await updatePurchaseInquiry(editingInquiryId, payload)
+          : await createPurchaseInquiry(payload)
+        setMessage(
+          editingInquiryId
+            ? t('purchase.inquiry.message.saved', { code: inquiry.code })
+            : t('purchase.inquiry.message.created', { code: inquiry.code }),
+        )
+        setEditingInquiryId(null)
+        upsertInquiry(inquiry)
+        await loadInquiries(inquiry.id)
+      },
+      (caught) => showError(caught, t('purchase.inquiry.message.saveFailed')),
+    )
+    if (saved) closeInquiryModal()
   }
 
   async function sendTemplate(event: FormEvent<HTMLFormElement>) {
@@ -400,23 +405,20 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
 
   function openCreateInquiry() {
     setEditingInquiryId(null)
-    setForm(initialPurchaseInquiryForm())
     setMessage('')
-    setInquiryModalOpen(true)
+    openInquiryModal()
   }
 
   function loadSelectedInquiryForEdit() {
     if (!selectedInquiry) return
     setEditingInquiryId(selectedInquiry.id)
-    setForm(purchaseInquiryToForm(selectedInquiry))
     setMessage(t('purchase.inquiry.message.editing', { code: selectedInquiry.code }))
-    setInquiryModalOpen(true)
+    openInquiryModal(purchaseInquiryToForm(selectedInquiry))
   }
 
   function cancelInquiryEdit() {
     setEditingInquiryId(null)
-    setForm(initialPurchaseInquiryForm())
-    setInquiryModalOpen(false)
+    closeInquiryModal()
   }
 
   const quotedCount = inquiries.filter((item) => item.status === 'quoted').length
@@ -682,7 +684,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                   onChange={(event) => setForm({ ...form, remarks: event.target.value })}
                 />
               </label>
-              <Button htmlType="submit" loading={submitting} type="primary">
+              <Button htmlType="submit" loading={submittingInquiry} type="primary">
                 {editingInquiryId
                   ? t('purchase.inquiry.form.save')
                   : t('purchase.inquiry.form.create')}
