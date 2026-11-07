@@ -1021,7 +1021,10 @@
         "directionOut": "Outbound",
         "emptyTitle": "No inbound orders",
         "emptyDescription": "Return to the list and select an inbound order to view details and stock",
-        "reviewerFallback": "designated approver"
+        "reviewerFallback": "designated approver",
+        "cancelledAt": "Cancelled at",
+        "cancelledBy": "Cancelled by",
+        "cancelReason": "Cancellation reason"
       },
       "form": {
         "modalTitle": "Generate and approve inbound order",
@@ -1045,12 +1048,14 @@
         "generate": "Generate inbound order",
         "submit": "Submit for approval",
         "approve": "Approve inbound",
+        "cancel": "Cancel inbound order",
         "backToList": "Back to list",
         "searchInventory": "Search stock"
       },
       "validation": {
         "reviewerRequired": "Please select an approver",
-        "reviewerMismatch": "This inbound order must be approved by {name}"
+        "reviewerMismatch": "This inbound order must be approved by {name}",
+        "cancelReasonRequired": "Please enter a cancellation reason"
       },
       "message": {
         "generated": "Inbound order {code} generated",
@@ -1060,6 +1065,8 @@
         "approvedFormal": "{code} formally received; stock and purchase follow-up updated",
         "approvedInspection": "{code} recorded as pending inspection stock",
         "approveFailed": "Failed to approve inbound order",
+        "cancelled": "Inbound order {code} cancelled",
+        "cancelFailed": "Failed to cancel inbound order",
         "waitingApproval": "Waiting for {name} to approve",
         "reviewerLoadFailed": "Failed to load approvers",
         "inventoryLoadFailed": "Failed to load stock snapshot"
@@ -1263,7 +1270,10 @@
         "notSet": "Not set",
         "emptyTitle": "No outbound orders",
         "emptyDescription": "Return to the list and select an outbound order to view details and stock ledger",
-        "reviewerFallback": "designated approver"
+        "reviewerFallback": "designated approver",
+        "cancelledAt": "Cancelled at",
+        "cancelledBy": "Cancelled by",
+        "cancelReason": "Cancellation reason"
       },
       "form": {
         "modalTitle": "Generate and approve outbound order",
@@ -1278,12 +1288,14 @@
         "generate": "Generate outbound order",
         "submit": "Submit for approval",
         "approve": "Approve outbound",
+        "cancel": "Cancel outbound order",
         "backToList": "Back to list",
         "searchInventory": "Search stock"
       },
       "validation": {
         "reviewerRequired": "Please select an approver",
-        "reviewerMismatch": "This outbound order must be approved by {name}"
+        "reviewerMismatch": "This outbound order must be approved by {name}",
+        "cancelReasonRequired": "Please enter a cancellation reason"
       },
       "message": {
         "generated": "Outbound order {code} generated",
@@ -1293,6 +1305,8 @@
         "approvedFormal": "{code} formally issued; stock and purchase follow-up updated",
         "approvedException": "{code} recorded as exception outbound",
         "approveFailed": "Failed to approve outbound order",
+        "cancelled": "Outbound order {code} cancelled",
+        "cancelFailed": "Failed to cancel outbound order",
         "waitingApproval": "Waiting for {name} to approve",
         "inventoryLoadFailed": "Failed to load stock snapshot"
       }

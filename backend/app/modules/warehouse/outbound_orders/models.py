@@ -42,6 +42,14 @@ class OutboundOrder(Base):
     reviewer_id: Mapped[str | None] = mapped_column(String(64), index=True, nullable=True)
     reviewer_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
     owner_user_id: Mapped[str] = mapped_column(String(36), index=True, nullable=False)
+    cancelled_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        index=True,
+        nullable=True,
+    )
+    cancelled_by_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    cancelled_by_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    cancel_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC),

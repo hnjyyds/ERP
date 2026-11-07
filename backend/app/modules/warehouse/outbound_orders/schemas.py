@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Literal
 
@@ -52,6 +52,18 @@ class OutboundOrderSubmit(ApprovalSubmit):
     """Submit an outbound order to one designated reviewer."""
 
 
+class OutboundOrderCancel(BaseModel):
+    """作废草稿或待审批的出库单，保留原记录与原单号。"""
+
+    model_config = ConfigDict(extra="forbid")
+
+    reason: str = Field(
+        min_length=1,
+        max_length=2000,
+        description="作废原因；必填，用于审计和列表说明。",
+    )
+
+
 class OutboundOrderLineResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -96,6 +108,10 @@ class OutboundOrderResponse(BaseModel):
     reviewer_id: str | None = None
     reviewer_name: str | None = None
     owner_user_id: str
+    cancelled_at: datetime | None = Field(default=None, description="作废时间；未作废为空。")
+    cancelled_by_id: str | None = Field(default=None, description="作废操作人的用户 ID。")
+    cancelled_by_name: str | None = Field(default=None, description="作废操作人姓名。")
+    cancel_reason: str | None = Field(default=None, description="作废原因。")
     lines: list[OutboundOrderLineResponse]
 
 

@@ -34,6 +34,10 @@ class OutboundOrderRow:
     reviewer_id: str | None
     reviewer_name: str | None
     owner_user_id: str
+    cancelled_at: datetime | None
+    cancelled_by_id: str | None
+    cancelled_by_name: str | None
+    cancel_reason: str | None
     created_at: datetime
 
 
@@ -193,6 +197,9 @@ class OutboundOrderRepository:
             )
         if status:
             conditions.append(OutboundOrder.status == status)
+        else:
+            # 常规列表默认过滤已作废单据，只有显式按“已作废”筛选时才展示。
+            conditions.append(OutboundOrder.status != "cancelled")
         if outbound_mode:
             conditions.append(OutboundOrder.outbound_mode == outbound_mode)
         if outbound_type:
@@ -251,6 +258,26 @@ class OutboundOrderRepository:
         await self.session.flush()
         return self._map_order(order)
 
+    async def cancel_order(
+        self,
+        order_id: str,
+        *,
+        cancel_reason: str,
+        cancelled_by_id: str,
+        cancelled_by_name: str,
+        cancelled_at: datetime,
+    ) -> OutboundOrderRow | None:
+        order = await self.session.get(OutboundOrder, order_id)
+        if order is None:
+            return None
+        order.status = "cancelled"
+        order.cancel_reason = cancel_reason
+        order.cancelled_by_id = cancelled_by_id
+        order.cancelled_by_name = cancelled_by_name
+        order.cancelled_at = cancelled_at
+        await self.session.flush()
+        return self._map_order(order)
+
     async def _order_scalars(self, statement: Select[tuple[OutboundOrder]]) -> list[OutboundOrder]:
         result = await self.session.scalars(statement)
         return list(result.unique())
@@ -280,6 +307,10 @@ class OutboundOrderRepository:
             reviewer_id=order.reviewer_id,
             reviewer_name=order.reviewer_name,
             owner_user_id=order.owner_user_id,
+            cancelled_at=order.cancelled_at,
+            cancelled_by_id=order.cancelled_by_id,
+            cancelled_by_name=order.cancelled_by_name,
+            cancel_reason=order.cancel_reason,
             created_at=order.created_at,
         )
 

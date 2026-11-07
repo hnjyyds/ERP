@@ -229,6 +229,11 @@ SOURCE_MESSAGES: dict[str, str] = {
     ),
     "只有已提交入库单可以审批": "Only submitted inbound orders can be approved",
     "只有草稿入库单可以提交": "Only draft inbound orders can be submitted",
+    "入库单已作废，不能重复作废": "The inbound order is already cancelled",
+    "只有草稿或待审批的入库单可以作废；已发生的库存需通过出库单或冲销方式纠正": (
+        "Only draft or pending-approval inbound orders can be cancelled; "
+        "inventory already received must be corrected via an outbound order or reversal"
+    ),
     "正式入库商品名称需与待入库清单一致": (
         "The final inbound product name must match the pending inbound list"
     ),
@@ -277,6 +282,11 @@ SOURCE_MESSAGES: dict[str, str] = {
     ),
     "只有已提交出库单可以审批": "Only submitted outbound orders can be approved",
     "只有草稿出库单可以提交": "Only draft outbound orders can be submitted",
+    "出库单已作废，不能重复作废": "The outbound order is already cancelled",
+    "只有草稿或待审批的出库单可以作废；已发生的库存需通过出库单或冲销方式纠正": (
+        "Only draft or pending-approval outbound orders can be cancelled; "
+        "inventory already issued must be corrected via an outbound order or reversal"
+    ),
     "正式出库商品名称需与待出库清单一致": (
         "The final outbound product name must match the pending outbound list"
     ),

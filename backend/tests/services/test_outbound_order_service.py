@@ -17,6 +17,7 @@ from app.modules.warehouse.inventory.services import InventoryService
 from app.modules.warehouse.outbound_orders.repositories import OutboundOrderRepository
 from app.modules.warehouse.outbound_orders.schemas import (
     OutboundOrderApprove,
+    OutboundOrderCancel,
     OutboundOrderGenerateFromPlan,
     OutboundOrderLineShip,
     OutboundOrderSubmit,
@@ -307,6 +308,99 @@ async def test_outbound_order_service_formal_outbound_deducts_stock_and_followup
     assert outbound_node is not None
     assert outbound_node.status == "completed"
     assert outbound_node.actual_date == date(2026, 9, 30)
+
+
+async def test_outbound_order_service_cancel_draft_keeps_code_and_hides_from_default_list(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        plan_id, _ = await _prepare_scheduled_outbound_plan(session)
+        service = _service(session)
+        user = _warehouse_user()
+        order = await service.generate_from_plan(
+            current_user=user,
+            payload=_payload(plan_id),
+        )
+        cancelled = await service.cancel_order(
+            current_user=user,
+            order_id=order.id,
+            payload=OutboundOrderCancel(reason="计划调整，重新生成"),
+        )
+        default_list = await service.list_orders(
+            current_user=user,
+            q=None,
+            status=None,
+            outbound_mode=None,
+            outbound_type=None,
+            customer_id=None,
+            source_id=None,
+        )
+        cancelled_list = await service.list_orders(
+            current_user=user,
+            q=None,
+            status="cancelled",
+            outbound_mode=None,
+            outbound_type=None,
+            customer_id=None,
+            source_id=None,
+        )
+        plan = await OutboundPlanRepository(session).get_plan(plan_id)
+
+    assert cancelled.status == "cancelled"
+    assert cancelled.code == order.code
+    assert cancelled.cancelled_by_id == "u-001"
+    assert cancelled.cancelled_by_name == "演示业务主管"
+    assert cancelled.cancel_reason == "计划调整，重新生成"
+    assert cancelled.cancelled_at is not None
+    assert all(item.id != order.id for item in default_list.items)
+    assert [item.id for item in cancelled_list.items] == [order.id]
+    # 草稿/待审批单未动库存，计划仍可重新生成出库单。
+    assert plan is not None
+    assert plan.status == "scheduled"
+
+
+async def test_outbound_order_service_rejects_cancel_after_approval_without_rollback(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        plan_id, _ = await _prepare_scheduled_outbound_plan(session)
+        await _add_available_stock(session, quantity="300")
+        service = _service(session)
+        order = await service.generate_from_plan(
+            current_user=_warehouse_user(),
+            payload=_payload(plan_id),
+        )
+        submitted = await service.submit_order(
+            current_user=_warehouse_user(),
+            order_id=order.id,
+            payload=OutboundOrderSubmit(reviewer_id="u-admin"),
+        )
+        approved = await service.approve_order(
+            current_user=_outbound_reviewer(),
+            order_id=submitted.id,
+            payload=OutboundOrderApprove(
+                reviewer_name="业务主管",
+                approved_at=date(2026, 9, 30),
+                allow_negative=False,
+            ),
+        )
+
+        with pytest.raises(ValueError, match="已发生的库存需通过出库单或冲销方式纠正"):
+            await service.cancel_order(
+                current_user=_warehouse_user(),
+                order_id=approved.id,
+                payload=OutboundOrderCancel(reason="尝试作废已出库单据"),
+            )
+
+        balances = await InventoryRepository(session).list_balances(q="BAG-40")
+        ledgers = await InventoryRepository(session).list_ledgers(source_id=approved.id)
+
+    assert approved.status == "approved"
+    assert balances[0][0].available_quantity == "0"
+    assert ledgers[0][0].direction == "out"
+    assert ledgers[0][0].quantity == "300"
 
 
 async def test_outbound_order_service_exception_outbound_records_reason(

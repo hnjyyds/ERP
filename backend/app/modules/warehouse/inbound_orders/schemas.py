@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Literal
 
@@ -50,6 +50,18 @@ class InboundOrderApprove(BaseModel):
     approved_at: date
 
 
+class InboundOrderCancel(BaseModel):
+    """作废草稿或待审批的入库单，保留原记录与原单号。"""
+
+    model_config = ConfigDict(extra="forbid")
+
+    reason: str = Field(
+        min_length=1,
+        max_length=2000,
+        description="作废原因；必填，用于审计和列表说明。",
+    )
+
+
 class InboundOrderLineResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -92,6 +104,10 @@ class InboundOrderResponse(BaseModel):
     reviewer_id: str | None
     reviewer_name: str | None
     owner_user_id: str
+    cancelled_at: datetime | None = Field(default=None, description="作废时间；未作废为空。")
+    cancelled_by_id: str | None = Field(default=None, description="作废操作人的用户 ID。")
+    cancelled_by_name: str | None = Field(default=None, description="作废操作人姓名。")
+    cancel_reason: str | None = Field(default=None, description="作废原因。")
     lines: list[InboundOrderLineResponse]
 
 

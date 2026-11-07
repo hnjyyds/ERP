@@ -6,6 +6,7 @@ from app.api.auth_dependencies import CurrentUserDep
 from app.modules.warehouse.outbound_orders.providers import get_outbound_order_service
 from app.modules.warehouse.outbound_orders.schemas import (
     OutboundOrderApprove,
+    OutboundOrderCancel,
     OutboundOrderGenerateFromPlan,
     OutboundOrderListResponse,
     OutboundOrderResponse,
@@ -89,4 +90,15 @@ async def approve_outbound_order(
     service: Annotated[OutboundOrderService, Depends(get_outbound_order_service)],
 ) -> ApiResponse[OutboundOrderResponse]:
     order = await service.approve_order(current_user=user, order_id=order_id, payload=payload)
+    return ApiResponse(data=order)
+
+
+@router.post("/{order_id}/cancel", response_model=ApiResponse[OutboundOrderResponse])
+async def cancel_outbound_order(
+    order_id: str,
+    payload: OutboundOrderCancel,
+    user: CurrentUserDep,
+    service: Annotated[OutboundOrderService, Depends(get_outbound_order_service)],
+) -> ApiResponse[OutboundOrderResponse]:
+    order = await service.cancel_order(current_user=user, order_id=order_id, payload=payload)
     return ApiResponse(data=order)

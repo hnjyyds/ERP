@@ -2,9 +2,9 @@ import { Alert, Button, Descriptions as _Descriptions, Input, Modal, Select, Ske
 import { ArrowLeft, LayoutDashboard, Plus, Search, Warehouse , CheckCircle2, PackagePlus, Send} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { approveInboundOrder, generateInboundOrderFromPlan, listAssignableUsers, listInboundOrders, listPurchaseContracts, submitInboundOrder, type AssignableUser, type CurrentUser, type InboundOrder, type InboundOrderApprovePayload, type InboundOrderGeneratePayload , InboundPlan, InventoryBalance, InventoryLedger, listInboundPlans, listInventoryBalances, listInventoryLedgers} from '../../../api'
+import { approveInboundOrder, cancelInboundOrder, generateInboundOrderFromPlan, listAssignableUsers, listInboundOrders, listPurchaseContracts, submitInboundOrder, type AssignableUser, type CurrentUser, type InboundOrder, type InboundOrderApprovePayload, type InboundOrderGeneratePayload , InboundPlan, InventoryBalance, InventoryLedger, listInboundPlans, listInventoryBalances, listInventoryLedgers} from '../../../api'
 import { warehouseInboundOrderPath, moduleDetailPath } from '../../routes'
-import { FormSelect, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
+import { FormModal, FormSelect, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { inboundOrderStatusOptions, inboundOrderModeOptions , inboundPlanStatusOptions} from '../../../shared/formOptions'
 import { formatDate, formatMoney as _formatMoney, formatQuantity as _formatQuantity, nullableText as _nullableText, todayInputValue, type RoutedDetailPageProps , trimDecimal} from '../appHelpers'
@@ -189,6 +189,9 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
   const [assignableUsersLoaded, setAssignableUsersLoaded] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
+  const [cancelModalOpen, setCancelModalOpen] = useState(false)
+  const [cancelReason, setCancelReason] = useState('')
+  const [cancelReasonError, setCancelReasonError] = useState('')
 
   const fetchSupplierOptions = useCallback(async (query: string) => {
     const result = await listPurchaseContracts({
@@ -465,6 +468,35 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
       setMessage(t('warehouse.inboundOrder.message.submitted', { code: order.code }))
     } catch (caught) {
       showError(caught, t('warehouse.inboundOrder.message.submitFailed'))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  function openCancelModal() {
+    setCancelReason('')
+    setCancelReasonError('')
+    setCancelModalOpen(true)
+  }
+
+  async function cancelSelectedInboundOrder(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!selectedOrder) return
+    const reason = cancelReason.trim()
+    if (!reason) {
+      setCancelReasonError(t('warehouse.inboundOrder.validation.cancelReasonRequired'))
+      return
+    }
+    setSubmitting(true)
+    setMessage('')
+    try {
+      const order = await cancelInboundOrder(selectedOrder.id, { reason })
+      upsertInboundOrder(order)
+      setCancelModalOpen(false)
+      await loadInboundOrders(order.id, order)
+      setMessage(t('warehouse.inboundOrder.message.cancelled', { code: order.code }))
+    } catch (caught) {
+      showError(caught, t('warehouse.inboundOrder.message.cancelFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -956,9 +988,16 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
           <section className="workspace-panel detail-panel product-detail-panel">
           <div className="panel-heading toolbar-heading">
             <PanelTitle icon={<LayoutDashboard size={18} />} title={t('warehouse.inboundOrder.detail.title')} />
-            <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(warehouseInboundOrderPath)}>
-              {t('warehouse.inboundOrder.action.backToList')}
-            </Button>
+            <div className="toolbar-actions">
+              {selectedOrder && ['draft', 'submitted'].includes(selectedOrder.status) ? (
+                <Button danger onClick={openCancelModal}>
+                  {t('warehouse.inboundOrder.action.cancel')}
+                </Button>
+              ) : null}
+              <Button icon={<ArrowLeft size={16} />} onClick={() => onNavigate(warehouseInboundOrderPath)}>
+                {t('warehouse.inboundOrder.action.backToList')}
+              </Button>
+            </div>
           </div>
           {selectedOrder ? (
             <>
@@ -987,6 +1026,22 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
                   <dt>{t('warehouse.inboundOrder.field.location')}</dt>
                   <dd>{selectedOrder.warehouse_name} / {selectedOrder.location_name}</dd>
                 </div>
+                {selectedOrder.status === 'cancelled' ? (
+                  <>
+                    <div>
+                      <dt>{t('warehouse.inboundOrder.detail.cancelledAt')}</dt>
+                      <dd>{selectedOrder.cancelled_at ? formatDate(selectedOrder.cancelled_at) : '-'}</dd>
+                    </div>
+                    <div>
+                      <dt>{t('warehouse.inboundOrder.detail.cancelledBy')}</dt>
+                      <dd>{selectedOrder.cancelled_by_name ?? '-'}</dd>
+                    </div>
+                    <div>
+                      <dt>{t('warehouse.inboundOrder.detail.cancelReason')}</dt>
+                      <dd>{selectedOrder.cancel_reason ?? '-'}</dd>
+                    </div>
+                  </>
+                ) : null}
               </dl>
 
               <div className="accessory-heading">
@@ -1125,6 +1180,33 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
           </section>
         ) : null}
       </section>
+
+      <FormModal
+        open={cancelModalOpen}
+        submitDanger
+        submitLabel={t('warehouse.inboundOrder.action.cancel')}
+        submitting={submitting}
+        title={t('warehouse.inboundOrder.action.cancel')}
+        onCancel={() => setCancelModalOpen(false)}
+        onSubmit={(event) => void cancelSelectedInboundOrder(event)}
+      >
+        <p className="form-hint">{t('warehouse.inboundOrder.detail.cancelReason')}</p>
+        <Input.TextArea
+          aria-describedby={cancelReasonError ? 'inbound-cancel-reason-error' : undefined}
+          aria-invalid={Boolean(cancelReasonError)}
+          rows={3}
+          value={cancelReason}
+          onChange={(event) => {
+            setCancelReason(event.target.value)
+            if (cancelReasonError) setCancelReasonError('')
+          }}
+        />
+        {cancelReasonError ? (
+          <div className="form-field-error" id="inbound-cancel-reason-error">
+            {cancelReasonError}
+          </div>
+        ) : null}
+      </FormModal>
     </section>
   )
 }

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import date
+from datetime import UTC, date, datetime
 from decimal import Decimal
 
 from app.db.uow import UnitOfWork
@@ -22,6 +22,7 @@ from app.modules.warehouse.outbound_orders.schemas import (
     VALID_OUTBOUND_ORDER_MODES,
     VALID_OUTBOUND_ORDER_STATUSES,
     OutboundOrderApprove,
+    OutboundOrderCancel,
     OutboundOrderGenerateFromPlan,
     OutboundOrderLineResponse,
     OutboundOrderLineShip,
@@ -221,6 +222,38 @@ class OutboundOrderService:
             actual_date=payload.approved_at,
         )
         return await self._order_response(approved)
+
+    async def cancel_order(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        order_id: str,
+        payload: OutboundOrderCancel,
+    ) -> OutboundOrderResponse:
+        """作废草稿或待审批的出库单；已审批单据涉及库存，不在本流程回滚。"""
+        self._require(current_user, "warehouse:outbound_order:edit")
+        order = await self._get_accessible_order(current_user=current_user, order_id=order_id)
+        if order.status == "cancelled":
+            raise ValueError("出库单已作废，不能重复作废")
+        if order.status not in {"draft", "submitted"}:
+            raise ValueError(
+                "只有草稿或待审批的出库单可以作废；"
+                "已发生的库存需通过出库单或冲销方式纠正"
+            )
+        reason = payload.reason.strip()
+        if not reason:
+            raise ValueError("作废原因不能为空")
+        async with UnitOfWork(self._repository.session):
+            cancelled = await self._repository.cancel_order(
+                order.id,
+                cancel_reason=reason,
+                cancelled_by_id=current_user.id,
+                cancelled_by_name=current_user.display_name,
+                cancelled_at=datetime.now(UTC),
+            )
+            if cancelled is None:
+                raise OutboundOrderNotFoundError
+        return await self._order_response(cancelled)
 
     async def list_orders(
         self,
@@ -463,6 +496,10 @@ class OutboundOrderService:
             reviewer_id=order.reviewer_id,
             reviewer_name=order.reviewer_name,
             owner_user_id=order.owner_user_id,
+            cancelled_at=order.cancelled_at,
+            cancelled_by_id=order.cancelled_by_id,
+            cancelled_by_name=order.cancelled_by_name,
+            cancel_reason=order.cancel_reason,
             lines=[self._line_response(line) for line in lines],
         )
 

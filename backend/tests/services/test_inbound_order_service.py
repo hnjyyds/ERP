@@ -15,6 +15,7 @@ from app.modules.system.auth.seed import seed_system_demo_data
 from app.modules.warehouse.inbound_orders.repositories import InboundOrderRepository
 from app.modules.warehouse.inbound_orders.schemas import (
     InboundOrderApprove,
+    InboundOrderCancel,
     InboundOrderGenerateFromPlan,
     InboundOrderSubmit,
 )
@@ -336,6 +337,99 @@ async def test_inbound_order_service_formal_inbound_posts_inventory_and_followup
     assert inbound_node is not None
     assert inbound_node.status == "completed"
     assert inbound_node.actual_date == date(2026, 8, 30)
+
+
+async def test_inbound_order_service_cancel_draft_keeps_code_and_hides_from_default_list(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        _, _, plan_id = await _prepare_plan(session)
+        service = _make_service(session)
+        user = _warehouse_user()
+        order = await service.generate_from_plan(
+            current_user=user,
+            payload=_payload(plan_id, inbound_mode="pending_inspection"),
+        )
+        cancelled = await service.cancel_order(
+            current_user=user,
+            order_id=order.id,
+            payload=InboundOrderCancel(reason="计划调整，重新生成"),
+        )
+        default_list = await service.list_orders(
+            current_user=user,
+            q=None,
+            status=None,
+            inbound_mode=None,
+            supplier_id=None,
+            purchase_contract_id=None,
+        )
+        cancelled_list = await service.list_orders(
+            current_user=user,
+            q=None,
+            status="cancelled",
+            inbound_mode=None,
+            supplier_id=None,
+            purchase_contract_id=None,
+        )
+        plan = await InboundPlanRepository(session).get_plan(plan_id)
+
+        with pytest.raises(ValueError, match="不能重复作废"):
+            await service.cancel_order(
+                current_user=user,
+                order_id=order.id,
+                payload=InboundOrderCancel(reason="再次作废"),
+            )
+
+    assert cancelled.status == "cancelled"
+    assert cancelled.code == order.code
+    assert cancelled.cancelled_by_id == "u-warehouse"
+    assert cancelled.cancelled_by_name == "演示仓库专员"
+    assert cancelled.cancel_reason == "计划调整，重新生成"
+    assert cancelled.cancelled_at is not None
+    assert all(item.id != order.id for item in default_list.items)
+    assert [item.id for item in cancelled_list.items] == [order.id]
+    # 草稿/待审批单未动库存，计划仍可重新生成入库单。
+    assert plan is not None
+    assert plan.status == "planned"
+
+
+async def test_inbound_order_service_rejects_cancel_after_approval_without_rollback(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        _, _, plan_id = await _prepare_plan(session)
+        service = _make_service(session)
+        order = await service.generate_from_plan(
+            current_user=_warehouse_user(),
+            payload=_payload(plan_id, inbound_mode="pending_inspection"),
+        )
+        submitted = await service.submit_order(
+            current_user=_warehouse_user(),
+            order_id=order.id,
+            payload=InboundOrderSubmit(reviewer_id="u-001"),
+        )
+        approved = await service.approve_order(
+            current_user=_business_approver(),
+            order_id=submitted.id,
+            payload=InboundOrderApprove(approved_at=date(2026, 8, 30)),
+        )
+
+        with pytest.raises(ValueError, match="已发生的库存需通过出库单或冲销方式纠正"):
+            await service.cancel_order(
+                current_user=_warehouse_user(),
+                order_id=approved.id,
+                payload=InboundOrderCancel(reason="尝试作废已入库单据"),
+            )
+
+        balances = await service.list_inventory_balances(current_user=_warehouse_user(), q="BAG-40")
+        ledgers = await service.list_inventory_ledgers(
+            current_user=_warehouse_user(),
+            source_id=approved.id,
+        )
+
+    assert approved.status == "approved"
+    assert balances.items[0].pending_inspection_quantity == "1000"
+    assert ledgers.items[0].stock_status == "pending_inspection"
 
 
 async def test_inbound_order_approval_requires_designated_logged_in_reviewer(

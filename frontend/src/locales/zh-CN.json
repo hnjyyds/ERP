@@ -931,7 +931,7 @@
         "draft": "草稿",
         "submitted": "待审批",
         "approved": "已审批",
-        "cancelled": "已取消"
+        "cancelled": "已作废"
       },
       "mode": {
         "formal": "正式入库",
@@ -1021,7 +1021,10 @@
         "directionOut": "出库",
         "emptyTitle": "暂无入库单",
         "emptyDescription": "请返回列表选择入库单查看明细和库存",
-        "reviewerFallback": "指定审批人"
+        "reviewerFallback": "指定审批人",
+        "cancelledAt": "作废时间",
+        "cancelledBy": "作废人",
+        "cancelReason": "作废原因"
       },
       "form": {
         "modalTitle": "入库单生成和审批",
@@ -1045,12 +1048,14 @@
         "generate": "生成入库单",
         "submit": "提交审批",
         "approve": "审批入库",
+        "cancel": "作废入库单",
         "backToList": "返回列表",
         "searchInventory": "查库存"
       },
       "validation": {
         "reviewerRequired": "请选择审批人",
-        "reviewerMismatch": "该入库单应由 {name} 审批"
+        "reviewerMismatch": "该入库单应由 {name} 审批",
+        "cancelReasonRequired": "请填写作废原因"
       },
       "message": {
         "generated": "已生成入库单 {code}",
@@ -1060,6 +1065,8 @@
         "approvedFormal": "{code} 已正式入库，库存和采购跟单已回写",
         "approvedInspection": "{code} 已登记待检库存",
         "approveFailed": "入库审批失败",
+        "cancelled": "已作废入库单 {code}",
+        "cancelFailed": "入库单作废失败",
         "waitingApproval": "等待 {name} 审批",
         "reviewerLoadFailed": "审批人员列表加载失败",
         "inventoryLoadFailed": "库存快照加载失败"
@@ -1172,7 +1179,7 @@
         "draft": "草稿",
         "submitted": "待审批",
         "approved": "已出库",
-        "cancelled": "已取消"
+        "cancelled": "已作废"
       },
       "mode": {
         "formal": "正式出库",
@@ -1263,7 +1270,10 @@
         "notSet": "未设置",
         "emptyTitle": "暂无出库单",
         "emptyDescription": "请返回列表选择出库单查看明细和库存流水",
-        "reviewerFallback": "指定审批人"
+        "reviewerFallback": "指定审批人",
+        "cancelledAt": "作废时间",
+        "cancelledBy": "作废人",
+        "cancelReason": "作废原因"
       },
       "form": {
         "modalTitle": "出库单生成和审批",
@@ -1278,12 +1288,14 @@
         "generate": "生成出库单",
         "submit": "提交审批",
         "approve": "审批出库",
+        "cancel": "作废出库单",
         "backToList": "返回列表",
         "searchInventory": "查库存"
       },
       "validation": {
         "reviewerRequired": "请选择审批人",
-        "reviewerMismatch": "该出库单应由 {name} 审批"
+        "reviewerMismatch": "该出库单应由 {name} 审批",
+        "cancelReasonRequired": "请填写作废原因"
       },
       "message": {
         "generated": "已生成出库单 {code}",
@@ -1293,6 +1305,8 @@
         "approvedFormal": "{code} 已正式出库，库存和采购跟单已回写",
         "approvedException": "{code} 已记录异常出库",
         "approveFailed": "出库审批失败",
+        "cancelled": "已作废出库单 {code}",
+        "cancelFailed": "出库单作废失败",
         "waitingApproval": "等待 {name} 审批",
         "inventoryLoadFailed": "库存快照加载失败"
       }

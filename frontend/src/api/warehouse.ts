@@ -94,6 +94,10 @@ export interface InboundOrder {
   reviewer_id: string | null
   reviewer_name: string | null
   owner_user_id: string
+  cancelled_at?: string | null
+  cancelled_by_id?: string | null
+  cancelled_by_name?: string | null
+  cancel_reason?: string | null
   lines: InboundOrderLine[]
 }
 
@@ -130,6 +134,10 @@ export interface InboundOrderSubmitPayload {
 
 export interface InboundOrderApprovePayload {
   approved_at: string
+}
+
+export interface InboundOrderCancelPayload {
+  reason: string
 }
 
 export interface OutboundPlanLine {
@@ -228,6 +236,10 @@ export interface OutboundOrder {
   reviewer_id: string | null
   reviewer_name: string | null
   owner_user_id: string
+  cancelled_at?: string | null
+  cancelled_by_id?: string | null
+  cancelled_by_name?: string | null
+  cancel_reason?: string | null
   lines: OutboundOrderLine[]
 }
 
@@ -263,6 +275,10 @@ export interface OutboundOrderApprovePayload {
   reviewer_name?: string
   approved_at: string
   allow_negative?: boolean
+}
+
+export interface OutboundOrderCancelPayload {
+  reason: string
 }
 
 export interface InventoryBalance {
@@ -396,6 +412,16 @@ export function approveOutboundOrder(
   })
 }
 
+export function cancelOutboundOrder(
+  orderId: string,
+  payload: OutboundOrderCancelPayload,
+): Promise<OutboundOrder> {
+  return request<OutboundOrder>(`/warehouse/outbound-orders/${orderId}/cancel`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
 export function listInboundPlans(filters: {
   q?: string
   inbound_type?: string
@@ -473,6 +499,16 @@ export function approveInboundOrder(
   payload: InboundOrderApprovePayload,
 ): Promise<InboundOrder> {
   return request<InboundOrder>(`/warehouse/inbound-orders/${orderId}/approve`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function cancelInboundOrder(
+  orderId: string,
+  payload: InboundOrderCancelPayload,
+): Promise<InboundOrder> {
+  return request<InboundOrder>(`/warehouse/inbound-orders/${orderId}/cancel`, {
     method: 'POST',
     body: JSON.stringify(payload),
   })
