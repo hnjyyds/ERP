@@ -7,8 +7,10 @@ import React from 'react'
 vi.mock('../../../api', () => ({
   addExportContractAdvancePayment: vi.fn(),
   approveExportContract: vi.fn(),
+  cancelExportContract: vi.fn(),
   createExportContract: vi.fn(),
   exportExportContract: vi.fn(),
+  reissueExportContract: vi.fn(),
   listExportContracts: vi.fn().mockResolvedValue({ items: [], total: 0 }),
   listAssignableUsers: vi.fn().mockResolvedValue({ users: [] }),
   registerExportContractSignature: vi.fn(),
@@ -33,11 +35,17 @@ vi.mock('../../../shared/ui', () => {
       title,
       children,
       onSubmit,
+      onCancel,
+      submitLabel,
+      submitting,
     }: {
       open: boolean
       title: React.ReactNode
       children: React.ReactNode
       onSubmit: (event: React.FormEvent<HTMLFormElement>) => void
+      onCancel?: () => void
+      submitLabel?: React.ReactNode
+      submitting?: boolean
     }) =>
       open
         ? React.createElement(
@@ -45,6 +53,8 @@ vi.mock('../../../shared/ui', () => {
             { 'data-testid': 'form-modal', onSubmit },
             React.createElement('h3', null, title),
             children,
+            React.createElement('button', { type: 'button', onClick: onCancel }, '取消'),
+            React.createElement('button', { type: 'submit', disabled: submitting }, submitLabel ?? '提交'),
           )
         : null,
     FormSelect: (props: Record<string, unknown>) =>
@@ -77,6 +87,7 @@ vi.mock('../../../shared/formOptions', () => ({
 
 // Import after all mocks
 import { ExportContractsPage } from '../sales/ExportContractsPage'
+import type { ExportContract } from '../../../api'
 // Re-import mocked modules to get typed references
 const api = await vi.importMock<Record<string, ReturnType<typeof vi.fn>>>('../../../api')
 
@@ -296,5 +307,125 @@ describe('ExportContractsPage', () => {
         }),
       )
     })
+  })
+
+  function makeExportContract(
+    overrides: Partial<ExportContract> = {},
+  ): ExportContract {
+    return {
+      id: 'ec-draft',
+      code: 'EC-DRAFT',
+      contract_date: '2026-08-04',
+      customer_id: 'customer-1',
+      customer_name: '全链路测试客户',
+      sales_user_id: 'u-sales',
+      sales_user_name: '销售专员',
+      currency: 'USD',
+      trade_term: 'FOB',
+      planned_ship_date: '2026-09-01',
+      payment_terms: '30% 预付，70% 出货前',
+      source_quotation_id: null,
+      source_quotation_no: null,
+      remarks: null,
+      approval_status: 'draft',
+      submitted_at: null,
+      approved_at: null,
+      reviewer_id: null,
+      reviewer_name: null,
+      signature_status: 'none',
+      customer_signed_at: null,
+      cancelled_at: null,
+      cancelled_by_id: null,
+      cancelled_by_name: null,
+      cancel_reason: null,
+      reissued_from_id: null,
+      reissued_from_code: null,
+      reissue_reason: null,
+      owner_user_id: 'u-admin',
+      statistics: {
+        total_quantity: '0',
+        total_amount: '0',
+        shipped_quantity: '0',
+        shipped_amount: '0',
+        unshipped_quantity: '0',
+        unshipped_amount: '0',
+        purchased_quantity: '0',
+        unpurchased_quantity: '0',
+        advance_payment_amount: '0',
+      },
+      lines: [],
+      signatures: [],
+      advance_payments: [],
+      purchase_statuses: [],
+      shipment_statuses: [],
+      ...overrides,
+    }
+  }
+
+  async function openCancelDialog(contract: ExportContract) {
+    api.listExportContracts.mockResolvedValue({ items: [contract], total: 1 })
+    const user = userEvent.setup()
+    render(<ExportContractsPage currentUser={currentUser} detailId={contract.id} onNavigate={onNavigate} />)
+    await user.click(await screen.findByRole('button', { name: '作废合同' }))
+    const dialog = await screen.findByTestId('form-modal')
+    return { user, dialog }
+  }
+
+  it('blocks cancelling a draft contract without a reason and never calls the API', async () => {
+    const contract = makeExportContract()
+    const { user, dialog } = await openCancelDialog(contract)
+
+    await user.click(within(dialog).getByRole('button', { name: '确认作废' }))
+
+    expect(await within(dialog).findByText('请填写作废原因')).toBeInTheDocument()
+    expect(api.cancelExportContract).not.toHaveBeenCalled()
+  })
+
+  it('keeps the cancel dialog and typed reason when the cancellation request fails', async () => {
+    const contract = makeExportContract()
+    api.cancelExportContract.mockRejectedValue(new Error('network down'))
+    const { user, dialog } = await openCancelDialog(contract)
+
+    await user.type(within(dialog).getByLabelText('作废原因'), '客户取消订单')
+    await user.click(within(dialog).getByRole('button', { name: '确认作废' }))
+
+    await waitFor(() => {
+      expect(api.cancelExportContract).toHaveBeenCalledWith(contract.id, { reason: '客户取消订单' })
+    })
+    expect(within(dialog).getByLabelText('作废原因')).toHaveValue('客户取消订单')
+    expect(within(dialog).getByRole('button', { name: '确认作废' })).toBeInTheDocument()
+  })
+
+  it('clears a previously typed cancel reason when the dialog is reopened', async () => {
+    const contract = makeExportContract()
+    const { user, dialog } = await openCancelDialog(contract)
+
+    await user.type(within(dialog).getByLabelText('作废原因'), '临时原因')
+    await user.click(within(dialog).getByRole('button', { name: '取消' }))
+    await waitFor(() => {
+      expect(screen.queryByTestId('form-modal')).not.toBeInTheDocument()
+    })
+
+    await user.click(await screen.findByRole('button', { name: '作废合同' }))
+    const reopened = await screen.findByTestId('form-modal')
+    expect(within(reopened).getByLabelText('作废原因')).toHaveValue('')
+  })
+
+  it('blocks reissuing a cancelled contract without a reason and never calls the API', async () => {
+    const contract = makeExportContract({
+      approval_status: 'cancelled',
+      cancelled_at: '2026-08-05',
+      cancel_reason: '客户取消订单',
+    })
+    api.listExportContracts.mockResolvedValue({ items: [contract], total: 1 })
+    const user = userEvent.setup()
+    render(<ExportContractsPage currentUser={currentUser} detailId={contract.id} onNavigate={onNavigate} />)
+
+    await user.click(await screen.findByRole('button', { name: '作废重开' }))
+    const dialog = await screen.findByTestId('form-modal')
+    await user.click(within(dialog).getByRole('button', { name: '重开为新合同' }))
+
+    expect(await within(dialog).findByText('请填写重开原因')).toBeInTheDocument()
+    expect(api.reissueExportContract).not.toHaveBeenCalled()
   })
 })
