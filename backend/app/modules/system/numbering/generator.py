@@ -25,6 +25,11 @@ DOCUMENT_PREFIXES: dict[str, str] = {
     "sales.quotation": "QT",
     "sales.contract": "EC",
     "sales.shipment": "SP",
+    "sample.request": "SR",
+    "sample.record": "SM",
+    "sample.delivery": "SD",
+    "quality.inspection": "QC",
+    "quality.reinspection": "QC-R",
 }
 
 

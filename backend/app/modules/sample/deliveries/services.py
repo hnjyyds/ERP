@@ -36,6 +36,7 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.numbering.generator import create_with_generated_code
 
 
 class PermissionDeniedError(Exception):
@@ -69,28 +70,33 @@ class SampleDeliveryService:
         payload: SampleDeliveryCreate,
     ) -> SampleDeliveryResponse:
         self._require(current_user, "sample:delivery:edit")
-        async with UnitOfWork(self._repository.session):
-            delivery = await self._repository.create_delivery(
-                code=payload.code,
-                delivery_date=payload.delivery_date,
-                customer_id=payload.customer_id,
-                customer_name=payload.customer_name,
-                supplier_id=payload.supplier_id,
-                supplier_name=payload.supplier_name,
-                factory_id=payload.factory_id,
-                factory_name=payload.factory_name,
-                recipient_name=payload.recipient_name,
-                recipient_company=payload.recipient_company,
-                recipient_address=payload.recipient_address,
-                express_company=payload.express_company,
-                tracking_no=payload.tracking_no,
-                quote_id=payload.quote_id,
-                quote_no=payload.quote_no,
-                remark=payload.remark,
-                status="draft",
-                owner_user_id=current_user.id,
-            )
-            await self._add_delivery_children(delivery.id, payload)
+
+        async def create_delivery_row(code: str) -> SampleDeliveryRow:
+            async with UnitOfWork(self._repository.session):
+                delivery = await self._repository.create_delivery(
+                    code=code,
+                    delivery_date=payload.delivery_date,
+                    customer_id=payload.customer_id,
+                    customer_name=payload.customer_name,
+                    supplier_id=payload.supplier_id,
+                    supplier_name=payload.supplier_name,
+                    factory_id=payload.factory_id,
+                    factory_name=payload.factory_name,
+                    recipient_name=payload.recipient_name,
+                    recipient_company=payload.recipient_company,
+                    recipient_address=payload.recipient_address,
+                    express_company=payload.express_company,
+                    tracking_no=payload.tracking_no,
+                    quote_id=payload.quote_id,
+                    quote_no=payload.quote_no,
+                    remark=payload.remark,
+                    status="draft",
+                    owner_user_id=current_user.id,
+                )
+                await self._add_delivery_children(delivery.id, payload)
+                return delivery
+
+        delivery = await create_with_generated_code("sample.delivery", create_delivery_row)
         return await self._delivery_response(delivery)
 
     async def update_delivery(
@@ -110,7 +116,6 @@ class SampleDeliveryService:
         async with UnitOfWork(self._repository.session):
             updated = await self._repository.update_delivery(
                 delivery_id=delivery.id,
-                code=payload.code,
                 delivery_date=payload.delivery_date,
                 customer_id=payload.customer_id,
                 customer_name=payload.customer_name,

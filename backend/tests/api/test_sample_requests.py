@@ -80,7 +80,7 @@ async def test_sample_request_create_search_progress_fee_and_payment(
     )
     assert create_response.status_code == 201
     request_data = create_response.json()["data"]
-    assert request_data["code"] == "SR-E2E-001"
+    assert request_data["code"].startswith("SR-")
     assert request_data["status"] == "draft"
     assert request_data["lines"][0]["product_code"] == "BAG-40"
     assert request_data["progress_events"] == []
@@ -106,7 +106,7 @@ async def test_sample_request_create_search_progress_fee_and_payment(
     assert list_response.status_code == 200
     list_data = list_response.json()["data"]
     assert list_data["total"] == 1
-    assert list_data["items"][0]["code"] == "SR-E2E-001"
+    assert list_data["items"][0]["code"] == request_data["code"]
 
     progress_response = await api_client.post(
         f"/api/v1/sample/requests/{request_id}/progress",
@@ -176,7 +176,9 @@ async def test_sample_request_filters_by_date_range_and_converts_completed_reque
         json=_sample_request_payload(code="SR-COMPLETE-001"),
     )
     assert create_response.status_code == 201
-    request_id = create_response.json()["data"]["id"]
+    sample_request = create_response.json()["data"]
+    request_id = sample_request["id"]
+    request_code = sample_request["code"]
 
     await api_client.post(
         f"/api/v1/sample/requests/{request_id}/progress",
@@ -196,7 +198,7 @@ async def test_sample_request_filters_by_date_range_and_converts_completed_reque
         params={"date_from": "2026-06-19", "date_to": "2026-06-21"},
     )
     assert list_response.status_code == 200
-    assert [item["code"] for item in list_response.json()["data"]["items"]] == ["SR-COMPLETE-001"]
+    assert [item["code"] for item in list_response.json()["data"]["items"]] == [request_code]
 
     excluded_response = await api_client.get(
         "/api/v1/sample/requests",
@@ -213,10 +215,10 @@ async def test_sample_request_filters_by_date_range_and_converts_completed_reque
     )
     assert convert_response.status_code == 201
     record = convert_response.json()["data"]
-    assert record["code"] == "SM-FROM-SR-001"
+    assert record["code"].startswith("SM-")
     assert record["source_type"] == "sample_request"
     assert record["source_id"] == request_id
-    assert record["source_code"] == "SR-COMPLETE-001"
+    assert record["source_code"] == request_code
     assert record["product_code"] == "BAG-40"
     assert record["customer_name"] == "欧陆家居用品有限公司"
     assert record["stock_summary"]["received_quantity"] == "3"

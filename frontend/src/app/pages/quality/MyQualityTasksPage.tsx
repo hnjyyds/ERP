@@ -152,7 +152,6 @@ function basePayload(
   status: QualityInspectionStatus,
 ): QualityInspectionPayload {
   return {
-    code: task.code,
     purchase_contract_id: task.purchase_contract_id,
     status,
     scheduled_at: task.scheduled_at,

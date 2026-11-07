@@ -34,6 +34,7 @@ from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.numbering.generator import create_with_generated_code
 
 
 class PermissionDeniedError(Exception):
@@ -79,36 +80,44 @@ class SampleRequestService:
         self._require(current_user, "sample:request:edit")
         self._validate_status(payload.status)
         self._validate_destination(payload.destination)
-        async with UnitOfWork(self._repository.session):
-            sample_request = await self._repository.create_request(
-                code=payload.code,
-                request_date=payload.request_date,
-                customer_id=payload.customer_id,
-                customer_name=payload.customer_name,
-                product_id=payload.product_id,
-                product_code=payload.product_code,
-                product_name=payload.product_name,
-                supplier_id=payload.supplier_id,
-                supplier_name=payload.supplier_name,
-                sales_user_id=payload.sales_user_id,
-                sales_user_name=payload.sales_user_name,
-                destination=payload.destination,
-                requirements=payload.requirements,
-                due_date=payload.due_date,
-                status=payload.status,
-                owner_user_id=current_user.id,
-            )
-            for line in payload.lines:
-                await self._repository.add_line(
-                    sample_request_id=sample_request.id,
-                    product_id=line.product_id,
-                    product_code=line.product_code,
-                    product_name=line.product_name,
-                    specification=line.specification,
-                    quantity=line.quantity,
-                    unit=line.unit,
-                    requirement=line.requirement,
+
+        async def create_request_row(code: str) -> SampleRequestRow:
+            async with UnitOfWork(self._repository.session):
+                sample_request = await self._repository.create_request(
+                    code=code,
+                    request_date=payload.request_date,
+                    customer_id=payload.customer_id,
+                    customer_name=payload.customer_name,
+                    product_id=payload.product_id,
+                    product_code=payload.product_code,
+                    product_name=payload.product_name,
+                    supplier_id=payload.supplier_id,
+                    supplier_name=payload.supplier_name,
+                    sales_user_id=payload.sales_user_id,
+                    sales_user_name=payload.sales_user_name,
+                    destination=payload.destination,
+                    requirements=payload.requirements,
+                    due_date=payload.due_date,
+                    status=payload.status,
+                    owner_user_id=current_user.id,
                 )
+                for line in payload.lines:
+                    await self._repository.add_line(
+                        sample_request_id=sample_request.id,
+                        product_id=line.product_id,
+                        product_code=line.product_code,
+                        product_name=line.product_name,
+                        specification=line.specification,
+                        quantity=line.quantity,
+                        unit=line.unit,
+                        requirement=line.requirement,
+                    )
+                return sample_request
+
+        sample_request = await create_with_generated_code(
+            "sample.request",
+            create_request_row,
+        )
         return await self._request_response(sample_request)
 
     async def get_request(
@@ -284,64 +293,69 @@ class SampleRequestService:
         )
         if existing is not None:
             raise SampleRecordAlreadyCreatedError
-        async with UnitOfWork(self._repository.session):
-            record = await self._sample_record_repository.create_record(
-                code=payload.code,
-                sample_type=payload.sample_type,
-                status=payload.status,
-                product_id=sample_request.product_id,
-                product_code=sample_request.product_code,
-                product_name=sample_request.product_name or sample_request.code,
-                customer_id=sample_request.customer_id,
-                customer_name=sample_request.customer_name,
-                supplier_id=sample_request.supplier_id,
-                supplier_name=sample_request.supplier_name,
-                customer_sku=payload.customer_sku,
-                supplier_sku=payload.supplier_sku,
-                purchase_contract_id=payload.purchase_contract_id,
-                purchase_contract_no=payload.purchase_contract_no,
-                source_type="sample_request",
-                source_id=sample_request.id,
-                source_code=sample_request.code,
-                source_note=sample_request.requirements,
-                received_at=payload.received_at,
-                submitted_at=payload.submitted_at,
-                quantity=payload.quantity,
-                unit=payload.unit,
-                description=payload.description,
-                owner_user_id=current_user.id,
-            )
-            await self._sample_record_repository.add_stock_event(
-                sample_record_id=record.id,
-                event_type="received",
-                quantity=payload.quantity,
-                unit=payload.unit,
-                occurred_at=payload.received_at,
-                delivery_no=None,
-                recipient=sample_request.supplier_name,
-                note=f"打样单 {sample_request.code} 转样品登记",
-            )
-            for image in payload.images:
-                await self._sample_record_repository.add_image(
-                    sample_record_id=record.id,
-                    file_id=image.file_id,
-                    filename=image.filename,
-                    url=image.url,
-                    caption=image.caption,
-                    is_primary=image.is_primary,
-                )
-            node = self._followup_node(payload.sample_type)
-            if node is not None and payload.submitted_at is not None:
-                node_code, node_label = node
-                await self._sample_record_repository.add_followup_event(
-                    sample_record_id=record.id,
+
+        async def create_record_row(code: str) -> SampleRecordRow:
+            async with UnitOfWork(self._repository.session):
+                record = await self._sample_record_repository.create_record(
+                    code=code,
+                    sample_type=payload.sample_type,
+                    status=payload.status,
+                    product_id=sample_request.product_id,
+                    product_code=sample_request.product_code,
+                    product_name=sample_request.product_name or sample_request.code,
+                    customer_id=sample_request.customer_id,
+                    customer_name=sample_request.customer_name,
+                    supplier_id=sample_request.supplier_id,
+                    supplier_name=sample_request.supplier_name,
+                    customer_sku=payload.customer_sku,
+                    supplier_sku=payload.supplier_sku,
                     purchase_contract_id=payload.purchase_contract_id,
                     purchase_contract_no=payload.purchase_contract_no,
-                    node_code=node_code,
-                    node_label=node_label,
-                    actual_date=payload.submitted_at,
-                    event_type="sample_completed",
+                    source_type="sample_request",
+                    source_id=sample_request.id,
+                    source_code=sample_request.code,
+                    source_note=sample_request.requirements,
+                    received_at=payload.received_at,
+                    submitted_at=payload.submitted_at,
+                    quantity=payload.quantity,
+                    unit=payload.unit,
+                    description=payload.description,
+                    owner_user_id=current_user.id,
                 )
+                await self._sample_record_repository.add_stock_event(
+                    sample_record_id=record.id,
+                    event_type="received",
+                    quantity=payload.quantity,
+                    unit=payload.unit,
+                    occurred_at=payload.received_at,
+                    delivery_no=None,
+                    recipient=sample_request.supplier_name,
+                    note=f"打样单 {sample_request.code} 转样品登记",
+                )
+                for image in payload.images:
+                    await self._sample_record_repository.add_image(
+                        sample_record_id=record.id,
+                        file_id=image.file_id,
+                        filename=image.filename,
+                        url=image.url,
+                        caption=image.caption,
+                        is_primary=image.is_primary,
+                    )
+                node = self._followup_node(payload.sample_type)
+                if node is not None and payload.submitted_at is not None:
+                    node_code, node_label = node
+                    await self._sample_record_repository.add_followup_event(
+                        sample_record_id=record.id,
+                        purchase_contract_id=payload.purchase_contract_id,
+                        purchase_contract_no=payload.purchase_contract_no,
+                        node_code=node_code,
+                        node_label=node_label,
+                        actual_date=payload.submitted_at,
+                        event_type="sample_completed",
+                    )
+                return record
+
+        record = await create_with_generated_code("sample.record", create_record_row)
         return await self._record_response(record)
 
     async def _get_accessible_request(

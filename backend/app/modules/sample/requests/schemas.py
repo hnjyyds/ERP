@@ -26,7 +26,7 @@ class SampleRequestLineCreate(BaseModel):
 class SampleRequestCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    code: str = Field(min_length=1, max_length=80)
+    code: str | None = Field(default=None, max_length=80)
     request_date: date
     customer_id: str | None = Field(default=None, max_length=36)
     customer_name: str = Field(min_length=1, max_length=240)
@@ -143,7 +143,7 @@ class SampleRequestListResponse(BaseModel):
 class SampleRequestToRecordCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    code: str = Field(min_length=1, max_length=80)
+    code: str | None = Field(default=None, max_length=80)
     sample_type: str = Field(default="confirm_sample", min_length=1, max_length=40)
     status: str = Field(default="registered", min_length=1, max_length=40)
     received_at: date

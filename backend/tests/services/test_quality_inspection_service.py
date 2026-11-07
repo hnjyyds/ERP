@@ -99,7 +99,7 @@ async def test_quality_inspection_list_loads_aggregate_relations_in_fixed_querie
         try:
             result = await service.list_inspections(
                 current_user=_quality_user(),
-                q="QC-LIST-BATCH",
+                q=None,
                 result=None,
                 supplier_id=None,
                 purchase_contract_id=None,
@@ -356,7 +356,7 @@ async def test_quality_inspection_service_scopes_qc_user_to_assigned_records(
         )
         assigned_list = await service.list_inspections(
             current_user=assigned_user,
-            q="QC-SVC-ASSIGNED",
+            q=inspection.code,
             result=None,
             supplier_id=None,
             purchase_contract_id=None,
@@ -364,7 +364,7 @@ async def test_quality_inspection_service_scopes_qc_user_to_assigned_records(
         )
         other_list = await service.list_inspections(
             current_user=other_user,
-            q="QC-SVC-ASSIGNED",
+            q=inspection.code,
             result=None,
             supplier_id=None,
             purchase_contract_id=None,
@@ -372,7 +372,7 @@ async def test_quality_inspection_service_scopes_qc_user_to_assigned_records(
         )
         manager_filtered = await service.list_inspections(
             current_user=_quality_user(),
-            q="QC-SVC-ASSIGNED",
+            q=inspection.code,
             result=None,
             supplier_id=None,
             purchase_contract_id=None,

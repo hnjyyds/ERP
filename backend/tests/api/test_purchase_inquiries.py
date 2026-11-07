@@ -179,7 +179,7 @@ async def test_purchase_inquiry_flow_quotes_samples_template_and_sales_reference
         params={"product_id": "product-bag", "supplier_id": "supplier-pack-a"},
     )
     assert samples_response.status_code == 200
-    assert samples_response.json()["data"]["items"][0]["sample_code"] == "SM-PI-API-001"
+    assert samples_response.json()["data"]["items"][0]["sample_code"].startswith("SM-")
 
     sales_references_response = await api_client.get(
         "/api/v1/sales/quotations/purchase-references",

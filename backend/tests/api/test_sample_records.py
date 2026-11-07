@@ -63,7 +63,7 @@ async def test_sample_record_create_search_image_stock_and_delivery_link(
     )
     assert create_response.status_code == 201
     record = create_response.json()["data"]
-    assert record["code"] == "SM-E2E-001"
+    assert record["code"].startswith("SM-")
     assert record["sample_type"] == "confirm_sample"
     assert record["stock_summary"]["received_quantity"] == "5"
     assert record["stock_summary"]["delivered_quantity"] == "0"
@@ -95,7 +95,7 @@ async def test_sample_record_create_search_image_stock_and_delivery_link(
     assert list_response.status_code == 200
     list_data = list_response.json()["data"]
     assert list_data["total"] == 1
-    assert list_data["items"][0]["code"] == "SM-E2E-001"
+    assert list_data["items"][0]["code"] == record["code"]
 
     image_response = await api_client.post(
         f"/api/v1/sample/records/{record_id}/images",

@@ -35,7 +35,7 @@ class SampleStockEventCreate(BaseModel):
 class SampleRecordCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    code: str = Field(min_length=1, max_length=80)
+    code: str | None = Field(default=None, max_length=80)
     sample_type: str = Field(min_length=1, max_length=40)
     status: str = Field(default="registered", min_length=1, max_length=40)
     product_id: str | None = Field(default=None, max_length=36)

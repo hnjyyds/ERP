@@ -156,7 +156,6 @@ class QualityInspectionRepository:
         self,
         *,
         inspection_id: str,
-        code: str,
         inspected_at: date,
         result: str,
         inspector_id: str | None,
@@ -171,7 +170,6 @@ class QualityInspectionRepository:
         inspection = await self.session.get(QualityInspection, inspection_id)
         if inspection is None:
             return None
-        inspection.code = code
         inspection.status = status
         inspection.scheduled_at = scheduled_at or datetime.combine(inspected_at, time(hour=9))
         inspection.inspected_at = inspected_at

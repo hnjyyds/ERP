@@ -127,7 +127,8 @@ async def test_print_sample_request_renders_internal_sample_sheet(
         },
     )
     assert create_response.status_code == 201
-    request_id = create_response.json()["data"]["id"]
+    sample_request = create_response.json()["data"]
+    request_id = sample_request["id"]
 
     response = await api_client.get(
         f"/api/v1/printing/sample-requests/{request_id}",
@@ -136,7 +137,7 @@ async def test_print_sample_request_renders_internal_sample_sheet(
     assert response.status_code == 200
     data = response.json()["data"]
     assert data["document_type"] == "sample_request"
-    assert data["document_code"] == "SR-PRINT-001"
+    assert data["document_code"] == sample_request["code"]
     assert "内部打样单" in data["html"]
     assert "Eco Shopping Bag" in data["html"]
     assert "华东包装制品厂" in data["html"]

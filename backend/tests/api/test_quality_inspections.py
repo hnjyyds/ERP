@@ -122,7 +122,7 @@ async def test_quality_inspection_api_creates_record_and_updates_followup(
     list_response = await api_client.get(
         "/api/v1/quality/inspections",
         headers=headers,
-        params={"q": "QC-API-001"},
+        params={"q": inspection["code"]},
     )
     assert list_response.status_code == 200
     assert list_response.json()["data"]["total"] == 1
@@ -209,7 +209,7 @@ async def test_quality_inspection_api_creates_a_scheduled_pending_task_without_r
         params={
             "inspector_user_id": "u-qc",
             "status": "pending",
-            "q": "QC-TASK-API-001",
+            "q": task["code"],
         },
     )
     assert list_response.status_code == 200
@@ -413,7 +413,7 @@ async def test_quality_inspection_api_inherits_contract_qc_assignee_and_filters(
     assigned_response = await api_client.get(
         "/api/v1/quality/inspections",
         headers=headers,
-        params={"assignee_user_id": "u-qc", "q": "QC-API-ASSIGNED"},
+        params={"assignee_user_id": "u-qc", "q": inspection["code"]},
     )
     assert assigned_response.status_code == 200
     assert assigned_response.json()["data"]["total"] == 1
@@ -421,7 +421,7 @@ async def test_quality_inspection_api_inherits_contract_qc_assignee_and_filters(
     other_response = await api_client.get(
         "/api/v1/quality/inspections",
         headers=headers,
-        params={"assignee_user_id": "u-qc-002", "q": "QC-API-ASSIGNED"},
+        params={"assignee_user_id": "u-qc-002", "q": inspection["code"]},
     )
     assert other_response.status_code == 200
     assert other_response.json()["data"]["total"] == 0

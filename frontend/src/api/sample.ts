@@ -77,7 +77,6 @@ export interface SampleRequestLinePayload {
 }
 
 export interface SampleRequestCreatePayload {
-  code: string
   request_date: string
   customer_id?: string | null
   customer_name: string
@@ -191,7 +190,6 @@ export interface SampleRecordList {
 }
 
 export interface SampleRequestToRecordPayload {
-  code: string
   sample_type: string
   status: string
   received_at: string
@@ -215,7 +213,6 @@ export interface SampleRecordImagePayload {
 }
 
 export interface SampleRecordCreatePayload {
-  code: string
   sample_type: string
   status: string
   product_id?: string | null
@@ -346,7 +343,6 @@ export interface SampleDeliveryFeePayload {
 }
 
 export interface SampleDeliveryCreatePayload {
-  code: string
   delivery_date: string
   customer_id?: string | null
   customer_name: string

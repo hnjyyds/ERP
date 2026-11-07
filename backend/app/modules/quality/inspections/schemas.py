@@ -115,7 +115,7 @@ class QualityInspectionIssueCreate(BaseModel):
 class QualityInspectionCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    code: str = Field(min_length=1, max_length=80)
+    code: str | None = Field(default=None, max_length=80)
     purchase_contract_id: str = Field(min_length=1, max_length=36)
     scheduled_at: datetime | None = None
     status: str | None = Field(default=None, min_length=1, max_length=40)
@@ -238,7 +238,7 @@ class QualityIssueResolveRequest(BaseModel):
 class QualityReinspectionCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    code: str = Field(min_length=1, max_length=80, description="复检任务编号")
+    code: str | None = Field(default=None, max_length=80, description="复检任务编号，服务端生成")
     scheduled_at: datetime = Field(description="复检排期时间")
     inspector_id: str = Field(min_length=1, max_length=36, description="复检负责人标识")
     reason: str = Field(min_length=1, max_length=1000, description="创建复检原因")

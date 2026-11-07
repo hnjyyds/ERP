@@ -27,6 +27,7 @@ from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.numbering.generator import create_with_generated_code
 
 
 class PermissionDeniedError(Exception):
@@ -89,39 +90,47 @@ class QualityInspectionService:
         else:
             raise ValueError("查验日期或排期时间至少填写一项")
         scheduled_at = payload.scheduled_at or datetime.combine(inspected_at, time(hour=9))
-        async with UnitOfWork(self._repository.session):
-            inspection = await self._repository.create_inspection(
-                code=payload.code,
-                purchase_contract_id=contract.id,
-                purchase_contract_no=contract.code,
-                supplier_id=contract.supplier_id,
-                supplier_name=contract.supplier_name,
-                status=task_status,
-                scheduled_at=scheduled_at,
-                inspected_at=inspected_at,
-                result=payload.result or "",
-                inspector_id=inspector.id,
-                inspector_name=inspector.display_name,
-                qc_user_id=qc_user_id,
-                qc_user_name=qc_user_name,
-                issue_summary=payload.issue_summary,
-                attachment_group_id=payload.attachment_group_id,
-                owner_user_id=current_user.id,
-            )
-            await self._write_lines_issues_and_attachments(
-                inspection.id,
-                payload,
-                current_user=current_user,
-            )
-            await self._repository.add_event(
-                inspection_id=inspection.id,
-                event_type="created",
-                from_status=None,
-                to_status=task_status,
-                notes=None,
-                actor_user_id=current_user.id,
-                actor_user_name=current_user.display_name,
-            )
+
+        async def create_inspection_row(code: str) -> QualityInspectionRow:
+            async with UnitOfWork(self._repository.session):
+                inspection = await self._repository.create_inspection(
+                    code=code,
+                    purchase_contract_id=contract.id,
+                    purchase_contract_no=contract.code,
+                    supplier_id=contract.supplier_id,
+                    supplier_name=contract.supplier_name,
+                    status=task_status,
+                    scheduled_at=scheduled_at,
+                    inspected_at=inspected_at,
+                    result=payload.result or "",
+                    inspector_id=inspector.id,
+                    inspector_name=inspector.display_name,
+                    qc_user_id=qc_user_id,
+                    qc_user_name=qc_user_name,
+                    issue_summary=payload.issue_summary,
+                    attachment_group_id=payload.attachment_group_id,
+                    owner_user_id=current_user.id,
+                )
+                await self._write_lines_issues_and_attachments(
+                    inspection.id,
+                    payload,
+                    current_user=current_user,
+                )
+                await self._repository.add_event(
+                    inspection_id=inspection.id,
+                    event_type="created",
+                    from_status=None,
+                    to_status=task_status,
+                    notes=None,
+                    actor_user_id=current_user.id,
+                    actor_user_name=current_user.display_name,
+                )
+                return inspection
+
+        inspection = await create_with_generated_code(
+            "quality.inspection",
+            create_inspection_row,
+        )
         await self._write_back_followup_if_passed(inspection)
         return await self._response_builder.build(inspection)
 
@@ -163,7 +172,6 @@ class QualityInspectionService:
         async with UnitOfWork(self._repository.session):
             updated = await self._repository.update_inspection(
                 inspection_id=inspection.id,
-                code=payload.code,
                 status=task_status,
                 scheduled_at=scheduled_at,
                 inspected_at=inspected_at,
@@ -406,45 +414,53 @@ class QualityInspectionService:
             permission_error="所选员工没有 QC 查验权限",
         )
         root_reinspection_no = inspection.reinspection_no + 1
-        async with UnitOfWork(self._repository.session):
-            reinspection = await self._repository.create_inspection(
-                code=payload.code,
-                purchase_contract_id=contract.id,
-                purchase_contract_no=contract.code,
-                supplier_id=contract.supplier_id,
-                supplier_name=contract.supplier_name,
-                status="pending",
-                scheduled_at=payload.scheduled_at,
-                inspected_at=payload.scheduled_at.date(),
-                result="",
-                inspector_id=inspector.id,
-                inspector_name=inspector.display_name,
-                qc_user_id=contract.qc_user_id,
-                qc_user_name=contract.qc_user_name,
-                issue_summary=payload.reason,
-                attachment_group_id=None,
-                parent_inspection_id=inspection.id,
-                reinspection_no=root_reinspection_no,
-                owner_user_id=current_user.id,
-            )
-            await self._repository.add_event(
-                inspection_id=reinspection.id,
-                event_type="created",
-                from_status=None,
-                to_status="pending",
-                notes=payload.reason,
-                actor_user_id=current_user.id,
-                actor_user_name=current_user.display_name,
-            )
-            await self._repository.add_event(
-                inspection_id=inspection.id,
-                event_type="reinspection_created",
-                from_status=inspection.status,
-                to_status=inspection.status,
-                notes=f"{payload.code}：{payload.reason}",
-                actor_user_id=current_user.id,
-                actor_user_name=current_user.display_name,
-            )
+
+        async def create_reinspection_row(code: str) -> QualityInspectionRow:
+            async with UnitOfWork(self._repository.session):
+                reinspection = await self._repository.create_inspection(
+                    code=code,
+                    purchase_contract_id=contract.id,
+                    purchase_contract_no=contract.code,
+                    supplier_id=contract.supplier_id,
+                    supplier_name=contract.supplier_name,
+                    status="pending",
+                    scheduled_at=payload.scheduled_at,
+                    inspected_at=payload.scheduled_at.date(),
+                    result="",
+                    inspector_id=inspector.id,
+                    inspector_name=inspector.display_name,
+                    qc_user_id=contract.qc_user_id,
+                    qc_user_name=contract.qc_user_name,
+                    issue_summary=payload.reason,
+                    attachment_group_id=None,
+                    parent_inspection_id=inspection.id,
+                    reinspection_no=root_reinspection_no,
+                    owner_user_id=current_user.id,
+                )
+                await self._repository.add_event(
+                    inspection_id=reinspection.id,
+                    event_type="created",
+                    from_status=None,
+                    to_status="pending",
+                    notes=payload.reason,
+                    actor_user_id=current_user.id,
+                    actor_user_name=current_user.display_name,
+                )
+                await self._repository.add_event(
+                    inspection_id=inspection.id,
+                    event_type="reinspection_created",
+                    from_status=inspection.status,
+                    to_status=inspection.status,
+                    notes=f"{reinspection.code}：{payload.reason}",
+                    actor_user_id=current_user.id,
+                    actor_user_name=current_user.display_name,
+                )
+                return reinspection
+
+        reinspection = await create_with_generated_code(
+            "quality.reinspection",
+            create_reinspection_row,
+        )
         return await self._response_builder.build(reinspection)
 
     async def get_inbound_eligibility(

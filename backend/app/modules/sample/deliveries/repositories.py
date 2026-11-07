@@ -87,7 +87,6 @@ class SampleDeliveryRepository:
         self,
         *,
         delivery_id: str,
-        code: str,
         delivery_date: date,
         customer_id: str | None,
         customer_name: str,
@@ -109,7 +108,6 @@ class SampleDeliveryRepository:
         )
         if delivery is None:
             return None
-        delivery.code = code
         delivery.delivery_date = delivery_date
         delivery.customer_id = customer_id
         delivery.customer_name = customer_name

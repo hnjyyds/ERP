@@ -146,7 +146,6 @@ async def test_sample_delivery_repository_updates_header_and_replaces_children(
 
         updated = await repository.update_delivery(
             delivery_id=delivery.id,
-            code="SD-REPO-EDIT-001",
             delivery_date=date(2026, 6, 26),
             customer_id="customer-a",
             customer_name="客户 A",
@@ -189,6 +188,7 @@ async def test_sample_delivery_repository_updates_header_and_replaces_children(
         fees = await repository.list_fees(delivery.id)
 
     assert updated is not None
+    assert updated.code == delivery.code
     assert updated.delivery_date == date(2026, 6, 26)
     assert updated.express_company == "FedEx"
     assert len(lines) == 1

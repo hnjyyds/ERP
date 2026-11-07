@@ -105,7 +105,7 @@ async def test_sample_delivery_review_stock_fee_statistics_and_histories(
     )
     assert create_response.status_code == 201
     delivery = create_response.json()["data"]
-    assert delivery["code"] == "SD-E2E-001"
+    assert delivery["code"].startswith("SD-")
     assert delivery["status"] == "draft"
     assert delivery["lines"][0]["sample_record_id"] == sample_record["id"]
     assert delivery["fees"][0]["amount"] == "18.50"
@@ -149,7 +149,7 @@ async def test_sample_delivery_review_stock_fee_statistics_and_histories(
     sample_detail = sample_response.json()["data"]
     assert sample_detail["stock_summary"]["delivered_quantity"] == "2"
     assert sample_detail["stock_summary"]["retained_quantity"] == "3"
-    assert sample_detail["stock_events"][0]["delivery_no"] == "SD-E2E-001"
+    assert sample_detail["stock_events"][0]["delivery_no"] == delivery["code"]
     assert sample_detail["stock_events"][0]["note"] is None
 
     stats_response = await api_client.get(
@@ -189,7 +189,7 @@ async def test_sample_delivery_review_stock_fee_statistics_and_histories(
         headers={"Authorization": f"Bearer {token}"},
     )
     assert sample_history_response.status_code == 200
-    assert sample_history_response.json()["data"]["items"][0]["code"] == "SD-E2E-001"
+    assert sample_history_response.json()["data"]["items"][0]["code"] == delivery["code"]
 
     quote_history_response = await api_client.get(
         "/api/v1/sample/deliveries/quote-history",
@@ -220,7 +220,7 @@ async def test_sample_delivery_review_stock_fee_statistics_and_histories(
     exported = export_response.json()["data"]
     assert exported["filename"].endswith(".csv")
     assert exported["total"] == 1
-    assert "SD-E2E-001" in exported["content"]
+    assert delivery["code"] in exported["content"]
     assert "DHL" in exported["content"]
 
 

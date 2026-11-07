@@ -118,7 +118,6 @@ export interface QualityIssuePayload {
 }
 
 export interface QualityInspectionPayload {
-  code: string
   purchase_contract_id: string
   status: QualityInspectionStatus
   scheduled_at: string
@@ -221,7 +220,7 @@ export function resolveQualityIssue(
 
 export function createQualityReinspection(
   inspectionId: string,
-  payload: { code: string; scheduled_at: string; inspector_id: string; reason: string },
+  payload: { scheduled_at: string; inspector_id: string; reason: string },
 ): Promise<QualityInspection> {
   return request<QualityInspection>(`/quality/inspections/${inspectionId}/reinspection`, {
     method: 'POST',

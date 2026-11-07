@@ -30,6 +30,7 @@ from app.modules.sample.records.schemas import (
 )
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.numbering.generator import create_with_generated_code
 
 
 class PermissionDeniedError(Exception):
@@ -63,46 +64,51 @@ class SampleRecordService:
         self._require(current_user, "sample:record:edit")
         self._validate_sample_type(payload.sample_type)
         self._validate_status(payload.status)
-        async with UnitOfWork(self._repository.session):
-            record = await self._repository.create_record(
-                code=payload.code,
-                sample_type=payload.sample_type,
-                status=payload.status,
-                product_id=payload.product_id,
-                product_code=payload.product_code,
-                product_name=payload.product_name,
-                customer_id=payload.customer_id,
-                customer_name=payload.customer_name,
-                supplier_id=payload.supplier_id,
-                supplier_name=payload.supplier_name,
-                customer_sku=payload.customer_sku,
-                supplier_sku=payload.supplier_sku,
-                purchase_contract_id=payload.purchase_contract_id,
-                purchase_contract_no=payload.purchase_contract_no,
-                source_type=payload.source_type,
-                source_id=payload.source_id,
-                source_code=payload.source_code,
-                source_note=payload.source_note,
-                received_at=payload.received_at,
-                submitted_at=payload.submitted_at,
-                quantity=payload.quantity,
-                unit=payload.unit,
-                description=payload.description,
-                owner_user_id=current_user.id,
-            )
-            await self._repository.add_stock_event(
-                sample_record_id=record.id,
-                event_type="received",
-                quantity=payload.quantity,
-                unit=payload.unit,
-                occurred_at=payload.received_at,
-                delivery_no=None,
-                recipient=payload.supplier_name,
-                note=None,
-            )
-            for image in payload.images:
-                await self._add_image_without_transaction(record.id, image)
-            await self._publish_followup_event(record)
+
+        async def create_record_row(code: str) -> SampleRecordRow:
+            async with UnitOfWork(self._repository.session):
+                record = await self._repository.create_record(
+                    code=code,
+                    sample_type=payload.sample_type,
+                    status=payload.status,
+                    product_id=payload.product_id,
+                    product_code=payload.product_code,
+                    product_name=payload.product_name,
+                    customer_id=payload.customer_id,
+                    customer_name=payload.customer_name,
+                    supplier_id=payload.supplier_id,
+                    supplier_name=payload.supplier_name,
+                    customer_sku=payload.customer_sku,
+                    supplier_sku=payload.supplier_sku,
+                    purchase_contract_id=payload.purchase_contract_id,
+                    purchase_contract_no=payload.purchase_contract_no,
+                    source_type=payload.source_type,
+                    source_id=payload.source_id,
+                    source_code=payload.source_code,
+                    source_note=payload.source_note,
+                    received_at=payload.received_at,
+                    submitted_at=payload.submitted_at,
+                    quantity=payload.quantity,
+                    unit=payload.unit,
+                    description=payload.description,
+                    owner_user_id=current_user.id,
+                )
+                await self._repository.add_stock_event(
+                    sample_record_id=record.id,
+                    event_type="received",
+                    quantity=payload.quantity,
+                    unit=payload.unit,
+                    occurred_at=payload.received_at,
+                    delivery_no=None,
+                    recipient=payload.supplier_name,
+                    note=None,
+                )
+                for image in payload.images:
+                    await self._add_image_without_transaction(record.id, image)
+                await self._publish_followup_event(record)
+                return record
+
+        record = await create_with_generated_code("sample.record", create_record_row)
         return await self._record_response(record)
 
     async def get_record(

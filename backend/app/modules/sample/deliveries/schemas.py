@@ -36,7 +36,7 @@ class SampleDeliveryFeeCreate(BaseModel):
 class SampleDeliveryCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    code: str = Field(min_length=1, max_length=80)
+    code: str | None = Field(default=None, max_length=80)
     delivery_date: date
     customer_id: str | None = Field(default=None, max_length=36)
     customer_name: str = Field(min_length=1, max_length=240)
