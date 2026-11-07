@@ -62,7 +62,7 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
   const goDetail = (module: FinanceModule, id: string) => onNavigate(financeDetailPath(module, id))
   const _goFinanceHome = () => onNavigate(financePath)
 
-  const { message, setMessage, error, setError } = useFinanceFeedback()
+  const { message, setMessage, setError } = useFinanceFeedback()
   const overviewModule = useFinanceOverviewModule({ setError })
   const env = {
     activeModule,
@@ -202,7 +202,6 @@ export function FinancePage({ currentUser, view, onNavigate }: FinancePageProps)
       {message ? (
         <Alert className="workspace-alert" title={message} type="success" showIcon />
       ) : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
     </>
   )
 

@@ -155,7 +155,9 @@ export function useTaxModule(env: FinanceModuleEnv) {
     }
   }
 
-  async function submitVerificationDocument(event: FormEvent<HTMLFormElement>) {
+  async function submitVerificationDocument(
+    event: FormEvent<HTMLFormElement>,
+  ): Promise<boolean> {
     event.preventDefault()
     setSubmittingVerificationDocument(true)
     setMessage('')
@@ -168,8 +170,10 @@ export function useTaxModule(env: FinanceModuleEnv) {
       setVerificationDocumentForm(initialVerificationDocumentForm())
       await loadVerificationDocuments(created.id)
       await loadVerificationUsage()
+      return true
     } catch (caught) {
       showError(caught, t('finance.tax.message.documentIssueFailed'))
+      return false
     } finally {
       setSubmittingVerificationDocument(false)
     }

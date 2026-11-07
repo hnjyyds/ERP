@@ -349,7 +349,6 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
   const [form, setForm] = useState<SampleRequestFormState>(() => initialSampleRequestForm())
   const [requestModalOpen, setRequestModalOpen] = useState(false)
   const [progressForm, setProgressForm] = useState<SampleProgressFormState>(() =>
@@ -388,7 +387,6 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
 
   async function loadRequests(preferredId?: string) {
     setLoading(true)
-    setError('')
     try {
       const result = await listSampleRequests({
         q: search.trim() || undefined,
@@ -420,7 +418,6 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
     event.preventDefault()
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const created = await createSampleRequest(sampleRequestPayload(form))
       setMessage(t('sample.request.message.created', { code: created.code }))
@@ -439,7 +436,6 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
     if (!selectedRequest) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const progress = await addSampleProgress(
         selectedRequest.id,
@@ -474,7 +470,6 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
     if (!selectedRequest) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const fee = await addSampleFee(selectedRequest.id, sampleFeePayload(feeForm))
       setRequests((current) =>
@@ -501,7 +496,6 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
     }
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const updatedFee = await requestSampleFeePayment(selectedRequest.id, fee.id, {
         reviewer_id: paymentReviewerId,
@@ -536,7 +530,6 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
     if (!selectedRequest) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const record = await createSampleRecordFromRequest(
         selectedRequest.id,
@@ -572,7 +565,6 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
       {message ? (
         <Alert className="workspace-alert" title={message} type="success" showIcon />
       ) : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid sample-request-grid">
         {!detailId ? (

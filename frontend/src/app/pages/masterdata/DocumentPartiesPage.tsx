@@ -67,7 +67,6 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
   const [modalMode, setModalMode] = useState<'create' | 'edit' | null>(null)
   const [form, setForm] = useState<DocumentPartyFormState>(() => initialDocumentPartyForm())
 
@@ -133,7 +132,6 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
 
   async function loadParties() {
     setLoading(true)
-    setError('')
     try {
       const result = await listDocumentParties({
         q: search.trim() || undefined,
@@ -165,7 +163,6 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
   async function submitParty(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setMessage('')
-    setError('')
     const validationMessage = validateDocumentPartyForm(form, modalMode === 'create')
     if (validationMessage) {
       showWarningDialog(validationMessage)
@@ -230,7 +227,6 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
       </div>
 
       {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section
         className={

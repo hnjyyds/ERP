@@ -166,7 +166,6 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
 
   const fetchPurchaseContractOptions = useCallback(async (query: string) => {
     const result = await listPurchaseContracts({
@@ -238,7 +237,6 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
 
   async function loadInboundPlans(preferredPlanId?: string) {
     setLoading(true)
-    setError('')
     try {
       const result = await listInboundPlans({
         q: search.trim() || undefined,
@@ -265,7 +263,6 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
     event.preventDefault()
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const plan = await generateInboundPlanFromPurchaseContract(
         inboundPlanGeneratePayload(generateForm),
@@ -288,7 +285,6 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
     if (!selectedPlan) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const plan = await scheduleInboundPlan(
         selectedPlan.id,
@@ -335,7 +331,6 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
       {message ? (
         <Alert className="workspace-alert" title={message} type="success" showIcon />
       ) : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid inbound-plan-grid">
         {!detailId ? (

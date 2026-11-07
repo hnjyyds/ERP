@@ -226,7 +226,6 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
 
   const selectedOrder = useMemo(() => {
     if (detailId) return orders.find((item) => item.id === detailId) ?? null
@@ -260,7 +259,6 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
     inventoryQuery?: string,
   ) {
     setLoading(true)
-    setError('')
     try {
       const [orderResult, planOptions] = await Promise.all([
         listOutboundOrders({
@@ -333,7 +331,6 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
 
   async function refreshOutboundInventorySnapshot(event?: FormEvent<HTMLFormElement>) {
     event?.preventDefault()
-    setError('')
     try {
       await loadOutboundInventorySnapshot(selectedOrder)
     } catch (caught) {
@@ -393,7 +390,6 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
     event.preventDefault()
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const order = await generateOutboundOrderFromPlan(outboundOrderPayload(form))
       const inventoryQuery = order.lines[0]?.product_code ?? order.lines[0]?.product_name ?? ''
@@ -422,7 +418,6 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
     }
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const order = await submitOutboundOrder(selectedOrder.id, { reviewer_id: reviewerId })
       const inventoryQuery = order.lines[0]?.product_code ?? order.lines[0]?.product_name ?? ''
@@ -460,7 +455,6 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
     }
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const order = await approveOutboundOrder(
         selectedOrder.id,
@@ -517,7 +511,6 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
       {message ? (
         <Alert className="workspace-alert" title={message} type="success" showIcon />
       ) : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid outbound-order-grid">
         {!detailId ? (

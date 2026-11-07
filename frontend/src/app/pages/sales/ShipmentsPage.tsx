@@ -169,7 +169,6 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
   const [form, setForm] = useState<ShipmentFormState>(() => initialShipmentForm())
   const [formOpen, setFormOpen] = useState(false)
   const [reviewerId, setReviewerId] = useState('')
@@ -218,7 +217,6 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
 
   async function loadShipments(preferredId?: string) {
     setLoading(true)
-    setError('')
     try {
       const result = await listShipments({
         q: search.trim() || undefined,
@@ -273,7 +271,6 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
     event.preventDefault()
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const created = await generateShipmentFromContracts(shipmentGeneratePayload(form))
       setMessage(t('sales.shipment.message.generated', { code: created.code }))
@@ -296,7 +293,6 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
     }
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const submitted = await submitShipment(selectedShipment.id, { reviewer_id: reviewerId })
       setMessage(t('sales.shipment.message.submitted', { code: submitted.code }))
@@ -326,7 +322,6 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
     }
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const approved = await approveShipment(
         selectedShipment.id,
@@ -393,7 +388,6 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
       {message ? (
         <Alert className="workspace-alert" title={message} type="success" showIcon />
       ) : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid shipment-grid">
         {!detailId ? (

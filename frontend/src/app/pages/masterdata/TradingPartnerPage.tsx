@@ -122,7 +122,6 @@ export function TradingPartnerPage({
   const [transactionLoading, setTransactionLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
   const [entityModalMode, setEntityModalMode] = useState<'create' | 'edit' | null>(null)
   const [contactModalOpen, setContactModalOpen] = useState(false)
   const [editingContactId, setEditingContactId] = useState<string | null>(null)
@@ -301,7 +300,6 @@ export function TradingPartnerPage({
 
   async function loadRows(filterOverride?: PartnerListFilters) {
     setLoading(true)
-    setError('')
     try {
       const result = await listEntity(
         filterOverride ?? {
@@ -358,7 +356,6 @@ export function TradingPartnerPage({
   async function submitEntity(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setMessage('')
-    setError('')
     const validationMessage = validatePartnerForm(form, entityModalMode === 'create', kind)
     if (validationMessage) {
       showWarningDialog(validationMessage)
@@ -388,7 +385,6 @@ export function TradingPartnerPage({
     event.preventDefault()
     if (!selected) return
     setMessage('')
-    setError('')
     if (!contactForm.name.trim()) {
       showWarningDialog(t('masterdata.tradingPartner.contactNameRequired'))
       return
@@ -485,7 +481,6 @@ export function TradingPartnerPage({
       </div>
 
       {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section
         className={

@@ -20,7 +20,7 @@ import {
   reportingStatusOptions,
 } from '../../../shared/formOptions'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
-import { Alert, Button, Input, Table, Tag } from 'antd'
+import { Button, Input, Table, Tag } from 'antd'
 import {
   ArrowRight,
   BarChart3,
@@ -171,7 +171,6 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
   const [statisticsSalesFilter, setStatisticsSalesFilter] = useState('')
   const [loading, setLoading] = useState(false)
   const [loadingStatistics, setLoadingStatistics] = useState(false)
-  const [error, setError] = useState('')
 
   useEffect(() => {
     void loadApprovals()
@@ -180,7 +179,6 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
 
   async function loadApprovals() {
     setLoading(true)
-    setError('')
     try {
       const result = await listApprovalDocuments({
         document_type: documentTypeFilter || undefined,
@@ -199,7 +197,6 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
 
   async function loadStatistics() {
     setLoadingStatistics(true)
-    setError('')
     try {
       const result = await listReportingStatistics({
         date_from: statisticsDateFromFilter || undefined,
@@ -263,7 +260,6 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
         />
       </div>
 
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="reporting-grid">
         <section className="workspace-panel reporting-approval-list-panel">

@@ -1105,7 +1105,7 @@ export type FinancePageContext = {
   submittingCustomsReceipt: boolean
   submittingVerificationRegister: boolean
   submittingTaxRefund: boolean
-  submitVerificationDocument: (event: FormEvent<HTMLFormElement>) => Promise<void>
+  submitVerificationDocument: (event: FormEvent<HTMLFormElement>) => Promise<boolean>
   submitCustomsReceipt: (event: FormEvent<HTMLFormElement>) => Promise<void>
   submitVerificationRegister: (event: FormEvent<HTMLFormElement>) => Promise<void>
   submitTaxRefund: (event: FormEvent<HTMLFormElement>) => Promise<void>

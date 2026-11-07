@@ -364,7 +364,6 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
   const [loadingAssignableUsers, setLoadingAssignableUsers] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
   const [form, setForm] = useState<PurchaseContractFormState>(() => initialPurchaseContractForm())
   const [reviewerId, setReviewerId] = useState('')
   const [generateForm, setGenerateForm] = useState<PurchaseContractGenerateFormState>(() =>
@@ -419,7 +418,6 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
 
   async function loadContracts(preferredId?: string, preferredContract?: PurchaseContract) {
     setLoading(true)
-    setError('')
     try {
       const result = await listPurchaseContracts({
         q: search.trim() || undefined,
@@ -578,7 +576,6 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
     event.preventDefault()
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const payload = purchaseContractPayload(form)
       const saved = editingContractId
@@ -607,7 +604,6 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
     event.preventDefault()
     setSubmitting(true)
     setMessage('')
-    setError('')
     const sources = [generateForm.source_contract_id_a, generateForm.source_contract_id_b]
       .map((item) => item.trim())
       .filter(Boolean)
@@ -641,7 +637,6 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
     }
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const submitted = await submitPurchaseContract(selectedContract.id, {
         reviewer_id: reviewerId,
@@ -680,7 +675,6 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
     }
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const reviewed = await approvePurchaseContract(
         selectedContract.id,
@@ -721,7 +715,6 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
     if (!selectedContract) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const document_ = await generatePurchaseContractTemplate(selectedContract.id)
       downloadBase64File(document_.filename, document_.content_base64, document_.content_type)
@@ -738,7 +731,6 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
     setContractModalMode('manual')
     setForm(initialPurchaseContractForm())
     setMessage('')
-    setError('')
     setContractModalOpen(true)
   }
 
@@ -747,7 +739,6 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
     setContractModalMode('generate')
     setGenerateForm(initialPurchaseContractGenerateForm())
     setMessage('')
-    setError('')
     setContractModalOpen(true)
   }
 
@@ -793,7 +784,6 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
       {message ? (
         <Alert className="workspace-alert" title={message} type="success" showIcon />
       ) : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid purchase-contract-grid">
         {!detailId ? (

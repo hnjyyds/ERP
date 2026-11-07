@@ -187,7 +187,6 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
 
   const selectedPlan = useMemo(() => {
     if (detailId) return plans.find((item) => item.id === detailId) ?? null
@@ -220,7 +219,6 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
 
   async function loadOutboundPlans(preferredPlanId?: string, preferredPlan?: OutboundPlan) {
     setLoading(true)
-    setError('')
     try {
       const [planResult, shipmentOptions] = await Promise.all([
         listOutboundPlans({
@@ -314,7 +312,6 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
     event.preventDefault()
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const plan = await generateOutboundPlanFromShipment(outboundPlanGeneratePayload(generateForm))
       setSearch(plan.source_code)
@@ -339,7 +336,6 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
     if (!selectedPlan) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const plan = await scheduleOutboundPlan(
         selectedPlan.id,
@@ -389,7 +385,6 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
       {message ? (
         <Alert className="workspace-alert" title={message} type="success" showIcon />
       ) : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid outbound-plan-grid">
         {!detailId ? (

@@ -310,7 +310,6 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
   const [form, setForm] = useState<SampleDeliveryFormState>(() => initialSampleDeliveryForm())
   const [deliveryModalMode, setDeliveryModalMode] = useState<'create' | 'edit' | null>(null)
   const [reviewerId, setReviewerId] = useState('')
@@ -344,7 +343,6 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
 
   async function loadDeliveries(preferredId?: string) {
     setLoading(true)
-    setError('')
     try {
       const reportFilters = {
         customer_id: customerFilter.trim() || undefined,
@@ -448,7 +446,6 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
     event.preventDefault()
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const created = await createSampleDelivery(sampleDeliveryPayload(form))
       setMessage(t('sample.delivery.message.created', { code: created.code }))
@@ -471,7 +468,6 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
     if (!selectedDelivery) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const updated = await updateSampleDelivery(selectedDelivery.id, sampleDeliveryPayload(form))
       setMessage(t('sample.delivery.message.draftSaved', { code: updated.code }))
@@ -493,7 +489,6 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
     }
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const submitted = await submitSampleDelivery(selectedDelivery.id, { reviewer_id: reviewerId })
       setMessage(t('sample.delivery.message.submitted', { code: submitted.code }))
@@ -527,7 +522,6 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
     }
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const approved = await approveSampleDelivery(
         selectedDelivery.id,
@@ -548,7 +542,6 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
     if (!selectedDelivery) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const tracked = await updateSampleDeliveryTracking(
         selectedDelivery.id,
@@ -571,7 +564,6 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
   async function downloadDeliveryExport() {
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const exported = await exportSampleDeliveries({
         customer_id: customerFilter.trim() || undefined,
@@ -613,7 +605,6 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
       {message ? (
         <Alert className="workspace-alert" title={message} type="success" showIcon />
       ) : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid sample-delivery-grid">
         {!detailId ? (

@@ -226,7 +226,6 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
   const [invoiceModalOpen, setInvoiceModalOpen] = useState(false)
   const [invoiceActionModal, setInvoiceActionModal] = useState<'send' | 'receive' | null>(null)
   const [form, setForm] = useState<PurchaseInvoiceNoticeFormState>(() =>
@@ -268,7 +267,6 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
 
   async function loadNotices(preferredId?: string, overrideCustomsFilter?: string) {
     setLoading(true)
-    setError('')
     try {
       const [noticeResult, reminderResult] = await Promise.all([
         listPurchaseInvoiceNotices({
@@ -323,7 +321,6 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
     event.preventDefault()
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const customsId = form.customs_declaration_id.trim()
       const result = await generatePurchaseInvoiceNoticesFromDeclaration(
@@ -351,7 +348,6 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
     if (!selectedNotice) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const sent = await sendPurchaseInvoiceNotice(
         selectedNotice.id,
@@ -373,7 +369,6 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
     if (!selectedNotice) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const received = await receivePurchaseInvoiceNoticeTaxInvoice(
         selectedNotice.id,
@@ -414,7 +409,6 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
       {message ? (
         <Alert className="workspace-alert" title={message} type="success" showIcon />
       ) : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid purchase-invoice-grid">
         {!detailId ? (

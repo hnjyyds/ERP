@@ -310,7 +310,6 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
   const [form, setForm] = useState<SampleRecordFormState>(() => initialSampleRecordForm())
   const [recordModalOpen, setRecordModalOpen] = useState(false)
   const [imageForm, setImageForm] = useState<SampleRecordImageFormState>(() =>
@@ -347,7 +346,6 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
 
   async function loadRecords(preferredId?: string) {
     setLoading(true)
-    setError('')
     try {
       const result = await listSampleRecords({
         q: search.trim() || undefined,
@@ -378,7 +376,6 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
     event.preventDefault()
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const created = await createSampleRecord(sampleRecordPayload(form))
       setMessage(t('sample.record.message.created', { code: created.code }))
@@ -401,7 +398,6 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
     if (!selectedRecord) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const image = await addSampleRecordImage(
         selectedRecord.id,
@@ -428,7 +424,6 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
     if (!selectedRecord) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const stockEvent = await addSampleRecordStockEvent(
         selectedRecord.id,
@@ -456,7 +451,6 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
   async function submitRecordImport() {
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const result = await importSampleRecords({ records: [sampleRecordPayload(form)] })
       setMessage(t('sample.record.message.imported', { count: result.created_count }))
@@ -473,7 +467,6 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
   async function downloadRecordExport() {
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const exported = await exportSampleRecords({
         q: search.trim() || undefined,
@@ -508,7 +501,6 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
       {message ? (
         <Alert className="workspace-alert" title={message} type="success" showIcon />
       ) : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid sample-record-grid">
         {!detailId ? (

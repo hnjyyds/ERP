@@ -111,7 +111,6 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
   const [exportResult, setExportResult] = useState<ProductExport | null>(null)
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const [form, setForm] = useState<ProductFormState>(() => initialProductForm())
@@ -183,7 +182,6 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
 
   async function loadProducts(preferredId?: string) {
     setLoading(true)
-    setError('')
     try {
       const result = await listProducts(search.trim() || undefined)
       setProducts(result.items)
@@ -222,7 +220,6 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
     }
     setSubmitting(true)
     setMessage('')
-    setError('')
     setExportResult(null)
     try {
       if (productModalMode === 'edit' && selectedProduct) {
@@ -271,7 +268,6 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
   async function submitImport(file: File) {
     setImporting(true)
     setMessage('')
-    setError('')
     try {
       const dataUrl = await readFileAsDataUrl(file)
       const result = await importProducts(file.name, dataUrl)
@@ -308,7 +304,6 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
     if (!selectedProduct) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const accessory =
         accessoryModalMode === 'edit' && editingAccessoryId
@@ -456,7 +451,6 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
       </div>
 
       {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section
         className={

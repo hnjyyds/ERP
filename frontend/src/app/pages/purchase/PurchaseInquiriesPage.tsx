@@ -212,7 +212,6 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
   const [form, setForm] = useState<PurchaseInquiryFormState>(() => initialPurchaseInquiryForm())
   const [quotationForm, setQuotationForm] = useState<PurchaseQuotationFormState>(() =>
     initialPurchaseQuotationForm(),
@@ -248,7 +247,6 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
 
   async function loadInquiries(preferredId?: string) {
     setLoading(true)
-    setError('')
     try {
       const result = await listPurchaseInquiries({
         q: search.trim() || undefined,
@@ -334,7 +332,6 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
     event.preventDefault()
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const payload = purchaseInquiryPayload(form)
       const saved = editingInquiryId
@@ -362,7 +359,6 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
     if (!selectedInquiry) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const template = await sendPurchaseInquiryTemplate(
         selectedInquiry.id,
@@ -384,7 +380,6 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
     if (!selectedInquiry?.lines[0]) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const updated = await addPurchaseInquiryQuotation(
         selectedInquiry.id,
@@ -407,7 +402,6 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
     setEditingInquiryId(null)
     setForm(initialPurchaseInquiryForm())
     setMessage('')
-    setError('')
     setInquiryModalOpen(true)
   }
 
@@ -441,7 +435,6 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
       {message ? (
         <Alert className="workspace-alert" title={message} type="success" showIcon />
       ) : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid purchase-inquiry-grid">
         {!detailId ? (

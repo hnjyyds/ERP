@@ -426,7 +426,6 @@ export function FollowupPage({
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
   const [followupModalOpen, setFollowupModalOpen] = useState(false)
   const [nodeActionNode, setNodeActionNode] = useState<PurchaseFollowNode | null>(null)
   const [templateForm, setTemplateForm] = useState<FollowupTemplateFormState>(() =>
@@ -491,7 +490,6 @@ export function FollowupPage({
 
   async function loadFollowupWorkspace(preferredPlanId?: string, preferredTemplateId?: string) {
     setLoading(true)
-    setError('')
     try {
       const [templateResult, planResult, overdueResult] = await Promise.all([
         listFollowupTemplates(),
@@ -532,7 +530,6 @@ export function FollowupPage({
     event.preventDefault()
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const payload = followupTemplatePayload(templateForm)
       const template = selectedTemplate
@@ -552,7 +549,6 @@ export function FollowupPage({
     event.preventDefault()
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const plan = await generateFollowupPlanFromPurchaseContract(
         followupPlanGeneratePayload(planForm),
@@ -573,7 +569,6 @@ export function FollowupPage({
     if (!selectedPlan) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const synced = await syncFollowupSampleEvents({
         purchase_contract_id: selectedPlan.purchase_contract_id,
@@ -594,7 +589,6 @@ export function FollowupPage({
     event.preventDefault()
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const nodeLabel = followupNodeLabel(sourceEventForm.node_code)
       const plan = await syncFollowupSourceEvent(followupSourceEventPayload(sourceEventForm))
@@ -626,7 +620,6 @@ export function FollowupPage({
     if (!nodeActionNode || !selectedPlan) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const plan = await syncFollowupSourceEvent(followupSourceEventPayload(nodeCompletionForm))
       const completedNodeName = followupNodeLabel(
@@ -652,7 +645,6 @@ export function FollowupPage({
     event?.preventDefault()
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const overdue = await listFollowupOverdueNodes(overdueAsOf)
       setOverdueNodes(overdue.items)
@@ -699,7 +691,6 @@ export function FollowupPage({
       {message ? (
         <Alert className="workspace-alert" title={message} type="success" showIcon />
       ) : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid followup-grid">
         {!detailId ? (

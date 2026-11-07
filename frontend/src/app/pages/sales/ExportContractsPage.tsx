@@ -317,7 +317,6 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
   const [assignableUsersLoaded, setAssignableUsersLoaded] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [productDrawerOpen, setProductDrawerOpen] = useState(false)
   const [productSearch, setProductSearch] = useState('')
@@ -386,7 +385,6 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
 
   async function loadContracts(preferredId?: string) {
     setLoading(true)
-    setError('')
     try {
       const result = await listExportContracts({
         q: search.trim() || undefined,
@@ -612,7 +610,6 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
     }
     setSubmitting(true)
     setMessage('')
-    setError('')
     setExportPreview('')
     try {
       const saved = editingContractId
@@ -649,7 +646,6 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
     }
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const submitted = await submitExportContract(selectedContract.id, { reviewer_id: reviewerId })
       setMessage(t('sales.contract.message.submitted', { code: submitted.code }))
@@ -676,7 +672,6 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
     }
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const approved = await approveExportContract(
         selectedContract.id,
@@ -697,7 +692,6 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
     if (!selectedContract) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const signed = await registerExportContractSignature(
         selectedContract.id,
@@ -718,7 +712,6 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
     if (!selectedContract) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const payment = await addExportContractAdvancePayment(
         selectedContract.id,
@@ -752,7 +745,6 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
     if (!selectedContract) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const result = await exportExportContract(selectedContract.id, format)
       setExportPreview(result.content.split('\n').slice(0, 14).join('\n'))
@@ -782,7 +774,6 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
       </div>
 
       {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid export-contract-grid">
         {!detailId ? (

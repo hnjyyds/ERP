@@ -314,7 +314,6 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
   const [loadingCustomers, setLoadingCustomers] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
   const [form, setForm] = useState<ExportQuotationFormState>(() => initialExportQuotationForm())
   const [formOpen, setFormOpen] = useState(false)
   const [reviewerId, setReviewerId] = useState('')
@@ -355,7 +354,6 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
 
   async function loadQuotations(preferredId?: string) {
     setLoading(true)
-    setError('')
     try {
       const result = await listExportQuotations({
         q: search.trim() || undefined,
@@ -475,7 +473,6 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
     event.preventDefault()
     setSubmitting(true)
     setMessage('')
-    setError('')
     setExportPreview('')
     try {
       const created = await createExportQuotation(exportQuotationPayload(form))
@@ -499,7 +496,6 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
     if (!selectedQuotation) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const updated = await updateExportQuotation(
         selectedQuotation.id,
@@ -524,7 +520,6 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
     }
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const submitted = await submitExportQuotation(selectedQuotation.id, {
         reviewer_id: reviewerId,
@@ -561,7 +556,6 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
     }
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const approved = await approveExportQuotation(
         selectedQuotation.id,
@@ -581,7 +575,6 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
     if (!selectedQuotation) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const result = await exportExportQuotation(selectedQuotation.id, format)
       setExportPreview(result.content.split('\n').slice(0, 10).join('\n'))
@@ -598,7 +591,6 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
     if (!selectedQuotation) return
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const contract = await confirmExportQuotationContract(
         selectedQuotation.id,
@@ -642,7 +634,6 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
       {message ? (
         <Alert className="workspace-alert" title={message} type="success" showIcon />
       ) : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid export-quotation-grid">
         {!detailId ? (

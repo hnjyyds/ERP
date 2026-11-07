@@ -193,7 +193,6 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
   const [assignableUsersLoaded, setAssignableUsersLoaded] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
 
   const fetchSupplierOptions = useCallback(async (query: string) => {
     const result = await listPurchaseContracts({
@@ -278,7 +277,6 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
     inventoryQuery?: string,
   ) {
     setLoading(true)
-    setError('')
     try {
       const [orderResult, planOptions] = await Promise.all([
         listInboundOrders({
@@ -372,7 +370,6 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
 
   async function refreshInventorySnapshot(event?: FormEvent<HTMLFormElement>) {
     event?.preventDefault()
-    setError('')
     try {
       await loadInventorySnapshotForOrder(selectedOrder)
     } catch (caught) {
@@ -436,7 +433,6 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
     event.preventDefault()
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const order = await generateInboundOrderFromPlan(inboundOrderPayload(form))
       const inventoryQuery = order.lines[0]?.product_code ?? order.lines[0]?.product_name ?? ''
@@ -463,7 +459,6 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
     }
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const order = await submitInboundOrder(selectedOrder.id, {
         reviewer_id: approvalForm.reviewer_id,
@@ -495,7 +490,6 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
     }
     setSubmitting(true)
     setMessage('')
-    setError('')
     try {
       const order = await approveInboundOrder(selectedOrder.id, inboundOrderApprovePayload(approvalForm))
       const inventoryQuery = order.lines[0]?.product_code ?? order.lines[0]?.product_name ?? ''
@@ -540,7 +534,6 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
       </div>
 
       {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
-      {error ? <Alert className="workspace-alert" title={error} type="error" showIcon /> : null}
 
       <section className="business-grid inbound-order-grid">
         {!detailId ? (

@@ -247,9 +247,9 @@ export function TaxView({ model, shell }: Props) {
           >
             <form
               className="record-form"
-              onSubmit={(e) => {
-                submitVerificationDocument(e)
-                setTaxDocumentModalOpen(false)
+              onSubmit={async (e) => {
+                const created = await submitVerificationDocument(e)
+                if (created) setTaxDocumentModalOpen(false)
               }}
             >
               <div className="form-pair two">
