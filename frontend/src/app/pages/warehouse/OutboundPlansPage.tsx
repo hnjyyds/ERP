@@ -292,6 +292,19 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
     onNavigate(moduleDetailPath(warehouseOutboundPlanPath, plan.id))
   }
 
+  function openOutboundPlanModal() {
+    setGenerateForm({
+      shipment_plan_id:
+        selectedPlan && selectedPlan.source_type === 'shipment_plan' ? selectedPlan.source_id : '',
+      outbound_type: selectedPlan?.outbound_type ?? 'finished_goods_outbound',
+      planned_date: selectedPlan?.planned_date ?? '',
+    })
+    setScheduleForm(
+      selectedPlan ? outboundPlanToScheduleForm(selectedPlan) : initialOutboundPlanScheduleForm(),
+    )
+    setOutboundPlanModalOpen(true)
+  }
+
   function stopAndOpenOutboundPlanDetail(event: MouseEvent<HTMLElement>, plan: OutboundPlan) {
     event.stopPropagation()
     openOutboundPlanDetail(plan)
@@ -469,7 +482,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                   htmlType="button"
                   type="primary"
                   icon={<Plus size={16} />}
-                  onClick={() => setOutboundPlanModalOpen(true)}
+                  onClick={openOutboundPlanModal}
                 >
                   {t('warehouse.outboundPlan.list.generateSchedule')}
                 </Button>

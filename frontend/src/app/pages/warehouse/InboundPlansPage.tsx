@@ -214,6 +214,23 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
     onNavigate(moduleDetailPath(warehouseInboundPlanPath, plan.id))
   }
 
+  function openInboundPlanModal() {
+    setGenerateForm(
+      selectedPlan
+        ? {
+            ...initialInboundPlanGenerateForm(),
+            purchase_contract_id: selectedPlan.purchase_contract_id,
+            inbound_type: selectedPlan.inbound_type,
+            planned_date: selectedPlan.planned_date,
+          }
+        : initialInboundPlanGenerateForm(),
+    )
+    setScheduleForm(
+      selectedPlan ? inboundPlanToScheduleForm(selectedPlan) : initialInboundPlanScheduleForm(),
+    )
+    setInboundPlanModalOpen(true)
+  }
+
   function stopAndOpenInboundPlanDetail(event: MouseEvent<HTMLElement>, plan: InboundPlan) {
     event.stopPropagation()
     openInboundPlanDetail(plan)
@@ -396,7 +413,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                   htmlType="button"
                   type="primary"
                   icon={<Plus size={16} />}
-                  onClick={() => setInboundPlanModalOpen(true)}
+                  onClick={openInboundPlanModal}
                 >
                   {t('warehouse.inboundPlan.list.generateSchedule')}
                 </Button>

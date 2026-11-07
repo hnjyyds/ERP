@@ -363,6 +363,27 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
     onNavigate(moduleDetailPath(warehouseOutboundOrderPath, order.id))
   }
 
+  function openOutboundOrderModal() {
+    setForm(
+      selectedOrder
+        ? outboundOrderToForm(selectedOrder)
+        : outboundPlans[0]
+          ? outboundOrderFormForPlan(outboundPlans[0], initialOutboundOrderForm())
+          : initialOutboundOrderForm(),
+    )
+    setApprovalForm(
+      selectedOrder
+        ? {
+            reviewer_name: selectedOrder.reviewer_name ?? '',
+            approved_at: selectedOrder.approved_at ?? selectedOrder.outbound_at,
+            allow_negative: false,
+          }
+        : initialOutboundOrderApprovalForm(),
+    )
+    setReviewerId(selectedOrder?.reviewer_id ?? '')
+    setOutboundOrderModalOpen(true)
+  }
+
   function stopAndOpenOutboundOrderDetail(event: MouseEvent<HTMLElement>, order: OutboundOrder) {
     event.stopPropagation()
     openOutboundOrderDetail(order)
@@ -586,7 +607,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                   htmlType="button"
                   type="primary"
                   icon={<Plus size={16} />}
-                  onClick={() => setOutboundOrderModalOpen(true)}
+                  onClick={openOutboundOrderModal}
                 >
                   {t('warehouse.outboundOrder.list.generateOrApprove')}
                 </Button>

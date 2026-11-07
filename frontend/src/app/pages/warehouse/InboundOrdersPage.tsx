@@ -407,6 +407,26 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
     onNavigate(moduleDetailPath(warehouseInboundOrderPath, order.id))
   }
 
+  function openInboundOrderModal() {
+    setForm(
+      selectedOrder
+        ? inboundOrderToForm(selectedOrder)
+        : inboundPlans[0]
+          ? inboundOrderFormForPlan(inboundPlans[0], initialInboundOrderForm())
+          : initialInboundOrderForm(),
+    )
+    setApprovalForm(
+      selectedOrder
+        ? {
+            reviewer_id: selectedOrder.reviewer_id ?? '',
+            reviewer_name: selectedOrder.reviewer_name ?? '',
+            approved_at: selectedOrder.approved_at ?? selectedOrder.inbound_at,
+          }
+        : initialInboundOrderApprovalForm(),
+    )
+    setInboundOrderModalOpen(true)
+  }
+
   function stopAndOpenInboundOrderDetail(event: MouseEvent<HTMLElement>, order: InboundOrder) {
     event.stopPropagation()
     openInboundOrderDetail(order)
@@ -598,7 +618,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
               <Button htmlType="submit" icon={<Search size={16} />}>
                 {t('warehouse.inboundOrder.list.query')}
               </Button>
-              <Button htmlType="button" type="primary" icon={<Plus size={16} />} onClick={() => setInboundOrderModalOpen(true)}>
+              <Button htmlType="button" type="primary" icon={<Plus size={16} />} onClick={openInboundOrderModal}>
                 {t('warehouse.inboundOrder.list.generateOrApprove')}
               </Button>
             </form>
