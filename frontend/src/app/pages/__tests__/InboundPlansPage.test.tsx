@@ -44,6 +44,21 @@ describe('InboundPlansPage', () => {
     expect(within(dialog).queryByLabelText('采购合同 ID')).not.toBeInTheDocument()
   })
 
+  it('resets the schedule form after cancelling the modal', async () => {
+    const user = userEvent.setup()
+    const { container } = render(<InboundPlansPage detailId={null} onNavigate={onNavigate} />)
+
+    await user.click(screen.getByRole('button', { name: '生成/排库位' }))
+    const operatorInput = screen.getByLabelText('经办人')
+    await user.type(operatorInput, '临时操作员')
+    expect(operatorInput).toHaveValue('临时操作员')
+
+    await user.click(container.querySelector('.ant-modal-close') as HTMLElement)
+    await user.click(screen.getByRole('button', { name: '生成/排库位' }))
+
+    expect(screen.getByLabelText('经办人')).toHaveValue('')
+  })
+
   it('renders without detail view when no detailId', () => {
     render(<InboundPlansPage detailId={null} onNavigate={onNavigate} />)
     // Should not have the "计划明细" detail panel in list-only mode

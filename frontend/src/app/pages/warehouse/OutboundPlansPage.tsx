@@ -23,6 +23,7 @@ import {
 } from '../../../api'
 import { warehouseOutboundPlanPath, moduleDetailPath } from '../../routes'
 import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { useFormModal } from '../../../shared/useFormModal'
 import { showError } from '../../../shared/errors'
 import {
   outboundPlanStatusOptions,
@@ -177,15 +178,24 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
   const [sourceFilter, setSourceFilter] = useState('')
   const [customerFilter, setCustomerFilter] = useState('')
   const [sourceIdFilter, setSourceIdFilter] = useState('')
-  const [generateForm, setGenerateForm] = useState<OutboundPlanGenerateFormState>(() =>
-    initialOutboundPlanGenerateForm(),
-  )
-  const [scheduleForm, setScheduleForm] = useState<OutboundPlanScheduleFormState>(() =>
-    initialOutboundPlanScheduleForm(),
-  )
-  const [outboundPlanModalOpen, setOutboundPlanModalOpen] = useState(false)
+  const {
+    open: outboundPlanModalOpen,
+    form: generateForm,
+    setForm: setGenerateForm,
+    submitting: generating,
+    openWith: openGenerateForm,
+    close: closeGenerateForm,
+    runSubmit: runGenerateSubmit,
+  } = useFormModal(initialOutboundPlanGenerateForm)
+  const {
+    form: scheduleForm,
+    setForm: setScheduleForm,
+    submitting: scheduling,
+    openWith: openScheduleForm,
+    close: closeScheduleForm,
+    runSubmit: runScheduleSubmit,
+  } = useFormModal(initialOutboundPlanScheduleForm)
   const [loading, setLoading] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
 
   const selectedPlan = useMemo(() => {
@@ -291,16 +301,20 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
   }
 
   function openOutboundPlanModal() {
-    setGenerateForm({
+    openGenerateForm({
       shipment_plan_id:
         selectedPlan && selectedPlan.source_type === 'shipment_plan' ? selectedPlan.source_id : '',
       outbound_type: selectedPlan?.outbound_type ?? 'finished_goods_outbound',
       planned_date: selectedPlan?.planned_date ?? '',
     })
-    setScheduleForm(
+    openScheduleForm(
       selectedPlan ? outboundPlanToScheduleForm(selectedPlan) : initialOutboundPlanScheduleForm(),
     )
-    setOutboundPlanModalOpen(true)
+  }
+
+  function closeOutboundPlanModal() {
+    closeGenerateForm()
+    closeScheduleForm()
   }
 
   function stopAndOpenOutboundPlanDetail(event: MouseEvent<HTMLElement>, plan: OutboundPlan) {
@@ -310,51 +324,47 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
 
   async function generateOutboundPlan(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setSubmitting(true)
     setMessage('')
-    try {
-      const plan = await generateOutboundPlanFromShipment(outboundPlanGeneratePayload(generateForm))
-      setSearch(plan.source_code)
-      setStatusFilter('')
-      setTypeFilter(plan.outbound_type)
-      setSourceFilter(plan.source_type)
-      setCustomerFilter(plan.customer_id ?? '')
-      setSourceIdFilter(plan.source_id)
-      upsertOutboundPlan(plan)
-      setOutboundPlanModalOpen(false)
-      await loadOutboundPlans(plan.id, plan)
-      setMessage(t('warehouse.outboundPlan.message.generated', { code: plan.code }))
-    } catch (caught) {
-      showError(caught, t('warehouse.outboundPlan.message.generateFailed'))
-    } finally {
-      setSubmitting(false)
-    }
+    await runGenerateSubmit(
+      async () => {
+        const plan = await generateOutboundPlanFromShipment(outboundPlanGeneratePayload(generateForm))
+        setSearch(plan.source_code)
+        setStatusFilter('')
+        setTypeFilter(plan.outbound_type)
+        setSourceFilter(plan.source_type)
+        setCustomerFilter(plan.customer_id ?? '')
+        setSourceIdFilter(plan.source_id)
+        upsertOutboundPlan(plan)
+        closeOutboundPlanModal()
+        await loadOutboundPlans(plan.id, plan)
+        setMessage(t('warehouse.outboundPlan.message.generated', { code: plan.code }))
+      },
+      (caught) => showError(caught, t('warehouse.outboundPlan.message.generateFailed')),
+    )
   }
 
   async function scheduleSelectedOutboundPlan(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!selectedPlan) return
-    setSubmitting(true)
     setMessage('')
-    try {
-      const plan = await scheduleOutboundPlan(
-        selectedPlan.id,
-        outboundPlanSchedulePayload(scheduleForm),
-      )
-      upsertOutboundPlan(plan)
-      setOutboundPlanModalOpen(false)
-      await loadOutboundPlans(plan.id, plan)
-      setMessage(
-        t('warehouse.outboundPlan.message.scheduled', {
-          warehouse: plan.warehouse_name ?? '',
-          location: plan.location_name ?? '',
-        }),
-      )
-    } catch (caught) {
-      showError(caught, t('warehouse.outboundPlan.message.scheduleFailed'))
-    } finally {
-      setSubmitting(false)
-    }
+    await runScheduleSubmit(
+      async () => {
+        const plan = await scheduleOutboundPlan(
+          selectedPlan.id,
+          outboundPlanSchedulePayload(scheduleForm),
+        )
+        upsertOutboundPlan(plan)
+        closeOutboundPlanModal()
+        await loadOutboundPlans(plan.id, plan)
+        setMessage(
+          t('warehouse.outboundPlan.message.scheduled', {
+            warehouse: plan.warehouse_name ?? '',
+            location: plan.location_name ?? '',
+          }),
+        )
+      },
+      (caught) => showError(caught, t('warehouse.outboundPlan.message.scheduleFailed')),
+    )
   }
 
   const plannedCount = plans.filter((item) => item.status === 'planned').length
@@ -558,7 +568,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
           open={outboundPlanModalOpen}
           title={t('warehouse.outboundPlan.form.modalTitle')}
           width={980}
-          onCancel={() => setOutboundPlanModalOpen(false)}
+          onCancel={closeOutboundPlanModal}
         >
           <div className="workflow-modal-content entity-modal-form">
             <PanelTitle
@@ -620,7 +630,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                 disabled={!generateForm.shipment_plan_id}
                 htmlType="submit"
                 icon={<PackagePlus size={16} />}
-                loading={submitting}
+                loading={generating}
               >
                 {t('warehouse.outboundPlan.action.generate')}
               </Button>
@@ -706,7 +716,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                 disabled={!selectedPlan}
                 htmlType="submit"
                 icon={<Save size={16} />}
-                loading={submitting}
+                loading={scheduling}
                 type="primary"
               >
                 {t('warehouse.outboundPlan.action.saveSchedule')}
