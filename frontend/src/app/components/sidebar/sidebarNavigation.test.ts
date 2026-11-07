@@ -22,37 +22,57 @@ function menu(path: string): MenuItem {
   }
 }
 
+const restoredPaths = [
+  '/organization/users',
+  '/masterdata/partners',
+  '/masterdata/document-parties',
+  '/sample/requests',
+  '/sample/records',
+  '/sample/deliveries',
+  '/sales/quotations',
+  '/sales/shipments',
+  '/purchase/inquiries',
+  '/purchase/invoice-notices',
+  '/warehouse/inbound-plans',
+  '/warehouse/outbound-plans',
+  '/warehouse/outbound-orders',
+]
+
 describe('getSidebarMenuGroups', () => {
-  it('omits non-primary workflow entries from the sidebar', () => {
-    const groups = getSidebarMenuGroups([
-      menu('/masterdata/products'),
-      menu('/sales/quotations'),
-      menu('/purchase/inquiries'),
-      menu('/warehouse/inbound-plans'),
-    ])
+  it('restores every implemented page to the sidebar', () => {
+    const groups = getSidebarMenuGroups(restoredPaths.map(menu))
 
     const paths = groups.flatMap((group) => group.items.map((item) => item.path))
 
-    expect(paths).toEqual(['/masterdata/products'])
+    expect(paths.sort()).toEqual([...restoredPaths].sort())
   })
 
-  it('drops a group once all of its entries are hidden', () => {
-    const groups = getSidebarMenuGroups([menu('/sales/quotations')])
+  it('keeps the original group order and merges purchase documents into their own group', () => {
+    const groups = getSidebarMenuGroups(restoredPaths.map(menu))
 
-    expect(groups).toEqual([])
+    expect(groups.map((group) => group.id)).toEqual([
+      'masterdata',
+      'workflow',
+      'taskCenter',
+      'warehouse',
+      'system',
+      'legacyPurchase',
+    ])
   })
 
-  it('keeps visible workflow entries and finance children intact', () => {
+  it('keeps finance children intact', () => {
     const groups = getSidebarMenuGroups([
-      menu('/sales/contracts'),
       menu('/finance'),
       menu('/finance/receipts'),
+      menu('/finance/payments'),
     ])
 
-    const workflow = groups.find((group) => group.id === 'workflow')
     const finance = groups.find((group) => group.id === 'finance')
 
-    expect(workflow?.items.map((item) => item.path)).toEqual(['/sales/contracts'])
-    expect(finance?.items[0].children?.map((child) => child.path)).toContain('/finance/receipts')
+    const childPaths = finance?.items[0].children?.map((child) => child.path)
+
+    expect(childPaths).toContain('/finance/receipts')
+    expect(childPaths).toContain('/finance/payments')
+    expect(childPaths).toHaveLength(10)
   })
 })

@@ -119,24 +119,13 @@ const sidebarNavGroups: Array<{
     icon: Settings,
     paths: [organizationUsersPath, mcpSettingsPath],
   },
+  {
+    id: 'legacyPurchase',
+    labelKey: 'nav.group.legacyPurchase',
+    icon: ClipboardCheck,
+    paths: [purchaseInquiryPath, purchaseInvoiceNoticePath],
+  },
 ]
-
-// 非主流程入口：只在侧栏隐藏，页面组件、路由与访问控制保持不变。
-const hiddenNavPaths = new Set([
-  organizationUsersPath,
-  partnerPath,
-  documentPartyPath,
-  sampleRequestPath,
-  sampleRecordPath,
-  sampleDeliveryPath,
-  exportQuotationPath,
-  shipmentPath,
-  purchaseInquiryPath,
-  purchaseInvoiceNoticePath,
-  warehouseInboundPlanPath,
-  warehouseOutboundPlanPath,
-  warehouseOutboundOrderPath,
-])
 
 export type SidebarChild = { path: string; label: string; active: boolean }
 export type SidebarItem = MenuItem & { children?: SidebarChild[] }
@@ -149,8 +138,7 @@ export type SidebarGroup = {
 
 export function getSidebarMenuGroups(menus: MenuItem[]): SidebarGroup[] {
   const language = getRuntimeSettings().language
-  const visibleMenus = menus.filter((item) => !hiddenNavPaths.has(item.path))
-  const menuByPath = new Map(visibleMenus.map((item) => [item.path, item]))
+  const menuByPath = new Map(menus.map((item) => [item.path, item]))
   const groupedPaths = new Set<string>()
   const groups = sidebarNavGroups
     .map((group) => {
@@ -174,7 +162,7 @@ export function getSidebarMenuGroups(menus: MenuItem[]): SidebarGroup[] {
       return { ...group, label: translate(language, group.labelKey), items }
     })
     .filter((group) => group.items.length > 0)
-  const otherItems = visibleMenus.filter(
+  const otherItems = menus.filter(
     (item) => item.path !== dashboardPath && !groupedPaths.has(item.path),
   )
   if (otherItems.length === 0) return groups
