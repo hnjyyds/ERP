@@ -14,118 +14,37 @@ import { type MenuItem } from '../../../api'
 import { translate, type TranslationKey } from '../../../locales'
 import { getRuntimeSettings } from '../../pages/appHelpers'
 import {
-  customerPath,
   dashboardPath,
-  documentPartyPath,
-  exportContractPath,
-  exportQuotationPath,
-  financeFeesPath,
-  financeMiscPath,
-  financeOverviewPath,
-  financePath,
-  financePaymentsPath,
-  financePortDataPath,
-  financeReceiptsPath,
-  financeReimbursementsPath,
-  financeReportsPath,
-  financeSettlementPath,
-  financeTaxPath,
-  followupPath,
-  mcpSettingsPath,
-  myQualityTasksPath,
-  organizationUsersPath,
-  partnerPath,
-  productPath,
-  purchaseContractPath,
-  purchaseInquiryPath,
-  purchaseInvoiceNoticePath,
-  qualityInspectionPath,
-  reportingPath,
-  sampleDeliveryPath,
-  sampleRecordPath,
-  sampleRequestPath,
-  shipmentPath,
-  supplierPath,
-  warehouseInboundOrderPath,
-  warehouseInboundPlanPath,
-  warehouseOutboundOrderPath,
-  warehouseOutboundPlanPath,
+  navChildrenForGroup,
+  navPathsForGroup,
+  type NavGroupId,
 } from '../../routes'
 
-const sidebarNavGroups: Array<{
-  id: string
+const sidebarNavGroupDefinitions: Array<{
+  id: NavGroupId
   labelKey: TranslationKey
   icon: LucideIcon
-  paths: string[]
-  children?: { path: string; labelKey: TranslationKey }[]
 }> = [
-  {
-    id: 'masterdata',
-    labelKey: 'nav.group.masterdata',
-    icon: Package,
-    paths: [productPath, supplierPath, customerPath, partnerPath, documentPartyPath],
-  },
-  {
-    id: 'workflow',
-    labelKey: 'nav.group.workflow',
-    icon: ClipboardCheck,
-    paths: [exportContractPath, purchaseContractPath, exportQuotationPath, shipmentPath],
-  },
-  {
-    id: 'taskCenter',
-    labelKey: 'nav.group.taskCenter',
-    icon: ShieldCheck,
-    paths: [
-      qualityInspectionPath,
-      myQualityTasksPath,
-      followupPath,
-      sampleRecordPath,
-      sampleRequestPath,
-      sampleDeliveryPath,
-    ],
-  },
-  {
-    id: 'warehouse',
-    labelKey: 'nav.group.warehouse',
-    icon: Warehouse,
-    paths: [
-      warehouseInboundOrderPath,
-      warehouseInboundPlanPath,
-      warehouseOutboundPlanPath,
-      warehouseOutboundOrderPath,
-    ],
-  },
-  {
-    id: 'finance',
-    labelKey: 'nav.group.finance',
-    icon: BarChart3,
-    paths: [financePath, reportingPath],
-    children: [
-      { path: financeOverviewPath, labelKey: 'nav.item.financeOverview' },
-      { path: financeReceiptsPath, labelKey: 'nav.item.financeReceipts' },
-      { path: financePaymentsPath, labelKey: 'nav.item.financePayments' },
-      { path: financeFeesPath, labelKey: 'nav.item.financeFees' },
-      { path: financeTaxPath, labelKey: 'nav.item.financeTax' },
-      { path: financeMiscPath, labelKey: 'nav.item.financeMisc' },
-      { path: financeSettlementPath, labelKey: 'nav.item.financeSettlement' },
-      { path: financeReimbursementsPath, labelKey: 'nav.item.financeReimbursements' },
-      { path: financePortDataPath, labelKey: 'nav.item.financePortData' },
-      { path: financeReportsPath, labelKey: 'nav.item.financeReports' },
-    ],
-  },
-  {
-    id: 'system',
-    labelKey: 'nav.group.system',
-    icon: Settings,
-    paths: [organizationUsersPath, mcpSettingsPath],
-  },
-  {
-    id: 'legacyPurchase',
-    labelKey: 'nav.group.legacyPurchase',
-    icon: ClipboardCheck,
-    paths: [purchaseInquiryPath, purchaseInvoiceNoticePath],
-  },
+  { id: 'masterdata', labelKey: 'nav.group.masterdata', icon: Package },
+  { id: 'workflow', labelKey: 'nav.group.workflow', icon: ClipboardCheck },
+  { id: 'taskCenter', labelKey: 'nav.group.taskCenter', icon: ShieldCheck },
+  { id: 'warehouse', labelKey: 'nav.group.warehouse', icon: Warehouse },
+  { id: 'finance', labelKey: 'nav.group.finance', icon: BarChart3 },
+  { id: 'system', labelKey: 'nav.group.system', icon: Settings },
+  { id: 'legacyPurchase', labelKey: 'nav.group.legacyPurchase', icon: ClipboardCheck },
 ]
+
+const sidebarNavGroups = sidebarNavGroupDefinitions.map((group) => {
+  const children = navChildrenForGroup(group.id).map((child) => ({
+    path: child.path,
+    labelKey: child.labelKey ?? ('nav.page.businessModule' as TranslationKey),
+  }))
+  return {
+    ...group,
+    paths: navPathsForGroup(group.id),
+    ...(children.length > 0 ? { children } : {}),
+  }
+})
 
 export type SidebarChild = { path: string; label: string; active: boolean }
 export type SidebarItem = MenuItem & { children?: SidebarChild[] }

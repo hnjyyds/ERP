@@ -3,58 +3,9 @@ import type { ReactNode as _ReactNode } from 'react'
 import type { AppLanguage, AppTimeZone, CurrentUser, MenuItem } from '../../api'
 import { translate, type TranslationKey } from '../../locales'
 import { partnerTypeOptions } from '../../shared/formOptions'
-import {
-  customerPath,
-  detailRootPath,
-  exportContractPath,
-  financePath,
-  financeReceiptsPath as _financeReceiptsPath,
-  financePaymentsPath as _financePaymentsPath,
-  financeSettlementPath as _financeSettlementPath,
-  followupPath,
-  isFinancePath,
-  mcpSettingsPath,
-  parseFinanceView,
-  productPath,
-  purchaseContractPath,
-  qualityInspectionPath,
-  myQualityTasksPath,
-  reportingPath,
-  supplierPath,
-  warehouseInboundOrderPath,
-  type FinanceModule,
-} from '../routes'
+import { routeDefinitionFor } from '../routes'
 
 export const superAdminPermission = 'system:super_admin'
-
-const workflowPageTitleKeyByPath: Record<string, TranslationKey> = {
-  [mcpSettingsPath]: 'nav.page.mcpSettings',
-  [exportContractPath]: 'nav.page.exportContracts',
-  [purchaseContractPath]: 'nav.page.purchaseContracts',
-  [qualityInspectionPath]: 'nav.page.qualityInspections',
-  [myQualityTasksPath]: 'nav.page.myQualityTasks',
-  [followupPath]: 'nav.page.followup',
-  [supplierPath]: 'nav.page.suppliers',
-  [productPath]: 'nav.page.products',
-  [customerPath]: 'nav.page.customers',
-  [warehouseInboundOrderPath]: 'nav.page.warehouseInboundOrders',
-  [financePath]: 'nav.page.finance',
-  [reportingPath]: 'nav.page.reporting',
-}
-
-const financePageTitleKeys: Record<FinanceModule, TranslationKey> = {
-  home: 'nav.page.finance',
-  overview: 'nav.page.financeOverview',
-  receipts: 'nav.page.financeReceipts',
-  payments: 'nav.page.financePayments',
-  fees: 'nav.page.financeFees',
-  tax: 'nav.page.financeTax',
-  misc: 'nav.page.financeMisc',
-  settlement: 'nav.page.financeSettlement',
-  reimbursements: 'nav.page.financeReimbursements',
-  portData: 'nav.page.financePortData',
-  reports: 'nav.page.financeReports',
-}
 
 export function canCreateAnnouncement(user: CurrentUser) {
   return user.permissions.includes(superAdminPermission)
@@ -228,31 +179,14 @@ export function partnerTypeLabel(value: string): string {
 }
 
 // ── Page title / tag helpers (used by App shell) ─────────────────────
-export function workflowPageTitle(
-  path: string,
-  fallback: string,
-  settings: AppSettings = runtimeSettings,
-): string {
-  const key = workflowPageTitleKeyByPath[path]
-  return key ? translate(settings.language, key) : fallback
-}
-
 export function pageTitle(
   path: string,
   menu: MenuItem | null,
   settings: AppSettings = runtimeSettings,
 ): string {
-  if (isFinancePath(path)) {
-    const { module } = parseFinanceView(path)
-    return translate(settings.language, financePageTitleKeys[module])
-  }
-  if (path === reportingPath) {
-    return translate(settings.language, 'nav.page.reporting')
-  }
-  const rootPath = detailRootPath(path)
-  const rootKey = workflowPageTitleKeyByPath[rootPath]
-  if (rootKey) {
-    return translate(settings.language, rootKey)
+  const titleKey = routeDefinitionFor(path)?.titleKey
+  if (titleKey) {
+    return translate(settings.language, titleKey)
   }
   return menu?.label ?? translate(settings.language, 'nav.page.businessModule')
 }
