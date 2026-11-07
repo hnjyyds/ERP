@@ -31,7 +31,7 @@ import {
 } from '../../../api'
 import { sampleRequestPath, moduleDetailPath } from '../../routes'
 import { t } from '../../appI18n'
-import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { useFormModal } from '../../../shared/useFormModal'
 import { useTablePagination } from '../../../shared/useTablePagination'
@@ -584,12 +584,11 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
 
       <section className="business-grid sample-request-grid">
         {!detailId ? (
-          <section className="workspace-panel list-panel product-list-panel">
-            <div className="panel-heading toolbar-heading">
-              <PanelTitle
-                icon={<Search size={18} />}
-                title={t('sample.request.panel.listTitle')}
-              />
+          <ListPageShell
+            className="product-list-panel"
+            icon={<Search size={18} />}
+            title={t('sample.request.panel.listTitle')}
+            toolbar={
               <form
                 className="inline-filters"
                 onSubmit={(event) => {
@@ -656,8 +655,8 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                   {t('sample.request.action.create')}
                 </Button>
               </form>
-            </div>
-
+            }
+          >
             <Table<SampleRequest>
               columns={[
                 {
@@ -724,7 +723,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                 onClick: () => setSelectedRequestId(record.id),
               })}
             />
-          </section>
+          </ListPageShell>
         ) : null}
 
         <Modal

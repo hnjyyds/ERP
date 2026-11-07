@@ -39,7 +39,7 @@ import {
   listSuppliers,
 } from '../../../api'
 import { purchaseContractPath, moduleDetailPath } from '../../routes'
-import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { FormModal, FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError, showWarningDialog } from '../../../shared/errors'
 import {
   purchaseContractStatusOptions,
@@ -1826,85 +1826,75 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                   </div>
                 </Modal>
 
-                <Modal
+                <FormModal
                   centered
-                  footer={null}
                   open={cancelModalOpen}
+                  submitDanger
+                  submitLabel={t('purchase.contract.cancel.confirm')}
+                  submitting={submitting}
                   title={t('purchase.contract.cancel.title')}
                   onCancel={() => setCancelModalOpen(false)}
+                  onSubmit={submitContractCancellation}
                 >
-                  <form className="record-form" onSubmit={submitContractCancellation}>
-                    <Alert message={t('purchase.contract.cancel.hint')} showIcon type="warning" />
-                    <label htmlFor="purchase-contract-cancel-reason">
-                      {t('purchase.contract.cancel.reason')}
-                      <Input.TextArea
-                        aria-describedby={
-                          cancelReasonError ? 'purchase-contract-cancel-error' : undefined
-                        }
-                        aria-invalid={Boolean(cancelReasonError)}
-                        id="purchase-contract-cancel-reason"
-                        placeholder={t('purchase.contract.cancel.reasonPlaceholder')}
-                        rows={4}
-                        value={cancelReason}
-                        onChange={(event) => {
-                          setCancelReason(event.currentTarget.value)
-                          setCancelReasonError('')
-                        }}
-                      />
-                    </label>
-                    {cancelReasonError ? (
-                      <span className="form-field-error" id="purchase-contract-cancel-error">
-                        {cancelReasonError}
-                      </span>
-                    ) : null}
-                    <div className="modal-actions">
-                      <Button onClick={() => setCancelModalOpen(false)}>{t('common.cancel')}</Button>
-                      <Button danger htmlType="submit" loading={submitting}>
-                        {t('purchase.contract.cancel.confirm')}
-                      </Button>
-                    </div>
-                  </form>
-                </Modal>
+                  <Alert message={t('purchase.contract.cancel.hint')} showIcon type="warning" />
+                  <label htmlFor="purchase-contract-cancel-reason">
+                    {t('purchase.contract.cancel.reason')}
+                    <Input.TextArea
+                      aria-describedby={
+                        cancelReasonError ? 'purchase-contract-cancel-error' : undefined
+                      }
+                      aria-invalid={Boolean(cancelReasonError)}
+                      id="purchase-contract-cancel-reason"
+                      placeholder={t('purchase.contract.cancel.reasonPlaceholder')}
+                      rows={4}
+                      value={cancelReason}
+                      onChange={(event) => {
+                        setCancelReason(event.currentTarget.value)
+                        setCancelReasonError('')
+                      }}
+                    />
+                  </label>
+                  {cancelReasonError ? (
+                    <span className="form-field-error" id="purchase-contract-cancel-error">
+                      {cancelReasonError}
+                    </span>
+                  ) : null}
+                </FormModal>
 
-                <Modal
+                <FormModal
                   centered
-                  footer={null}
                   open={reissueModalOpen}
+                  submitLabel={t('purchase.contract.cancel.reissueConfirm')}
+                  submitType="primary"
+                  submitting={submitting}
                   title={t('purchase.contract.cancel.reissueTitle')}
                   onCancel={() => setReissueModalOpen(false)}
+                  onSubmit={submitContractReissue}
                 >
-                  <form className="record-form" onSubmit={submitContractReissue}>
-                    <Alert message={t('purchase.contract.cancel.reissueHint')} showIcon type="info" />
-                    <label htmlFor="purchase-contract-reissue-reason">
-                      {t('purchase.contract.cancel.reissueReason')}
-                      <Input.TextArea
-                        aria-describedby={
-                          reissueReasonError ? 'purchase-contract-reissue-error' : undefined
-                        }
-                        aria-invalid={Boolean(reissueReasonError)}
-                        id="purchase-contract-reissue-reason"
-                        placeholder={t('purchase.contract.cancel.reissuePlaceholder')}
-                        rows={4}
-                        value={reissueReason}
-                        onChange={(event) => {
-                          setReissueReason(event.currentTarget.value)
-                          setReissueReasonError('')
-                        }}
-                      />
-                    </label>
-                    {reissueReasonError ? (
-                      <span className="form-field-error" id="purchase-contract-reissue-error">
-                        {reissueReasonError}
-                      </span>
-                    ) : null}
-                    <div className="modal-actions">
-                      <Button onClick={() => setReissueModalOpen(false)}>{t('common.cancel')}</Button>
-                      <Button htmlType="submit" loading={submitting} type="primary">
-                        {t('purchase.contract.cancel.reissueConfirm')}
-                      </Button>
-                    </div>
-                  </form>
-                </Modal>
+                  <Alert message={t('purchase.contract.cancel.reissueHint')} showIcon type="info" />
+                  <label htmlFor="purchase-contract-reissue-reason">
+                    {t('purchase.contract.cancel.reissueReason')}
+                    <Input.TextArea
+                      aria-describedby={
+                        reissueReasonError ? 'purchase-contract-reissue-error' : undefined
+                      }
+                      aria-invalid={Boolean(reissueReasonError)}
+                      id="purchase-contract-reissue-reason"
+                      placeholder={t('purchase.contract.cancel.reissuePlaceholder')}
+                      rows={4}
+                      value={reissueReason}
+                      onChange={(event) => {
+                        setReissueReason(event.currentTarget.value)
+                        setReissueReasonError('')
+                      }}
+                    />
+                  </label>
+                  {reissueReasonError ? (
+                    <span className="form-field-error" id="purchase-contract-reissue-error">
+                      {reissueReasonError}
+                    </span>
+                  ) : null}
+                </FormModal>
 
                 <div className="accessory-heading">
                   <strong>{t('purchase.contract.detail.linesTitle')}</strong>

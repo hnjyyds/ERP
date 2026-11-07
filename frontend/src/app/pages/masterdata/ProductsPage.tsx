@@ -39,7 +39,7 @@ import {
 } from '../../../api'
 import { showError, showSuccess, showWarningDialog } from '../../../shared/errors'
 import { downloadCsv } from '../../../shared/print'
-import { Metric, PanelTitle, useColumnView, type ColumnOption } from '../../../shared/ui'
+import { ListPageShell, Metric, PanelTitle, useColumnView, type ColumnOption } from '../../../shared/ui'
 import { useTablePagination } from '../../../shared/useTablePagination'
 import { t, type TranslationKey } from '../../appI18n'
 import { productDetailPath, productPath } from '../../routes'
@@ -476,9 +476,10 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
         }
       >
         {!detailId ? (
-          <section className="workspace-panel list-panel">
-            <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title={t('masterdata.product.listTitle')} />
+          <ListPageShell
+            icon={<Search size={18} />}
+            title={t('masterdata.product.listTitle')}
+            toolbar={
               <form
                 className="inline-filters product-list-filters"
                 onSubmit={(event) => {
@@ -539,8 +540,8 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
                   {columnViewControl}
                 </div>
               </form>
-            </div>
-
+            }
+          >
             <Table<Product>
               rowSelection={{
                 selectedRowKeys,
@@ -609,7 +610,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
                 onClick: () => setSelectedProductId(record.id),
               })}
             />
-          </section>
+          </ListPageShell>
         ) : null}
 
         {detailId ? (

@@ -4,7 +4,7 @@ import type { FormEvent, MouseEvent , ReactNode} from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { addExportContractAdvancePayment, approveExportContract, cancelExportContract, createExportContract, exportExportContract, listExportContracts, registerExportContractSignature, reissueExportContract, submitExportContract, updateExportContract, type AssignableUser, type CurrentUser, type ExportContract, type ExportContractAdvancePayment, type ExportContractAdvancePaymentPayload, type ExportContractApprovePayload, type ExportContractCreatePayload, type ExportContractLine, type ExportContractSignature, type ExportContractSignaturePayload, type Customer, type Product , ExportContractPurchaseStatus, ExportContractShipmentStatus, ExportQuotation, listAssignableUsers, listCustomers, listProducts, getExportQuotationHistory} from '../../../api'
 import { exportContractPath, moduleDetailPath } from '../../routes'
-import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { FormModal, FormSelect, Metric, PanelTitle } from '../../../shared/ui'
 import { showError, showWarningDialog } from '../../../shared/errors'
 import { downloadCsv as _downloadCsv, openExportContractPrint } from '../../../shared/print'
 import { exportContractStatusOptions } from '../../../shared/formOptions'
@@ -1723,81 +1723,71 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
           </section>
         ) : null}
 
-        <Modal
+        <FormModal
           destroyOnHidden
-          footer={null}
           open={cancelModalOpen}
+          submitDanger
+          submitLabel={t('sales.contract.cancel.confirm')}
+          submitting={submitting}
           title={t('sales.contract.cancel.title')}
           onCancel={() => setCancelModalOpen(false)}
+          onSubmit={submitContractCancellation}
         >
-          <form className="record-form" onSubmit={submitContractCancellation}>
-            <Alert message={t('sales.contract.cancel.hint')} showIcon type="warning" />
-            <label htmlFor="export-contract-cancel-reason">
-              {t('sales.contract.cancel.reason')}
-              <Input.TextArea
-                aria-describedby={cancelReasonError ? 'export-contract-cancel-error' : undefined}
-                aria-invalid={Boolean(cancelReasonError)}
-                id="export-contract-cancel-reason"
-                placeholder={t('sales.contract.cancel.reasonPlaceholder')}
-                rows={4}
-                value={cancelReason}
-                onChange={(event) => {
-                  setCancelReason(event.target.value)
-                  setCancelReasonError('')
-                }}
-              />
-            </label>
-            {cancelReasonError ? (
-              <span className="form-field-error" id="export-contract-cancel-error">
-                {cancelReasonError}
-              </span>
-            ) : null}
-            <div className="modal-actions">
-              <Button onClick={() => setCancelModalOpen(false)}>{t('common.cancel')}</Button>
-              <Button danger htmlType="submit" loading={submitting}>
-                {t('sales.contract.cancel.confirm')}
-              </Button>
-            </div>
-          </form>
-        </Modal>
+          <Alert message={t('sales.contract.cancel.hint')} showIcon type="warning" />
+          <label htmlFor="export-contract-cancel-reason">
+            {t('sales.contract.cancel.reason')}
+            <Input.TextArea
+              aria-describedby={cancelReasonError ? 'export-contract-cancel-error' : undefined}
+              aria-invalid={Boolean(cancelReasonError)}
+              id="export-contract-cancel-reason"
+              placeholder={t('sales.contract.cancel.reasonPlaceholder')}
+              rows={4}
+              value={cancelReason}
+              onChange={(event) => {
+                setCancelReason(event.target.value)
+                setCancelReasonError('')
+              }}
+            />
+          </label>
+          {cancelReasonError ? (
+            <span className="form-field-error" id="export-contract-cancel-error">
+              {cancelReasonError}
+            </span>
+          ) : null}
+        </FormModal>
 
-        <Modal
+        <FormModal
           destroyOnHidden
-          footer={null}
           open={reissueModalOpen}
+          submitLabel={t('sales.contract.cancel.reissueConfirm')}
+          submitType="primary"
+          submitting={submitting}
           title={t('sales.contract.cancel.reissueTitle')}
           onCancel={() => setReissueModalOpen(false)}
+          onSubmit={submitContractReissue}
         >
-          <form className="record-form" onSubmit={submitContractReissue}>
-            <Alert message={t('sales.contract.cancel.reissueHint')} showIcon type="info" />
-            <label htmlFor="export-contract-reissue-reason">
-              {t('sales.contract.cancel.reissueReason')}
-              <Input.TextArea
-                aria-describedby={reissueReasonError ? 'export-contract-reissue-error' : undefined}
-                aria-invalid={Boolean(reissueReasonError)}
-                id="export-contract-reissue-reason"
-                placeholder={t('sales.contract.cancel.reissuePlaceholder')}
-                rows={4}
-                value={reissueReason}
-                onChange={(event) => {
-                  setReissueReason(event.target.value)
-                  setReissueReasonError('')
-                }}
-              />
-            </label>
-            {reissueReasonError ? (
-              <span className="form-field-error" id="export-contract-reissue-error">
-                {reissueReasonError}
-              </span>
-            ) : null}
-            <div className="modal-actions">
-              <Button onClick={() => setReissueModalOpen(false)}>{t('common.cancel')}</Button>
-              <Button htmlType="submit" loading={submitting} type="primary">
-                {t('sales.contract.cancel.reissueConfirm')}
-              </Button>
-            </div>
-          </form>
-        </Modal>
+          <Alert message={t('sales.contract.cancel.reissueHint')} showIcon type="info" />
+          <label htmlFor="export-contract-reissue-reason">
+            {t('sales.contract.cancel.reissueReason')}
+            <Input.TextArea
+              aria-describedby={reissueReasonError ? 'export-contract-reissue-error' : undefined}
+              aria-invalid={Boolean(reissueReasonError)}
+              id="export-contract-reissue-reason"
+              placeholder={t('sales.contract.cancel.reissuePlaceholder')}
+              rows={4}
+              value={reissueReason}
+              onChange={(event) => {
+                setReissueReason(event.target.value)
+                setReissueReasonError('')
+              }}
+            />
+          </label>
+          {reissueReasonError ? (
+            <span className="form-field-error" id="export-contract-reissue-error">
+              {reissueReasonError}
+            </span>
+          ) : null}
+        </FormModal>
       </section>
     </section>
   )

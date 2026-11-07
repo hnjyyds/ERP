@@ -28,6 +28,25 @@ vi.mock('../../routes', async (importOriginal) => {
 // ── Mock shared modules ──────────────────────────────────────────
 vi.mock('../../../shared/ui', () => {
   return {
+    FormModal: ({
+      open,
+      title,
+      children,
+      onSubmit,
+    }: {
+      open: boolean
+      title: React.ReactNode
+      children: React.ReactNode
+      onSubmit: (event: React.FormEvent<HTMLFormElement>) => void
+    }) =>
+      open
+        ? React.createElement(
+            'form',
+            { 'data-testid': 'form-modal', onSubmit },
+            React.createElement('h3', null, title),
+            children,
+          )
+        : null,
     FormSelect: (props: Record<string, unknown>) =>
       React.createElement('select', { ...props, 'data-testid': 'form-select' }),
     Metric: ({ label, value }: { label: string; value: unknown }) =>
