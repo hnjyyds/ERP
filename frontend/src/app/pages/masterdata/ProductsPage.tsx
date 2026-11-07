@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import type { ChangeEvent, FormEvent, MouseEvent } from 'react'
 import React from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import {
   addProductAccessory,
@@ -41,6 +41,7 @@ import { showError, showSuccess, showWarningDialog } from '../../../shared/error
 import { downloadCsv } from '../../../shared/print'
 import { ListPageShell, Metric, PanelTitle, useColumnView, type ColumnOption } from '../../../shared/ui'
 import { useTablePagination } from '../../../shared/useTablePagination'
+import { parsePageParam, useUrlQuery } from '../../../shared/useUrlQuery'
 import { t, type TranslationKey } from '../../appI18n'
 import { productDetailPath, productPath } from '../../routes'
 
@@ -106,9 +107,11 @@ type ProductsPageProps = {
 }
 
 export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
+  const urlQuery = useUrlQuery()
+  const appliedUrlSearchRef = useRef(urlQuery.search)
   const [products, setProducts] = useState<Product[]>([])
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
@@ -126,7 +129,10 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
   const [importing, setImporting] = useState(false)
   const [relatedCustomers, setRelatedCustomers] = useState<ProductCustomer[]>([])
   const [transactions, setTransactions] = useState<ProductTransaction[]>([])
-  const { page, pageSize, setTotal, setPage, changePage, pagination } = useTablePagination()
+  const { page, pageSize, setTotal, setPage, changePage, pagination } = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params),
+  )
 
   const { isVisible: isColumnVisible, control: columnViewControl } = useColumnView(
     'masterdata-products',
@@ -146,6 +152,17 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
   useEffect(() => {
     void loadProducts()
   }, [])
+
+  // 浏览器前进/后退或外部导航只改变查询串时，App 的 activePath 不变，需要页面自己重新读取。
+  useEffect(() => {
+    if (appliedUrlSearchRef.current === urlQuery.search) return
+    appliedUrlSearchRef.current = urlQuery.search
+    const nextSearch = urlQuery.params.get('q') ?? ''
+    const nextPage = parsePageParam(urlQuery.params)
+    setSearch(nextSearch)
+    setPage(nextPage)
+    void loadProducts(undefined, nextPage, pageSize, nextSearch)
+  }, [urlQuery.search])
 
   useEffect(() => {
     if (!selectedProduct) {
@@ -182,13 +199,19 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
     }
   }, [detailId, onNavigate, products])
 
-  async function loadProducts(preferredId?: string, pageOverride?: number, pageSizeOverride?: number) {
+  async function loadProducts(
+    preferredId?: string,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    queryOverride?: string,
+  ) {
     const resolvedPage = pageOverride ?? page
     const resolvedPageSize = pageSizeOverride ?? pageSize
+    const resolvedQuery = queryOverride ?? search
     setLoading(true)
     try {
       const result = await listProducts({
-        q: search.trim() || undefined,
+        q: resolvedQuery.trim() || undefined,
         limit: resolvedPageSize,
         offset: (resolvedPage - 1) * resolvedPageSize,
       })
@@ -196,7 +219,10 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
       if (result.items.length === 0 && resolvedPage > 1) {
         const prevPage = resolvedPage - 1
         setPage(prevPage)
-        await loadProducts(preferredId, prevPage, resolvedPageSize)
+        appliedUrlSearchRef.current = urlQuery.update({
+          page: prevPage === 1 ? null : prevPage,
+        })
+        await loadProducts(preferredId, prevPage, resolvedPageSize, resolvedQuery)
         return
       }
       setProducts(result.items)
@@ -249,6 +275,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
       setForm(initialProductForm())
       setProductModalMode(null)
       setPage(1)
+      appliedUrlSearchRef.current = urlQuery.update({ page: null })
       await loadProducts(created.id, 1)
     } catch (caught) {
       showError(caught, t('masterdata.product.saveFailed'))
@@ -485,6 +512,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
                 onSubmit={(event) => {
                   event.preventDefault()
                   setPage(1)
+                  appliedUrlSearchRef.current = urlQuery.update({ q: search, page: null })
                   void loadProducts(undefined, 1)
                 }}
               >
@@ -600,6 +628,9 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
                 ...pagination,
                 onChange: (nextPage, nextPageSize) => {
                   const next = changePage(nextPage, nextPageSize)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    page: next.page === 1 ? null : next.page,
+                  })
                   void loadProducts(undefined, next.page, next.pageSize)
                 },
               }}

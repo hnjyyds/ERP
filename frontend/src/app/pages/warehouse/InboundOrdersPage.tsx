@@ -1,7 +1,7 @@
 import { Alert, Button, Descriptions as _Descriptions, Input, Modal, Select, Skeleton as _Skeleton, Table, Tag as _Tag } from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search, Warehouse , CheckCircle2, PackagePlus, Send} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { approveInboundOrder, cancelInboundOrder, generateInboundOrderFromPlan, listAssignableUsers, listInboundOrders, listPurchaseContracts, submitInboundOrder, type AssignableUser, type CurrentUser, type InboundOrder, type InboundOrderApprovePayload, type InboundOrderGeneratePayload , InboundPlan, InventoryBalance, InventoryLedger, listInboundPlans, listInventoryBalances, listInventoryLedgers} from '../../../api'
 import { warehouseInboundOrderPath, moduleDetailPath } from '../../routes'
 import { FormModal, FormSelect, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
@@ -9,6 +9,8 @@ import { showError } from '../../../shared/errors'
 import { inboundOrderStatusOptions, inboundOrderModeOptions , inboundPlanStatusOptions} from '../../../shared/formOptions'
 import { formatDate, formatMoney as _formatMoney, formatQuantity as _formatQuantity, nullableText as _nullableText, todayInputValue, type RoutedDetailPageProps , trimDecimal} from '../appHelpers'
 import { t } from '../../appI18n'
+import { useTablePagination } from '../../../shared/useTablePagination'
+import { parsePageParam, useUrlQuery } from '../../../shared/useUrlQuery'
 
 function inboundPlanStatusLabel(value: string): string {
   const option = inboundPlanStatusOptions.find((item) => item.value === value)
@@ -167,13 +169,15 @@ type InboundOrdersPageProps = RoutedDetailPageProps & {
 }
 
 export function InboundOrdersPage({ currentUser, detailId, onNavigate }: InboundOrdersPageProps) {
+  const urlQuery = useUrlQuery()
+  const appliedUrlSearchRef = useRef(urlQuery.search)
   const [orders, setOrders] = useState<InboundOrder[]>([])
   const [inboundPlans, setInboundPlans] = useState<InboundPlan[]>([])
   const [inventoryBalances, setInventoryBalances] = useState<InventoryBalance[]>([])
   const [inventoryLedgers, setInventoryLedgers] = useState<InventoryLedger[]>([])
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
+  const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
+  const [statusFilter, setStatusFilter] = useState(() => urlQuery.params.get('status') ?? '')
   const [modeFilter, setModeFilter] = useState('')
   const [supplierFilter, setSupplierFilter] = useState('')
   const [contractFilter, setContractFilter] = useState('')
@@ -192,6 +196,10 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
   const [cancelModalOpen, setCancelModalOpen] = useState(false)
   const [cancelReason, setCancelReason] = useState('')
   const [cancelReasonError, setCancelReasonError] = useState('')
+  const { page, pageSize, setTotal, setPage, changePage, pagination } = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params),
+  )
 
   const fetchSupplierOptions = useCallback(async (query: string) => {
     const result = await listPurchaseContracts({
@@ -249,6 +257,23 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
     void loadInboundOrders()
   }, [])
 
+  // 浏览器前进/后退只改变查询串时，App 的 activePath 不变，需要页面自己重新读取。
+  useEffect(() => {
+    if (appliedUrlSearchRef.current === urlQuery.search) return
+    appliedUrlSearchRef.current = urlQuery.search
+    const nextSearch = urlQuery.params.get('q') ?? ''
+    const nextStatus = urlQuery.params.get('status') ?? ''
+    const nextPage = parsePageParam(urlQuery.params)
+    setSearch(nextSearch)
+    setStatusFilter(nextStatus)
+    setPage(nextPage)
+    void loadInboundOrders(undefined, undefined, undefined, {
+      q: nextSearch,
+      status: nextStatus,
+      page: nextPage,
+    })
+  }, [urlQuery.search])
+
   useEffect(() => {
     if (!inboundOrderModalOpen || assignableUsersLoaded || loadingAssignableUsers) return
     void loadAssignableUsersForApproval()
@@ -274,19 +299,27 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
     preferredOrderId?: string,
     preferredOrder?: InboundOrder,
     inventoryQuery?: string,
+    queryOverride?: { q?: string; status?: string; page?: number; pageSize?: number },
   ) {
+    const resolvedQuery = queryOverride?.q ?? search
+    const resolvedStatus = queryOverride?.status ?? statusFilter
+    const resolvedPage = queryOverride?.page ?? page
+    const resolvedPageSize = queryOverride?.pageSize ?? pageSize
     setLoading(true)
     try {
       const [orderResult, planOptions] = await Promise.all([
         listInboundOrders({
-          q: preferredOrder?.code ?? (search.trim() || undefined),
-          status: statusFilter || undefined,
+          q: preferredOrder?.code ?? (resolvedQuery.trim() || undefined),
+          status: resolvedStatus || undefined,
           inbound_mode: modeFilter || undefined,
           supplier_id: supplierFilter.trim() || undefined,
           purchase_contract_id: contractFilter.trim() || undefined,
+          limit: resolvedPageSize,
+          offset: (resolvedPage - 1) * resolvedPageSize,
         }),
         loadInboundOrderPlanOptions(),
       ])
+      setTotal(orderResult.total)
       const nextOrders = preferredOrder
         ? [preferredOrder, ...orderResult.items.filter((item) => item.id !== preferredOrder.id)]
         : orderResult.items
@@ -572,7 +605,17 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
               className="inline-filters single-line-filter-toolbar"
               onSubmit={(event) => {
                 event.preventDefault()
-                void loadInboundOrders()
+                setPage(1)
+                appliedUrlSearchRef.current = urlQuery.update({
+                  q: search,
+                  status: statusFilter,
+                  page: null,
+                })
+                void loadInboundOrders(undefined, undefined, undefined, {
+                  q: search,
+                  status: statusFilter,
+                  page: 1,
+                })
               }}
             >
               <label>
@@ -698,7 +741,19 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
             ]}
             dataSource={orders}
             loading={loading}
-            pagination={false}
+            pagination={{
+              ...pagination,
+              onChange: (nextPage, nextPageSize) => {
+                const next = changePage(nextPage, nextPageSize)
+                appliedUrlSearchRef.current = urlQuery.update({
+                  page: next.page === 1 ? null : next.page,
+                })
+                void loadInboundOrders(undefined, undefined, undefined, {
+                  page: next.page,
+                  pageSize: next.pageSize,
+                })
+              },
+            }}
             rowClassName={(record) => (record.id === selectedOrder?.id ? 'selected-row' : '')}
             rowKey="id"
             size="small"

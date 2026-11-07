@@ -95,6 +95,7 @@ describe('InboundOrdersPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    window.history.replaceState({}, '', '/warehouse/inbound-orders')
     vi.mocked(listInboundPlans).mockResolvedValue({ items: [], total: 0 })
   })
 
@@ -277,5 +278,77 @@ describe('InboundOrdersPage', () => {
   it('renders without detail view when no detailId', () => {
     render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
     expect(screen.queryByText('明细和库存')).toBeFalsy()
+  })
+
+  it('从 URL 恢复搜索、状态与页码，并按 offset 请求', async () => {
+    window.history.replaceState({}, '', '/warehouse/inbound-orders?q=IO&status=approved&page=2')
+    render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() => {
+      expect(listInboundOrders).toHaveBeenCalledWith(
+        expect.objectContaining({ q: 'IO', status: 'approved', limit: 50, offset: 50 }),
+      )
+    })
+    expect(screen.getByPlaceholderText('入库单 / 采购合同 / 商品')).toHaveValue('IO')
+    expect(screen.getByLabelText(/单据状态/).closest('.ant-select')?.textContent).toContain('已审批')
+  })
+
+  it('提交筛选时写入 URL 并回到第一页', async () => {
+    window.history.replaceState({}, '', '/warehouse/inbound-orders?page=3')
+    const user = userEvent.setup()
+    render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() => {
+      expect(listInboundOrders).toHaveBeenCalledWith(expect.objectContaining({ offset: 100 }))
+    })
+
+    await user.type(screen.getByPlaceholderText('入库单 / 采购合同 / 商品'), 'IO-2')
+    await user.click(screen.getByLabelText(/单据状态/))
+    const approvedOptions = await screen.findAllByText('已审批')
+    await user.click(
+      approvedOptions.find((element) =>
+        element.classList.contains('ant-select-item-option-content'),
+      )!,
+    )
+    await user.click(screen.getByRole('button', { name: '查询' }))
+
+    await waitFor(() => {
+      expect(listInboundOrders).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          q: 'IO-2',
+          status: 'approved',
+          limit: 50,
+          offset: 0,
+        }),
+      )
+    })
+    const query = new URLSearchParams(window.location.search)
+    expect(query.get('q')).toBe('IO-2')
+    expect(query.get('status')).toBe('approved')
+    expect(query.get('page')).toBeNull()
+  })
+
+  it('浏览器后退时按 URL 恢复筛选与页码', async () => {
+    window.history.replaceState({}, '', '/warehouse/inbound-orders?q=A&status=draft&page=1')
+    render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() => {
+      expect(listInboundOrders).toHaveBeenCalledWith(
+        expect.objectContaining({ q: 'A', status: 'draft', offset: 0 }),
+      )
+    })
+
+    window.history.pushState({}, '', '/warehouse/inbound-orders?q=B&status=approved&page=2')
+    window.dispatchEvent(new PopStateEvent('popstate'))
+
+    await waitFor(() => {
+      expect(listInboundOrders).toHaveBeenLastCalledWith(
+        expect.objectContaining({ q: 'B', status: 'approved', limit: 50, offset: 50 }),
+      )
+    })
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText('入库单 / 采购合同 / 商品')).toHaveValue('B')
+    })
+    expect(screen.getByLabelText(/单据状态/).closest('.ant-select')?.textContent).toContain('已审批')
   })
 })
