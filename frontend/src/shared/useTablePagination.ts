@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { t } from '../app/appI18n'
 
-const DEFAULT_PAGE_SIZE = 20
+const DEFAULT_PAGE_SIZE = 50
 const PAGE_SIZE_OPTIONS = [20, 50, 100]
 
 /**
