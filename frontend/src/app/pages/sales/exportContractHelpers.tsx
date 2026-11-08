@@ -9,12 +9,37 @@ import type {
   ExportContractAdvancePaymentPayload,
   ExportContractApprovePayload,
   ExportContractCreatePayload,
+  ExportContractListSummary,
   ExportContractSignaturePayload,
   Product,
 } from '@/api'
 import { exportContractStatusOptions } from '@/shared/formOptions'
 import { t } from '@/app/appI18n'
 import { emptyToNull, todayInputValue } from '@/app/pages/appHelpers'
+
+export type ExportContractListFilters = {
+  q: string
+  status: string
+  customer: string
+}
+
+export const emptyExportContractSummary: ExportContractListSummary = {
+  submitted_count: 0,
+  approved_count: 0,
+  total_amount: '0',
+  advance_payment_amount: '0',
+  currency: null,
+}
+
+export function exportContractFiltersFromParams(
+  params: URLSearchParams,
+): ExportContractListFilters {
+  return {
+    q: params.get('q') ?? '',
+    status: params.get('status') ?? '',
+    customer: params.get('customer') ?? '',
+  }
+}
 
 export function customerDisplayName(customer: Customer): string {
   return customer.cn_name || customer.en_name || customer.code
