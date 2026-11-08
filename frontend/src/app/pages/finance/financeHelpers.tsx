@@ -974,12 +974,6 @@ export type FinancePageContext = {
   setInvoiceSupplierFilter: (v: string) => void
   invoiceContractFilter: string
   setInvoiceContractFilter: (v: string) => void
-  paymentRequestSearch: string
-  setPaymentRequestSearch: (v: string) => void
-  paymentRequestStatusFilter: string
-  setPaymentRequestStatusFilter: (v: string) => void
-  paymentRequestTypeFilter: string
-  setPaymentRequestTypeFilter: (v: string) => void
   payableSearch: string
   setPayableSearch: (v: string) => void
   payableStatusFilter: string
@@ -1025,12 +1019,6 @@ export type FinancePageContext = {
   setFeeInvoicePartnerFilter: (v: string) => void
   feeInvoiceShipmentFilter: string
   setFeeInvoiceShipmentFilter: (v: string) => void
-  feePaymentRequestSearch: string
-  setFeePaymentRequestSearch: (v: string) => void
-  feePaymentRequestStatusFilter: string
-  setFeePaymentRequestStatusFilter: (v: string) => void
-  feePaymentRequestTypeFilter: string
-  setFeePaymentRequestTypeFilter: (v: string) => void
   feePayableSearch: string
   setFeePayableSearch: (v: string) => void
   feePayableStatusFilter: string
@@ -1204,8 +1192,6 @@ export type FinancePageContext = {
   // Port data
   portImportBatches: PortImportBatch[]
   customsRecords: CustomsDeclarationRecord[]
-  portBatchSourceFilter: string
-  setPortBatchSourceFilter: (v: string) => void
   customsDeclarationFilter: string
   setCustomsDeclarationFilter: (v: string) => void
   customsReceiptFilter: string

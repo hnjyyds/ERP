@@ -72,8 +72,6 @@ export function usePortDataModule(
 
   const [submittingPortBatch, setSubmittingPortBatch] = useState(false)
 
-  const [portBatchSourceFilter, _setPortBatchSourceFilter] = useState('')
-
   const [portBatchForm, setPortBatchForm] = useState({
     batch_no: '',
     source: '',
@@ -105,7 +103,6 @@ export function usePortDataModule(
       const page = pageOverride ?? batchesPager.page
       const pageSize = pageSizeOverride ?? batchesPager.pageSize
       const result = await listPortImportBatches({
-        source: portBatchSourceFilter.trim() || undefined,
         limit: pageSize,
         offset: (page - 1) * pageSize,
       })

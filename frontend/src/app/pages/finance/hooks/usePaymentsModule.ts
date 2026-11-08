@@ -107,12 +107,6 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
 
   const [selectedPaymentRequestId, setSelectedPaymentRequestId] = useState<string | null>(null)
 
-  const [paymentRequestSearch, _setPaymentRequestSearch] = useState('')
-
-  const [paymentRequestStatusFilter, _setPaymentRequestStatusFilter] = useState('')
-
-  const [paymentRequestTypeFilter, _setPaymentRequestTypeFilter] = useState('')
-
   const invoiceModal = useFormModal(initialSupplierInvoiceForm)
 
   const [paymentRequestForm, setPaymentRequestForm] = useState<PaymentRequestFormState>(() =>
@@ -227,9 +221,6 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
       const page = pageOverride ?? paymentRequestsPager.page
       const pageSize = pageSizeOverride ?? paymentRequestsPager.pageSize
       const result = await listPaymentRequests({
-        q: paymentRequestSearch.trim() || undefined,
-        status: paymentRequestStatusFilter || undefined,
-        payment_type: paymentRequestTypeFilter || undefined,
         supplier_id: invoiceFilters.supplier.trim() || undefined,
         limit: pageSize,
         offset: (page - 1) * pageSize,

@@ -132,12 +132,6 @@ export function useFeesModule(env: FinanceModuleEnv) {
     null,
   )
 
-  const [feePaymentRequestSearch, _setFeePaymentRequestSearch] = useState('')
-
-  const [feePaymentRequestStatusFilter, _setFeePaymentRequestStatusFilter] = useState('')
-
-  const [feePaymentRequestTypeFilter, _setFeePaymentRequestTypeFilter] = useState('')
-
   const feeInvoiceModal = useFormModal(initialPartnerFeeInvoiceForm)
 
   const [feePaymentRequestForm, setFeePaymentRequestForm] = useState<FeePaymentRequestFormState>(
@@ -254,9 +248,6 @@ export function useFeesModule(env: FinanceModuleEnv) {
       const page = pageOverride ?? feePaymentRequestsPager.page
       const pageSize = pageSizeOverride ?? feePaymentRequestsPager.pageSize
       const result = await listFeePaymentRequests({
-        q: feePaymentRequestSearch.trim() || undefined,
-        status: feePaymentRequestStatusFilter || undefined,
-        fee_type: feePaymentRequestTypeFilter || undefined,
         partner_id: feeInvoiceFilters.partner.trim() || undefined,
         shipment_no: feeInvoiceFilters.shipment.trim() || undefined,
         limit: pageSize,
