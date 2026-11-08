@@ -11,6 +11,7 @@ import {
 import { showError } from '@/shared/errors'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { useTablePagination } from '@/shared/useTablePagination'
+import { useFormModal } from '@/shared/useFormModal'
 import { canApproveAssignedRecord } from '@/app/pages/appHelpers'
 import { t } from '@/app/appI18n'
 
@@ -31,6 +32,21 @@ function reimbursementSignature(params: URLSearchParams): string {
     parsePageParam(params, 'reimbursements_page'),
     reimbursementFiltersFromParams(params),
   ])
+}
+
+function initialReimbursementForm() {
+  return {
+    reimbursement_no: '',
+    applicant_user_id: '',
+    applicant_user_name: '',
+    department: '',
+    category: 'travel',
+    currency: 'CNY',
+    amount: '',
+    reviewer_id: '',
+    reason: '',
+    remark: '',
+  }
 }
 
 export function useReimbursementsModule(env: FinanceModuleEnv) {
@@ -58,26 +74,11 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
 
   const [loadingReimbursements, setLoadingReimbursements] = useState(false)
 
-  const [submittingReimbursement, setSubmittingReimbursement] = useState(false)
-
   const [submittingReimbursementAction, setSubmittingReimbursementAction] = useState(false)
 
-  const [reimbursementForm, setReimbursementForm] = useState({
-    reimbursement_no: '',
-    applicant_user_id: '',
-    applicant_user_name: '',
-    department: '',
-    category: 'travel',
-    currency: 'CNY',
-    amount: '',
-    reviewer_id: '',
-    reason: '',
-    remark: '',
-  })
+  const reimbursementModal = useFormModal(initialReimbursementForm)
 
   const [reimbursementPayMethod, setReimbursementPayMethod] = useState('bank_transfer')
-
-  const [reimbursementModalOpen, setReimbursementModalOpen] = useState(false)
 
   async function loadReimbursements(
     preferredId?: string,
@@ -121,45 +122,32 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
 
   async function submitReimbursement(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setSubmittingReimbursement(true)
     setMessage('')
     setError('')
-    try {
-      const payload: ReimbursementCreatePayload = {
-        reimbursement_no: reimbursementForm.reimbursement_no.trim(),
-        applicant_user_id: reimbursementForm.applicant_user_id.trim(),
-        applicant_user_name: reimbursementForm.applicant_user_name.trim(),
-        department: reimbursementForm.department.trim(),
-        category: reimbursementForm.category,
-        currency: reimbursementForm.currency.trim(),
-        amount: reimbursementForm.amount.trim(),
-        reviewer_id: reimbursementForm.reviewer_id,
-        reason: reimbursementForm.reason.trim() || undefined,
-        remark: reimbursementForm.remark.trim() || undefined,
-      }
-      const created = await createReimbursement(payload)
-      setMessage(
-        t('finance.reimbursement.message.createSuccess', { code: created.reimbursement_no }),
-      )
-      setReimbursementModalOpen(false)
-      setReimbursementForm({
-        reimbursement_no: '',
-        applicant_user_id: '',
-        applicant_user_name: '',
-        department: '',
-        category: 'travel',
-        currency: 'CNY',
-        amount: '',
-        reviewer_id: '',
-        reason: '',
-        remark: '',
-      })
-      await loadReimbursements(created.id)
-    } catch (caught) {
-      showError(caught, t('finance.reimbursement.message.createFailed'))
-    } finally {
-      setSubmittingReimbursement(false)
-    }
+    const form = reimbursementModal.form
+    const saved = await reimbursementModal.runSubmit(
+      async () => {
+        const payload: ReimbursementCreatePayload = {
+          reimbursement_no: form.reimbursement_no.trim(),
+          applicant_user_id: form.applicant_user_id.trim(),
+          applicant_user_name: form.applicant_user_name.trim(),
+          department: form.department.trim(),
+          category: form.category,
+          currency: form.currency.trim(),
+          amount: form.amount.trim(),
+          reviewer_id: form.reviewer_id,
+          reason: form.reason.trim() || undefined,
+          remark: form.remark.trim() || undefined,
+        }
+        const created = await createReimbursement(payload)
+        setMessage(
+          t('finance.reimbursement.message.createSuccess', { code: created.reimbursement_no }),
+        )
+        await loadReimbursements(created.id)
+      },
+      (caught) => showError(caught, t('finance.reimbursement.message.createFailed')),
+    )
+    if (saved) reimbursementModal.close()
   }
 
   async function handleReimbursementApprove(approved: boolean) {
@@ -247,8 +235,8 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
     loadReimbursements,
     loadingReimbursements,
     reimbursementCategoryFilter: reimbursementFilters.category,
-    reimbursementForm,
-    reimbursementModalOpen,
+    reimbursementForm: reimbursementModal.form,
+    reimbursementModalOpen: reimbursementModal.open,
     reimbursementPayMethod,
     reimbursementSearch: reimbursementFilters.q,
     reimbursementStatusFilter: reimbursementFilters.status,
@@ -259,8 +247,9 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
     selectedReimbursementId,
     setReimbursementCategoryFilter: (value: string) =>
       setReimbursementFilters((current) => ({ ...current, category: value })),
-    setReimbursementForm,
-    setReimbursementModalOpen,
+    setReimbursementForm: reimbursementModal.setForm,
+    setReimbursementModalOpen: (open: boolean) =>
+      open ? reimbursementModal.openWith() : reimbursementModal.close(),
     setReimbursementPayMethod,
     setReimbursementSearch: (value: string) =>
       setReimbursementFilters((current) => ({ ...current, q: value })),
@@ -268,7 +257,7 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
       setReimbursementFilters((current) => ({ ...current, status: value })),
     setSelectedReimbursementId,
     submitReimbursement,
-    submittingReimbursement,
+    submittingReimbursement: reimbursementModal.submitting,
     submittingReimbursementAction,
   }
 }

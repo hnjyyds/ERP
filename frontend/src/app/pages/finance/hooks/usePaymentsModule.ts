@@ -14,9 +14,9 @@ import {
 import { showError } from '@/shared/errors'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { useTablePagination } from '@/shared/useTablePagination'
+import { useFormModal } from '@/shared/useFormModal'
 import { canApproveAssignedRecord } from '@/app/pages/appHelpers'
 import {
-  SupplierInvoiceFormState,
   PaymentRequestFormState,
   PaymentApprovalFormState,
   initialSupplierInvoiceForm,
@@ -113,9 +113,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
 
   const [paymentRequestTypeFilter, _setPaymentRequestTypeFilter] = useState('')
 
-  const [supplierInvoiceForm, setSupplierInvoiceForm] = useState<SupplierInvoiceFormState>(() =>
-    initialSupplierInvoiceForm(),
-  )
+  const invoiceModal = useFormModal(initialSupplierInvoiceForm)
 
   const [paymentRequestForm, setPaymentRequestForm] = useState<PaymentRequestFormState>(() =>
     initialPaymentRequestForm(),
@@ -131,11 +129,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
 
   const [loadingPayables, setLoadingPayables] = useState(false)
 
-  const [submittingSupplierInvoice, setSubmittingSupplierInvoice] = useState(false)
-
   const [supplierInvoiceNoError, setSupplierInvoiceNoError] = useState('')
-
-  const [invoiceModalOpen, setInvoiceModalOpen] = useState(false)
 
   const [submittingPaymentRequest, setSubmittingPaymentRequest] = useState(false)
 
@@ -288,26 +282,25 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
 
   async function submitSupplierInvoice(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!supplierInvoiceForm.invoice_no.trim()) {
+    if (!invoiceModal.form.invoice_no.trim()) {
       setSupplierInvoiceNoError(t('finance.payment.validation.invoiceNoRequired'))
       return
     }
     setSupplierInvoiceNoError('')
-    setSubmittingSupplierInvoice(true)
     setMessage('')
     setError('')
-    try {
-      const created = await createSupplierInvoice(supplierInvoicePayload(supplierInvoiceForm))
-      setMessage(t('finance.payment.message.supplierInvoiceCreated', { code: created.invoice_no }))
-      setSupplierInvoiceForm(initialSupplierInvoiceForm())
-      setInvoiceModalOpen(false)
-      await loadSupplierInvoices(created.id)
-      await loadPayables()
-    } catch (caught) {
-      showError(caught, t('finance.payment.message.supplierInvoiceCreateFailed'))
-    } finally {
-      setSubmittingSupplierInvoice(false)
-    }
+    const saved = await invoiceModal.runSubmit(
+      async () => {
+        const created = await createSupplierInvoice(supplierInvoicePayload(invoiceModal.form))
+        setMessage(
+          t('finance.payment.message.supplierInvoiceCreated', { code: created.invoice_no }),
+        )
+        await loadSupplierInvoices(created.id)
+        await loadPayables()
+      },
+      (caught) => showError(caught, t('finance.payment.message.supplierInvoiceCreateFailed')),
+    )
+    if (saved) invoiceModal.close()
   }
 
   async function submitPaymentRequest(event: FormEvent<HTMLFormElement>) {
@@ -442,7 +435,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     changePaymentRequestsPage,
     changeSupplierInvoicesPage,
     invoiceContractFilter: invoiceFilters.contract,
-    invoiceModalOpen,
+    invoiceModalOpen: invoiceModal.open,
     invoiceSearch: invoiceFilters.q,
     invoiceStatusFilter: invoiceFilters.status,
     invoiceSupplierFilter: invoiceFilters.supplier,
@@ -470,7 +463,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     selectedSupplierInvoice,
     setInvoiceContractFilter: (value: string) =>
       setInvoiceFilters((current) => ({ ...current, contract: value })),
-    setInvoiceModalOpen,
+    setInvoiceModalOpen: (open: boolean) => (open ? invoiceModal.openWith() : invoiceModal.close()),
     setInvoiceSearch: (value: string) =>
       setInvoiceFilters((current) => ({ ...current, q: value })),
     setInvoiceStatusFilter: (value: string) =>
@@ -489,15 +482,15 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     setPaymentRequestForm,
     setSelectedPaymentRequestId,
     setSelectedSupplierInvoiceId,
-    setSupplierInvoiceForm,
+    setSupplierInvoiceForm: invoiceModal.setForm,
     setSupplierInvoiceNoError,
     submitPaymentApproval,
     submitPaymentRequest,
     submitSupplierInvoice,
     submittingPaymentApproval,
     submittingPaymentRequest,
-    submittingSupplierInvoice,
-    supplierInvoiceForm,
+    submittingSupplierInvoice: invoiceModal.submitting,
+    supplierInvoiceForm: invoiceModal.form,
     supplierInvoiceNoError,
     supplierInvoices,
     supplierInvoicesPagination: supplierInvoicesPager.pagination,

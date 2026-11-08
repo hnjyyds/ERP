@@ -12,8 +12,8 @@ import {
 import { showError } from '@/shared/errors'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { useTablePagination } from '@/shared/useTablePagination'
+import { useFormModal } from '@/shared/useFormModal'
 import {
-  BankReceiptFormState,
   ReceiptClaimFormState,
   ReceiptAllocationFormState,
   initialBankReceiptForm,
@@ -99,9 +99,7 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
 
   const [selectedReceiptId, setSelectedReceiptId] = useState<string | null>(null)
 
-  const [receiptForm, setReceiptForm] = useState<BankReceiptFormState>(() =>
-    initialBankReceiptForm(),
-  )
+  const receiptModal = useFormModal(initialBankReceiptForm)
 
   const [claimForm, setClaimForm] = useState<ReceiptClaimFormState>(() => initialReceiptClaimForm())
 
@@ -112,10 +110,6 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
   const [loadingReceipts, setLoadingReceipts] = useState(false)
 
   const [loadingReceivables, setLoadingReceivables] = useState(false)
-
-  const [submittingReceipt, setSubmittingReceipt] = useState(false)
-
-  const [receiptModalOpen, setReceiptModalOpen] = useState(false)
 
   const [submittingClaim, setSubmittingClaim] = useState(false)
 
@@ -198,19 +192,14 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
 
   async function submitReceipt(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setSubmittingReceipt(true)
     setMessage('')
     setError('')
-    try {
-      const created = await createBankReceipt(bankReceiptPayload(receiptForm))
-      setMessage(t('finance.receipt.message.receiptCreated', { code: created.receipt_no }))
-      setReceiptForm(initialBankReceiptForm())
-      await loadReceipts(created.id, 1, receiptsPager.pageSize)
-    } catch (caught) {
-      showError(caught, t('finance.receipt.message.receiptCreateFailed'))
-    } finally {
-      setSubmittingReceipt(false)
-    }
+    const created = await receiptModal.runSubmit(async () => {
+      const saved = await createBankReceipt(bankReceiptPayload(receiptModal.form))
+      setMessage(t('finance.receipt.message.receiptCreated', { code: saved.receipt_no }))
+      await loadReceipts(saved.id, 1, receiptsPager.pageSize)
+    }, (caught) => showError(caught, t('finance.receipt.message.receiptCreateFailed')))
+    if (created) receiptModal.close()
   }
 
   async function submitClaim(event: FormEvent<HTMLFormElement>) {
@@ -333,8 +322,8 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
     receivablesTotal: receivablesPager.total,
     totalReceivableAmount,
     receiptCustomerFilter: receiptFilters.customer,
-    receiptForm,
-    receiptModalOpen,
+    receiptForm: receiptModal.form,
+    receiptModalOpen: receiptModal.open,
     receiptSearch: receiptFilters.q,
     receiptStatusFilter: receiptFilters.status,
     receipts,
@@ -349,8 +338,9 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
     setClaimForm,
     setReceiptCustomerFilter: (value: string) =>
       setReceiptFilters((current) => ({ ...current, customer: value })),
-    setReceiptForm,
-    setReceiptModalOpen,
+    setReceiptForm: receiptModal.setForm,
+    setReceiptModalOpen: (open: boolean) =>
+      open ? receiptModal.openWith() : receiptModal.close(),
     setReceiptSearch: (value: string) =>
       setReceiptFilters((current) => ({ ...current, q: value })),
     setReceiptStatusFilter: (value: string) =>
@@ -367,7 +357,7 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
     submitReceipt,
     submittingAllocation,
     submittingClaim,
-    submittingReceipt,
+    submittingReceipt: receiptModal.submitting,
     totalReceiptAmount,
     totalUnallocatedAmount,
   }

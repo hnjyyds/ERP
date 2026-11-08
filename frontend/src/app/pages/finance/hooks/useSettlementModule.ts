@@ -10,9 +10,9 @@ import {
 import { showError } from '@/shared/errors'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { useTablePagination } from '@/shared/useTablePagination'
+import { useFormModal } from '@/shared/useFormModal'
 import { t } from '@/app/appI18n'
 import {
-  FinancialSettlementFormState,
   ManualProfitCostFormState,
   initialFinancialSettlementForm,
   initialManualProfitCostForm,
@@ -91,9 +91,7 @@ export function useSettlementModule(env: FinanceModuleEnv) {
     null,
   )
 
-  const [settlementForm, setSettlementForm] = useState<FinancialSettlementFormState>(() =>
-    initialFinancialSettlementForm(),
-  )
+  const settlementModal = useFormModal(initialFinancialSettlementForm)
 
   const [manualProfitCostForm, setManualProfitCostForm] = useState<ManualProfitCostFormState>(() =>
     initialManualProfitCostForm(),
@@ -102,10 +100,6 @@ export function useSettlementModule(env: FinanceModuleEnv) {
   const [loadingFinancialSettlements, setLoadingFinancialSettlements] = useState(false)
 
   const [loadingProfitCalculations, setLoadingProfitCalculations] = useState(false)
-
-  const [settlementModalOpen, setSettlementModalOpen] = useState(false)
-
-  const [submittingSettlement, setSubmittingSettlement] = useState(false)
 
   const [submittingManualProfitCost, setSubmittingManualProfitCost] = useState(false)
 
@@ -200,21 +194,22 @@ export function useSettlementModule(env: FinanceModuleEnv) {
 
   async function submitFinancialSettlement(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setSubmittingSettlement(true)
     setMessage('')
     setError('')
-    try {
-      const created = await createFinancialSettlement(financialSettlementPayload(settlementForm))
-      setMessage(t('finance.settlement.message.settlementLocked', { code: created.settlement_no }))
-      setSettlementForm(initialFinancialSettlementForm())
-      await loadFinancialSettlements(created.id)
-      await loadProfitCalculations()
-      await loadOverview()
-    } catch (caught) {
-      showError(caught, t('finance.settlement.message.settlementLockFailed'))
-    } finally {
-      setSubmittingSettlement(false)
-    }
+    await settlementModal.runSubmit(
+      async () => {
+        const created = await createFinancialSettlement(
+          financialSettlementPayload(settlementModal.form),
+        )
+        setMessage(
+          t('finance.settlement.message.settlementLocked', { code: created.settlement_no }),
+        )
+        await loadFinancialSettlements(created.id)
+        await loadProfitCalculations()
+        await loadOverview()
+      },
+      (caught) => showError(caught, t('finance.settlement.message.settlementLockFailed')),
+    )
   }
 
   async function submitManualProfitCost(event: FormEvent<HTMLFormElement>) {
@@ -311,20 +306,21 @@ export function useSettlementModule(env: FinanceModuleEnv) {
     setProfitCalculationShipmentFilter: (value: string) =>
       setProfitFilters((current) => ({ ...current, shipment: value })),
     setSelectedFinancialSettlementId,
-    setSettlementForm,
-    setSettlementModalOpen,
+    setSettlementForm: settlementModal.setForm,
+    setSettlementModalOpen: (open: boolean) =>
+      open ? settlementModal.openWith() : settlementModal.close(),
     setSettlementSearch: (value: string) =>
       setSettlementFilters((current) => ({ ...current, q: value })),
     setSettlementShipmentFilter: (value: string) =>
       setSettlementFilters((current) => ({ ...current, shipment: value })),
-    settlementForm,
-    settlementModalOpen,
+    settlementForm: settlementModal.form,
+    settlementModalOpen: settlementModal.open,
     settlementSearch: settlementFilters.q,
     settlementShipmentFilter: settlementFilters.shipment,
     submitFinancialSettlement,
     submitManualProfitCost,
     submittingManualProfitCost,
-    submittingSettlement,
+    submittingSettlement: settlementModal.submitting,
     totalProfitCalculationGrossProfit,
     totalSettlementGrossProfit,
     totalSettlementSalesIncome,

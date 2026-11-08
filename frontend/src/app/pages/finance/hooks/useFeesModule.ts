@@ -14,9 +14,9 @@ import {
 import { showError } from '@/shared/errors'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { useTablePagination } from '@/shared/useTablePagination'
+import { useFormModal } from '@/shared/useFormModal'
 import { canApproveAssignedRecord } from '@/app/pages/appHelpers'
 import {
-  PartnerFeeInvoiceFormState,
   FeePaymentRequestFormState,
   FeePaymentApprovalFormState,
   initialPartnerFeeInvoiceForm,
@@ -138,9 +138,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
 
   const [feePaymentRequestTypeFilter, _setFeePaymentRequestTypeFilter] = useState('')
 
-  const [partnerFeeInvoiceForm, setPartnerFeeInvoiceForm] = useState<PartnerFeeInvoiceFormState>(
-    () => initialPartnerFeeInvoiceForm(),
-  )
+  const feeInvoiceModal = useFormModal(initialPartnerFeeInvoiceForm)
 
   const [feePaymentRequestForm, setFeePaymentRequestForm] = useState<FeePaymentRequestFormState>(
     () => initialFeePaymentRequestForm(),
@@ -155,10 +153,6 @@ export function useFeesModule(env: FinanceModuleEnv) {
   const [loadingFeePaymentRequests, setLoadingFeePaymentRequests] = useState(false)
 
   const [loadingFeePayables, setLoadingFeePayables] = useState(false)
-
-  const [feeInvoiceModalOpen, setFeeInvoiceModalOpen] = useState(false)
-
-  const [submittingPartnerFeeInvoice, setSubmittingPartnerFeeInvoice] = useState(false)
 
   const [partnerFeeInvoiceNoError, setPartnerFeeInvoiceNoError] = useState('')
 
@@ -317,26 +311,25 @@ export function useFeesModule(env: FinanceModuleEnv) {
 
   async function submitPartnerFeeInvoice(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!partnerFeeInvoiceForm.invoice_no.trim()) {
+    if (!feeInvoiceModal.form.invoice_no.trim()) {
       setPartnerFeeInvoiceNoError(t('finance.fee.validation.invoiceNoRequired'))
       return
     }
     setPartnerFeeInvoiceNoError('')
-    setSubmittingPartnerFeeInvoice(true)
     setMessage('')
     setError('')
-    try {
-      const created = await createPartnerFeeInvoice(partnerFeeInvoicePayload(partnerFeeInvoiceForm))
-      setMessage(t('finance.fee.message.invoiceCreated', { code: created.invoice_no }))
-      setPartnerFeeInvoiceForm(initialPartnerFeeInvoiceForm())
-      setFeeInvoiceModalOpen(false)
-      await loadPartnerFeeInvoices(created.id)
-      await loadFeePayables()
-    } catch (caught) {
-      showError(caught, t('finance.fee.message.invoiceCreateFailed'))
-    } finally {
-      setSubmittingPartnerFeeInvoice(false)
-    }
+    const saved = await feeInvoiceModal.runSubmit(
+      async () => {
+        const created = await createPartnerFeeInvoice(
+          partnerFeeInvoicePayload(feeInvoiceModal.form),
+        )
+        setMessage(t('finance.fee.message.invoiceCreated', { code: created.invoice_no }))
+        await loadPartnerFeeInvoices(created.id)
+        await loadFeePayables()
+      },
+      (caught) => showError(caught, t('finance.fee.message.invoiceCreateFailed')),
+    )
+    if (saved) feeInvoiceModal.close()
   }
 
   async function submitFeePaymentRequest(event: FormEvent<HTMLFormElement>) {
@@ -476,7 +469,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
     changeFeePayablesPage,
     changeFeePaymentRequestsPage,
     changePartnerFeeInvoicesPage,
-    feeInvoiceModalOpen,
+    feeInvoiceModalOpen: feeInvoiceModal.open,
     feeInvoicePartnerFilter: feeInvoiceFilters.partner,
     feeInvoiceSearch: feeInvoiceFilters.q,
     feeInvoiceShipmentFilter: feeInvoiceFilters.shipment,
@@ -502,7 +495,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
     loadingFeePayables,
     loadingFeePaymentRequests,
     loadingPartnerFeeInvoices,
-    partnerFeeInvoiceForm,
+    partnerFeeInvoiceForm: feeInvoiceModal.form,
     partnerFeeInvoiceNoError,
     partnerFeeInvoices,
     partnerFeeInvoicesPagination: partnerFeeInvoicesPager.pagination,
@@ -510,7 +503,8 @@ export function useFeesModule(env: FinanceModuleEnv) {
     selectedFeePaymentRequest,
     selectedFeePaymentRequestCanApprove,
     selectedPartnerFeeInvoice,
-    setFeeInvoiceModalOpen,
+    setFeeInvoiceModalOpen: (open: boolean) =>
+      open ? feeInvoiceModal.openWith() : feeInvoiceModal.close(),
     setFeeInvoicePartnerFilter: (value: string) =>
       setFeeInvoiceFilters((current) => ({ ...current, partner: value })),
     setFeeInvoiceSearch: (value: string) =>
@@ -533,7 +527,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
       setFeePayableFilters((current) => ({ ...current, type: value })),
     setFeePaymentApprovalForm,
     setFeePaymentRequestForm,
-    setPartnerFeeInvoiceForm,
+    setPartnerFeeInvoiceForm: feeInvoiceModal.setForm,
     setPartnerFeeInvoiceNoError,
     setSelectedFeePaymentRequestId,
     setSelectedPartnerFeeInvoiceId,
@@ -542,7 +536,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
     submitPartnerFeeInvoice,
     submittingFeePaymentApproval,
     submittingFeePaymentRequest,
-    submittingPartnerFeeInvoice,
+    submittingPartnerFeeInvoice: feeInvoiceModal.submitting,
   }
 }
 
