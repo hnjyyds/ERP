@@ -20,7 +20,7 @@ import {
   type InboundPlanSchedulePayload,
 } from '../../../api'
 import { warehouseInboundPlanPath, moduleDetailPath } from '../../routes'
-import { FormSelect, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
+import { FormSelect, ListPageShell, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
 import { useFormModal } from '../../../shared/useFormModal'
 import { showError } from '../../../shared/errors'
 import { inboundPlanStatusOptions, inboundPlanTypeOptions } from '../../../shared/formOptions'
@@ -344,14 +344,12 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
 
       <section className="business-grid inbound-plan-grid">
         {!detailId ? (
-          <section className="workspace-panel list-panel product-list-panel">
-            <div className="panel-heading toolbar-heading">
-              <PanelTitle
-                icon={<Search size={18} />}
-                title={t('warehouse.inboundPlan.list.title')}
-              />
-              <form
-                className="inline-filters"
+          <ListPageShell
+            className="product-list-panel"
+            icon={<Search size={18} />}
+            title={t('warehouse.inboundPlan.list.title')}
+            toolbar={<form
+              className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
                   void loadInboundPlans()
@@ -422,8 +420,8 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                 >
                   {t('warehouse.inboundPlan.list.generateSchedule')}
                 </Button>
-              </form>
-            </div>
+              </form>}
+            >
 
             <Table<InboundPlan>
               columns={[
@@ -489,7 +487,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                 onClick: () => setSelectedPlanId(record.id),
               })}
             />
-          </section>
+          </ListPageShell>
         ) : null}
 
         <Modal

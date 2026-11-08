@@ -39,7 +39,7 @@ import {
   listInventoryLedgers,
 } from '../../../api'
 import { warehouseOutboundOrderPath, moduleDetailPath } from '../../routes'
-import { FormModal, FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { FormModal, FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import {
   outboundOrderStatusOptions,
@@ -543,11 +543,12 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
 
       <section className="business-grid outbound-order-grid">
         {!detailId ? (
-          <section className="workspace-panel list-panel product-list-panel">
-            <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title={t('warehouse.outboundOrder.list.title')} />
-              <form
-                className="inline-filters"
+          <ListPageShell
+            className="product-list-panel"
+            icon={<Search size={18} />}
+            title={t('warehouse.outboundOrder.list.title')}
+            toolbar={<form
+              className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
                   void loadOutboundOrders()
@@ -633,8 +634,8 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                 >
                   {t('warehouse.outboundOrder.list.generateOrApprove')}
                 </Button>
-              </form>
-            </div>
+              </form>}
+            >
 
             <Table<OutboundOrder>
               columns={[
@@ -706,7 +707,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
                 onClick: () => setSelectedOrderId(record.id),
               })}
             />
-          </section>
+          </ListPageShell>
         ) : null}
 
         <Modal

@@ -22,7 +22,7 @@ import {
   listShipments,
 } from '../../../api'
 import { warehouseOutboundPlanPath, moduleDetailPath } from '../../routes'
-import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
 import { useFormModal } from '../../../shared/useFormModal'
 import { showError } from '../../../shared/errors'
 import {
@@ -398,14 +398,12 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
 
       <section className="business-grid outbound-plan-grid">
         {!detailId ? (
-          <section className="workspace-panel list-panel product-list-panel">
-            <div className="panel-heading toolbar-heading">
-              <PanelTitle
-                icon={<Search size={18} />}
-                title={t('warehouse.outboundPlan.list.title')}
-              />
-              <form
-                className="inline-filters"
+          <ListPageShell
+            className="product-list-panel"
+            icon={<Search size={18} />}
+            title={t('warehouse.outboundPlan.list.title')}
+            toolbar={<form
+              className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
                   void loadOutboundPlans()
@@ -491,8 +489,8 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                 >
                   {t('warehouse.outboundPlan.list.generateSchedule')}
                 </Button>
-              </form>
-            </div>
+              </form>}
+            >
 
             <Table<OutboundPlan>
               columns={[
@@ -559,7 +557,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                 onClick: () => setSelectedPlanId(record.id),
               })}
             />
-          </section>
+          </ListPageShell>
         ) : null}
 
         <Modal

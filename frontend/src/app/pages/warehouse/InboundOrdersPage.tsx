@@ -4,7 +4,7 @@ import type { FormEvent, MouseEvent } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { approveInboundOrder, cancelInboundOrder, generateInboundOrderFromPlan, listAssignableUsers, listInboundOrders, listPurchaseContracts, submitInboundOrder, type AssignableUser, type CurrentUser, type InboundOrder, type InboundOrderApprovePayload, type InboundOrderGeneratePayload , InboundPlan, InventoryBalance, InventoryLedger, listInboundPlans, listInventoryBalances, listInventoryLedgers} from '../../../api'
 import { warehouseInboundOrderPath, moduleDetailPath } from '../../routes'
-import { FormModal, FormSelect, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
+import { FormModal, FormSelect, ListPageShell, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { inboundOrderStatusOptions, inboundOrderModeOptions , inboundPlanStatusOptions} from '../../../shared/formOptions'
 import { formatDate, formatMoney as _formatMoney, formatQuantity as _formatQuantity, nullableText as _nullableText, todayInputValue, type RoutedDetailPageProps , trimDecimal} from '../appHelpers'
@@ -605,10 +605,11 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
 
       <section className="business-grid inbound-order-grid">
         {!detailId ? (
-          <section className="workspace-panel list-panel product-list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title={t('warehouse.inboundOrder.list.title')} />
-            <form
+          <ListPageShell
+            className="product-list-panel"
+            icon={<Search size={18} />}
+            title={t('warehouse.inboundOrder.list.title')}
+            toolbar={<form
               className="inline-filters single-line-filter-toolbar"
               onSubmit={(event) => {
                 event.preventDefault()
@@ -692,8 +693,8 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
               <Button htmlType="button" type="primary" icon={<Plus size={16} />} onClick={openInboundOrderModal}>
                 {t('warehouse.inboundOrder.list.generateOrApprove')}
               </Button>
-            </form>
-          </div>
+            </form>}
+          >
 
           <Table<InboundOrder>
             columns={[
@@ -768,7 +769,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
               onClick: () => setSelectedOrderId(record.id),
             })}
           />
-          </section>
+          </ListPageShell>
         ) : null}
 
         <Modal
