@@ -13,9 +13,9 @@ import {
 import { showError } from '@/shared/errors'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { useTablePagination } from '@/shared/useTablePagination'
+import { useFormModal } from '@/shared/useFormModal'
 import { t } from '@/app/appI18n'
 import {
-  VerificationDocumentFormState,
   CustomsReceiptFormState,
   VerificationRegisterFormState,
   TaxRefundFormState,
@@ -99,8 +99,7 @@ export function useTaxModule(env: FinanceModuleEnv) {
     string | null
   >(null)
 
-  const [verificationDocumentForm, setVerificationDocumentForm] =
-    useState<VerificationDocumentFormState>(() => initialVerificationDocumentForm())
+  const taxDocumentModal = useFormModal(initialVerificationDocumentForm)
 
   const [customsReceiptForm, setCustomsReceiptForm] = useState<CustomsReceiptFormState>(() =>
     initialCustomsReceiptForm(),
@@ -116,10 +115,6 @@ export function useTaxModule(env: FinanceModuleEnv) {
   const [loadingVerificationDocuments, setLoadingVerificationDocuments] = useState(false)
 
   const [loadingVerificationUsage, setLoadingVerificationUsage] = useState(false)
-
-  const [taxDocumentModalOpen, setTaxDocumentModalOpen] = useState(false)
-
-  const [submittingVerificationDocument, setSubmittingVerificationDocument] = useState(false)
 
   const [submittingCustomsReceipt, setSubmittingCustomsReceipt] = useState(false)
 
@@ -262,24 +257,19 @@ export function useTaxModule(env: FinanceModuleEnv) {
     event: FormEvent<HTMLFormElement>,
   ): Promise<boolean> {
     event.preventDefault()
-    setSubmittingVerificationDocument(true)
     setMessage('')
     setError('')
-    try {
-      const created = await createVerificationDocument(
-        verificationDocumentPayload(verificationDocumentForm),
-      )
-      setMessage(t('finance.tax.message.documentIssued', { code: created.document_no }))
-      setVerificationDocumentForm(initialVerificationDocumentForm())
-      await loadVerificationDocuments(created.id)
-      await loadVerificationUsage()
-      return true
-    } catch (caught) {
-      showError(caught, t('finance.tax.message.documentIssueFailed'))
-      return false
-    } finally {
-      setSubmittingVerificationDocument(false)
-    }
+    return taxDocumentModal.runSubmit(
+      async () => {
+        const created = await createVerificationDocument(
+          verificationDocumentPayload(taxDocumentModal.form),
+        )
+        setMessage(t('finance.tax.message.documentIssued', { code: created.document_no }))
+        await loadVerificationDocuments(created.id)
+        await loadVerificationUsage()
+      },
+      (caught) => showError(caught, t('finance.tax.message.documentIssueFailed')),
+    )
   }
 
   async function submitCustomsReceipt(event: FormEvent<HTMLFormElement>) {
@@ -394,9 +384,10 @@ export function useTaxModule(env: FinanceModuleEnv) {
     setCustomsReceiptErrors,
     setCustomsReceiptForm,
     setSelectedVerificationDocumentId,
-    setTaxDocumentModalOpen,
+    setTaxDocumentModalOpen: (open: boolean) =>
+      open ? taxDocumentModal.openWith() : taxDocumentModal.close(),
     setTaxRefundForm,
-    setVerificationDocumentForm,
+    setVerificationDocumentForm: taxDocumentModal.setForm,
     setVerificationOwnerFilter: (value: string) =>
       setDocumentFilters((current) => ({ ...current, owner: value })),
     setVerificationRegisterForm,
@@ -422,11 +413,11 @@ export function useTaxModule(env: FinanceModuleEnv) {
     submitVerificationRegister,
     submittingCustomsReceipt,
     submittingTaxRefund,
-    submittingVerificationDocument,
+    submittingVerificationDocument: taxDocumentModal.submitting,
     submittingVerificationRegister,
-    taxDocumentModalOpen,
+    taxDocumentModalOpen: taxDocumentModal.open,
     taxRefundForm,
-    verificationDocumentForm,
+    verificationDocumentForm: taxDocumentModal.form,
     verificationDocuments,
     verificationDocumentsPagination: verificationDocumentsPager.pagination,
     verificationDocumentsTotal: verificationDocumentsPager.total,

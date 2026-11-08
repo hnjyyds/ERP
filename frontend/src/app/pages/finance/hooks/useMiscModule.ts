@@ -12,9 +12,9 @@ import {
 import { showError } from '@/shared/errors'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { useTablePagination } from '@/shared/useTablePagination'
+import { useFormModal } from '@/shared/useFormModal'
 import { t } from '@/app/appI18n'
 import {
-  MiscFeeItemFormState,
   MiscFeeAllocationFormState,
   initialMiscFeeItemForm,
   initialMiscFeeAllocationForm,
@@ -96,9 +96,7 @@ export function useMiscModule(env: FinanceModuleEnv) {
 
   const [miscFeeItemCodeError, setMiscFeeItemCodeError] = useState('')
 
-  const [miscFeeItemForm, setMiscFeeItemForm] = useState<MiscFeeItemFormState>(() =>
-    initialMiscFeeItemForm(),
-  )
+  const miscItemModal = useFormModal(initialMiscFeeItemForm)
 
   const [miscFeeAllocationForm, setMiscFeeAllocationForm] = useState<MiscFeeAllocationFormState>(
     () => initialMiscFeeAllocationForm(),
@@ -109,10 +107,6 @@ export function useMiscModule(env: FinanceModuleEnv) {
   const [loadingMiscFeeAllocations, setLoadingMiscFeeAllocations] = useState(false)
 
   const [loadingMiscFeeSummary, setLoadingMiscFeeSummary] = useState(false)
-
-  const [miscItemModalOpen, setMiscItemModalOpen] = useState(false)
-
-  const [submittingMiscFeeItem, setSubmittingMiscFeeItem] = useState(false)
 
   const [submittingMiscFeeAllocation, setSubmittingMiscFeeAllocation] = useState(false)
 
@@ -267,24 +261,21 @@ export function useMiscModule(env: FinanceModuleEnv) {
 
   async function submitMiscFeeItem(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!miscFeeItemForm.code.trim()) {
+    if (!miscItemModal.form.code.trim()) {
       setMiscFeeItemCodeError(t('finance.misc.validation.codeRequired'))
       return
     }
     setMiscFeeItemCodeError('')
-    setSubmittingMiscFeeItem(true)
     setMessage('')
     setError('')
-    try {
-      const created = await createMiscFeeItem(miscFeeItemPayload(miscFeeItemForm))
-      setMessage(t('finance.misc.message.itemCreated', { name: created.name }))
-      setMiscFeeItemForm(initialMiscFeeItemForm())
-      await loadMiscFeeItems(created.id)
-    } catch (caught) {
-      showError(caught, t('finance.misc.message.itemCreateFailed'))
-    } finally {
-      setSubmittingMiscFeeItem(false)
-    }
+    await miscItemModal.runSubmit(
+      async () => {
+        const created = await createMiscFeeItem(miscFeeItemPayload(miscItemModal.form))
+        setMessage(t('finance.misc.message.itemCreated', { name: created.name }))
+        await loadMiscFeeItems(created.id)
+      },
+      (caught) => showError(caught, t('finance.misc.message.itemCreateFailed')),
+    )
   }
 
   async function submitMiscFeeAllocation(event: FormEvent<HTMLFormElement>) {
@@ -332,13 +323,13 @@ export function useMiscModule(env: FinanceModuleEnv) {
     miscFeeAllocationsTotal: miscFeeAllocationsPager.total,
     miscFeeItemCategoryFilter: miscItemFilters.category,
     miscFeeItemCodeError,
-    miscFeeItemForm,
+    miscFeeItemForm: miscItemModal.form,
     miscFeeItemSearch: miscItemFilters.q,
     miscFeeItemStatusFilter: miscItemFilters.status,
     miscFeeItems,
     miscFeeItemsPagination: miscFeeItemsPager.pagination,
     miscFeeItemsTotal: miscFeeItemsPager.total,
-    miscItemModalOpen,
+    miscItemModalOpen: miscItemModal.open,
     selectedMiscFeeItem,
     setMiscFeeAllocationCategoryFilter: (value: string) =>
       setMiscAllocationFilters((current) => ({ ...current, category: value })),
@@ -352,7 +343,7 @@ export function useMiscModule(env: FinanceModuleEnv) {
     setMiscFeeItemCategoryFilter: (value: string) =>
       setMiscItemFilters((current) => ({ ...current, category: value })),
     setMiscFeeItemCodeError,
-    setMiscFeeItemForm,
+    setMiscFeeItemForm: miscItemModal.setForm,
     setMiscFeeItemSearch: (value: string) =>
       setMiscItemFilters((current) => ({ ...current, q: value })),
     setMiscFeeItemStatusFilter: (value: string) =>
@@ -361,12 +352,13 @@ export function useMiscModule(env: FinanceModuleEnv) {
       setMiscAllocationFilters((current) => ({ ...current, category: value })),
     setMiscFeeSummaryShipmentFilter: (value: string) =>
       setMiscAllocationFilters((current) => ({ ...current, shipment: value })),
-    setMiscItemModalOpen,
+    setMiscItemModalOpen: (open: boolean) =>
+      open ? miscItemModal.openWith() : miscItemModal.close(),
     setSelectedMiscFeeItemId,
     submitMiscFeeAllocation,
     submitMiscFeeItem,
     submittingMiscFeeAllocation,
-    submittingMiscFeeItem,
+    submittingMiscFeeItem: miscItemModal.submitting,
     totalMiscFeeAmount,
   }
 }
