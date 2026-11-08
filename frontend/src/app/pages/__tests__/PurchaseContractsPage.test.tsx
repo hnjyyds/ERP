@@ -15,7 +15,10 @@ describe('PurchaseContractsPage', () => {
   const onNavigate = vi.fn()
   const currentUser = { id: 'u-admin', username: 'admin', display_name: '管理员', department_name: '管理部', avatar_type: 'preset' as const, avatar_value: 'blue', roles: ['admin'], permissions: ['system:super_admin'] }
 
-  beforeEach(() => { vi.clearAllMocks() })
+  beforeEach(() => {
+    vi.clearAllMocks()
+    window.history.replaceState({}, '', '/')
+  })
 
   it('renders without crashing', () => {
     const { container } = render(<PurchaseContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
@@ -156,7 +159,7 @@ describe('PurchaseContractsPage', () => {
   }
 
   function mockContractApis(contract: api.PurchaseContract) {
-    vi.spyOn(api, 'listPurchaseContracts').mockResolvedValue({
+    const listSpy = vi.spyOn(api, 'listPurchaseContracts').mockResolvedValue({
       items: [contract],
       total: 1,
       summary: {
@@ -178,6 +181,7 @@ describe('PurchaseContractsPage', () => {
       summary: { active_count: 0, contact_count: 0, credit_profile_count: 0 },
     })
     vi.spyOn(api, 'listAssignableUsers').mockResolvedValue({ users: [] })
+    return listSpy
   }
 
   it('blocks cancelling a draft contract without a reason and never calls the API', async () => {
@@ -287,5 +291,115 @@ describe('PurchaseContractsPage', () => {
     })
     expect(metricValue('待审批')).toBe('3')
     expect(metricValue('已审批')).toBe('2')
+  })
+
+  it('提交筛选时写入 URL 并回到第 1 页请求', async () => {
+    const user = userEvent.setup()
+    window.history.replaceState({}, '', '/?page=3')
+    const listSpy = mockContractApis(makeContract())
+
+    render(
+      <PurchaseContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+    await waitFor(() => {
+      expect(listSpy).toHaveBeenCalledWith(expect.objectContaining({ limit: 50, offset: 100 }))
+    })
+
+    await user.type(screen.getByLabelText('合同搜索'), '铝箔')
+    await user.click(screen.getByRole('button', { name: '查询' }))
+
+    await waitFor(() => {
+      expect(listSpy).toHaveBeenLastCalledWith(
+        expect.objectContaining({ q: '铝箔', limit: 50, offset: 0 }),
+      )
+    })
+    const params = new URLSearchParams(window.location.search)
+    expect(params.get('q')).toBe('铝箔')
+    expect(params.get('page')).toBeNull()
+  })
+
+  it('刷新或直达时从 URL 恢复筛选并按该条件请求', async () => {
+    window.history.replaceState(
+      {},
+      '',
+      '/?q=PC-1&status=submitted&supplier=supplier-pack-a&source=stock_purchase&page=2',
+    )
+    const listSpy = mockContractApis(makeContract())
+
+    render(
+      <PurchaseContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    await waitFor(() => {
+      expect(listSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          q: 'PC-1',
+          approval_status: 'submitted',
+          supplier_id: 'supplier-pack-a',
+          source_type: 'stock_purchase',
+          limit: 50,
+          offset: 50,
+        }),
+      )
+    })
+    expect(screen.getByLabelText('合同搜索')).toHaveValue('PC-1')
+    expect(screen.getByLabelText('供应商标识')).toHaveValue('supplier-pack-a')
+  })
+
+  it('重新打开作废弹窗时清空上次填写的原因和错误', async () => {
+    const user = userEvent.setup()
+    const contract = makeContract()
+    mockContractApis(contract)
+
+    render(
+      <PurchaseContractsPage currentUser={currentUser} detailId={contract.id} onNavigate={onNavigate} />,
+    )
+    await user.click(await screen.findByRole('button', { name: '作废合同' }))
+    let dialog = await screen.findByRole('dialog')
+    await user.click(within(dialog).getByRole('button', { name: '确认作废' }))
+    expect(await within(dialog).findByText('请填写作废原因')).toBeInTheDocument()
+    await user.type(within(dialog).getByLabelText('作废原因'), '供应商停产')
+    await user.click(within(dialog).getByRole('button', { name: /取\s*消/ }))
+
+    await user.click(screen.getByRole('button', { name: '作废合同' }))
+    dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByLabelText('作废原因')).toHaveValue('')
+    expect(within(dialog).queryByText('请填写作废原因')).not.toBeInTheDocument()
+  })
+
+  it('新增采购合同提交失败后保留弹窗和已填内容', async () => {
+    const user = userEvent.setup()
+    mockContractApis(makeContract())
+    const createSpy = vi
+      .spyOn(api, 'createPurchaseContract')
+      .mockRejectedValue(new Error('network down'))
+
+    render(
+      <PurchaseContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+    await user.click(await screen.findByRole('button', { name: '新增采购合同' }))
+    const dialog = await screen.findByRole('dialog')
+    await user.type(within(dialog).getByLabelText('工厂名称'), '测试工厂')
+    await user.click(within(dialog).getByRole('button', { name: '新增采购合同' }))
+
+    await waitFor(() => {
+      expect(createSpy).toHaveBeenCalledTimes(1)
+    })
+    expect(within(dialog).getByLabelText('工厂名称')).toHaveValue('测试工厂')
+  })
+
+  it('草稿状态下编辑和作废可用，未选审批人不能提交且审批按钮禁用', async () => {
+    const contract = makeContract()
+    mockContractApis(contract)
+
+    render(
+      <PurchaseContractsPage currentUser={currentUser} detailId={contract.id} onNavigate={onNavigate} />,
+    )
+
+    expect(await screen.findByRole('button', { name: '编辑合同' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: '提交采购合同' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: '审批采购合同' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: '作废合同' })).toBeEnabled()
+    expect(screen.queryByRole('button', { name: '作废重开' })).not.toBeInTheDocument()
   })
 })
