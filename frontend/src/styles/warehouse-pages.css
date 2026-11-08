@@ -1,0 +1,34 @@
+/* warehouse-pages — 入库 / 出库计划与单据页 — 由原分片按业务域拆出，声明内容未改动。 */
+
+.outbound-order-grid {
+  gap: 14px;
+}
+
+
+
+.inbound-plan-page .summary-strip {
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
+}
+
+
+
+.inbound-order-page .summary-strip {
+  grid-template-columns: repeat(6, minmax(120px, 1fr));
+}
+
+
+
+.outbound-plan-page .summary-strip {
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
+}
+
+
+
+.outbound-order-page .summary-strip {
+  grid-template-columns: repeat(6, minmax(120px, 1fr));
+}
+
+.business-grid.outbound-order-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}

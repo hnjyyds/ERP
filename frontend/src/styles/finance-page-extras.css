@@ -1,0 +1,5 @@
+/* finance-page-extras — 财务页补充样式 — 由原分片按业务域拆出，声明内容未改动。 */
+
+.finance-page .summary-strip {
+  grid-template-columns: repeat(6, minmax(120px, 1fr));
+}

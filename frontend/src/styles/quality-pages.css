@@ -1,0 +1,5 @@
+/* quality-pages — 质量检验页 — 由原分片按业务域拆出，声明内容未改动。 */
+
+.quality-inspection-page .summary-strip {
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
+}

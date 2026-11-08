@@ -10,6 +10,13 @@
 @import './styles/base-shell.css';
 @import './styles/finance-shell.css';
 @import './styles/masterdata-pages.css';
+@import './styles/workflow-pages.css';
+@import './styles/warehouse-pages.css';
+@import './styles/sample-pages.css';
+@import './styles/purchase-pages.css';
+@import './styles/quality-pages.css';
+@import './styles/sales-pages.css';
+@import './styles/finance-page-extras.css';
 @import './styles/dashboard.css';
 @import './styles/dashboard-todo.css';
 @import './styles/organization.css';

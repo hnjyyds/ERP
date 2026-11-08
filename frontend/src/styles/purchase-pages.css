@@ -1,0 +1,23 @@
+/* purchase-pages — 采购询价 / 合同 / 发票通知 / 跟单页 — 由原分片按业务域拆出，声明内容未改动。 */
+
+.purchase-inquiry-page .summary-strip {
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+}
+
+
+
+.purchase-contract-page .summary-strip {
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
+}
+
+
+
+.purchase-invoice-page .summary-strip {
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
+}
+
+
+
+.followup-page .summary-strip {
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
+}

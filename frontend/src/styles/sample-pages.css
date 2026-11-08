@@ -1,0 +1,169 @@
+/* sample-pages — 打样申请 / 记录 / 出货页 — 由原分片按业务域拆出，声明内容未改动。 */
+
+.sample-request-page .summary-strip {
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+}
+
+
+
+.sample-record-page .summary-strip {
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+}
+
+
+
+.sample-delivery-page .summary-strip {
+  grid-template-columns: repeat(5, minmax(112px, 1fr));
+}
+
+.sample-delivery-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+
+
+
+.sample-request-page .inline-filters,
+.sample-record-page .inline-filters,
+.sample-delivery-page .inline-filters {
+  flex: 1 1 620px;
+}
+
+
+
+.sample-request-page .toolbar-heading,
+.sample-record-page .toolbar-heading,
+.sample-delivery-page .toolbar-heading {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+}
+
+
+
+.sample-request-page .toolbar-heading .panel-title,
+.sample-record-page .toolbar-heading .panel-title,
+.sample-delivery-page .toolbar-heading .panel-title {
+  margin-bottom: 0;
+}
+
+
+
+.sample-request-page .workspace-panel,
+.sample-record-page .workspace-panel,
+.sample-delivery-page .workspace-panel {
+  padding: 16px 18px;
+  min-height: 0;
+}
+
+
+
+.sample-request-page .list-panel > .panel-heading.toolbar-heading,
+.sample-record-page .list-panel > .panel-heading.toolbar-heading,
+.sample-delivery-page .list-panel > .panel-heading.toolbar-heading {
+  gap: 14px;
+}
+
+
+
+.sample-request-page .panel-heading,
+.sample-record-page .panel-heading,
+.sample-delivery-page .panel-heading {
+  border-bottom: 0;
+  padding-left: 0;
+  padding-right: 0;
+  min-height: 0;
+}
+
+
+
+.sample-request-page .list-panel .inline-filters,
+.sample-record-page .list-panel .inline-filters,
+.sample-delivery-page .list-panel .inline-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 12px;
+  padding-top: 2px;
+}
+
+
+
+.sample-request-page .inline-filters label,
+.sample-record-page .inline-filters label,
+.sample-delivery-page .inline-filters label {
+  min-width: 0;
+}
+
+
+
+.sample-request-page .inline-filters .inline-filter-search,
+.sample-record-page .inline-filters .inline-filter-search,
+.sample-delivery-page .inline-filters .inline-filter-search {
+  min-width: 0;
+}
+
+
+
+.sample-request-page .inline-filters .inline-filter-compact,
+.sample-record-page .inline-filters .inline-filter-compact,
+.sample-delivery-page .inline-filters .inline-filter-compact {
+  flex: 0 0 160px;
+}
+
+
+
+.sample-request-page .inline-filters .ant-btn,
+.sample-record-page .inline-filters .ant-btn,
+.sample-delivery-page .inline-filters .ant-btn {
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding-inline: 16px;
+}
+
+
+
+.sample-request-page .list-panel .inline-filters .ant-btn,
+.sample-record-page .list-panel .inline-filters .ant-btn,
+.sample-delivery-page .list-panel .inline-filters .ant-btn {
+  width: auto;
+}
+
+
+
+.sample-request-page .list-panel .panel-heading + .ant-table-wrapper,
+.sample-record-page .list-panel .panel-heading + .ant-table-wrapper,
+.sample-delivery-page .list-panel .panel-heading + .ant-table-wrapper {
+  margin-top: 12px;
+}
+
+
+
+.sample-request-page .list-panel .ant-table-container,
+.sample-record-page .list-panel .ant-table-container,
+.sample-delivery-page .list-panel .ant-table-container {
+  max-height: min(38vh, 420px);
+}
+
+
+
+.sample-request-page .list-panel .ant-table-placeholder,
+.sample-request-page .list-panel .ant-table-placeholder > td,
+.sample-request-page .list-panel .ant-table-placeholder:hover > td,
+.sample-record-page .list-panel .ant-table-placeholder,
+.sample-record-page .list-panel .ant-table-placeholder > td,
+.sample-record-page .list-panel .ant-table-placeholder:hover > td,
+.sample-delivery-page .list-panel .ant-table-placeholder,
+.sample-delivery-page .list-panel .ant-table-placeholder > td,
+.sample-delivery-page .list-panel .ant-table-placeholder:hover > td {
+  background: var(--erp-surface) !important;
+}
+
+
+
+.sample-request-page .list-panel .ant-table-placeholder > td,
+.sample-record-page .list-panel .ant-table-placeholder > td,
+.sample-delivery-page .list-panel .ant-table-placeholder > td {
+  height: 200px;
+}

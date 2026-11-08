@@ -175,196 +175,15 @@
   padding-left: 0;
   padding-right: 0;
   min-height: 0;
-}
-
-.sample-request-page .summary-strip {
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
-}
-
-.purchase-inquiry-page,
-.purchase-contract-page,
-.purchase-invoice-page,
-.followup-page,
-.quality-inspection-page,
-.inbound-plan-page,
-.inbound-order-page,
-.outbound-plan-page,
-.outbound-order-page {
-  display: grid;
-  gap: 14px;
-  align-content: start;
-  min-width: 0;
-}
-
-.purchase-inquiry-page .workspace-alert,
-.purchase-contract-page .workspace-alert,
-.purchase-invoice-page .workspace-alert,
-.followup-page .workspace-alert,
-.quality-inspection-page .workspace-alert,
-.inbound-plan-page .workspace-alert,
-.inbound-order-page .workspace-alert,
-.outbound-plan-page .workspace-alert,
-.outbound-order-page .workspace-alert {
-  margin-bottom: 0;
-}
-
-.purchase-inquiry-grid,
+}.purchase-inquiry-grid,
 .purchase-contract-grid,
 .purchase-invoice-grid,
 .followup-grid,
 .quality-inspection-grid,
 .inbound-plan-grid,
 .inbound-order-grid,
-.outbound-plan-grid,
-.outbound-order-grid {
+.outbound-plan-grid {
   gap: 14px;
-}
-
-.purchase-inquiry-page .workspace-panel,
-.purchase-contract-page .workspace-panel,
-.purchase-invoice-page .workspace-panel,
-.followup-page .workspace-panel,
-.quality-inspection-page .workspace-panel,
-.inbound-plan-page .workspace-panel,
-.inbound-order-page .workspace-panel,
-.outbound-plan-page .workspace-panel,
-.outbound-order-page .workspace-panel {
-  min-height: 0;
-  min-width: 0;
-  padding: 16px 18px;
-}
-
-.purchase-inquiry-page .panel-heading,
-.purchase-contract-page .panel-heading,
-.purchase-invoice-page .panel-heading,
-.followup-page .panel-heading,
-.quality-inspection-page .panel-heading,
-.inbound-plan-page .panel-heading,
-.inbound-order-page .panel-heading,
-.outbound-plan-page .panel-heading,
-.outbound-order-page .panel-heading {
-  border-bottom: 0;
-  padding-left: 0;
-  padding-right: 0;
-  min-height: 0;
-}
-
-.purchase-inquiry-page .list-panel > .panel-heading.toolbar-heading,
-.purchase-contract-page .list-panel > .panel-heading.toolbar-heading,
-.purchase-invoice-page .list-panel > .panel-heading.toolbar-heading,
-.followup-page .list-panel > .panel-heading.toolbar-heading,
-.quality-inspection-page .list-panel > .panel-heading.toolbar-heading,
-.inbound-plan-page .list-panel > .panel-heading.toolbar-heading,
-.inbound-order-page .list-panel > .panel-heading.toolbar-heading,
-.outbound-plan-page .list-panel > .panel-heading.toolbar-heading,
-.outbound-order-page .list-panel > .panel-heading.toolbar-heading {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-  align-items: stretch;
-}
-
-.purchase-inquiry-page .inline-filters,
-.purchase-contract-page .inline-filters,
-.purchase-invoice-page .inline-filters,
-.followup-page .inline-filters,
-.quality-inspection-page .inline-filters,
-.inbound-plan-page .inline-filters,
-.inbound-order-page .inline-filters,
-.outbound-plan-page .inline-filters,
-.outbound-order-page .inline-filters {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: flex-start;
-  gap: 12px;
-  width: 100%;
-}
-
-.purchase-inquiry-page .inline-filters label:first-child,
-.purchase-contract-page .inline-filters label:first-child,
-.purchase-invoice-page .inline-filters label:first-child,
-.followup-page .inline-filters label:first-child,
-.quality-inspection-page .inline-filters label:first-child,
-.inbound-plan-page .inline-filters label:first-child,
-.inbound-order-page .inline-filters label:first-child,
-.outbound-plan-page .inline-filters label:first-child,
-.outbound-order-page .inline-filters label:first-child {
-  flex: 1 1 280px;
-  min-width: 0;
-}
-
-.purchase-inquiry-page .inline-filters label:not(:first-child),
-.purchase-contract-page .inline-filters label:not(:first-child),
-.purchase-invoice-page .inline-filters label:not(:first-child),
-.followup-page .inline-filters label:not(:first-child),
-.quality-inspection-page .inline-filters label:not(:first-child),
-.inbound-plan-page .inline-filters label:not(:first-child),
-.inbound-order-page .inline-filters label:not(:first-child),
-.outbound-plan-page .inline-filters label:not(:first-child),
-.outbound-order-page .inline-filters label:not(:first-child) {
-  flex: 0 0 160px;
-  min-width: 0;
-}
-
-.purchase-inquiry-page .inline-filters > select,
-.purchase-contract-page .inline-filters > select,
-.purchase-invoice-page .inline-filters > select,
-.followup-page .inline-filters > select,
-.quality-inspection-page .inline-filters > select,
-.inbound-plan-page .inline-filters > select,
-.inbound-order-page .inline-filters > select,
-.outbound-plan-page .inline-filters > select,
-.outbound-order-page .inline-filters > select,
-.purchase-inquiry-page .inline-filters > .ant-select,
-.purchase-contract-page .inline-filters > .ant-select,
-.purchase-invoice-page .inline-filters > .ant-select,
-.followup-page .inline-filters > .ant-select,
-.quality-inspection-page .inline-filters > .ant-select,
-.inbound-plan-page .inline-filters > .ant-select,
-.inbound-order-page .inline-filters > .ant-select,
-.outbound-plan-page .inline-filters > .ant-select,
-.outbound-order-page .inline-filters > .ant-select {
-  flex: 0 0 160px;
-  min-width: 0;
-}
-
-.purchase-inquiry-page .inline-filters .ant-btn,
-.purchase-contract-page .inline-filters .ant-btn,
-.purchase-invoice-page .inline-filters .ant-btn,
-.followup-page .inline-filters .ant-btn,
-.quality-inspection-page .inline-filters .ant-btn,
-.inbound-plan-page .inline-filters .ant-btn,
-.inbound-order-page .inline-filters .ant-btn,
-.outbound-plan-page .inline-filters .ant-btn,
-.outbound-order-page .inline-filters .ant-btn {
-  flex: 0 0 auto;
-  min-height: 38px;
-  padding-inline: 16px;
-}
-
-.purchase-inquiry-page .list-panel .panel-heading + .ant-table-wrapper,
-.purchase-contract-page .list-panel .panel-heading + .ant-table-wrapper,
-.purchase-invoice-page .list-panel .panel-heading + .ant-table-wrapper,
-.followup-page .list-panel .panel-heading + .ant-table-wrapper,
-.quality-inspection-page .list-panel .panel-heading + .ant-table-wrapper,
-.inbound-plan-page .list-panel .panel-heading + .ant-table-wrapper,
-.inbound-order-page .list-panel .panel-heading + .ant-table-wrapper,
-.outbound-plan-page .list-panel .panel-heading + .ant-table-wrapper,
-.outbound-order-page .list-panel .panel-heading + .ant-table-wrapper {
-  margin-top: 12px;
-}
-
-.purchase-inquiry-page .list-panel .ant-table-container,
-.purchase-contract-page .list-panel .ant-table-container,
-.purchase-invoice-page .list-panel .ant-table-container,
-.followup-page .list-panel .ant-table-container,
-.quality-inspection-page .list-panel .ant-table-container,
-.inbound-plan-page .list-panel .ant-table-container,
-.inbound-order-page .list-panel .ant-table-container,
-.outbound-plan-page .list-panel .ant-table-container,
-.outbound-order-page .list-panel .ant-table-container {
-  max-height: min(38vh, 420px);
 }
 
 .workflow-modal-content {
@@ -389,89 +208,23 @@
   padding-inline: 18px;
 }
 
-.sample-record-page .summary-strip {
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
-}
-
-.sample-delivery-page .summary-strip {
-  grid-template-columns: repeat(5, minmax(112px, 1fr));
-}
-
-.export-quotation-page .summary-strip {
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
-}
-
-.export-contract-page .summary-strip {
-  grid-template-columns: repeat(5, minmax(120px, 1fr));
-}
-
-.shipment-page .summary-strip {
-  grid-template-columns: repeat(5, minmax(120px, 1fr));
-}
-
-.purchase-inquiry-page .summary-strip {
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
-}
-
-.purchase-contract-page .summary-strip {
-  grid-template-columns: repeat(5, minmax(120px, 1fr));
-}
-
-.purchase-invoice-page .summary-strip {
-  grid-template-columns: repeat(5, minmax(120px, 1fr));
-}
-
-.followup-page .summary-strip {
-  grid-template-columns: repeat(5, minmax(120px, 1fr));
-}
-
-.quality-inspection-page .summary-strip {
-  grid-template-columns: repeat(5, minmax(120px, 1fr));
-}
-
-.inbound-plan-page .summary-strip {
-  grid-template-columns: repeat(5, minmax(120px, 1fr));
-}
-
-.inbound-order-page .summary-strip {
-  grid-template-columns: repeat(6, minmax(120px, 1fr));
-}
-
-.outbound-plan-page .summary-strip {
-  grid-template-columns: repeat(5, minmax(120px, 1fr));
-}
-
-.outbound-order-page .summary-strip {
-  grid-template-columns: repeat(6, minmax(120px, 1fr));
-}
-
-.finance-page .summary-strip {
-  grid-template-columns: repeat(6, minmax(120px, 1fr));
-}
-
 .business-grid {
   display: grid;
   grid-template-columns: minmax(440px, 1.08fr) minmax(360px, 0.72fr);
   gap: 16px;
   align-items: start;
-}
-
-.business-grid.purchase-inquiry-grid,
+}.business-grid.purchase-inquiry-grid,
 .business-grid.purchase-contract-grid,
 .business-grid.purchase-invoice-grid,
 .business-grid.followup-grid,
 .business-grid.quality-inspection-grid,
 .business-grid.inbound-plan-grid,
 .business-grid.inbound-order-grid,
-.business-grid.outbound-plan-grid,
-.business-grid.outbound-order-grid {
+.business-grid.outbound-plan-grid {
   grid-template-columns: minmax(0, 1fr);
   gap: 14px;
-}
-
-.sample-request-grid,
-.sample-record-grid,
-.sample-delivery-grid {
+}.sample-request-grid,
+.sample-record-grid {
   grid-template-columns: minmax(0, 1fr);
   gap: 14px;
 }
@@ -559,121 +312,6 @@
 
 .inline-filters .inline-filter-search {
   min-width: 260px;
-}
-
-.sample-request-page .inline-filters,
-.sample-record-page .inline-filters,
-.sample-delivery-page .inline-filters {
-  flex: 1 1 620px;
-}
-
-.sample-request-page .toolbar-heading,
-.sample-record-page .toolbar-heading,
-.sample-delivery-page .toolbar-heading {
-  display: grid;
-  grid-template-columns: 1fr;
-  align-items: stretch;
-}
-
-.sample-request-page .toolbar-heading .panel-title,
-.sample-record-page .toolbar-heading .panel-title,
-.sample-delivery-page .toolbar-heading .panel-title {
-  margin-bottom: 0;
-}
-
-.sample-request-page .workspace-panel,
-.sample-record-page .workspace-panel,
-.sample-delivery-page .workspace-panel {
-  padding: 16px 18px;
-  min-height: 0;
-}
-
-.sample-request-page .list-panel > .panel-heading.toolbar-heading,
-.sample-record-page .list-panel > .panel-heading.toolbar-heading,
-.sample-delivery-page .list-panel > .panel-heading.toolbar-heading {
-  gap: 14px;
-}
-
-.sample-request-page .panel-heading,
-.sample-record-page .panel-heading,
-.sample-delivery-page .panel-heading {
-  border-bottom: 0;
-  padding-left: 0;
-  padding-right: 0;
-  min-height: 0;
-}
-
-.sample-request-page .list-panel .inline-filters,
-.sample-record-page .list-panel .inline-filters,
-.sample-delivery-page .list-panel .inline-filters {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: flex-start;
-  gap: 12px;
-  padding-top: 2px;
-}
-
-.sample-request-page .inline-filters label,
-.sample-record-page .inline-filters label,
-.sample-delivery-page .inline-filters label {
-  min-width: 0;
-}
-
-.sample-request-page .inline-filters .inline-filter-search,
-.sample-record-page .inline-filters .inline-filter-search,
-.sample-delivery-page .inline-filters .inline-filter-search {
-  min-width: 0;
-}
-
-.sample-request-page .inline-filters .inline-filter-compact,
-.sample-record-page .inline-filters .inline-filter-compact,
-.sample-delivery-page .inline-filters .inline-filter-compact {
-  flex: 0 0 160px;
-}
-
-.sample-request-page .inline-filters .ant-btn,
-.sample-record-page .inline-filters .ant-btn,
-.sample-delivery-page .inline-filters .ant-btn {
-  flex: 0 0 auto;
-  min-height: 38px;
-  padding-inline: 16px;
-}
-
-.sample-request-page .list-panel .inline-filters .ant-btn,
-.sample-record-page .list-panel .inline-filters .ant-btn,
-.sample-delivery-page .list-panel .inline-filters .ant-btn {
-  width: auto;
-}
-
-.sample-request-page .list-panel .panel-heading + .ant-table-wrapper,
-.sample-record-page .list-panel .panel-heading + .ant-table-wrapper,
-.sample-delivery-page .list-panel .panel-heading + .ant-table-wrapper {
-  margin-top: 12px;
-}
-
-.sample-request-page .list-panel .ant-table-container,
-.sample-record-page .list-panel .ant-table-container,
-.sample-delivery-page .list-panel .ant-table-container {
-  max-height: min(38vh, 420px);
-}
-
-.sample-request-page .list-panel .ant-table-placeholder,
-.sample-request-page .list-panel .ant-table-placeholder > td,
-.sample-request-page .list-panel .ant-table-placeholder:hover > td,
-.sample-record-page .list-panel .ant-table-placeholder,
-.sample-record-page .list-panel .ant-table-placeholder > td,
-.sample-record-page .list-panel .ant-table-placeholder:hover > td,
-.sample-delivery-page .list-panel .ant-table-placeholder,
-.sample-delivery-page .list-panel .ant-table-placeholder > td,
-.sample-delivery-page .list-panel .ant-table-placeholder:hover > td {
-  background: var(--erp-surface) !important;
-}
-
-.sample-request-page .list-panel .ant-table-placeholder > td,
-.sample-record-page .list-panel .ant-table-placeholder > td,
-.sample-delivery-page .list-panel .ant-table-placeholder > td {
-  height: 200px;
 }
 
 .partner-inline-filters {
@@ -996,4 +634,3 @@
   line-height: 1.5;
   white-space: pre-wrap;
 }
-

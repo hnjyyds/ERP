@@ -1,0 +1,17 @@
+/* sales-pages — 出口报价 / 合同 / 出货页 — 由原分片按业务域拆出，声明内容未改动。 */
+
+.export-quotation-page .summary-strip {
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+}
+
+
+
+.export-contract-page .summary-strip {
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
+}
+
+
+
+.shipment-page .summary-strip {
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
+}

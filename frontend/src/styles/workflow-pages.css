@@ -1,0 +1,197 @@
+/* workflow-pages — 采购 / 质量 / 仓库等流程页共享外壳 — 由原分片按业务域拆出，声明内容未改动。 */
+
+.purchase-inquiry-page,
+.purchase-contract-page,
+.purchase-invoice-page,
+.followup-page,
+.quality-inspection-page,
+.inbound-plan-page,
+.inbound-order-page,
+.outbound-plan-page,
+.outbound-order-page {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  min-width: 0;
+}
+
+
+
+.purchase-inquiry-page .workspace-alert,
+.purchase-contract-page .workspace-alert,
+.purchase-invoice-page .workspace-alert,
+.followup-page .workspace-alert,
+.quality-inspection-page .workspace-alert,
+.inbound-plan-page .workspace-alert,
+.inbound-order-page .workspace-alert,
+.outbound-plan-page .workspace-alert,
+.outbound-order-page .workspace-alert {
+  margin-bottom: 0;
+}
+
+
+
+.purchase-inquiry-page .workspace-panel,
+.purchase-contract-page .workspace-panel,
+.purchase-invoice-page .workspace-panel,
+.followup-page .workspace-panel,
+.quality-inspection-page .workspace-panel,
+.inbound-plan-page .workspace-panel,
+.inbound-order-page .workspace-panel,
+.outbound-plan-page .workspace-panel,
+.outbound-order-page .workspace-panel {
+  min-height: 0;
+  min-width: 0;
+  padding: 16px 18px;
+}
+
+
+
+.purchase-inquiry-page .panel-heading,
+.purchase-contract-page .panel-heading,
+.purchase-invoice-page .panel-heading,
+.followup-page .panel-heading,
+.quality-inspection-page .panel-heading,
+.inbound-plan-page .panel-heading,
+.inbound-order-page .panel-heading,
+.outbound-plan-page .panel-heading,
+.outbound-order-page .panel-heading {
+  border-bottom: 0;
+  padding-left: 0;
+  padding-right: 0;
+  min-height: 0;
+}
+
+
+
+.purchase-inquiry-page .list-panel > .panel-heading.toolbar-heading,
+.purchase-contract-page .list-panel > .panel-heading.toolbar-heading,
+.purchase-invoice-page .list-panel > .panel-heading.toolbar-heading,
+.followup-page .list-panel > .panel-heading.toolbar-heading,
+.quality-inspection-page .list-panel > .panel-heading.toolbar-heading,
+.inbound-plan-page .list-panel > .panel-heading.toolbar-heading,
+.inbound-order-page .list-panel > .panel-heading.toolbar-heading,
+.outbound-plan-page .list-panel > .panel-heading.toolbar-heading,
+.outbound-order-page .list-panel > .panel-heading.toolbar-heading {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  align-items: stretch;
+}
+
+
+
+.purchase-inquiry-page .inline-filters,
+.purchase-contract-page .inline-filters,
+.purchase-invoice-page .inline-filters,
+.followup-page .inline-filters,
+.quality-inspection-page .inline-filters,
+.inbound-plan-page .inline-filters,
+.inbound-order-page .inline-filters,
+.outbound-plan-page .inline-filters,
+.outbound-order-page .inline-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+
+
+.purchase-inquiry-page .inline-filters label:first-child,
+.purchase-contract-page .inline-filters label:first-child,
+.purchase-invoice-page .inline-filters label:first-child,
+.followup-page .inline-filters label:first-child,
+.quality-inspection-page .inline-filters label:first-child,
+.inbound-plan-page .inline-filters label:first-child,
+.inbound-order-page .inline-filters label:first-child,
+.outbound-plan-page .inline-filters label:first-child,
+.outbound-order-page .inline-filters label:first-child {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+
+
+.purchase-inquiry-page .inline-filters label:not(:first-child),
+.purchase-contract-page .inline-filters label:not(:first-child),
+.purchase-invoice-page .inline-filters label:not(:first-child),
+.followup-page .inline-filters label:not(:first-child),
+.quality-inspection-page .inline-filters label:not(:first-child),
+.inbound-plan-page .inline-filters label:not(:first-child),
+.inbound-order-page .inline-filters label:not(:first-child),
+.outbound-plan-page .inline-filters label:not(:first-child),
+.outbound-order-page .inline-filters label:not(:first-child) {
+  flex: 0 0 160px;
+  min-width: 0;
+}
+
+
+
+.purchase-inquiry-page .inline-filters > select,
+.purchase-contract-page .inline-filters > select,
+.purchase-invoice-page .inline-filters > select,
+.followup-page .inline-filters > select,
+.quality-inspection-page .inline-filters > select,
+.inbound-plan-page .inline-filters > select,
+.inbound-order-page .inline-filters > select,
+.outbound-plan-page .inline-filters > select,
+.outbound-order-page .inline-filters > select,
+.purchase-inquiry-page .inline-filters > .ant-select,
+.purchase-contract-page .inline-filters > .ant-select,
+.purchase-invoice-page .inline-filters > .ant-select,
+.followup-page .inline-filters > .ant-select,
+.quality-inspection-page .inline-filters > .ant-select,
+.inbound-plan-page .inline-filters > .ant-select,
+.inbound-order-page .inline-filters > .ant-select,
+.outbound-plan-page .inline-filters > .ant-select,
+.outbound-order-page .inline-filters > .ant-select {
+  flex: 0 0 160px;
+  min-width: 0;
+}
+
+
+
+.purchase-inquiry-page .inline-filters .ant-btn,
+.purchase-contract-page .inline-filters .ant-btn,
+.purchase-invoice-page .inline-filters .ant-btn,
+.followup-page .inline-filters .ant-btn,
+.quality-inspection-page .inline-filters .ant-btn,
+.inbound-plan-page .inline-filters .ant-btn,
+.inbound-order-page .inline-filters .ant-btn,
+.outbound-plan-page .inline-filters .ant-btn,
+.outbound-order-page .inline-filters .ant-btn {
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding-inline: 16px;
+}
+
+
+
+.purchase-inquiry-page .list-panel .panel-heading + .ant-table-wrapper,
+.purchase-contract-page .list-panel .panel-heading + .ant-table-wrapper,
+.purchase-invoice-page .list-panel .panel-heading + .ant-table-wrapper,
+.followup-page .list-panel .panel-heading + .ant-table-wrapper,
+.quality-inspection-page .list-panel .panel-heading + .ant-table-wrapper,
+.inbound-plan-page .list-panel .panel-heading + .ant-table-wrapper,
+.inbound-order-page .list-panel .panel-heading + .ant-table-wrapper,
+.outbound-plan-page .list-panel .panel-heading + .ant-table-wrapper,
+.outbound-order-page .list-panel .panel-heading + .ant-table-wrapper {
+  margin-top: 12px;
+}
+
+
+
+.purchase-inquiry-page .list-panel .ant-table-container,
+.purchase-contract-page .list-panel .ant-table-container,
+.purchase-invoice-page .list-panel .ant-table-container,
+.followup-page .list-panel .ant-table-container,
+.quality-inspection-page .list-panel .ant-table-container,
+.inbound-plan-page .list-panel .ant-table-container,
+.inbound-order-page .list-panel .ant-table-container,
+.outbound-plan-page .list-panel .ant-table-container,
+.outbound-order-page .list-panel .ant-table-container {
+  max-height: min(38vh, 420px);
+}
