@@ -10,7 +10,7 @@ import {
 } from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search, FileSpreadsheet, FileStack } from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   approvePurchaseContract,
   cancelPurchaseContract,
@@ -27,6 +27,7 @@ import {
   type PurchaseContractApprovePayload,
   type PurchaseContractLine as _PurchaseContractLine,
   type PurchaseContractReminder,
+  type PurchaseContractListSummary,
   type PurchaseContractSourceLink as _PurchaseContractSourceLink,
   type Supplier,
   AssignableUser,
@@ -37,6 +38,8 @@ import {
 } from '@/api'
 import { purchaseContractPath, moduleDetailPath } from '@/app/routes'
 import { FormModal, FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { showError, showWarningDialog } from '@/shared/errors'
 import {
   purchaseContractStatusOptions,
@@ -74,7 +77,15 @@ import {
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 
 export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Props) {
+  const urlQuery = useUrlQuery()
+  const appliedUrlSearchRef = useRef(urlQuery.search)
   const [contracts, setContracts] = useState<PurchaseContract[]>([])
+  const [summary, setSummary] = useState<PurchaseContractListSummary>({
+    submitted_count: 0,
+    approved_count: 0,
+    total_amount: '0',
+    currency: null,
+  })
   const [reminders, setReminders] = useState<PurchaseContractReminder[]>([])
   const [products, setProducts] = useState<Product[]>([])
   const [suppliers, setSuppliers] = useState<Supplier[]>([])
@@ -84,11 +95,15 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
   const [contractModalOpen, setContractModalOpen] = useState(false)
   const [contractModalMode, setContractModalMode] = useState<'manual' | 'generate'>('manual')
   const [contractApprovalModalOpen, setContractApprovalModalOpen] = useState(false)
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [supplierFilter, setSupplierFilter] = useState('')
-  const [sourceFilter, setSourceFilter] = useState('')
+  const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
+  const [statusFilter, setStatusFilter] = useState(() => urlQuery.params.get('status') ?? '')
+  const [supplierFilter, setSupplierFilter] = useState(() => urlQuery.params.get('supplier') ?? '')
+  const [sourceFilter, setSourceFilter] = useState(() => urlQuery.params.get('source') ?? '')
   const [loading, setLoading] = useState(false)
+  const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params),
+  )
   const [loadingProducts, setLoadingProducts] = useState(false)
   const [loadingSuppliers, setLoadingSuppliers] = useState(false)
   const [loadingAssignableUsers, setLoadingAssignableUsers] = useState(false)
@@ -123,6 +138,24 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
   }, [])
 
   useEffect(() => {
+    if (appliedUrlSearchRef.current === urlQuery.search) return
+    appliedUrlSearchRef.current = urlQuery.search
+    setSearch(urlQuery.params.get('q') ?? '')
+    setStatusFilter(urlQuery.params.get('status') ?? '')
+    setSourceFilter(urlQuery.params.get('source') ?? '')
+    setSupplierFilter(urlQuery.params.get('supplier') ?? '')
+    const nextPage = parsePageParam(urlQuery.params)
+    const nextFilters = {
+      q: urlQuery.params.get('q') ?? '',
+      status: urlQuery.params.get('status') ?? '',
+      supplier: urlQuery.params.get('supplier') ?? '',
+      source: urlQuery.params.get('source') ?? '',
+    }
+    setPage(nextPage)
+    void loadContracts(undefined, undefined, nextPage, pageSize, nextFilters)
+  }, [urlQuery.search])
+
+  useEffect(() => {
     setApproveForm({
       reviewer_name: selectedContract?.reviewer_name ?? '',
       approved_at:
@@ -152,15 +185,46 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
     }
   }, [contracts, detailId, onNavigate])
 
-  async function loadContracts(preferredId?: string, preferredContract?: PurchaseContract) {
+  async function loadContracts(
+    preferredId?: string,
+    preferredContract?: PurchaseContract,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: { q: string; status: string; supplier: string; source: string },
+  ) {
+    const resolvedPage = pageOverride ?? page
+    const resolvedPageSize = pageSizeOverride ?? pageSize
+    const resolvedQ = filtersOverride?.q ?? search
+    const resolvedStatus = filtersOverride?.status ?? statusFilter
+    const resolvedSupplier = filtersOverride?.supplier ?? supplierFilter
+    const resolvedSource = filtersOverride?.source ?? sourceFilter
     setLoading(true)
     try {
       const result = await listPurchaseContracts({
-        q: search.trim() || undefined,
-        approval_status: statusFilter || undefined,
-        supplier_id: supplierFilter.trim() || undefined,
-        source_type: sourceFilter || undefined,
+        q: resolvedQ.trim() || undefined,
+        approval_status: resolvedStatus || undefined,
+        supplier_id: resolvedSupplier.trim() || undefined,
+        source_type: resolvedSource || undefined,
+        limit: resolvedPageSize,
+        offset: (resolvedPage - 1) * resolvedPageSize,
       })
+      setTotal(result.total)
+      setSummary(result.summary)
+      if (result.items.length === 0 && resolvedPage > 1) {
+        const prevPage = resolvedPage - 1
+        setPage(prevPage)
+        appliedUrlSearchRef.current = urlQuery.update({
+          page: prevPage === 1 ? null : prevPage,
+        })
+        await loadContracts(
+          preferredId,
+          preferredContract,
+          prevPage,
+          resolvedPageSize,
+          filtersOverride,
+        )
+        return
+      }
       const items = preferredContract
         ? [preferredContract, ...result.items.filter((item) => item.id !== preferredContract.id)]
         : result.items
@@ -555,21 +619,21 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
     setContractModalOpen(false)
   }
 
-  const totalAmount = contracts.reduce((sum, item) => sum + Number(item.statistics.total_amount), 0)
+  const totalAmount = Number(summary.total_amount ?? 0)
   const openReminders = reminders.filter((item) => item.status === 'open').length
-  const currency = contracts[0]?.currency ?? 'USD'
+  const currency = summary.currency ?? 'USD'
 
   return (
     <section className="purchase-contract-page">
       <div className="summary-strip" aria-label={t('purchase.contract.metric.overviewAria')}>
-        <Metric label={t('purchase.contract.metric.contractCount')} value={contracts.length} />
+        <Metric label={t('purchase.contract.metric.contractCount')} value={total} />
         <Metric
           label={t('purchase.contract.metric.pendingApproval')}
-          value={contracts.filter((item) => item.approval_status === 'submitted').length}
+          value={summary.submitted_count}
         />
         <Metric
           label={t('purchase.contract.metric.approvedCount')}
-          value={contracts.filter((item) => item.approval_status === 'approved').length}
+          value={summary.approved_count}
         />
         <Metric
           label={t('purchase.contract.metric.contractAmount')}
@@ -592,7 +656,15 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
               className="inline-filters single-line-filter-toolbar"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadContracts()
+                  setPage(1)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    q: search,
+                    status: statusFilter,
+                    source: sourceFilter,
+                    supplier: supplierFilter,
+                    page: null,
+                  })
+                  void loadContracts(undefined, undefined, 1)
                 }}
               >
                 <label>
@@ -718,7 +790,16 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
               ]}
               dataSource={contracts}
               loading={loading}
-              pagination={false}
+              pagination={{
+                ...pagination,
+                onChange: (nextPage, nextPageSize) => {
+                  const next = changePage(nextPage, nextPageSize)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    page: next.page === 1 ? null : next.page,
+                  })
+                  void loadContracts(undefined, undefined, next.page, next.pageSize)
+                },
+              }}
               rowClassName={(record) => (record.id === selectedContract?.id ? 'selected-row' : '')}
               rowKey="id"
               size="small"

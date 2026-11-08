@@ -4,6 +4,13 @@ import userEvent from '@testing-library/user-event'
 import * as api from '@/api'
 import { PurchaseContractsPage } from '@/app/pages/purchase/PurchaseContractsPage'
 
+function metricValue(label: string): string | null | undefined {
+  const cell = Array.from(document.querySelectorAll('.metric-cell')).find(
+    (node) => node.querySelector('.metric-label')?.textContent === label,
+  )
+  return cell?.querySelector('.metric-value')?.textContent
+}
+
 describe('PurchaseContractsPage', () => {
   const onNavigate = vi.fn()
   const currentUser = { id: 'u-admin', username: 'admin', display_name: '管理员', department_name: '管理部', avatar_type: 'preset' as const, avatar_value: 'blue', roles: ['admin'], permissions: ['system:super_admin'] }
@@ -64,7 +71,16 @@ describe('PurchaseContractsPage', () => {
       source_links: [],
       reminders: [],
     }
-    vi.spyOn(api, 'listPurchaseContracts').mockResolvedValue({ items: [contract], total: 1 })
+    vi.spyOn(api, 'listPurchaseContracts').mockResolvedValue({
+      items: [contract],
+      total: 1,
+      summary: {
+        submitted_count: 1,
+        approved_count: 0,
+        total_amount: '1200.00',
+        currency: 'USD',
+      },
+    })
     vi.spyOn(api, 'listPurchaseContractReminders').mockResolvedValue({ items: [], total: 0 })
     vi.spyOn(api, 'listProducts').mockResolvedValue({
       items: [],
@@ -136,7 +152,16 @@ describe('PurchaseContractsPage', () => {
   }
 
   function mockContractApis(contract: api.PurchaseContract) {
-    vi.spyOn(api, 'listPurchaseContracts').mockResolvedValue({ items: [contract], total: 1 })
+    vi.spyOn(api, 'listPurchaseContracts').mockResolvedValue({
+      items: [contract],
+      total: 1,
+      summary: {
+        submitted_count: 1,
+        approved_count: 0,
+        total_amount: '1200.00',
+        currency: 'USD',
+      },
+    })
     vi.spyOn(api, 'listPurchaseContractReminders').mockResolvedValue({ items: [], total: 0 })
     vi.spyOn(api, 'listProducts').mockResolvedValue({
       items: [],
@@ -210,5 +235,45 @@ describe('PurchaseContractsPage', () => {
 
     expect(await within(dialog).findByText('请填写重开原因')).toBeInTheDocument()
     expect(reissueSpy).not.toHaveBeenCalled()
+  })
+
+  it('按服务端分页请求且在翻页时保持后端汇总指标不变', async () => {
+    window.history.replaceState({}, '', '/')
+    const listSpy = vi.spyOn(api, 'listPurchaseContracts').mockResolvedValue({
+      items: [makeContract()],
+      total: 120,
+      summary: {
+        submitted_count: 3,
+        approved_count: 2,
+        total_amount: '300.00',
+        currency: 'USD',
+      },
+    })
+    vi.spyOn(api, 'listPurchaseContractReminders').mockResolvedValue({ items: [], total: 0 })
+    vi.spyOn(api, 'listProducts').mockResolvedValue({
+      items: [],
+      total: 0,
+      summary: { with_image_count: 0, accessory_count: 0 },
+    })
+    vi.spyOn(api, 'listSuppliers').mockResolvedValue({ items: [], total: 0 })
+    vi.spyOn(api, 'listAssignableUsers').mockResolvedValue({ users: [] })
+
+    render(
+      <PurchaseContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    await waitFor(() => {
+      expect(listSpy).toHaveBeenCalledWith(expect.objectContaining({ limit: 50, offset: 0 }))
+    })
+    expect(metricValue('待审批')).toBe('3')
+    expect(metricValue('已审批')).toBe('2')
+
+    await userEvent.click(screen.getByTitle('2'))
+
+    await waitFor(() => {
+      expect(listSpy).toHaveBeenCalledWith(expect.objectContaining({ limit: 50, offset: 50 }))
+    })
+    expect(metricValue('待审批')).toBe('3')
+    expect(metricValue('已审批')).toBe('2')
   })
 })

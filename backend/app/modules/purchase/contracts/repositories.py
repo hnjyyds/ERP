@@ -385,6 +385,72 @@ class PurchaseContractRepository:
     ) -> tuple[list[PurchaseContractRow], int]:
         statement = select(PurchaseContract)
         count_statement = select(func.count()).select_from(PurchaseContract)
+        conditions = self._contract_conditions(
+            q=q,
+            approval_status=approval_status,
+            supplier_id=supplier_id,
+            source_type=source_type,
+            owner_user_ids=owner_user_ids,
+        )
+        for condition in conditions:
+            statement = statement.where(condition)
+            count_statement = count_statement.where(condition)
+        statement = (
+            statement.order_by(PurchaseContract.contract_date.desc(), PurchaseContract.code.asc())
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        rows = await self._scalars(statement)
+        total = await self.session.scalar(count_statement)
+        return [self._map_contract(row) for row in rows], int(total or 0)
+
+    async def summarize_contracts(
+        self,
+        *,
+        q: str | None = None,
+        approval_status: str | None = None,
+        supplier_id: str | None = None,
+        source_type: str | None = None,
+        owner_user_ids: list[str] | None = None,
+    ) -> dict[str, object]:
+        conditions = self._contract_conditions(
+            q=q,
+            approval_status=approval_status,
+            supplier_id=supplier_id,
+            source_type=source_type,
+            owner_user_ids=owner_user_ids,
+        )
+        status_rows = await self.session.execute(
+            select(PurchaseContract.approval_status, func.count())
+            .where(*conditions)
+            .group_by(PurchaseContract.approval_status)
+        )
+        counts = {status: int(count) for status, count in status_rows}
+        total_amount = await self.session.scalar(
+            select(func.coalesce(func.sum(PurchaseContract.total_amount), 0)).where(*conditions)
+        )
+        currency = await self.session.scalar(
+            select(PurchaseContract.currency)
+            .where(*conditions)
+            .order_by(PurchaseContract.contract_date.desc(), PurchaseContract.code.asc())
+            .limit(1)
+        )
+        return {
+            "submitted_count": counts.get("submitted", 0),
+            "approved_count": counts.get("approved", 0),
+            "total_amount": total_amount or 0,
+            "currency": currency,
+        }
+
+    def _contract_conditions(
+        self,
+        *,
+        q: str | None,
+        approval_status: str | None,
+        supplier_id: str | None,
+        source_type: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> list[object]:
         conditions = []
         if q:
             pattern = f"%{q}%"
@@ -419,17 +485,7 @@ class PurchaseContractRepository:
             conditions.append(PurchaseContract.source_type == source_type)
         if owner_user_ids is not None:
             conditions.append(PurchaseContract.owner_user_id.in_(owner_user_ids))
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-        statement = (
-            statement.order_by(PurchaseContract.contract_date.desc(), PurchaseContract.code.asc())
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        rows = await self._scalars(statement)
-        total = await self.session.scalar(count_statement)
-        return [self._map_contract(row) for row in rows], int(total or 0)
+        return conditions
 
     async def submit_contract(
         self,

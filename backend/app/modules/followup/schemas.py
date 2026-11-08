@@ -138,11 +138,21 @@ class PurchaseFollowPlanResponse(BaseModel):
     nodes: list[PurchaseFollowNodeResponse]
 
 
+class PurchaseFollowPlanListSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    completed_plan_count: int = 0
+    overdue_plan_count: int = 0
+    completed_node_count: int = 0
+    total_node_count: int = 0
+
+
 class PurchaseFollowPlanListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[PurchaseFollowPlanResponse]
     total: int
+    summary: PurchaseFollowPlanListSummary
 
 
 class PurchaseFollowOverdueNodeResponse(BaseModel):

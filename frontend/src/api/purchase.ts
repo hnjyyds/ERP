@@ -90,9 +90,17 @@ export interface PurchaseContract {
   reminders: PurchaseContractReminder[]
 }
 
+export interface PurchaseContractListSummary {
+  submitted_count: number
+  approved_count: number
+  total_amount: string
+  currency: string | null
+}
+
 export interface PurchaseContractList {
   items: PurchaseContract[]
   total: number
+  summary: PurchaseContractListSummary
 }
 
 export interface PurchaseContractReminderList {
@@ -202,9 +210,17 @@ export interface PurchaseInvoiceNotice {
   reminders: PurchaseInvoiceNoticeReminder[]
 }
 
+export interface PurchaseInvoiceNoticeListSummary {
+  sent_count: number
+  received_count: number
+  total_amount: string
+  currency: string | null
+}
+
 export interface PurchaseInvoiceNoticeList {
   items: PurchaseInvoiceNotice[]
   total: number
+  summary: PurchaseInvoiceNoticeListSummary
 }
 
 export interface PurchaseInvoiceNoticeReminderList {
@@ -309,9 +325,16 @@ export interface PurchaseInquiry {
   quotations: SupplierQuotation[]
 }
 
+export interface PurchaseInquiryListSummary {
+  sent_count: number
+  quoted_count: number
+  quotation_count: number
+}
+
 export interface PurchaseInquiryList {
   items: PurchaseInquiry[]
   total: number
+  summary: PurchaseInquiryListSummary
 }
 
 export interface SupplierSampleEvidenceList {
@@ -382,12 +405,16 @@ export function listPurchaseContracts(filters: {
   approval_status?: string
   supplier_id?: string
   source_type?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<PurchaseContractList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.approval_status) params.set('approval_status', filters.approval_status)
   if (filters.supplier_id) params.set('supplier_id', filters.supplier_id)
   if (filters.source_type) params.set('source_type', filters.source_type)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<PurchaseContractList>(`/purchase/contracts${suffix}`)
 }
@@ -469,6 +496,8 @@ export function listPurchaseInvoiceNotices(filters: {
   status?: string
   supplier_id?: string
   customs_declaration_id?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<PurchaseInvoiceNoticeList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
@@ -477,6 +506,8 @@ export function listPurchaseInvoiceNotices(filters: {
   if (filters.customs_declaration_id) {
     params.set('customs_declaration_id', filters.customs_declaration_id)
   }
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<PurchaseInvoiceNoticeList>(`/purchase/invoice-notices${suffix}`)
 }
@@ -522,12 +553,16 @@ export function listPurchaseInquiries(filters: {
   status?: string
   product_id?: string
   supplier_id?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<PurchaseInquiryList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.status) params.set('status', filters.status)
   if (filters.product_id) params.set('product_id', filters.product_id)
   if (filters.supplier_id) params.set('supplier_id', filters.supplier_id)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<PurchaseInquiryList>(`/purchase/inquiries${suffix}`)
 }

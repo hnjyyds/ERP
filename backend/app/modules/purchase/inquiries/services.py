@@ -139,9 +139,17 @@ class PurchaseInquiryService:
             supplier_id=supplier_id,
             owner_user_ids=owner_user_ids,
         )
+        summary = await self._repository.summarize_inquiries(
+            q=q,
+            status=status,
+            product_id=product_id,
+            supplier_id=supplier_id,
+            owner_user_ids=owner_user_ids,
+        )
         return PurchaseInquiryListResponse(
             items=[await self._inquiry_response(item) for item in inquiries],
             total=total,
+            summary=summary,
         )
 
     async def get_inquiry(

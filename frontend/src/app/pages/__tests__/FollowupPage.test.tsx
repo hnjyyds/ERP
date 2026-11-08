@@ -52,6 +52,13 @@ const legacyLabelPlan: PurchaseFollowPlan = {
   })),
 }
 
+function metricValue(label: string): string | null | undefined {
+  const cell = Array.from(document.querySelectorAll('.metric-cell')).find(
+    (node) => node.querySelector('.metric-label')?.textContent === label,
+  )
+  return cell?.querySelector('.metric-value')?.textContent
+}
+
 describe('FollowupPage', () => {
   const onNavigate = vi.fn()
 
@@ -68,7 +75,16 @@ describe('FollowupPage', () => {
   })
 
   it('按节点编码统一显示日期名称并兼容历史节点名称', async () => {
-    vi.spyOn(api, 'listFollowupPlans').mockResolvedValue({ items: [legacyLabelPlan], total: 1 })
+    vi.spyOn(api, 'listFollowupPlans').mockResolvedValue({
+      items: [legacyLabelPlan],
+      total: 1,
+      summary: {
+        completed_plan_count: 0,
+        overdue_plan_count: 0,
+        completed_node_count: 0,
+        total_node_count: legacyLabelPlan.nodes.length,
+      },
+    })
     vi.spyOn(api, 'listFollowupTemplates').mockResolvedValue({ items: [], total: 0 })
     vi.spyOn(api, 'listFollowupOverdueNodes').mockResolvedValue({ items: [], total: 0 })
 
@@ -102,7 +118,16 @@ describe('FollowupPage', () => {
   })
 
   it('定位工作台传入的节点并提供可执行的登记入口', async () => {
-    vi.spyOn(api, 'listFollowupPlans').mockResolvedValue({ items: [followupPlan], total: 1 })
+    vi.spyOn(api, 'listFollowupPlans').mockResolvedValue({
+      items: [followupPlan],
+      total: 1,
+      summary: {
+        completed_plan_count: 0,
+        overdue_plan_count: 0,
+        completed_node_count: 1,
+        total_node_count: followupPlan.nodes.length,
+      },
+    })
     vi.spyOn(api, 'listFollowupTemplates').mockResolvedValue({ items: [], total: 0 })
     vi.spyOn(api, 'listFollowupOverdueNodes').mockResolvedValue({ items: [], total: 0 })
     const syncSourceEvent = vi
@@ -140,5 +165,39 @@ describe('FollowupPage', () => {
         source_summary: '供应商已提交确认样',
       }),
     )
+  })
+
+  it('按服务端分页请求且在翻页时保持后端汇总指标不变', async () => {
+    window.history.replaceState({}, '', '/')
+    const listSpy = vi.spyOn(api, 'listFollowupPlans').mockResolvedValue({
+      items: [followupPlan],
+      total: 120,
+      summary: {
+        completed_plan_count: 4,
+        overdue_plan_count: 2,
+        completed_node_count: 9,
+        total_node_count: 12,
+      },
+    })
+    vi.spyOn(api, 'listFollowupTemplates').mockResolvedValue({ items: [], total: 0 })
+    vi.spyOn(api, 'listFollowupOverdueNodes').mockResolvedValue({ items: [], total: 0 })
+
+    render(<FollowupPage detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() => {
+      expect(listSpy).toHaveBeenCalledWith(expect.objectContaining({ limit: 50, offset: 0 }))
+    })
+    expect(metricValue('已完成计划')).toBe('4')
+    expect(metricValue('逾期计划')).toBe('2')
+    expect(metricValue('完成节点')).toBe('9/12')
+
+    await userEvent.click(screen.getByTitle('2'))
+
+    await waitFor(() => {
+      expect(listSpy).toHaveBeenCalledWith(expect.objectContaining({ limit: 50, offset: 50 }))
+    })
+    expect(metricValue('已完成计划')).toBe('4')
+    expect(metricValue('逾期计划')).toBe('2')
+    expect(metricValue('完成节点')).toBe('9/12')
   })
 })

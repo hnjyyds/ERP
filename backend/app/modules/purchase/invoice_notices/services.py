@@ -121,9 +121,17 @@ class PurchaseInvoiceNoticeService:
             customs_declaration_id=customs_declaration_id,
             owner_user_ids=owner_user_ids,
         )
+        summary = await self._repository.summarize_notices(
+            q=q,
+            status=status,
+            supplier_id=supplier_id,
+            customs_declaration_id=customs_declaration_id,
+            owner_user_ids=owner_user_ids,
+        )
         return PurchaseInvoiceNoticeListResponse(
             items=[await self._notice_response(row) for row in rows],
             total=total,
+            summary=summary,
         )
 
     async def get_notice(

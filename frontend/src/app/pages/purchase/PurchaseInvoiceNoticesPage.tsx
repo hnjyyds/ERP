@@ -1,7 +1,7 @@
 import { Alert, Button, Input, Modal, Table, Tag as _Tag } from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search, Receipt } from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   generatePurchaseInvoiceNoticesFromDeclaration,
   listPurchaseInvoiceNoticeReminders,
@@ -9,6 +9,7 @@ import {
   receivePurchaseInvoiceNoticeTaxInvoice,
   sendPurchaseInvoiceNotice,
   type PurchaseInvoiceNotice,
+  type PurchaseInvoiceNoticeListSummary,
   type PurchaseInvoiceNoticeGeneratePayload,
   type PurchaseInvoiceNoticeLinePayload,
   type PurchaseInvoiceNoticeReceivePayload,
@@ -17,6 +18,8 @@ import {
 } from '@/api'
 import { purchaseInvoiceNoticePath, moduleDetailPath } from '@/app/routes'
 import { FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { t } from '@/app/appI18n'
 import { showError } from '@/shared/errors'
 import { useFormModal } from '@/shared/useFormModal'
@@ -217,14 +220,26 @@ function purchaseInvoiceReminderStatusLabel(value: string): string {
 }
 
 export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetailPageProps) {
+  const urlQuery = useUrlQuery()
+  const appliedUrlSearchRef = useRef(urlQuery.search)
   const [notices, setNotices] = useState<PurchaseInvoiceNotice[]>([])
+  const [summary, setSummary] = useState<PurchaseInvoiceNoticeListSummary>({
+    sent_count: 0,
+    received_count: 0,
+    total_amount: '0',
+    currency: null,
+  })
   const [reminders, setReminders] = useState<PurchaseInvoiceNoticeReminder[]>([])
   const [selectedNoticeId, setSelectedNoticeId] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [supplierFilter, setSupplierFilter] = useState('')
-  const [customsFilter, setCustomsFilter] = useState('')
+  const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
+  const [statusFilter, setStatusFilter] = useState(() => urlQuery.params.get('status') ?? '')
+  const [supplierFilter, setSupplierFilter] = useState(() => urlQuery.params.get('supplier') ?? '')
+  const [customsFilter, setCustomsFilter] = useState(() => urlQuery.params.get('customs') ?? '')
   const [loading, setLoading] = useState(false)
+  const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params),
+  )
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [customsDeclarationNoError, setCustomsDeclarationNoError] = useState('')
@@ -255,6 +270,24 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
   }, [])
 
   useEffect(() => {
+    if (appliedUrlSearchRef.current === urlQuery.search) return
+    appliedUrlSearchRef.current = urlQuery.search
+    const nextFilters = {
+      q: urlQuery.params.get('q') ?? '',
+      status: urlQuery.params.get('status') ?? '',
+      supplier: urlQuery.params.get('supplier') ?? '',
+      customs: urlQuery.params.get('customs') ?? '',
+    }
+    setSearch(nextFilters.q)
+    setStatusFilter(nextFilters.status)
+    setSupplierFilter(nextFilters.supplier)
+    setCustomsFilter(nextFilters.customs)
+    const nextPage = parsePageParam(urlQuery.params)
+    setPage(nextPage)
+    void loadNotices(undefined, undefined, nextPage, pageSize, nextFilters)
+  }, [urlQuery.search])
+
+  useEffect(() => {
     setSendForm((current) => ({
       ...current,
       sent_at: selectedNotice?.sent_at ?? selectedNotice?.notice_date ?? current.sent_at,
@@ -272,18 +305,47 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
     }
   }, [detailId, notices, onNavigate])
 
-  async function loadNotices(preferredId?: string, overrideCustomsFilter?: string) {
+  async function loadNotices(
+    preferredId?: string,
+    overrideCustomsFilter?: string,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: { q: string; status: string; supplier: string; customs: string },
+  ) {
+    const resolvedPage = pageOverride ?? page
+    const resolvedPageSize = pageSizeOverride ?? pageSize
     setLoading(true)
     try {
       const [noticeResult, reminderResult] = await Promise.all([
         listPurchaseInvoiceNotices({
-          q: search.trim() || undefined,
-          status: statusFilter || undefined,
-          supplier_id: supplierFilter.trim() || undefined,
-          customs_declaration_id: (overrideCustomsFilter ?? customsFilter).trim() || undefined,
+          q: (filtersOverride?.q ?? search).trim() || undefined,
+          status: (filtersOverride?.status ?? statusFilter) || undefined,
+          supplier_id: (filtersOverride?.supplier ?? supplierFilter).trim() || undefined,
+          customs_declaration_id:
+            (filtersOverride?.customs ?? overrideCustomsFilter ?? customsFilter).trim() ||
+            undefined,
+          limit: resolvedPageSize,
+          offset: (resolvedPage - 1) * resolvedPageSize,
         }),
         listPurchaseInvoiceNoticeReminders(),
       ])
+      setTotal(noticeResult.total)
+      setSummary(noticeResult.summary)
+      if (noticeResult.items.length === 0 && resolvedPage > 1) {
+        const prevPage = resolvedPage - 1
+        setPage(prevPage)
+        appliedUrlSearchRef.current = urlQuery.update({
+          page: prevPage === 1 ? null : prevPage,
+        })
+        await loadNotices(
+          preferredId,
+          overrideCustomsFilter,
+          prevPage,
+          resolvedPageSize,
+          filtersOverride,
+        )
+        return
+      }
       setNotices(noticeResult.items)
       setReminders(reminderResult.items)
       const nextSelectedId =
@@ -398,16 +460,16 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
     }
   }
 
-  const sentCount = notices.filter((item) => item.status === 'sent').length
-  const receivedCount = notices.filter((item) => item.status === 'received').length
+  const sentCount = summary.sent_count
+  const receivedCount = summary.received_count
   const openReminders = reminders.filter((item) => item.status === 'open').length
-  const totalAmount = notices.reduce((sum, item) => sum + Number(item.total_amount), 0)
-  const currency = notices[0]?.currency ?? 'CNY'
+  const totalAmount = Number(summary.total_amount ?? 0)
+  const currency = summary.currency ?? 'CNY'
 
   return (
     <section className="purchase-invoice-page">
       <div className="summary-strip" aria-label={t('purchase.invoiceNotice.metric.overviewAria')}>
-        <Metric label={t('purchase.invoiceNotice.metric.noticeCount')} value={notices.length} />
+        <Metric label={t('purchase.invoiceNotice.metric.noticeCount')} value={total} />
         <Metric label={t('purchase.invoiceNotice.metric.sentCount')} value={sentCount} />
         <Metric label={t('purchase.invoiceNotice.metric.receivedCount')} value={receivedCount} />
         <Metric
@@ -431,7 +493,15 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
               className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadNotices()
+                  setPage(1)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    q: search,
+                    status: statusFilter,
+                    supplier: supplierFilter,
+                    customs: customsFilter,
+                    page: null,
+                  })
+                  void loadNotices(undefined, undefined, 1)
                 }}
               >
                 <label>
@@ -543,7 +613,16 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
               ]}
               dataSource={notices}
               loading={loading}
-              pagination={false}
+              pagination={{
+                ...pagination,
+                onChange: (nextPage, nextPageSize) => {
+                  const next = changePage(nextPage, nextPageSize)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    page: next.page === 1 ? null : next.page,
+                  })
+                  void loadNotices(undefined, undefined, next.page, next.pageSize)
+                },
+              }}
               rowClassName={(record) => (record.id === selectedNotice?.id ? 'selected-row' : '')}
               rowKey="id"
               size="small"

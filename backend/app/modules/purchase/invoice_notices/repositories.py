@@ -280,6 +280,80 @@ class PurchaseInvoiceNoticeRepository:
     ) -> tuple[list[PurchaseInvoiceNoticeRow], int]:
         statement = select(PurchaseInvoiceNotice)
         count_statement = select(func.count()).select_from(PurchaseInvoiceNotice)
+        conditions = self._notice_conditions(
+            q=q,
+            status=status,
+            supplier_id=supplier_id,
+            customs_declaration_id=customs_declaration_id,
+            owner_user_ids=owner_user_ids,
+        )
+        for condition in conditions:
+            statement = statement.where(condition)
+            count_statement = count_statement.where(condition)
+        statement = (
+            statement.order_by(
+                PurchaseInvoiceNotice.notice_date.desc(),
+                PurchaseInvoiceNotice.code.asc(),
+            )
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        rows = await self._scalars(statement)
+        total = await self.session.scalar(count_statement)
+        return [self._map_notice(row) for row in rows], int(total or 0)
+
+    async def summarize_notices(
+        self,
+        *,
+        q: str | None = None,
+        status: str | None = None,
+        supplier_id: str | None = None,
+        customs_declaration_id: str | None = None,
+        owner_user_ids: list[str] | None = None,
+    ) -> dict[str, object]:
+        conditions = self._notice_conditions(
+            q=q,
+            status=status,
+            supplier_id=supplier_id,
+            customs_declaration_id=customs_declaration_id,
+            owner_user_ids=owner_user_ids,
+        )
+        status_rows = await self.session.execute(
+            select(PurchaseInvoiceNotice.status, func.count())
+            .where(*conditions)
+            .group_by(PurchaseInvoiceNotice.status)
+        )
+        counts = {value: int(count) for value, count in status_rows}
+        total_amount = await self.session.scalar(
+            select(func.coalesce(func.sum(PurchaseInvoiceNotice.total_amount), 0)).where(
+                *conditions
+            )
+        )
+        currency = await self.session.scalar(
+            select(PurchaseInvoiceNotice.currency)
+            .where(*conditions)
+            .order_by(
+                PurchaseInvoiceNotice.notice_date.desc(),
+                PurchaseInvoiceNotice.code.asc(),
+            )
+            .limit(1)
+        )
+        return {
+            "sent_count": counts.get("sent", 0),
+            "received_count": counts.get("received", 0),
+            "total_amount": total_amount or 0,
+            "currency": currency,
+        }
+
+    def _notice_conditions(
+        self,
+        *,
+        q: str | None,
+        status: str | None,
+        supplier_id: str | None,
+        customs_declaration_id: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> list[object]:
         conditions = []
         if q:
             pattern = f"%{q}%"
@@ -315,20 +389,7 @@ class PurchaseInvoiceNoticeRepository:
             )
         if owner_user_ids is not None:
             conditions.append(PurchaseInvoiceNotice.owner_user_id.in_(owner_user_ids))
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-        statement = (
-            statement.order_by(
-                PurchaseInvoiceNotice.notice_date.desc(),
-                PurchaseInvoiceNotice.code.asc(),
-            )
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        rows = await self._scalars(statement)
-        total = await self.session.scalar(count_statement)
-        return [self._map_notice(row) for row in rows], int(total or 0)
+        return conditions
 
     async def _get_notice_model(self, notice_id: str) -> PurchaseInvoiceNotice | None:
         return await self.session.get(PurchaseInvoiceNotice, notice_id)

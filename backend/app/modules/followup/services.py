@@ -290,9 +290,17 @@ class FollowupService:
             purchase_contract_id=purchase_contract_id,
             owner_user_ids=owner_user_ids,
         )
+        summary = await self._repository.summarize_plans(
+            q=q,
+            overall_status=overall_status,
+            supplier_id=supplier_id,
+            purchase_contract_id=purchase_contract_id,
+            owner_user_ids=owner_user_ids,
+        )
         return PurchaseFollowPlanListResponse(
             items=[await self._plan_response(row) for row in rows],
             total=total,
+            summary=summary,
         )
 
     async def get_plan(

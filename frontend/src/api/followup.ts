@@ -70,9 +70,17 @@ export interface PurchaseFollowPlan {
   nodes: PurchaseFollowNode[]
 }
 
+export interface PurchaseFollowPlanListSummary {
+  completed_plan_count: number
+  overdue_plan_count: number
+  completed_node_count: number
+  total_node_count: number
+}
+
 export interface PurchaseFollowPlanList {
   items: PurchaseFollowPlan[]
   total: number
+  summary: PurchaseFollowPlanListSummary
 }
 
 export interface PurchaseFollowOverdueNode {
@@ -137,12 +145,16 @@ export function listFollowupPlans(filters: {
   overall_status?: string
   supplier_id?: string
   purchase_contract_id?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<PurchaseFollowPlanList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.overall_status) params.set('overall_status', filters.overall_status)
   if (filters.supplier_id) params.set('supplier_id', filters.supplier_id)
   if (filters.purchase_contract_id) params.set('purchase_contract_id', filters.purchase_contract_id)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<PurchaseFollowPlanList>(`/followup/plans${suffix}`)
 }

@@ -106,11 +106,23 @@ class PurchaseInvoiceNoticeResponse(BaseModel):
     reminders: list[PurchaseInvoiceNoticeReminderResponse]
 
 
+class PurchaseInvoiceNoticeListSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    sent_count: int = 0
+    received_count: int = 0
+    total_amount: Decimal = Decimal("0")
+    currency: str | None = None
+
+
 class PurchaseInvoiceNoticeListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[PurchaseInvoiceNoticeResponse]
     total: int
+    summary: PurchaseInvoiceNoticeListSummary = Field(
+        default_factory=PurchaseInvoiceNoticeListSummary
+    )
 
 
 class PurchaseInvoiceNoticeReminderListResponse(BaseModel):

@@ -368,6 +368,73 @@ class FollowupRepository:
     ) -> tuple[list[PurchaseFollowPlanRow], int]:
         statement = select(PurchaseFollowPlan)
         count_statement = select(func.count()).select_from(PurchaseFollowPlan)
+        conditions = self._plan_conditions(
+            q=q,
+            overall_status=overall_status,
+            supplier_id=supplier_id,
+            purchase_contract_id=purchase_contract_id,
+            owner_user_ids=owner_user_ids,
+        )
+        for condition in conditions:
+            statement = statement.where(condition)
+            count_statement = count_statement.where(condition)
+        statement = (
+            statement.order_by(
+                PurchaseFollowPlan.base_date.desc(),
+                PurchaseFollowPlan.purchase_contract_no.asc(),
+            )
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        rows = await self._plan_scalars(statement)
+        total = await self.session.scalar(count_statement)
+        return [self._map_plan(row) for row in rows], int(total or 0)
+
+    async def summarize_plans(
+        self,
+        *,
+        q: str | None,
+        overall_status: str | None,
+        supplier_id: str | None,
+        purchase_contract_id: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> dict[str, object]:
+        conditions = self._plan_conditions(
+            q=q,
+            overall_status=overall_status,
+            supplier_id=supplier_id,
+            purchase_contract_id=purchase_contract_id,
+            owner_user_ids=owner_user_ids,
+        )
+        status_rows = await self.session.execute(
+            select(PurchaseFollowPlan.overall_status, func.count())
+            .where(*conditions)
+            .group_by(PurchaseFollowPlan.overall_status)
+        )
+        counts = {value: int(count) for value, count in status_rows}
+        plan_ids = select(PurchaseFollowPlan.id).where(*conditions)
+        node_rows = await self.session.execute(
+            select(PurchaseFollowNode.status, func.count())
+            .where(PurchaseFollowNode.follow_plan_id.in_(plan_ids))
+            .group_by(PurchaseFollowNode.status)
+        )
+        node_counts = {value: int(count) for value, count in node_rows}
+        return {
+            "completed_plan_count": counts.get("completed", 0),
+            "overdue_plan_count": counts.get("overdue", 0),
+            "completed_node_count": node_counts.get("completed", 0),
+            "total_node_count": sum(node_counts.values()),
+        }
+
+    def _plan_conditions(
+        self,
+        *,
+        q: str | None,
+        overall_status: str | None,
+        supplier_id: str | None,
+        purchase_contract_id: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> list[object]:
         conditions = []
         if q:
             pattern = f"%{q}%"
@@ -385,20 +452,7 @@ class FollowupRepository:
             conditions.append(PurchaseFollowPlan.purchase_contract_id == purchase_contract_id)
         if owner_user_ids is not None:
             conditions.append(PurchaseFollowPlan.owner_user_id.in_(owner_user_ids))
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-        statement = (
-            statement.order_by(
-                PurchaseFollowPlan.base_date.desc(),
-                PurchaseFollowPlan.purchase_contract_no.asc(),
-            )
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        rows = await self._plan_scalars(statement)
-        total = await self.session.scalar(count_statement)
-        return [self._map_plan(row) for row in rows], int(total or 0)
+        return conditions
 
     async def list_overdue_nodes(
         self,

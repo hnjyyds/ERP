@@ -328,6 +328,78 @@ class PurchaseInquiryRepository:
         limit: int = 100,
         offset: int = 0,
     ) -> tuple[list[PurchaseInquiryRow], int]:
+        statement, count_statement = self._inquiry_query_bases(supplier_id=supplier_id)
+        conditions = self._inquiry_conditions(
+            q=q,
+            status=status,
+            product_id=product_id,
+            supplier_id=supplier_id,
+            owner_user_ids=owner_user_ids,
+        )
+        for condition in conditions:
+            statement = statement.where(condition)
+            count_statement = count_statement.where(condition)
+
+        statement = (
+            statement.order_by(PurchaseInquiry.inquiry_date.desc(), PurchaseInquiry.code.asc())
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        result = await self.session.scalars(statement)
+        rows = list(result.unique())
+        total = await self.session.scalar(count_statement)
+        return [self._map_inquiry(row) for row in rows], int(total or 0)
+
+    async def summarize_inquiries(
+        self,
+        *,
+        q: str | None,
+        status: str | None,
+        product_id: str | None,
+        supplier_id: str | None,
+        owner_user_ids: list[str] | None = None,
+    ) -> dict[str, object]:
+        conditions = self._inquiry_conditions(
+            q=q,
+            status=status,
+            product_id=product_id,
+            supplier_id=supplier_id,
+            owner_user_ids=owner_user_ids,
+        )
+        status_statement = (
+            select(PurchaseInquiry.status, func.count(distinct(PurchaseInquiry.id)))
+            .select_from(PurchaseInquiry)
+            .outerjoin(
+                PurchaseInquiryLine,
+                PurchaseInquiryLine.inquiry_id == PurchaseInquiry.id,
+            )
+        )
+        if supplier_id:
+            status_statement = status_statement.outerjoin(
+                SupplierQuotation,
+                SupplierQuotation.inquiry_id == PurchaseInquiry.id,
+            )
+        status_rows = await self.session.execute(
+            status_statement.where(*conditions).group_by(PurchaseInquiry.status)
+        )
+        counts = {value: int(count) for value, count in status_rows}
+        filtered_ids = self._inquiry_query_bases(supplier_id=supplier_id)[0].with_only_columns(
+            PurchaseInquiry.id
+        )
+        for condition in conditions:
+            filtered_ids = filtered_ids.where(condition)
+        quotation_count = await self.session.scalar(
+            select(func.count(SupplierQuotation.id)).where(
+                SupplierQuotation.inquiry_id.in_(filtered_ids)
+            )
+        )
+        return {
+            "sent_count": counts.get("sent", 0),
+            "quoted_count": counts.get("quoted", 0),
+            "quotation_count": int(quotation_count or 0),
+        }
+
+    def _inquiry_query_bases(self, *, supplier_id: str | None):
         statement = select(PurchaseInquiry).outerjoin(
             PurchaseInquiryLine,
             PurchaseInquiryLine.inquiry_id == PurchaseInquiry.id,
@@ -349,7 +421,17 @@ class PurchaseInquiryRepository:
                 SupplierQuotation,
                 SupplierQuotation.inquiry_id == PurchaseInquiry.id,
             )
+        return statement, count_statement
 
+    def _inquiry_conditions(
+        self,
+        *,
+        q: str | None,
+        status: str | None,
+        product_id: str | None,
+        supplier_id: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> list[object]:
         conditions = []
         if q:
             pattern = f"%{q}%"
@@ -369,19 +451,7 @@ class PurchaseInquiryRepository:
             conditions.append(SupplierQuotation.supplier_id == supplier_id)
         if owner_user_ids is not None:
             conditions.append(PurchaseInquiry.owner_user_id.in_(owner_user_ids))
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-
-        statement = (
-            statement.order_by(PurchaseInquiry.inquiry_date.desc(), PurchaseInquiry.code.asc())
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        result = await self.session.scalars(statement)
-        rows = list(result.unique())
-        total = await self.session.scalar(count_statement)
-        return [self._map_inquiry(row) for row in rows], int(total or 0)
+        return conditions
 
     async def list_supplier_sample_evidence(
         self,

@@ -254,10 +254,18 @@ class PurchaseContractService:
             source_type=source_type,
             owner_user_ids=owner_user_ids,
         )
+        summary = await self._repository.summarize_contracts(
+            q=q,
+            approval_status=approval_status,
+            supplier_id=supplier_id,
+            source_type=source_type,
+            owner_user_ids=owner_user_ids,
+        )
         responses = await self._response_builder.build_many(rows)
         return PurchaseContractListResponse(
             items=responses,
             total=total,
+            summary=summary,
         )
 
     async def get_contract(

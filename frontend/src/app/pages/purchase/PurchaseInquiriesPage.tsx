@@ -1,7 +1,7 @@
 import { Alert, Button, Input, Modal, Table } from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search, FileText } from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   addPurchaseInquiryQuotation,
   createPurchaseInquiry,
@@ -11,6 +11,7 @@ import {
   sendPurchaseInquiryTemplate,
   updatePurchaseInquiry,
   type PurchaseInquiry,
+  type PurchaseInquiryListSummary,
   type PurchaseInquiryCreatePayload,
   type PurchaseInquiryLine as _PurchaseInquiryLine,
   type PurchaseInquiryReference,
@@ -23,6 +24,8 @@ import {
 import { purchaseInquiryPath, moduleDetailPath } from '@/app/routes'
 import { t } from '@/app/appI18n'
 import { FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { useFormModal } from '@/shared/useFormModal'
 import { showError } from '@/shared/errors'
 import { purchaseInquiryStatusOptions } from '@/shared/formOptions'
@@ -195,7 +198,14 @@ function lowestSupplierQuotation(quotations: SupplierQuotation[]): SupplierQuota
 }
 
 export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPageProps) {
+  const urlQuery = useUrlQuery()
+  const appliedUrlSearchRef = useRef(urlQuery.search)
   const [inquiries, setInquiries] = useState<PurchaseInquiry[]>([])
+  const [summary, setSummary] = useState<PurchaseInquiryListSummary>({
+    sent_count: 0,
+    quoted_count: 0,
+    quotation_count: 0,
+  })
   const [selectedInquiryId, setSelectedInquiryId] = useState<string | null>(null)
   const [editingInquiryId, setEditingInquiryId] = useState<string | null>(null)
   const {
@@ -210,14 +220,18 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
   const [inquiryActionModal, setInquiryActionModal] = useState<'template' | 'quotation' | null>(
     null,
   )
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [productFilter, setProductFilter] = useState('')
-  const [supplierFilter, setSupplierFilter] = useState('')
+  const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
+  const [statusFilter, setStatusFilter] = useState(() => urlQuery.params.get('status') ?? '')
+  const [productFilter, setProductFilter] = useState(() => urlQuery.params.get('product') ?? '')
+  const [supplierFilter, setSupplierFilter] = useState(() => urlQuery.params.get('supplier') ?? '')
   const [supplierSamples, setSupplierSamples] = useState<SupplierSampleEvidence[]>([])
   const [references, setReferences] = useState<PurchaseInquiryReference[]>([])
   const [templatePreview, setTemplatePreview] = useState('')
   const [loading, setLoading] = useState(false)
+  const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params),
+  )
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [quotationForm, setQuotationForm] = useState<PurchaseQuotationFormState>(() =>
@@ -237,6 +251,24 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
   }, [])
 
   useEffect(() => {
+    if (appliedUrlSearchRef.current === urlQuery.search) return
+    appliedUrlSearchRef.current = urlQuery.search
+    const nextFilters = {
+      q: urlQuery.params.get('q') ?? '',
+      status: urlQuery.params.get('status') ?? '',
+      product: urlQuery.params.get('product') ?? '',
+      supplier: urlQuery.params.get('supplier') ?? '',
+    }
+    setSearch(nextFilters.q)
+    setStatusFilter(nextFilters.status)
+    setProductFilter(nextFilters.product)
+    setSupplierFilter(nextFilters.supplier)
+    const nextPage = parsePageParam(urlQuery.params)
+    setPage(nextPage)
+    void loadInquiries(undefined, nextPage, pageSize, nextFilters)
+  }, [urlQuery.search])
+
+  useEffect(() => {
     if (!detailId) {
       setSupplierSamples([])
       setReferences([])
@@ -252,15 +284,35 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
     }
   }, [detailId, inquiries, onNavigate])
 
-  async function loadInquiries(preferredId?: string) {
+  async function loadInquiries(
+    preferredId?: string,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: { q: string; status: string; product: string; supplier: string },
+  ) {
+    const resolvedPage = pageOverride ?? page
+    const resolvedPageSize = pageSizeOverride ?? pageSize
     setLoading(true)
     try {
       const result = await listPurchaseInquiries({
-        q: search.trim() || undefined,
-        status: statusFilter || undefined,
-        product_id: productFilter.trim() || undefined,
-        supplier_id: supplierFilter.trim() || undefined,
+        q: (filtersOverride?.q ?? search).trim() || undefined,
+        status: (filtersOverride?.status ?? statusFilter) || undefined,
+        product_id: (filtersOverride?.product ?? productFilter).trim() || undefined,
+        supplier_id: (filtersOverride?.supplier ?? supplierFilter).trim() || undefined,
+        limit: resolvedPageSize,
+        offset: (resolvedPage - 1) * resolvedPageSize,
       })
+      setTotal(result.total)
+      setSummary(result.summary)
+      if (result.items.length === 0 && resolvedPage > 1) {
+        const prevPage = resolvedPage - 1
+        setPage(prevPage)
+        appliedUrlSearchRef.current = urlQuery.update({
+          page: prevPage === 1 ? null : prevPage,
+        })
+        await loadInquiries(preferredId, prevPage, resolvedPageSize, filtersOverride)
+        return
+      }
       setInquiries(result.items)
       const nextSelectedId =
         preferredId ??
@@ -420,14 +472,14 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
     closeInquiryModal()
   }
 
-  const quotedCount = inquiries.filter((item) => item.status === 'quoted').length
-  const sentCount = inquiries.filter((item) => item.status === 'sent').length
-  const quotationCount = inquiries.reduce((sum, item) => sum + item.quotations.length, 0)
+  const quotedCount = summary.quoted_count
+  const sentCount = summary.sent_count
+  const quotationCount = summary.quotation_count
 
   return (
     <section className="purchase-inquiry-page">
       <div className="summary-strip" aria-label={t('purchase.inquiry.metric.overviewAria')}>
-        <Metric label={t('purchase.inquiry.metric.inquiryCount')} value={inquiries.length} />
+        <Metric label={t('purchase.inquiry.metric.inquiryCount')} value={total} />
         <Metric label={t('purchase.inquiry.metric.sentCount')} value={sentCount} />
         <Metric label={t('purchase.inquiry.metric.quotedCount')} value={quotedCount} />
         <Metric label={t('purchase.inquiry.metric.quotationCount')} value={quotationCount} />
@@ -447,7 +499,15 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
               className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadInquiries()
+                  setPage(1)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    q: search,
+                    status: statusFilter,
+                    product: productFilter,
+                    supplier: supplierFilter,
+                    page: null,
+                  })
+                  void loadInquiries(undefined, 1)
                 }}
               >
                 <label>
@@ -559,7 +619,16 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
               ]}
               dataSource={inquiries}
               loading={loading}
-              pagination={false}
+              pagination={{
+                ...pagination,
+                onChange: (nextPage, nextPageSize) => {
+                  const next = changePage(nextPage, nextPageSize)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    page: next.page === 1 ? null : next.page,
+                  })
+                  void loadInquiries(undefined, next.page, next.pageSize)
+                },
+              }}
               rowClassName={(record) => (record.id === selectedInquiry?.id ? 'selected-row' : '')}
               rowKey="id"
               size="small"

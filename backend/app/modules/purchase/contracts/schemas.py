@@ -231,11 +231,21 @@ class PurchaseContractResponse(BaseModel):
     reminders: list[PurchaseContractReminderResponse]
 
 
+class PurchaseContractListSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    submitted_count: int = 0
+    approved_count: int = 0
+    total_amount: Decimal = Decimal("0")
+    currency: str | None = None
+
+
 class PurchaseContractListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[PurchaseContractResponse]
     total: int
+    summary: PurchaseContractListSummary
 
 
 class PurchaseContractReminderListResponse(BaseModel):

@@ -126,11 +126,20 @@ class PurchaseInquiryResponse(BaseModel):
     quotations: list[SupplierQuotationResponse]
 
 
+class PurchaseInquiryListSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    sent_count: int = 0
+    quoted_count: int = 0
+    quotation_count: int = 0
+
+
 class PurchaseInquiryListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[PurchaseInquiryResponse]
     total: int
+    summary: PurchaseInquiryListSummary
 
 
 class SupplierSampleEvidenceListResponse(BaseModel):
