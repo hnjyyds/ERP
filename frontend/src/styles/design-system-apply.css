@@ -1,0 +1,1248 @@
+/* 设计契约的应用层：消费 design-system.css 的 --ui-* tokens。
+   必须由 styles.css 最后引入，否则业务分片会覆盖契约（字号、间距、底色）。
+   拆自 design-system.css，规则内容未改动。 */
+html,
+body {
+  color: var(--ui-text-primary);
+  background: var(--ui-bg-page);
+  font-family: var(--ui-font-family);
+  font-size: var(--ui-font-body);
+}
+
+body .react-shell {
+  grid-template-columns: var(--ui-sidebar-width) minmax(0, 1fr);
+  background: var(--ui-bg-page);
+}
+
+body .react-sidebar {
+  border-right: 1px solid var(--ui-border);
+  background: var(--ui-bg-subtle);
+  background-image: none;
+  box-shadow: none;
+  padding: var(--ui-space-4) var(--ui-space-3);
+}
+
+body .react-workspace {
+  background: var(--ui-bg-page);
+  background-image: none;
+  padding: var(--ui-space-5) var(--ui-space-6) var(--ui-space-8);
+}
+
+body .react-topbar {
+  align-items: center;
+  margin: calc(-1 * var(--ui-space-5)) calc(-1 * var(--ui-space-6)) var(--ui-space-4);
+  border-bottom: 1px solid var(--ui-border);
+  background: rgba(244, 246, 248, 0.96);
+  backdrop-filter: blur(8px);
+  padding: var(--ui-space-3) var(--ui-space-6);
+}
+
+body .react-topbar .eyebrow {
+  margin: 0 0 2px;
+  color: var(--ui-text-muted);
+  font-size: 11px;
+  font-weight: var(--ui-weight-semibold);
+}
+
+body .react-topbar h1 {
+  margin: 0;
+  color: var(--ui-text-primary);
+  font-size: var(--ui-font-page-title);
+  font-weight: var(--ui-weight-bold);
+  line-height: 32px;
+}
+
+body .brand {
+  min-height: 44px;
+  margin-bottom: var(--ui-space-2);
+  border-bottom-color: var(--ui-border);
+  padding: 0 2px var(--ui-space-3);
+}
+
+body .brand-wordmark {
+  min-width: 72px;
+  border-right-color: var(--ui-border);
+  font-size: 13px;
+  padding-right: 10px;
+}
+
+body .brand strong {
+  font-size: 14px;
+  font-weight: var(--ui-weight-bold);
+}
+
+body .brand span {
+  color: var(--ui-text-muted);
+  font-size: 12px;
+  font-weight: var(--ui-weight-medium);
+}
+
+body .react-nav,
+body .nav-groups {
+  gap: var(--ui-space-1);
+}
+
+body .nav-group,
+body .settings-group {
+  border-color: transparent;
+  border-radius: var(--ui-radius-panel);
+  background: transparent;
+}
+
+body .nav-group[open],
+body .settings-group[open] {
+  border-color: var(--ui-border-subtle);
+  background: var(--ui-bg-surface);
+}
+
+body .nav-group-summary,
+body .settings-summary,
+body .nav-link,
+body .nav-dashboard,
+body .nav-group-items .nav-link {
+  min-height: var(--ui-control-height);
+  border-radius: var(--ui-radius-control);
+}
+
+body .nav-group-summary,
+body .settings-summary,
+body .nav-link span,
+body .nav-group-items .nav-link span {
+  font-size: var(--ui-font-body);
+  font-weight: var(--ui-weight-semibold);
+}
+
+body .nav-link:hover,
+body .nav-link:focus-visible {
+  border-color: var(--ui-border);
+  background: var(--ui-bg-surface);
+  box-shadow: none;
+  outline: 2px solid color-mix(in srgb, var(--ui-primary) 18%, transparent);
+  outline-offset: -2px;
+  transform: none;
+}
+
+body .nav-link.active,
+body .nav-submenu > .nav-link-parent.active {
+  border-color: color-mix(in srgb, var(--ui-primary) 24%, var(--ui-border));
+  background: var(--ui-bg-selected);
+  box-shadow: none;
+  color: var(--ui-primary-hover);
+}
+
+body .nav-link.active::after {
+  top: 8px;
+  right: auto;
+  left: 0;
+  width: 3px;
+  height: calc(100% - 16px);
+  background: var(--ui-primary);
+  box-shadow: none;
+}
+
+body .nav-link.active .nav-link-icon,
+body .nav-submenu > .nav-link-parent.active .nav-link-icon {
+  color: var(--ui-primary);
+  filter: none;
+}
+
+body .summary-strip,
+body .metric-strip {
+  overflow-x: auto;
+  margin-bottom: var(--ui-space-4);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-panel);
+  background: var(--ui-bg-surface);
+  box-shadow: none;
+  scrollbar-width: thin;
+}
+
+body .summary-cell,
+body .metric-cell {
+  min-height: 68px;
+  border-right: 1px solid var(--ui-border-subtle);
+  background: var(--ui-bg-surface);
+  padding: 11px var(--ui-space-4);
+  animation: none;
+}
+
+body .summary-cell span,
+body .metric-cell span,
+body .metric-strip .metric-label {
+  color: var(--ui-text-secondary);
+  font-size: var(--ui-font-label);
+  font-weight: var(--ui-weight-semibold);
+}
+
+body .summary-cell strong,
+body .metric-cell strong,
+body .metric-strip .metric-value {
+  margin-top: 2px;
+  color: var(--ui-text-primary);
+  font-size: var(--ui-font-metric);
+  font-weight: var(--ui-weight-bold);
+  line-height: 28px;
+}
+
+body .panel,
+body .module-panel,
+body .workspace-panel,
+body .list-panel,
+body .form-panel,
+body .detail-panel,
+body .dashboard-panel {
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-panel);
+  background: var(--ui-bg-surface);
+  box-shadow: none;
+}
+
+body .workspace-panel,
+body .masterdata-page .workspace-panel,
+body .quality-inspection-page .workspace-panel {
+  padding: var(--ui-space-4);
+}
+
+body .panel-title .ant-typography,
+body .toolbar-heading h2,
+body .panel-heading h2 {
+  margin: 0;
+  color: var(--ui-text-primary);
+  font-size: var(--ui-font-panel-title);
+  font-weight: var(--ui-weight-semibold);
+  line-height: 26px;
+}
+
+body .panel-title svg {
+  color: var(--ui-primary);
+}
+
+body .toolbar-heading {
+  min-height: 0;
+  margin-bottom: var(--ui-space-4);
+  border-bottom: 0;
+  padding: 0;
+}
+
+body section[class*="-page"] .inline-filters {
+  display: grid;
+  grid-template-columns: minmax(240px, 2fr) repeat(4, minmax(145px, 1fr));
+  gap: var(--ui-space-3);
+  align-items: end;
+  width: 100%;
+  margin-bottom: var(--ui-space-4);
+}
+
+body section[class*="-page"] .inline-filters label,
+body .record-form label {
+  display: grid;
+  gap: var(--ui-space-1);
+  min-width: 0;
+  color: var(--ui-text-secondary);
+  font-size: var(--ui-font-label);
+  font-weight: var(--ui-weight-semibold);
+  line-height: 18px;
+  white-space: normal;
+}
+
+body section[class*="-page"] .inline-filters > label,
+body section[class*="-page"] .inline-filters > label:first-child,
+body section[class*="-page"] .inline-filters > label:not(:first-child) {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  flex: none;
+  justify-self: stretch;
+}
+
+body section[class*="-page"] .inline-filters label .ant-input,
+body section[class*="-page"] .inline-filters label .ant-input-affix-wrapper,
+body section[class*="-page"] .inline-filters label .ant-select,
+body section[class*="-page"] .inline-filters label select,
+body section[class*="-page"] .inline-filters label .ant-input-number {
+  width: 100%;
+  max-width: none;
+}
+
+body .remote-select-option {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding-block: 2px;
+}
+
+body .remote-select-option-title,
+body .remote-select-option-desc {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body .remote-select-option-title {
+  color: var(--ui-text-primary);
+  font-weight: var(--ui-weight-medium);
+  line-height: 20px;
+}
+
+body .remote-select-option-desc {
+  color: var(--ui-text-tertiary);
+  font-size: var(--ui-font-caption);
+  line-height: 16px;
+}
+
+/* Ant Design v6 renders the select border on `.ant-select` instead of the
+   legacy `.ant-select-selector`; size the actual interactive surface. */
+body .ant-select-single {
+  height: var(--ui-control-height);
+  min-height: var(--ui-control-height);
+  padding-inline: var(--ui-control-padding-inline);
+  font-size: var(--ui-font-body);
+  line-height: var(--ui-control-line-height);
+}
+
+body .ant-select-single .ant-select-content {
+  /* Ant Design v6 injects `display: block` after application styles. The
+     selected label is an anonymous text node, so flex centering must win or
+     the value sits three pixels above the shared control baseline. */
+  display: flex !important;
+  height: calc(var(--ui-control-height) - 10px);
+  min-height: calc(var(--ui-control-height) - 10px);
+  align-items: center;
+  font-size: var(--ui-font-body);
+  line-height: var(--ui-control-line-height);
+}
+
+/* Ant Design 6 keeps the selected label as a text node underneath its
+   absolutely positioned search input. Form-wide input rules must not paint
+   that internal input or the selected value becomes visually hidden. */
+body .ant-select .ant-select-input {
+  min-height: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  padding: 0 !important;
+  line-height: var(--ui-control-line-height) !important;
+}
+
+body .record-form .boolean-segmented {
+  width: 100%;
+  min-height: var(--ui-control-height);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-control);
+  background: var(--ui-bg-subtle);
+  padding: 2px;
+}
+
+body .record-form .boolean-segmented .ant-segmented-group,
+body .record-form .boolean-segmented .ant-segmented-item {
+  flex: 1;
+}
+
+body .record-form .boolean-segmented .ant-segmented-item-label {
+  min-height: 30px;
+  line-height: 30px;
+  text-align: center;
+}
+
+body .filter-actions {
+  display: flex;
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+  gap: var(--ui-space-2);
+  min-width: 0;
+}
+
+body section[class*="-page"] .inline-filters .filter-actions .ant-btn {
+  height: var(--ui-control-height);
+  min-height: var(--ui-control-height);
+}
+
+body section.masterdata-page.product-page .inline-filters.product-list-filters {
+  grid-template-columns: minmax(280px, 1fr) auto;
+}
+
+body .product-page .product-filter-actions {
+  display: flex;
+  align-items: end;
+  justify-content: flex-end;
+  gap: var(--ui-space-2);
+}
+
+body .toolbar-icon-button.ant-btn {
+  width: var(--ui-control-height);
+  min-width: var(--ui-control-height);
+  height: var(--ui-control-height);
+  padding: 0;
+}
+
+/* Customer/supplier/partner pages use the product toolbar as their default
+   state and progressively disclose lower-frequency filters. */
+body section.masterdata-page .inline-filters.partner-inline-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--ui-space-3);
+}
+
+body section.masterdata-page .partner-inline-filters .partner-filter-toolbar {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) auto;
+  align-items: end;
+  gap: var(--ui-space-2);
+  width: 100%;
+}
+
+body section.masterdata-page .partner-inline-filters .partner-filter-actions {
+  display: flex;
+  align-items: end;
+  width: 100%;
+  margin: 0;
+  justify-content: flex-end;
+  gap: var(--ui-space-2);
+  padding: 0;
+}
+
+body section.masterdata-page .partner-inline-filters .partner-advanced-filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  align-items: end;
+  gap: var(--ui-space-3);
+  width: 100%;
+  border-top: 1px solid var(--ui-border-subtle);
+  padding-top: var(--ui-space-3);
+}
+
+/* Dense business lists keep their high-frequency filters and commands on one
+   desktop row. The first field absorbs spare width; commands stay content-sized. */
+body section[class*="-page"] .inline-filters.single-line-filter-toolbar {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: end;
+  gap: var(--ui-space-3);
+}
+
+body section[class*="-page"] .inline-filters.single-line-filter-toolbar > label,
+body section[class*="-page"] .inline-filters.single-line-filter-toolbar > label:not(:first-child) {
+  flex: 1 1 136px;
+  width: auto;
+  min-width: 0;
+}
+
+body section[class*="-page"] .inline-filters.single-line-filter-toolbar > label:first-child {
+  flex: 2 1 240px;
+  width: auto;
+  min-width: 180px;
+}
+
+/* Searchable business entities carry longer labels than enum filters. Give
+   them enough room while keeping every part of Ant Select shrinkable. */
+body section[class*="-page"] .inline-filters.single-line-filter-toolbar > label.entity-search-filter {
+  flex: 1.2 1 164px;
+}
+
+body section[class*="-page"] .inline-filters .entity-search-filter .ant-select,
+body section[class*="-page"] .inline-filters .entity-search-filter .ant-select-content,
+body section[class*="-page"] .inline-filters .entity-search-filter .ant-select-selection-wrap {
+  min-width: 0;
+  max-width: 100%;
+}
+
+body section[class*="-page"] .inline-filters .entity-search-filter .ant-select-placeholder,
+body section[class*="-page"] .inline-filters .entity-search-filter .ant-select-selection-placeholder,
+body section[class*="-page"] .inline-filters .entity-search-filter .ant-select-selection-item {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body section[class*="-page"] .inline-filters.single-line-filter-toolbar > .ant-btn {
+  flex: 0 0 auto;
+  height: var(--ui-control-height);
+  min-height: var(--ui-control-height);
+  padding-inline: var(--ui-space-4);
+}
+
+body .advanced-filter-toggle.ant-btn {
+  position: relative;
+}
+
+body .advanced-filter-toggle[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--ui-primary) 48%, var(--ui-border));
+  background: var(--ui-bg-selected);
+  color: var(--ui-primary);
+}
+
+body .advanced-filter-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  display: grid;
+  width: 16px;
+  height: 16px;
+  place-items: center;
+  border: 2px solid var(--ui-bg-surface);
+  border-radius: 50%;
+  background: var(--ui-primary);
+  color: var(--ui-bg-surface);
+  font-size: 9px;
+  font-weight: var(--ui-weight-semibold);
+  line-height: 1;
+}
+
+body .ant-input,
+body .ant-input-affix-wrapper,
+body .ant-input-number,
+body .ant-picker,
+body .ant-select-selector,
+body .inline-filters select,
+body .record-form input:not([type="checkbox"]):not([type="radio"]):not(.ant-select-input),
+body .record-form select {
+  min-height: var(--ui-control-height) !important;
+  border-color: var(--ui-border) !important;
+  border-radius: var(--ui-radius-control) !important;
+  background: var(--ui-bg-surface);
+  color: var(--ui-text-primary);
+  font-size: var(--ui-font-body);
+  box-shadow: none !important;
+}
+
+/* Keep the editable content on one shared inset and text line. Ant inputs,
+   pickers and selects use different internal DOM, so height alone does not
+   produce a stable text baseline. */
+body .ant-input,
+body .ant-input-number-input,
+body .ant-picker-input > input,
+body .inline-filters select,
+body .record-form input:not([type="checkbox"]):not([type="radio"]):not(.ant-select-input),
+body .record-form select {
+  padding-inline: var(--ui-control-padding-inline) !important;
+  font-size: var(--ui-font-body) !important;
+  line-height: var(--ui-control-line-height) !important;
+}
+
+body .ant-input-affix-wrapper,
+body .ant-picker {
+  padding-inline: var(--ui-control-padding-inline) !important;
+}
+
+body .ant-input-affix-wrapper > input.ant-input,
+body .ant-input-number-input-wrap > input.ant-input-number-input,
+body .ant-picker-input > input {
+  min-height: 0 !important;
+  padding-inline: 0 !important;
+}
+
+body .ant-input:hover,
+body .ant-input-affix-wrapper:hover,
+body .ant-select:hover .ant-select-selector,
+body .inline-filters select:hover {
+  border-color: color-mix(in srgb, var(--ui-primary) 45%, var(--ui-border)) !important;
+}
+
+body .ant-input:focus,
+body .ant-input-affix-wrapper-focused,
+body .ant-select-focused .ant-select-selector,
+body .inline-filters select:focus {
+  border-color: var(--ui-primary) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ui-primary) 14%, transparent) !important;
+  outline: 0;
+}
+
+body .ant-btn {
+  min-height: var(--ui-control-height);
+  border-radius: var(--ui-radius-control);
+  box-shadow: none !important;
+  font-size: var(--ui-font-body);
+  font-weight: var(--ui-weight-semibold);
+  padding-inline: var(--ui-space-4);
+  transform: none !important;
+}
+
+body .ant-btn-default {
+  border-color: var(--ui-border);
+  background: var(--ui-bg-surface);
+  color: var(--ui-text-primary);
+}
+
+body .ant-btn-default:hover,
+body .ant-btn-default:focus-visible {
+  border-color: color-mix(in srgb, var(--ui-primary) 50%, var(--ui-border)) !important;
+  background: var(--ui-bg-subtle) !important;
+  color: var(--ui-primary-hover) !important;
+}
+
+body .ant-btn-primary {
+  border-color: var(--ui-primary);
+  background: var(--ui-primary);
+  color: #ffffff;
+}
+
+body .ant-btn-primary:hover,
+body .ant-btn-primary:focus-visible {
+  border-color: var(--ui-primary-hover) !important;
+  background: var(--ui-primary-hover) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ui-primary) 16%, transparent) !important;
+}
+
+body .ant-btn-sm {
+  min-height: var(--ui-control-height-sm);
+  padding-inline: var(--ui-space-2);
+  font-size: var(--ui-font-label);
+}
+
+body .ant-table {
+  color: var(--ui-text-primary);
+  font-size: var(--ui-font-body);
+}
+
+body .ant-table-container {
+  border: 0;
+  border-top: 1px solid var(--ui-border-subtle);
+  border-radius: 0;
+}
+
+body .ant-table-thead > tr > th,
+body .data-table th {
+  height: 40px;
+  border-bottom: 1px solid var(--ui-border) !important;
+  background: var(--ui-bg-subtle) !important;
+  color: var(--ui-text-secondary);
+  font-size: var(--ui-font-label);
+  font-weight: var(--ui-weight-semibold);
+  padding-block: var(--ui-space-2);
+}
+
+body .ant-table-tbody > tr > td,
+body .data-table td {
+  height: 44px;
+  border-bottom: 1px solid var(--ui-border-subtle) !important;
+  padding-block: var(--ui-space-2);
+}
+
+body .ant-table-tbody > tr:hover > td,
+body .data-table tbody tr:hover {
+  background: var(--ui-bg-subtle) !important;
+}
+
+body .ant-table-tbody > tr.ant-table-row-selected > td {
+  background: var(--ui-bg-selected) !important;
+}
+
+body .row-button {
+  color: var(--ui-primary);
+  font-weight: var(--ui-weight-semibold);
+}
+
+body .ant-tag {
+  margin-inline-end: 0;
+  border: 0;
+  border-radius: var(--ui-radius-tag);
+  font-size: var(--ui-font-label);
+  font-weight: var(--ui-weight-medium);
+  line-height: 22px;
+  padding-inline: 7px;
+}
+
+body .ant-modal-content,
+body .ant-dropdown,
+body .ant-select-dropdown,
+body .semi-modal-content {
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-panel);
+  box-shadow: var(--ui-shadow-overlay);
+}
+
+@media (max-width: 1180px) {
+  body .react-shell {
+    grid-template-columns: 216px minmax(0, 1fr);
+  }
+
+  body .brand-wordmark {
+    display: none;
+  }
+
+  body section[class*="-page"] .inline-filters {
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
+  }
+
+  body section[class*="-page"] .inline-filters.single-line-filter-toolbar {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
+  }
+
+  body section.masterdata-page .inline-filters.partner-inline-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  body section.masterdata-page .partner-inline-filters .partner-advanced-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  body .react-shell,
+  body .react-shell-home {
+    display: block;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  body .react-sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    width: 100%;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--ui-border);
+    padding: 10px 14px;
+  }
+
+  body .react-workspace,
+  body .react-shell-home .react-workspace {
+    height: auto;
+    min-height: calc(100vh - 57px);
+    overflow: visible;
+    padding: 14px;
+  }
+
+  body .react-topbar {
+    position: static;
+    margin: -14px -14px 14px;
+    padding: 10px 14px;
+  }
+
+  body .react-topbar h1 {
+    max-width: 20ch;
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  body .ant-select-single {
+    height: var(--ui-touch-height);
+    min-height: var(--ui-touch-height);
+  }
+
+  body .ant-select-single .ant-select-content {
+    height: calc(var(--ui-touch-height) - 10px);
+    min-height: calc(var(--ui-touch-height) - 10px);
+  }
+
+  body .ant-input,
+  body .ant-input-affix-wrapper,
+  body .ant-input-number,
+  body .ant-picker,
+  body .inline-filters select,
+  body .record-form input:not([type="checkbox"]):not([type="radio"]):not(.ant-select-input),
+  body .record-form select {
+    min-height: var(--ui-touch-height) !important;
+  }
+
+  body .record-form .boolean-segmented {
+    min-height: var(--ui-touch-height);
+  }
+
+  body .record-form .boolean-segmented .ant-segmented-item-label {
+    min-height: 38px;
+    line-height: 38px;
+  }
+
+  body section[class*="-page"] .inline-filters {
+    grid-template-columns: 1fr;
+  }
+
+  body section[class*="-page"] .inline-filters.single-line-filter-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  body section.masterdata-page.product-page .inline-filters.product-list-filters {
+    grid-template-columns: 1fr;
+  }
+
+  body .product-page .product-filter-actions {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+  }
+
+  body section.masterdata-page.product-page .product-filter-actions > .ant-btn-primary {
+    flex: 0 0 auto;
+    width: auto;
+  }
+
+  body section.masterdata-page .partner-inline-filters .partner-filter-toolbar,
+  body section.masterdata-page .partner-inline-filters .partner-advanced-filters {
+    grid-template-columns: 1fr;
+  }
+
+  body section.masterdata-page .partner-inline-filters .partner-filter-actions {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+  }
+
+  body section.masterdata-page .partner-filter-actions > .ant-btn-primary {
+    flex: 0 0 auto;
+    width: auto;
+  }
+
+  body section.masterdata-page .partner-advanced-filters .advanced-filter-reset {
+    width: var(--ui-touch-height);
+  }
+
+  body .masterdata-page .ant-table table {
+    min-width: 760px;
+  }
+
+  body .filter-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body .filter-actions .ant-btn {
+    width: 100%;
+    min-height: var(--ui-touch-height);
+    justify-content: center;
+  }
+
+  body .summary-strip,
+  body .metric-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  body .ant-table-content {
+    overflow-x: auto !important;
+    overscroll-behavior-inline: contain;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Dashboard: task-first operational workspace. */
+body .react-shell-home .react-workspace {
+  background: var(--ui-bg-page);
+  background-image: none !important;
+}
+
+body .react-shell-home .react-topbar {
+  margin-bottom: var(--ui-space-3);
+  padding-block: 10px;
+}
+
+body .react-shell-home .react-topbar .eyebrow {
+  color: var(--ui-text-secondary);
+}
+
+body .react-shell-home .react-topbar h1 {
+  font-size: var(--ui-font-page-title);
+  font-weight: var(--ui-weight-bold);
+  line-height: 30px;
+}
+
+body .react-shell-home .dashboard-workbench {
+  --dash-type-section: var(--ui-font-panel-title);
+  --dash-type-item: var(--ui-font-section-title);
+  --dash-type-body: var(--ui-font-body);
+  --dash-type-meta: var(--ui-font-label);
+  --dash-type-data: var(--ui-font-metric);
+  --dash-weight-section: var(--ui-weight-semibold);
+  --dash-weight-item: var(--ui-weight-semibold);
+  --dash-weight-body: var(--ui-weight-regular);
+  --dash-weight-meta: var(--ui-weight-medium);
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: var(--ui-space-3);
+  height: auto;
+  overflow: visible;
+  color: var(--ui-text-primary);
+  font-size: var(--ui-font-body);
+}
+
+body .react-shell-home .metric-strip {
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+body .react-shell-home .metric-cell {
+  min-height: 58px;
+  padding: 8px var(--ui-space-3);
+}
+
+body .react-shell-home .metric-strip .metric-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--ui-radius-control);
+  background: var(--ui-bg-subtle);
+  color: var(--ui-primary);
+}
+
+body .react-shell-home .metric-strip .metric-label {
+  color: var(--ui-text-secondary);
+  font-size: var(--ui-font-label);
+  font-weight: var(--ui-weight-medium);
+  line-height: 18px;
+}
+
+body .react-shell-home .metric-strip .metric-value {
+  color: var(--ui-text-primary);
+  font-size: 20px;
+  font-weight: var(--ui-weight-bold);
+  line-height: 24px;
+}
+
+body .react-shell-home .dashboard-toolbar {
+  gap: var(--ui-space-2);
+}
+
+body .react-shell-home .dashboard-toolbar button {
+  min-height: 32px;
+  border-color: var(--ui-border);
+  background: var(--ui-bg-surface);
+  color: var(--ui-text-secondary);
+  font-size: var(--ui-font-label);
+  font-weight: var(--ui-weight-semibold);
+  padding-inline: var(--ui-space-3);
+}
+
+body .react-shell-home .dashboard-toolbar button:hover,
+body .react-shell-home .dashboard-toolbar button:focus-visible {
+  border-color: color-mix(in srgb, var(--ui-primary) 36%, var(--ui-border));
+  background: var(--ui-primary-soft);
+  color: var(--ui-primary-hover);
+  outline: none;
+}
+
+body .react-shell-home .dashboard-board {
+  grid-template-columns: minmax(0, 1.86fr) minmax(300px, 1fr);
+  grid-template-rows: auto auto auto;
+  gap: 0 var(--ui-space-6);
+  align-items: start;
+  height: auto;
+  overflow: visible;
+}
+
+body .react-shell-home .dashboard-board::before {
+  display: none;
+}
+
+body .react-shell-home .dashboard-panel {
+  overflow: visible;
+  border: 0;
+  border-top: 1px solid var(--ui-border-subtle);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+body .react-shell-home .dashboard-panel-primary,
+body .react-shell-home .dashboard-panel-schedule,
+body .react-shell-home .dashboard-panel-reminders,
+body .react-shell-home .dashboard-announcements-panel {
+  min-height: 0;
+  padding: var(--ui-space-4) 0;
+}
+
+body .react-shell-home .dashboard-panel-primary { grid-column: 1; grid-row: 1; }
+body .react-shell-home .dashboard-panel-reminders { grid-column: 2; grid-row: 1; }
+body .react-shell-home .dashboard-panel-schedule { grid-column: 1; grid-row: 2 / span 2; }
+body .react-shell-home .dashboard-announcements-panel { grid-column: 2; grid-row: 2; }
+
+body .react-shell-home .dashboard-panel-heading {
+  align-items: center;
+  min-height: 32px;
+  margin-bottom: var(--ui-space-3);
+}
+
+body .react-shell-home .dashboard-grid .panel-title {
+  min-height: 0;
+  margin: 0;
+  color: var(--ui-text-primary);
+}
+
+body .react-shell-home .dashboard-grid .panel-title .ant-typography {
+  color: var(--ui-text-primary);
+  font-size: var(--ui-font-panel-title);
+  font-weight: var(--ui-weight-semibold);
+  line-height: 26px;
+}
+
+body .react-shell-home .dashboard-grid .panel-title svg {
+  width: 18px;
+  height: 18px;
+  color: var(--ui-text-muted);
+}
+
+body .react-shell-home .dashboard-panel-actions {
+  gap: var(--ui-space-2);
+}
+
+body .react-shell-home .dashboard-priority-scope,
+body .react-shell-home .dashboard-task-meta span,
+body .react-shell-home .dashboard-task-content,
+body .react-shell-home .dashboard-reminder span,
+body .react-shell-home .dashboard-announcement p,
+body .react-shell-home .dashboard-timeline-note,
+body .react-shell-home .dashboard-timeline-time small {
+  color: var(--ui-text-secondary);
+}
+
+body .react-shell-home .panel-link-button {
+  min-height: 28px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--ui-primary);
+  font-size: var(--ui-font-label);
+  font-weight: var(--ui-weight-semibold);
+  padding-inline: var(--ui-space-2);
+}
+
+body .react-shell-home .panel-link-button:hover,
+body .react-shell-home .panel-link-button:focus-visible {
+  border-color: transparent;
+  background: var(--ui-primary-soft);
+  color: var(--ui-primary-hover);
+  outline: none;
+}
+
+body .react-shell-home .dashboard-task-list {
+  overflow: visible;
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: var(--ui-radius-panel);
+  background: var(--ui-bg-surface);
+  padding: 0;
+}
+
+body .react-shell-home .dashboard-task {
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  gap: var(--ui-space-3);
+  min-height: 72px;
+  border-radius: 0;
+  padding: 11px var(--ui-space-3);
+}
+
+body .react-shell-home .dashboard-task:first-child {
+  border-radius: var(--ui-radius-panel) var(--ui-radius-panel) 0 0;
+}
+
+body .react-shell-home .dashboard-task:last-child {
+  border-radius: 0 0 var(--ui-radius-panel) var(--ui-radius-panel);
+}
+
+body .react-shell-home .dashboard-task + .dashboard-task {
+  border-top-color: var(--ui-border-subtle);
+}
+
+body .react-shell-home .dashboard-task:hover {
+  background: var(--ui-bg-subtle);
+}
+
+body .react-shell-home .dashboard-task-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--ui-radius-control);
+  background: var(--ui-bg-muted);
+  color: var(--ui-text-muted);
+}
+
+body .react-shell-home .dashboard-task-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+body .react-shell-home .dashboard-task-body {
+  gap: var(--ui-space-1);
+}
+
+body .react-shell-home .dashboard-task-title strong,
+body .react-shell-home .dashboard-reminder strong,
+body .react-shell-home .dashboard-announcement strong,
+body .react-shell-home .dashboard-timeline-title {
+  color: var(--ui-text-primary);
+  font-size: var(--ui-font-section-title);
+  font-weight: var(--ui-weight-semibold);
+  line-height: 22px;
+}
+
+body .react-shell-home .dashboard-task-content {
+  margin-top: 0;
+  font-size: var(--ui-font-body);
+  line-height: 20px;
+}
+
+body .react-shell-home .dashboard-task-meta {
+  gap: var(--ui-space-2);
+}
+
+body .react-shell-home .dashboard-task-meta span {
+  background: transparent;
+  font-size: var(--ui-font-label);
+  font-weight: var(--ui-weight-regular);
+  line-height: 18px;
+  padding: 0;
+}
+
+body .react-shell-home .dashboard-task .table-action {
+  min-height: 32px;
+  border-color: color-mix(in srgb, var(--ui-primary) 32%, var(--ui-border));
+  background: var(--ui-bg-surface);
+  color: var(--ui-primary-hover);
+  font-size: var(--ui-font-label);
+  font-weight: var(--ui-weight-semibold);
+}
+
+body .react-shell-home .dashboard-task .table-action:hover,
+body .react-shell-home .dashboard-task .table-action:focus-visible {
+  background: var(--ui-primary);
+  color: #ffffff;
+}
+
+body .react-shell-home .dashboard-reminders,
+body .react-shell-home .dashboard-announcements,
+body .react-shell-home .dashboard-timeline {
+  overflow: visible;
+}
+
+body .react-shell-home .dashboard-reminder {
+  border: 1px solid var(--ui-border-subtle);
+  border-left: 3px solid var(--ui-text-muted);
+  border-radius: var(--ui-radius-panel);
+  background: var(--ui-bg-surface);
+  padding: var(--ui-space-3);
+}
+
+body .react-shell-home .dashboard-reminder span {
+  margin-top: var(--ui-space-1);
+  font-size: var(--ui-font-body);
+  line-height: 20px;
+}
+
+body .react-shell-home .dashboard-announcement {
+  grid-template-columns: 1fr;
+  border-bottom-color: var(--ui-border-subtle);
+  padding-bottom: var(--ui-space-3);
+}
+
+body .react-shell-home .dashboard-announcement p {
+  font-size: var(--ui-font-body);
+  line-height: 20px;
+}
+
+body .react-shell-home .dashboard-empty {
+  min-height: 64px;
+  border-color: var(--ui-border);
+  border-radius: var(--ui-radius-panel);
+  background: var(--ui-bg-subtle);
+  color: var(--ui-text-secondary);
+  font-size: var(--ui-font-body);
+  padding: var(--ui-space-3);
+}
+
+body .react-shell-home .dashboard-timeline {
+  --timeline-time-width: 112px;
+  --timeline-column-gap: var(--ui-space-3);
+  --timeline-row-padding-x: var(--ui-space-3);
+}
+
+body .react-shell-home .dashboard-timeline-item {
+  min-height: 84px;
+  border-radius: var(--ui-radius-panel);
+  padding: var(--ui-space-3);
+}
+
+body .react-shell-home .dashboard-timeline-item:hover,
+body .react-shell-home .dashboard-timeline-item:focus-visible {
+  background: var(--ui-bg-subtle);
+  outline: 2px solid color-mix(in srgb, var(--ui-primary) 16%, transparent);
+  outline-offset: -2px;
+}
+
+body .react-shell-home .dashboard-timeline-time {
+  gap: var(--ui-space-1);
+  padding-inline-end: var(--ui-space-2);
+}
+
+body .react-shell-home .dashboard-timeline-time strong {
+  color: var(--ui-text-primary);
+  font-size: 18px;
+  font-weight: var(--ui-weight-bold);
+}
+
+@media (max-width: 1180px) {
+  body .react-shell-home .dashboard-board {
+    grid-template-columns: minmax(0, 1.55fr) minmax(270px, 1fr);
+    gap: 0 var(--ui-space-4);
+  }
+}
+
+@media (max-width: 980px) {
+  body .react-shell-home .dashboard-board {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  body .react-shell-home .dashboard-panel-primary,
+  body .react-shell-home .dashboard-panel-reminders,
+  body .react-shell-home .dashboard-panel-schedule,
+  body .react-shell-home .dashboard-announcements-panel {
+    grid-column: 1;
+    grid-row: auto;
+    padding-block: var(--ui-space-4);
+  }
+
+  body .react-shell-home .dashboard-panel-primary { order: 1; }
+  body .react-shell-home .dashboard-panel-schedule { order: 2; }
+  body .react-shell-home .dashboard-panel-reminders { order: 3; }
+  body .react-shell-home .dashboard-announcements-panel { order: 4; }
+}
+
+@media (max-width: 640px) {
+  body .react-shell-home .metric-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  body .react-shell-home .metric-strip .metric-cell {
+    min-width: 0;
+  }
+
+  body .react-shell-home .react-topbar h1 {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  body .react-shell-home .dashboard-panel-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  body .react-shell-home .dashboard-panel-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  body .react-shell-home .dashboard-task {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+
+  body .react-shell-home .dashboard-task .table-action {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  body .react-shell-home .dashboard-timeline {
+    --timeline-time-width: 84px;
+    --timeline-column-gap: var(--ui-space-2);
+  }
+}

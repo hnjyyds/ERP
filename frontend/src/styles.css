@@ -1,10 +1,11 @@
 /* 层叠顺序（唯一入口，禁止在 main.tsx 再单独引入分片）：
-   1. design-system.css：--ui-* tokens 与 --erp-* 别名、基础 reset
+   1. design-system.css：--ui-* tokens 与 --erp-* 别名
    2. 基础/组件
-   3. 业务页分片
-   4. ux-pass.css：页面级补丁
-   5. responsive-cascade.css：响应式
-   回退：删除首行 @import 并把 './design-system.css' 放回 main.tsx 最后一行。 */
+   3. 业务页分片（ux-pass.css 保持历史位置：位于 antd-and-login 之后、组件分片之前，
+      否则会覆盖 modal-quality 等组件样式）
+   4. responsive-cascade.css：响应式
+   5. design-system-apply.css：设计契约的应用层，必须最后，保证视觉规范覆盖业务分片
+   注意：tokens 只提供变量，不参与竞争；业务分片仍可覆盖契约层中未声明的属性。 */
 @import './design-system.css';
 @import './styles/base-shell.css';
 @import './styles/finance-shell.css';
@@ -14,10 +15,11 @@
 @import './styles/organization.css';
 @import './styles/organization-members.css';
 @import './styles/antd-and-login.css';
+@import './styles/ux-pass.css';
 @import './styles/navigation-settings.css';
 @import './styles/shared-primitives.css';
 @import './styles/form-contract-pages.css';
 @import './styles/finance-reporting.css';
 @import './styles/modal-quality.css';
-@import './styles/ux-pass.css';
 @import './styles/responsive-cascade.css';
+@import './styles/design-system-apply.css';
