@@ -116,11 +116,21 @@ class ExportQuotationResponse(BaseModel):
     lines: list[ExportQuotationLineResponse]
 
 
+class ExportQuotationListSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    submitted_count: int = 0
+    approved_count: int = 0
+    total_amount: Decimal = Decimal("0")
+    currency: str | None = None
+
+
 class ExportQuotationListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[ExportQuotationResponse]
     total: int
+    summary: ExportQuotationListSummary = Field(default_factory=ExportQuotationListSummary)
 
 
 class ExportQuotationPurchaseReferenceResponse(BaseModel):

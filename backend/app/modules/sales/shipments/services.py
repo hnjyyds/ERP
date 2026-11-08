@@ -140,9 +140,17 @@ class ShipmentPlanService:
             contract_id=contract_id,
             owner_user_ids=owner_user_ids,
         )
+        summary = await self._repository.summarize_shipments(
+            q=q,
+            approval_status=approval_status,
+            customer_id=customer_id,
+            contract_id=contract_id,
+            owner_user_ids=owner_user_ids,
+        )
         return ShipmentPlanListResponse(
             items=[await self._shipment_response(plan) for plan in plans],
             total=total,
+            summary=summary,
         )
 
     async def get_shipment(

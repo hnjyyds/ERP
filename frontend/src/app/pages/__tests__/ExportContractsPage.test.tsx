@@ -110,13 +110,25 @@ import type { ExportContract } from '@/api'
 // Re-import mocked modules to get typed references
 const api = await vi.importMock<Record<string, ReturnType<typeof vi.fn>>>('@/api')
 
+const emptyContractSummary = {
+  submitted_count: 0,
+  approved_count: 0,
+  total_amount: '0',
+  advance_payment_amount: '0',
+  currency: 'USD',
+}
+
 describe('ExportContractsPage', () => {
   const onNavigate = vi.fn()
   const currentUser = { id: 'u-admin', username: 'admin', display_name: '管理员', department_name: '管理部', avatar_type: 'preset' as const, avatar_value: 'blue', roles: ['admin'], permissions: ['system:super_admin'] }
 
   beforeEach(() => {
     vi.clearAllMocks()
-    api.listExportContracts.mockResolvedValue({ items: [], total: 0 })
+    api.listExportContracts.mockResolvedValue({
+      items: [],
+      total: 0,
+      summary: emptyContractSummary,
+    })
     api.listCustomers.mockResolvedValue({ items: [], total: 0 })
     api.listProducts.mockResolvedValue({ items: [], total: 0 })
     api.listAssignableUsers.mockResolvedValue({ users: [] })
@@ -382,7 +394,11 @@ describe('ExportContractsPage', () => {
   }
 
   async function openCancelDialog(contract: ExportContract) {
-    api.listExportContracts.mockResolvedValue({ items: [contract], total: 1 })
+    api.listExportContracts.mockResolvedValue({
+      items: [contract],
+      total: 1,
+      summary: emptyContractSummary,
+    })
     const user = userEvent.setup()
     render(<ExportContractsPage currentUser={currentUser} detailId={contract.id} onNavigate={onNavigate} />)
     await user.click(await screen.findByRole('button', { name: '作废合同' }))
@@ -436,7 +452,11 @@ describe('ExportContractsPage', () => {
       cancelled_at: '2026-08-05',
       cancel_reason: '客户取消订单',
     })
-    api.listExportContracts.mockResolvedValue({ items: [contract], total: 1 })
+    api.listExportContracts.mockResolvedValue({
+      items: [contract],
+      total: 1,
+      summary: emptyContractSummary,
+    })
     const user = userEvent.setup()
     render(<ExportContractsPage currentUser={currentUser} detailId={contract.id} onNavigate={onNavigate} />)
 
@@ -446,5 +466,42 @@ describe('ExportContractsPage', () => {
 
     expect(await within(dialog).findByText('请填写重开原因')).toBeInTheDocument()
     expect(api.reissueExportContract).not.toHaveBeenCalled()
+  })
+
+  it('按服务端分页请求且在翻页时保持后端汇总指标不变', async () => {
+    window.history.replaceState({}, '', '/')
+    api.listExportContracts.mockResolvedValue({
+      items: [makeExportContract()],
+      total: 120,
+      summary: {
+        submitted_count: 3,
+        approved_count: 2,
+        total_amount: '300.00',
+        advance_payment_amount: '100.00',
+        currency: 'USD',
+      },
+    })
+
+    render(
+      <ExportContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    await waitFor(() => {
+      expect(api.listExportContracts).toHaveBeenCalledWith(
+        expect.objectContaining({ limit: 50, offset: 0 }),
+      )
+    })
+    expect(screen.getByText('待审批: 3')).toBeInTheDocument()
+    expect(screen.getByText('已审批: 2')).toBeInTheDocument()
+
+    await userEvent.click(screen.getByTitle('2'))
+
+    await waitFor(() => {
+      expect(api.listExportContracts).toHaveBeenCalledWith(
+        expect.objectContaining({ limit: 50, offset: 50 }),
+      )
+    })
+    expect(screen.getByText('待审批: 3')).toBeInTheDocument()
+    expect(screen.getByText('已审批: 2')).toBeInTheDocument()
   })
 })

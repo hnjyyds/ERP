@@ -46,9 +46,17 @@ export interface ExportQuotation {
   lines: ExportQuotationLine[]
 }
 
+export interface ExportQuotationListSummary {
+  submitted_count: number
+  approved_count: number
+  total_amount: string
+  currency: string | null
+}
+
 export interface ExportQuotationList {
   items: ExportQuotation[]
   total: number
+  summary: ExportQuotationListSummary
 }
 
 export interface ExportQuotationLinePayload {
@@ -243,9 +251,18 @@ export interface ExportContract {
   shipment_statuses: ExportContractShipmentStatus[]
 }
 
+export interface ExportContractListSummary {
+  submitted_count: number
+  approved_count: number
+  total_amount: string
+  advance_payment_amount: string
+  currency: string | null
+}
+
 export interface ExportContractList {
   items: ExportContract[]
   total: number
+  summary: ExportContractListSummary
 }
 
 export interface ExportContractLinePayload {
@@ -377,9 +394,18 @@ export interface ShipmentPlan {
   contract_progresses: ShipmentContractProgress[]
 }
 
+export interface ShipmentPlanListSummary {
+  submitted_count: number
+  approved_count: number
+  receivable_amount: string
+  profit_amount: string
+  currency: string | null
+}
+
 export interface ShipmentPlanList {
   items: ShipmentPlan[]
   total: number
+  summary: ShipmentPlanListSummary
 }
 
 export interface ShipmentReminderList {
@@ -416,11 +442,15 @@ export function listExportQuotations(filters: {
   q?: string
   approval_status?: string
   customer_id?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<ExportQuotationList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.approval_status) params.set('approval_status', filters.approval_status)
   if (filters.customer_id) params.set('customer_id', filters.customer_id)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<ExportQuotationList>(`/sales/quotations${suffix}`)
 }
@@ -513,11 +543,15 @@ export function listExportContracts(filters: {
   q?: string
   approval_status?: string
   customer_id?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<ExportContractList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.approval_status) params.set('approval_status', filters.approval_status)
   if (filters.customer_id) params.set('customer_id', filters.customer_id)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<ExportContractList>(`/sales/contracts${suffix}`)
 }
@@ -613,12 +647,16 @@ export function listShipments(filters: {
   approval_status?: string
   customer_id?: string
   contract_id?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<ShipmentPlanList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.approval_status) params.set('approval_status', filters.approval_status)
   if (filters.customer_id) params.set('customer_id', filters.customer_id)
   if (filters.contract_id) params.set('contract_id', filters.contract_id)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<ShipmentPlanList>(`/sales/shipments${suffix}`)
 }

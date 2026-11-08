@@ -1,7 +1,7 @@
 import { Alert, Button, Input, Modal, Table, Tag as _Tag, Select } from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search, FileText } from 'lucide-react'
 import type { FormEvent, MouseEvent, ReactNode } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   approveExportQuotation,
   confirmExportQuotationContract,
@@ -20,6 +20,7 @@ import {
   type ExportQuotationContract,
   type ExportQuotationCreatePayload,
   type ExportQuotationLine,
+  type ExportQuotationListSummary,
   type ExportQuotationPurchaseReference,
   type Customer,
   type Product,
@@ -30,6 +31,8 @@ import {
 } from '@/api'
 import { exportQuotationPath, moduleDetailPath } from '@/app/routes'
 import { FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { showError } from '@/shared/errors'
 import { downloadCsv as _downloadCsv } from '@/shared/print'
 import {
@@ -293,11 +296,19 @@ function _mergePurchaseLineRemark(current: string, addition: string): string {
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 
 export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Props) {
+  const urlQuery = useUrlQuery()
+  const appliedUrlSearchRef = useRef(urlQuery.search)
   const [quotations, setQuotations] = useState<ExportQuotation[]>([])
+  const [summary, setSummary] = useState<ExportQuotationListSummary>({
+    submitted_count: 0,
+    approved_count: 0,
+    total_amount: '0',
+    currency: null,
+  })
   const [selectedQuotationId, setSelectedQuotationId] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [customerFilter, setCustomerFilter] = useState('')
+  const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
+  const [statusFilter, setStatusFilter] = useState(() => urlQuery.params.get('status') ?? '')
+  const [customerFilter, setCustomerFilter] = useState(() => urlQuery.params.get('customer') ?? '')
   const [customers, setCustomers] = useState<Customer[]>([])
   const [history, setHistory] = useState<ExportQuotation[]>([])
   const [purchaseReferences, setPurchaseReferences] = useState<ExportQuotationPurchaseReference[]>(
@@ -307,6 +318,10 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
   const [exportPreview, setExportPreview] = useState('')
   const [generatedContract, setGeneratedContract] = useState<ExportQuotationContract | null>(null)
   const [loading, setLoading] = useState(false)
+  const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params),
+  )
   const [loadingCustomers, setLoadingCustomers] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
@@ -331,6 +346,22 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
   }, [])
 
   useEffect(() => {
+    if (appliedUrlSearchRef.current === urlQuery.search) return
+    appliedUrlSearchRef.current = urlQuery.search
+    setSearch(urlQuery.params.get('q') ?? '')
+    setStatusFilter(urlQuery.params.get('status') ?? '')
+    setCustomerFilter(urlQuery.params.get('customer') ?? '')
+    const nextPage = parsePageParam(urlQuery.params)
+    const nextFilters = {
+      q: urlQuery.params.get('q') ?? '',
+      status: urlQuery.params.get('status') ?? '',
+      customer: urlQuery.params.get('customer') ?? '',
+    }
+    setPage(nextPage)
+    void loadQuotations(undefined, nextPage, pageSize, nextFilters)
+  }, [urlQuery.search])
+
+  useEffect(() => {
     if (!detailId) {
       setHistory([])
       setPurchaseReferences([])
@@ -348,14 +379,37 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
     }
   }, [detailId, onNavigate, quotations])
 
-  async function loadQuotations(preferredId?: string) {
+  async function loadQuotations(
+    preferredId?: string,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: { q: string; status: string; customer: string },
+  ) {
+    const resolvedPage = pageOverride ?? page
+    const resolvedPageSize = pageSizeOverride ?? pageSize
+    const resolvedQ = filtersOverride?.q ?? search
+    const resolvedStatus = filtersOverride?.status ?? statusFilter
+    const resolvedCustomer = filtersOverride?.customer ?? customerFilter
     setLoading(true)
     try {
       const result = await listExportQuotations({
-        q: search.trim() || undefined,
-        approval_status: statusFilter || undefined,
-        customer_id: customerFilter.trim() || undefined,
+        q: resolvedQ.trim() || undefined,
+        approval_status: resolvedStatus || undefined,
+        customer_id: resolvedCustomer.trim() || undefined,
+        limit: resolvedPageSize,
+        offset: (resolvedPage - 1) * resolvedPageSize,
       })
+      setTotal(result.total)
+      setSummary(result.summary)
+      if (result.items.length === 0 && resolvedPage > 1) {
+        const prevPage = resolvedPage - 1
+        setPage(prevPage)
+        appliedUrlSearchRef.current = urlQuery.update({
+          page: prevPage === 1 ? null : prevPage,
+        })
+        await loadQuotations(preferredId, prevPage, resolvedPageSize, filtersOverride)
+        return
+      }
       setQuotations(result.items)
       const nextSelectedId =
         preferredId ??
@@ -599,24 +653,20 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
     }
   }
 
-  const totalAmount = quotations.reduce((sum, item) => sum + Number(item.total_amount), 0)
-  const currency = quotations[0]?.currency ?? 'USD'
+  const totalAmount = Number(summary.total_amount)
+  const currency = summary.currency ?? 'USD'
 
   return (
     <section className="export-quotation-page">
       <div className="summary-strip" aria-label={t('sales.quotation.metric.overviewAria')}>
-        <Metric label={t('sales.quotation.metric.quotationCount')} value={quotations.length} />
+        <Metric label={t('sales.quotation.metric.quotationCount')} value={total} />
         <Metric
           label={t('sales.quotation.metric.pendingApproval')}
-          value={quotations.filter((item) => item.approval_status === 'submitted').length}
+          value={summary.submitted_count}
         />
         <Metric
           label={t('sales.quotation.metric.approvedCount')}
-          value={
-            quotations.filter((item) =>
-              ['approved', 'contract_generated'].includes(item.approval_status),
-            ).length
-          }
+          value={summary.approved_count}
         />
         <Metric
           label={t('sales.quotation.metric.quotationAmount')}
@@ -638,7 +688,14 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
               className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadQuotations()
+                  setPage(1)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    q: search.trim(),
+                    status: statusFilter,
+                    customer: customerFilter,
+                    page: null,
+                  })
+                  void loadQuotations(undefined, 1)
                 }}
               >
                 <label>
@@ -741,7 +798,16 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
               ]}
               dataSource={quotations}
               loading={loading}
-              pagination={false}
+              pagination={{
+                ...pagination,
+                onChange: (nextPage, nextPageSize) => {
+                  const next = changePage(nextPage, nextPageSize)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    page: next.page === 1 ? null : next.page,
+                  })
+                  void loadQuotations(undefined, next.page, next.pageSize)
+                },
+              }}
               rowClassName={(record) => (record.id === selectedQuotation?.id ? 'selected-row' : '')}
               rowKey="id"
               size="small"

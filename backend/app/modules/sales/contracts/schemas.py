@@ -399,6 +399,16 @@ class ExportContractResponse(BaseModel):
     )
 
 
+class ExportContractListSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    submitted_count: int = 0
+    approved_count: int = 0
+    total_amount: Decimal = Decimal("0")
+    advance_payment_amount: Decimal = Decimal("0")
+    currency: str | None = None
+
+
 class ExportContractListResponse(BaseModel):
     """分页出口订单查询结果。"""
 
@@ -406,6 +416,7 @@ class ExportContractListResponse(BaseModel):
 
     items: list[ExportContractResponse] = Field(description="当前分页返回的出口订单列表。")
     total: int = Field(description="符合查询条件的出口订单总数。")
+    summary: ExportContractListSummary
 
 
 class ExportContractExportResponse(BaseModel):

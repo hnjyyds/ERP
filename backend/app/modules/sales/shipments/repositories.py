@@ -209,6 +209,76 @@ class ShipmentPlanRepository:
     ) -> tuple[list[ShipmentPlanRow], int]:
         statement = select(ShipmentPlan)
         count_statement = select(func.count()).select_from(ShipmentPlan)
+        conditions = self._shipment_conditions(
+            q=q,
+            approval_status=approval_status,
+            customer_id=customer_id,
+            contract_id=contract_id,
+            owner_user_ids=owner_user_ids,
+        )
+        for condition in conditions:
+            statement = statement.where(condition)
+            count_statement = count_statement.where(condition)
+        statement = (
+            statement.order_by(ShipmentPlan.shipment_date.desc(), ShipmentPlan.code.asc())
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        rows = await self._scalars(statement)
+        total = await self.session.scalar(count_statement)
+        return [self._map_plan(row) for row in rows], int(total or 0)
+
+    async def summarize_shipments(
+        self,
+        *,
+        q: str | None = None,
+        approval_status: str | None = None,
+        customer_id: str | None = None,
+        contract_id: str | None = None,
+        owner_user_ids: list[str] | None = None,
+    ) -> dict[str, object]:
+        conditions = self._shipment_conditions(
+            q=q,
+            approval_status=approval_status,
+            customer_id=customer_id,
+            contract_id=contract_id,
+            owner_user_ids=owner_user_ids,
+        )
+        status_rows = await self.session.execute(
+            select(ShipmentPlan.approval_status, func.count())
+            .where(*conditions)
+            .group_by(ShipmentPlan.approval_status)
+        )
+        counts = {value: int(count) for value, count in status_rows}
+        receivable_amount = await self.session.scalar(
+            select(func.coalesce(func.sum(ShipmentPlan.receivable_amount), 0)).where(*conditions)
+        )
+        profit_amount = await self.session.scalar(
+            select(func.coalesce(func.sum(ShipmentPlan.profit_amount), 0)).where(*conditions)
+        )
+        currency = await self.session.scalar(
+            select(ShipmentPlan.currency)
+            .where(*conditions)
+            .order_by(ShipmentPlan.shipment_date.desc(), ShipmentPlan.code.asc())
+            .limit(1)
+        )
+        return {
+            "submitted_count": counts.get("submitted", 0),
+            "approved_count": counts.get("approved", 0),
+            "receivable_amount": receivable_amount or 0,
+            "profit_amount": profit_amount or 0,
+            "currency": currency,
+        }
+
+    def _shipment_conditions(
+        self,
+        *,
+        q: str | None,
+        approval_status: str | None,
+        customer_id: str | None,
+        contract_id: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> list[object]:
         conditions = []
         if q:
             pattern = f"%{q}%"
@@ -248,17 +318,7 @@ class ShipmentPlanRepository:
             conditions.append(contract_exists)
         if owner_user_ids is not None:
             conditions.append(ShipmentPlan.owner_user_id.in_(owner_user_ids))
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-        statement = (
-            statement.order_by(ShipmentPlan.shipment_date.desc(), ShipmentPlan.code.asc())
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        rows = await self._scalars(statement)
-        total = await self.session.scalar(count_statement)
-        return [self._map_plan(row) for row in rows], int(total or 0)
+        return conditions
 
     async def submit_plan(
         self,

@@ -1,10 +1,12 @@
 import { Alert, Button, Checkbox, Descriptions as _Descriptions, Drawer, Input, Table, Tag as _Tag , Select} from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search , FileStack} from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
-import { addExportContractAdvancePayment, approveExportContract, cancelExportContract, createExportContract, exportExportContract, listExportContracts, registerExportContractSignature, reissueExportContract, submitExportContract, updateExportContract, type AssignableUser, type CurrentUser, type ExportContract, type ExportContractAdvancePayment, type ExportContractLine, type ExportContractSignature, type Customer, type Product , ExportContractPurchaseStatus, ExportContractShipmentStatus, ExportQuotation, listAssignableUsers, listCustomers, listProducts, getExportQuotationHistory} from '@/api'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { addExportContractAdvancePayment, approveExportContract, cancelExportContract, createExportContract, exportExportContract, listExportContracts, registerExportContractSignature, reissueExportContract, submitExportContract, updateExportContract, type AssignableUser, type CurrentUser, type ExportContract, type ExportContractAdvancePayment, type ExportContractLine, type ExportContractSignature, type ExportContractListSummary, type Customer, type Product , ExportContractPurchaseStatus, ExportContractShipmentStatus, ExportQuotation, listAssignableUsers, listCustomers, listProducts, getExportQuotationHistory} from '@/api'
 import { exportContractPath, moduleDetailPath } from '@/app/routes'
 import { FormModal, FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { showError, showWarningDialog } from '@/shared/errors'
 import { downloadCsv as _downloadCsv, openExportContractPrint } from '@/shared/print'
 import { exportContractStatusOptions } from '@/shared/formOptions'
@@ -39,17 +41,30 @@ import {
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 
 export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props) {
+  const urlQuery = useUrlQuery()
+  const appliedUrlSearchRef = useRef(urlQuery.search)
   const [contracts, setContracts] = useState<ExportContract[]>([])
+  const [summary, setSummary] = useState<ExportContractListSummary>({
+    submitted_count: 0,
+    approved_count: 0,
+    total_amount: '0',
+    advance_payment_amount: '0',
+    currency: null,
+  })
   const [products, setProducts] = useState<Product[]>([])
   const [selectedContractId, setSelectedContractId] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [customerFilter, setCustomerFilter] = useState('')
+  const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
+  const [statusFilter, setStatusFilter] = useState(() => urlQuery.params.get('status') ?? '')
+  const [customerFilter, setCustomerFilter] = useState(() => urlQuery.params.get('customer') ?? '')
   const [customers, setCustomers] = useState<Customer[]>([])
   const [assignableUsers, setAssignableUsers] = useState<AssignableUser[]>([])
   const [history, setHistory] = useState<ExportQuotation[]>([])
   const [exportPreview, setExportPreview] = useState('')
   const [loading, setLoading] = useState(false)
+  const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params),
+  )
   const [loadingCustomers, setLoadingCustomers] = useState(false)
   const [loadingProducts, setLoadingProducts] = useState(false)
   const [loadingAssignableUsers, setLoadingAssignableUsers] = useState(false)
@@ -108,6 +123,22 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
   }, [])
 
   useEffect(() => {
+    if (appliedUrlSearchRef.current === urlQuery.search) return
+    appliedUrlSearchRef.current = urlQuery.search
+    setSearch(urlQuery.params.get('q') ?? '')
+    setStatusFilter(urlQuery.params.get('status') ?? '')
+    setCustomerFilter(urlQuery.params.get('customer') ?? '')
+    const nextPage = parsePageParam(urlQuery.params)
+    const nextFilters = {
+      q: urlQuery.params.get('q') ?? '',
+      status: urlQuery.params.get('status') ?? '',
+      customer: urlQuery.params.get('customer') ?? '',
+    }
+    setPage(nextPage)
+    void loadContracts(undefined, nextPage, pageSize, nextFilters)
+  }, [urlQuery.search])
+
+  useEffect(() => {
     if (!createModalOpen || assignableUsersLoaded || loadingAssignableUsers) return
     void loadAssignableUsersForContract()
   }, [createModalOpen, assignableUsersLoaded, loadingAssignableUsers])
@@ -128,14 +159,37 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
     }
   }, [contracts, detailId, onNavigate])
 
-  async function loadContracts(preferredId?: string) {
+  async function loadContracts(
+    preferredId?: string,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: { q: string; status: string; customer: string },
+  ) {
+    const resolvedPage = pageOverride ?? page
+    const resolvedPageSize = pageSizeOverride ?? pageSize
+    const resolvedQ = filtersOverride?.q ?? search
+    const resolvedStatus = filtersOverride?.status ?? statusFilter
+    const resolvedCustomer = filtersOverride?.customer ?? customerFilter
     setLoading(true)
     try {
       const result = await listExportContracts({
-        q: search.trim() || undefined,
-        approval_status: statusFilter || undefined,
-        customer_id: customerFilter.trim() || undefined,
+        q: resolvedQ.trim() || undefined,
+        approval_status: resolvedStatus || undefined,
+        customer_id: resolvedCustomer.trim() || undefined,
+        limit: resolvedPageSize,
+        offset: (resolvedPage - 1) * resolvedPageSize,
       })
+      setTotal(result.total)
+      setSummary(result.summary)
+      if (result.items.length === 0 && resolvedPage > 1) {
+        const prevPage = resolvedPage - 1
+        setPage(prevPage)
+        appliedUrlSearchRef.current = urlQuery.update({
+          page: prevPage === 1 ? null : prevPage,
+        })
+        await loadContracts(preferredId, prevPage, resolvedPageSize, filtersOverride)
+        return
+      }
       setContracts(result.items)
       const nextSelectedId =
         preferredId ??
@@ -564,19 +618,16 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
     }
   }
 
-  const totalAmount = contracts.reduce((sum, item) => sum + Number(item.statistics.total_amount), 0)
-  const totalAdvance = contracts.reduce(
-    (sum, item) => sum + Number(item.statistics.advance_payment_amount),
-    0,
-  )
-  const currency = contracts[0]?.currency ?? 'USD'
+  const totalAmount = Number(summary.total_amount)
+  const totalAdvance = Number(summary.advance_payment_amount)
+  const currency = summary.currency ?? 'USD'
 
   return (
     <section className="export-contract-page">
 <div className="summary-strip" aria-label={t('sales.contract.metric.overviewAria')}>
-        <Metric label={t('sales.contract.metric.contractCount')} value={contracts.length} />
-        <Metric label={t('sales.contract.metric.pendingApproval')} value={contracts.filter((item) => item.approval_status === 'submitted').length} />
-        <Metric label={t('sales.contract.metric.approvedCount')} value={contracts.filter((item) => item.approval_status === 'approved').length} />
+        <Metric label={t('sales.contract.metric.contractCount')} value={total} />
+        <Metric label={t('sales.contract.metric.pendingApproval')} value={summary.submitted_count} />
+        <Metric label={t('sales.contract.metric.approvedCount')} value={summary.approved_count} />
         <Metric label={t('sales.contract.metric.contractAmount')} value={formatMoney(totalAmount.toFixed(2), currency)} />
         <Metric label={t('sales.contract.metric.advancePayment')} value={formatMoney(totalAdvance.toFixed(2), currency)} />
       </div>
@@ -595,7 +646,14 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
             className="inline-filters single-line-filter-toolbar"
             onSubmit={(event) => {
               event.preventDefault()
-              void loadContracts()
+              setPage(1)
+              appliedUrlSearchRef.current = urlQuery.update({
+                q: search.trim(),
+                status: statusFilter,
+                customer: customerFilter,
+                page: null,
+              })
+              void loadContracts(undefined, 1)
             }}
           >
             <label>
@@ -689,7 +747,16 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
             ]}
             dataSource={contracts}
             loading={loading}
-            pagination={false}
+            pagination={{
+              ...pagination,
+              onChange: (nextPage, nextPageSize) => {
+                const next = changePage(nextPage, nextPageSize)
+                appliedUrlSearchRef.current = urlQuery.update({
+                  page: next.page === 1 ? null : next.page,
+                })
+                void loadContracts(undefined, next.page, next.pageSize)
+              },
+            }}
             rowClassName={(record) => (record.id === selectedContract?.id ? 'selected-row' : '')}
             rowKey="id"
             size="small"

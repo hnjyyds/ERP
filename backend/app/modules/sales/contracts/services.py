@@ -184,9 +184,16 @@ class ExportContractService:
             limit=limit,
             offset=offset,
         )
+        summary = await self._repository.summarize_contracts(
+            q=q,
+            approval_status=approval_status,
+            customer_id=customer_id,
+            owner_user_ids=owner_user_ids,
+        )
         return ExportContractListResponse(
             items=await self._contract_responses(contracts),
             total=total,
+            summary=summary,
         )
 
     async def get_contract(

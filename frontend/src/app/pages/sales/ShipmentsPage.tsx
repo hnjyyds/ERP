@@ -1,7 +1,7 @@
 import { Alert, Button, Input, Modal, Skeleton as _Skeleton, Table, Tag as _Tag } from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search, Ship } from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   approveShipment,
   generateShipmentFromContracts,
@@ -11,6 +11,7 @@ import {
   submitShipment,
   type CurrentUser,
   type ShipmentPlan,
+  type ShipmentPlanListSummary,
   type ShipmentApprovePayload,
   type ShipmentPlanGeneratePayload,
   type ShipmentReminder,
@@ -21,6 +22,8 @@ import {
 } from '@/api'
 import { shipmentPath, moduleDetailPath } from '@/app/routes'
 import { FormSelect, ListPageShell, Metric, PanelTitle, RemoteSelect } from '@/shared/ui'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { showError } from '@/shared/errors'
 import { shipmentStatusOptions, freightMethodOptions } from '@/shared/formOptions'
 import { useFormModal } from '@/shared/useFormModal'
@@ -159,14 +162,27 @@ function formatPercent(value?: string | null): string {
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 
 export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
+  const urlQuery = useUrlQuery()
+  const appliedUrlSearchRef = useRef(urlQuery.search)
   const [shipments, setShipments] = useState<ShipmentPlan[]>([])
+  const [summary, setSummary] = useState<ShipmentPlanListSummary>({
+    submitted_count: 0,
+    approved_count: 0,
+    receivable_amount: '0',
+    profit_amount: '0',
+    currency: null,
+  })
   const [reminders, setReminders] = useState<ShipmentReminder[]>([])
   const [selectedShipmentId, setSelectedShipmentId] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [customerFilter, setCustomerFilter] = useState('')
-  const [contractFilter, setContractFilter] = useState('')
+  const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
+  const [statusFilter, setStatusFilter] = useState(() => urlQuery.params.get('status') ?? '')
+  const [customerFilter, setCustomerFilter] = useState(() => urlQuery.params.get('customer') ?? '')
+  const [contractFilter, setContractFilter] = useState(() => urlQuery.params.get('contract') ?? '')
   const [loading, setLoading] = useState(false)
+  const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params),
+  )
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const {
@@ -209,6 +225,24 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
   }, [])
 
   useEffect(() => {
+    if (appliedUrlSearchRef.current === urlQuery.search) return
+    appliedUrlSearchRef.current = urlQuery.search
+    setSearch(urlQuery.params.get('q') ?? '')
+    setStatusFilter(urlQuery.params.get('status') ?? '')
+    setCustomerFilter(urlQuery.params.get('customer') ?? '')
+    setContractFilter(urlQuery.params.get('contract') ?? '')
+    const nextPage = parsePageParam(urlQuery.params)
+    const nextFilters = {
+      q: urlQuery.params.get('q') ?? '',
+      status: urlQuery.params.get('status') ?? '',
+      customer: urlQuery.params.get('customer') ?? '',
+      contract: urlQuery.params.get('contract') ?? '',
+    }
+    setPage(nextPage)
+    void loadShipments(undefined, nextPage, pageSize, nextFilters)
+  }, [urlQuery.search])
+
+  useEffect(() => {
     setApproveForm({
       reviewer_name: selectedShipment?.reviewer_name ?? '',
       approved_at: selectedShipment?.approved_at ?? todayInputValue(),
@@ -222,15 +256,39 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
     }
   }, [detailId, onNavigate, shipments])
 
-  async function loadShipments(preferredId?: string) {
+  async function loadShipments(
+    preferredId?: string,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: { q: string; status: string; customer: string; contract: string },
+  ) {
+    const resolvedPage = pageOverride ?? page
+    const resolvedPageSize = pageSizeOverride ?? pageSize
+    const resolvedQ = filtersOverride?.q ?? search
+    const resolvedStatus = filtersOverride?.status ?? statusFilter
+    const resolvedCustomer = filtersOverride?.customer ?? customerFilter
+    const resolvedContract = filtersOverride?.contract ?? contractFilter
     setLoading(true)
     try {
       const result = await listShipments({
-        q: search.trim() || undefined,
-        approval_status: statusFilter || undefined,
-        customer_id: customerFilter.trim() || undefined,
-        contract_id: contractFilter.trim() || undefined,
+        q: resolvedQ.trim() || undefined,
+        approval_status: resolvedStatus || undefined,
+        customer_id: resolvedCustomer.trim() || undefined,
+        contract_id: resolvedContract.trim() || undefined,
+        limit: resolvedPageSize,
+        offset: (resolvedPage - 1) * resolvedPageSize,
       })
+      setTotal(result.total)
+      setSummary(result.summary)
+      if (result.items.length === 0 && resolvedPage > 1) {
+        const prevPage = resolvedPage - 1
+        setPage(prevPage)
+        appliedUrlSearchRef.current = urlQuery.update({
+          page: prevPage === 1 ? null : prevPage,
+        })
+        await loadShipments(preferredId, prevPage, resolvedPageSize, filtersOverride)
+        return
+      }
       setShipments(result.items)
       const nextSelectedId =
         preferredId ??
@@ -341,15 +399,9 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
     }
   }
 
-  const totalReceivable = shipments.reduce(
-    (sum, item) => sum + Number(item.finance_overview.receivable_amount),
-    0,
-  )
-  const totalProfit = shipments.reduce(
-    (sum, item) => sum + Number(item.finance_overview.profit_amount),
-    0,
-  )
-  const currency = shipments[0]?.currency ?? 'USD'
+  const totalReceivable = Number(summary.receivable_amount)
+  const totalProfit = Number(summary.profit_amount)
+  const currency = summary.currency ?? 'USD'
   const selectedShipmentRows =
     selectedShipment?.contract_progresses.flatMap((progress) =>
       progress.shipment_statuses.map((status) => ({
@@ -370,14 +422,14 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
   return (
     <section className="shipment-page">
       <div className="summary-strip" aria-label={t('sales.shipment.metric.overviewAria')}>
-        <Metric label={t('sales.shipment.metric.shipmentCount')} value={shipments.length} />
+        <Metric label={t('sales.shipment.metric.shipmentCount')} value={total} />
         <Metric
           label={t('sales.shipment.metric.pendingApproval')}
-          value={shipments.filter((item) => item.approval_status === 'submitted').length}
+          value={summary.submitted_count}
         />
         <Metric
           label={t('sales.shipment.metric.approvedCount')}
-          value={shipments.filter((item) => item.approval_status === 'approved').length}
+          value={summary.approved_count}
         />
         <Metric
           label={t('sales.shipment.metric.receivableAmount')}
@@ -403,7 +455,15 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
               className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadShipments()
+                  setPage(1)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    q: search.trim(),
+                    status: statusFilter,
+                    customer: customerFilter,
+                    contract: contractFilter,
+                    page: null,
+                  })
+                  void loadShipments(undefined, 1)
                 }}
               >
                 <label>
@@ -505,7 +565,16 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
               ]}
               dataSource={shipments}
               loading={loading}
-              pagination={false}
+              pagination={{
+                ...pagination,
+                onChange: (nextPage, nextPageSize) => {
+                  const next = changePage(nextPage, nextPageSize)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    page: next.page === 1 ? null : next.page,
+                  })
+                  void loadShipments(undefined, next.page, next.pageSize)
+                },
+              }}
               rowClassName={(record) => (record.id === selectedShipment?.id ? 'selected-row' : '')}
               rowKey="id"
               size="small"

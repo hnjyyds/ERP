@@ -177,9 +177,16 @@ class ExportQuotationService:
             customer_id=customer_id,
             owner_user_ids=owner_user_ids,
         )
+        summary = await self._repository.summarize_quotations(
+            q=q,
+            approval_status=approval_status,
+            customer_id=customer_id,
+            owner_user_ids=owner_user_ids,
+        )
         return ExportQuotationListResponse(
             items=[await self._quotation_response(quotation) for quotation in quotations],
             total=total,
+            summary=summary,
         )
 
     async def get_quotation(

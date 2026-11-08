@@ -128,11 +128,22 @@ class ShipmentPlanResponse(BaseModel):
     contract_progresses: list[ShipmentContractProgressResponse]
 
 
+class ShipmentPlanListSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    submitted_count: int = 0
+    approved_count: int = 0
+    receivable_amount: Decimal = Decimal("0")
+    profit_amount: Decimal = Decimal("0")
+    currency: str | None = None
+
+
 class ShipmentPlanListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[ShipmentPlanResponse]
     total: int
+    summary: ShipmentPlanListSummary
 
 
 class ShipmentReminderListResponse(BaseModel):
