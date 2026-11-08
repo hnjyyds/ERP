@@ -5,6 +5,11 @@ import * as api from '@/api'
 import type { SampleRecord } from '@/api'
 import { SampleRecordsPage } from '@/app/pages/sample/SampleRecordsPage'
 
+vi.mock('@/shared/print', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/shared/print')>()
+  return { ...actual, downloadCsv: vi.fn() }
+})
+
 const record = {
   id: 'rec-1',
   code: 'SP-001',
@@ -117,6 +122,56 @@ describe('SampleRecordsPage', () => {
     await waitFor(() => expect(createSpy).toHaveBeenCalledTimes(1))
     expect(createSpy.mock.calls[0][0]).toMatchObject({ product_name: '新品杯' })
     expect(await screen.findByText('已新增样品 SP-002')).toBeTruthy()
+  })
+
+  it('按当前表单导入样品并提示新增数量', async () => {
+    vi.spyOn(api, 'listSampleRecords').mockResolvedValue({ items: [record], total: 1 })
+    const importSpy = vi.spyOn(api, 'importSampleRecords').mockResolvedValue({
+      created_count: 1,
+      records: [{ ...record, id: 'rec-9', code: 'SP-009' }],
+    } as never)
+
+    render(<SampleRecordsPage detailId={null} onNavigate={onNavigate} />)
+    await waitFor(() => expect(api.listSampleRecords).toHaveBeenCalled())
+
+    await userEvent.click(screen.getByRole('button', { name: '新增样品' }))
+    const dialog = await screen.findByRole('dialog')
+    await userEvent.type(within(dialog).getByLabelText('产品名称'), '样品A')
+    await userEvent.click(within(dialog).getByRole('button', { name: '按当前表单导入' }))
+
+    await waitFor(() => {
+      expect(importSpy).toHaveBeenCalledWith({
+        records: [expect.objectContaining({ product_name: '样品A' })],
+      })
+    })
+    expect(await screen.findByText('已导入 1 条样品')).toBeTruthy()
+    await waitFor(() => {
+      expect(api.listSampleRecords).toHaveBeenLastCalledWith(
+        expect.objectContaining({ q: undefined }),
+      )
+    })
+  })
+
+  it('按搜索条件导出台账', async () => {
+    vi.spyOn(api, 'listSampleRecords').mockResolvedValue({ items: [record], total: 1 })
+    const exportSpy = vi.spyOn(api, 'exportSampleRecords').mockResolvedValue({
+      filename: 'sample-records.csv',
+      content: 'code\nSP-001',
+      total: 2,
+    } as never)
+
+    render(<SampleRecordsPage detailId={null} onNavigate={onNavigate} />)
+    await waitFor(() => expect(api.listSampleRecords).toHaveBeenCalled())
+
+    await userEvent.type(screen.getByLabelText('样品搜索'), 'SP-9')
+    await userEvent.click(screen.getByRole('button', { name: '导出台账' }))
+
+    await waitFor(() => {
+      expect(exportSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ q: 'SP-9', sample_type: undefined }),
+      )
+    })
+    expect(await screen.findByText('已导出 2 条样品台账')).toBeTruthy()
   })
 
   it('详情页追加样品图片提交图片信息', async () => {

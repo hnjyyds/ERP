@@ -5,6 +5,11 @@ import * as api from '@/api'
 import type { SampleDelivery } from '@/api'
 import { SampleDeliveriesPage } from '@/app/pages/sample/SampleDeliveriesPage'
 
+vi.mock('@/shared/print', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/shared/print')>()
+  return { ...actual, downloadCsv: vi.fn() }
+})
+
 const delivery = {
   id: 'sd-1',
   code: 'SD-001',
@@ -157,6 +162,114 @@ describe('SampleDeliveriesPage', () => {
     const approveButton = await screen.findByRole('button', { name: '审核通过' })
     expect(approveButton).toBeDisabled()
     expect(screen.getByText('等待 张三 审批')).toBeTruthy()
+  })
+
+  it('保存草稿编辑提交更新后的客户名称', async () => {
+    vi.spyOn(api, 'listSampleDeliveries').mockResolvedValue({ items: [delivery], total: 1 })
+    const updateSpy = vi
+      .spyOn(api, 'updateSampleDelivery')
+      .mockResolvedValue({ ...delivery, customer_name: '客户B' })
+
+    render(
+      <SampleDeliveriesPage currentUser={currentUser} detailId="sd-1" onNavigate={onNavigate} />,
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: '编辑草稿' }))
+    const dialog = await screen.findByRole('dialog')
+    const customerInput = within(dialog).getByLabelText('客户名称')
+    await userEvent.clear(customerInput)
+    await userEvent.type(customerInput, '客户B')
+    await userEvent.click(within(dialog).getByRole('button', { name: '保存草稿编辑' }))
+
+    await waitFor(() => {
+      expect(updateSpy).toHaveBeenCalledWith(
+        'sd-1',
+        expect.objectContaining({ customer_name: '客户B' }),
+      )
+    })
+    expect(await screen.findByText('已保存寄样单 SD-001')).toBeTruthy()
+  })
+
+  it('指定审批人后提交寄样单审核', async () => {
+    vi.spyOn(api, 'listSampleDeliveries').mockResolvedValue({ items: [delivery], total: 1 })
+    vi.spyOn(api, 'listAssignableUsers').mockResolvedValue({
+      users: [{ id: 'u-2', display_name: '李四', department_name: '管理部' }],
+    } as never)
+    const submitSpy = vi
+      .spyOn(api, 'submitSampleDelivery')
+      .mockResolvedValue({ ...delivery, status: 'submitted', reviewer_id: 'u-2' })
+
+    render(
+      <SampleDeliveriesPage currentUser={currentUser} detailId="sd-1" onNavigate={onNavigate} />,
+    )
+
+    await userEvent.click(await screen.findByLabelText('审批人'))
+    await userEvent.click(await screen.findByText('李四 / 管理部'))
+    await userEvent.click(screen.getByRole('button', { name: '提交审核' }))
+
+    await waitFor(() => {
+      expect(submitSpy).toHaveBeenCalledWith('sd-1', { reviewer_id: 'u-2' })
+    })
+    expect(await screen.findByText('已提交寄样单 SD-001')).toBeTruthy()
+  })
+
+  it('指定审批人审核通过寄样单', async () => {
+    vi.spyOn(api, 'listSampleDeliveries').mockResolvedValue({
+      items: [
+        {
+          ...delivery,
+          status: 'submitted',
+          reviewer_id: 'u-reviewer',
+          reviewer_name: '李四',
+        },
+      ],
+      total: 1,
+    })
+    const approveSpy = vi
+      .spyOn(api, 'approveSampleDelivery')
+      .mockResolvedValue({ ...delivery, status: 'approved', reviewer_id: 'u-reviewer' })
+
+    render(
+      <SampleDeliveriesPage
+        currentUser={{ ...currentUser, id: 'u-reviewer', permissions: ['sample:delivery:approve'] }}
+        detailId="sd-1"
+        onNavigate={onNavigate}
+      />,
+    )
+
+    const approveButton = await screen.findByRole('button', { name: '审核通过' })
+    expect(approveButton).toBeEnabled()
+    await userEvent.click(approveButton)
+
+    await waitFor(() => {
+      expect(approveSpy).toHaveBeenCalledWith(
+        'sd-1',
+        expect.objectContaining({ approved_at: '2026-08-01' }),
+      )
+    })
+    expect(await screen.findByText('已审核寄样单 SD-001')).toBeTruthy()
+  })
+
+  it('按客户筛选导出寄样记录', async () => {
+    vi.spyOn(api, 'listSampleDeliveries').mockResolvedValue({ items: [delivery], total: 1 })
+    const exportSpy = vi.spyOn(api, 'exportSampleDeliveries').mockResolvedValue({
+      filename: 'sample-deliveries.csv',
+      content: 'code\nSD-001',
+      total: 2,
+    } as never)
+
+    render(
+      <SampleDeliveriesPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+    await waitFor(() => expect(api.listSampleDeliveries).toHaveBeenCalled())
+
+    await userEvent.type(screen.getByLabelText('客户标识'), 'c-9')
+    await userEvent.click(screen.getByRole('button', { name: '导出寄样' }))
+
+    await waitFor(() => {
+      expect(exportSpy).toHaveBeenCalledWith(expect.objectContaining({ customer_id: 'c-9' }))
+    })
+    expect(await screen.findByText('已导出 2 条寄样记录')).toBeTruthy()
   })
 
   it('更新物流提交快递单号并提示', async () => {

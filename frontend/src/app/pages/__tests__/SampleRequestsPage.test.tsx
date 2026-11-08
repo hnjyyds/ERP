@@ -138,6 +138,105 @@ describe('SampleRequestsPage', () => {
     })
   })
 
+  it('登记打样费用提交金额与币种并提示成功', async () => {
+    vi.spyOn(api, 'listSampleRequests').mockResolvedValue(listResult([request]))
+    const feeSpy = vi.spyOn(api, 'addSampleFee').mockResolvedValue({
+      id: 'fee-1',
+      fee_type: 'sample_making',
+      amount: '120',
+      currency: 'USD',
+      payee_type: 'supplier',
+      payee_name: '',
+      payment_status: 'pending',
+      payment_request_no: null,
+      remark: null,
+    } as never)
+
+    render(
+      <SampleRequestsPage currentUser={currentUser} detailId="sr-1" onNavigate={onNavigate} />,
+    )
+
+    const amountInput = await screen.findByLabelText('打样费用金额')
+    await userEvent.clear(amountInput)
+    await userEvent.type(amountInput, '120')
+    await userEvent.click(screen.getByRole('button', { name: '登记打样费用' }))
+
+    await waitFor(() => {
+      expect(feeSpy).toHaveBeenCalledWith(
+        'sr-1',
+        expect.objectContaining({ amount: '120', currency: 'USD' }),
+      )
+    })
+    expect(await screen.findByText(/已登记打样费用/)).toBeTruthy()
+  })
+
+  it('指定付费审批人后发起费用付款申请', async () => {
+    const requestWithFee = {
+      ...request,
+      fees: [
+        {
+          id: 'fee-1',
+          fee_type: 'sample_making',
+          amount: '80',
+          currency: 'USD',
+          payee_type: 'supplier',
+          payee_name: '工厂A',
+          payment_status: 'pending',
+          payment_request_no: null,
+          remark: null,
+        },
+      ],
+    } as unknown as SampleRequest
+    vi.spyOn(api, 'listSampleRequests').mockResolvedValue(listResult([requestWithFee]))
+    vi.spyOn(api, 'listAssignableUsers').mockResolvedValue({
+      users: [{ id: 'u-2', display_name: '李四', department_name: '财务部' }],
+    } as never)
+    const paymentSpy = vi.spyOn(api, 'requestSampleFeePayment').mockResolvedValue({
+      ...requestWithFee.fees[0],
+      payment_request_no: 'PR-001',
+    } as never)
+
+    render(
+      <SampleRequestsPage currentUser={currentUser} detailId="sr-1" onNavigate={onNavigate} />,
+    )
+
+    await userEvent.click(await screen.findByLabelText('付费审批人'))
+    await userEvent.click(await screen.findByText('李四 / 财务部'))
+    await userEvent.click(screen.getByRole('button', { name: '发起付款' }))
+
+    await waitFor(() => {
+      expect(paymentSpy).toHaveBeenCalledWith('sr-1', 'fee-1', { reviewer_id: 'u-2' })
+    })
+    expect(await screen.findByText('已发起打样费用付款申请')).toBeTruthy()
+  })
+
+  it('载入打样单并转为样品登记', async () => {
+    const completed = { ...request, status: 'completed' } as SampleRequest
+    vi.spyOn(api, 'listSampleRequests').mockResolvedValue(listResult([completed]))
+    const convertSpy = vi.spyOn(api, 'createSampleRecordFromRequest').mockResolvedValue({
+      id: 'rec-9',
+      code: 'SP-009',
+    } as never)
+
+    render(
+      <SampleRequestsPage currentUser={currentUser} detailId="sr-1" onNavigate={onNavigate} />,
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: '载入为样品' }))
+    const quantityInput = screen.getByLabelText('收样数量')
+    await userEvent.clear(quantityInput)
+    await userEvent.type(quantityInput, '5')
+    await userEvent.click(screen.getByRole('button', { name: '转为样品登记' }))
+
+    await waitFor(() => {
+      expect(convertSpy).toHaveBeenCalledWith(
+        'sr-1',
+        expect.objectContaining({ sample_type: 'confirm_sample', quantity: '5', unit: 'pcs' }),
+      )
+    })
+    expect(await screen.findByText('已转为样品 SP-009')).toBeTruthy()
+  })
+
   it('详情页更新打样进度后提示并保留当前单', async () => {
     vi.spyOn(api, 'listSampleRequests').mockResolvedValue(listResult([request]))
     const progressSpy = vi.spyOn(api, 'addSampleProgress').mockResolvedValue({
