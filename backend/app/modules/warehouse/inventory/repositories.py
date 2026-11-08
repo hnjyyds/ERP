@@ -211,6 +211,60 @@ class InventoryRepository:
     ) -> tuple[list[InventoryBalanceRow], int]:
         statement = select(InventoryBalance)
         count_statement = select(func.count()).select_from(InventoryBalance)
+        conditions = self._balance_conditions(
+            q=q,
+            warehouse_id=warehouse_id,
+            location_id=location_id,
+            product_id=product_id,
+        )
+        for condition in conditions:
+            statement = statement.where(condition)
+            count_statement = count_statement.where(condition)
+        statement = (
+            statement.order_by(
+                InventoryBalance.warehouse_name.asc(),
+                InventoryBalance.location_name.asc(),
+                InventoryBalance.product_name.asc(),
+            )
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        rows = await self._balance_scalars(statement)
+        total = await self.session.scalar(count_statement)
+        return [self._map_balance(row) for row in rows], int(total or 0)
+
+    async def sum_balances(
+        self,
+        *,
+        q: str | None = None,
+        warehouse_id: str | None = None,
+        location_id: str | None = None,
+        product_id: str | None = None,
+    ) -> tuple[Decimal, Decimal]:
+        """同一筛选条件下的库存合计，不受分页影响。"""
+        conditions = self._balance_conditions(
+            q=q,
+            warehouse_id=warehouse_id,
+            location_id=location_id,
+            product_id=product_id,
+        )
+        statement = select(
+            func.coalesce(func.sum(InventoryBalance.available_quantity), 0),
+            func.coalesce(func.sum(InventoryBalance.pending_inspection_quantity), 0),
+        ).select_from(InventoryBalance)
+        for condition in conditions:
+            statement = statement.where(condition)
+        available, pending = (await self.session.execute(statement)).one()
+        return Decimal(available or 0), Decimal(pending or 0)
+
+    def _balance_conditions(
+        self,
+        *,
+        q: str | None,
+        warehouse_id: str | None,
+        location_id: str | None,
+        product_id: str | None,
+    ) -> list:
         conditions = []
         if q:
             pattern = f"%{q}%"
@@ -228,21 +282,7 @@ class InventoryRepository:
             conditions.append(InventoryBalance.location_id == location_id)
         if product_id:
             conditions.append(InventoryBalance.product_id == product_id)
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-        statement = (
-            statement.order_by(
-                InventoryBalance.warehouse_name.asc(),
-                InventoryBalance.location_name.asc(),
-                InventoryBalance.product_name.asc(),
-            )
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        rows = await self._balance_scalars(statement)
-        total = await self.session.scalar(count_statement)
-        return [self._map_balance(row) for row in rows], int(total or 0)
+        return conditions
 
     async def list_ledgers(
         self,

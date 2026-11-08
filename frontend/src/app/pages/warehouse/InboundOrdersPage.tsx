@@ -196,7 +196,16 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
   const [cancelModalOpen, setCancelModalOpen] = useState(false)
   const [cancelReason, setCancelReason] = useState('')
   const [cancelReasonError, setCancelReasonError] = useState('')
-  const { page, pageSize, setTotal, setPage, changePage, pagination } = useTablePagination(
+  const [statusSummary, setStatusSummary] = useState({
+    draft_count: 0,
+    submitted_count: 0,
+    approved_count: 0,
+  })
+  const [inventorySummary, setInventorySummary] = useState({
+    available_quantity: '0',
+    pending_inspection_quantity: '0',
+  })
+  const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
     undefined,
     parsePageParam(urlQuery.params),
   )
@@ -305,9 +314,10 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
     const resolvedStatus = queryOverride?.status ?? statusFilter
     const resolvedPage = queryOverride?.page ?? page
     const resolvedPageSize = queryOverride?.pageSize ?? pageSize
+    const summaryInventoryQuery = inventorySearch.trim() || resolvedQuery.trim() || undefined
     setLoading(true)
     try {
-      const [orderResult, planOptions] = await Promise.all([
+      const [orderResult, planOptions, balanceSummary] = await Promise.all([
         listInboundOrders({
           q: preferredOrder?.code ?? (resolvedQuery.trim() || undefined),
           status: resolvedStatus || undefined,
@@ -318,8 +328,11 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
           offset: (resolvedPage - 1) * resolvedPageSize,
         }),
         loadInboundOrderPlanOptions(),
+        listInventoryBalances({ q: summaryInventoryQuery, limit: 1 }),
       ])
       setTotal(orderResult.total)
+      setStatusSummary(orderResult.summary)
+      setInventorySummary(balanceSummary.summary)
       const nextOrders = preferredOrder
         ? [preferredOrder, ...orderResult.items.filter((item) => item.id !== preferredOrder.id)]
         : orderResult.items
@@ -571,22 +584,16 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
     }
   }
 
-  const draftCount = orders.filter((item) => item.status === 'draft').length
-  const submittedCount = orders.filter((item) => item.status === 'submitted').length
-  const approvedCount = orders.filter((item) => item.status === 'approved').length
-  const availableQuantity = inventoryBalances.reduce(
-    (sum, item) => sum + Number(item.available_quantity || 0),
-    0,
-  )
-  const pendingQuantity = inventoryBalances.reduce(
-    (sum, item) => sum + Number(item.pending_inspection_quantity || 0),
-    0,
-  )
+  const draftCount = statusSummary.draft_count
+  const submittedCount = statusSummary.submitted_count
+  const approvedCount = statusSummary.approved_count
+  const availableQuantity = Number(inventorySummary.available_quantity || 0)
+  const pendingQuantity = Number(inventorySummary.pending_inspection_quantity || 0)
 
   return (
     <section className="inbound-order-page">
 <div className="summary-strip" aria-label={t('warehouse.inboundOrder.metric.overviewAria')}>
-        <Metric label={t('warehouse.inboundOrder.metric.orderCount')} value={orders.length} />
+        <Metric label={t('warehouse.inboundOrder.metric.orderCount')} value={total} />
         <Metric label={t('warehouse.inboundOrder.metric.draftCount')} value={draftCount} />
         <Metric label={t('warehouse.inboundOrder.metric.submittedCount')} value={submittedCount} intent={submittedCount > 0 ? 'warning' : 'normal'} />
         <Metric label={t('warehouse.inboundOrder.metric.approvedCount')} value={approvedCount} />

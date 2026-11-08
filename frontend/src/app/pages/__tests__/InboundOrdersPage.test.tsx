@@ -49,9 +49,14 @@ vi.mock('../../../api', async (importOriginal) => {
         },
       ],
       total: 1,
+      summary: { draft_count: 1, submitted_count: 0, approved_count: 0 },
     }),
     listInboundPlans: vi.fn().mockResolvedValue({ items: [], total: 0 }),
-    listInventoryBalances: vi.fn().mockResolvedValue({ items: [], total: 0 }),
+    listInventoryBalances: vi.fn().mockResolvedValue({
+      items: [],
+      total: 0,
+      summary: { available_quantity: '12.50', pending_inspection_quantity: '3.00' },
+    }),
     listInventoryLedgers: vi.fn().mockResolvedValue({ items: [], total: 0 }),
     listPurchaseContracts: vi.fn().mockResolvedValue({
       items: [
@@ -78,6 +83,7 @@ import {
   listPurchaseContracts,
   submitInboundOrder,
   type CurrentUser,
+  type InboundOrder,
 } from '../../../api'
 
 describe('InboundOrdersPage', () => {
@@ -350,5 +356,67 @@ describe('InboundOrdersPage', () => {
       expect(screen.getByPlaceholderText('入库单 / 采购合同 / 商品')).toHaveValue('B')
     })
     expect(screen.getByLabelText(/单据状态/).closest('.ant-select')?.textContent).toContain('已审批')
+  })
+
+  it('翻到第 2 页时顶部指标数值不变', async () => {
+    const baseOrder: InboundOrder = {
+      id: 'inbound-order-1',
+      code: 'IO-TEST-001',
+      plan_id: 'inbound-plan-1',
+      purchase_contract_id: 'purchase-contract-1',
+      purchase_contract_no: 'PC-TEST-001',
+      supplier_id: 'supplier-1',
+      supplier_name: '测试供应商',
+      inbound_type: 'purchase',
+      inbound_mode: 'pending_inspection',
+      inbound_at: '2026-08-30',
+      warehouse_id: 'wh-ningbo',
+      warehouse_name: '宁波总仓',
+      location_id: 'loc-a-01',
+      location_name: 'A-01',
+      operator_name: '仓库主管',
+      status: 'draft',
+      submitted_at: null,
+      approved_at: null,
+      reviewer_id: null,
+      reviewer_name: null,
+      owner_user_id: 'user-warehouse',
+      lines: [],
+    }
+    const summary = { draft_count: 7, submitted_count: 5, approved_count: 9 }
+    vi.mocked(listInboundOrders).mockImplementation(async (filters) => ({
+      items:
+        (filters?.offset ?? 0) === 0
+          ? [baseOrder]
+          : [
+              { ...baseOrder, id: 'inbound-order-2', code: 'IO-TEST-002', status: 'approved' },
+              { ...baseOrder, id: 'inbound-order-3', code: 'IO-TEST-003', status: 'approved' },
+            ],
+      total: 120,
+      summary,
+    }))
+
+    render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() => expect(listInboundOrders).toHaveBeenCalledWith(expect.objectContaining({ offset: 0 })))
+
+    const strip = screen.getByLabelText('货物入库概览')
+    const labels = ['入库单', '草稿', '待审批', '已审批', '可用库存', '待检库存']
+    const readMetrics = () =>
+      labels.map(
+        (label) =>
+          within(strip).getByText(label).closest('.metric-cell')?.querySelector('.metric-value')
+            ?.textContent,
+      )
+
+    expect(readMetrics()).toEqual(['120', '7', '5', '9', '12.50', '3.00'])
+    const before = readMetrics()
+
+    await userEvent.setup().click(screen.getByTitle('2'))
+
+    await waitFor(() => {
+      expect(listInboundOrders).toHaveBeenLastCalledWith(expect.objectContaining({ offset: 50 }))
+    })
+    expect(readMetrics()).toEqual(before)
   })
 })

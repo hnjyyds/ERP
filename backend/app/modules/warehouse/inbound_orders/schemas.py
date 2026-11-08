@@ -111,11 +111,20 @@ class InboundOrderResponse(BaseModel):
     lines: list[InboundOrderLineResponse]
 
 
+class InboundOrderStatusSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    draft_count: int = 0
+    submitted_count: int = 0
+    approved_count: int = 0
+
+
 class InboundOrderListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[InboundOrderResponse]
     total: int
+    summary: InboundOrderStatusSummary
 
 
 class InventoryBalanceResponse(BaseModel):
@@ -135,11 +144,19 @@ class InventoryBalanceResponse(BaseModel):
     unit: str
 
 
+class InventoryBalanceSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    available_quantity: str
+    pending_inspection_quantity: str
+
+
 class InventoryBalanceListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[InventoryBalanceResponse]
     total: int
+    summary: InventoryBalanceSummary
 
 
 class InventoryLedgerResponse(BaseModel):

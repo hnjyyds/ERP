@@ -27,9 +27,15 @@ export interface Product {
   accessories: ProductAccessory[]
 }
 
+export interface ProductListSummary {
+  with_image_count: number
+  accessory_count: number
+}
+
 export interface ProductList {
   items: Product[]
   total: number
+  summary: ProductListSummary
 }
 
 export interface ProductAccessoryPayload {

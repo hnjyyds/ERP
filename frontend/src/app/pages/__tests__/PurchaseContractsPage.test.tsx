@@ -66,7 +66,11 @@ describe('PurchaseContractsPage', () => {
     }
     vi.spyOn(api, 'listPurchaseContracts').mockResolvedValue({ items: [contract], total: 1 })
     vi.spyOn(api, 'listPurchaseContractReminders').mockResolvedValue({ items: [], total: 0 })
-    vi.spyOn(api, 'listProducts').mockResolvedValue({ items: [], total: 0 })
+    vi.spyOn(api, 'listProducts').mockResolvedValue({
+      items: [],
+      total: 0,
+      summary: { with_image_count: 0, accessory_count: 0 },
+    })
     vi.spyOn(api, 'listSuppliers').mockResolvedValue({ items: [], total: 0 })
     vi.spyOn(api, 'listAssignableUsers').mockResolvedValue({ users: [] })
 
@@ -134,7 +138,11 @@ describe('PurchaseContractsPage', () => {
   function mockContractApis(contract: api.PurchaseContract) {
     vi.spyOn(api, 'listPurchaseContracts').mockResolvedValue({ items: [contract], total: 1 })
     vi.spyOn(api, 'listPurchaseContractReminders').mockResolvedValue({ items: [], total: 0 })
-    vi.spyOn(api, 'listProducts').mockResolvedValue({ items: [], total: 0 })
+    vi.spyOn(api, 'listProducts').mockResolvedValue({
+      items: [],
+      total: 0,
+      summary: { with_image_count: 0, accessory_count: 0 },
+    })
     vi.spyOn(api, 'listSuppliers').mockResolvedValue({ items: [], total: 0 })
     vi.spyOn(api, 'listAssignableUsers').mockResolvedValue({ users: [] })
   }

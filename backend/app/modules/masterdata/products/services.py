@@ -26,6 +26,7 @@ from app.modules.masterdata.products.schemas import (
     ProductImportRequest,
     ProductImportResponse,
     ProductListResponse,
+    ProductListSummary,
     ProductResponse,
     ProductTransactionListResponse,
     ProductTransactionResponse,
@@ -253,11 +254,19 @@ class ProductService:
     ) -> ProductListResponse:
         self._require(current_user, "masterdata:product:view")
         products, total = await self._repository.list_products(q=q, limit=limit, offset=offset)
+        with_image_count, accessory_count = await self._repository.summarize_products(q=q)
         items = [
             self._product_response(product, await self._repository.list_accessories(product.id))
             for product in products
         ]
-        return ProductListResponse(items=items, total=total)
+        return ProductListResponse(
+            items=items,
+            total=total,
+            summary=ProductListSummary(
+                with_image_count=with_image_count,
+                accessory_count=accessory_count,
+            ),
+        )
 
     async def export_products(
         self,

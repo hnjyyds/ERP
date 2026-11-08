@@ -101,9 +101,16 @@ export interface InboundOrder {
   lines: InboundOrderLine[]
 }
 
+export interface InboundOrderStatusSummary {
+  draft_count: number
+  submitted_count: number
+  approved_count: number
+}
+
 export interface InboundOrderList {
   items: InboundOrder[]
   total: number
+  summary: InboundOrderStatusSummary
 }
 
 export interface InboundOrderLinePayload {
@@ -296,9 +303,15 @@ export interface InventoryBalance {
   unit: string
 }
 
+export interface InventoryBalanceSummary {
+  available_quantity: string
+  pending_inspection_quantity: string
+}
+
 export interface InventoryBalanceList {
   items: InventoryBalance[]
   total: number
+  summary: InventoryBalanceSummary
 }
 
 export interface InventoryLedger {
@@ -523,12 +536,16 @@ export function listInventoryBalances(filters: {
   warehouse_id?: string
   location_id?: string
   product_id?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<InventoryBalanceList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.warehouse_id) params.set('warehouse_id', filters.warehouse_id)
   if (filters.location_id) params.set('location_id', filters.location_id)
   if (filters.product_id) params.set('product_id', filters.product_id)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<InventoryBalanceList>(`/warehouse/inbound-orders/inventory-balances${suffix}`)
 }

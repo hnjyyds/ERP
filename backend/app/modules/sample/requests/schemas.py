@@ -133,11 +133,18 @@ class SampleRequestResponse(BaseModel):
     fees: list[SampleFeeResponse]
 
 
+class SampleRequestListSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    in_progress_count: int = 0
+
+
 class SampleRequestListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[SampleRequestResponse]
     total: int
+    summary: SampleRequestListSummary
 
 
 class SampleRequestToRecordCreate(BaseModel):

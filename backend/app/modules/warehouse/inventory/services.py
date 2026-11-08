@@ -34,6 +34,21 @@ class InventoryService:
             offset=offset,
         )
 
+    async def summarize_balances(
+        self,
+        *,
+        q: str | None = None,
+        warehouse_id: str | None = None,
+        location_id: str | None = None,
+        product_id: str | None = None,
+    ) -> tuple[Decimal, Decimal]:
+        return await self._repository.sum_balances(
+            q=q,
+            warehouse_id=warehouse_id,
+            location_id=location_id,
+            product_id=product_id,
+        )
+
     async def list_ledgers(
         self,
         *,

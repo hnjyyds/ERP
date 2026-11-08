@@ -27,6 +27,7 @@ from app.modules.sample.requests.schemas import (
     SampleRequestCreate,
     SampleRequestLineResponse,
     SampleRequestListResponse,
+    SampleRequestListSummary,
     SampleRequestResponse,
     SampleRequestToRecordCreate,
 )
@@ -158,9 +159,18 @@ class SampleRequestService:
             date_to=date_to,
             owner_user_ids=owner_user_ids,
         )
+        in_progress_count = await self._repository.count_in_progress_requests(
+            q=q,
+            status=status,
+            customer_id=customer_id,
+            date_from=date_from,
+            date_to=date_to,
+            owner_user_ids=owner_user_ids,
+        )
         return SampleRequestListResponse(
             items=[await self._request_response(item) for item in requests],
             total=total,
+            summary=SampleRequestListSummary(in_progress_count=in_progress_count),
         )
 
     async def add_progress(

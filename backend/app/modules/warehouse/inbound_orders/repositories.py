@@ -163,8 +163,67 @@ class InboundOrderRepository:
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[InboundOrderRow], int]:
+        conditions = self._order_conditions(
+            q=q,
+            status=status,
+            inbound_mode=inbound_mode,
+            supplier_id=supplier_id,
+            purchase_contract_id=purchase_contract_id,
+            owner_user_ids=owner_user_ids,
+        )
         statement = select(InboundOrder)
         count_statement = select(func.count()).select_from(InboundOrder)
+        for condition in conditions:
+            statement = statement.where(condition)
+            count_statement = count_statement.where(condition)
+        statement = (
+            statement.order_by(InboundOrder.inbound_at.desc(), InboundOrder.code.desc())
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        rows = await self._order_scalars(statement)
+        total = await self.session.scalar(count_statement)
+        return [self._map_order(row) for row in rows], int(total or 0)
+
+    async def count_orders_by_status(
+        self,
+        *,
+        q: str | None,
+        status: str | None,
+        inbound_mode: str | None,
+        supplier_id: str | None,
+        purchase_contract_id: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> dict[str, int]:
+        """同一筛选条件下的状态计数，不受分页影响。"""
+        conditions = self._order_conditions(
+            q=q,
+            status=status,
+            inbound_mode=inbound_mode,
+            supplier_id=supplier_id,
+            purchase_contract_id=purchase_contract_id,
+            owner_user_ids=owner_user_ids,
+        )
+        statement = (
+            select(InboundOrder.status, func.count())
+            .select_from(InboundOrder)
+            .group_by(InboundOrder.status)
+        )
+        for condition in conditions:
+            statement = statement.where(condition)
+        rows = await self.session.execute(statement)
+        return {row[0]: int(row[1]) for row in rows}
+
+    def _order_conditions(
+        self,
+        *,
+        q: str | None,
+        status: str | None,
+        inbound_mode: str | None,
+        supplier_id: str | None,
+        purchase_contract_id: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> list:
         conditions = []
         if q:
             pattern = f"%{q}%"
@@ -202,17 +261,7 @@ class InboundOrderRepository:
             conditions.append(InboundOrder.purchase_contract_id == purchase_contract_id)
         if owner_user_ids is not None:
             conditions.append(InboundOrder.owner_user_id.in_(owner_user_ids))
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-        statement = (
-            statement.order_by(InboundOrder.inbound_at.desc(), InboundOrder.code.desc())
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        rows = await self._order_scalars(statement)
-        total = await self.session.scalar(count_statement)
-        return [self._map_order(row) for row in rows], int(total or 0)
+        return conditions
 
     async def submit_order(
         self,

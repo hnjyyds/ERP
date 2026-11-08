@@ -112,6 +112,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
   const [products, setProducts] = useState<Product[]>([])
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null)
   const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
+  const [summary, setSummary] = useState({ with_image_count: 0, accessory_count: 0 })
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
@@ -129,7 +130,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
   const [importing, setImporting] = useState(false)
   const [relatedCustomers, setRelatedCustomers] = useState<ProductCustomer[]>([])
   const [transactions, setTransactions] = useState<ProductTransaction[]>([])
-  const { page, pageSize, setTotal, setPage, changePage, pagination } = useTablePagination(
+  const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
     undefined,
     parsePageParam(urlQuery.params),
   )
@@ -216,6 +217,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
         offset: (resolvedPage - 1) * resolvedPageSize,
       })
       setTotal(result.total)
+      setSummary(result.summary)
       if (result.items.length === 0 && resolvedPage > 1) {
         const prevPage = resolvedPage - 1
         setPage(prevPage)
@@ -481,15 +483,9 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
   return (
     <section className="masterdata-page product-page">
       <div className="summary-strip" aria-label={t('masterdata.product.overviewAria')}>
-        <Metric label={t('masterdata.product.metric.products')} value={products.length} />
-        <Metric
-          label={t('masterdata.product.metric.accessories')}
-          value={products.reduce((sum, item) => sum + item.accessories.length, 0)}
-        />
-        <Metric
-          label={t('masterdata.product.metric.withImage')}
-          value={products.filter((item) => Boolean(item.image_url)).length}
-        />
+        <Metric label={t('masterdata.product.metric.products')} value={total} />
+        <Metric label={t('masterdata.product.metric.accessories')} value={summary.accessory_count} />
+        <Metric label={t('masterdata.product.metric.withImage')} value={summary.with_image_count} />
         <Metric label={t('masterdata.product.metric.exported')} value={exportResult ? 1 : 0} />
       </div>
 

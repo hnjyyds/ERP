@@ -230,6 +230,15 @@ class ProductResponse(BaseModel):
     accessories: list[ProductAccessoryResponse] = Field(description="商品配件清单。")
 
 
+class ProductListSummary(BaseModel):
+    """同一筛选条件下的汇总指标，不随分页变化。"""
+
+    model_config = ConfigDict(extra="forbid")
+
+    with_image_count: int = 0
+    accessory_count: int = 0
+
+
 class ProductListResponse(BaseModel):
     """分页商品查询结果。"""
 
@@ -237,6 +246,7 @@ class ProductListResponse(BaseModel):
 
     items: list[ProductResponse] = Field(description="当前分页返回的商品列表。")
     total: int = Field(description="符合查询条件的商品总数。")
+    summary: ProductListSummary
 
 
 class ProductExportResponse(BaseModel):

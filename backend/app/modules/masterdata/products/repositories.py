@@ -471,19 +471,10 @@ class ProductRepository:
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[ProductRow], int]:
+        conditions = self._product_conditions(q=q, include_inactive=include_inactive)
         statement = select(Product)
         count_statement = select(func.count()).select_from(Product)
-        if not include_inactive:
-            statement = statement.where(Product.status == "active")
-            count_statement = count_statement.where(Product.status == "active")
-        if q:
-            pattern = f"%{q}%"
-            condition = or_(
-                Product.code.ilike(pattern),
-                Product.cn_name.ilike(pattern),
-                Product.en_name.ilike(pattern),
-                Product.customs_code.ilike(pattern),
-            )
+        for condition in conditions:
             statement = statement.where(condition)
             count_statement = count_statement.where(condition)
 
@@ -495,6 +486,47 @@ class ProductRepository:
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)
         return [self._map_product(row) for row in rows], int(total or 0)
+
+    async def summarize_products(
+        self,
+        *,
+        q: str | None = None,
+        include_inactive: bool = False,
+    ) -> tuple[int, int]:
+        """同一筛选条件下的有图商品数与配件总数，不受分页影响。"""
+        conditions = self._product_conditions(q=q, include_inactive=include_inactive)
+
+        with_image_statement = (
+            select(func.count())
+            .select_from(Product)
+            .where(Product.image_url.is_not(None), Product.image_url != "")
+        )
+        accessory_statement = select(func.count()).select_from(ProductAccessory).join(
+            Product, ProductAccessory.product_id == Product.id
+        )
+        for condition in conditions:
+            with_image_statement = with_image_statement.where(condition)
+            accessory_statement = accessory_statement.where(condition)
+
+        with_image_count = await self.session.scalar(with_image_statement)
+        accessory_count = await self.session.scalar(accessory_statement)
+        return int(with_image_count or 0), int(accessory_count or 0)
+
+    def _product_conditions(self, *, q: str | None, include_inactive: bool) -> list:
+        conditions = []
+        if not include_inactive:
+            conditions.append(Product.status == "active")
+        if q:
+            pattern = f"%{q}%"
+            conditions.append(
+                or_(
+                    Product.code.ilike(pattern),
+                    Product.cn_name.ilike(pattern),
+                    Product.en_name.ilike(pattern),
+                    Product.customs_code.ilike(pattern),
+                )
+            )
+        return conditions
 
     async def _scalars(self, statement: Select[tuple[Product]]) -> list[Product]:
         result = await self.session.scalars(statement)

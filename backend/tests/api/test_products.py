@@ -80,6 +80,7 @@ async def test_product_create_detail_search_and_export(
     list_data = list_response.json()["data"]
     assert list_data["total"] == 1
     assert list_data["items"][0]["code"] == "P-BAG-001"
+    assert list_data["summary"] == {"with_image_count": 1, "accessory_count": 1}
 
     export_response = await api_client.get(
         "/api/v1/masterdata/products/export",

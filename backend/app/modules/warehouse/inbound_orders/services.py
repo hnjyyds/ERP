@@ -26,9 +26,11 @@ from app.modules.warehouse.inbound_orders.schemas import (
     InboundOrderLineResponse,
     InboundOrderListResponse,
     InboundOrderResponse,
+    InboundOrderStatusSummary,
     InboundOrderSubmit,
     InventoryBalanceListResponse,
     InventoryBalanceResponse,
+    InventoryBalanceSummary,
     InventoryLedgerListResponse,
     InventoryLedgerResponse,
 )
@@ -285,9 +287,22 @@ class InboundOrderService:
             purchase_contract_id=purchase_contract_id,
             owner_user_ids=owner_user_ids,
         )
+        status_counts = await self._repository.count_orders_by_status(
+            q=q,
+            status=status,
+            inbound_mode=inbound_mode,
+            supplier_id=supplier_id,
+            purchase_contract_id=purchase_contract_id,
+            owner_user_ids=owner_user_ids,
+        )
         return InboundOrderListResponse(
             items=[await self._order_response(row) for row in rows],
             total=total,
+            summary=InboundOrderStatusSummary(
+                draft_count=status_counts.get("draft", 0),
+                submitted_count=status_counts.get("submitted", 0),
+                approved_count=status_counts.get("approved", 0),
+            ),
         )
 
     async def get_order(
@@ -315,9 +330,19 @@ class InboundOrderService:
             location_id=location_id,
             product_id=product_id,
         )
+        available, pending = await self._inventory_service.summarize_balances(
+            q=q,
+            warehouse_id=warehouse_id,
+            location_id=location_id,
+            product_id=product_id,
+        )
         return InventoryBalanceListResponse(
             items=[self._balance_response(row) for row in rows],
             total=total,
+            summary=InventoryBalanceSummary(
+                available_quantity=str(available),
+                pending_inspection_quantity=str(pending),
+            ),
         )
 
     async def list_inventory_ledgers(

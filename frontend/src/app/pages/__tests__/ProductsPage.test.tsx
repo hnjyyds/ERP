@@ -42,7 +42,11 @@ describe('ProductsPage', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     window.history.replaceState({}, '', '/masterdata/products')
-    vi.mocked(listProducts).mockResolvedValue({ items: [productFixture], total: 120 })
+    vi.mocked(listProducts).mockResolvedValue({
+      items: [productFixture],
+      total: 120,
+      summary: { with_image_count: 80, accessory_count: 35 },
+    })
   })
 
   it('renders product list panel', () => {

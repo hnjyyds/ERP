@@ -278,8 +278,66 @@ class SampleRequestRepository:
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[SampleRequestRow], int]:
+        conditions = self._request_conditions(
+            q=q,
+            status=status,
+            customer_id=customer_id,
+            date_from=date_from,
+            date_to=date_to,
+            owner_user_ids=owner_user_ids,
+        )
         statement = select(SampleRequest)
         count_statement = select(func.count()).select_from(SampleRequest)
+        for condition in conditions:
+            statement = statement.where(condition)
+            count_statement = count_statement.where(condition)
+
+        statement = (
+            statement.order_by(SampleRequest.request_date.desc(), SampleRequest.code.asc())
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        rows = await self._scalars(statement)
+        total = await self.session.scalar(count_statement)
+        return [self._map_request(row) for row in rows], int(total or 0)
+
+    async def count_in_progress_requests(
+        self,
+        *,
+        q: str | None = None,
+        status: str | None = None,
+        customer_id: str | None = None,
+        date_from: date | None = None,
+        date_to: date | None = None,
+        owner_user_ids: list[str] | None = None,
+    ) -> int:
+        """同一筛选条件下的进行中数量，不受分页影响。"""
+        conditions = self._request_conditions(
+            q=q,
+            status=status,
+            customer_id=customer_id,
+            date_from=date_from,
+            date_to=date_to,
+            owner_user_ids=owner_user_ids,
+        )
+        statement = select(func.count()).select_from(SampleRequest).where(
+            SampleRequest.status == "in_progress"
+        )
+        for condition in conditions:
+            statement = statement.where(condition)
+        total = await self.session.scalar(statement)
+        return int(total or 0)
+
+    def _request_conditions(
+        self,
+        *,
+        q: str | None,
+        status: str | None,
+        customer_id: str | None,
+        date_from: date | None,
+        date_to: date | None,
+        owner_user_ids: list[str] | None,
+    ) -> list:
         conditions = []
         if q:
             pattern = f"%{q}%"
@@ -316,18 +374,7 @@ class SampleRequestRepository:
             conditions.append(SampleRequest.request_date <= date_to)
         if owner_user_ids is not None:
             conditions.append(SampleRequest.owner_user_id.in_(owner_user_ids))
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-
-        statement = (
-            statement.order_by(SampleRequest.request_date.desc(), SampleRequest.code.asc())
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        rows = await self._scalars(statement)
-        total = await self.session.scalar(count_statement)
-        return [self._map_request(row) for row in rows], int(total or 0)
+        return conditions
 
     async def _scalars(self, statement: Select[tuple[SampleRequest]]) -> list[SampleRequest]:
         result = await self.session.scalars(statement)

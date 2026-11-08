@@ -366,7 +366,8 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
   const [recordForm, setRecordForm] = useState<SampleRecordFormState>(() =>
     initialSampleRecordForm(),
   )
-  const { page, pageSize, setTotal, setPage, changePage, pagination } = useTablePagination()
+  const [summary, setSummary] = useState({ in_progress_count: 0 })
+  const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination()
 
   const selectedRequest = useMemo(() => {
     if (detailId) return requests.find((item) => item.id === detailId) ?? null
@@ -408,6 +409,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
         offset: (resolvedPage - 1) * resolvedPageSize,
       })
       setTotal(result.total)
+      setSummary(result.summary)
       if (result.items.length === 0 && resolvedPage > 1) {
         const prevPage = resolvedPage - 1
         setPage(prevPage)
@@ -563,10 +565,10 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
   return (
     <section className="sample-request-page">
       <div className="summary-strip" aria-label={t('sample.request.pageAria')}>
-        <Metric label={t('sample.request.metric.requestCount')} value={requests.length} />
+        <Metric label={t('sample.request.metric.requestCount')} value={total} />
         <Metric
           label={t('sample.request.metric.inProgressCount')}
-          value={requests.filter((item) => item.status === 'in_progress').length}
+          value={summary.in_progress_count}
         />
         <Metric
           label={t('sample.request.metric.progressCount')}

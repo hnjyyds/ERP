@@ -115,12 +115,27 @@ window.IntersectionObserver = IntersectionObserverMock as unknown as typeof Inte
 vi.mock('../api', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../api')>()
   // 把所有 list* / get* / export* 函数 mock 为返回空数据，避免页面的 useEffect 发起真实请求
+  const emptyList = {
+    data: [],
+    items: [],
+    total: 0,
+    summary: {
+      in_progress_count: 0,
+      with_image_count: 0,
+      accessory_count: 0,
+      draft_count: 0,
+      submitted_count: 0,
+      approved_count: 0,
+      available_quantity: '0',
+      pending_inspection_quantity: '0',
+    },
+  }
   const safeDefaults: Record<string, () => Promise<unknown>> = {}
   for (const key of Object.keys(actual)) {
     const fn = (actual as Record<string, unknown>)[key]
     if (typeof fn === 'function') {
       if (key.startsWith('list') || key.startsWith('get') || key.startsWith('export') || key === 'uploadImage' || key === 'downloadFile') {
-        safeDefaults[key] = () => Promise.resolve({ data: [], items: [], total: 0 })
+        safeDefaults[key] = () => Promise.resolve(emptyList)
       }
     }
   }

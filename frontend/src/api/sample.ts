@@ -61,9 +61,14 @@ export interface SampleRequest {
   fees: SampleFee[]
 }
 
+export interface SampleRequestListSummary {
+  in_progress_count: number
+}
+
 export interface SampleRequestList {
   items: SampleRequest[]
   total: number
+  summary: SampleRequestListSummary
 }
 
 export interface SampleRequestLinePayload {

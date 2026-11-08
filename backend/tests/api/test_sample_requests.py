@@ -107,6 +107,7 @@ async def test_sample_request_create_search_progress_fee_and_payment(
     list_data = list_response.json()["data"]
     assert list_data["total"] == 1
     assert list_data["items"][0]["code"] == request_data["code"]
+    assert list_data["summary"]["in_progress_count"] == 0
 
     progress_response = await api_client.post(
         f"/api/v1/sample/requests/{request_id}/progress",
@@ -123,6 +124,14 @@ async def test_sample_request_create_search_progress_fee_and_payment(
     progress = progress_response.json()["data"]
     assert progress["stage"] == "sent_to_factory"
     assert progress["status"] == "in_progress"
+
+    in_progress_list_response = await api_client.get(
+        "/api/v1/sample/requests",
+        headers={"Authorization": f"Bearer {token}"},
+        params={"q": "Eco"},
+    )
+    assert in_progress_list_response.status_code == 200
+    assert in_progress_list_response.json()["data"]["summary"]["in_progress_count"] == 1
 
     fee_response = await api_client.post(
         f"/api/v1/sample/requests/{request_id}/fees",

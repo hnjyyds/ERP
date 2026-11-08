@@ -1,5 +1,7 @@
 import re
 
+from decimal import Decimal
+
 from httpx import AsyncClient
 
 
@@ -163,9 +165,12 @@ async def test_inbound_order_api_formal_inbound_posts_inventory_and_supplier_rec
         params={"q": "BAG-40"},
     )
     assert balances_response.status_code == 200
-    balance = balances_response.json()["data"]["items"][0]
+    balance_payload = balances_response.json()["data"]
+    balance = balance_payload["items"][0]
     assert balance["available_quantity"] == "1000"
     assert balance["pending_inspection_quantity"] == "0"
+    assert Decimal(balance_payload["summary"]["available_quantity"]) == Decimal("1000")
+    assert Decimal(balance_payload["summary"]["pending_inspection_quantity"]) == Decimal("0")
 
     ledgers_response = await api_client.get(
         "/api/v1/warehouse/inbound-orders/inventory-ledgers",
@@ -183,7 +188,29 @@ async def test_inbound_order_api_formal_inbound_posts_inventory_and_supplier_rec
         params={"supplier_id": "supplier-pack-a"},
     )
     assert supplier_records_response.status_code == 200
-    assert supplier_records_response.json()["data"]["total"] >= 1
+    supplier_records_payload = supplier_records_response.json()["data"]
+    assert supplier_records_payload["total"] >= 1
+    assert supplier_records_payload["summary"]["approved_count"] >= 1
+    assert supplier_records_payload["summary"]["draft_count"] == 0
+
+    first_page_response = await api_client.get(
+        "/api/v1/warehouse/inbound-orders",
+        headers=headers,
+        params={"supplier_id": "supplier-pack-a", "limit": 1, "offset": 0},
+    )
+    second_page_response = await api_client.get(
+        "/api/v1/warehouse/inbound-orders",
+        headers=headers,
+        params={"supplier_id": "supplier-pack-a", "limit": 1, "offset": 1},
+    )
+    assert first_page_response.status_code == 200
+    assert second_page_response.status_code == 200
+    assert first_page_response.json()["data"]["total"] == supplier_records_payload["total"]
+    assert second_page_response.json()["data"]["total"] == supplier_records_payload["total"]
+    assert (
+        second_page_response.json()["data"]["summary"]
+        == first_page_response.json()["data"]["summary"]
+    )
 
 
 async def test_inbound_order_api_rejects_unauthorized_finance_and_invalid_payload(
