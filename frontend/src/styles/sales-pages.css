@@ -15,3 +15,7 @@
 .shipment-page .summary-strip {
   grid-template-columns: repeat(5, minmax(120px, 1fr));
 }
+
+.shipment-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+}

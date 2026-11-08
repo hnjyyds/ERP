@@ -3,3 +3,77 @@
 .finance-page .summary-strip {
   grid-template-columns: repeat(6, minmax(120px, 1fr));
 }
+
+.finance-action-block {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #EBEEF2;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+
+.finance-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+
+
+.finance-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  margin-top: 12px;
+  border: 1px solid var(--erp-border-soft);
+  border-radius: 8px;
+  background: var(--erp-border-soft);
+}
+
+
+
+.finance-overview-grid .metric-cell {
+  min-height: 70px;
+}
+
+
+
+.finance-overview-grid .metric-cell strong {
+  font-size: 20px;
+}
+
+
+
+.finance-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+
+.finance-receipt-grid,
+.finance-payment-grid,
+.finance-fee-grid,
+.finance-tax-grid,
+.finance-misc-grid,
+.finance-settlement-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+
+
+.reporting-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: start;
+}

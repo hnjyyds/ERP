@@ -167,3 +167,136 @@
 .sample-delivery-page .list-panel .ant-table-placeholder > td {
   height: 200px;
 }
+
+.sample-record-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+
+
+.sample-request-page .list-panel,
+.sample-record-page .list-panel,
+.sample-delivery-page .list-panel,
+.sample-request-page .detail-panel,
+.sample-record-page .detail-panel,
+.sample-delivery-page .detail-panel {
+  grid-column: 1 / -1;
+  overflow: hidden;
+}
+
+
+
+.sample-request-page .ant-table-wrapper,
+.sample-request-page .ant-table-container,
+.sample-request-page .ant-table-content,
+.sample-record-page .ant-table-wrapper,
+.sample-record-page .ant-table-container,
+.sample-record-page .ant-table-content,
+.sample-delivery-page .ant-table-wrapper,
+.sample-delivery-page .ant-table-container,
+.sample-delivery-page .ant-table-content {
+  min-width: 0;
+}
+
+
+
+.sample-request-page .ant-table-content,
+.sample-record-page .ant-table-content,
+.sample-delivery-page .ant-table-content {
+  overflow-x: auto;
+}
+
+
+
+.sample-request-page .ant-table table,
+.sample-record-page .ant-table table,
+.sample-delivery-page .ant-table table {
+  min-width: 520px;
+}
+
+
+
+.sample-request-page .detail-panel,
+.sample-record-page .detail-panel,
+.sample-delivery-page .detail-panel {
+  align-self: start;
+}
+
+
+
+.sample-request-page .detail-panel .record-form,
+.sample-record-page .detail-panel .record-form,
+.sample-delivery-page .detail-panel .record-form {
+  gap: 12px;
+}
+
+
+
+.sample-request-page .detail-panel .record-form > .ant-btn,
+.sample-record-page .detail-panel .record-form > .ant-btn,
+.sample-delivery-page .detail-panel .record-form > .ant-btn {
+  justify-self: flex-start;
+  min-width: 132px;
+  margin-top: 4px;
+}
+
+
+
+.sample-request-page .detail-panel .record-form > .ant-btn:last-child,
+.sample-record-page .detail-panel .record-form > .ant-btn:last-child,
+.sample-delivery-page .detail-panel .record-form > .ant-btn:last-child {
+  margin-bottom: 2px;
+}
+
+
+
+.sample-modal-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 18px;
+}
+
+
+
+.sample-modal-form > .form-divider,
+.sample-modal-form > .modal-actions,
+.sample-modal-form > label:has(textarea),
+.sample-modal-form > label:has(#sample-request-destination),
+.sample-modal-form > label:has(#sample-record-source-type),
+.sample-modal-form > label:has(#sample-delivery-remark) {
+  grid-column: 1 / -1;
+}
+
+
+
+.sample-modal-form > .form-pair {
+  display: contents;
+}
+
+
+
+.ant-modal:has(.sample-modal-form) .ant-modal-body {
+  padding: 22px 26px 24px;
+}
+
+
+
+.sample-modal-form > .form-divider {
+  margin-top: 8px;
+  padding-top: 6px;
+}
+
+
+
+.sample-modal-form > .modal-actions {
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 18px;
+}
+
+
+
+.sample-modal-form > .modal-actions .secondary-inline,
+.sample-modal-form > .modal-actions .inline-submit {
+  min-width: 108px;
+}

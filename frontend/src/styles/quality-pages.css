@@ -3,3 +3,48 @@
 .quality-inspection-page .summary-strip {
   grid-template-columns: repeat(5, minmax(120px, 1fr));
 }
+
+.quality-form-heading {
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+
+
+.quality-eligibility {
+  display: grid;
+  gap: 5px;
+  margin: 12px 0 14px;
+  border: 1px solid #E0E3E8;
+  border-radius: 8px;
+  background: #FAFBFC;
+  padding: 12px 14px;
+}
+
+
+
+.quality-eligibility strong {
+  color: #1D2129;
+  font-size: 15px;
+}
+
+
+
+.quality-eligibility span {
+  color: #5d6962;
+  font-size: 13px;
+}
+
+
+
+.quality-eligibility.eligible {
+  border-color: #bdd7c9;
+  background: #eef7f1;
+}
+
+
+
+.quality-eligibility.blocked {
+  border-color: #ead6b6;
+  background: #fbf6ec;
+}
