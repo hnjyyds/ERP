@@ -1,6 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { useState } from 'react'
 
 vi.mock('@/api', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/api')>()
@@ -13,6 +14,7 @@ vi.mock('@/api', async (importOriginal) => {
 })
 
 import { ProductsPage } from '@/app/pages/masterdata/ProductsPage'
+import { setRuntimeSettings } from '@/app/pages/appHelpers'
 import { listProducts, type Product } from '@/api'
 
 const productFixture: Product = {
@@ -121,5 +123,39 @@ describe('ProductsPage', () => {
       expect(listProducts).toHaveBeenLastCalledWith({ q: 'BBB', limit: 50, offset: 100 })
     })
     expect(screen.getByPlaceholderText('编号 / 中文 / 英文 / 海关编码')).toHaveValue('BBB')
+  })
+
+  afterEach(() => {
+    setRuntimeSettings({ language: 'zh-CN', timeZone: 'Asia/Shanghai' })
+  })
+
+  it('已挂载的列表在切换语言后更新标题与表头', async () => {
+    let switchLanguage = () => {}
+
+    function Harness() {
+      const [, setTick] = useState(0)
+      switchLanguage = () => {
+        setRuntimeSettings({ language: 'en-US', timeZone: 'UTC' })
+        setTick((tick) => tick + 1)
+      }
+      return <ProductsPage detailId={null} onNavigate={onNavigate} />
+    }
+
+    render(<Harness />)
+
+    expect(await screen.findByRole('heading', { level: 2, name: '商品列表' })).toBeInTheDocument()
+    expect(screen.getByRole('columnheader', { name: '编号' })).toBeInTheDocument()
+    expect(screen.getByRole('columnheader', { name: '中文名称' })).toBeInTheDocument()
+
+    await act(async () => {
+      await Promise.resolve()
+    })
+    act(() => switchLanguage())
+
+    expect(screen.getByRole('heading', { level: 2, name: 'Product list' })).toBeInTheDocument()
+    expect(screen.getByRole('columnheader', { name: 'Code' })).toBeInTheDocument()
+    expect(screen.getByRole('columnheader', { name: 'Chinese name' })).toBeInTheDocument()
+    expect(screen.queryByText('商品列表')).not.toBeInTheDocument()
+    expect(screen.queryByRole('columnheader', { name: '编号' })).not.toBeInTheDocument()
   })
 })

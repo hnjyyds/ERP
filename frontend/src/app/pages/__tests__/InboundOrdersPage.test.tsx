@@ -1,6 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { useState } from 'react'
 
 vi.mock('@/api', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/api')>()
@@ -88,6 +89,7 @@ import {
   type CurrentUser,
   type InboundOrder,
 } from '@/api'
+import { setRuntimeSettings } from '@/app/pages/appHelpers'
 
 describe('InboundOrdersPage', () => {
   const onNavigate = vi.fn()
@@ -593,5 +595,43 @@ describe('InboundOrdersPage', () => {
         approved_at: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
       })
     })
+  })
+
+  afterEach(() => {
+    setRuntimeSettings({ language: 'zh-CN', timeZone: 'Asia/Shanghai' })
+  })
+
+  it('已挂载的列表在切换语言后更新标题、表头与日期', async () => {
+    mockOrderList(inboundOrderFixture({ inbound_at: '2026-08-30T18:00:00Z' }))
+    let switchLanguage = () => {}
+
+    function Harness() {
+      const [, setTick] = useState(0)
+      switchLanguage = () => {
+        setRuntimeSettings({ language: 'en-US', timeZone: 'UTC' })
+        setTick((tick) => tick + 1)
+      }
+      return (
+        <InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />
+      )
+    }
+
+    render(<Harness />)
+
+    expect(await screen.findByRole('heading', { level: 2, name: '入库单' })).toBeInTheDocument()
+    expect(screen.getByRole('columnheader', { name: '入库日' })).toBeInTheDocument()
+    expect(screen.getByRole('columnheader', { name: '供应商' })).toBeInTheDocument()
+    expect(screen.getByText('2026-08-31')).toBeInTheDocument()
+
+    await act(async () => {
+      await Promise.resolve()
+    })
+    act(() => switchLanguage())
+
+    expect(screen.getByRole('heading', { level: 2, name: 'Inbound orders' })).toBeInTheDocument()
+    expect(screen.getByRole('columnheader', { name: 'Inbound date' })).toBeInTheDocument()
+    expect(screen.getByRole('columnheader', { name: 'Supplier' })).toBeInTheDocument()
+    expect(screen.getByText('2026-08-30')).toBeInTheDocument()
+    expect(screen.queryByText('2026-08-31')).not.toBeInTheDocument()
   })
 })
