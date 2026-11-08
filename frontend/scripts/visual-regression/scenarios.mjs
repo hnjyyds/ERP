@@ -34,6 +34,7 @@ export function buildScenarios({ productId, inboundOrderId, contractId }) {
     { name: 'purchase-followup', path: '/purchase/followup' },
     { name: 'purchase-invoice-notices', path: '/purchase/invoice-notices' },
     { name: 'quality-inspections', path: '/quality/inspections' },
+    { name: 'quality-tasks', path: '/quality/tasks' },
     { name: 'inbound-plans', path: '/warehouse/inbound-plans' },
     { name: 'outbound-plans', path: '/warehouse/outbound-plans' },
     { name: 'outbound-orders', path: '/warehouse/outbound-orders' },
