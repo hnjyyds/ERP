@@ -26,6 +26,16 @@ const { pendingTask } = vi.hoisted(() => ({
   },
 }))
 
+vi.mock('@/shared/ui', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/shared/ui')>()
+  return {
+    ...actual,
+    Metric: ({ label, value }: { label: string; value: number | string }) => (
+      <span data-testid="metric">{`${label}: ${value}`}</span>
+    ),
+  }
+})
+
 vi.mock('@/api', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/api')>()
   return {
@@ -33,6 +43,15 @@ vi.mock('@/api', async (importOriginal) => {
     listQualityInspections: vi.fn().mockResolvedValue({
       items: [pendingTask],
       total: 1,
+      summary: {
+        pending_count: 1,
+        in_progress_count: 0,
+        completed_count: 0,
+        cancelled_count: 0,
+        overdue_count: 0,
+        open_issue_count: 0,
+        my_action_count: 1,
+      },
     }),
     cancelQualityInspection: vi.fn().mockResolvedValue({
       ...pendingTask,
@@ -71,6 +90,7 @@ import {
   listPurchaseContracts,
   listQualityInspections,
   updateQualityInspection,
+  type QualityInspection,
 } from '@/api'
 import { MyQualityTasksPage } from '@/app/pages/quality/MyQualityTasksPage'
 
@@ -88,7 +108,12 @@ describe('MyQualityTasksPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    window.history.replaceState({}, '', '/quality/tasks')
   })
+
+  function metricTexts() {
+    return screen.getAllByTestId('metric').map((element) => element.textContent)
+  }
 
   it('loads only tasks assigned to the current user and starts a pending task', async () => {
     const user = userEvent.setup()
@@ -120,6 +145,15 @@ describe('MyQualityTasksPage', () => {
     vi.mocked(listQualityInspections).mockResolvedValueOnce({
       items: [{ ...pendingTask, status: 'in_progress' }],
       total: 1,
+      summary: {
+        pending_count: 0,
+        in_progress_count: 1,
+        completed_count: 0,
+        cancelled_count: 0,
+        overdue_count: 0,
+        open_issue_count: 0,
+        my_action_count: 1,
+      },
     })
     render(<MyQualityTasksPage currentUser={currentUser} />)
 
@@ -135,6 +169,15 @@ describe('MyQualityTasksPage', () => {
     vi.mocked(listQualityInspections).mockResolvedValueOnce({
       items: [{ ...pendingTask, status: 'in_progress' }],
       total: 1,
+      summary: {
+        pending_count: 0,
+        in_progress_count: 1,
+        completed_count: 0,
+        cancelled_count: 0,
+        overdue_count: 0,
+        open_issue_count: 0,
+        my_action_count: 1,
+      },
     })
     vi.mocked(listPurchaseContracts).mockResolvedValueOnce({
       items: [
@@ -193,5 +236,42 @@ describe('MyQualityTasksPage', () => {
     await waitFor(() => {
       expect(cancelQualityInspection).toHaveBeenCalledWith('qc-task-001', '供应商取消备货')
     })
+  })
+
+  it('按服务端分页请求且翻页后汇总指标不变', async () => {
+    vi.mocked(listQualityInspections).mockResolvedValue({
+      items: [pendingTask as QualityInspection],
+      total: 120,
+      summary: {
+        pending_count: 5,
+        in_progress_count: 2,
+        completed_count: 100,
+        cancelled_count: 1,
+        overdue_count: 3,
+        open_issue_count: 0,
+        my_action_count: 5,
+      },
+    })
+    const user = userEvent.setup()
+    render(<MyQualityTasksPage currentUser={currentUser} />)
+
+    await waitFor(() =>
+      expect(listQualityInspections).toHaveBeenCalledWith(
+        expect.objectContaining({ limit: 50, offset: 0, inspector_user_id: currentUser.id }),
+      ),
+    )
+    const before = metricTexts()
+    for (const value of [120, 5, 2, 100, 3]) {
+      expect(before.some((text) => text?.endsWith(`: ${value}`))).toBe(true)
+    }
+
+    await user.click(screen.getByTitle('2'))
+
+    await waitFor(() =>
+      expect(listQualityInspections).toHaveBeenLastCalledWith(
+        expect.objectContaining({ limit: 50, offset: 50 }),
+      ),
+    )
+    expect(metricTexts()).toEqual(before)
   })
 })

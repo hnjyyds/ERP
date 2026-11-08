@@ -109,7 +109,10 @@ async def test_quality_inspection_list_loads_aggregate_relations_in_fixed_querie
             event.remove(session.bind.sync_engine, "before_cursor_execute", count_selects)
 
     assert result.total == 2
-    assert query_count == 6
+    # 列表 + 总数 + 汇总的 4 条聚合查询（状态分布、逾期、异常、待我处理）。
+    assert query_count == 10
+    assert result.summary.completed_count == 2
+    assert result.summary.open_issue_count == 0
 
 
 async def _create_approved_contract(

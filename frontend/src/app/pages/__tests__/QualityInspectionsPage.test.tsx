@@ -2,6 +2,16 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
+vi.mock('@/shared/ui', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/shared/ui')>()
+  return {
+    ...actual,
+    Metric: ({ label, value }: { label: string; value: number | string }) => (
+      <span data-testid="metric">{`${label}: ${value}`}</span>
+    ),
+  }
+})
+
 vi.mock('@/api', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/api')>()
   return {
@@ -34,7 +44,19 @@ vi.mock('@/api', async (importOriginal) => {
       ],
       total: 1,
     }),
-    listQualityInspections: vi.fn().mockResolvedValue({ items: [], total: 0 }),
+    listQualityInspections: vi.fn().mockResolvedValue({
+      items: [],
+      total: 0,
+      summary: {
+        pending_count: 0,
+        in_progress_count: 0,
+        completed_count: 0,
+        cancelled_count: 0,
+        overdue_count: 0,
+        open_issue_count: 0,
+        my_action_count: 0,
+      },
+    }),
     resolveQualityIssue: vi.fn(),
     updateQualityInspection: vi.fn(),
   }
@@ -49,6 +71,7 @@ import {
   listPurchaseContracts,
   listQualityInspections,
   resolveQualityIssue,
+  type QualityInspection,
 } from '@/api'
 
 describe('QualityInspectionsPage', () => {
@@ -66,7 +89,12 @@ describe('QualityInspectionsPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    window.history.replaceState({}, '', '/quality/inspections')
   })
+
+  function metricTexts() {
+    return screen.getAllByTestId('metric').map((element) => element.textContent)
+  }
 
   it('renders without crashing', () => {
     const { container } = render(
@@ -124,14 +152,18 @@ describe('QualityInspectionsPage', () => {
     await user.click(screen.getByRole('button', { name: '重置筛选' }))
     expect(searchInput).toHaveValue('')
     await waitFor(() => {
-      expect(listQualityInspections).toHaveBeenLastCalledWith({
-        q: undefined,
-        status: undefined,
-        result: undefined,
-        supplier_id: undefined,
-        purchase_contract_id: undefined,
-        inspector_user_id: undefined,
-      })
+      expect(listQualityInspections).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          q: undefined,
+          status: undefined,
+          result: undefined,
+          supplier_id: undefined,
+          purchase_contract_id: undefined,
+          inspector_user_id: undefined,
+          limit: 50,
+          offset: 0,
+        }),
+      )
     })
   })
 
@@ -278,6 +310,15 @@ describe('QualityInspectionsPage', () => {
     vi.mocked(listQualityInspections).mockResolvedValueOnce({
       items: [failedInspection],
       total: 1,
+      summary: {
+        pending_count: 0,
+        in_progress_count: 0,
+        completed_count: 1,
+        cancelled_count: 0,
+        overdue_count: 0,
+        open_issue_count: 1,
+        my_action_count: 0,
+      },
     })
     vi.mocked(resolveQualityIssue).mockResolvedValueOnce(resolvedInspection)
     vi.mocked(getQualityInboundEligibility).mockResolvedValueOnce({
@@ -371,6 +412,15 @@ describe('QualityInspectionsPage', () => {
     vi.mocked(listQualityInspections).mockResolvedValueOnce({
       items: [staleInspection],
       total: 1,
+      summary: {
+        pending_count: 0,
+        in_progress_count: 0,
+        completed_count: 1,
+        cancelled_count: 0,
+        overdue_count: 0,
+        open_issue_count: 0,
+        my_action_count: 0,
+      },
     })
     vi.mocked(getQualityInboundEligibility).mockResolvedValueOnce({
       purchase_contract_id: staleInspection.purchase_contract_id,
@@ -392,5 +442,68 @@ describe('QualityInspectionsPage', () => {
 
     expect(await screen.findByText('该任务不是合同最新 QC，不能重复发起复检')).toBeTruthy()
     expect(screen.queryByRole('button', { name: '发起复检' })).toBeNull()
+  })
+
+  it('按服务端分页请求且翻页后汇总指标不变', async () => {
+    vi.mocked(listQualityInspections).mockResolvedValue({
+      items: [
+        {
+          id: 'qc-page-001',
+          code: 'QC-PAGE-001',
+          purchase_contract_id: 'pc-001',
+          purchase_contract_no: 'PC-QC-001',
+          supplier_id: 'supplier-001',
+          supplier_name: '华东包装制品厂',
+          status: 'pending',
+          scheduled_at: '2026-08-25T09:00:00',
+          inspected_at: null,
+          result: null,
+          inspector_id: 'user-qc',
+          inspector_name: '演示 QC 专员',
+          qc_user_id: 'user-qc',
+          qc_user_name: '演示 QC 专员',
+          issue_summary: null,
+          attachment_group_id: null,
+          lines: [],
+          issues: [],
+          created_at: '2026-08-20T00:00:00Z',
+          updated_at: '2026-08-20T00:00:00Z',
+        } as unknown as QualityInspection,
+      ],
+      total: 120,
+      summary: {
+        pending_count: 7,
+        in_progress_count: 3,
+        completed_count: 100,
+        cancelled_count: 2,
+        overdue_count: 4,
+        open_issue_count: 6,
+        my_action_count: 0,
+      },
+    })
+    const user = userEvent.setup()
+    render(
+      <QualityInspectionsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    await waitFor(() =>
+      expect(listQualityInspections).toHaveBeenCalledWith(
+        expect.objectContaining({ limit: 50, offset: 0 }),
+      ),
+    )
+    const before = metricTexts()
+    expect(before).toHaveLength(5)
+    for (const value of [7, 3, 4, 6]) {
+      expect(before.some((text) => text?.endsWith(`: ${value}`))).toBe(true)
+    }
+
+    await user.click(screen.getByTitle('2'))
+
+    await waitFor(() =>
+      expect(listQualityInspections).toHaveBeenLastCalledWith(
+        expect.objectContaining({ limit: 50, offset: 50 }),
+      ),
+    )
+    expect(metricTexts()).toEqual(before)
   })
 })

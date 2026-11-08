@@ -304,6 +304,82 @@ async def test_quality_inspection_api_creates_a_scheduled_pending_task_without_r
     assert completed_qc_node["source_record_id"] == task["id"]
 
 
+async def test_quality_inspection_list_paginates_and_keeps_summary_across_pages(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "purchase", "purchase123")
+    headers = {"Authorization": f"Bearer {token}"}
+    create_response = await api_client.post(
+        "/api/v1/purchase/contracts",
+        headers=headers,
+        json=_purchase_contract_payload("PC-QC-PAGE-API"),
+    )
+    assert create_response.status_code == 201
+    contract = create_response.json()["data"]
+    assert (
+        await api_client.post(
+            f"/api/v1/purchase/contracts/{contract['id']}/submit",
+            headers=headers,
+            json={"reviewer_id": "u-purchase"},
+        )
+    ).status_code == 200
+    assert (
+        await api_client.post(
+            f"/api/v1/purchase/contracts/{contract['id']}/approve",
+            headers={"Authorization": f"Bearer {reviewer_token}"},
+            json={"approved_at": "2026-08-05"},
+        )
+    ).status_code == 200
+
+    for code in ("QC-PAGE-001", "QC-PAGE-002", "QC-PAGE-003"):
+        task_response = await api_client.post(
+            "/api/v1/quality/inspections",
+            headers=headers,
+            json={
+                "code": code,
+                "purchase_contract_id": contract["id"],
+                "scheduled_at": "2020-01-01T09:00:00",
+                "status": "pending",
+                "inspector_id": "u-qc",
+                "inspector_name": "QC 张工",
+                "issue_summary": None,
+                "attachment_group_id": None,
+                "lines": [],
+                "issues": [],
+            },
+        )
+        assert task_response.status_code == 201
+
+    first_response = await api_client.get(
+        "/api/v1/quality/inspections",
+        headers=headers,
+        params={"purchase_contract_id": contract["id"], "limit": 2, "offset": 0},
+    )
+    second_response = await api_client.get(
+        "/api/v1/quality/inspections",
+        headers=headers,
+        params={"purchase_contract_id": contract["id"], "limit": 2, "offset": 2},
+    )
+    first = first_response.json()["data"]
+    second = second_response.json()["data"]
+
+    assert first["total"] == 3
+    assert len(first["items"]) == 2
+    assert len(second["items"]) == 1
+    assert first["summary"] == {
+        "pending_count": 3,
+        "in_progress_count": 0,
+        "completed_count": 0,
+        "cancelled_count": 0,
+        "overdue_count": 3,
+        "open_issue_count": 0,
+        "my_action_count": 0,
+    }
+    assert second["summary"] == first["summary"]
+
+
 async def test_quality_inspection_rejects_assignee_without_quality_permission(
     api_client: AsyncClient,
     seeded_system: None,

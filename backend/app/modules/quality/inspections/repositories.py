@@ -463,8 +463,115 @@ class QualityInspectionRepository:
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[QualityInspectionRow], int]:
+        conditions = self._inspection_conditions(
+            q=q,
+            status=status,
+            result=result,
+            supplier_id=supplier_id,
+            purchase_contract_id=purchase_contract_id,
+            owner_user_ids=owner_user_ids,
+            visible_assignee_user_id=visible_assignee_user_id,
+            assignee_user_id=assignee_user_id,
+            inspector_user_id=inspector_user_id,
+        )
         statement = select(QualityInspection)
         count_statement = select(func.count()).select_from(QualityInspection)
+        for condition in conditions:
+            statement = statement.where(condition)
+            count_statement = count_statement.where(condition)
+        statement = (
+            statement.order_by(
+                QualityInspection.inspected_at.desc(),
+                QualityInspection.code.desc(),
+            )
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        rows = await self._inspection_scalars(statement)
+        total = await self.session.scalar(count_statement)
+        return [self._map_inspection(row) for row in rows], int(total or 0)
+
+    async def summarize_inspections(
+        self,
+        *,
+        q: str | None,
+        status: str | None,
+        result: str | None,
+        supplier_id: str | None,
+        purchase_contract_id: str | None,
+        owner_user_ids: list[str] | None,
+        visible_assignee_user_id: str | None,
+        assignee_user_id: str | None,
+        inspector_user_id: str | None,
+        current_user_id: str,
+        now: datetime,
+    ) -> tuple[dict[str, int], int, int, int]:
+        """同一筛选条件下的状态分布、逾期数、未关闭问题数与待我处理数，不受分页影响。"""
+        conditions = self._inspection_conditions(
+            q=q,
+            status=status,
+            result=result,
+            supplier_id=supplier_id,
+            purchase_contract_id=purchase_contract_id,
+            owner_user_ids=owner_user_ids,
+            visible_assignee_user_id=visible_assignee_user_id,
+            assignee_user_id=assignee_user_id,
+            inspector_user_id=inspector_user_id,
+        )
+        status_statement = (
+            select(QualityInspection.status, func.count())
+            .select_from(QualityInspection)
+            .group_by(QualityInspection.status)
+        )
+        overdue_statement = (
+            select(func.count())
+            .select_from(QualityInspection)
+            .where(QualityInspection.scheduled_at.is_not(None))
+            .where(QualityInspection.scheduled_at < now)
+            .where(QualityInspection.status.notin_(("completed", "cancelled")))
+        )
+        issue_statement = (
+            select(func.count(QualityIssue.id))
+            .select_from(QualityInspection)
+            .join(QualityIssue, QualityIssue.inspection_id == QualityInspection.id)
+            .where(QualityIssue.status != "resolved")
+        )
+        my_action_statement = (
+            select(func.count())
+            .select_from(QualityInspection)
+            .where(QualityInspection.inspector_id == current_user_id)
+            .where(QualityInspection.status.in_(("pending", "in_progress")))
+        )
+        for condition in conditions:
+            status_statement = status_statement.where(condition)
+            overdue_statement = overdue_statement.where(condition)
+            issue_statement = issue_statement.where(condition)
+            my_action_statement = my_action_statement.where(condition)
+        status_rows = (await self.session.execute(status_statement)).all()
+        overdue_count = await self.session.scalar(overdue_statement)
+        open_issue_count = await self.session.scalar(issue_statement)
+        my_action_count = await self.session.scalar(my_action_statement)
+        status_counts = {str(row[0]): int(row[1]) for row in status_rows}
+        return (
+            status_counts,
+            int(overdue_count or 0),
+            int(open_issue_count or 0),
+            int(my_action_count or 0),
+        )
+
+    def _inspection_conditions(
+        self,
+        *,
+        q: str | None,
+        status: str | None,
+        result: str | None,
+        supplier_id: str | None,
+        purchase_contract_id: str | None,
+        owner_user_ids: list[str] | None,
+        visible_assignee_user_id: str | None,
+        assignee_user_id: str | None,
+        inspector_user_id: str | None,
+    ) -> list[ColumnElement[bool]]:
         conditions: list[ColumnElement[bool]] = []
         if q:
             pattern = f"%{q}%"
@@ -477,6 +584,7 @@ class QualityInspectionRepository:
                         QualityInspectionLine.product_name.ilike(pattern),
                     )
                 )
+                .correlate(QualityInspection)
                 .exists()
             )
             conditions.append(
@@ -511,20 +619,7 @@ class QualityInspectionRepository:
                     )
                 )
             conditions.append(or_(*visibility_conditions) if visibility_conditions else false())
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-        statement = (
-            statement.order_by(
-                QualityInspection.inspected_at.desc(),
-                QualityInspection.code.desc(),
-            )
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        rows = await self._inspection_scalars(statement)
-        total = await self.session.scalar(count_statement)
-        return [self._map_inspection(row) for row in rows], int(total or 0)
+        return conditions
 
     async def get_latest_for_contract(
         self,

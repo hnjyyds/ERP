@@ -11,7 +11,7 @@ import {
   ShieldCheck,
 } from 'lucide-react'
 import type { ChangeEvent, FormEvent, MouseEvent, ReactNode } from 'react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import {
   createQualityInspection,
@@ -26,6 +26,7 @@ import {
   type CurrentUser,
   type QualityInspection,
   type QualityInspectionInboundEligibility,
+  type QualityInspectionListSummary,
   type QualityInspectionPayload,
   type QualityInspectionStatus,
 } from '@/api'
@@ -33,6 +34,8 @@ import type { LocalizedOption } from '@/shared/formOptions'
 import { ApiError, showError, showWarningDialog } from '@/shared/errors'
 import { useFormModal } from '@/shared/useFormModal'
 import { FormSelect, ListPageShell, Metric, PanelTitle, RemoteSelect } from '@/shared/ui'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { t, type TranslationKey } from '@/app/appI18n'
 import { moduleDetailPath, qualityInspectionPath } from '@/app/routes'
 import { emptyToNull, formatDate, nullableText, type RoutedDetailPageProps } from '@/app/pages/appHelpers'
@@ -46,6 +49,28 @@ type QualityInspectionListFilters = {
   supplier: string
   contract: string
   assignee: QualityInspectionAssigneeFilter
+}
+
+function filtersFromUrl(params: URLSearchParams): QualityInspectionListFilters {
+  const assignee = params.get('assignee')
+  return {
+    search: params.get('q') ?? '',
+    status: params.get('status') ?? '',
+    result: params.get('result') ?? '',
+    supplier: params.get('supplier') ?? '',
+    contract: params.get('contract') ?? '',
+    assignee: assignee === 'mine' ? 'mine' : 'all',
+  }
+}
+
+const emptySummary: QualityInspectionListSummary = {
+  pending_count: 0,
+  in_progress_count: 0,
+  completed_count: 0,
+  cancelled_count: 0,
+  overdue_count: 0,
+  open_issue_count: 0,
+  my_action_count: 0,
 }
 
 type QualityTaskFormState = {
@@ -316,13 +341,26 @@ function taskPriority(inspection: QualityInspection): number {
 
 export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Props) {
   const [inspections, setInspections] = useState<QualityInspection[]>([])
+  const [summary, setSummary] = useState<QualityInspectionListSummary>(emptySummary)
+  const urlQuery = useUrlQuery()
+  const appliedUrlSearchRef = useRef(urlQuery.search)
+  const { page, pageSize, setTotal, setPage, changePage, pagination } = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params),
+  )
   const [selectedInspectionId, setSelectedInspectionId] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [resultFilter, setResultFilter] = useState('')
-  const [supplierFilter, setSupplierFilter] = useState('')
-  const [contractFilter, setContractFilter] = useState('')
-  const [assigneeFilter, setAssigneeFilter] = useState<QualityInspectionAssigneeFilter>('all')
+  const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
+  const [statusFilter, setStatusFilter] = useState(() => urlQuery.params.get('status') ?? '')
+  const [resultFilter, setResultFilter] = useState(() => urlQuery.params.get('result') ?? '')
+  const [supplierFilter, setSupplierFilter] = useState(
+    () => urlQuery.params.get('supplier') ?? '',
+  )
+  const [contractFilter, setContractFilter] = useState(
+    () => urlQuery.params.get('contract') ?? '',
+  )
+  const [assigneeFilter, setAssigneeFilter] = useState<QualityInspectionAssigneeFilter>(
+    () => (urlQuery.params.get('assignee') === 'mine' ? 'mine' : 'all'),
+  )
   const [eligibility, setEligibility] = useState<QualityInspectionInboundEligibility | null>(null)
   const {
     open: taskModalOpen,
@@ -414,6 +452,21 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
   }, [])
 
   useEffect(() => {
+    if (appliedUrlSearchRef.current === urlQuery.search) return
+    appliedUrlSearchRef.current = urlQuery.search
+    const nextFilters = filtersFromUrl(urlQuery.params)
+    setSearch(nextFilters.search)
+    setStatusFilter(nextFilters.status)
+    setResultFilter(nextFilters.result)
+    setSupplierFilter(nextFilters.supplier)
+    setContractFilter(nextFilters.contract)
+    setAssigneeFilter(nextFilters.assignee)
+    const nextPage = parsePageParam(urlQuery.params)
+    setPage(nextPage)
+    void loadQualityInspections(undefined, nextPage, pageSize, nextFilters)
+  }, [urlQuery.search])
+
+  useEffect(() => {
     if (!taskModalOpen || assignableUsersLoaded || loadingAssignableUsers) return
     void loadAssignableUsersForTask()
   }, [taskModalOpen, assignableUsersLoaded, loadingAssignableUsers])
@@ -434,6 +487,8 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
 
   async function loadQualityInspections(
     preferredInspectionId?: string,
+    pageOverride?: number,
+    pageSizeOverride?: number,
     filters?: QualityInspectionListFilters,
   ) {
     const activeFilters = filters ?? {
@@ -444,6 +499,8 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
       contract: contractFilter,
       assignee: assigneeFilter,
     }
+    const resolvedPage = pageOverride ?? page
+    const resolvedPageSize = pageSizeOverride ?? pageSize
     setLoading(true)
     try {
       const result = await listQualityInspections({
@@ -453,7 +510,25 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
         supplier_id: activeFilters.supplier.trim() || undefined,
         purchase_contract_id: activeFilters.contract.trim() || undefined,
         inspector_user_id: activeFilters.assignee === 'mine' ? currentUser.id : undefined,
+        limit: resolvedPageSize,
+        offset: (resolvedPage - 1) * resolvedPageSize,
       })
+      setTotal(result.total)
+      setSummary(result.summary)
+      if (result.items.length === 0 && resolvedPage > 1) {
+        const prevPage = resolvedPage - 1
+        setPage(prevPage)
+        appliedUrlSearchRef.current = urlQuery.update({
+          page: prevPage === 1 ? null : prevPage,
+        })
+        await loadQualityInspections(
+          preferredInspectionId,
+          prevPage,
+          resolvedPageSize,
+          filters,
+        )
+        return
+      }
       setInspections(result.items)
       setSelectedInspectionId((current) => {
         if (preferredInspectionId) return preferredInspectionId
@@ -483,7 +558,17 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
     setContractFilter(resetFilters.contract)
     setAssigneeFilter(resetFilters.assignee)
     setMessage('')
-    void loadQualityInspections(undefined, resetFilters)
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      q: null,
+      status: null,
+      result: null,
+      supplier: null,
+      contract: null,
+      assignee: null,
+      page: null,
+    })
+    void loadQualityInspections(undefined, 1, pageSize, resetFilters)
   }
 
   async function loadAssignableUsersForTask() {
@@ -652,6 +737,10 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
         attachments: resolutionAttachments,
       })
       replaceInspection(updated)
+      setSummary((current) => ({
+        ...current,
+        open_issue_count: Math.max(0, current.open_issue_count - 1),
+      }))
       setResolvingIssueId(null)
       setMessage(t('quality.inspection.message.issueResolved'))
     } catch (caught) {
@@ -696,18 +785,11 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
     }
   }
 
-  const pendingCount = inspections.filter((item) => item.status === 'pending').length
-  const inProgressCount = inspections.filter((item) => item.status === 'in_progress').length
-  const myActionCount = inspections.filter(
-    (item) =>
-      item.inspector_id === currentUser.id &&
-      (item.status === 'pending' || item.status === 'in_progress'),
-  ).length
-  const overdueCount = inspections.filter((item) => isInspectionOverdue(item)).length
-  const openIssueCount = inspections.reduce(
-    (count, item) => count + item.issues.filter((issue) => issue.status !== 'resolved').length,
-    0,
-  )
+  const pendingCount = summary.pending_count
+  const inProgressCount = summary.in_progress_count
+  const myActionCount = summary.my_action_count
+  const overdueCount = summary.overdue_count
+  const openIssueCount = summary.open_issue_count
   const prioritizedInspections = inspections
     .map((inspection, index) => ({ inspection, index }))
     .sort(
@@ -765,7 +847,17 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
               className="inline-filters single-line-filter-toolbar"
               onSubmit={(event) => {
                 event.preventDefault()
-                void loadQualityInspections()
+                setPage(1)
+                appliedUrlSearchRef.current = urlQuery.update({
+                  q: search.trim(),
+                  status: statusFilter,
+                  result: resultFilter,
+                  supplier: supplierFilter,
+                  contract: contractFilter,
+                  assignee: assigneeFilter === 'mine' ? 'mine' : '',
+                  page: null,
+                })
+                void loadQualityInspections(undefined, 1, pageSize)
               }}
             >
               <label>
@@ -922,7 +1014,16 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
               ]}
               dataSource={prioritizedInspections}
               loading={loading}
-              pagination={false}
+              pagination={{
+                ...pagination,
+                onChange: (nextPage, nextPageSize) => {
+                  const next = changePage(nextPage, nextPageSize)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    page: next.page === 1 ? null : next.page,
+                  })
+                  void loadQualityInspections(undefined, next.page, next.pageSize)
+                },
+              }}
               rowKey="id"
               size="small"
               onRow={(record) => ({

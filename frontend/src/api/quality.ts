@@ -90,9 +90,20 @@ export interface QualityInspection {
   events?: QualityInspectionEvent[]
 }
 
+export interface QualityInspectionListSummary {
+  pending_count: number
+  in_progress_count: number
+  completed_count: number
+  cancelled_count: number
+  overdue_count: number
+  open_issue_count: number
+  my_action_count: number
+}
+
 export interface QualityInspectionList {
   items: QualityInspection[]
   total: number
+  summary: QualityInspectionListSummary
 }
 
 export interface QualityInspectionLinePayload {
@@ -150,6 +161,8 @@ export function listQualityInspections(filters: {
   purchase_contract_id?: string
   assignee_user_id?: string
   inspector_user_id?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<QualityInspectionList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
@@ -161,6 +174,8 @@ export function listQualityInspections(filters: {
   }
   if (filters.assignee_user_id) params.set('assignee_user_id', filters.assignee_user_id)
   if (filters.inspector_user_id) params.set('inspector_user_id', filters.inspector_user_id)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<QualityInspectionList>(`/quality/inspections${suffix}`)
 }

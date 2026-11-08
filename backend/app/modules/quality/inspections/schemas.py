@@ -344,11 +344,26 @@ class QualityInspectionResponse(BaseModel):
     events: list[QualityInspectionEventResponse]
 
 
+class QualityInspectionListSummary(BaseModel):
+    """同一筛选条件下不受分页影响的质检任务汇总指标。"""
+
+    model_config = ConfigDict(extra="forbid")
+
+    pending_count: int = 0
+    in_progress_count: int = 0
+    completed_count: int = 0
+    cancelled_count: int = 0
+    overdue_count: int = 0
+    open_issue_count: int = 0
+    my_action_count: int = 0
+
+
 class QualityInspectionListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[QualityInspectionResponse]
     total: int
+    summary: QualityInspectionListSummary
 
 
 class QualityInspectionInboundEligibilityResponse(BaseModel):

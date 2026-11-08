@@ -9,7 +9,7 @@ import {
   XCircle,
 } from 'lucide-react'
 import type { ChangeEvent, FormEvent, ReactNode } from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import {
   cancelQualityInspection,
@@ -20,12 +20,15 @@ import {
   uploadImage,
   type CurrentUser,
   type QualityInspection,
+  type QualityInspectionListSummary,
   type QualityInspectionPayload,
   type QualityInspectionStatus,
 } from '@/api'
 import type { LocalizedOption } from '@/shared/formOptions'
 import { showError, showWarningDialog } from '@/shared/errors'
 import { FormSelect, ListPageShell, Metric } from '@/shared/ui'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { t } from '@/app/appI18n'
 
 type Props = { currentUser: CurrentUser }
@@ -59,6 +62,28 @@ type CompletionFormState = {
 }
 
 type CompletionErrors = Record<string, string>
+
+type TaskListFilters = {
+  q?: string
+  status?: string
+}
+
+const emptySummary: QualityInspectionListSummary = {
+  pending_count: 0,
+  in_progress_count: 0,
+  completed_count: 0,
+  cancelled_count: 0,
+  overdue_count: 0,
+  open_issue_count: 0,
+  my_action_count: 0,
+}
+
+function filtersFromUrl(params: URLSearchParams): TaskListFilters {
+  return {
+    q: params.get('q')?.trim() || undefined,
+    status: params.get('status') || undefined,
+  }
+}
 
 const qualityTaskStatusOptions: LocalizedOption[] = [
   { value: 'pending', labelKey: 'quality.task.status.pending' },
@@ -272,8 +297,15 @@ function CompletionError({ field, errors }: { field: string; errors: CompletionE
 
 export function MyQualityTasksPage({ currentUser }: Props) {
   const [tasks, setTasks] = useState<QualityInspection[]>([])
-  const [statusFilter, setStatusFilter] = useState('')
-  const [search, setSearch] = useState('')
+  const [summary, setSummary] = useState<QualityInspectionListSummary>(emptySummary)
+  const urlQuery = useUrlQuery()
+  const appliedUrlSearchRef = useRef(urlQuery.search)
+  const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params),
+  )
+  const [statusFilter, setStatusFilter] = useState(() => urlQuery.params.get('status') ?? '')
+  const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
   const [loading, setLoading] = useState(false)
   const [submittingId, setSubmittingId] = useState<string | null>(null)
   const [message, setMessage] = useState('')
@@ -290,14 +322,43 @@ export function MyQualityTasksPage({ currentUser }: Props) {
     void loadTasks()
   }, [])
 
-  async function loadTasks() {
+  useEffect(() => {
+    if (appliedUrlSearchRef.current === urlQuery.search) return
+    appliedUrlSearchRef.current = urlQuery.search
+    setSearch(urlQuery.params.get('q') ?? '')
+    setStatusFilter(urlQuery.params.get('status') ?? '')
+    const nextPage = parsePageParam(urlQuery.params)
+    setPage(nextPage)
+    void loadTasks(nextPage, pageSize, filtersFromUrl(urlQuery.params))
+  }, [urlQuery.search])
+
+  async function loadTasks(
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: TaskListFilters,
+  ) {
+    const resolvedPage = pageOverride ?? page
+    const resolvedPageSize = pageSizeOverride ?? pageSize
+    const filters = filtersOverride ?? currentFilters()
     setLoading(true)
     try {
       const result = await listQualityInspections({
         inspector_user_id: currentUser.id,
-        q: search.trim() || undefined,
-        status: statusFilter || undefined,
+        ...filters,
+        limit: resolvedPageSize,
+        offset: (resolvedPage - 1) * resolvedPageSize,
       })
+      setTotal(result.total)
+      setSummary(result.summary)
+      if (result.items.length === 0 && resolvedPage > 1) {
+        const prevPage = resolvedPage - 1
+        setPage(prevPage)
+        appliedUrlSearchRef.current = urlQuery.update({
+          page: prevPage === 1 ? null : prevPage,
+        })
+        await loadTasks(prevPage, resolvedPageSize, filtersOverride)
+        return
+      }
       setTasks(result.items)
     } catch (caught) {
       showError(caught, t('quality.task.message.loadFailed'))
@@ -306,13 +367,20 @@ export function MyQualityTasksPage({ currentUser }: Props) {
     }
   }
 
+  function currentFilters(): TaskListFilters {
+    return {
+      q: search.trim() || undefined,
+      status: statusFilter || undefined,
+    }
+  }
+
   async function startTask(task: QualityInspection) {
     setSubmittingId(task.id)
     setMessage('')
     try {
-      const updated = await updateQualityInspection(task.id, basePayload(task, 'in_progress'))
-      setTasks((current) => current.map((item) => (item.id === task.id ? updated : item)))
+      await updateQualityInspection(task.id, basePayload(task, 'in_progress'))
       setMessage(t('quality.task.message.started', { code: task.code }))
+      await loadTasks()
     } catch (caught) {
       showError(caught, t('quality.task.message.statusUpdateFailed'))
     } finally {
@@ -444,6 +512,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
       setTasks((current) => current.map((item) => (item.id === completionTask.id ? updated : item)))
       setCompletionTask(null)
       setCompletionForm(null)
+      await loadTasks()
       setMessage(
         t('quality.task.message.completed', {
           code: updated.code,
@@ -491,6 +560,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
       )
       setActionTask(null)
       setActionMode(null)
+      await loadTasks()
     } catch (caught) {
       showError(
         caught,
@@ -503,17 +573,15 @@ export function MyQualityTasksPage({ currentUser }: Props) {
     }
   }
 
-  const pendingCount = tasks.filter((task) => task.status === 'pending').length
-  const inProgressCount = tasks.filter((task) => task.status === 'in_progress').length
-  const completedCount = tasks.filter((task) => task.status === 'completed').length
-  const overdueCount = tasks.filter(
-    (task) => task.status === 'pending' && new Date(task.scheduled_at).getTime() < Date.now(),
-  ).length
+  const pendingCount = summary.pending_count
+  const inProgressCount = summary.in_progress_count
+  const completedCount = summary.completed_count
+  const overdueCount = summary.overdue_count
 
   return (
     <section className="quality-inspection-page">
       <div className="summary-strip" aria-label={t('quality.task.pageAria')}>
-        <Metric label={t('quality.task.metric.tasks')} value={tasks.length} />
+        <Metric label={t('quality.task.metric.tasks')} value={total} />
         <Metric
           label={t('quality.task.metric.pending')}
           value={pendingCount}
@@ -545,7 +613,13 @@ export function MyQualityTasksPage({ currentUser }: Props) {
           className="inline-filters"
           onSubmit={(event) => {
             event.preventDefault()
-            void loadTasks()
+            setPage(1)
+            appliedUrlSearchRef.current = urlQuery.update({
+              q: search.trim(),
+              status: statusFilter,
+              page: null,
+            })
+            void loadTasks(1, pageSize)
           }}
         >
           <label>
@@ -664,7 +738,16 @@ export function MyQualityTasksPage({ currentUser }: Props) {
           ]}
           dataSource={tasks}
           loading={loading}
-          pagination={false}
+          pagination={{
+            ...pagination,
+            onChange: (nextPage, nextPageSize) => {
+              const next = changePage(nextPage, nextPageSize)
+              appliedUrlSearchRef.current = urlQuery.update({
+                page: next.page === 1 ? null : next.page,
+              })
+              void loadTasks(next.page, next.pageSize)
+            },
+          }}
           rowKey="id"
           size="small"
         />

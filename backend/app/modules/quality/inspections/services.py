@@ -1,4 +1,4 @@
-from datetime import datetime, time
+from datetime import UTC, datetime, time
 
 from app.db.uow import UnitOfWork
 from app.modules.followup.services import FollowupService
@@ -18,6 +18,7 @@ from app.modules.quality.inspections.schemas import (
     QualityInspectionCreate,
     QualityInspectionInboundEligibilityResponse,
     QualityInspectionListResponse,
+    QualityInspectionListSummary,
     QualityInspectionResponse,
     QualityIssueResolveRequest,
     QualityReinspectionCreate,
@@ -252,9 +253,33 @@ class QualityInspectionService:
             assignee_user_id=resolved_assignee_user_id,
             inspector_user_id=resolved_inspector_user_id,
         )
+        status_counts, overdue_count, open_issue_count, my_action_count = (
+            await self._repository.summarize_inspections(
+                q=q,
+                status=status,
+                result=result,
+                supplier_id=supplier_id,
+                purchase_contract_id=purchase_contract_id,
+                owner_user_ids=owner_user_ids,
+                visible_assignee_user_id=visible_assignee_user_id,
+                assignee_user_id=resolved_assignee_user_id,
+                inspector_user_id=resolved_inspector_user_id,
+                current_user_id=current_user.id,
+                now=datetime.now(UTC),
+            )
+        )
         return QualityInspectionListResponse(
             items=await self._response_builder.build_many(rows),
             total=total,
+            summary=QualityInspectionListSummary(
+                pending_count=status_counts.get("pending", 0),
+                in_progress_count=status_counts.get("in_progress", 0),
+                completed_count=status_counts.get("completed", 0),
+                cancelled_count=status_counts.get("cancelled", 0),
+                overdue_count=overdue_count,
+                open_issue_count=open_issue_count,
+                my_action_count=my_action_count,
+            ),
         )
 
     async def get_inspection(
