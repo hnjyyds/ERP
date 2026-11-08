@@ -41,6 +41,7 @@ export function buildScenarios({ productId, inboundOrderId, contractId }) {
     { name: 'sales-quotations', path: '/sales/quotations' },
     { name: 'sales-shipments', path: '/sales/shipments' },
     { name: 'sales-contracts', path: '/sales/contracts' },
+    { name: 'organization-users', path: '/organization/users' },
   ]
 
   if (productId) {
