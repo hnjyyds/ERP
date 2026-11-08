@@ -444,6 +444,211 @@ describe('QualityInspectionsPage', () => {
     expect(screen.queryByRole('button', { name: '发起复检' })).toBeNull()
   })
 
+  it('从 URL 恢复筛选条件与页码并据此请求列表', async () => {
+    vi.mocked(listQualityInspections).mockResolvedValueOnce({
+      items: [
+        {
+          id: 'qc-url-001',
+          code: 'QC-URL-001',
+          purchase_contract_id: 'pc-001',
+          purchase_contract_no: 'PC-QC-001',
+          supplier_id: 'supplier-001',
+          supplier_name: '华东包装制品厂',
+          status: 'pending',
+          scheduled_at: '2026-08-25T09:00:00',
+          inspected_at: null,
+          result: null,
+          inspector_id: 'user-qc',
+          inspector_name: '演示 QC 专员',
+          qc_user_id: 'user-qc',
+          qc_user_name: '演示 QC 专员',
+          issue_summary: null,
+          attachment_group_id: null,
+          lines: [],
+          issues: [],
+        } as unknown as QualityInspection,
+      ],
+      total: 120,
+      summary: {
+        pending_count: 1,
+        in_progress_count: 0,
+        completed_count: 0,
+        cancelled_count: 0,
+        overdue_count: 0,
+        open_issue_count: 0,
+        my_action_count: 0,
+      },
+    })
+    window.history.replaceState(
+      {},
+      '',
+      '/quality/inspections?q=QC-URL&status=pending&result=failed&supplier=supplier-001&contract=pc-001&assignee=mine&page=2',
+    )
+
+    render(
+      <QualityInspectionsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    await waitFor(() =>
+      expect(listQualityInspections).toHaveBeenCalledWith({
+        q: 'QC-URL',
+        status: 'pending',
+        result: 'failed',
+        supplier_id: 'supplier-001',
+        purchase_contract_id: 'pc-001',
+        inspector_user_id: 'user-current',
+        limit: 50,
+        offset: 50,
+      }),
+    )
+    expect(screen.getByPlaceholderText('QC 单号 / 合同 / 供应商')).toHaveValue('QC-URL')
+  })
+
+  it('提交筛选时写入 URL，重置筛选时清除 URL', async () => {
+    const user = userEvent.setup()
+    render(
+      <QualityInspectionsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+    await waitFor(() => expect(listQualityInspections).toHaveBeenCalled())
+
+    const searchInput = screen.getByPlaceholderText('QC 单号 / 合同 / 供应商')
+    await user.type(searchInput, 'QC-URL')
+    await user.click(screen.getByRole('button', { name: '查询' }))
+
+    await waitFor(() => {
+      expect(new URLSearchParams(window.location.search).get('q')).toBe('QC-URL')
+    })
+    expect(listQualityInspections).toHaveBeenLastCalledWith(
+      expect.objectContaining({ q: 'QC-URL', limit: 50, offset: 0 }),
+    )
+
+    await user.click(screen.getByRole('button', { name: '重置筛选' }))
+
+    await waitFor(() => {
+      expect(new URLSearchParams(window.location.search).get('q')).toBeNull()
+    })
+    expect(searchInput).toHaveValue('')
+  })
+
+  it('关闭后重新打开新增弹窗会重置已填写内容', async () => {
+    const user = userEvent.setup()
+    render(
+      <QualityInspectionsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    await user.click(screen.getByText('新增 QC 单'))
+    await waitFor(() => expect(listAssignableUsers).toHaveBeenCalled())
+    const modal = screen.getByText('建立 QC 任务').closest<HTMLElement>('.ant-modal')!
+    const contractSelect = within(modal).getByRole('combobox', { name: '采购合同' })
+    await user.click(contractSelect)
+    await user.click(await screen.findByText('PC-QC-001 / 华东包装制品厂'))
+    await user.type(modal.querySelector<HTMLTextAreaElement>('#quality-task-note')!, '第一次填写')
+    expect(within(modal).getByTitle('PC-QC-001 / 华东包装制品厂')).toBeTruthy()
+
+    await user.click(modal.querySelector('.ant-modal-close') as HTMLElement)
+
+    await user.click(screen.getByText('新增 QC 单'))
+    const reopened = screen.getByText('建立 QC 任务').closest<HTMLElement>('.ant-modal')!
+    expect(within(reopened).queryByTitle('PC-QC-001 / 华东包装制品厂')).toBeNull()
+    expect(reopened.querySelector<HTMLTextAreaElement>('#quality-task-note')).toHaveValue('')
+  })
+
+  it('创建失败时保留已填写内容并保持弹窗打开', async () => {
+    const user = userEvent.setup()
+    render(
+      <QualityInspectionsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    await user.click(screen.getByText('新增 QC 单'))
+    await waitFor(() => expect(listAssignableUsers).toHaveBeenCalled())
+    const modal = screen.getByText('建立 QC 任务').closest<HTMLElement>('.ant-modal')!
+    await user.click(within(modal).getByRole('combobox', { name: '采购合同' }))
+    await user.click(await screen.findByText('PC-QC-001 / 华东包装制品厂'))
+    await user.type(modal.querySelector<HTMLTextAreaElement>('#quality-task-note')!, '失败也要保留')
+
+    fireEvent.submit(within(modal).getByRole('button', { name: '创建 QC 任务' }).closest('form')!)
+
+    await waitFor(() => expect(createQualityInspection).toHaveBeenCalled())
+    expect(screen.getByText('建立 QC 任务')).toBeTruthy()
+    expect(within(modal).getByTitle('PC-QC-001 / 华东包装制品厂')).toBeTruthy()
+    expect(modal.querySelector<HTMLTextAreaElement>('#quality-task-note')).toHaveValue(
+      '失败也要保留',
+    )
+  })
+
+  it('存在未关闭异常时复检按钮不可用并提示先关闭异常', async () => {
+    const failedInspection = {
+      id: 'qc-open-issue',
+      code: 'QC-OPEN-ISSUE',
+      purchase_contract_id: 'pc-001',
+      purchase_contract_no: 'PC-QC-001',
+      supplier_id: 'supplier-001',
+      supplier_name: '华东包装制品厂',
+      status: 'completed' as const,
+      scheduled_at: '2026-08-20T09:00:00',
+      inspected_at: '2026-08-20',
+      result: 'failed',
+      inspector_id: 'user-qc',
+      inspector_name: '演示 QC 专员',
+      qc_user_id: 'user-qc',
+      qc_user_name: '演示 QC 专员',
+      issue_summary: null,
+      attachment_group_id: null,
+      owner_user_id: 'user-current',
+      lines: [],
+      issues: [
+        {
+          id: 'issue-open',
+          inspection_id: 'qc-open-issue',
+          line_id: null,
+          issue_type: '包装破损',
+          severity: 'major',
+          description: '包装破损 10 件',
+          corrective_action: '重新包装',
+          status: 'open',
+          attachment_group_id: null,
+          attachments: [],
+        },
+      ],
+      attachments: [],
+      events: [],
+    }
+    vi.mocked(listQualityInspections).mockResolvedValueOnce({
+      items: [failedInspection],
+      total: 1,
+      summary: {
+        pending_count: 0,
+        in_progress_count: 0,
+        completed_count: 1,
+        cancelled_count: 0,
+        overdue_count: 0,
+        open_issue_count: 1,
+        my_action_count: 0,
+      },
+    })
+    vi.mocked(getQualityInboundEligibility).mockResolvedValueOnce({
+      purchase_contract_id: failedInspection.purchase_contract_id,
+      eligible: false,
+      latest_inspection_id: failedInspection.id,
+      latest_status: 'completed',
+      latest_result: 'failed',
+      inspected_at: failedInspection.inspected_at,
+      reason: '最近一次 QC 未通过',
+    })
+
+    render(
+      <QualityInspectionsPage
+        currentUser={currentUser}
+        detailId={failedInspection.id}
+        onNavigate={onNavigate}
+      />,
+    )
+
+    const reinspectionButton = await screen.findByRole('button', { name: '发起复检' })
+    expect(reinspectionButton).toBeDisabled()
+    expect(screen.getByText('关闭全部异常后才能发起复检')).toBeTruthy()
+  })
+
   it('按服务端分页请求且翻页后汇总指标不变', async () => {
     vi.mocked(listQualityInspections).mockResolvedValue({
       items: [
