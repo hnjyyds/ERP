@@ -4,7 +4,7 @@ import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { addExportContractAdvancePayment, approveExportContract, cancelExportContract, createExportContract, exportExportContract, listExportContracts, registerExportContractSignature, reissueExportContract, submitExportContract, updateExportContract, type AssignableUser, type CurrentUser, type ExportContract, type ExportContractAdvancePayment, type ExportContractLine, type ExportContractSignature, type Customer, type Product , ExportContractPurchaseStatus, ExportContractShipmentStatus, ExportQuotation, listAssignableUsers, listCustomers, listProducts, getExportQuotationHistory} from '../../../api'
 import { exportContractPath, moduleDetailPath } from '../../routes'
-import { FormModal, FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { FormModal, FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
 import { showError, showWarningDialog } from '../../../shared/errors'
 import { downloadCsv as _downloadCsv, openExportContractPrint } from '../../../shared/print'
 import { exportContractStatusOptions } from '../../../shared/formOptions'
@@ -585,10 +585,12 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
 
       <section className="business-grid export-contract-grid">
         {!detailId ? (
-          <section className="workspace-panel list-panel product-list-panel" style={{ gridColumn: '1 / -1' }}>
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title={t('sales.contract.list.title')} />
-          </div>
+          <ListPageShell
+            className="product-list-panel"
+            icon={<Search size={18} />}
+            style={{ gridColumn: '1 / -1' }}
+            title={t('sales.contract.list.title')}
+          >
           <form
             className="inline-filters single-line-filter-toolbar"
             onSubmit={(event) => {
@@ -695,7 +697,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
               onClick: () => setSelectedContractId(record.id),
             })}
           />
-          </section>
+          </ListPageShell>
         ) : null}
 
         <ExportContractFormModal

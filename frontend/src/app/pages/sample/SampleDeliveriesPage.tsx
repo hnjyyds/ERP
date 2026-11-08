@@ -30,7 +30,7 @@ import {
 } from '../../../api'
 import { sampleDeliveryPath, moduleDetailPath } from '../../routes'
 import { t } from '../../appI18n'
-import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { downloadCsv } from '../../../shared/print'
 import {
@@ -607,14 +607,12 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
 
       <section className="business-grid sample-delivery-grid">
         {!detailId ? (
-          <section className="workspace-panel list-panel product-list-panel">
-            <div className="panel-heading toolbar-heading">
-              <PanelTitle
-                icon={<Search size={18} />}
-                title={t('sample.delivery.panel.listTitle')}
-              />
-              <form
-                className="inline-filters"
+          <ListPageShell
+            className="product-list-panel"
+            icon={<Search size={18} />}
+            title={t('sample.delivery.panel.listTitle')}
+            toolbar={<form
+              className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
                   void loadDeliveries()
@@ -691,9 +689,9 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                 >
                   {t('sample.delivery.action.create')}
                 </Button>
-              </form>
-            </div>
+            </form>}
 
+          >
             <Table<SampleDelivery>
               columns={[
                 {
@@ -748,7 +746,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
                 onClick: () => setSelectedDeliveryId(record.id),
               })}
             />
-          </section>
+          </ListPageShell>
         ) : null}
 
         <Modal

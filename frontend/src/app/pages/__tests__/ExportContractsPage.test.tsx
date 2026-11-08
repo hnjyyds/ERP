@@ -61,6 +61,25 @@ vi.mock('../../../shared/ui', () => {
       React.createElement('select', { ...props, 'data-testid': 'form-select' }),
     Metric: ({ label, value }: { label: string; value: unknown }) =>
       React.createElement('span', { 'data-testid': 'metric' }, `${label}: ${value}`),
+    ListPageShell: ({
+      title,
+      toolbar,
+      children,
+    }: {
+      icon: React.ReactNode
+      title: string
+      toolbar?: React.ReactNode
+      children: React.ReactNode
+      className?: string
+      style?: React.CSSProperties
+    }) =>
+      React.createElement(
+        'section',
+        null,
+        React.createElement('h3', { 'data-testid': 'panel-title' }, title),
+        toolbar,
+        children,
+      ),
     PanelTitle: ({ title }: { icon: unknown; title: string }) =>
       React.createElement('h3', { 'data-testid': 'panel-title' }, title),
   }

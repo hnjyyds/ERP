@@ -20,7 +20,7 @@ import {
 } from '../../../api'
 import { sampleRecordPath, moduleDetailPath } from '../../routes'
 import { t } from '../../appI18n'
-import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { downloadCsv } from '../../../shared/print'
 import {
@@ -502,11 +502,12 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
 
       <section className="business-grid sample-record-grid">
         {!detailId ? (
-          <section className="workspace-panel list-panel product-list-panel">
-            <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title={t('sample.record.panel.listTitle')} />
-              <form
-                className="inline-filters"
+          <ListPageShell
+            className="product-list-panel"
+            icon={<Search size={18} />}
+            title={t('sample.record.panel.listTitle')}
+            toolbar={<form
+              className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
                   void loadRecords()
@@ -564,9 +565,9 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                 >
                   {t('sample.record.action.create')}
                 </Button>
-              </form>
-            </div>
+            </form>}
 
+          >
             <Table<SampleRecord>
               columns={[
                 {
@@ -611,7 +612,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                 onClick: () => setSelectedRecordId(record.id),
               })}
             />
-          </section>
+          </ListPageShell>
         ) : null}
 
         <Modal

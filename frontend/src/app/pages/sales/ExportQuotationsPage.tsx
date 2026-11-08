@@ -29,7 +29,7 @@ import {
   listCustomers,
 } from '../../../api'
 import { exportQuotationPath, moduleDetailPath } from '../../routes'
-import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { downloadCsv as _downloadCsv } from '../../../shared/print'
 import {
@@ -630,14 +630,12 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
 
       <section className="business-grid export-quotation-grid">
         {!detailId ? (
-          <section className="workspace-panel list-panel product-list-panel">
-            <div className="panel-heading toolbar-heading">
-              <PanelTitle
-                icon={<Search size={18} />}
-                title={t('sales.quotation.list.title')}
-              />
-              <form
-                className="inline-filters"
+          <ListPageShell
+            className="product-list-panel"
+            icon={<Search size={18} />}
+            title={t('sales.quotation.list.title')}
+            toolbar={<form
+              className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
                   void loadQuotations()
@@ -692,9 +690,9 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                 <Button icon={<Plus size={16} />} type="primary" onClick={openNewQuotationForm}>
                   {t('sales.quotation.list.create')}
                 </Button>
-              </form>
-            </div>
+            </form>}
 
+          >
             <Table<ExportQuotation>
               columns={[
                 {
@@ -751,7 +749,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
                 onClick: () => setSelectedQuotationId(record.id),
               })}
             />
-          </section>
+          </ListPageShell>
         ) : null}
 
         {!detailId ? (

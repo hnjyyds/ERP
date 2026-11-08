@@ -20,7 +20,7 @@ import {
   ShipmentLine,
 } from '../../../api'
 import { shipmentPath, moduleDetailPath } from '../../routes'
-import { FormSelect, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
+import { FormSelect, ListPageShell, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import { shipmentStatusOptions, freightMethodOptions } from '../../../shared/formOptions'
 import { useFormModal } from '../../../shared/useFormModal'
@@ -395,11 +395,12 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
 
       <section className="business-grid shipment-grid">
         {!detailId ? (
-          <section className="workspace-panel list-panel product-list-panel">
-            <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title={t('sales.shipment.list.title')} />
-              <form
-                className="inline-filters"
+          <ListPageShell
+            className="product-list-panel"
+            icon={<Search size={18} />}
+            title={t('sales.shipment.list.title')}
+            toolbar={<form
+              className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
                   void loadShipments()
@@ -453,9 +454,9 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
                 >
                   {t('sales.shipment.action.generate')}
                 </Button>
-              </form>
-            </div>
+            </form>}
 
+          >
             <Table<ShipmentPlan>
               columns={[
                 {
@@ -512,7 +513,7 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
                 onClick: () => setSelectedShipmentId(record.id),
               })}
             />
-          </section>
+          </ListPageShell>
         ) : null}
 
         {!detailId ? (
