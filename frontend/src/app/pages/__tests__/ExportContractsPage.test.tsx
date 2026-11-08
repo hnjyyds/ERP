@@ -124,6 +124,7 @@ describe('ExportContractsPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    window.history.replaceState({}, '', '/')
     api.listExportContracts.mockResolvedValue({
       items: [],
       total: 0,
@@ -503,5 +504,152 @@ describe('ExportContractsPage', () => {
     })
     expect(screen.getByText('待审批: 3')).toBeInTheDocument()
     expect(screen.getByText('已审批: 2')).toBeInTheDocument()
+  })
+
+  it('提交筛选时写入 URL 并回到第 1 页请求', async () => {
+    const user = userEvent.setup()
+    window.history.replaceState({}, '', '/?page=3')
+    api.listExportContracts.mockResolvedValue({
+      items: [makeExportContract()],
+      total: 120,
+      summary: emptyContractSummary,
+    })
+
+    render(
+      <ExportContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+    await waitFor(() => {
+      expect(api.listExportContracts).toHaveBeenCalledWith(
+        expect.objectContaining({ limit: 50, offset: 100 }),
+      )
+    })
+
+    await user.type(screen.getByLabelText('合同搜索'), 'EC-1')
+    await user.click(screen.getByRole('button', { name: '查询' }))
+
+    await waitFor(() => {
+      expect(api.listExportContracts).toHaveBeenLastCalledWith(
+        expect.objectContaining({ q: 'EC-1', limit: 50, offset: 0 }),
+      )
+    })
+    const params = new URLSearchParams(window.location.search)
+    expect(params.get('q')).toBe('EC-1')
+    expect(params.get('page')).toBeNull()
+  })
+
+  it('刷新或直达时从 URL 恢复筛选并按该条件请求', async () => {
+    window.history.replaceState(
+      {},
+      '',
+      '/?q=EC-9&status=submitted&customer=customer-9&page=2',
+    )
+    api.listExportContracts.mockResolvedValue({
+      items: [makeExportContract()],
+      total: 120,
+      summary: emptyContractSummary,
+    })
+
+    render(
+      <ExportContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    await waitFor(() => {
+      expect(api.listExportContracts).toHaveBeenCalledWith(
+        expect.objectContaining({
+          q: 'EC-9',
+          approval_status: 'submitted',
+          customer_id: 'customer-9',
+          limit: 50,
+          offset: 50,
+        }),
+      )
+    })
+    expect(screen.getByLabelText('合同搜索')).toHaveValue('EC-9')
+  })
+
+  it('新增出口合同提交失败后保留弹窗和已添加的商品行', async () => {
+    api.listProducts.mockResolvedValue({
+      items: [
+        {
+          id: 'product-bag',
+          code: 'BAG-001',
+          cn_name: '环保购物袋',
+          en_name: 'Eco Shopping Bag',
+          specification: '40 × 50 cm',
+          model: 'BAG-L',
+          customs_code: '4202920000',
+          tax_rate: '13.00',
+          rebate_rate: '9.00',
+          package_info: '100 pcs / carton',
+          unit: 'pcs',
+          image_url: null,
+          status: 'active',
+          accessories: [],
+        },
+      ],
+      total: 1,
+    })
+    api.createExportContract.mockRejectedValue(new Error('network down'))
+    const user = userEvent.setup()
+
+    render(
+      <ExportContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+    await user.click(await screen.findByRole('button', { name: '新增合同' }))
+    const dialog = await screen.findByRole('dialog')
+    await user.click(within(dialog).getByRole('button', { name: '添加商品' }))
+    await user.click(await screen.findByRole('checkbox', { name: /环保购物袋/ }))
+    await user.click(screen.getByRole('button', { name: '添加 1 项' }))
+    await user.click(within(dialog).getByRole('button', { name: '新增出口合同' }))
+
+    await waitFor(() => {
+      expect(api.createExportContract).toHaveBeenCalledTimes(1)
+    })
+    expect(within(dialog).getByText('环保购物袋')).toBeInTheDocument()
+    expect(
+      within(dialog).getByRole('button', { name: /新增出口合同/ }),
+    ).toBeInTheDocument()
+  })
+
+  it('草稿状态下载入编辑和作废可用，未选审批人不能提交，审批按钮禁用', async () => {
+    const contract = makeExportContract()
+    api.listExportContracts.mockResolvedValue({
+      items: [contract],
+      total: 1,
+      summary: emptyContractSummary,
+    })
+
+    render(
+      <ExportContractsPage currentUser={currentUser} detailId={contract.id} onNavigate={onNavigate} />,
+    )
+
+    expect(await screen.findByRole('button', { name: '载入编辑' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: '提交审批' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: '审批通过' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: '作废合同' })).toBeEnabled()
+    expect(screen.queryByRole('button', { name: '作废重开' })).not.toBeInTheDocument()
+  })
+
+  it('已提交但非指定审批人时审批按钮禁用并提示等待审批', async () => {
+    const otherUser = { ...currentUser, permissions: ['sales:contract:approve'] }
+    const contract = makeExportContract({
+      approval_status: 'submitted',
+      reviewer_id: 'u-reviewer',
+      reviewer_name: '审批人',
+    })
+    api.listExportContracts.mockResolvedValue({
+      items: [contract],
+      total: 1,
+      summary: emptyContractSummary,
+    })
+
+    render(
+      <ExportContractsPage currentUser={otherUser} detailId={contract.id} onNavigate={onNavigate} />,
+    )
+
+    expect(await screen.findByRole('button', { name: '审批通过' })).toBeDisabled()
+    expect(screen.getByText('等待 审批人 审批')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '载入编辑' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: '提交审批' })).toBeDisabled()
   })
 })
