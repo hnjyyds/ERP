@@ -33,9 +33,16 @@ export interface Supplier {
   credit_profile: SupplierCreditProfile | null
 }
 
+export interface SupplierListSummary {
+  active_count: number
+  contact_count: number
+  credit_profile_count: number
+}
+
 export interface SupplierList {
   items: Supplier[]
   total: number
+  summary: SupplierListSummary
 }
 
 export interface SupplierContactPayload {
@@ -93,11 +100,17 @@ export function listSuppliers(filters: {
   q?: string
   country?: string
   credit_grade?: string
+  status?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<SupplierList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.country) params.set('country', filters.country)
   if (filters.credit_grade) params.set('credit_grade', filters.credit_grade)
+  if (filters.status) params.set('status', filters.status)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<SupplierList>(`/masterdata/suppliers${suffix}`)
 }

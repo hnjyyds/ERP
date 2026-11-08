@@ -94,11 +94,22 @@ class SupplierResponse(BaseModel):
     credit_profile: SupplierCreditProfileResponse | None
 
 
+class SupplierListSummary(BaseModel):
+    """同一筛选条件下不受分页影响的供应商汇总指标。"""
+
+    model_config = ConfigDict(extra="forbid")
+
+    active_count: int = 0
+    contact_count: int = 0
+    credit_profile_count: int = 0
+
+
 class SupplierListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[SupplierResponse]
     total: int
+    summary: SupplierListSummary
 
 
 class SupplierTransactionResponse(BaseModel):

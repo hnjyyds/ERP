@@ -15,6 +15,7 @@ from app.modules.masterdata.customers.schemas import (
     CustomerCreditProfileInput,
     CustomerCreditProfileResponse,
     CustomerListResponse,
+    CustomerListSummary,
     CustomerResponse,
     CustomerTransactionListResponse,
     CustomerTransactionResponse,
@@ -194,6 +195,7 @@ class CustomerService:
         q: str | None,
         country: str | None,
         credit_grade: str | None,
+        status: str | None,
         limit: int = 50,
         offset: int = 0,
     ) -> CustomerListResponse:
@@ -205,9 +207,19 @@ class CustomerService:
             q=q,
             country=country,
             credit_grade=credit_grade,
+            status=status,
             owner_user_ids=owner_user_ids,
             limit=limit,
             offset=offset,
+        )
+        active_count, contact_count, credit_profile_count = (
+            await self._repository.summarize_customers(
+                q=q,
+                country=country,
+                credit_grade=credit_grade,
+                status=status,
+                owner_user_ids=owner_user_ids,
+            )
         )
         items = [
             await self._customer_response(
@@ -216,7 +228,15 @@ class CustomerService:
             )
             for customer in customers
         ]
-        return CustomerListResponse(items=items, total=total)
+        return CustomerListResponse(
+            items=items,
+            total=total,
+            summary=CustomerListSummary(
+                active_count=active_count,
+                contact_count=contact_count,
+                credit_profile_count=credit_profile_count,
+            ),
+        )
 
     async def list_transactions(
         self,

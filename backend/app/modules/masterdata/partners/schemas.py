@@ -74,11 +74,22 @@ class PartnerResponse(BaseModel):
     primary_contact: PartnerContactResponse | None
 
 
+class PartnerListSummary(BaseModel):
+    """同一筛选条件下不受分页影响的伙伴汇总指标。"""
+
+    model_config = ConfigDict(extra="forbid")
+
+    active_count: int = 0
+    contact_count: int = 0
+    partner_type_count: int = 0
+
+
 class PartnerListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[PartnerResponse]
     total: int
+    summary: PartnerListSummary
 
 
 class PartnerFeeRecordResponse(BaseModel):

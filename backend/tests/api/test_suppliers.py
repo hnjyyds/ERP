@@ -77,6 +77,11 @@ async def test_supplier_create_detail_search_update_and_transactions(
     list_data = list_response.json()["data"]
     assert list_data["total"] == 1
     assert list_data["items"][0]["code"] == "S-CN-001"
+    assert list_data["summary"] == {
+        "active_count": 1,
+        "contact_count": 1,
+        "credit_profile_count": 1,
+    }
 
     update_response = await api_client.put(
         f"/api/v1/masterdata/suppliers/{supplier_id}",
@@ -326,6 +331,44 @@ async def test_supplier_transactions_collect_supplier_quotation_and_purchase_con
     assert by_type["supplier_quotation"]["amount"] == "820.00"
     assert by_type["purchase_contract"]["source_code"] == purchase_contract["code"]
     assert by_type["purchase_contract"]["amount"] == "820.00"
+
+
+async def test_supplier_list_paginates_and_keeps_summary_across_pages(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    for code in ("S-PAGE-001", "S-PAGE-002", "S-PAGE-003"):
+        response = await api_client.post(
+            "/api/v1/masterdata/suppliers",
+            headers=headers,
+            json=_supplier_payload(code=code),
+        )
+        assert response.status_code == 201
+
+    first_response = await api_client.get(
+        "/api/v1/masterdata/suppliers",
+        headers=headers,
+        params={"q": "华东", "limit": 2, "offset": 0},
+    )
+    second_response = await api_client.get(
+        "/api/v1/masterdata/suppliers",
+        headers=headers,
+        params={"q": "华东", "limit": 2, "offset": 2},
+    )
+    first = first_response.json()["data"]
+    second = second_response.json()["data"]
+
+    assert first["total"] == 3
+    assert len(first["items"]) == 2
+    assert len(second["items"]) == 1
+    assert first["summary"] == {
+        "active_count": 3,
+        "contact_count": 3,
+        "credit_profile_count": 3,
+    }
+    assert second["summary"] == first["summary"]
 
 
 async def test_supplier_endpoints_require_login(

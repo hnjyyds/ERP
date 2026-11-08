@@ -87,7 +87,11 @@ describe('PurchaseContractsPage', () => {
       total: 0,
       summary: { with_image_count: 0, accessory_count: 0 },
     })
-    vi.spyOn(api, 'listSuppliers').mockResolvedValue({ items: [], total: 0 })
+    vi.spyOn(api, 'listSuppliers').mockResolvedValue({
+      items: [],
+      total: 0,
+      summary: { active_count: 0, contact_count: 0, credit_profile_count: 0 },
+    })
     vi.spyOn(api, 'listAssignableUsers').mockResolvedValue({ users: [] })
 
     render(
@@ -168,7 +172,11 @@ describe('PurchaseContractsPage', () => {
       total: 0,
       summary: { with_image_count: 0, accessory_count: 0 },
     })
-    vi.spyOn(api, 'listSuppliers').mockResolvedValue({ items: [], total: 0 })
+    vi.spyOn(api, 'listSuppliers').mockResolvedValue({
+      items: [],
+      total: 0,
+      summary: { active_count: 0, contact_count: 0, credit_profile_count: 0 },
+    })
     vi.spyOn(api, 'listAssignableUsers').mockResolvedValue({ users: [] })
   }
 
@@ -255,7 +263,11 @@ describe('PurchaseContractsPage', () => {
       total: 0,
       summary: { with_image_count: 0, accessory_count: 0 },
     })
-    vi.spyOn(api, 'listSuppliers').mockResolvedValue({ items: [], total: 0 })
+    vi.spyOn(api, 'listSuppliers').mockResolvedValue({
+      items: [],
+      total: 0,
+      summary: { active_count: 0, contact_count: 0, credit_profile_count: 0 },
+    })
     vi.spyOn(api, 'listAssignableUsers').mockResolvedValue({ users: [] })
 
     render(

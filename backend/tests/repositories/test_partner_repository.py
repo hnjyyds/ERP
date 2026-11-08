@@ -45,7 +45,16 @@ async def test_partner_repository_filters_by_type_contact_and_owner(
             partner_type="freight_forwarder",
             owner_user_ids=["u-001"],
         )
+        summary = await repository.summarize_partners(
+            q="Ivy",
+            partner_type="freight_forwarder",
+            status=None,
+            owner_user_ids=["u-001"],
+        )
+        _, inactive_total = await repository.list_partners(status="inactive")
 
     assert total == 1
     assert isinstance(rows[0], PartnerRow)
     assert rows[0].code == "P-FWD-REPO-001"
+    assert summary == (1, 1, 1)
+    assert inactive_total == 0

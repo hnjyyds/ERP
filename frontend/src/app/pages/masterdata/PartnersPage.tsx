@@ -33,7 +33,15 @@ export function PartnersPage({ detailId, onNavigate }: PartnersPageProps) {
       detailId={detailId}
       detailPath={(id) => moduleDetailPath(partnerPath, id)}
       listPath={partnerPath}
-      listEntity={(filters) => listPartners({ q: filters?.q, partner_type: filters?.partner_type })}
+      listEntity={(filters) =>
+        listPartners({
+          q: filters?.q,
+          partner_type: filters?.partner_type,
+          status: filters?.status,
+          limit: filters?.limit,
+          offset: filters?.offset,
+        })
+      }
       listTransactions={listPartnerFeeRecords}
       onNavigate={onNavigate}
       pageTitle={t('masterdata.partner.pageTitle')}

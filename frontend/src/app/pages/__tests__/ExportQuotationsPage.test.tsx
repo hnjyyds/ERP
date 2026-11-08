@@ -72,7 +72,11 @@ describe('ExportQuotationsPage', () => {
       total: 120,
       summary: { submitted_count: 3, approved_count: 2, total_amount: '300.00', currency: 'USD' },
     })
-    vi.spyOn(api, 'listCustomers').mockResolvedValue({ items: [], total: 0 })
+    vi.spyOn(api, 'listCustomers').mockResolvedValue({
+      items: [],
+      total: 0,
+      summary: { active_count: 0, contact_count: 0, credit_profile_count: 0 },
+    })
 
     render(
       <ExportQuotationsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,

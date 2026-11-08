@@ -52,7 +52,17 @@ async def test_customer_repository_filters_by_contact_country_credit_and_owner(
             credit_grade="A",
             owner_user_ids=["u-001"],
         )
+        summary = await repository.summarize_customers(
+            q="Greta",
+            country="Germany",
+            credit_grade="A",
+            status=None,
+            owner_user_ids=["u-001"],
+        )
+        _, inactive_total = await repository.list_customers(status="inactive")
 
     assert total == 1
     assert isinstance(rows[0], CustomerRow)
     assert rows[0].code == "C-DE-001"
+    assert summary == (1, 1, 1)
+    assert inactive_total == 0

@@ -226,6 +226,16 @@ class CustomerResponse(BaseModel):
     )
 
 
+class CustomerListSummary(BaseModel):
+    """同一筛选条件下不受分页影响的客户汇总指标。"""
+
+    model_config = ConfigDict(extra="forbid")
+
+    active_count: int = Field(default=0, description="状态为启用的客户数。")
+    contact_count: int = Field(default=0, description="客户联系人总数。")
+    credit_profile_count: int = Field(default=0, description="已维护信用资料的客户数。")
+
+
 class CustomerListResponse(BaseModel):
     """分页客户查询结果。"""
 
@@ -233,6 +243,7 @@ class CustomerListResponse(BaseModel):
 
     items: list[CustomerResponse] = Field(description="当前分页返回的客户列表。")
     total: int = Field(description="符合查询条件的客户总数。")
+    summary: CustomerListSummary = Field(description="不受分页影响的客户汇总指标。")
 
 
 class CustomerTransactionResponse(BaseModel):

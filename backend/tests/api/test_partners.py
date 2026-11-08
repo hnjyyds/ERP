@@ -69,6 +69,11 @@ async def test_partner_create_detail_search_update_and_fee_records(
     list_data = list_response.json()["data"]
     assert list_data["total"] == 1
     assert list_data["items"][0]["code"] == "P-FWD-001"
+    assert list_data["summary"] == {
+        "active_count": 1,
+        "contact_count": 1,
+        "partner_type_count": 1,
+    }
 
     update_response = await api_client.put(
         f"/api/v1/masterdata/partners/{partner_id}",
@@ -236,6 +241,50 @@ async def test_partner_rejects_unknown_type(
     )
 
     assert response.status_code == 422
+
+
+async def test_partner_list_paginates_and_keeps_summary_across_pages(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    for code in ("P-PAGE-001", "P-PAGE-002"):
+        response = await api_client.post(
+            "/api/v1/masterdata/partners",
+            headers=headers,
+            json=_partner_payload(code=code),
+        )
+        assert response.status_code == 201
+    insurer_response = await api_client.post(
+        "/api/v1/masterdata/partners",
+        headers=headers,
+        json=_partner_payload(code="P-PAGE-003") | {"partner_type": "insurer"},
+    )
+    assert insurer_response.status_code == 201
+
+    first_response = await api_client.get(
+        "/api/v1/masterdata/partners",
+        headers=headers,
+        params={"q": "远航", "limit": 2, "offset": 0},
+    )
+    second_response = await api_client.get(
+        "/api/v1/masterdata/partners",
+        headers=headers,
+        params={"q": "远航", "limit": 2, "offset": 2},
+    )
+    first = first_response.json()["data"]
+    second = second_response.json()["data"]
+
+    assert first["total"] == 3
+    assert len(first["items"]) == 2
+    assert len(second["items"]) == 1
+    assert first["summary"] == {
+        "active_count": 3,
+        "contact_count": 3,
+        "partner_type_count": 2,
+    }
+    assert second["summary"] == first["summary"]
 
 
 async def test_partner_endpoints_require_login(

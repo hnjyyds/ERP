@@ -77,6 +77,11 @@ async def test_customer_create_detail_search_update_and_transactions(
     list_data = list_response.json()["data"]
     assert list_data["total"] == 1
     assert list_data["items"][0]["code"] == "C-EU-001"
+    assert list_data["summary"] == {
+        "active_count": 1,
+        "contact_count": 1,
+        "credit_profile_count": 1,
+    }
 
     update_response = await api_client.put(
         f"/api/v1/masterdata/customers/{customer_id}",
@@ -349,6 +354,44 @@ async def test_customer_transactions_close_sales_chain_from_quotation_to_shipmen
     assert by_type["export_quotation"]["amount"] == "1370.00"
     assert by_type["export_contract"]["source_code"] == contract_code
     assert by_type["shipment"]["source_code"] == shipment_code
+
+
+async def test_customer_list_paginates_and_keeps_summary_across_pages(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    for code in ("C-PAGE-001", "C-PAGE-002", "C-PAGE-003"):
+        response = await api_client.post(
+            "/api/v1/masterdata/customers",
+            headers=headers,
+            json=_customer_payload(code=code),
+        )
+        assert response.status_code == 201
+
+    first_response = await api_client.get(
+        "/api/v1/masterdata/customers",
+        headers=headers,
+        params={"q": "欧陆", "limit": 2, "offset": 0},
+    )
+    second_response = await api_client.get(
+        "/api/v1/masterdata/customers",
+        headers=headers,
+        params={"q": "欧陆", "limit": 2, "offset": 2},
+    )
+    first = first_response.json()["data"]
+    second = second_response.json()["data"]
+
+    assert first["total"] == 3
+    assert len(first["items"]) == 2
+    assert len(second["items"]) == 1
+    assert first["summary"] == {
+        "active_count": 3,
+        "contact_count": 3,
+        "credit_profile_count": 3,
+    }
+    assert second["summary"] == first["summary"]
 
 
 async def test_customer_endpoints_require_login(

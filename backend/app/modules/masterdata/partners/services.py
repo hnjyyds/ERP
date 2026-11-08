@@ -13,6 +13,7 @@ from app.modules.masterdata.partners.schemas import (
     PartnerFeeRecordListResponse,
     PartnerFeeRecordResponse,
     PartnerListResponse,
+    PartnerListSummary,
     PartnerResponse,
     PartnerUpdate,
 )
@@ -180,6 +181,7 @@ class PartnerService:
         current_user: CurrentUserResponse,
         q: str | None,
         partner_type: str | None,
+        status: str | None,
     ) -> PartnerListResponse:
         self._require(current_user, "masterdata:partner:view")
         if partner_type is not None:
@@ -190,10 +192,27 @@ class PartnerService:
         partners, total = await self._repository.list_partners(
             q=q,
             partner_type=partner_type,
+            status=status,
             owner_user_ids=owner_user_ids,
         )
+        active_count, contact_count, partner_type_count = (
+            await self._repository.summarize_partners(
+                q=q,
+                partner_type=partner_type,
+                status=status,
+                owner_user_ids=owner_user_ids,
+            )
+        )
         items = [await self._partner_response(partner) for partner in partners]
-        return PartnerListResponse(items=items, total=total)
+        return PartnerListResponse(
+            items=items,
+            total=total,
+            summary=PartnerListSummary(
+                active_count=active_count,
+                contact_count=contact_count,
+                partner_type_count=partner_type_count,
+            ),
+        )
 
     async def list_fee_records(
         self,

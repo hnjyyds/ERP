@@ -52,7 +52,17 @@ async def test_supplier_repository_filters_by_contact_country_credit_and_owner(
             credit_grade="A",
             owner_user_ids=["u-001"],
         )
+        summary = await repository.summarize_suppliers(
+            q="Chen",
+            country="China",
+            credit_grade="A",
+            status=None,
+            owner_user_ids=["u-001"],
+        )
+        _, inactive_total = await repository.list_suppliers(status="inactive")
 
     assert total == 1
     assert isinstance(rows[0], SupplierRow)
     assert rows[0].code == "S-CN-REPO-001"
+    assert summary == (1, 1, 1)
+    assert inactive_total == 0

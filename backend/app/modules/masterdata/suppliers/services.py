@@ -15,6 +15,7 @@ from app.modules.masterdata.suppliers.schemas import (
     SupplierCreditProfileInput,
     SupplierCreditProfileResponse,
     SupplierListResponse,
+    SupplierListSummary,
     SupplierResponse,
     SupplierTransactionListResponse,
     SupplierTransactionResponse,
@@ -194,6 +195,7 @@ class SupplierService:
         q: str | None,
         country: str | None,
         credit_grade: str | None,
+        status: str | None,
     ) -> SupplierListResponse:
         self._require(current_user, "masterdata:supplier:view")
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
@@ -203,7 +205,17 @@ class SupplierService:
             q=q,
             country=country,
             credit_grade=credit_grade,
+            status=status,
             owner_user_ids=owner_user_ids,
+        )
+        active_count, contact_count, credit_profile_count = (
+            await self._repository.summarize_suppliers(
+                q=q,
+                country=country,
+                credit_grade=credit_grade,
+                status=status,
+                owner_user_ids=owner_user_ids,
+            )
         )
         items = [
             await self._supplier_response(
@@ -212,7 +224,15 @@ class SupplierService:
             )
             for supplier in suppliers
         ]
-        return SupplierListResponse(items=items, total=total)
+        return SupplierListResponse(
+            items=items,
+            total=total,
+            summary=SupplierListSummary(
+                active_count=active_count,
+                contact_count=contact_count,
+                credit_profile_count=credit_profile_count,
+            ),
+        )
 
     async def list_transactions(
         self,

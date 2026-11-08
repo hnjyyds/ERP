@@ -267,12 +267,81 @@ class CustomerRepository:
         q: str | None = None,
         country: str | None = None,
         credit_grade: str | None = None,
+        status: str | None = None,
         owner_user_ids: list[str] | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[CustomerRow], int]:
+        conditions = self._customer_conditions(
+            q=q,
+            country=country,
+            credit_grade=credit_grade,
+            status=status,
+            owner_user_ids=owner_user_ids,
+        )
         statement = select(Customer)
         count_statement = select(func.count()).select_from(Customer)
+        for condition in conditions:
+            statement = statement.where(condition)
+            count_statement = count_statement.where(condition)
+
+        statement = (
+            statement.order_by(Customer.created_at.desc(), Customer.code.asc())
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        rows = await self._scalars(statement)
+        total = await self.session.scalar(count_statement)
+        return [self._map_customer(row) for row in rows], int(total or 0)
+
+    async def summarize_customers(
+        self,
+        *,
+        q: str | None,
+        country: str | None,
+        credit_grade: str | None,
+        status: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> tuple[int, int, int]:
+        """同一筛选条件下的启用客户数、联系人数与信用资料数，不受分页影响。"""
+        conditions = self._customer_conditions(
+            q=q,
+            country=country,
+            credit_grade=credit_grade,
+            status=status,
+            owner_user_ids=owner_user_ids,
+        )
+        active_statement = select(func.count()).select_from(Customer).where(
+            Customer.status == "active"
+        )
+        contact_statement = (
+            select(func.count(CustomerContact.id))
+            .select_from(Customer)
+            .join(CustomerContact, CustomerContact.customer_id == Customer.id)
+        )
+        credit_statement = (
+            select(func.count(CustomerCreditProfile.id))
+            .select_from(Customer)
+            .join(CustomerCreditProfile, CustomerCreditProfile.customer_id == Customer.id)
+        )
+        for condition in conditions:
+            active_statement = active_statement.where(condition)
+            contact_statement = contact_statement.where(condition)
+            credit_statement = credit_statement.where(condition)
+        active_count = await self.session.scalar(active_statement)
+        contact_count = await self.session.scalar(contact_statement)
+        credit_count = await self.session.scalar(credit_statement)
+        return int(active_count or 0), int(contact_count or 0), int(credit_count or 0)
+
+    def _customer_conditions(
+        self,
+        *,
+        q: str | None,
+        country: str | None,
+        credit_grade: str | None,
+        status: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> list:
         conditions = []
         if q:
             pattern = f"%{q}%"
@@ -286,6 +355,7 @@ class CustomerRepository:
                         CustomerContact.phone.ilike(pattern),
                     )
                 )
+                .correlate(Customer)
                 .exists()
             )
             conditions.append(
@@ -304,23 +374,15 @@ class CustomerRepository:
                 select(CustomerCreditProfile.id)
                 .where(CustomerCreditProfile.customer_id == Customer.id)
                 .where(CustomerCreditProfile.credit_grade == credit_grade)
+                .correlate(Customer)
                 .exists()
             )
             conditions.append(credit_exists)
+        if status:
+            conditions.append(Customer.status == status)
         if owner_user_ids is not None:
             conditions.append(Customer.owner_user_id.in_(owner_user_ids))
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-
-        statement = (
-            statement.order_by(Customer.created_at.desc(), Customer.code.asc())
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        rows = await self._scalars(statement)
-        total = await self.session.scalar(count_statement)
-        return [self._map_customer(row) for row in rows], int(total or 0)
+        return conditions
 
     async def list_transactions(
         self,

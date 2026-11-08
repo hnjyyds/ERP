@@ -271,12 +271,81 @@ class SupplierRepository:
         q: str | None = None,
         country: str | None = None,
         credit_grade: str | None = None,
+        status: str | None = None,
         owner_user_ids: list[str] | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[SupplierRow], int]:
+        conditions = self._supplier_conditions(
+            q=q,
+            country=country,
+            credit_grade=credit_grade,
+            status=status,
+            owner_user_ids=owner_user_ids,
+        )
         statement = select(Supplier)
         count_statement = select(func.count()).select_from(Supplier)
+        for condition in conditions:
+            statement = statement.where(condition)
+            count_statement = count_statement.where(condition)
+
+        statement = (
+            statement.order_by(Supplier.created_at.desc(), Supplier.code.asc())
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        rows = await self._scalars(statement)
+        total = await self.session.scalar(count_statement)
+        return [self._map_supplier(row) for row in rows], int(total or 0)
+
+    async def summarize_suppliers(
+        self,
+        *,
+        q: str | None,
+        country: str | None,
+        credit_grade: str | None,
+        status: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> tuple[int, int, int]:
+        """同一筛选条件下的启用供应商数、联系人数与信用资料数，不受分页影响。"""
+        conditions = self._supplier_conditions(
+            q=q,
+            country=country,
+            credit_grade=credit_grade,
+            status=status,
+            owner_user_ids=owner_user_ids,
+        )
+        active_statement = select(func.count()).select_from(Supplier).where(
+            Supplier.status == "active"
+        )
+        contact_statement = (
+            select(func.count(SupplierContact.id))
+            .select_from(Supplier)
+            .join(SupplierContact, SupplierContact.supplier_id == Supplier.id)
+        )
+        credit_statement = (
+            select(func.count(SupplierCreditProfile.id))
+            .select_from(Supplier)
+            .join(SupplierCreditProfile, SupplierCreditProfile.supplier_id == Supplier.id)
+        )
+        for condition in conditions:
+            active_statement = active_statement.where(condition)
+            contact_statement = contact_statement.where(condition)
+            credit_statement = credit_statement.where(condition)
+        active_count = await self.session.scalar(active_statement)
+        contact_count = await self.session.scalar(contact_statement)
+        credit_count = await self.session.scalar(credit_statement)
+        return int(active_count or 0), int(contact_count or 0), int(credit_count or 0)
+
+    def _supplier_conditions(
+        self,
+        *,
+        q: str | None,
+        country: str | None,
+        credit_grade: str | None,
+        status: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> list:
         conditions = []
         if q:
             pattern = f"%{q}%"
@@ -290,6 +359,7 @@ class SupplierRepository:
                         SupplierContact.phone.ilike(pattern),
                     )
                 )
+                .correlate(Supplier)
                 .exists()
             )
             conditions.append(
@@ -308,23 +378,15 @@ class SupplierRepository:
                 select(SupplierCreditProfile.id)
                 .where(SupplierCreditProfile.supplier_id == Supplier.id)
                 .where(SupplierCreditProfile.credit_grade == credit_grade)
+                .correlate(Supplier)
                 .exists()
             )
             conditions.append(credit_exists)
+        if status:
+            conditions.append(Supplier.status == status)
         if owner_user_ids is not None:
             conditions.append(Supplier.owner_user_id.in_(owner_user_ids))
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-
-        statement = (
-            statement.order_by(Supplier.created_at.desc(), Supplier.code.asc())
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        rows = await self._scalars(statement)
-        total = await self.session.scalar(count_statement)
-        return [self._map_supplier(row) for row in rows], int(total or 0)
+        return conditions
 
     async def list_transactions(
         self,

@@ -14,11 +14,13 @@ import {
 } from 'lucide-react'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import type { FormEvent, MouseEvent } from 'react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { showError, showWarningDialog } from '@/shared/errors'
 import { useFormModal } from '@/shared/useFormModal'
 import { ListPageShell, Metric, PanelTitle, useColumnView, type ColumnOption } from '@/shared/ui'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { t } from '@/app/appI18n'
 import {
   contactPayload,
@@ -38,6 +40,7 @@ import {
   type PartnerCreatePayload,
   type PartnerEntity,
   type PartnerListResult,
+  type PartnerListSummary,
   type PartnerTransaction,
   type PartnerUpdatePayload,
   type TradingPartnerKind,
@@ -86,6 +89,19 @@ type PartnerListFilters = {
   country?: string
   credit_grade?: string
   partner_type?: string
+  status?: string
+  limit?: number
+  offset?: number
+}
+
+function filtersFromUrl(params: URLSearchParams): PartnerListFilters {
+  return {
+    q: params.get('q')?.trim() || undefined,
+    country: params.get('country')?.trim() || undefined,
+    credit_grade: params.get('credit_grade') || undefined,
+    partner_type: params.get('partner_type') || undefined,
+    status: params.get('status') || undefined,
+  }
 }
 
 export function TradingPartnerPage({
@@ -108,13 +124,29 @@ export function TradingPartnerPage({
   listTransactions,
 }: TradingPartnerPageProps) {
   const [rows, setRows] = useState<PartnerEntity[]>([])
+  const [summary, setSummary] = useState<PartnerListSummary>({
+    active_count: 0,
+    contact_count: 0,
+  })
+  const urlQuery = useUrlQuery()
+  const appliedUrlSearchRef = useRef(urlQuery.search)
+  const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params),
+  )
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [transactions, setTransactions] = useState<PartnerTransaction[]>([])
-  const [search, setSearch] = useState('')
-  const [country, setCountry] = useState('')
-  const [creditGrade, setCreditGrade] = useState('')
-  const [partnerType, setPartnerType] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
+  const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
+  const [country, setCountry] = useState(() => urlQuery.params.get('country') ?? '')
+  const [creditGrade, setCreditGrade] = useState(
+    () => urlQuery.params.get('credit_grade') ?? '',
+  )
+  const [partnerType, setPartnerType] = useState(
+    () => urlQuery.params.get('partner_type') ?? '',
+  )
+  const [statusFilter, setStatusFilter] = useState(
+    () => urlQuery.params.get('status') ?? '',
+  )
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [transactionLoading, setTransactionLoading] = useState(false)
@@ -263,24 +295,32 @@ export function TradingPartnerPage({
     },
   ]
 
-  const filteredRows = useMemo(
-    () => rows.filter((row) => !statusFilter || row.status === statusFilter),
-    [rows, statusFilter],
-  )
-
   const selected = useMemo(
     () => {
       if (detailId) {
         return rows.find((item) => item.id === detailId) ?? null
       }
-      return filteredRows.find((item) => item.id === selectedId) ?? filteredRows[0] ?? null
+      return rows.find((item) => item.id === selectedId) ?? rows[0] ?? null
     },
-    [detailId, filteredRows, rows, selectedId],
+    [detailId, rows, selectedId],
   )
 
   useEffect(() => {
     void loadRows()
   }, [])
+
+  useEffect(() => {
+    if (appliedUrlSearchRef.current === urlQuery.search) return
+    appliedUrlSearchRef.current = urlQuery.search
+    setSearch(urlQuery.params.get('q') ?? '')
+    setCountry(urlQuery.params.get('country') ?? '')
+    setCreditGrade(urlQuery.params.get('credit_grade') ?? '')
+    setPartnerType(urlQuery.params.get('partner_type') ?? '')
+    setStatusFilter(urlQuery.params.get('status') ?? '')
+    const nextPage = parsePageParam(urlQuery.params)
+    setPage(nextPage)
+    void loadRows(nextPage, pageSize, filtersFromUrl(urlQuery.params))
+  }, [urlQuery.search])
 
   useEffect(() => {
     if (!detailId || !selected) {
@@ -310,17 +350,32 @@ export function TradingPartnerPage({
     }
   }, [detailId, listPath, onNavigate, rows])
 
-  async function loadRows(filterOverride?: PartnerListFilters) {
+  async function loadRows(
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: PartnerListFilters,
+  ) {
+    const resolvedPage = pageOverride ?? page
+    const resolvedPageSize = pageSizeOverride ?? pageSize
+    const filters = filtersOverride ?? currentFilters()
     setLoading(true)
     try {
-      const result = await listEntity(
-        filterOverride ?? {
-          q: search.trim() || undefined,
-          country: country.trim() || undefined,
-          credit_grade: showCreditFields ? creditGrade || undefined : undefined,
-          partner_type: kind === 'partner' ? partnerType || undefined : undefined,
-        },
-      )
+      const result = await listEntity({
+        ...filters,
+        limit: resolvedPageSize,
+        offset: (resolvedPage - 1) * resolvedPageSize,
+      })
+      setTotal(result.total)
+      setSummary(result.summary)
+      if (result.items.length === 0 && resolvedPage > 1) {
+        const prevPage = resolvedPage - 1
+        setPage(prevPage)
+        appliedUrlSearchRef.current = urlQuery.update({
+          page: prevPage === 1 ? null : prevPage,
+        })
+        await loadRows(prevPage, resolvedPageSize, filtersOverride)
+        return
+      }
       setRows(result.items)
       setSelectedId((current) => {
         if (current && result.items.some((item) => item.id === current)) return current
@@ -333,12 +388,30 @@ export function TradingPartnerPage({
     }
   }
 
+  function currentFilters(): PartnerListFilters {
+    return {
+      q: search.trim() || undefined,
+      country: country.trim() || undefined,
+      credit_grade: showCreditFields ? creditGrade || undefined : undefined,
+      partner_type: kind === 'partner' ? partnerType || undefined : undefined,
+      status: statusFilter || undefined,
+    }
+  }
+
   function resetAdvancedFilters() {
     setCountry('')
     setCreditGrade('')
     setPartnerType('')
     setStatusFilter('')
-    void loadRows({ q: search.trim() || undefined })
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      country: null,
+      credit_grade: null,
+      partner_type: null,
+      status: null,
+      page: null,
+    })
+    void loadRows(1, pageSize, { q: search.trim() || undefined })
   }
 
   function closeEntityForm() {
@@ -391,8 +464,10 @@ export function TradingPartnerPage({
           setMessage(t('masterdata.tradingPartner.saved', { entity: entityLabel }))
         } else {
           const created = await createEntity(partnerCreatePayload(form, kind))
-          setRows((current) => [created, ...current])
           setSelectedId(created.id)
+          setPage(1)
+          appliedUrlSearchRef.current = urlQuery.update({ page: null })
+          await loadRows(1, pageSize)
           setMessage(t('masterdata.tradingPartner.created', { entity: entityLabel }))
         }
       },
@@ -477,11 +552,11 @@ export function TradingPartnerPage({
         className="summary-strip"
         aria-label={t('masterdata.tradingPartner.overviewAria', { entity: entityLabel })}
       >
-        <Metric label={entityLabel} value={rows.length} />
-        <Metric label={t('status.active')} value={rows.filter((item) => item.status === 'active').length} />
+        <Metric label={entityLabel} value={total} />
+        <Metric label={t('status.active')} value={summary.active_count} />
         <Metric
           label={t('masterdata.field.contact')}
-          value={rows.reduce((sum, item) => sum + item.contacts.length, 0)}
+          value={summary.contact_count}
         />
         <Metric
           label={
@@ -491,8 +566,8 @@ export function TradingPartnerPage({
           }
           value={
             showCreditFields
-              ? rows.filter((item) => 'credit_profile' in item && Boolean(item.credit_profile)).length
-              : new Set(rows.map((item) => ('partner_type' in item ? item.partner_type : ''))).size
+              ? summary.credit_profile_count ?? 0
+              : summary.partner_type_count ?? 0
           }
         />
       </div>
@@ -515,7 +590,16 @@ export function TradingPartnerPage({
               className="inline-filters partner-inline-filters"
               onSubmit={(event) => {
                 event.preventDefault()
-                void loadRows()
+                setPage(1)
+                appliedUrlSearchRef.current = urlQuery.update({
+                  q: search.trim(),
+                  country: country.trim(),
+                  credit_grade: showCreditFields ? creditGrade : '',
+                  partner_type: kind === 'partner' ? partnerType : '',
+                  status: statusFilter,
+                  page: null,
+                })
+                void loadRows(1, pageSize)
               }}
             >
               <div className="partner-filter-toolbar">
@@ -644,9 +728,18 @@ export function TradingPartnerPage({
           >
             <Table<PartnerEntity>
             columns={columns}
-            dataSource={filteredRows}
+            dataSource={rows}
             loading={loading}
-            pagination={false}
+            pagination={{
+              ...pagination,
+              onChange: (nextPage, nextPageSize) => {
+                const next = changePage(nextPage, nextPageSize)
+                appliedUrlSearchRef.current = urlQuery.update({
+                  page: next.page === 1 ? null : next.page,
+                })
+                void loadRows(next.page, next.pageSize)
+              },
+            }}
             rowClassName={(record) => (record.id === selected?.id ? 'selected-row' : '')}
             rowKey="id"
             size="small"

@@ -32,9 +32,17 @@ export type PartnerEntity = Customer | Supplier | Partner
 export type PartnerContact = CustomerContact | SupplierContact | ApiPartnerContact
 export type PartnerTransaction = CustomerTransaction | SupplierTransaction | PartnerFeeRecord
 
+export type PartnerListSummary = {
+  active_count: number
+  contact_count: number
+  credit_profile_count?: number
+  partner_type_count?: number
+}
+
 export type PartnerListResult = {
   items: PartnerEntity[]
   total: number
+  summary: PartnerListSummary
 }
 
 export type TransactionListResult = {

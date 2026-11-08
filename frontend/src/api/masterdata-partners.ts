@@ -25,9 +25,16 @@ export interface Partner {
   primary_contact: PartnerContact | null
 }
 
+export interface PartnerListSummary {
+  active_count: number
+  contact_count: number
+  partner_type_count: number
+}
+
 export interface PartnerList {
   items: Partner[]
   total: number
+  summary: PartnerListSummary
 }
 
 export interface PartnerContactPayload {
@@ -125,10 +132,16 @@ export type DocumentPartyUpdatePayload = Omit<DocumentPartyCreatePayload, 'code'
 export function listPartners(filters: {
   q?: string
   partner_type?: string
+  status?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<PartnerList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.partner_type) params.set('partner_type', filters.partner_type)
+  if (filters.status) params.set('status', filters.status)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<PartnerList>(`/masterdata/partners${suffix}`)
 }

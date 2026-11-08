@@ -219,12 +219,75 @@ class PartnerRepository:
         *,
         q: str | None = None,
         partner_type: str | None = None,
+        status: str | None = None,
         owner_user_ids: list[str] | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[PartnerRow], int]:
+        conditions = self._partner_conditions(
+            q=q,
+            partner_type=partner_type,
+            status=status,
+            owner_user_ids=owner_user_ids,
+        )
         statement = select(Partner)
         count_statement = select(func.count()).select_from(Partner)
+        for condition in conditions:
+            statement = statement.where(condition)
+            count_statement = count_statement.where(condition)
+
+        statement = (
+            statement.order_by(Partner.created_at.desc(), Partner.code.asc())
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        rows = await self._scalars(statement)
+        total = await self.session.scalar(count_statement)
+        return [self._map_partner(row) for row in rows], int(total or 0)
+
+    async def summarize_partners(
+        self,
+        *,
+        q: str | None,
+        partner_type: str | None,
+        status: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> tuple[int, int, int]:
+        """同一筛选条件下的启用伙伴数、联系人数与伙伴类型数，不受分页影响。"""
+        conditions = self._partner_conditions(
+            q=q,
+            partner_type=partner_type,
+            status=status,
+            owner_user_ids=owner_user_ids,
+        )
+        active_statement = select(func.count()).select_from(Partner).where(
+            Partner.status == "active"
+        )
+        contact_statement = (
+            select(func.count(PartnerContact.id))
+            .select_from(Partner)
+            .join(PartnerContact, PartnerContact.partner_id == Partner.id)
+        )
+        type_statement = select(
+            func.count(func.distinct(Partner.partner_type))
+        ).select_from(Partner)
+        for condition in conditions:
+            active_statement = active_statement.where(condition)
+            contact_statement = contact_statement.where(condition)
+            type_statement = type_statement.where(condition)
+        active_count = await self.session.scalar(active_statement)
+        contact_count = await self.session.scalar(contact_statement)
+        type_count = await self.session.scalar(type_statement)
+        return int(active_count or 0), int(contact_count or 0), int(type_count or 0)
+
+    def _partner_conditions(
+        self,
+        *,
+        q: str | None,
+        partner_type: str | None,
+        status: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> list:
         conditions = []
         if q:
             pattern = f"%{q}%"
@@ -238,6 +301,7 @@ class PartnerRepository:
                         PartnerContact.phone.ilike(pattern),
                     )
                 )
+                .correlate(Partner)
                 .exists()
             )
             conditions.append(
@@ -251,20 +315,11 @@ class PartnerRepository:
             )
         if partner_type:
             conditions.append(Partner.partner_type == partner_type)
+        if status:
+            conditions.append(Partner.status == status)
         if owner_user_ids is not None:
             conditions.append(Partner.owner_user_id.in_(owner_user_ids))
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-
-        statement = (
-            statement.order_by(Partner.created_at.desc(), Partner.code.asc())
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        rows = await self._scalars(statement)
-        total = await self.session.scalar(count_statement)
-        return [self._map_partner(row) for row in rows], int(total or 0)
+        return conditions
 
     async def list_fee_records(
         self,

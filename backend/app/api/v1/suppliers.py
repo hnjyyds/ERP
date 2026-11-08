@@ -29,12 +29,14 @@ async def list_suppliers(
     q: Annotated[str | None, Query(max_length=120)] = None,
     country: Annotated[str | None, Query(max_length=120)] = None,
     credit_grade: Annotated[str | None, Query(max_length=40)] = None,
+    status: Annotated[str | None, Query(max_length=40)] = None,
 ) -> ApiResponse[SupplierListResponse]:
     suppliers = await service.list_suppliers(
         current_user=user,
         q=q,
         country=country,
         credit_grade=credit_grade,
+        status=status,
     )
     return ApiResponse(data=suppliers)
 
