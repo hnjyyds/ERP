@@ -25,7 +25,7 @@ import {
 } from '../../../api'
 import type { LocalizedOption } from '../../../shared/formOptions'
 import { showError, showWarningDialog } from '../../../shared/errors'
-import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { FormSelect, ListPageShell, Metric } from '../../../shared/ui'
 import { t } from '../../appI18n'
 
 type Props = { currentUser: CurrentUser }
@@ -536,13 +536,11 @@ export function MyQualityTasksPage({ currentUser }: Props) {
         <Alert className="workspace-alert" title={message} type="success" showIcon />
       ) : null}
 
-      <section className="workspace-panel list-panel product-list-panel">
-        <div className="panel-heading toolbar-heading">
-          <PanelTitle
-            icon={<ClipboardCheck size={18} />}
-            title={t('quality.task.panel.listTitle')}
-          />
-        </div>
+      <ListPageShell
+        className="product-list-panel"
+        icon={<ClipboardCheck size={18} />}
+        title={t('quality.task.panel.listTitle')}
+      >
         <form
           className="inline-filters"
           onSubmit={(event) => {
@@ -670,7 +668,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
           rowKey="id"
           size="small"
         />
-      </section>
+      </ListPageShell>
 
       <Modal
         centered

@@ -18,7 +18,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { showError, showWarningDialog } from '../../../shared/errors'
 import { useFormModal } from '../../../shared/useFormModal'
-import { Metric, PanelTitle, useColumnView, type ColumnOption } from '../../../shared/ui'
+import { ListPageShell, Metric, PanelTitle, useColumnView, type ColumnOption } from '../../../shared/ui'
 import { t } from '../../appI18n'
 import {
   contactPayload,
@@ -507,13 +507,11 @@ export function TradingPartnerPage({
         }
       >
         {!detailId ? (
-          <section className="workspace-panel list-panel masterdata-list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle
-              icon={<Search size={18} />}
-              title={t('masterdata.tradingPartner.listTitle', { entity: entityLabel })}
-            />
-            <form
+          <ListPageShell
+            className="masterdata-list-panel"
+            icon={<Search size={18} />}
+            title={t('masterdata.tradingPartner.listTitle', { entity: entityLabel })}
+            toolbar={<form
               className="inline-filters partner-inline-filters"
               onSubmit={(event) => {
                 event.preventDefault()
@@ -641,10 +639,10 @@ export function TradingPartnerPage({
                   </Tooltip>
                 </div>
               ) : null}
-            </form>
-          </div>
+            </form>}
 
-          <Table<PartnerEntity>
+          >
+            <Table<PartnerEntity>
             columns={columns}
             dataSource={filteredRows}
             loading={loading}
@@ -656,7 +654,7 @@ export function TradingPartnerPage({
               onClick: () => setSelectedId(record.id),
             })}
           />
-          </section>
+          </ListPageShell>
         ) : null}
 
         {detailId ? (

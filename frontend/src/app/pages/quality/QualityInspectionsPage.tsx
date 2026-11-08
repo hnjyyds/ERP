@@ -32,7 +32,7 @@ import {
 import type { LocalizedOption } from '../../../shared/formOptions'
 import { ApiError, showError, showWarningDialog } from '../../../shared/errors'
 import { useFormModal } from '../../../shared/useFormModal'
-import { FormSelect, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
+import { FormSelect, ListPageShell, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
 import { t, type TranslationKey } from '../../appI18n'
 import { moduleDetailPath, qualityInspectionPath } from '../../routes'
 import { emptyToNull, formatDate, nullableText, type RoutedDetailPageProps } from '../appHelpers'
@@ -756,13 +756,11 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
 
       <section className="business-grid quality-inspection-grid">
         {!detailId ? (
-          <section className="workspace-panel list-panel product-list-panel">
-            <div className="panel-heading toolbar-heading">
-              <PanelTitle
-                icon={<Search size={18} />}
-                title={t('quality.inspection.panel.listTitle')}
-              />
-            </div>
+          <ListPageShell
+            className="product-list-panel"
+            icon={<Search size={18} />}
+            title={t('quality.inspection.panel.listTitle')}
+          >
             <form
               className="inline-filters single-line-filter-toolbar"
               onSubmit={(event) => {
@@ -931,7 +929,7 @@ export function QualityInspectionsPage({ currentUser, detailId, onNavigate }: Pr
                 onClick: () => setSelectedInspectionId(record.id),
               })}
             />
-          </section>
+          </ListPageShell>
         ) : null}
 
         <Modal

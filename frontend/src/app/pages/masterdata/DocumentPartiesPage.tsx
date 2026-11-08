@@ -25,7 +25,7 @@ import {
 import { showError, showWarningDialog } from '../../../shared/errors'
 import { documentPartyTypeOptions, type LocalizedOption } from '../../../shared/formOptions'
 import { useFormModal } from '../../../shared/useFormModal'
-import { Metric, PanelTitle } from '../../../shared/ui'
+import { ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
 import { t } from '../../appI18n'
 import { documentPartyPath, moduleDetailPath } from '../../routes'
 
@@ -252,10 +252,11 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
         }
       >
         {!detailId ? (
-          <section className="workspace-panel list-panel masterdata-list-panel">
-          <div className="panel-heading toolbar-heading">
-            <PanelTitle icon={<Search size={18} />} title={t('masterdata.documentParty.listTitle')} />
-            <form
+          <ListPageShell
+            className="masterdata-list-panel"
+            icon={<Search size={18} />}
+            title={t('masterdata.documentParty.listTitle')}
+            toolbar={<form
               className="inline-filters"
               onSubmit={(event) => {
                 event.preventDefault()
@@ -284,10 +285,10 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
               <Button type="primary" icon={<Plus size={16} />} onClick={openCreate}>
                 {t('masterdata.documentParty.create')}
               </Button>
-            </form>
-          </div>
+            </form>}
 
-          <Table<DocumentParty>
+          >
+            <Table<DocumentParty>
             columns={[
               {
                 title: t('masterdata.field.code'),
@@ -343,7 +344,7 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
               onClick: () => setSelectedId(record.id),
             })}
           />
-          </section>
+          </ListPageShell>
         ) : null}
 
         {detailId ? (
