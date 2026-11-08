@@ -8,6 +8,7 @@ import type {
   PurchaseContractApprovePayload,
   PurchaseContractCreatePayload,
   PurchaseContractGeneratePayload,
+  PurchaseContractListSummary,
   Supplier,
 } from '@/api'
 import {
@@ -16,6 +17,31 @@ import {
 } from '@/shared/formOptions'
 import { t } from '@/app/appI18n'
 import { emptyToNull, todayInputValue } from '@/app/pages/appHelpers'
+
+export type PurchaseContractListFilters = {
+  q: string
+  status: string
+  supplier: string
+  source: string
+}
+
+export const emptyPurchaseContractSummary: PurchaseContractListSummary = {
+  submitted_count: 0,
+  approved_count: 0,
+  total_amount: '0',
+  currency: null,
+}
+
+export function purchaseContractFiltersFromParams(
+  params: URLSearchParams,
+): PurchaseContractListFilters {
+  return {
+    q: params.get('q') ?? '',
+    status: params.get('status') ?? '',
+    supplier: params.get('supplier') ?? '',
+    source: params.get('source') ?? '',
+  }
+}
 
 export function supplierOptionLabel(supplier: Supplier): string {
   return [supplier.code, supplier.cn_name, supplier.en_name].filter(Boolean).join(' / ')
