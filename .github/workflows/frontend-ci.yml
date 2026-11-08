@@ -1,0 +1,36 @@
+name: frontend-ci
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+# 视觉回归（frontend/scripts/visual-regression）不在 CI 中执行，原因：
+# 1. 需要同时启动后端服务、数据库和预置业务数据，CI 还要额外提供容器与种子数据；
+# 2. 基线快照绑定具体机器渲染与当日数据，无法作为可复用产物入库（已在 .gitignore 中排除）；
+# 3. 截图对比依赖 Chromium 与固定 viewport/字体，云端字体差异会引入噪声。
+# 因此保留为本地改动前后手动执行的工具，详见 frontend/scripts/visual-regression/README.md。
