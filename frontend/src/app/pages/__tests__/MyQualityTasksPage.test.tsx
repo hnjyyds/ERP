@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 const { pendingTask } = vi.hoisted(() => ({
@@ -89,6 +89,7 @@ import {
   cancelQualityInspection,
   listPurchaseContracts,
   listQualityInspections,
+  rescheduleQualityInspection,
   updateQualityInspection,
   type QualityInspection,
 } from '@/api'
@@ -235,6 +236,122 @@ describe('MyQualityTasksPage', () => {
 
     await waitFor(() => {
       expect(cancelQualityInspection).toHaveBeenCalledWith('qc-task-001', '供应商取消备货')
+    })
+  })
+
+  it('按 URL 恢复搜索、状态与页码', async () => {
+    window.history.replaceState({}, '', '/quality/tasks?q=QC-1&status=in_progress&page=2')
+    render(<MyQualityTasksPage currentUser={currentUser} />)
+
+    await waitFor(() => {
+      expect(listQualityInspections).toHaveBeenCalledWith(
+        expect.objectContaining({
+          q: 'QC-1',
+          status: 'in_progress',
+          limit: 50,
+          offset: 50,
+          inspector_user_id: 'user-qc',
+        }),
+      )
+    })
+  })
+
+  it('翻到空页时回退上一页并清掉 URL 页码', async () => {
+    const user = userEvent.setup()
+    vi.mocked(listQualityInspections)
+      .mockResolvedValueOnce({ items: [pendingTask as QualityInspection], total: 120, summary: {
+        pending_count: 1,
+        in_progress_count: 0,
+        completed_count: 0,
+        cancelled_count: 0,
+        overdue_count: 0,
+        open_issue_count: 0,
+        my_action_count: 1,
+      } })
+      .mockResolvedValueOnce({ items: [], total: 120, summary: {
+        pending_count: 1,
+        in_progress_count: 0,
+        completed_count: 0,
+        cancelled_count: 0,
+        overdue_count: 0,
+        open_issue_count: 0,
+        my_action_count: 1,
+      } })
+      .mockResolvedValue({ items: [pendingTask as QualityInspection], total: 120, summary: {
+        pending_count: 1,
+        in_progress_count: 0,
+        completed_count: 0,
+        cancelled_count: 0,
+        overdue_count: 0,
+        open_issue_count: 0,
+        my_action_count: 1,
+      } })
+    render(<MyQualityTasksPage currentUser={currentUser} />)
+    await waitFor(() => expect(listQualityInspections).toHaveBeenCalledTimes(1))
+
+    await user.click(screen.getByTitle('2'))
+
+    await waitFor(() => {
+      expect(listQualityInspections).toHaveBeenCalledWith(
+        expect.objectContaining({ offset: 50 }),
+      )
+    })
+    await waitFor(() => {
+      expect(listQualityInspections).toHaveBeenLastCalledWith(
+        expect.objectContaining({ offset: 0 }),
+      )
+    })
+    expect(window.location.search).not.toContain('page=')
+  })
+
+  it('查验数量无效时阻止提交并提示校验数量', async () => {
+    const user = userEvent.setup()
+    vi.mocked(listQualityInspections).mockResolvedValueOnce({
+      items: [{ ...pendingTask, status: 'in_progress' }],
+      total: 1,
+      summary: {
+        pending_count: 0,
+        in_progress_count: 1,
+        completed_count: 0,
+        cancelled_count: 0,
+        overdue_count: 0,
+        open_issue_count: 0,
+        my_action_count: 1,
+      },
+    })
+    render(<MyQualityTasksPage currentUser={currentUser} />)
+
+    await user.click(await screen.findByRole('button', { name: '登记结果' }))
+    await screen.findByDisplayValue('Eco Shopping Bag')
+    fireEvent.change(screen.getByRole('spinbutton', { name: /查验数量/ }), {
+      target: { value: '0' },
+    })
+    await user.click(screen.getByRole('button', { name: '完成 QC 查验' }))
+
+    expect(await screen.findByText('请修正 1 项查验信息')).toBeTruthy()
+    expect(updateQualityInspection).not.toHaveBeenCalled()
+  })
+
+  it('调整排期提交新的排期时间与原因', async () => {
+    const user = userEvent.setup()
+    vi.mocked(rescheduleQualityInspection).mockResolvedValueOnce({
+      ...pendingTask,
+      scheduled_at: '2026-09-01T10:00:00',
+    } as never)
+    render(<MyQualityTasksPage currentUser={currentUser} />)
+
+    await user.click(await screen.findByRole('button', { name: '调整排期' }))
+    fireEvent.change(document.querySelector('#quality-action-schedule') as HTMLInputElement, {
+      target: { value: '2026-09-01T10:00' },
+    })
+    await user.type(screen.getByRole('textbox', { name: /调整原因/ }), '船期延后')
+    await user.click(screen.getByRole('button', { name: '保存排期' }))
+
+    await waitFor(() => {
+      expect(rescheduleQualityInspection).toHaveBeenCalledWith('qc-task-001', {
+        scheduled_at: '2026-09-01T10:00',
+        reason: '船期延后',
+      })
     })
   })
 
