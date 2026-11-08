@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import * as api from '@/api'
 import type { ExportQuotation } from '@/api'
@@ -95,5 +95,280 @@ describe('ExportQuotationsPage', () => {
     })
     expect(metricValue('待审批')).toBe('3')
     expect(metricValue('已审批')).toBe('2')
+  })
+
+  const emptyCustomers = {
+    items: [],
+    total: 0,
+    summary: { active_count: 0, contact_count: 0, credit_profile_count: 0 },
+  }
+
+  function fieldByLabel(labelText: string): HTMLInputElement {
+    const label = screen.getByText(labelText, { exact: true }).closest('label')
+    const input = label?.querySelector('input, textarea')
+    if (!input) throw new Error(`field not found: ${labelText}`)
+    return input as HTMLInputElement
+  }
+
+  const quotationWith = (overrides: Partial<ExportQuotation> = {}): ExportQuotation =>
+    ({
+      id: 'q-1',
+      code: 'Q-001',
+      approval_status: 'draft',
+      customer_id: 'c-1',
+      customer_name: '客户A',
+      trade_term: 'FOB',
+      quote_date: '2026-10-01',
+      approved_at: '2026-10-05',
+      valid_until: '2026-12-31',
+      sales_user_id: null,
+      sales_user_name: null,
+      reviewer_id: null,
+      reviewer_name: null,
+      generated_contract_no: null,
+      description: '',
+      total_amount: '100.00',
+      currency: 'USD',
+      lines: [
+        {
+          id: 'line-1',
+          product_id: 'p-1',
+          product_code: 'P-001',
+          product_name: '产品A',
+          specification: null,
+          model: null,
+          quantity: '10',
+          unit: 'pcs',
+          unit_price: '10.00',
+          amount: '100.00',
+          freight_method: 'sea',
+          freight_amount: '0.00',
+          remark: null,
+          purchase_reference_supplier_name: null,
+          purchase_reference_price: null,
+        },
+      ],
+      ...overrides,
+    }) as unknown as ExportQuotation
+
+  const mockQuotationList = (item: ExportQuotation, total = 1) => {
+    vi.spyOn(api, 'listExportQuotations').mockResolvedValue({
+      items: [item],
+      total,
+      summary: { submitted_count: 1, approved_count: 0, total_amount: '100.00', currency: 'USD' },
+    })
+  }
+
+  const mockDetailReferences = () => {
+    vi.spyOn(api, 'getExportQuotationHistory').mockResolvedValue({
+      items: [],
+      total: 0,
+      summary: { submitted_count: 0, approved_count: 0, total_amount: '0', currency: null },
+    })
+    vi.spyOn(api, 'getExportQuotationPurchaseReferences').mockResolvedValue({
+      items: [],
+      total: 0,
+    })
+    vi.spyOn(api, 'getExportQuotationSampleDeliveries').mockResolvedValue({
+      items: [],
+      total: 0,
+    })
+    vi.spyOn(api, 'listCustomers').mockResolvedValue(emptyCustomers)
+    vi.spyOn(api, 'listAssignableUsers').mockResolvedValue({ users: [] })
+  }
+
+  it('从 URL 恢复筛选与页码，并在浏览器前进后退时重新读取', async () => {
+    window.history.replaceState({}, '', '/sales/quotations?q=Q&status=approved&customer=c-1&page=2')
+    mockDetailReferences()
+    const listSpy = vi.spyOn(api, 'listExportQuotations').mockResolvedValue({
+      items: [quotationWith({ approval_status: 'approved' })],
+      total: 120,
+      summary: { submitted_count: 0, approved_count: 1, total_amount: '100.00', currency: 'USD' },
+    })
+
+    render(
+      <ExportQuotationsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    await waitFor(() => {
+      expect(listSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          q: 'Q',
+          approval_status: 'approved',
+          customer_id: 'c-1',
+          limit: 50,
+          offset: 50,
+        }),
+      )
+    })
+    expect(screen.getByPlaceholderText('单号 / 客户 / 产品 / 条款')).toHaveValue('Q')
+    expect(fieldByLabel('审批状态').closest('.ant-select')?.textContent).toContain('已审批')
+
+    window.history.pushState({}, '', '/sales/quotations?q=Q2&status=draft&customer=c-2&page=1')
+    window.dispatchEvent(new PopStateEvent('popstate'))
+
+    await waitFor(() => {
+      expect(listSpy).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          q: 'Q2',
+          approval_status: 'draft',
+          customer_id: 'c-2',
+          offset: 0,
+        }),
+      )
+    })
+    expect(screen.getByPlaceholderText('单号 / 客户 / 产品 / 条款')).toHaveValue('Q2')
+    expect(fieldByLabel('审批状态').closest('.ant-select')?.textContent).toContain('草稿')
+  })
+
+  it('提交筛选时写入 URL 并回到第一页', async () => {
+    window.history.replaceState({}, '', '/sales/quotations?page=3')
+    mockDetailReferences()
+    const listSpy = vi.spyOn(api, 'listExportQuotations').mockResolvedValue({
+      items: [quotation],
+      total: 120,
+      summary: { submitted_count: 0, approved_count: 0, total_amount: '0', currency: 'USD' },
+    })
+    const user = userEvent.setup()
+    render(
+      <ExportQuotationsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    await waitFor(() => {
+      expect(listSpy).toHaveBeenCalledWith(expect.objectContaining({ offset: 100 }))
+    })
+
+    await user.type(screen.getByPlaceholderText('单号 / 客户 / 产品 / 条款'), 'Q-2')
+    await user.click(fieldByLabel('审批状态'))
+    const approvedOptions = await screen.findAllByText('已审批')
+    await user.click(
+      approvedOptions.find((element) =>
+        element.classList.contains('ant-select-item-option-content'),
+      )!,
+    )
+    await user.click(screen.getByRole('button', { name: '查询' }))
+
+    await waitFor(() => {
+      expect(listSpy).toHaveBeenLastCalledWith(
+        expect.objectContaining({ q: 'Q-2', approval_status: 'approved', offset: 0 }),
+      )
+    })
+    const query = new URLSearchParams(window.location.search)
+    expect(query.get('q')).toBe('Q-2')
+    expect(query.get('status')).toBe('approved')
+    expect(query.get('page')).toBeNull()
+    expect(screen.getByTitle('1')).toHaveClass('ant-pagination-item-active')
+  })
+
+  it('审批按钮按指定审批人启用，非指定人时禁用并提示等待', async () => {
+    window.history.replaceState({}, '', '/')
+    mockDetailReferences()
+    const reviewerQuotation = quotationWith({
+      approval_status: 'submitted',
+      reviewer_id: 'u-manager',
+      reviewer_name: '业务主管',
+    })
+    mockQuotationList(reviewerQuotation)
+    const viewer = { ...currentUser, id: 'u-sales', roles: ['sales'], permissions: [] }
+    const first = render(
+      <ExportQuotationsPage currentUser={viewer} detailId="q-1" onNavigate={onNavigate} />,
+    )
+
+    await waitFor(() => expect(screen.getByRole('button', { name: '审批通过' })).toBeDisabled())
+    expect(screen.getByText('等待 业务主管 审批')).toBeTruthy()
+    first.unmount()
+
+    const assignedQuotation = quotationWith({
+      approval_status: 'submitted',
+      reviewer_id: 'u-sales',
+      reviewer_name: '销售员',
+    })
+    mockQuotationList(assignedQuotation)
+    const approveSpy = vi
+      .spyOn(api, 'approveExportQuotation')
+      .mockResolvedValue(quotationWith({ approval_status: 'approved' }))
+    render(
+      <ExportQuotationsPage currentUser={viewer} detailId="q-1" onNavigate={onNavigate} />,
+    )
+
+    const approveButton = await screen.findByRole('button', { name: '审批通过' })
+    expect(approveButton).toBeEnabled()
+    await userEvent.setup().click(approveButton)
+
+    await waitFor(() => {
+      expect(approveSpy).toHaveBeenCalledWith('q-1', {
+        reviewer_name: '',
+        approved_at: '2026-10-01',
+      })
+    })
+  })
+
+  it('新增报价失败时保留弹窗和已填写的产品信息', async () => {
+    window.history.replaceState({}, '', '/')
+    mockDetailReferences()
+    vi.spyOn(api, 'listExportQuotations').mockResolvedValue({
+      items: [],
+      total: 0,
+      summary: { submitted_count: 0, approved_count: 0, total_amount: '0', currency: 'USD' },
+    })
+    const createSpy = vi
+      .spyOn(api, 'createExportQuotation')
+      .mockRejectedValueOnce(new Error('boom'))
+    const user = userEvent.setup()
+    render(
+      <ExportQuotationsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    await user.click(screen.getByRole('button', { name: '新增出口报价' }))
+    const dialog = within(screen.getByRole('dialog'))
+    await user.type(fieldByLabel('商品名称'), '测试产品')
+    await user.clear(fieldByLabel('销售单价'))
+    await user.type(fieldByLabel('销售单价'), '12.5')
+    await user.click(dialog.getByRole('button', { name: '新增出口报价' }))
+
+    await waitFor(() => expect(createSpy).toHaveBeenCalledTimes(1))
+    expect(createSpy.mock.calls[0][0].lines[0]).toMatchObject({
+      product_name: '测试产品',
+      unit_price: '12.5',
+    })
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    expect(fieldByLabel('商品名称')).toHaveValue('测试产品')
+    expect(fieldByLabel('销售单价')).toHaveValue(12.5)
+  })
+
+  it('生成出口合同仅在已审批报价上可用，成功后展示合同号', async () => {
+    window.history.replaceState({}, '', '/')
+    mockDetailReferences()
+    mockQuotationList(quotationWith({ approval_status: 'draft' }))
+    const first = render(
+      <ExportQuotationsPage currentUser={currentUser} detailId="q-1" onNavigate={onNavigate} />,
+    )
+    expect(await screen.findByRole('button', { name: '生成出口合同' })).toBeDisabled()
+    first.unmount()
+
+    const approved = quotationWith({
+      approval_status: 'approved',
+      reviewer_id: 'u-manager',
+      reviewer_name: '业务主管',
+    })
+    mockQuotationList(approved)
+    const contractSpy = vi.spyOn(api, 'confirmExportQuotationContract').mockResolvedValue({
+      contract_no: 'EC-001',
+      total_amount: '100.00',
+      currency: 'USD',
+    } as unknown as api.ExportQuotationContract)
+    const user = userEvent.setup()
+    render(
+      <ExportQuotationsPage currentUser={currentUser} detailId="q-1" onNavigate={onNavigate} />,
+    )
+
+    const contractButton = await screen.findByRole('button', { name: '生成出口合同' })
+    expect(contractButton).toBeEnabled()
+    await user.click(contractButton)
+
+    await waitFor(() => {
+      expect(contractSpy).toHaveBeenCalledWith('q-1', { confirmed_at: '2026-10-05' })
+    })
+    expect((await screen.findAllByText(/EC-001/)).length).toBeGreaterThan(0)
   })
 })
