@@ -3,7 +3,15 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { getRuntimeSettings, setRuntimeSettings } from '@/app/pages/appHelpers'
 import { translate } from '@/locales'
 import { ApiError, friendlyMessageFor } from '@/shared/errors'
-import { apiBaseUrl, readApiError, request } from '@/api/core'
+import {
+  apiBaseUrl,
+  authExpiredEventName,
+  clearAuthToken,
+  hasAuthToken,
+  readApiError,
+  request,
+  setAuthToken,
+} from '@/api/core'
 
 const originalSettings = { ...getRuntimeSettings() }
 
@@ -145,5 +153,86 @@ describe('request error handling', () => {
       message: 'field required; bad value',
       details: [],
     })
+  })
+})
+
+describe('request auth handling', () => {
+  afterEach(() => {
+    clearAuthToken()
+    vi.unstubAllGlobals()
+  })
+
+  it('clears the token and dispatches auth-expired when the server returns 401', async () => {
+    setAuthToken('token-401')
+    const listener = vi.fn()
+    window.addEventListener(authExpiredEventName, listener)
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        jsonResponse(
+          { error: { code: 'TOKEN_EXPIRED', message: 'expired', details: [] } },
+          401,
+        ),
+      ),
+    )
+
+    await expect(request('/secure')).rejects.toBeInstanceOf(ApiError)
+
+    expect(hasAuthToken()).toBe(false)
+    expect(localStorage.getItem('xinpei_access_token')).toBeNull()
+    expect(listener).toHaveBeenCalledTimes(1)
+    window.removeEventListener(authExpiredEventName, listener)
+  })
+
+  it('sends Authorization only when a token is present', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse(successBody({})))
+    vi.stubGlobal('fetch', fetchMock)
+
+    setAuthToken('token-abc')
+    await request('/probe')
+    clearAuthToken()
+    await request('/probe')
+
+    const headers = fetchMock.mock.calls.map(
+      ([, init]) => (init as RequestInit).headers as Record<string, string>,
+    )
+    expect(headers[0].Authorization).toBe('Bearer token-abc')
+    expect(headers[1].Authorization).toBeUndefined()
+  })
+
+  it('throws ApiError when HTTP 200 carries success:false', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        jsonResponse({
+          success: false,
+          code: 'BUSINESS_ERROR',
+          message: '库存不足',
+          data: null,
+          error: null,
+        }),
+      ),
+    )
+
+    await expect(request('/probe')).rejects.toMatchObject({ code: 'BUSINESS_ERROR' })
+  })
+
+  it('propagates network failures from fetch', async () => {
+    const failure = new TypeError('Failed to fetch')
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(failure))
+
+    await expect(request('/probe')).rejects.toBe(failure)
+  })
+
+  it('keeps Chinese query parameters encoded in the request URL', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse(successBody({})))
+    vi.stubGlobal('fetch', fetchMock)
+
+    const params = new URLSearchParams({ q: '电池 组' })
+    await request(`/products?${params.toString()}`)
+
+    const [url] = fetchMock.mock.calls[0] as [string]
+    expect(url).toContain('q=%E7%94%B5%E6%B1%A0')
+    expect(new URL(url).searchParams.get('q')).toBe('电池 组')
   })
 })
