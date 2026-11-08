@@ -14,7 +14,11 @@
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "build": "npm run typecheck && vite build",
-    "preview": "vite preview --host 127.0.0.1"
+    "preview": "vite preview --host 127.0.0.1",
+    "visual:baseline": "node scripts/visual-regression/run.mjs capture --out .visual-regression/baseline",
+    "visual:capture": "node scripts/visual-regression/run.mjs capture",
+    "visual:compare": "node scripts/visual-regression/run.mjs compare",
+    "visual:regress": "npm run visual:capture && npm run visual:compare"
   },
   "dependencies": {
     "@douyinfe/semi-ui": "^2.100.0",
