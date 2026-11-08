@@ -20,7 +20,7 @@ import {
   Send,
 } from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   approveOutboundOrder,
   cancelOutboundOrder,
@@ -28,9 +28,11 @@ import {
   listOutboundOrders,
   submitOutboundOrder,
   type CurrentUser,
+  type InventoryBalanceSummary,
   type OutboundOrder,
   type OutboundOrderApprovePayload,
   type OutboundOrderGeneratePayload,
+  type OutboundOrderListSummary,
   InventoryBalance,
   InventoryLedger,
   OutboundPlan,
@@ -40,6 +42,8 @@ import {
 } from '@/api'
 import { warehouseOutboundOrderPath, moduleDetailPath } from '@/app/routes'
 import { FormModal, FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { showError } from '@/shared/errors'
 import {
   outboundOrderStatusOptions,
@@ -202,18 +206,34 @@ function outboundOrderTotalQuantity(order: OutboundOrder): number {
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 
 export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props) {
+  const urlQuery = useUrlQuery()
+  const appliedUrlSearchRef = useRef(urlQuery.search)
   const [orders, setOrders] = useState<OutboundOrder[]>([])
+  const [summary, setSummary] = useState<OutboundOrderListSummary>({
+    draft_count: 0,
+    submitted_count: 0,
+    approved_count: 0,
+    outbound_quantity: '0',
+  })
+  const [inventorySummary, setInventorySummary] = useState<InventoryBalanceSummary>({
+    available_quantity: '0',
+    pending_inspection_quantity: '0',
+  })
   const [outboundPlans, setOutboundPlans] = useState<OutboundPlan[]>([])
   const [inventoryBalances, setInventoryBalances] = useState<InventoryBalance[]>([])
   const [inventoryLedgers, setInventoryLedgers] = useState<InventoryLedger[]>([])
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [modeFilter, setModeFilter] = useState('')
-  const [typeFilter, setTypeFilter] = useState('')
-  const [customerFilter, setCustomerFilter] = useState('')
-  const [sourceIdFilter, setSourceIdFilter] = useState('')
+  const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
+  const [statusFilter, setStatusFilter] = useState(() => urlQuery.params.get('status') ?? '')
+  const [modeFilter, setModeFilter] = useState(() => urlQuery.params.get('mode') ?? '')
+  const [typeFilter, setTypeFilter] = useState(() => urlQuery.params.get('type') ?? '')
+  const [customerFilter, setCustomerFilter] = useState(() => urlQuery.params.get('customer') ?? '')
+  const [sourceIdFilter, setSourceIdFilter] = useState(() => urlQuery.params.get('source_id') ?? '')
   const [inventorySearch, setInventorySearch] = useState('')
+  const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params),
+  )
   const [form, setForm] = useState<OutboundOrderFormState>(() => initialOutboundOrderForm())
   const [reviewerId, setReviewerId] = useState('')
   const [approvalForm, setApprovalForm] = useState<OutboundOrderApprovalFormState>(() =>
@@ -237,6 +257,28 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
   }, [])
 
   useEffect(() => {
+    if (appliedUrlSearchRef.current === urlQuery.search) return
+    appliedUrlSearchRef.current = urlQuery.search
+    const nextFilters = {
+      q: urlQuery.params.get('q') ?? '',
+      status: urlQuery.params.get('status') ?? '',
+      mode: urlQuery.params.get('mode') ?? '',
+      type: urlQuery.params.get('type') ?? '',
+      customer: urlQuery.params.get('customer') ?? '',
+      sourceId: urlQuery.params.get('source_id') ?? '',
+    }
+    setSearch(nextFilters.q)
+    setStatusFilter(nextFilters.status)
+    setModeFilter(nextFilters.mode)
+    setTypeFilter(nextFilters.type)
+    setCustomerFilter(nextFilters.customer)
+    setSourceIdFilter(nextFilters.sourceId)
+    const nextPage = parsePageParam(urlQuery.params)
+    setPage(nextPage)
+    void loadOutboundOrders(undefined, undefined, undefined, nextPage, pageSize, nextFilters)
+  }, [urlQuery.search])
+
+  useEffect(() => {
     if (!selectedOrder) return
     setForm(outboundOrderToForm(selectedOrder))
     setApprovalForm((current) => ({
@@ -257,20 +299,58 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
     preferredOrderId?: string,
     preferredOrder?: OutboundOrder,
     inventoryQuery?: string,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: {
+      q: string
+      status: string
+      mode: string
+      type: string
+      customer: string
+      sourceId: string
+    },
   ) {
+    const resolvedPage = pageOverride ?? page
+    const resolvedPageSize = pageSizeOverride ?? pageSize
+    const resolvedQ = filtersOverride?.q ?? search
+    const resolvedStatus = filtersOverride?.status ?? statusFilter
+    const resolvedMode = filtersOverride?.mode ?? modeFilter
+    const resolvedType = filtersOverride?.type ?? typeFilter
+    const resolvedCustomer = filtersOverride?.customer ?? customerFilter
+    const resolvedSourceId = filtersOverride?.sourceId ?? sourceIdFilter
     setLoading(true)
     try {
       const [orderResult, planOptions] = await Promise.all([
         listOutboundOrders({
-          q: preferredOrder?.code ?? (search.trim() || undefined),
-          status: statusFilter || undefined,
-          outbound_mode: modeFilter || undefined,
-          outbound_type: typeFilter || undefined,
-          customer_id: customerFilter.trim() || undefined,
-          source_id: sourceIdFilter.trim() || undefined,
+          q: preferredOrder?.code ?? (resolvedQ.trim() || undefined),
+          status: resolvedStatus || undefined,
+          outbound_mode: resolvedMode || undefined,
+          outbound_type: resolvedType || undefined,
+          customer_id: resolvedCustomer.trim() || undefined,
+          source_id: resolvedSourceId.trim() || undefined,
+          limit: resolvedPageSize,
+          offset: (resolvedPage - 1) * resolvedPageSize,
         }),
         loadOutboundOrderPlanOptions(),
       ])
+      setTotal(orderResult.total)
+      setSummary(orderResult.summary)
+      if (orderResult.items.length === 0 && resolvedPage > 1) {
+        const prevPage = resolvedPage - 1
+        setPage(prevPage)
+        appliedUrlSearchRef.current = urlQuery.update({
+          page: prevPage === 1 ? null : prevPage,
+        })
+        await loadOutboundOrders(
+          preferredOrderId,
+          preferredOrder,
+          inventoryQuery,
+          prevPage,
+          resolvedPageSize,
+          filtersOverride,
+        )
+        return
+      }
       const nextOrders = preferredOrder
         ? [preferredOrder, ...orderResult.items.filter((item) => item.id !== preferredOrder.id)]
         : orderResult.items
@@ -319,13 +399,14 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
         order?.lines[0]?.product_name ||
         undefined)
     const [balances, ledgers] = await Promise.all([
-      listInventoryBalances({ q: query }),
+      listInventoryBalances({ q: query, limit: 50 }),
       listInventoryLedgers({
         q: query,
         source_id: order?.id,
       }),
     ])
     setInventoryBalances(balances.items)
+    setInventorySummary(balances.summary)
     setInventoryLedgers(ledgers.items)
   }
 
@@ -393,15 +474,33 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
     try {
       const order = await generateOutboundOrderFromPlan(outboundOrderPayload(form))
       const inventoryQuery = order.lines[0]?.product_code ?? order.lines[0]?.product_name ?? ''
-      setSearch(order.code)
-      setStatusFilter('')
-      setTypeFilter(order.outbound_type)
-      setCustomerFilter(order.customer_id ?? '')
-      setSourceIdFilter(order.source_id)
+      const nextFilters = {
+        q: order.code,
+        status: '',
+        mode: modeFilter,
+        type: order.outbound_type,
+        customer: order.customer_id ?? '',
+        sourceId: order.source_id,
+      }
+      setSearch(nextFilters.q)
+      setStatusFilter(nextFilters.status)
+      setTypeFilter(nextFilters.type)
+      setCustomerFilter(nextFilters.customer)
+      setSourceIdFilter(nextFilters.sourceId)
       setInventorySearch(inventoryQuery)
+      setPage(1)
+      appliedUrlSearchRef.current = urlQuery.update({
+        q: nextFilters.q || null,
+        status: null,
+        mode: nextFilters.mode || null,
+        type: nextFilters.type || null,
+        customer: nextFilters.customer || null,
+        source_id: nextFilters.sourceId || null,
+        page: null,
+      })
       upsertOutboundOrder(order)
       setOutboundOrderModalOpen(false)
-      await loadOutboundOrders(order.id, order, inventoryQuery)
+      await loadOutboundOrders(order.id, order, inventoryQuery, 1, pageSize, nextFilters)
       setMessage(t('warehouse.outboundOrder.message.generated', { code: order.code }))
     } catch (caught) {
       showError(caught, t('warehouse.outboundOrder.message.generateFailed'))
@@ -490,11 +589,24 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
         outboundOrderApprovePayload(approvalForm),
       )
       const inventoryQuery = order.lines[0]?.product_code ?? order.lines[0]?.product_name ?? ''
-      setStatusFilter('approved')
+      const nextFilters = {
+        q: search,
+        status: 'approved',
+        mode: modeFilter,
+        type: typeFilter,
+        customer: customerFilter,
+        sourceId: sourceIdFilter,
+      }
+      setStatusFilter(nextFilters.status)
       setInventorySearch(inventoryQuery)
+      setPage(1)
+      appliedUrlSearchRef.current = urlQuery.update({
+        status: nextFilters.status,
+        page: null,
+      })
       upsertOutboundOrder(order)
       setOutboundOrderModalOpen(false)
-      await loadOutboundOrders(order.id, order, inventoryQuery)
+      await loadOutboundOrders(order.id, order, inventoryQuery, 1, pageSize, nextFilters)
       setMessage(
         order.outbound_mode === 'formal'
           ? t('warehouse.outboundOrder.message.approvedFormal', { code: order.code })
@@ -507,19 +619,16 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
     }
   }
 
-  const draftCount = orders.filter((item) => item.status === 'draft').length
-  const submittedCount = orders.filter((item) => item.status === 'submitted').length
-  const approvedCount = orders.filter((item) => item.status === 'approved').length
-  const outboundQuantity = orders.reduce((sum, item) => sum + outboundOrderTotalQuantity(item), 0)
-  const availableQuantity = inventoryBalances.reduce(
-    (sum, item) => sum + Number(item.available_quantity || 0),
-    0,
-  )
+  const draftCount = summary.draft_count
+  const submittedCount = summary.submitted_count
+  const approvedCount = summary.approved_count
+  const outboundQuantity = Number(summary.outbound_quantity || 0)
+  const availableQuantity = Number(inventorySummary.available_quantity || 0)
 
   return (
     <section className="outbound-order-page">
       <div className="summary-strip" aria-label={t('warehouse.outboundOrder.metric.overviewAria')}>
-        <Metric label={t('warehouse.outboundOrder.metric.orderCount')} value={orders.length} />
+        <Metric label={t('warehouse.outboundOrder.metric.orderCount')} value={total} />
         <Metric label={t('warehouse.outboundOrder.metric.draftCount')} value={draftCount} />
         <Metric
           label={t('warehouse.outboundOrder.metric.submittedCount')}
@@ -551,7 +660,25 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
               className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadOutboundOrders()
+                  const nextFilters = {
+                    q: search,
+                    status: statusFilter,
+                    mode: modeFilter,
+                    type: typeFilter,
+                    customer: customerFilter,
+                    sourceId: sourceIdFilter,
+                  }
+                  setPage(1)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    q: nextFilters.q || null,
+                    status: nextFilters.status || null,
+                    mode: nextFilters.mode || null,
+                    type: nextFilters.type || null,
+                    customer: nextFilters.customer || null,
+                    source_id: nextFilters.sourceId || null,
+                    page: null,
+                  })
+                  void loadOutboundOrders(undefined, undefined, undefined, 1, pageSize, nextFilters)
                 }}
               >
                 <label>
@@ -699,7 +826,22 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
               ]}
               dataSource={orders}
               loading={loading}
-              pagination={false}
+              pagination={{
+                ...pagination,
+                onChange: (nextPage, nextPageSize) => {
+                  const next = changePage(nextPage, nextPageSize)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    page: next.page === 1 ? null : next.page,
+                  })
+                  void loadOutboundOrders(
+                    undefined,
+                    undefined,
+                    undefined,
+                    next.page,
+                    next.pageSize,
+                  )
+                },
+              }}
               rowClassName={(record) => (record.id === selectedOrder?.id ? 'selected-row' : '')}
               rowKey="id"
               size="small"

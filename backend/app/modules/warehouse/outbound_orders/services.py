@@ -27,6 +27,7 @@ from app.modules.warehouse.outbound_orders.schemas import (
     OutboundOrderLineResponse,
     OutboundOrderLineShip,
     OutboundOrderListResponse,
+    OutboundOrderListSummary,
     OutboundOrderResponse,
     OutboundOrderSubmit,
 )
@@ -283,9 +284,24 @@ class OutboundOrderService:
             source_id=source_id,
             owner_user_ids=owner_user_ids,
         )
+        status_counts, outbound_quantity = await self._repository.summarize_orders(
+            q=q,
+            status=status,
+            outbound_mode=outbound_mode,
+            outbound_type=outbound_type,
+            customer_id=customer_id,
+            source_id=source_id,
+            owner_user_ids=owner_user_ids,
+        )
         return OutboundOrderListResponse(
             items=[await self._order_response(row) for row in rows],
             total=total,
+            summary=OutboundOrderListSummary(
+                draft_count=status_counts.get("draft", 0),
+                submitted_count=status_counts.get("submitted", 0),
+                approved_count=status_counts.get("approved", 0),
+                outbound_quantity=outbound_quantity,
+            ),
         )
 
     async def get_order(

@@ -162,8 +162,89 @@ class OutboundPlanRepository:
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[OutboundPlanRow], int]:
+        conditions = self._plan_conditions(
+            q=q,
+            status=status,
+            outbound_type=outbound_type,
+            source_type=source_type,
+            customer_id=customer_id,
+            source_id=source_id,
+            owner_user_ids=owner_user_ids,
+        )
         statement = select(OutboundPlan)
         count_statement = select(func.count()).select_from(OutboundPlan)
+        for condition in conditions:
+            statement = statement.where(condition)
+            count_statement = count_statement.where(condition)
+        statement = (
+            statement.order_by(OutboundPlan.planned_date.asc(), OutboundPlan.code.asc())
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        rows = await self._scalars(statement)
+        total = await self.session.scalar(count_statement)
+        return [self._map_plan(row) for row in rows], int(total or 0)
+
+    async def summarize_plans(
+        self,
+        *,
+        q: str | None,
+        status: str | None,
+        outbound_type: str | None,
+        source_type: str | None,
+        customer_id: str | None,
+        source_id: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> tuple[dict[str, int], str, int]:
+        """同一筛选条件下的状态计数、计划总量与出货来源数，不受分页影响。"""
+        conditions = self._plan_conditions(
+            q=q,
+            status=status,
+            outbound_type=outbound_type,
+            source_type=source_type,
+            customer_id=customer_id,
+            source_id=source_id,
+            owner_user_ids=owner_user_ids,
+        )
+        status_statement = (
+            select(OutboundPlan.status, func.count())
+            .select_from(OutboundPlan)
+            .group_by(OutboundPlan.status)
+        )
+        quantity_statement = (
+            select(func.coalesce(func.sum(OutboundPlanLine.planned_quantity), 0))
+            .select_from(OutboundPlan)
+            .join(OutboundPlanLine, OutboundPlanLine.plan_id == OutboundPlan.id)
+        )
+        shipment_statement = (
+            select(func.count())
+            .select_from(OutboundPlan)
+            .where(OutboundPlan.source_type == "shipment_plan")
+        )
+        for condition in conditions:
+            status_statement = status_statement.where(condition)
+            quantity_statement = quantity_statement.where(condition)
+            shipment_statement = shipment_statement.where(condition)
+        status_rows = await self.session.execute(status_statement)
+        total_quantity = await self.session.scalar(quantity_statement)
+        shipment_count = await self.session.scalar(shipment_statement)
+        return (
+            {row[0]: int(row[1]) for row in status_rows},
+            self._quantity(Decimal(str(total_quantity or 0))),
+            int(shipment_count or 0),
+        )
+
+    def _plan_conditions(
+        self,
+        *,
+        q: str | None,
+        status: str | None,
+        outbound_type: str | None,
+        source_type: str | None,
+        customer_id: str | None,
+        source_id: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> list:
         conditions = []
         if q:
             pattern = f"%{q}%"
@@ -178,6 +259,7 @@ class OutboundPlanRepository:
                         OutboundPlanLine.model.ilike(pattern),
                     )
                 )
+                .correlate(OutboundPlan)
                 .exists()
             )
             conditions.append(
@@ -200,17 +282,7 @@ class OutboundPlanRepository:
             conditions.append(OutboundPlan.source_id == source_id)
         if owner_user_ids is not None:
             conditions.append(OutboundPlan.owner_user_id.in_(owner_user_ids))
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-        statement = (
-            statement.order_by(OutboundPlan.planned_date.asc(), OutboundPlan.code.asc())
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        rows = await self._scalars(statement)
-        total = await self.session.scalar(count_statement)
-        return [self._map_plan(row) for row in rows], int(total or 0)
+        return conditions
 
     async def schedule_plan(
         self,

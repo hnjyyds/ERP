@@ -83,8 +83,18 @@ class OutboundPlanResponse(BaseModel):
     lines: list[OutboundPlanLineResponse]
 
 
+class OutboundPlanListSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    planned_count: int = 0
+    scheduled_count: int = 0
+    total_quantity: str = "0"
+    shipment_source_count: int = 0
+
+
 class OutboundPlanListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[OutboundPlanResponse]
     total: int
+    summary: OutboundPlanListSummary

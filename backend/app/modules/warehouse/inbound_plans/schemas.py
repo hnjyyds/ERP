@@ -81,8 +81,18 @@ class InboundPlanResponse(BaseModel):
     lines: list[InboundPlanLineResponse]
 
 
+class InboundPlanListSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    planned_count: int = 0
+    scheduled_count: int = 0
+    total_quantity: str = "0"
+    type_count: int = 0
+
+
 class InboundPlanListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[InboundPlanResponse]
     total: int
+    summary: InboundPlanListSummary

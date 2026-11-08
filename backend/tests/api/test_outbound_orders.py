@@ -357,7 +357,22 @@ async def test_outbound_order_api_formal_outbound_deducts_stock_and_records(
         params={"q": order["code"], "status": "approved"},
     )
     assert records_response.status_code == 200
-    assert records_response.json()["data"]["total"] == 1
+    records = records_response.json()["data"]
+    assert records["total"] == 1
+    assert records["summary"] == {
+        "draft_count": 0,
+        "submitted_count": 0,
+        "approved_count": 1,
+        "outbound_quantity": "300",
+    }
+    paged_response = await api_client.get(
+        "/api/v1/warehouse/outbound-orders",
+        headers=headers,
+        params={"q": order["code"], "status": "approved", "limit": 1, "offset": 0},
+    )
+    paged = paged_response.json()["data"]
+    assert len(paged["items"]) == 1
+    assert paged["summary"] == records["summary"]
 
 
 async def test_outbound_order_api_rejects_unauthorized_finance_and_invalid_payload(

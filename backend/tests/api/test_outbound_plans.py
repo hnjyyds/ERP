@@ -159,7 +159,25 @@ async def test_outbound_plan_api_generates_from_shipment_and_schedules(
         params={"q": "BAG-40", "outbound_type": "finished_goods_outbound"},
     )
     assert list_response.status_code == 200
-    assert list_response.json()["data"]["total"] >= 1
+    listed = list_response.json()["data"]
+    assert listed["total"] >= 1
+    assert listed["summary"]["planned_count"] == 0
+    assert listed["summary"]["scheduled_count"] == 1
+    assert listed["summary"]["total_quantity"] == "300"
+    assert listed["summary"]["shipment_source_count"] == 1
+    paged_response = await api_client.get(
+        "/api/v1/warehouse/outbound-plans",
+        headers=headers,
+        params={
+            "q": "BAG-40",
+            "outbound_type": "finished_goods_outbound",
+            "limit": 1,
+            "offset": 0,
+        },
+    )
+    paged = paged_response.json()["data"]
+    assert len(paged["items"]) == 1
+    assert paged["summary"] == listed["summary"]
 
 
 async def test_outbound_plan_api_rejects_unauthorized_finance_and_invalid_payload(

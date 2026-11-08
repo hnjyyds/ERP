@@ -102,7 +102,11 @@ describe('InboundOrdersPage', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     window.history.replaceState({}, '', '/warehouse/inbound-orders')
-    vi.mocked(listInboundPlans).mockResolvedValue({ items: [], total: 0 })
+    vi.mocked(listInboundPlans).mockResolvedValue({
+      items: [],
+      total: 0,
+      summary: { planned_count: 0, scheduled_count: 0, total_quantity: '0', type_count: 0 },
+    })
   })
 
   it('renders without crashing', () => {
@@ -206,6 +210,7 @@ describe('InboundOrdersPage', () => {
         },
       ],
       total: 1,
+      summary: { planned_count: 0, scheduled_count: 1, total_quantity: '0', type_count: 1 },
     })
     const user = userEvent.setup()
     render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)

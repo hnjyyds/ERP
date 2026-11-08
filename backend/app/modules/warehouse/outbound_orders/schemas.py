@@ -115,8 +115,18 @@ class OutboundOrderResponse(BaseModel):
     lines: list[OutboundOrderLineResponse]
 
 
+class OutboundOrderListSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    draft_count: int = 0
+    submitted_count: int = 0
+    approved_count: int = 0
+    outbound_quantity: str = "0"
+
+
 class OutboundOrderListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[OutboundOrderResponse]
     total: int
+    summary: OutboundOrderListSummary

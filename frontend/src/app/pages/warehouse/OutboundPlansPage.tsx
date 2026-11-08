@@ -10,19 +10,22 @@ import {
   Send,
 } from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   generateOutboundPlanFromShipment,
   listOutboundPlans,
   scheduleOutboundPlan,
   type OutboundPlan,
   type OutboundPlanGeneratePayload,
+  type OutboundPlanListSummary,
   type OutboundPlanSchedulePayload,
   ShipmentPlan,
   listShipments,
 } from '@/api'
 import { warehouseOutboundPlanPath, moduleDetailPath } from '@/app/routes'
 import { FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { useFormModal } from '@/shared/useFormModal'
 import { showError } from '@/shared/errors'
 import {
@@ -169,15 +172,27 @@ function outboundPlanTotalQuantity(plan: OutboundPlan): number {
 }
 
 export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps) {
+  const urlQuery = useUrlQuery()
+  const appliedUrlSearchRef = useRef(urlQuery.search)
   const [plans, setPlans] = useState<OutboundPlan[]>([])
+  const [summary, setSummary] = useState<OutboundPlanListSummary>({
+    planned_count: 0,
+    scheduled_count: 0,
+    total_quantity: '0',
+    shipment_source_count: 0,
+  })
   const [shipments, setShipments] = useState<ShipmentPlan[]>([])
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [typeFilter, setTypeFilter] = useState('')
-  const [sourceFilter, setSourceFilter] = useState('')
-  const [customerFilter, setCustomerFilter] = useState('')
-  const [sourceIdFilter, setSourceIdFilter] = useState('')
+  const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
+  const [statusFilter, setStatusFilter] = useState(() => urlQuery.params.get('status') ?? '')
+  const [typeFilter, setTypeFilter] = useState(() => urlQuery.params.get('type') ?? '')
+  const [sourceFilter, setSourceFilter] = useState(() => urlQuery.params.get('source') ?? '')
+  const [customerFilter, setCustomerFilter] = useState(() => urlQuery.params.get('customer') ?? '')
+  const [sourceIdFilter, setSourceIdFilter] = useState(() => urlQuery.params.get('source_id') ?? '')
+  const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params),
+  )
   const {
     open: outboundPlanModalOpen,
     form: generateForm,
@@ -208,6 +223,28 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
   }, [])
 
   useEffect(() => {
+    if (appliedUrlSearchRef.current === urlQuery.search) return
+    appliedUrlSearchRef.current = urlQuery.search
+    const nextFilters = {
+      q: urlQuery.params.get('q') ?? '',
+      status: urlQuery.params.get('status') ?? '',
+      type: urlQuery.params.get('type') ?? '',
+      source: urlQuery.params.get('source') ?? '',
+      customer: urlQuery.params.get('customer') ?? '',
+      sourceId: urlQuery.params.get('source_id') ?? '',
+    }
+    setSearch(nextFilters.q)
+    setStatusFilter(nextFilters.status)
+    setTypeFilter(nextFilters.type)
+    setSourceFilter(nextFilters.source)
+    setCustomerFilter(nextFilters.customer)
+    setSourceIdFilter(nextFilters.sourceId)
+    const nextPage = parsePageParam(urlQuery.params)
+    setPage(nextPage)
+    void loadOutboundPlans(undefined, undefined, nextPage, pageSize, nextFilters)
+  }, [urlQuery.search])
+
+  useEffect(() => {
     if (!selectedPlan) return
     setGenerateForm((current) => ({
       ...current,
@@ -227,20 +264,60 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
     }
   }, [detailId, onNavigate, plans])
 
-  async function loadOutboundPlans(preferredPlanId?: string, preferredPlan?: OutboundPlan) {
+  async function loadOutboundPlans(
+    preferredPlanId?: string,
+    preferredPlan?: OutboundPlan,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: {
+      q: string
+      status: string
+      type: string
+      source: string
+      customer: string
+      sourceId: string
+    },
+  ) {
+    const resolvedPage = pageOverride ?? page
+    const resolvedPageSize = pageSizeOverride ?? pageSize
+    const resolvedQ = filtersOverride?.q ?? search
+    const resolvedStatus = filtersOverride?.status ?? statusFilter
+    const resolvedType = filtersOverride?.type ?? typeFilter
+    const resolvedSource = filtersOverride?.source ?? sourceFilter
+    const resolvedCustomer = filtersOverride?.customer ?? customerFilter
+    const resolvedSourceId = filtersOverride?.sourceId ?? sourceIdFilter
     setLoading(true)
     try {
       const [planResult, shipmentOptions] = await Promise.all([
         listOutboundPlans({
-          q: preferredPlan?.code ?? (search.trim() || undefined),
-          status: statusFilter || undefined,
-          outbound_type: typeFilter || undefined,
-          source_type: sourceFilter || undefined,
-          customer_id: customerFilter.trim() || undefined,
-          source_id: sourceIdFilter.trim() || undefined,
+          q: preferredPlan?.code ?? (resolvedQ.trim() || undefined),
+          status: resolvedStatus || undefined,
+          outbound_type: resolvedType || undefined,
+          source_type: resolvedSource || undefined,
+          customer_id: resolvedCustomer.trim() || undefined,
+          source_id: resolvedSourceId.trim() || undefined,
+          limit: resolvedPageSize,
+          offset: (resolvedPage - 1) * resolvedPageSize,
         }),
         loadOutboundShipmentOptions(),
       ])
+      setTotal(planResult.total)
+      setSummary(planResult.summary)
+      if (planResult.items.length === 0 && resolvedPage > 1) {
+        const prevPage = resolvedPage - 1
+        setPage(prevPage)
+        appliedUrlSearchRef.current = urlQuery.update({
+          page: prevPage === 1 ? null : prevPage,
+        })
+        await loadOutboundPlans(
+          preferredPlanId,
+          preferredPlan,
+          prevPage,
+          resolvedPageSize,
+          filtersOverride,
+        )
+        return
+      }
       const nextPlans = preferredPlan
         ? [preferredPlan, ...planResult.items.filter((item) => item.id !== preferredPlan.id)]
         : planResult.items
@@ -328,15 +405,33 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
     await runGenerateSubmit(
       async () => {
         const plan = await generateOutboundPlanFromShipment(outboundPlanGeneratePayload(generateForm))
-        setSearch(plan.source_code)
-        setStatusFilter('')
-        setTypeFilter(plan.outbound_type)
-        setSourceFilter(plan.source_type)
-        setCustomerFilter(plan.customer_id ?? '')
-        setSourceIdFilter(plan.source_id)
+        const nextFilters = {
+          q: plan.source_code,
+          status: '',
+          type: plan.outbound_type,
+          source: plan.source_type,
+          customer: plan.customer_id ?? '',
+          sourceId: plan.source_id,
+        }
+        setSearch(nextFilters.q)
+        setStatusFilter(nextFilters.status)
+        setTypeFilter(nextFilters.type)
+        setSourceFilter(nextFilters.source)
+        setCustomerFilter(nextFilters.customer)
+        setSourceIdFilter(nextFilters.sourceId)
+        setPage(1)
+        appliedUrlSearchRef.current = urlQuery.update({
+          q: nextFilters.q || null,
+          status: null,
+          type: nextFilters.type || null,
+          source: nextFilters.source || null,
+          customer: nextFilters.customer || null,
+          source_id: nextFilters.sourceId || null,
+          page: null,
+        })
         upsertOutboundPlan(plan)
         closeOutboundPlanModal()
-        await loadOutboundPlans(plan.id, plan)
+        await loadOutboundPlans(plan.id, plan, 1, pageSize, nextFilters)
         setMessage(t('warehouse.outboundPlan.message.generated', { code: plan.code }))
       },
       (caught) => showError(caught, t('warehouse.outboundPlan.message.generateFailed')),
@@ -367,15 +462,15 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
     )
   }
 
-  const plannedCount = plans.filter((item) => item.status === 'planned').length
-  const scheduledCount = plans.filter((item) => item.status === 'scheduled').length
-  const totalQuantity = plans.reduce((sum, item) => sum + outboundPlanTotalQuantity(item), 0)
-  const shipmentSourceCount = plans.filter((item) => item.source_type === 'shipment_plan').length
+  const plannedCount = summary.planned_count
+  const scheduledCount = summary.scheduled_count
+  const totalQuantity = Number(summary.total_quantity || 0)
+  const shipmentSourceCount = summary.shipment_source_count
 
   return (
     <section className="outbound-plan-page">
       <div className="summary-strip" aria-label={t('warehouse.outboundPlan.metric.overviewAria')}>
-        <Metric label={t('warehouse.outboundPlan.metric.planCount')} value={plans.length} />
+        <Metric label={t('warehouse.outboundPlan.metric.planCount')} value={total} />
         <Metric
           label={t('warehouse.outboundPlan.metric.plannedCount')}
           value={plannedCount}
@@ -406,7 +501,25 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
               className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadOutboundPlans()
+                  const nextFilters = {
+                    q: search,
+                    status: statusFilter,
+                    type: typeFilter,
+                    source: sourceFilter,
+                    customer: customerFilter,
+                    sourceId: sourceIdFilter,
+                  }
+                  setPage(1)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    q: nextFilters.q || null,
+                    status: nextFilters.status || null,
+                    type: nextFilters.type || null,
+                    source: nextFilters.source || null,
+                    customer: nextFilters.customer || null,
+                    source_id: nextFilters.sourceId || null,
+                    page: null,
+                  })
+                  void loadOutboundPlans(undefined, undefined, 1, pageSize, nextFilters)
                 }}
               >
                 <label>
@@ -549,7 +662,16 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
               ]}
               dataSource={plans}
               loading={loading}
-              pagination={false}
+              pagination={{
+                ...pagination,
+                onChange: (nextPage, nextPageSize) => {
+                  const next = changePage(nextPage, nextPageSize)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    page: next.page === 1 ? null : next.page,
+                  })
+                  void loadOutboundPlans(undefined, undefined, next.page, next.pageSize)
+                },
+              }}
               rowClassName={(record) => (record.id === selectedPlan?.id ? 'selected-row' : '')}
               rowKey="id"
               size="small"

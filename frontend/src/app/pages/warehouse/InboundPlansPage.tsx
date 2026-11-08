@@ -9,7 +9,7 @@ import {
   Save,
 } from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   generateInboundPlanFromPurchaseContract,
   listInboundPlans,
@@ -17,10 +17,13 @@ import {
   scheduleInboundPlan,
   type InboundPlan,
   type InboundPlanGeneratePayload,
+  type InboundPlanListSummary,
   type InboundPlanSchedulePayload,
 } from '@/api'
 import { warehouseInboundPlanPath, moduleDetailPath } from '@/app/routes'
 import { FormSelect, ListPageShell, Metric, PanelTitle, RemoteSelect } from '@/shared/ui'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { useFormModal } from '@/shared/useFormModal'
 import { showError } from '@/shared/errors'
 import { inboundPlanStatusOptions, inboundPlanTypeOptions } from '@/shared/formOptions'
@@ -150,13 +153,25 @@ function trimDecimal(value: string): string {
 }
 
 export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps) {
+  const urlQuery = useUrlQuery()
+  const appliedUrlSearchRef = useRef(urlQuery.search)
   const [plans, setPlans] = useState<InboundPlan[]>([])
+  const [summary, setSummary] = useState<InboundPlanListSummary>({
+    planned_count: 0,
+    scheduled_count: 0,
+    total_quantity: '0',
+    type_count: 0,
+  })
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [typeFilter, setTypeFilter] = useState('')
-  const [supplierFilter, setSupplierFilter] = useState('')
-  const [contractFilter, setContractFilter] = useState('')
+  const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
+  const [statusFilter, setStatusFilter] = useState(() => urlQuery.params.get('status') ?? '')
+  const [typeFilter, setTypeFilter] = useState(() => urlQuery.params.get('type') ?? '')
+  const [supplierFilter, setSupplierFilter] = useState(() => urlQuery.params.get('supplier') ?? '')
+  const [contractFilter, setContractFilter] = useState(() => urlQuery.params.get('contract') ?? '')
+  const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params),
+  )
   const {
     open: inboundPlanModalOpen,
     form: generateForm,
@@ -200,6 +215,26 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
   useEffect(() => {
     void loadInboundPlans()
   }, [])
+
+  useEffect(() => {
+    if (appliedUrlSearchRef.current === urlQuery.search) return
+    appliedUrlSearchRef.current = urlQuery.search
+    const nextFilters = {
+      q: urlQuery.params.get('q') ?? '',
+      status: urlQuery.params.get('status') ?? '',
+      type: urlQuery.params.get('type') ?? '',
+      supplier: urlQuery.params.get('supplier') ?? '',
+      contract: urlQuery.params.get('contract') ?? '',
+    }
+    setSearch(nextFilters.q)
+    setStatusFilter(nextFilters.status)
+    setTypeFilter(nextFilters.type)
+    setSupplierFilter(nextFilters.supplier)
+    setContractFilter(nextFilters.contract)
+    const nextPage = parsePageParam(urlQuery.params)
+    setPage(nextPage)
+    void loadInboundPlans(undefined, nextPage, pageSize, nextFilters)
+  }, [urlQuery.search])
 
   useEffect(() => {
     if (!selectedPlan) return
@@ -249,16 +284,41 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
     openInboundPlanDetail(plan)
   }
 
-  async function loadInboundPlans(preferredPlanId?: string) {
+  async function loadInboundPlans(
+    preferredPlanId?: string,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: { q: string; status: string; type: string; supplier: string; contract: string },
+  ) {
+    const resolvedPage = pageOverride ?? page
+    const resolvedPageSize = pageSizeOverride ?? pageSize
+    const resolvedQ = filtersOverride?.q ?? search
+    const resolvedStatus = filtersOverride?.status ?? statusFilter
+    const resolvedType = filtersOverride?.type ?? typeFilter
+    const resolvedSupplier = filtersOverride?.supplier ?? supplierFilter
+    const resolvedContract = filtersOverride?.contract ?? contractFilter
     setLoading(true)
     try {
       const result = await listInboundPlans({
-        q: search.trim() || undefined,
-        status: statusFilter || undefined,
-        inbound_type: typeFilter || undefined,
-        supplier_id: supplierFilter.trim() || undefined,
-        purchase_contract_id: contractFilter.trim() || undefined,
+        q: resolvedQ.trim() || undefined,
+        status: resolvedStatus || undefined,
+        inbound_type: resolvedType || undefined,
+        supplier_id: resolvedSupplier.trim() || undefined,
+        purchase_contract_id: resolvedContract.trim() || undefined,
+        limit: resolvedPageSize,
+        offset: (resolvedPage - 1) * resolvedPageSize,
       })
+      setTotal(result.total)
+      setSummary(result.summary)
+      if (result.items.length === 0 && resolvedPage > 1) {
+        const prevPage = resolvedPage - 1
+        setPage(prevPage)
+        appliedUrlSearchRef.current = urlQuery.update({
+          page: prevPage === 1 ? null : prevPage,
+        })
+        await loadInboundPlans(preferredPlanId, prevPage, resolvedPageSize, filtersOverride)
+        return
+      }
       setPlans(result.items)
       const nextId =
         preferredPlanId ??
@@ -281,11 +341,27 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
         const plan = await generateInboundPlanFromPurchaseContract(
           inboundPlanGeneratePayload(generateForm),
         )
-        setSearch(plan.purchase_contract_no)
-        setContractFilter(plan.purchase_contract_id)
+        const nextFilters = {
+          q: plan.purchase_contract_no,
+          status: statusFilter,
+          type: typeFilter,
+          supplier: supplierFilter,
+          contract: plan.purchase_contract_id,
+        }
+        setSearch(nextFilters.q)
+        setContractFilter(nextFilters.contract)
         setSelectedPlanId(plan.id)
+        setPage(1)
+        appliedUrlSearchRef.current = urlQuery.update({
+          q: nextFilters.q || null,
+          status: nextFilters.status || null,
+          type: nextFilters.type || null,
+          supplier: nextFilters.supplier || null,
+          contract: nextFilters.contract || null,
+          page: null,
+        })
         closeInboundPlanModal()
-        await loadInboundPlans(plan.id)
+        await loadInboundPlans(plan.id, 1, pageSize, nextFilters)
         setMessage(t('warehouse.inboundPlan.message.generated', { code: plan.code }))
       },
       (caught) => showError(caught, t('warehouse.inboundPlan.message.generateFailed')),
@@ -316,15 +392,15 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
     )
   }
 
-  const scheduledCount = plans.filter((item) => item.status === 'scheduled').length
-  const plannedCount = plans.filter((item) => item.status === 'planned').length
-  const totalQuantity = plans.reduce((sum, item) => sum + inboundPlanTotalQuantity(item), 0)
-  const typeCount = new Set(plans.map((item) => item.inbound_type)).size
+  const scheduledCount = summary.scheduled_count
+  const plannedCount = summary.planned_count
+  const totalQuantity = Number(summary.total_quantity || 0)
+  const typeCount = summary.type_count
 
   return (
     <section className="inbound-plan-page">
       <div className="summary-strip" aria-label={t('warehouse.inboundPlan.metric.overviewAria')}>
-        <Metric label={t('warehouse.inboundPlan.metric.planCount')} value={plans.length} />
+        <Metric label={t('warehouse.inboundPlan.metric.planCount')} value={total} />
         <Metric
           label={t('warehouse.inboundPlan.metric.plannedCount')}
           value={plannedCount}
@@ -352,7 +428,23 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
               className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadInboundPlans()
+                  const nextFilters = {
+                    q: search,
+                    status: statusFilter,
+                    type: typeFilter,
+                    supplier: supplierFilter,
+                    contract: contractFilter,
+                  }
+                  setPage(1)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    q: nextFilters.q || null,
+                    status: nextFilters.status || null,
+                    type: nextFilters.type || null,
+                    supplier: nextFilters.supplier || null,
+                    contract: nextFilters.contract || null,
+                    page: null,
+                  })
+                  void loadInboundPlans(undefined, 1, pageSize, nextFilters)
                 }}
               >
                 <label>
@@ -479,7 +571,16 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
               ]}
               dataSource={plans}
               loading={loading}
-              pagination={false}
+              pagination={{
+                ...pagination,
+                onChange: (nextPage, nextPageSize) => {
+                  const next = changePage(nextPage, nextPageSize)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    page: next.page === 1 ? null : next.page,
+                  })
+                  void loadInboundPlans(undefined, next.page, next.pageSize)
+                },
+              }}
               rowClassName={(record) => (record.id === selectedPlan?.id ? 'selected-row' : '')}
               rowKey="id"
               size="small"

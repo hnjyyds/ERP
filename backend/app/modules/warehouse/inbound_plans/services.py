@@ -18,6 +18,7 @@ from app.modules.warehouse.inbound_plans.schemas import (
     InboundPlanGenerateFromPurchaseContract,
     InboundPlanLineResponse,
     InboundPlanListResponse,
+    InboundPlanListSummary,
     InboundPlanResponse,
     InboundPlanSchedule,
 )
@@ -134,9 +135,23 @@ class InboundPlanService:
             purchase_contract_id=purchase_contract_id,
             owner_user_ids=owner_user_ids,
         )
+        status_counts, total_quantity, type_count = await self._repository.summarize_plans(
+            q=q,
+            inbound_type=inbound_type,
+            status=status,
+            supplier_id=supplier_id,
+            purchase_contract_id=purchase_contract_id,
+            owner_user_ids=owner_user_ids,
+        )
         return InboundPlanListResponse(
             items=[await self._plan_response(row) for row in rows],
             total=total,
+            summary=InboundPlanListSummary(
+                planned_count=status_counts.get("planned", 0),
+                scheduled_count=status_counts.get("scheduled", 0),
+                total_quantity=total_quantity,
+                type_count=type_count,
+            ),
         )
 
     async def get_plan(

@@ -36,9 +36,17 @@ export interface InboundPlan {
   lines: InboundPlanLine[]
 }
 
+export interface InboundPlanListSummary {
+  planned_count: number
+  scheduled_count: number
+  total_quantity: string
+  type_count: number
+}
+
 export interface InboundPlanList {
   items: InboundPlan[]
   total: number
+  summary: InboundPlanListSummary
 }
 
 export interface InboundPlanGeneratePayload {
@@ -183,9 +191,17 @@ export interface OutboundPlan {
   lines: OutboundPlanLine[]
 }
 
+export interface OutboundPlanListSummary {
+  planned_count: number
+  scheduled_count: number
+  total_quantity: string
+  shipment_source_count: number
+}
+
 export interface OutboundPlanList {
   items: OutboundPlan[]
   total: number
+  summary: OutboundPlanListSummary
 }
 
 export interface OutboundPlanGeneratePayload {
@@ -250,9 +266,17 @@ export interface OutboundOrder {
   lines: OutboundOrderLine[]
 }
 
+export interface OutboundOrderListSummary {
+  draft_count: number
+  submitted_count: number
+  approved_count: number
+  outbound_quantity: string
+}
+
 export interface OutboundOrderList {
   items: OutboundOrder[]
   total: number
+  summary: OutboundOrderListSummary
 }
 
 export interface OutboundOrderLinePayload {
@@ -346,6 +370,8 @@ export function listOutboundPlans(filters: {
   source_type?: string
   customer_id?: string
   source_id?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<OutboundPlanList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
@@ -354,6 +380,8 @@ export function listOutboundPlans(filters: {
   if (filters.source_type) params.set('source_type', filters.source_type)
   if (filters.customer_id) params.set('customer_id', filters.customer_id)
   if (filters.source_id) params.set('source_id', filters.source_id)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<OutboundPlanList>(`/warehouse/outbound-plans${suffix}`)
 }
@@ -384,6 +412,8 @@ export function listOutboundOrders(filters: {
   outbound_type?: string
   customer_id?: string
   source_id?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<OutboundOrderList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
@@ -392,6 +422,8 @@ export function listOutboundOrders(filters: {
   if (filters.outbound_type) params.set('outbound_type', filters.outbound_type)
   if (filters.customer_id) params.set('customer_id', filters.customer_id)
   if (filters.source_id) params.set('source_id', filters.source_id)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<OutboundOrderList>(`/warehouse/outbound-orders${suffix}`)
 }
@@ -441,6 +473,8 @@ export function listInboundPlans(filters: {
   status?: string
   supplier_id?: string
   purchase_contract_id?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<InboundPlanList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
@@ -448,6 +482,8 @@ export function listInboundPlans(filters: {
   if (filters.status) params.set('status', filters.status)
   if (filters.supplier_id) params.set('supplier_id', filters.supplier_id)
   if (filters.purchase_contract_id) params.set('purchase_contract_id', filters.purchase_contract_id)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<InboundPlanList>(`/warehouse/inbound-plans${suffix}`)
 }

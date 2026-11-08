@@ -18,6 +18,7 @@ from app.modules.warehouse.outbound_plans.schemas import (
     OutboundPlanGenerateFromShipment,
     OutboundPlanLineResponse,
     OutboundPlanListResponse,
+    OutboundPlanListSummary,
     OutboundPlanResponse,
     OutboundPlanSchedule,
 )
@@ -118,9 +119,26 @@ class OutboundPlanService:
             source_id=source_id,
             owner_user_ids=owner_user_ids,
         )
+        status_counts, total_quantity, shipment_source_count = (
+            await self._repository.summarize_plans(
+                q=q,
+                status=status,
+                outbound_type=outbound_type,
+                source_type=source_type,
+                customer_id=customer_id,
+                source_id=source_id,
+                owner_user_ids=owner_user_ids,
+            )
+        )
         return OutboundPlanListResponse(
             items=[await self._plan_response(row) for row in rows],
             total=total,
+            summary=OutboundPlanListSummary(
+                planned_count=status_counts.get("planned", 0),
+                scheduled_count=status_counts.get("scheduled", 0),
+                total_quantity=total_quantity,
+                shipment_source_count=shipment_source_count,
+            ),
         )
 
     async def get_plan(

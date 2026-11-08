@@ -169,8 +169,81 @@ class OutboundOrderRepository:
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[OutboundOrderRow], int]:
+        conditions = self._order_conditions(
+            q=q,
+            status=status,
+            outbound_mode=outbound_mode,
+            outbound_type=outbound_type,
+            customer_id=customer_id,
+            source_id=source_id,
+            owner_user_ids=owner_user_ids,
+        )
         statement = select(OutboundOrder)
         count_statement = select(func.count()).select_from(OutboundOrder)
+        for condition in conditions:
+            statement = statement.where(condition)
+            count_statement = count_statement.where(condition)
+        statement = (
+            statement.order_by(OutboundOrder.outbound_at.desc(), OutboundOrder.code.desc())
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        rows = await self._order_scalars(statement)
+        total = await self.session.scalar(count_statement)
+        return [self._map_order(row) for row in rows], int(total or 0)
+
+    async def summarize_orders(
+        self,
+        *,
+        q: str | None,
+        status: str | None,
+        outbound_mode: str | None,
+        outbound_type: str | None,
+        customer_id: str | None,
+        source_id: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> tuple[dict[str, int], str]:
+        """同一筛选条件下的状态计数与出库总量，不受分页影响。"""
+        conditions = self._order_conditions(
+            q=q,
+            status=status,
+            outbound_mode=outbound_mode,
+            outbound_type=outbound_type,
+            customer_id=customer_id,
+            source_id=source_id,
+            owner_user_ids=owner_user_ids,
+        )
+        status_statement = (
+            select(OutboundOrder.status, func.count())
+            .select_from(OutboundOrder)
+            .group_by(OutboundOrder.status)
+        )
+        quantity_statement = (
+            select(func.coalesce(func.sum(OutboundOrderLine.quantity), 0))
+            .select_from(OutboundOrder)
+            .join(OutboundOrderLine, OutboundOrderLine.order_id == OutboundOrder.id)
+        )
+        for condition in conditions:
+            status_statement = status_statement.where(condition)
+            quantity_statement = quantity_statement.where(condition)
+        status_rows = await self.session.execute(status_statement)
+        total_quantity = await self.session.scalar(quantity_statement)
+        return (
+            {row[0]: int(row[1]) for row in status_rows},
+            self._quantity(Decimal(str(total_quantity or 0))),
+        )
+
+    def _order_conditions(
+        self,
+        *,
+        q: str | None,
+        status: str | None,
+        outbound_mode: str | None,
+        outbound_type: str | None,
+        customer_id: str | None,
+        source_id: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> list:
         conditions = []
         if q:
             pattern = f"%{q}%"
@@ -185,6 +258,7 @@ class OutboundOrderRepository:
                         OutboundOrderLine.model.ilike(pattern),
                     )
                 )
+                .correlate(OutboundOrder)
                 .exists()
             )
             conditions.append(
@@ -210,17 +284,7 @@ class OutboundOrderRepository:
             conditions.append(OutboundOrder.source_id == source_id)
         if owner_user_ids is not None:
             conditions.append(OutboundOrder.owner_user_id.in_(owner_user_ids))
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-        statement = (
-            statement.order_by(OutboundOrder.outbound_at.desc(), OutboundOrder.code.desc())
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        rows = await self._order_scalars(statement)
-        total = await self.session.scalar(count_statement)
-        return [self._map_order(row) for row in rows], int(total or 0)
+        return conditions
 
     async def submit_order(
         self,
