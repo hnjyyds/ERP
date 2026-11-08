@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { fireEvent as _fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 vi.mock('@/api', async (importOriginal) => {
@@ -7,6 +7,7 @@ vi.mock('@/api', async (importOriginal) => {
   return {
     ...actual,
     approveInboundOrder: vi.fn().mockRejectedValue(new Error('stop after payload capture')),
+    cancelInboundOrder: vi.fn().mockRejectedValue(new Error('stop after payload capture')),
     generateInboundOrderFromPlan: vi.fn().mockRejectedValue(new Error('stop after payload capture')),
     submitInboundOrder: vi.fn().mockRejectedValue(new Error('stop after payload capture')),
     listAssignableUsers: vi.fn().mockResolvedValue({
@@ -76,6 +77,8 @@ vi.mock('@/api', async (importOriginal) => {
 
 import { InboundOrdersPage } from '@/app/pages/warehouse/InboundOrdersPage'
 import {
+  approveInboundOrder,
+  cancelInboundOrder,
   generateInboundOrderFromPlan,
   listAssignableUsers,
   listInboundOrders,
@@ -423,5 +426,172 @@ describe('InboundOrdersPage', () => {
       expect(listInboundOrders).toHaveBeenLastCalledWith(expect.objectContaining({ offset: 50 }))
     })
     expect(readMetrics()).toEqual(before)
+  })
+
+  const inboundOrderFixture = (overrides: Partial<InboundOrder> = {}): InboundOrder => ({
+    id: 'inbound-order-1',
+    code: 'IO-TEST-001',
+    plan_id: 'inbound-plan-1',
+    purchase_contract_id: 'purchase-contract-1',
+    purchase_contract_no: 'PC-TEST-001',
+    supplier_id: 'supplier-1',
+    supplier_name: '测试供应商',
+    inbound_type: 'purchase',
+    inbound_mode: 'pending_inspection',
+    inbound_at: '2026-08-30',
+    warehouse_id: 'wh-ningbo',
+    warehouse_name: '宁波总仓',
+    location_id: 'loc-a-01',
+    location_name: 'A-01',
+    operator_name: '仓库主管',
+    status: 'draft',
+    submitted_at: null,
+    approved_at: null,
+    reviewer_id: null,
+    reviewer_name: null,
+    owner_user_id: 'user-warehouse',
+    lines: [],
+    ...overrides,
+  })
+
+  const mockOrderList = (order: InboundOrder) => {
+    vi.mocked(listInboundOrders).mockResolvedValue({
+      items: [order],
+      total: 1,
+      summary: { draft_count: 0, submitted_count: 0, approved_count: 0 },
+    })
+  }
+
+  it('关闭后重新打开弹窗时表单回到当前订单的值', async () => {
+    const user = userEvent.setup()
+    mockOrderList(inboundOrderFixture())
+    render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() => expect(screen.getByText('IO-TEST-001')).toBeTruthy())
+    await user.click(screen.getByText('生成/审批入库单'))
+
+    const modal = within(screen.getByRole('dialog'))
+    const dateInput = modal.getByLabelText('入库日期')
+    const locationInput = modal.getByLabelText('库位')
+    expect(dateInput).toHaveValue('2026-08-30')
+    expect(locationInput).toHaveValue('A-01')
+
+    fireEvent.change(dateInput, { target: { value: '2026-09-09' } })
+    fireEvent.change(locationInput, { target: { value: 'B-02' } })
+    expect(locationInput).toHaveValue('B-02')
+
+    await user.click(modal.getAllByLabelText('Close')[0])
+    await user.click(screen.getByText('生成/审批入库单'))
+
+    expect(modal.getByLabelText('入库日期')).toHaveValue('2026-08-30')
+    expect(modal.getByLabelText('库位')).toHaveValue('A-01')
+  })
+
+  it('生成入库单失败时保留弹窗内已填写的库位与经办人', async () => {
+    const user = userEvent.setup()
+    mockOrderList(inboundOrderFixture())
+    vi.mocked(listInboundPlans).mockResolvedValue({
+      items: [
+        {
+          id: 'inbound-plan-1',
+          code: 'IP-TEST-001',
+          purchase_contract_id: 'purchase-contract-1',
+          purchase_contract_no: 'PC-TEST-001',
+          supplier_id: 'supplier-1',
+          supplier_name: '测试供应商',
+          inbound_type: 'purchase',
+          planned_date: '2026-08-30',
+          status: 'scheduled',
+          warehouse_id: 'wh-company',
+          warehouse_name: '公司仓库',
+          location_id: 'loc-b-01',
+          location_name: 'B-01',
+          operator_name: '仓库主管',
+          owner_user_id: 'user-warehouse',
+          lines: [],
+        },
+      ],
+      total: 1,
+      summary: { planned_count: 0, scheduled_count: 1, total_quantity: '0', type_count: 1 },
+    })
+    render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() => expect(screen.getByText('IO-TEST-001')).toBeTruthy())
+    await user.click(screen.getByText('生成/审批入库单'))
+
+    const modal = within(screen.getByRole('dialog'))
+    fireEvent.change(modal.getByLabelText('库位'), { target: { value: 'C-03' } })
+    fireEvent.change(modal.getByLabelText('经办人'), { target: { value: '张三' } })
+
+    await user.click(modal.getByRole('button', { name: '生成入库单' }))
+
+    await waitFor(() => expect(generateInboundOrderFromPlan).toHaveBeenCalledTimes(1))
+    expect(modal.getByLabelText('库位')).toHaveValue('C-03')
+    expect(modal.getByLabelText('经办人')).toHaveValue('张三')
+  })
+
+  it('作废入库单必须先填原因，填写后才提交', async () => {
+    const user = userEvent.setup()
+    mockOrderList(inboundOrderFixture())
+    render(
+      <InboundOrdersPage currentUser={currentUser} detailId="inbound-order-1" onNavigate={onNavigate} />,
+    )
+
+    await user.click(await screen.findByRole('button', { name: '作废入库单' }))
+
+    const dialog = within(await screen.findByRole('dialog'))
+    await user.click(dialog.getByRole('button', { name: '作废入库单' }))
+    expect(screen.getByText('请填写作废原因')).toBeTruthy()
+    expect(cancelInboundOrder).not.toHaveBeenCalled()
+
+    fireEvent.change(dialog.getByRole('textbox'), { target: { value: '供应商延期' } })
+    await user.click(dialog.getByRole('button', { name: '作废入库单' }))
+
+    await waitFor(() => {
+      expect(cancelInboundOrder).toHaveBeenCalledWith('inbound-order-1', { reason: '供应商延期' })
+    })
+  })
+
+  it('待审批单的审批人不是当前用户时审批按钮禁用并提示等待', async () => {
+    const user = userEvent.setup()
+    mockOrderList(
+      inboundOrderFixture({
+        status: 'submitted',
+        reviewer_id: 'user-manager',
+        reviewer_name: '演示业务主管',
+      }),
+    )
+    render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() => expect(screen.getByText('IO-TEST-001')).toBeTruthy())
+    await user.click(screen.getByText('生成/审批入库单'))
+
+    expect(screen.getByRole('button', { name: '审批入库' })).toBeDisabled()
+    expect(screen.getByText('等待 演示业务主管 审批')).toBeTruthy()
+  })
+
+  it('当前用户是指定审批人时可提交审批并带上审批日期', async () => {
+    const user = userEvent.setup()
+    mockOrderList(
+      inboundOrderFixture({
+        status: 'submitted',
+        reviewer_id: 'user-warehouse',
+        reviewer_name: '仓库主管',
+      }),
+    )
+    render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() => expect(screen.getByText('IO-TEST-001')).toBeTruthy())
+    await user.click(screen.getByText('生成/审批入库单'))
+
+    const approveButton = screen.getByRole('button', { name: '审批入库' })
+    expect(approveButton).toBeEnabled()
+    await user.click(approveButton)
+
+    await waitFor(() => {
+      expect(approveInboundOrder).toHaveBeenCalledWith('inbound-order-1', {
+        approved_at: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
+      })
+    })
   })
 })
