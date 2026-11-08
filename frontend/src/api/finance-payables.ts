@@ -138,6 +138,8 @@ export function listPartnerFeeInvoices(filters: {
   partner_id?: string
   sales_user_id?: string
   shipment_no?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<PartnerFeeInvoiceList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
@@ -146,6 +148,8 @@ export function listPartnerFeeInvoices(filters: {
   if (filters.partner_id) params.set('partner_id', filters.partner_id)
   if (filters.sales_user_id) params.set('sales_user_id', filters.sales_user_id)
   if (filters.shipment_no) params.set('shipment_no', filters.shipment_no)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<PartnerFeeInvoiceList>(`/finance/partner-fee-invoices${suffix}`)
 }
@@ -166,6 +170,8 @@ export function listFeePaymentRequests(filters: {
   partner_id?: string
   sales_user_id?: string
   shipment_no?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<FeePaymentRequestList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
@@ -174,6 +180,8 @@ export function listFeePaymentRequests(filters: {
   if (filters.partner_id) params.set('partner_id', filters.partner_id)
   if (filters.sales_user_id) params.set('sales_user_id', filters.sales_user_id)
   if (filters.shipment_no) params.set('shipment_no', filters.shipment_no)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<FeePaymentRequestList>(`/finance/fee-payment-requests${suffix}`)
 }
@@ -204,6 +212,8 @@ export function listFeePayables(filters: {
   partner_id?: string
   sales_user_id?: string
   shipment_no?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<FeePayableList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
@@ -212,6 +222,8 @@ export function listFeePayables(filters: {
   if (filters.partner_id) params.set('partner_id', filters.partner_id)
   if (filters.sales_user_id) params.set('sales_user_id', filters.sales_user_id)
   if (filters.shipment_no) params.set('shipment_no', filters.shipment_no)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<FeePayableList>(`/finance/fee-payables${suffix}`)
 }

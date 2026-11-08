@@ -64,6 +64,17 @@ async def test_finance_reimbursement_full_flow(
     assert listing["total_amount"] == "300.00"
     assert listing["items"][0]["reimbursement_no"] == "RB-API-001"
 
+    empty_page_response = await api_client.get(
+        "/api/v1/finance/reimbursements",
+        headers=headers,
+        params={"status": "submitted", "category": "travel", "limit": 1, "offset": 1},
+    )
+    assert empty_page_response.status_code == 200
+    empty_page = empty_page_response.json()["data"]
+    assert empty_page["items"] == []
+    assert empty_page["total"] == 1
+    assert empty_page["total_amount"] == "300.00"
+
     approve_response = await api_client.post(
         f"/api/v1/finance/reimbursements/{reimbursement['id']}/approve",
         headers={"Authorization": f"Bearer {reviewer_token}"},

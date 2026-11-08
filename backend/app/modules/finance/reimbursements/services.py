@@ -1,4 +1,3 @@
-from collections.abc import Iterable
 from decimal import Decimal
 
 from app.db.uow import UnitOfWork
@@ -100,7 +99,14 @@ class ReimbursementService:
         return ReimbursementListResponse(
             items=[self._response(row) for row in rows],
             total=total,
-            total_amount=self._money_sum(row.amount for row in rows),
+            total_amount=self._money(
+                await self._repository.summarize(
+                    q=q,
+                    status=status,
+                    category=category,
+                    applicant_user_id=applicant_user_id,
+                )
+            ),
         )
 
     async def approve_reimbursement(
@@ -215,5 +221,5 @@ class ReimbursementService:
         if "finance:view" not in current_user.permissions:
             raise PermissionDeniedError
 
-    def _money_sum(self, values: Iterable[str]) -> str:
-        return f"{sum(Decimal(str(value)) for value in values):.2f}"
+    def _money(self, value: Decimal | int | str | None) -> str:
+        return f"{Decimal(str(value or 0)):.2f}"

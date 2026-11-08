@@ -165,6 +165,27 @@ async def test_finance_misc_fee_item_allocation_and_profit(
     assert summary["total_allocated_amount"] == "36.00"
     assert summary["items"][0]["allocation_no"] == allocation["allocation_no"]
 
+    allocation_list_response = await api_client.get(
+        "/api/v1/finance/misc-fee-allocations",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        params={"shipment_no": shipment["code"]},
+    )
+    assert allocation_list_response.status_code == 200
+    allocation_list = allocation_list_response.json()["data"]
+    assert allocation_list["total"] == 1
+    assert allocation_list["total_allocated_amount"] == "36.00"
+
+    empty_page_response = await api_client.get(
+        "/api/v1/finance/misc-fee-allocations",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        params={"shipment_no": shipment["code"], "limit": 1, "offset": 1},
+    )
+    assert empty_page_response.status_code == 200
+    empty_page = empty_page_response.json()["data"]
+    assert empty_page["items"] == []
+    assert empty_page["total"] == 1
+    assert empty_page["total_allocated_amount"] == "36.00"
+
     overview_response = await api_client.get(
         "/api/v1/finance/overview",
         headers={"Authorization": f"Bearer {finance_token}"},

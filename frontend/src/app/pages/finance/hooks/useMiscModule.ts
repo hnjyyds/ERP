@@ -1,5 +1,5 @@
 import type { FormEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   createMiscFeeAllocation,
   createMiscFeeItem,
@@ -10,6 +10,8 @@ import {
   type MiscFeeItem,
 } from '@/api'
 import { showError } from '@/shared/errors'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { t } from '@/app/appI18n'
 import {
   MiscFeeItemFormState,
@@ -24,6 +26,26 @@ import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 
 export function useMiscModule(env: FinanceModuleEnv) {
   const { activeModule, detailId, setMessage, setError, loadOverview } = env
+
+  const urlQuery = useUrlQuery()
+
+  const miscFeeItemsPager = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params, 'misc_items_page'),
+  )
+
+  const miscFeeAllocationsPager = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params, 'misc_allocations_page'),
+  )
+
+  const miscFeeItemsUrlPage = urlQuery.params.get('misc_items_page') ?? ''
+
+  const appliedMiscFeeItemsPageRef = useRef(miscFeeItemsUrlPage)
+
+  const miscFeeAllocationsUrlPage = urlQuery.params.get('misc_allocations_page') ?? ''
+
+  const appliedMiscFeeAllocationsPageRef = useRef(miscFeeAllocationsUrlPage)
 
   const [miscFeeItems, setMiscFeeItems] = useState<MiscFeeItem[]>([])
 
@@ -87,16 +109,25 @@ export function useMiscModule(env: FinanceModuleEnv) {
     }))
   }, [selectedMiscFeeItem?.id, selectedMiscFeeItem?.default_allocation_method])
 
-  async function loadMiscFeeItems(preferredId?: string) {
+  async function loadMiscFeeItems(
+    preferredId?: string,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+  ) {
     setLoadingMiscFeeItems(true)
     setError('')
     try {
+      const page = pageOverride ?? miscFeeItemsPager.page
+      const pageSize = pageSizeOverride ?? miscFeeItemsPager.pageSize
       const result = await listMiscFeeItems({
         q: miscFeeItemSearch.trim() || undefined,
         category: miscFeeItemCategoryFilter || undefined,
         status: miscFeeItemStatusFilter || undefined,
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
       })
       setMiscFeeItems(result.items)
+      miscFeeItemsPager.setTotal(result.total)
       const nextItemId =
         preferredId ??
         (activeModule === 'misc' && result.items.some((item) => item.id === detailId)
@@ -115,17 +146,22 @@ export function useMiscModule(env: FinanceModuleEnv) {
     }
   }
 
-  async function loadMiscFeeAllocations() {
+  async function loadMiscFeeAllocations(pageOverride?: number, pageSizeOverride?: number) {
     setLoadingMiscFeeAllocations(true)
     setError('')
     try {
+      const page = pageOverride ?? miscFeeAllocationsPager.page
+      const pageSize = pageSizeOverride ?? miscFeeAllocationsPager.pageSize
       const result = await listMiscFeeAllocations({
         q: miscFeeAllocationSearch.trim() || undefined,
         category: miscFeeAllocationCategoryFilter || undefined,
         shipment_no: miscFeeAllocationShipmentFilter.trim() || undefined,
         sales_user_id: miscFeeAllocationSalesFilter.trim() || undefined,
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
       })
       setMiscFeeAllocations(result.items)
+      miscFeeAllocationsPager.setTotal(result.total)
     } catch (caught) {
       showError(caught, t('finance.misc.message.loadAllocationsFailed'))
     } finally {
@@ -148,6 +184,36 @@ export function useMiscModule(env: FinanceModuleEnv) {
       setLoadingMiscFeeSummary(false)
     }
   }
+
+  async function changeMiscFeeItemsPage(nextPage: number, nextPageSize: number) {
+    const next = miscFeeItemsPager.changePage(nextPage, nextPageSize)
+    appliedMiscFeeItemsPageRef.current = next.page === 1 ? '' : String(next.page)
+    urlQuery.update({ misc_items_page: next.page === 1 ? null : next.page })
+    await loadMiscFeeItems(undefined, next.page, next.pageSize)
+  }
+
+  async function changeMiscFeeAllocationsPage(nextPage: number, nextPageSize: number) {
+    const next = miscFeeAllocationsPager.changePage(nextPage, nextPageSize)
+    appliedMiscFeeAllocationsPageRef.current = next.page === 1 ? '' : String(next.page)
+    urlQuery.update({ misc_allocations_page: next.page === 1 ? null : next.page })
+    await loadMiscFeeAllocations(next.page, next.pageSize)
+  }
+
+  useEffect(() => {
+    if (appliedMiscFeeItemsPageRef.current === miscFeeItemsUrlPage) return
+    appliedMiscFeeItemsPageRef.current = miscFeeItemsUrlPage
+    const nextPage = parsePageParam(urlQuery.params, 'misc_items_page')
+    miscFeeItemsPager.setPage(nextPage)
+    void loadMiscFeeItems(undefined, nextPage, miscFeeItemsPager.pageSize)
+  }, [miscFeeItemsUrlPage])
+
+  useEffect(() => {
+    if (appliedMiscFeeAllocationsPageRef.current === miscFeeAllocationsUrlPage) return
+    appliedMiscFeeAllocationsPageRef.current = miscFeeAllocationsUrlPage
+    const nextPage = parsePageParam(urlQuery.params, 'misc_allocations_page')
+    miscFeeAllocationsPager.setPage(nextPage)
+    void loadMiscFeeAllocations(nextPage, miscFeeAllocationsPager.pageSize)
+  }, [miscFeeAllocationsUrlPage])
 
   async function submitMiscFeeItem(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -198,6 +264,8 @@ export function useMiscModule(env: FinanceModuleEnv) {
   )
 
   return {
+    changeMiscFeeAllocationsPage,
+    changeMiscFeeItemsPage,
     loadMiscFeeAllocationSummary,
     loadMiscFeeAllocations,
     loadMiscFeeItems,
@@ -210,12 +278,16 @@ export function useMiscModule(env: FinanceModuleEnv) {
     miscFeeAllocationSearch,
     miscFeeAllocationShipmentFilter,
     miscFeeAllocations,
+    miscFeeAllocationsPagination: miscFeeAllocationsPager.pagination,
+    miscFeeAllocationsTotal: miscFeeAllocationsPager.total,
     miscFeeItemCategoryFilter,
     miscFeeItemCodeError,
     miscFeeItemForm,
     miscFeeItemSearch,
     miscFeeItemStatusFilter,
     miscFeeItems,
+    miscFeeItemsPagination: miscFeeItemsPager.pagination,
+    miscFeeItemsTotal: miscFeeItemsPager.total,
     miscItemModalOpen,
     selectedMiscFeeItem,
     setMiscFeeAllocationCategoryFilter,

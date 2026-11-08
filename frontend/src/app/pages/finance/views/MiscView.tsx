@@ -26,9 +26,9 @@ type Props = {
 
 export function MiscView({ model, shell }: Props) {
   const {
+    changeMiscFeeAllocationsPage,
+    changeMiscFeeItemsPage,
     loadMiscFeeAllocationSummary,
-    loadMiscFeeAllocations,
-    loadMiscFeeItems,
     loadingMiscFeeAllocations,
     loadingMiscFeeItems,
     loadingMiscFeeSummary,
@@ -38,12 +38,15 @@ export function MiscView({ model, shell }: Props) {
     miscFeeAllocationSearch,
     miscFeeAllocationShipmentFilter,
     miscFeeAllocations,
+    miscFeeAllocationsPagination,
+    miscFeeAllocationsTotal,
     miscFeeItemCategoryFilter,
     miscFeeItemCodeError,
     miscFeeItemForm,
     miscFeeItemSearch,
     miscFeeItemStatusFilter,
     miscFeeItems,
+    miscFeeItemsPagination,
     miscItemModalOpen,
     selectedMiscFeeItem,
     setMiscFeeAllocationCategoryFilter,
@@ -96,7 +99,7 @@ export function MiscView({ model, shell }: Props) {
                 className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadMiscFeeItems()
+                  void changeMiscFeeItemsPage(1, miscFeeItemsPagination.pageSize)
                 }}
               >
                 <label>
@@ -179,7 +182,12 @@ export function MiscView({ model, shell }: Props) {
               ]}
               dataSource={miscFeeItems}
               loading={loadingMiscFeeItems}
-              pagination={false}
+              pagination={{
+                ...miscFeeItemsPagination,
+                onChange: (nextPage, nextPageSize) => {
+                  void changeMiscFeeItemsPage(nextPage, nextPageSize)
+                },
+              }}
               rowClassName={(record) =>
                 record.id === selectedMiscFeeItem?.id ? 'selected-row' : ''
               }
@@ -520,7 +528,7 @@ export function MiscView({ model, shell }: Props) {
                 className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadMiscFeeAllocations()
+                  void changeMiscFeeAllocationsPage(1, miscFeeAllocationsPagination.pageSize)
                   void loadMiscFeeAllocationSummary()
                 }}
               >
@@ -572,7 +580,7 @@ export function MiscView({ model, shell }: Props) {
             </div>
             <div className="finance-receipt-strip">
               <span>
-                {t('finance.misc.metric.allocationCount', { count: miscFeeAllocations.length })}
+                {t('finance.misc.metric.allocationCount', { count: miscFeeAllocationsTotal })}
               </span>
               <strong>
                 {formatFinanceAmount(
@@ -620,7 +628,12 @@ export function MiscView({ model, shell }: Props) {
               ]}
               dataSource={miscFeeAllocations}
               loading={loadingMiscFeeAllocations || loadingMiscFeeSummary}
-              pagination={false}
+              pagination={{
+                ...miscFeeAllocationsPagination,
+                onChange: (nextPage, nextPageSize) => {
+                  void changeMiscFeeAllocationsPage(nextPage, nextPageSize)
+                },
+              }}
               rowKey="id"
               size="small"
             />

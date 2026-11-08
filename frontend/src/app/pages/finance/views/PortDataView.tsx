@@ -15,16 +15,20 @@ type Props = {
 export function PortDataView({ model, shell }: Props) {
   const {
     autoMatchPortCustomsReceipts,
+    changeCustomsRecordsPage,
+    changePortImportBatchesPage,
     customsDeclarationFilter,
     customsReceiptFilter,
     customsRecords,
+    customsRecordsPagination,
+    customsRecordsTotal,
     customsTradeTypeFilter,
-    loadCustomsRecords,
     loadingCustomsRecords,
     loadingPortBatches,
     matchingCustomsReceipts,
     portBatchForm,
     portImportBatches,
+    portImportBatchesPagination,
     portRecordForm,
     setCustomsDeclarationFilter,
     setCustomsReceiptFilter,
@@ -48,7 +52,7 @@ export function PortDataView({ model, shell }: Props) {
               className="inline-filters"
               onSubmit={(event) => {
                 event.preventDefault()
-                void loadCustomsRecords()
+                void changeCustomsRecordsPage(1, customsRecordsPagination.pageSize)
               }}
             >
               <label>
@@ -134,12 +138,17 @@ export function PortDataView({ model, shell }: Props) {
             ]}
             dataSource={customsRecords}
             loading={loadingCustomsRecords}
-            pagination={false}
+            pagination={{
+              ...customsRecordsPagination,
+              onChange: (nextPage, nextPageSize) => {
+                void changeCustomsRecordsPage(nextPage, nextPageSize)
+              },
+            }}
             rowKey="id"
             size="small"
           />
           <div className="finance-receipt-strip">
-            <span>{t('finance.portData.metric.count', { count: customsRecords.length })}</span>
+            <span>{t('finance.portData.metric.count', { count: customsRecordsTotal })}</span>
           </div>
 
           <div className="panel-heading">
@@ -158,7 +167,12 @@ export function PortDataView({ model, shell }: Props) {
             ]}
             dataSource={portImportBatches}
             loading={loadingPortBatches}
-            pagination={false}
+            pagination={{
+              ...portImportBatchesPagination,
+              onChange: (nextPage, nextPageSize) => {
+                void changePortImportBatchesPage(nextPage, nextPageSize)
+              },
+            }}
             rowKey="id"
             size="small"
           />

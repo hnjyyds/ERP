@@ -123,6 +123,8 @@ export function listVerificationDocuments(filters: {
   owner_user_id?: string
   shipment_no?: string
   reminder_status?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<VerificationDocumentList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
@@ -130,6 +132,8 @@ export function listVerificationDocuments(filters: {
   if (filters.owner_user_id) params.set('owner_user_id', filters.owner_user_id)
   if (filters.shipment_no) params.set('shipment_no', filters.shipment_no)
   if (filters.reminder_status) params.set('reminder_status', filters.reminder_status)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<VerificationDocumentList>(`/finance/verification-documents${suffix}`)
 }

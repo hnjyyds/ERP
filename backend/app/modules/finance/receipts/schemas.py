@@ -104,6 +104,9 @@ class BankReceiptListResponse(BaseModel):
 
     items: list[BankReceiptResponse]
     total: int
+    total_amount: str
+    unallocated_amount: str
+    currency: str | None
 
 
 class ReceivableItemResponse(BaseModel):

@@ -1,5 +1,5 @@
 import type { FormEvent } from 'react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   createReimbursement,
   approveReimbursement,
@@ -9,6 +9,8 @@ import {
   type ReimbursementCreatePayload,
 } from '@/api'
 import { showError } from '@/shared/errors'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { canApproveAssignedRecord } from '@/app/pages/appHelpers'
 import { t } from '@/app/appI18n'
 
@@ -18,7 +20,18 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
   const { activeModule, detailId, currentUser, setMessage, setError } = env
 
   // ---- 报销管理 / 口岸数据 / 财务报表 ----
+  const urlQuery = useUrlQuery()
+
   const [reimbursements, setReimbursements] = useState<Reimbursement[]>([])
+
+  const reimbursementsPager = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params, 'reimbursements_page'),
+  )
+
+  const reimbursementsUrlPage = urlQuery.params.get('reimbursements_page') ?? ''
+
+  const appliedReimbursementsPageRef = useRef(reimbursementsUrlPage)
 
   const [reimbursementsTotalAmount, setReimbursementsTotalAmount] = useState('0.00')
 
@@ -53,16 +66,25 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
 
   const [reimbursementModalOpen, setReimbursementModalOpen] = useState(false)
 
-  async function loadReimbursements(preferredId?: string) {
+  async function loadReimbursements(
+    preferredId?: string,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+  ) {
     setLoadingReimbursements(true)
     setError('')
     try {
+      const page = pageOverride ?? reimbursementsPager.page
+      const pageSize = pageSizeOverride ?? reimbursementsPager.pageSize
       const result = await listReimbursements({
         q: reimbursementSearch.trim() || undefined,
         status: reimbursementStatusFilter || undefined,
         category: reimbursementCategoryFilter || undefined,
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
       })
       setReimbursements(result.items)
+      reimbursementsPager.setTotal(result.total)
       setReimbursementsTotalAmount(result.total_amount)
       const nextId =
         preferredId ??
@@ -178,7 +200,23 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
     }
   }
 
+  async function changeReimbursementsPage(nextPage: number, nextPageSize: number) {
+    const next = reimbursementsPager.changePage(nextPage, nextPageSize)
+    appliedReimbursementsPageRef.current = next.page === 1 ? '' : String(next.page)
+    urlQuery.update({ reimbursements_page: next.page === 1 ? null : next.page })
+    await loadReimbursements(undefined, next.page, next.pageSize)
+  }
+
+  useEffect(() => {
+    if (appliedReimbursementsPageRef.current === reimbursementsUrlPage) return
+    appliedReimbursementsPageRef.current = reimbursementsUrlPage
+    const nextPage = parsePageParam(urlQuery.params, 'reimbursements_page')
+    reimbursementsPager.setPage(nextPage)
+    void loadReimbursements(undefined, nextPage, reimbursementsPager.pageSize)
+  }, [reimbursementsUrlPage])
+
   return {
+    changeReimbursementsPage,
     handleReimbursementApprove,
     handleReimbursementPay,
     loadReimbursements,
@@ -190,6 +228,8 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
     reimbursementSearch,
     reimbursementStatusFilter,
     reimbursements,
+    reimbursementsPagination: reimbursementsPager.pagination,
+    reimbursementsTotal: reimbursementsPager.total,
     reimbursementsTotalAmount,
     selectedReimbursementId,
     setReimbursementCategoryFilter,

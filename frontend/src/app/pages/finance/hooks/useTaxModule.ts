@@ -1,5 +1,5 @@
 import type { FormEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   createVerificationDocument,
   listVerificationDocuments,
@@ -11,6 +11,8 @@ import {
   type VerificationUsageItem,
 } from '@/api'
 import { showError } from '@/shared/errors'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { t } from '@/app/appI18n'
 import {
   VerificationDocumentFormState,
@@ -31,6 +33,17 @@ import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 
 export function useTaxModule(env: FinanceModuleEnv) {
   const { activeModule, detailId, setMessage, setError, loadOverview } = env
+
+  const urlQuery = useUrlQuery()
+
+  const verificationDocumentsPager = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params, 'documents_page'),
+  )
+
+  const verificationDocumentsUrlPage = urlQuery.params.get('documents_page') ?? ''
+
+  const appliedVerificationDocumentsPageRef = useRef(verificationDocumentsUrlPage)
 
   const [verificationDocuments, setVerificationDocuments] = useState<VerificationDocument[]>([])
 
@@ -112,18 +125,27 @@ export function useTaxModule(env: FinanceModuleEnv) {
     selectedVerificationDocument?.currency,
   ])
 
-  async function loadVerificationDocuments(preferredId?: string) {
+  async function loadVerificationDocuments(
+    preferredId?: string,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+  ) {
     setLoadingVerificationDocuments(true)
     setError('')
     try {
+      const page = pageOverride ?? verificationDocumentsPager.page
+      const pageSize = pageSizeOverride ?? verificationDocumentsPager.pageSize
       const result = await listVerificationDocuments({
         q: verificationSearch.trim() || undefined,
         status: verificationStatusFilter || undefined,
         owner_user_id: verificationOwnerFilter.trim() || undefined,
         shipment_no: verificationShipmentFilter.trim() || undefined,
         reminder_status: verificationReminderFilter || undefined,
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
       })
       setVerificationDocuments(result.items)
+      verificationDocumentsPager.setTotal(result.total)
       const nextDocumentId =
         preferredId ??
         (activeModule === 'tax' && result.items.some((item) => item.id === detailId)
@@ -141,6 +163,21 @@ export function useTaxModule(env: FinanceModuleEnv) {
       setLoadingVerificationDocuments(false)
     }
   }
+
+  async function changeVerificationDocumentsPage(nextPage: number, nextPageSize: number) {
+    const next = verificationDocumentsPager.changePage(nextPage, nextPageSize)
+    appliedVerificationDocumentsPageRef.current = next.page === 1 ? '' : String(next.page)
+    urlQuery.update({ documents_page: next.page === 1 ? null : next.page })
+    await loadVerificationDocuments(undefined, next.page, next.pageSize)
+  }
+
+  useEffect(() => {
+    if (appliedVerificationDocumentsPageRef.current === verificationDocumentsUrlPage) return
+    appliedVerificationDocumentsPageRef.current = verificationDocumentsUrlPage
+    const nextPage = parsePageParam(urlQuery.params, 'documents_page')
+    verificationDocumentsPager.setPage(nextPage)
+    void loadVerificationDocuments(undefined, nextPage, verificationDocumentsPager.pageSize)
+  }, [verificationDocumentsUrlPage])
 
   async function loadVerificationUsage() {
     setLoadingVerificationUsage(true)
@@ -281,6 +318,7 @@ export function useTaxModule(env: FinanceModuleEnv) {
       Number(selectedVerificationDocument.unrefunded_amount) > 0)
 
   return {
+    changeVerificationDocumentsPage,
     customsReceiptErrors,
     customsReceiptForm,
     loadVerificationDocuments,
@@ -319,6 +357,8 @@ export function useTaxModule(env: FinanceModuleEnv) {
     taxRefundForm,
     verificationDocumentForm,
     verificationDocuments,
+    verificationDocumentsPagination: verificationDocumentsPager.pagination,
+    verificationDocumentsTotal: verificationDocumentsPager.total,
     verificationOwnerFilter,
     verificationRegisterForm,
     verificationReminderFilter,

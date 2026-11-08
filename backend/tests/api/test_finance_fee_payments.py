@@ -269,6 +269,23 @@ async def test_finance_fee_payment_flow_invoice_request_approve_and_payables(
     assert payables["items"][0]["payable_amount"] == "580.00"
     assert payables["items"][0]["status"] == "partial"
 
+    empty_page_response = await api_client.get(
+        "/api/v1/finance/fee-payables",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        params={
+            "partner_id": partner["id"],
+            "shipment_no": shipment["code"],
+            "fee_type": "freight",
+            "limit": 1,
+            "offset": 1,
+        },
+    )
+    assert empty_page_response.status_code == 200
+    empty_page = empty_page_response.json()["data"]
+    assert empty_page["items"] == []
+    assert empty_page["total"] == 1
+    assert empty_page["total_payable_amount"] == "580.00"
+
 
 async def test_finance_fee_payment_rejects_excess_amount_and_permissions(
     api_client: AsyncClient,

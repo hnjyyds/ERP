@@ -74,11 +74,15 @@ export function listMiscFeeItems(filters: {
   q?: string
   category?: string
   status?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<MiscFeeItemList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.category) params.set('category', filters.category)
   if (filters.status) params.set('status', filters.status)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<MiscFeeItemList>(`/finance/misc-fee-items${suffix}`)
 }
@@ -97,6 +101,8 @@ export function listMiscFeeAllocations(filters: {
   shipment_no?: string
   sales_user_id?: string
   status?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<MiscFeeAllocationList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
@@ -105,6 +111,8 @@ export function listMiscFeeAllocations(filters: {
   if (filters.shipment_no) params.set('shipment_no', filters.shipment_no)
   if (filters.sales_user_id) params.set('sales_user_id', filters.sales_user_id)
   if (filters.status) params.set('status', filters.status)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<MiscFeeAllocationList>(`/finance/misc-fee-allocations${suffix}`)
 }

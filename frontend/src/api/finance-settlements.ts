@@ -79,11 +79,15 @@ export function listFinancialSettlements(filters: {
   q?: string
   status?: string
   shipment_no?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<FinancialSettlementList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.status) params.set('status', filters.status)
   if (filters.shipment_no) params.set('shipment_no', filters.shipment_no)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<FinancialSettlementList>(`/finance/settlements${suffix}`)
 }
@@ -110,10 +114,14 @@ export function addManualProfitCost(
 export function listProfitCalculations(filters: {
   q?: string
   shipment_no?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<ProfitCalculationList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.shipment_no) params.set('shipment_no', filters.shipment_no)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<ProfitCalculationList>(`/finance/profit-calculations${suffix}`)
 }

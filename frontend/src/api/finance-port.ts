@@ -74,10 +74,14 @@ export interface PortImportBatchCreatePayload {
 export function listPortImportBatches(filters: {
   source?: string
   status?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<PortImportBatchList> {
   const params = new URLSearchParams()
   if (filters.source) params.set('source', filters.source)
   if (filters.status) params.set('status', filters.status)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<PortImportBatchList>(`/finance/port-import-batches${suffix}`)
 }
@@ -96,12 +100,16 @@ export function listCustomsDeclarationRecords(filters: {
   customs_receipt_no?: string
   trade_type?: string
   batch_id?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<CustomsDeclarationRecordList> {
   const params = new URLSearchParams()
   if (filters.declaration_no) params.set('declaration_no', filters.declaration_no)
   if (filters.customs_receipt_no) params.set('customs_receipt_no', filters.customs_receipt_no)
   if (filters.trade_type) params.set('trade_type', filters.trade_type)
   if (filters.batch_id) params.set('batch_id', filters.batch_id)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<CustomsDeclarationRecordList>(`/finance/customs-declaration-records${suffix}`)
 }

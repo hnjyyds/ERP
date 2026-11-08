@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Select, func, or_, select
+from sqlalchemy import Select, case, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.elements import ColumnElement
 
@@ -418,6 +418,35 @@ class FeePaymentRepository:
         invoices = await self._invoice_scalars(statement)
         total = await self.session.scalar(count_statement)
         return [self._map_payable(invoice) for invoice in invoices], int(total or 0)
+
+    async def summarize_fee_payables(
+        self,
+        *,
+        q: str | None,
+        status: str | None,
+        fee_type: str | None,
+        partner_id: str | None,
+        sales_user_id: str | None,
+        shipment_no: str | None,
+    ) -> Decimal:
+        """同一筛选条件下的费用应付合计（按 0 下限截断），不受分页影响。"""
+        payable_amount = PartnerFeeInvoice.total_amount - PartnerFeeInvoice.paid_amount
+        statement = select(
+            func.coalesce(
+                func.sum(case((payable_amount > 0, payable_amount), else_=0)),
+                0,
+            )
+        ).select_from(PartnerFeeInvoice)
+        for condition in self._invoice_conditions(
+            q=q,
+            status=status,
+            fee_type=fee_type,
+            partner_id=partner_id,
+            sales_user_id=sales_user_id,
+            shipment_no=shipment_no,
+        ):
+            statement = statement.where(condition)
+        return self._decimal(await self.session.scalar(statement))
 
     def _invoice_conditions(
         self,

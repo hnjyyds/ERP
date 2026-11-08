@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Select, func, or_, select
+from sqlalchemy import Select, case, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.pagination import resolve_limit, resolve_offset
@@ -133,8 +133,63 @@ class ReceiptRepository:
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[BankReceiptRow], int]:
+        conditions = self._receipt_conditions(q=q, status=status, customer_id=customer_id)
         statement = select(BankReceipt)
         count_statement = select(func.count()).select_from(BankReceipt)
+        for condition in conditions:
+            statement = statement.where(condition)
+            count_statement = count_statement.where(condition)
+        statement = (
+            statement.order_by(BankReceipt.received_at.desc(), BankReceipt.receipt_no.asc())
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        rows = await self._scalars(statement)
+        total = await self.session.scalar(count_statement)
+        return [self._map_receipt(row) for row in rows], int(total or 0)
+
+    async def summarize_receipts(
+        self,
+        *,
+        q: str | None,
+        status: str | None,
+        customer_id: str | None,
+    ) -> tuple[Decimal, Decimal, str | None]:
+        """同一筛选条件下的收款金额、未分配金额与首行币种，不受分页影响。"""
+        conditions = self._receipt_conditions(q=q, status=status, customer_id=customer_id)
+        total_statement = (
+            select(
+                func.coalesce(func.sum(BankReceipt.amount), 0),
+                func.coalesce(
+                    func.sum(BankReceipt.amount - BankReceipt.allocated_amount), 0
+                ),
+            )
+            .select_from(BankReceipt)
+        )
+        currency_statement = (
+            select(BankReceipt.currency)
+            .select_from(BankReceipt)
+            .order_by(BankReceipt.received_at.desc(), BankReceipt.receipt_no.asc())
+            .limit(1)
+        )
+        for condition in conditions:
+            total_statement = total_statement.where(condition)
+            currency_statement = currency_statement.where(condition)
+        totals = (await self.session.execute(total_statement)).one()
+        currency = await self.session.scalar(currency_statement)
+        return (
+            self._decimal(totals[0]),
+            self._decimal(totals[1]),
+            str(currency) if currency is not None else None,
+        )
+
+    def _receipt_conditions(
+        self,
+        *,
+        q: str | None,
+        status: str | None,
+        customer_id: str | None,
+    ) -> list:
         conditions = []
         if q:
             pattern = f"%{q}%"
@@ -150,17 +205,7 @@ class ReceiptRepository:
             conditions.append(BankReceipt.status == status)
         if customer_id:
             conditions.append(BankReceipt.customer_id == customer_id)
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-        statement = (
-            statement.order_by(BankReceipt.received_at.desc(), BankReceipt.receipt_no.asc())
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        rows = await self._scalars(statement)
-        total = await self.session.scalar(count_statement)
-        return [self._map_receipt(row) for row in rows], int(total or 0)
+        return conditions
 
     async def add_claim(
         self,
@@ -264,7 +309,78 @@ class ReceiptRepository:
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[ReceivableRow], int]:
-        allocation_totals = (
+        allocation_totals = self._allocation_totals_subquery()
+        row_conditions = self._receivable_conditions(
+            q=q,
+            customer_id=customer_id,
+            sales_user_id=sales_user_id,
+            contract_no=contract_no,
+            invoice_no=invoice_no,
+        )
+        statement = select(
+            ExportContract,
+            func.coalesce(allocation_totals.c.received_amount, 0),
+        ).outerjoin(allocation_totals, allocation_totals.c.contract_id == ExportContract.id)
+        count_statement = select(func.count()).select_from(ExportContract)
+        for condition in row_conditions:
+            statement = statement.where(condition)
+            count_statement = count_statement.where(condition)
+        statement = (
+            statement.order_by(ExportContract.contract_date.desc(), ExportContract.code.asc())
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        result = await self.session.execute(statement)
+        total = await self.session.scalar(count_statement)
+        return [
+            self._map_receivable(contract, self._decimal(received_amount))
+            for contract, received_amount in result.all()
+        ], int(total or 0)
+
+    async def summarize_receivables(
+        self,
+        *,
+        q: str | None,
+        customer_id: str | None,
+        sales_user_id: str | None,
+        contract_no: str | None,
+        invoice_no: str | None,
+    ) -> Decimal:
+        """同一筛选条件下的应收余额合计，不受分页影响。"""
+        allocation_totals = self._allocation_totals_subquery()
+        receivable_amount = ExportContract.total_amount - func.coalesce(
+            allocation_totals.c.received_amount, 0
+        )
+        statement = (
+            select(
+                func.coalesce(
+                    func.sum(
+                        case(
+                            (receivable_amount > 0, receivable_amount),
+                            else_=0,
+                        )
+                    ),
+                    0,
+                )
+            )
+            .select_from(ExportContract)
+            .outerjoin(
+                allocation_totals,
+                allocation_totals.c.contract_id == ExportContract.id,
+            )
+        )
+        for condition in self._receivable_conditions(
+            q=q,
+            customer_id=customer_id,
+            sales_user_id=sales_user_id,
+            contract_no=contract_no,
+            invoice_no=invoice_no,
+        ):
+            statement = statement.where(condition)
+        return self._decimal(await self.session.scalar(statement))
+
+    def _allocation_totals_subquery(self):
+        return (
             select(
                 ReceiptAllocation.contract_id.label("contract_id"),
                 func.sum(ReceiptAllocation.amount).label("received_amount"),
@@ -273,11 +389,16 @@ class ReceiptRepository:
             .group_by(ReceiptAllocation.contract_id)
             .subquery()
         )
-        statement = select(
-            ExportContract,
-            func.coalesce(allocation_totals.c.received_amount, 0),
-        ).outerjoin(allocation_totals, allocation_totals.c.contract_id == ExportContract.id)
-        count_statement = select(func.count()).select_from(ExportContract)
+
+    def _receivable_conditions(
+        self,
+        *,
+        q: str | None,
+        customer_id: str | None,
+        sales_user_id: str | None,
+        contract_no: str | None,
+        invoice_no: str | None,
+    ) -> list:
         conditions = [ExportContract.approval_status == "approved"]
         if q:
             pattern = f"%{q}%"
@@ -295,27 +416,13 @@ class ReceiptRepository:
         if contract_no:
             conditions.append(ExportContract.code == contract_no)
         if invoice_no:
-            invoice_exists = (
+            conditions.append(
                 select(ReceiptAllocation.id)
                 .where(ReceiptAllocation.contract_id == ExportContract.id)
                 .where(ReceiptAllocation.invoice_no == invoice_no)
                 .exists()
             )
-            conditions.append(invoice_exists)
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-        statement = (
-            statement.order_by(ExportContract.contract_date.desc(), ExportContract.code.asc())
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        result = await self.session.execute(statement)
-        total = await self.session.scalar(count_statement)
-        return [
-            self._map_receivable(contract, self._decimal(received_amount))
-            for contract, received_amount in result.all()
-        ], int(total or 0)
+        return conditions
 
     async def _scalars(self, statement: Select[tuple[BankReceipt]]) -> list[BankReceipt]:
         result = await self.session.scalars(statement)

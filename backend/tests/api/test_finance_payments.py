@@ -185,6 +185,22 @@ async def test_finance_payment_flow_invoice_request_approve_and_payables(
     assert payables["items"][0]["payable_amount"] == "2000.00"
     assert payables["items"][0]["status"] == "partial"
 
+    empty_page_response = await api_client.get(
+        "/api/v1/finance/payables",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        params={
+            "supplier_id": "supplier-pack-a",
+            "purchase_contract_no": "PC-PAY-API-001",
+            "limit": 1,
+            "offset": 1,
+        },
+    )
+    assert empty_page_response.status_code == 200
+    empty_page = empty_page_response.json()["data"]
+    assert empty_page["items"] == []
+    assert empty_page["total"] == 1
+    assert empty_page["total_payable_amount"] == "2000.00"
+
     final_request_response = await api_client.post(
         "/api/v1/finance/payment-requests",
         headers={"Authorization": f"Bearer {finance_token}"},

@@ -28,13 +28,13 @@ type Props = {
 
 export function PaymentsView({ model, shell }: Props) {
   const {
+    changePayablesPage,
+    changeSupplierInvoicesPage,
     invoiceContractFilter,
     invoiceModalOpen,
     invoiceSearch,
     invoiceStatusFilter,
     invoiceSupplierFilter,
-    loadPayables,
-    loadSupplierInvoices,
     loadingPayables,
     loadingPaymentRequests,
     loadingSupplierInvoices,
@@ -43,12 +43,14 @@ export function PaymentsView({ model, shell }: Props) {
     payableStatusFilter,
     payableSupplierFilter,
     payables,
+    payablesPagination,
     paymentApprovalForm,
     paymentRequestForm,
     paymentRequests,
     selectedPaymentRequest,
     selectedPaymentRequestCanApprove,
     selectedSupplierInvoice,
+    supplierInvoicesPagination,
     setInvoiceContractFilter,
     setInvoiceModalOpen,
     setInvoiceSearch,
@@ -105,7 +107,7 @@ export function PaymentsView({ model, shell }: Props) {
                 className="inline-filters single-line-filter-toolbar"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadSupplierInvoices()
+                  void changeSupplierInvoicesPage(1, supplierInvoicesPagination.pageSize)
                 }}
               >
                 <label>
@@ -185,7 +187,12 @@ export function PaymentsView({ model, shell }: Props) {
               ]}
               dataSource={supplierInvoices}
               loading={loadingSupplierInvoices}
-              pagination={false}
+              pagination={{
+                ...supplierInvoicesPagination,
+                onChange: (nextPage, nextPageSize) => {
+                  void changeSupplierInvoicesPage(nextPage, nextPageSize)
+                },
+              }}
               rowClassName={(record) =>
                 record.id === selectedSupplierInvoice?.id ? 'selected-row' : ''
               }
@@ -676,7 +683,7 @@ export function PaymentsView({ model, shell }: Props) {
                 className="inline-filters single-line-filter-toolbar"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadPayables()
+                  void changePayablesPage(1, payablesPagination.pageSize)
                 }}
               >
                 <label>
@@ -747,7 +754,12 @@ export function PaymentsView({ model, shell }: Props) {
               ]}
               dataSource={payables}
               loading={loadingPayables}
-              pagination={false}
+              pagination={{
+                ...payablesPagination,
+                onChange: (nextPage, nextPageSize) => {
+                  void changePayablesPage(nextPage, nextPageSize)
+                },
+              }}
               rowKey="supplier_invoice_id"
               size="small"
             />

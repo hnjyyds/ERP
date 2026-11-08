@@ -48,6 +48,9 @@ export interface BankReceipt {
 export interface BankReceiptList {
   items: BankReceipt[]
   total: number
+  total_amount: string
+  unallocated_amount: string
+  currency: string | null
 }
 
 export interface BankReceiptCreatePayload {
@@ -228,11 +231,15 @@ export function listBankReceipts(filters: {
   q?: string
   status?: string
   customer_id?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<BankReceiptList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.status) params.set('status', filters.status)
   if (filters.customer_id) params.set('customer_id', filters.customer_id)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<BankReceiptList>(`/finance/receipts${suffix}`)
 }
@@ -270,6 +277,8 @@ export function listReceivables(filters: {
   sales_user_id?: string
   contract_no?: string
   invoice_no?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<ReceivableList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
@@ -277,6 +286,8 @@ export function listReceivables(filters: {
   if (filters.sales_user_id) params.set('sales_user_id', filters.sales_user_id)
   if (filters.contract_no) params.set('contract_no', filters.contract_no)
   if (filters.invoice_no) params.set('invoice_no', filters.invoice_no)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<ReceivableList>(`/finance/receivables${suffix}`)
 }
@@ -286,12 +297,16 @@ export function listSupplierInvoices(filters: {
   status?: string
   supplier_id?: string
   purchase_contract_no?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<SupplierInvoiceList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.status) params.set('status', filters.status)
   if (filters.supplier_id) params.set('supplier_id', filters.supplier_id)
   if (filters.purchase_contract_no) params.set('purchase_contract_no', filters.purchase_contract_no)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<SupplierInvoiceList>(`/finance/supplier-invoices${suffix}`)
 }
@@ -310,12 +325,16 @@ export function listPaymentRequests(filters: {
   status?: string
   payment_type?: string
   supplier_id?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<SupplierPaymentRequestList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.status) params.set('status', filters.status)
   if (filters.payment_type) params.set('payment_type', filters.payment_type)
   if (filters.supplier_id) params.set('supplier_id', filters.supplier_id)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<SupplierPaymentRequestList>(`/finance/payment-requests${suffix}`)
 }
@@ -344,12 +363,16 @@ export function listPayables(filters: {
   status?: string
   supplier_id?: string
   purchase_contract_no?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<PayableList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.status) params.set('status', filters.status)
   if (filters.supplier_id) params.set('supplier_id', filters.supplier_id)
   if (filters.purchase_contract_no) params.set('purchase_contract_no', filters.purchase_contract_no)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<PayableList>(`/finance/payables${suffix}`)
 }

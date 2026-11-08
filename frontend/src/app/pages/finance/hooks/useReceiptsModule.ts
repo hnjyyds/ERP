@@ -1,5 +1,5 @@
 import type { FormEvent } from 'react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   allocateBankReceipt,
   claimBankReceipt,
@@ -10,6 +10,8 @@ import {
   type ReceivableItem,
 } from '@/api'
 import { showError } from '@/shared/errors'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import {
   BankReceiptFormState,
   ReceiptClaimFormState,
@@ -28,9 +30,37 @@ import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 export function useReceiptsModule(env: FinanceModuleEnv) {
   const { activeModule, detailId, setMessage, setError } = env
 
+  const urlQuery = useUrlQuery()
+
   const [receipts, setReceipts] = useState<BankReceipt[]>([])
 
   const [receivables, setReceivables] = useState<ReceivableItem[]>([])
+
+  const receiptsPager = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params, 'receipts_page'),
+  )
+
+  const receivablesPager = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params, 'receivables_page'),
+  )
+
+  const [receiptTotals, setReceiptTotals] = useState({
+    totalAmount: '0.00',
+    unallocatedAmount: '0.00',
+    currency: null as string | null,
+  })
+
+  const [receivableTotal, setReceivableTotal] = useState('0.00')
+
+  const receiptsUrlPage = urlQuery.params.get('receipts_page') ?? ''
+
+  const appliedReceiptsPageRef = useRef(receiptsUrlPage)
+
+  const receivablesUrlPage = urlQuery.params.get('receivables_page') ?? ''
+
+  const appliedReceivablesPageRef = useRef(receivablesUrlPage)
 
   const [selectedReceiptId, setSelectedReceiptId] = useState<string | null>(null)
 
@@ -73,16 +103,26 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
     [receipts, selectedReceiptId],
   )
 
-  async function loadReceipts(preferredId?: string) {
+  async function loadReceipts(preferredId?: string, pageOverride?: number, pageSizeOverride?: number) {
     setLoadingReceipts(true)
     setError('')
     try {
+      const page = pageOverride ?? receiptsPager.page
+      const pageSize = pageSizeOverride ?? receiptsPager.pageSize
       const result = await listBankReceipts({
         q: receiptSearch.trim() || undefined,
         status: receiptStatusFilter || undefined,
         customer_id: receiptCustomerFilter.trim() || undefined,
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
       })
       setReceipts(result.items)
+      receiptsPager.setTotal(result.total)
+      setReceiptTotals({
+        totalAmount: result.total_amount,
+        unallocatedAmount: result.unallocated_amount,
+        currency: result.currency,
+      })
       const nextReceiptId =
         preferredId ??
         (activeModule === 'receipts' && result.items.some((item) => item.id === detailId)
@@ -99,16 +139,22 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
     }
   }
 
-  async function loadReceivables() {
+  async function loadReceivables(pageOverride?: number, pageSizeOverride?: number) {
     setLoadingReceivables(true)
     setError('')
     try {
+      const page = pageOverride ?? receivablesPager.page
+      const pageSize = pageSizeOverride ?? receivablesPager.pageSize
       const result = await listReceivables({
         q: receivableSearch.trim() || undefined,
         contract_no: receivableContractFilter.trim() || undefined,
         invoice_no: receivableInvoiceFilter.trim() || undefined,
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
       })
       setReceivables(result.items)
+      receivablesPager.setTotal(result.total)
+      setReceivableTotal(result.total_receivable_amount)
     } catch (caught) {
       showError(caught, t('finance.receipt.message.loadReceivablesFailed'))
     } finally {
@@ -125,7 +171,7 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
       const created = await createBankReceipt(bankReceiptPayload(receiptForm))
       setMessage(t('finance.receipt.message.receiptCreated', { code: created.receipt_no }))
       setReceiptForm(initialBankReceiptForm())
-      await loadReceipts(created.id)
+      await loadReceipts(created.id, 1, receiptsPager.pageSize)
     } catch (caught) {
       showError(caught, t('finance.receipt.message.receiptCreateFailed'))
     } finally {
@@ -177,12 +223,43 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
     }
   }
 
-  const totalReceiptAmount = receipts.reduce((sum, item) => sum + Number(item.amount || 0), 0)
+  async function changeReceiptsPage(nextPage: number, nextPageSize: number) {
+    const next = receiptsPager.changePage(nextPage, nextPageSize)
+    appliedReceiptsPageRef.current = next.page === 1 ? '' : String(next.page)
+    urlQuery.update({ receipts_page: next.page === 1 ? null : next.page })
+    await loadReceipts(undefined, next.page, next.pageSize)
+  }
 
-  const totalUnallocatedAmount = receipts.reduce(
-    (sum, item) => sum + Number(item.unallocated_amount || 0),
-    0,
-  )
+  async function changeReceivablesPage(nextPage: number, nextPageSize: number) {
+    const next = receivablesPager.changePage(nextPage, nextPageSize)
+    appliedReceivablesPageRef.current = next.page === 1 ? '' : String(next.page)
+    urlQuery.update({ receivables_page: next.page === 1 ? null : next.page })
+    await loadReceivables(next.page, next.pageSize)
+  }
+
+  useEffect(() => {
+    if (appliedReceiptsPageRef.current === receiptsUrlPage) return
+    appliedReceiptsPageRef.current = receiptsUrlPage
+    const nextPage = parsePageParam(urlQuery.params, 'receipts_page')
+    receiptsPager.setPage(nextPage)
+    void loadReceipts(undefined, nextPage, receiptsPager.pageSize)
+  }, [receiptsUrlPage])
+
+  useEffect(() => {
+    if (appliedReceivablesPageRef.current === receivablesUrlPage) return
+    appliedReceivablesPageRef.current = receivablesUrlPage
+    const nextPage = parsePageParam(urlQuery.params, 'receivables_page')
+    receivablesPager.setPage(nextPage)
+    void loadReceivables(nextPage, receivablesPager.pageSize)
+  }, [receivablesUrlPage])
+
+  const totalReceiptAmount = receiptTotals.totalAmount
+
+  const totalUnallocatedAmount = receiptTotals.unallocatedAmount
+
+  const receiptCurrency = receiptTotals.currency
+
+  const totalReceivableAmount = receivableTotal
 
   const selectedReceiptCanClaim = selectedReceipt?.status === 'unclaimed'
 
@@ -192,11 +269,19 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
 
   return {
     allocationForm,
+    changeReceiptsPage,
+    changeReceivablesPage,
     claimForm,
     loadReceipts,
     loadReceivables,
     loadingReceipts,
     loadingReceivables,
+    receiptCurrency,
+    receiptsPagination: receiptsPager.pagination,
+    receiptsTotal: receiptsPager.total,
+    receivablesPagination: receivablesPager.pagination,
+    receivablesTotal: receivablesPager.total,
+    totalReceivableAmount,
     receiptCustomerFilter,
     receiptForm,
     receiptModalOpen,

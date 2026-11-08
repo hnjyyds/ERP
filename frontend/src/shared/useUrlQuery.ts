@@ -12,9 +12,9 @@ export function notifyUrlQueryChange() {
   window.dispatchEvent(new Event(urlQueryChangeEvent))
 }
 
-/** 读取页码参数；非法值回退到第 1 页。 */
-export function parsePageParam(params: URLSearchParams): number {
-  const value = Number(params.get('page'))
+/** 读取页码参数；非法值回退到第 1 页。可用 key 区分同一页面的多张列表。 */
+export function parsePageParam(params: URLSearchParams, key = 'page'): number {
+  const value = Number(params.get(key))
   return Number.isInteger(value) && value > 0 ? value : 1
 }
 

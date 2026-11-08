@@ -1,8 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { FinancePage } from '@/app/pages/finance/FinancePage'
 import * as api from '@/api'
-import type { CurrentUser, SupplierInvoice, SupplierPaymentRequest } from '@/api'
+import type {
+  BankReceipt,
+  CurrentUser,
+  ReceivableItem,
+  SupplierInvoice,
+  SupplierPaymentRequest,
+} from '@/api'
 
 const currentUser: CurrentUser = {
   id: 'u-finance',
@@ -18,7 +24,10 @@ const currentUser: CurrentUser = {
 describe('FinancePage', () => {
   const onNavigate = vi.fn()
 
-  beforeEach(() => { vi.clearAllMocks() })
+  beforeEach(() => {
+    vi.clearAllMocks()
+    window.history.replaceState({}, '', '/finance/receipts')
+  })
 
   it('renders without crashing (home view)', () => {
     const { container } = render(
@@ -142,5 +151,80 @@ describe('FinancePage', () => {
     expect((await screen.findAllByText('SI-TARGET')).length).toBeGreaterThan(0)
     expect(await screen.findByRole('textbox', { name: '审批金额' })).toHaveValue('100.00')
     expect(screen.getByRole('button', { name: '审批付款' })).toBeEnabled()
+  })
+
+  it('pages receipts on the server without changing backend summary totals', async () => {
+    const receipt: BankReceipt = {
+      id: 'receipt-1',
+      receipt_no: 'BR-PAGE-001',
+      received_at: '2026-08-04',
+      payer_name: '华东客户',
+      customer_id: 'customer-1',
+      customer_name: '华东客户',
+      amount: '1200.00',
+      allocated_amount: '1200.00',
+      unallocated_amount: '0.00',
+      currency: 'USD',
+      bank_account: '招商银行 **** 8821',
+      reference_no: null,
+      receipt_type: 'customer_receipt',
+      status: 'allocated',
+      claim_message: '',
+      remark: null,
+      created_by_user_id: 'u-finance',
+      created_by_user_name: '演示财务',
+      claims: [],
+      allocations: [],
+    }
+    const receivable: ReceivableItem = {
+      contract_id: 'contract-1',
+      contract_no: 'SC-001',
+      customer_id: 'customer-1',
+      customer_name: '华东客户',
+      sales_user_id: 'u-sales',
+      sales_user_name: '业务员',
+      currency: 'USD',
+      total_amount: '1200.00',
+      received_amount: '1200.00',
+      receivable_amount: '0.00',
+      status: 'settled',
+    }
+    vi.spyOn(api, 'listBankReceipts').mockResolvedValue({
+      items: [receipt],
+      total: 120,
+      total_amount: '1200.00',
+      unallocated_amount: '0.00',
+      currency: 'USD',
+    })
+    vi.spyOn(api, 'listReceivables').mockResolvedValue({
+      items: [receivable],
+      total: 1,
+      total_receivable_amount: '0.00',
+    })
+
+    render(
+      <FinancePage
+        currentUser={currentUser}
+        view={{ module: 'receipts', id: null }}
+        onNavigate={onNavigate}
+      />,
+    )
+
+    expect(await screen.findByText('BR-PAGE-001')).toBeInTheDocument()
+    expect(api.listBankReceipts).toHaveBeenCalledWith(
+      expect.objectContaining({ limit: 50, offset: 0 }),
+    )
+    const summaryBefore = screen.getAllByText('USD 1,200.00').length
+    expect(summaryBefore).toBeGreaterThan(0)
+
+    fireEvent.click(screen.getByTitle('2'))
+
+    await waitFor(() => {
+      expect(api.listBankReceipts).toHaveBeenLastCalledWith(
+        expect.objectContaining({ limit: 50, offset: 50 }),
+      )
+    })
+    expect(window.location.search).toContain('receipts_page=2')
+    expect(screen.getAllByText('USD 1,200.00').length).toBe(summaryBefore)
   })
 })

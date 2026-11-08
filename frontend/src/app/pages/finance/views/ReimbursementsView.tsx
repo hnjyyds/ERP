@@ -16,9 +16,9 @@ type Props = {
 
 export function ReimbursementsView({ model, shell }: Props) {
   const {
+    changeReimbursementsPage,
     handleReimbursementApprove,
     handleReimbursementPay,
-    loadReimbursements,
     loadingReimbursements,
     reimbursementCategoryFilter,
     reimbursementForm,
@@ -27,6 +27,8 @@ export function ReimbursementsView({ model, shell }: Props) {
     reimbursementSearch,
     reimbursementStatusFilter,
     reimbursements,
+    reimbursementsPagination,
+    reimbursementsTotal,
     reimbursementsTotalAmount,
     selectedReimbursementId,
     setReimbursementCategoryFilter,
@@ -59,7 +61,7 @@ export function ReimbursementsView({ model, shell }: Props) {
               className="inline-filters"
               onSubmit={(event) => {
                 event.preventDefault()
-                void loadReimbursements()
+                void changeReimbursementsPage(1, reimbursementsPagination.pageSize)
               }}
             >
               <label>
@@ -141,7 +143,12 @@ export function ReimbursementsView({ model, shell }: Props) {
             ]}
             dataSource={reimbursements}
             loading={loadingReimbursements}
-            pagination={false}
+            pagination={{
+              ...reimbursementsPagination,
+              onChange: (nextPage, nextPageSize) => {
+                void changeReimbursementsPage(nextPage, nextPageSize)
+              },
+            }}
             rowClassName={(record) =>
               record.id === selectedReimbursement?.id ? 'selected-row' : ''
             }
@@ -152,7 +159,7 @@ export function ReimbursementsView({ model, shell }: Props) {
             })}
           />
           <div className="finance-receipt-strip">
-            <span>{t('finance.reimbursement.metric.count', { count: reimbursements.length })}</span>
+            <span>{t('finance.reimbursement.metric.count', { count: reimbursementsTotal })}</span>
             <strong>{formatFinanceAmount(reimbursementsTotalAmount, 'CNY')}</strong>
           </div>
         </section>

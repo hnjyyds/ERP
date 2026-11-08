@@ -1,5 +1,5 @@
 import type { FormEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   addManualProfitCost,
   createFinancialSettlement,
@@ -8,6 +8,8 @@ import {
   type FinancialSettlement,
 } from '@/api'
 import { showError } from '@/shared/errors'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { t } from '@/app/appI18n'
 import {
   FinancialSettlementFormState,
@@ -23,9 +25,36 @@ import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 export function useSettlementModule(env: FinanceModuleEnv) {
   const { activeModule, detailId, setMessage, setError, loadOverview } = env
 
+  const urlQuery = useUrlQuery()
+
   const [financialSettlements, setFinancialSettlements] = useState<FinancialSettlement[]>([])
 
   const [profitCalculations, setProfitCalculations] = useState<FinancialSettlement[]>([])
+
+  const settlementsPager = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params, 'settlements_page'),
+  )
+
+  const profitsPager = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params, 'profits_page'),
+  )
+
+  const [totalSettlementSalesIncome, setTotalSettlementSalesIncome] = useState('0.00')
+
+  const [totalSettlementGrossProfit, setTotalSettlementGrossProfit] = useState('0.00')
+
+  const [totalProfitCalculationGrossProfit, setTotalProfitCalculationGrossProfit] =
+    useState('0.00')
+
+  const settlementsUrlPage = urlQuery.params.get('settlements_page') ?? ''
+
+  const appliedSettlementsPageRef = useRef(settlementsUrlPage)
+
+  const profitsUrlPage = urlQuery.params.get('profits_page') ?? ''
+
+  const appliedProfitsPageRef = useRef(profitsUrlPage)
 
   const [selectedFinancialSettlementId, setSelectedFinancialSettlementId] = useState<string | null>(
     null,
@@ -78,16 +107,27 @@ export function useSettlementModule(env: FinanceModuleEnv) {
     selectedFinancialSettlement?.settlement_date,
   ])
 
-  async function loadFinancialSettlements(preferredId?: string) {
+  async function loadFinancialSettlements(
+    preferredId?: string,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+  ) {
     setLoadingFinancialSettlements(true)
     setError('')
     try {
+      const page = pageOverride ?? settlementsPager.page
+      const pageSize = pageSizeOverride ?? settlementsPager.pageSize
       const result = await listFinancialSettlements({
         q: settlementSearch.trim() || undefined,
         status: 'locked',
         shipment_no: settlementShipmentFilter.trim() || undefined,
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
       })
       setFinancialSettlements(result.items)
+      settlementsPager.setTotal(result.total)
+      setTotalSettlementSalesIncome(result.total_sales_income)
+      setTotalSettlementGrossProfit(result.total_gross_profit)
       const nextSettlementId =
         preferredId ??
         (activeModule === 'settlement' && result.items.some((item) => item.id === detailId)
@@ -106,15 +146,21 @@ export function useSettlementModule(env: FinanceModuleEnv) {
     }
   }
 
-  async function loadProfitCalculations() {
+  async function loadProfitCalculations(pageOverride?: number, pageSizeOverride?: number) {
     setLoadingProfitCalculations(true)
     setError('')
     try {
+      const page = pageOverride ?? profitsPager.page
+      const pageSize = pageSizeOverride ?? profitsPager.pageSize
       const result = await listProfitCalculations({
         q: profitCalculationSearch.trim() || undefined,
         shipment_no: profitCalculationShipmentFilter.trim() || undefined,
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
       })
       setProfitCalculations(result.items)
+      profitsPager.setTotal(result.total)
+      setTotalProfitCalculationGrossProfit(result.total_gross_profit)
     } catch (caught) {
       showError(caught, t('finance.settlement.message.loadProfitFailed'))
     } finally {
@@ -168,23 +214,42 @@ export function useSettlementModule(env: FinanceModuleEnv) {
     }
   }
 
-  const totalSettlementSalesIncome = financialSettlements.reduce(
-    (sum, item) => sum + Number(item.sales_income || 0),
-    0,
-  )
+  async function changeFinancialSettlementsPage(nextPage: number, nextPageSize: number) {
+    const next = settlementsPager.changePage(nextPage, nextPageSize)
+    appliedSettlementsPageRef.current = next.page === 1 ? '' : String(next.page)
+    urlQuery.update({ settlements_page: next.page === 1 ? null : next.page })
+    await loadFinancialSettlements(undefined, next.page, next.pageSize)
+  }
 
-  const totalSettlementGrossProfit = financialSettlements.reduce(
-    (sum, item) => sum + Number(item.gross_profit || 0),
-    0,
-  )
+  async function changeProfitCalculationsPage(nextPage: number, nextPageSize: number) {
+    const next = profitsPager.changePage(nextPage, nextPageSize)
+    appliedProfitsPageRef.current = next.page === 1 ? '' : String(next.page)
+    urlQuery.update({ profits_page: next.page === 1 ? null : next.page })
+    await loadProfitCalculations(next.page, next.pageSize)
+  }
 
-  const totalProfitCalculationGrossProfit = profitCalculations.reduce(
-    (sum, item) => sum + Number(item.gross_profit || 0),
-    0,
-  )
+  useEffect(() => {
+    if (appliedSettlementsPageRef.current === settlementsUrlPage) return
+    appliedSettlementsPageRef.current = settlementsUrlPage
+    const nextPage = parsePageParam(urlQuery.params, 'settlements_page')
+    settlementsPager.setPage(nextPage)
+    void loadFinancialSettlements(undefined, nextPage, settlementsPager.pageSize)
+  }, [settlementsUrlPage])
+
+  useEffect(() => {
+    if (appliedProfitsPageRef.current === profitsUrlPage) return
+    appliedProfitsPageRef.current = profitsUrlPage
+    const nextPage = parsePageParam(urlQuery.params, 'profits_page')
+    profitsPager.setPage(nextPage)
+    void loadProfitCalculations(nextPage, profitsPager.pageSize)
+  }, [profitsUrlPage])
 
   return {
+    changeFinancialSettlementsPage,
+    changeProfitCalculationsPage,
     financialSettlements,
+    financialSettlementsPagination: settlementsPager.pagination,
+    financialSettlementsTotal: settlementsPager.total,
     loadFinancialSettlements,
     loadProfitCalculations,
     loadingFinancialSettlements,
@@ -193,6 +258,8 @@ export function useSettlementModule(env: FinanceModuleEnv) {
     profitCalculationSearch,
     profitCalculationShipmentFilter,
     profitCalculations,
+    profitCalculationsPagination: profitsPager.pagination,
+    profitCalculationsTotal: profitsPager.total,
     selectedFinancialSettlement,
     setManualProfitCostForm,
     setProfitCalculationSearch,

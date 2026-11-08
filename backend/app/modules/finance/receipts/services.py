@@ -92,9 +92,19 @@ class ReceiptService:
             status=status,
             customer_id=customer_id,
         )
+        total_amount, unallocated_amount, currency = (
+            await self._repository.summarize_receipts(
+                q=q,
+                status=status,
+                customer_id=customer_id,
+            )
+        )
         return BankReceiptListResponse(
             items=[await self._receipt_response(receipt) for receipt in receipts],
             total=total,
+            total_amount=self._money(total_amount),
+            unallocated_amount=self._money(unallocated_amount),
+            currency=currency,
         )
 
     async def claim_receipt(
@@ -171,7 +181,15 @@ class ReceiptService:
         return ReceivableListResponse(
             items=[self._receivable_response(row) for row in rows],
             total=total,
-            total_receivable_amount=self._money_sum(row.receivable_amount for row in rows),
+            total_receivable_amount=self._money(
+                await self._repository.summarize_receivables(
+                    q=q,
+                    customer_id=customer_id,
+                    sales_user_id=sales_user_id,
+                    contract_no=contract_no,
+                    invoice_no=invoice_no,
+                )
+            ),
         )
 
     async def _get_receipt(self, receipt_id: str) -> BankReceiptRow:
@@ -302,6 +320,9 @@ class ReceiptService:
 
     def _money_sum(self, values: Iterable[str]) -> str:
         return f"{sum((self._decimal(value) for value in values), Decimal('0')):.2f}"
+
+    def _money(self, value: Decimal | int | str | None) -> str:
+        return f"{self._decimal(value):.2f}"
 
     def _decimal(self, value: Decimal | int | str | None) -> Decimal:
         return Decimal(str(value or 0))

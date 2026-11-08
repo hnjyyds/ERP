@@ -278,6 +278,18 @@ async def test_finance_settlement_locks_profit_by_settlement_date_and_manual_cos
     assert profits["total"] == 1
     assert profits["items"][0]["settlement_no"] == settlement["settlement_no"]
     assert profits["items"][0]["gross_profit"] == "222.00"
+    assert profits["total_sales_income"] == "600.00"
+    assert profits["total_gross_profit"] == "222.00"
+
+    empty_page_response = await api_client.get(
+        "/api/v1/finance/profit-calculations",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        params={"shipment_no": shipment["code"], "limit": 1, "offset": 1},
+    )
+    empty_page = empty_page_response.json()["data"]
+    assert empty_page["items"] == []
+    assert empty_page["total_sales_income"] == profits["total_sales_income"]
+    assert empty_page["total_gross_profit"] == profits["total_gross_profit"]
 
 
 async def test_finance_settlement_rejects_permissions_and_invalid_inputs(

@@ -1,5 +1,5 @@
 import type { FormEvent } from 'react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   autoMatchCustomsReceipts,
   createPortImportBatch,
@@ -11,6 +11,8 @@ import {
   CustomsDeclarationRecordCreatePayload,
 } from '@/api'
 import { showError } from '@/shared/errors'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { t } from '@/app/appI18n'
 
 import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
@@ -21,9 +23,29 @@ export function usePortDataModule(
 ) {
   const { setMessage, setError } = env
 
+  const urlQuery = useUrlQuery()
+
   const [portImportBatches, setPortImportBatches] = useState<PortImportBatch[]>([])
 
   const [customsRecords, setCustomsRecords] = useState<CustomsDeclarationRecord[]>([])
+
+  const batchesPager = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params, 'port_batches_page'),
+  )
+
+  const recordsPager = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params, 'port_records_page'),
+  )
+
+  const batchesUrlPage = urlQuery.params.get('port_batches_page') ?? ''
+
+  const appliedBatchesPageRef = useRef(batchesUrlPage)
+
+  const recordsUrlPage = urlQuery.params.get('port_records_page') ?? ''
+
+  const appliedRecordsPageRef = useRef(recordsUrlPage)
 
   const [loadingPortBatches, setLoadingPortBatches] = useState(false)
 
@@ -63,14 +85,19 @@ export function usePortDataModule(
 
   const [matchingCustomsReceipts, setMatchingCustomsReceipts] = useState(false)
 
-  async function loadPortImportBatches() {
+  async function loadPortImportBatches(pageOverride?: number, pageSizeOverride?: number) {
     setLoadingPortBatches(true)
     setError('')
     try {
+      const page = pageOverride ?? batchesPager.page
+      const pageSize = pageSizeOverride ?? batchesPager.pageSize
       const result = await listPortImportBatches({
         source: portBatchSourceFilter.trim() || undefined,
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
       })
       setPortImportBatches(result.items)
+      batchesPager.setTotal(result.total)
     } catch (caught) {
       showError(caught, t('finance.portData.message.loadBatchesFailed'))
     } finally {
@@ -78,16 +105,21 @@ export function usePortDataModule(
     }
   }
 
-  async function loadCustomsRecords() {
+  async function loadCustomsRecords(pageOverride?: number, pageSizeOverride?: number) {
     setLoadingCustomsRecords(true)
     setError('')
     try {
+      const page = pageOverride ?? recordsPager.page
+      const pageSize = pageSizeOverride ?? recordsPager.pageSize
       const result = await listCustomsDeclarationRecords({
         declaration_no: customsDeclarationFilter.trim() || undefined,
         customs_receipt_no: customsReceiptFilter.trim() || undefined,
         trade_type: customsTradeTypeFilter || undefined,
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
       })
       setCustomsRecords(result.items)
+      recordsPager.setTotal(result.total)
     } catch (caught) {
       showError(caught, t('finance.portData.message.loadCustomsFailed'))
     } finally {
@@ -167,11 +199,45 @@ export function usePortDataModule(
     }
   }
 
+  async function changeCustomsRecordsPage(nextPage: number, nextPageSize: number) {
+    const next = recordsPager.changePage(nextPage, nextPageSize)
+    appliedRecordsPageRef.current = next.page === 1 ? '' : String(next.page)
+    urlQuery.update({ port_records_page: next.page === 1 ? null : next.page })
+    await loadCustomsRecords(next.page, next.pageSize)
+  }
+
+  async function changePortImportBatchesPage(nextPage: number, nextPageSize: number) {
+    const next = batchesPager.changePage(nextPage, nextPageSize)
+    appliedBatchesPageRef.current = next.page === 1 ? '' : String(next.page)
+    urlQuery.update({ port_batches_page: next.page === 1 ? null : next.page })
+    await loadPortImportBatches(next.page, next.pageSize)
+  }
+
+  useEffect(() => {
+    if (appliedRecordsPageRef.current === recordsUrlPage) return
+    appliedRecordsPageRef.current = recordsUrlPage
+    const nextPage = parsePageParam(urlQuery.params, 'port_records_page')
+    recordsPager.setPage(nextPage)
+    void loadCustomsRecords(nextPage, recordsPager.pageSize)
+  }, [recordsUrlPage])
+
+  useEffect(() => {
+    if (appliedBatchesPageRef.current === batchesUrlPage) return
+    appliedBatchesPageRef.current = batchesUrlPage
+    const nextPage = parsePageParam(urlQuery.params, 'port_batches_page')
+    batchesPager.setPage(nextPage)
+    void loadPortImportBatches(nextPage, batchesPager.pageSize)
+  }, [batchesUrlPage])
+
   return {
     autoMatchPortCustomsReceipts,
+    changeCustomsRecordsPage,
+    changePortImportBatchesPage,
     customsDeclarationFilter,
     customsReceiptFilter,
     customsRecords,
+    customsRecordsPagination: recordsPager.pagination,
+    customsRecordsTotal: recordsPager.total,
     customsTradeTypeFilter,
     loadCustomsRecords,
     loadPortImportBatches,
@@ -180,6 +246,8 @@ export function usePortDataModule(
     matchingCustomsReceipts,
     portBatchForm,
     portImportBatches,
+    portImportBatchesPagination: batchesPager.pagination,
+    portImportBatchesTotal: batchesPager.total,
     portRecordForm,
     setCustomsDeclarationFilter,
     setCustomsReceiptFilter,

@@ -1,4 +1,3 @@
-from collections.abc import Iterable
 from decimal import Decimal
 
 from app.db.uow import UnitOfWork
@@ -149,7 +148,16 @@ class MiscFeeService:
         return MiscFeeAllocationListResponse(
             items=[self._allocation_response(row) for row in rows],
             total=total,
-            total_allocated_amount=self._money_sum(row.amount for row in rows),
+            total_allocated_amount=self._money(
+                await self._repository.summarize_allocations(
+                    q=q,
+                    item_id=item_id,
+                    category=category,
+                    shipment_no=shipment_no,
+                    sales_user_id=sales_user_id,
+                    status=status,
+                )
+            ),
         )
 
     async def list_allocation_summary(
@@ -254,5 +262,5 @@ class MiscFeeService:
         if "finance:view" not in current_user.permissions:
             raise PermissionDeniedError
 
-    def _money_sum(self, values: Iterable[str]) -> str:
-        return f"{sum(Decimal(str(value)) for value in values):.2f}"
+    def _money(self, value: Decimal | int | str | None) -> str:
+        return f"{Decimal(str(value or 0)):.2f}"

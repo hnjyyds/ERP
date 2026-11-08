@@ -31,6 +31,8 @@ type Props = {
 
 export function FeesView({ model, shell }: Props) {
   const {
+    changeFeePayablesPage,
+    changePartnerFeeInvoicesPage,
     feeInvoiceModalOpen,
     feeInvoicePartnerFilter,
     feeInvoiceSearch,
@@ -43,17 +45,17 @@ export function FeesView({ model, shell }: Props) {
     feePayableStatusFilter,
     feePayableTypeFilter,
     feePayables,
+    feePayablesPagination,
     feePaymentApprovalForm,
     feePaymentRequestForm,
     feePaymentRequests,
-    loadFeePayables,
-    loadPartnerFeeInvoices,
     loadingFeePayables,
     loadingFeePaymentRequests,
     loadingPartnerFeeInvoices,
     partnerFeeInvoiceForm,
     partnerFeeInvoiceNoError,
     partnerFeeInvoices,
+    partnerFeeInvoicesPagination,
     selectedFeePaymentRequest,
     selectedFeePaymentRequestCanApprove,
     selectedPartnerFeeInvoice,
@@ -111,7 +113,10 @@ export function FeesView({ model, shell }: Props) {
                 className="inline-filters single-line-filter-toolbar"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadPartnerFeeInvoices()
+                  void changePartnerFeeInvoicesPage(
+                    1,
+                    partnerFeeInvoicesPagination.pageSize,
+                  )
                 }}
               >
                 <label>
@@ -203,7 +208,12 @@ export function FeesView({ model, shell }: Props) {
               ]}
               dataSource={partnerFeeInvoices}
               loading={loadingPartnerFeeInvoices}
-              pagination={false}
+              pagination={{
+                ...partnerFeeInvoicesPagination,
+                onChange: (nextPage, nextPageSize) => {
+                  void changePartnerFeeInvoicesPage(nextPage, nextPageSize)
+                },
+              }}
               rowClassName={(record) =>
                 record.id === selectedPartnerFeeInvoice?.id ? 'selected-row' : ''
               }
@@ -727,7 +737,7 @@ export function FeesView({ model, shell }: Props) {
                 className="inline-filters single-line-filter-toolbar"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadFeePayables()
+                  void changeFeePayablesPage(1, feePayablesPagination.pageSize)
                 }}
               >
                 <label>
@@ -813,7 +823,12 @@ export function FeesView({ model, shell }: Props) {
               ]}
               dataSource={feePayables}
               loading={loadingFeePayables}
-              pagination={false}
+              pagination={{
+                ...feePayablesPagination,
+                onChange: (nextPage, nextPageSize) => {
+                  void changeFeePayablesPage(nextPage, nextPageSize)
+                },
+              }}
               rowKey="partner_fee_invoice_id"
               size="small"
             />

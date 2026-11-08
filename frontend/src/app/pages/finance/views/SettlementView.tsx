@@ -20,15 +20,19 @@ type Props = {
 
 export function SettlementView({ model, shell }: Props) {
   const {
+    changeFinancialSettlementsPage,
+    changeProfitCalculationsPage,
     financialSettlements,
-    loadFinancialSettlements,
-    loadProfitCalculations,
+    financialSettlementsPagination,
+    financialSettlementsTotal,
     loadingFinancialSettlements,
     loadingProfitCalculations,
     manualProfitCostForm,
     profitCalculationSearch,
     profitCalculationShipmentFilter,
     profitCalculations,
+    profitCalculationsPagination,
+    profitCalculationsTotal,
     selectedFinancialSettlement,
     setManualProfitCostForm,
     setProfitCalculationSearch,
@@ -85,7 +89,7 @@ export function SettlementView({ model, shell }: Props) {
               className="inline-filters"
               onSubmit={(event) => {
                 event.preventDefault()
-                void loadFinancialSettlements()
+                void changeFinancialSettlementsPage(1, financialSettlementsPagination.pageSize)
               }}
             >
               <label>
@@ -116,18 +120,18 @@ export function SettlementView({ model, shell }: Props) {
             </form>
             <div className="finance-receipt-strip">
               <span>
-                {t('finance.settlement.metric.lockedCount', { count: financialSettlements.length })}
+                {t('finance.settlement.metric.lockedCount', { count: financialSettlementsTotal })}
               </span>
               <strong>
                 {formatFinanceAmount(
-                  totalSettlementSalesIncome.toFixed(2),
+                  totalSettlementSalesIncome,
                   financialSettlements[0]?.currency ?? 'USD',
                 )}
               </strong>
               <span>
                 {t('finance.settlement.field.grossProfit')}{' '}
                 {formatFinanceAmount(
-                  totalSettlementGrossProfit.toFixed(2),
+                  totalSettlementGrossProfit,
                   financialSettlements[0]?.currency ?? 'USD',
                 )}
               </span>
@@ -189,7 +193,12 @@ export function SettlementView({ model, shell }: Props) {
               ]}
               dataSource={financialSettlements}
               loading={loadingFinancialSettlements}
-              pagination={false}
+              pagination={{
+                ...financialSettlementsPagination,
+                onChange: (nextPage, nextPageSize) => {
+                  void changeFinancialSettlementsPage(nextPage, nextPageSize)
+                },
+              }}
               rowClassName={(record) =>
                 record.id === selectedFinancialSettlement?.id ? 'selected-row' : ''
               }
@@ -464,7 +473,7 @@ export function SettlementView({ model, shell }: Props) {
               className="inline-filters"
               onSubmit={(event) => {
                 event.preventDefault()
-                void loadProfitCalculations()
+                void changeProfitCalculationsPage(1, profitCalculationsPagination.pageSize)
               }}
             >
               <label>
@@ -488,11 +497,11 @@ export function SettlementView({ model, shell }: Props) {
             </form>
             <div className="finance-receipt-strip">
               <span>
-                {t('finance.settlement.metric.profitCount', { count: profitCalculations.length })}
+                {t('finance.settlement.metric.profitCount', { count: profitCalculationsTotal })}
               </span>
               <strong>
                 {formatFinanceAmount(
-                  totalProfitCalculationGrossProfit.toFixed(2),
+                  totalProfitCalculationGrossProfit,
                   profitCalculations[0]?.currency ?? 'USD',
                 )}
               </strong>
@@ -585,7 +594,12 @@ export function SettlementView({ model, shell }: Props) {
                 ),
               }}
               loading={loadingProfitCalculations}
-              pagination={false}
+              pagination={{
+                ...profitCalculationsPagination,
+                onChange: (nextPage, nextPageSize) => {
+                  void changeProfitCalculationsPage(nextPage, nextPageSize)
+                },
+              }}
               rowKey="id"
               size="small"
             />

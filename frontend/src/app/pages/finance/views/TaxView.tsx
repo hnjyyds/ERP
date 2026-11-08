@@ -32,9 +32,9 @@ type Props = {
 
 export function TaxView({ model, shell }: Props) {
   const {
+    changeVerificationDocumentsPage,
     customsReceiptErrors,
     customsReceiptForm,
-    loadVerificationDocuments,
     loadVerificationUsage,
     loadingVerificationDocuments,
     loadingVerificationUsage,
@@ -70,6 +70,7 @@ export function TaxView({ model, shell }: Props) {
     taxRefundForm,
     verificationDocumentForm,
     verificationDocuments,
+    verificationDocumentsPagination,
     verificationOwnerFilter,
     verificationRegisterForm,
     verificationReminderFilter,
@@ -113,7 +114,7 @@ export function TaxView({ model, shell }: Props) {
                 className="inline-filters single-line-filter-toolbar"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadVerificationDocuments()
+                  void changeVerificationDocumentsPage(1, verificationDocumentsPagination.pageSize)
                 }}
               >
                 <label>
@@ -221,7 +222,12 @@ export function TaxView({ model, shell }: Props) {
               ]}
               dataSource={verificationDocuments}
               loading={loadingVerificationDocuments}
-              pagination={false}
+              pagination={{
+                ...verificationDocumentsPagination,
+                onChange: (nextPage, nextPageSize) => {
+                  void changeVerificationDocumentsPage(nextPage, nextPageSize)
+                },
+              }}
               rowClassName={(record) =>
                 record.id === selectedVerificationDocument?.id ? 'selected-row' : ''
               }

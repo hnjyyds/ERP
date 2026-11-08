@@ -96,11 +96,18 @@ class FinancialSettlementService:
             shipment_no=shipment_no,
         )
         responses = [await self._settlement_response(row) for row in settlements]
+        total_sales_income, total_gross_profit = (
+            await self._repository.summarize_settlements(
+                q=q,
+                status=status,
+                shipment_no=shipment_no,
+            )
+        )
         return FinancialSettlementListResponse(
             items=responses,
             total=total,
-            total_sales_income=self._money_sum(row.sales_income for row in settlements),
-            total_gross_profit=self._money_sum(row.gross_profit for row in settlements),
+            total_sales_income=self._money(total_sales_income),
+            total_gross_profit=self._money(total_gross_profit),
         )
 
     async def add_manual_cost(
@@ -158,11 +165,18 @@ class FinancialSettlementService:
             shipment_no=shipment_no,
         )
         responses = [await self._settlement_response(row) for row in settlements]
+        total_sales_income, total_gross_profit = (
+            await self._repository.summarize_settlements(
+                q=q,
+                status="locked",
+                shipment_no=shipment_no,
+            )
+        )
         return ProfitCalculationListResponse(
             items=responses,
             total=total,
-            total_sales_income=self._money_sum(row.sales_income for row in settlements),
-            total_gross_profit=self._money_sum(row.gross_profit for row in settlements),
+            total_sales_income=self._money(total_sales_income),
+            total_gross_profit=self._money(total_gross_profit),
         )
 
     async def _resolve_shipment(

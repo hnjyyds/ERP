@@ -198,6 +198,31 @@ class MiscFeeRepository:
         total = await self.session.scalar(count_statement)
         return [self._map_allocation(row) for row in rows], int(total or 0)
 
+    async def summarize_allocations(
+        self,
+        *,
+        q: str | None,
+        item_id: str | None,
+        category: str | None,
+        shipment_no: str | None,
+        sales_user_id: str | None,
+        status: str | None,
+    ) -> Decimal:
+        """同一筛选条件下的杂费分摊金额合计，不受分页影响。"""
+        statement = select(
+            func.coalesce(func.sum(MiscFeeAllocation.amount), 0)
+        ).select_from(MiscFeeAllocation)
+        for condition in self._allocation_conditions(
+            q=q,
+            item_id=item_id,
+            category=category,
+            shipment_no=shipment_no,
+            sales_user_id=sales_user_id,
+            status=status,
+        ):
+            statement = statement.where(condition)
+        return self._decimal(await self.session.scalar(statement))
+
     async def subtract_allocation_from_shipment_profit(
         self,
         *,

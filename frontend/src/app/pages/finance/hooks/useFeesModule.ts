@@ -1,5 +1,5 @@
 import type { FormEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   approveFeePaymentRequest,
   createFeePaymentRequest,
@@ -12,6 +12,8 @@ import {
   type PartnerFeeInvoice,
 } from '@/api'
 import { showError } from '@/shared/errors'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { useTablePagination } from '@/shared/useTablePagination'
 import { canApproveAssignedRecord } from '@/app/pages/appHelpers'
 import {
   PartnerFeeInvoiceFormState,
@@ -31,11 +33,42 @@ import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 export function useFeesModule(env: FinanceModuleEnv) {
   const { activeModule, detailId, currentUser, setMessage, setError } = env
 
+  const urlQuery = useUrlQuery()
+
+  const partnerFeeInvoicesPager = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params, 'fee_invoices_page'),
+  )
+
+  const feePaymentRequestsPager = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params, 'fee_requests_page'),
+  )
+
+  const feePayablesPager = useTablePagination(
+    undefined,
+    parsePageParam(urlQuery.params, 'fee_payables_page'),
+  )
+
   const [partnerFeeInvoices, setPartnerFeeInvoices] = useState<PartnerFeeInvoice[]>([])
 
   const [feePaymentRequests, setFeePaymentRequests] = useState<FeePaymentRequest[]>([])
 
   const [feePayables, setFeePayables] = useState<FeePayableItem[]>([])
+
+  const [feePayableTotalAmount, setFeePayableTotalAmount] = useState('0.00')
+
+  const partnerFeeInvoicesUrlPage = urlQuery.params.get('fee_invoices_page') ?? ''
+
+  const appliedPartnerFeeInvoicesPageRef = useRef(partnerFeeInvoicesUrlPage)
+
+  const feePaymentRequestsUrlPage = urlQuery.params.get('fee_requests_page') ?? ''
+
+  const appliedFeePaymentRequestsPageRef = useRef(feePaymentRequestsUrlPage)
+
+  const feePayablesUrlPage = urlQuery.params.get('fee_payables_page') ?? ''
+
+  const appliedFeePayablesPageRef = useRef(feePayablesUrlPage)
 
   const [selectedPartnerFeeInvoiceId, setSelectedPartnerFeeInvoiceId] = useState<string | null>(
     null,
@@ -141,18 +174,27 @@ export function useFeesModule(env: FinanceModuleEnv) {
     selectedFeePaymentRequest?.requested_amount,
   ])
 
-  async function loadPartnerFeeInvoices(preferredId?: string) {
+  async function loadPartnerFeeInvoices(
+    preferredId?: string,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+  ) {
     setLoadingPartnerFeeInvoices(true)
     setError('')
     try {
+      const page = pageOverride ?? partnerFeeInvoicesPager.page
+      const pageSize = pageSizeOverride ?? partnerFeeInvoicesPager.pageSize
       const result = await listPartnerFeeInvoices({
         q: feeInvoiceSearch.trim() || undefined,
         status: feeInvoiceStatusFilter || undefined,
         fee_type: feeInvoiceTypeFilter || undefined,
         partner_id: feeInvoicePartnerFilter.trim() || undefined,
         shipment_no: feeInvoiceShipmentFilter.trim() || undefined,
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
       })
       setPartnerFeeInvoices(result.items)
+      partnerFeeInvoicesPager.setTotal(result.total)
       const nextInvoiceId =
         preferredId ??
         (activeModule === 'fees' && result.items.some((item) => item.id === detailId)
@@ -171,18 +213,27 @@ export function useFeesModule(env: FinanceModuleEnv) {
     }
   }
 
-  async function loadFeePaymentRequests(preferredId?: string) {
+  async function loadFeePaymentRequests(
+    preferredId?: string,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+  ) {
     setLoadingFeePaymentRequests(true)
     setError('')
     try {
+      const page = pageOverride ?? feePaymentRequestsPager.page
+      const pageSize = pageSizeOverride ?? feePaymentRequestsPager.pageSize
       const result = await listFeePaymentRequests({
         q: feePaymentRequestSearch.trim() || undefined,
         status: feePaymentRequestStatusFilter || undefined,
         fee_type: feePaymentRequestTypeFilter || undefined,
         partner_id: feeInvoicePartnerFilter.trim() || undefined,
         shipment_no: feeInvoiceShipmentFilter.trim() || undefined,
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
       })
       setFeePaymentRequests(result.items)
+      feePaymentRequestsPager.setTotal(result.total)
       const nextRequestId =
         preferredId ??
         (result.items.some((item) => item.id === selectedFeePaymentRequestId)
@@ -198,18 +249,24 @@ export function useFeesModule(env: FinanceModuleEnv) {
     }
   }
 
-  async function loadFeePayables() {
+  async function loadFeePayables(pageOverride?: number, pageSizeOverride?: number) {
     setLoadingFeePayables(true)
     setError('')
     try {
+      const page = pageOverride ?? feePayablesPager.page
+      const pageSize = pageSizeOverride ?? feePayablesPager.pageSize
       const result = await listFeePayables({
         q: feePayableSearch.trim() || undefined,
         status: feePayableStatusFilter || undefined,
         fee_type: feePayableTypeFilter || undefined,
         partner_id: feePayablePartnerFilter.trim() || undefined,
         shipment_no: feePayableShipmentFilter.trim() || undefined,
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
       })
       setFeePayables(result.items)
+      feePayablesPager.setTotal(result.total)
+      setFeePayableTotalAmount(result.total_payable_amount)
     } catch (caught) {
       showError(caught, t('finance.fee.message.loadPayablesFailed'))
     } finally {
@@ -304,12 +361,60 @@ export function useFeesModule(env: FinanceModuleEnv) {
     }
   }
 
+  async function changePartnerFeeInvoicesPage(nextPage: number, nextPageSize: number) {
+    const next = partnerFeeInvoicesPager.changePage(nextPage, nextPageSize)
+    appliedPartnerFeeInvoicesPageRef.current = next.page === 1 ? '' : String(next.page)
+    urlQuery.update({ fee_invoices_page: next.page === 1 ? null : next.page })
+    await loadPartnerFeeInvoices(undefined, next.page, next.pageSize)
+  }
+
+  async function changeFeePaymentRequestsPage(nextPage: number, nextPageSize: number) {
+    const next = feePaymentRequestsPager.changePage(nextPage, nextPageSize)
+    appliedFeePaymentRequestsPageRef.current = next.page === 1 ? '' : String(next.page)
+    urlQuery.update({ fee_requests_page: next.page === 1 ? null : next.page })
+    await loadFeePaymentRequests(undefined, next.page, next.pageSize)
+  }
+
+  async function changeFeePayablesPage(nextPage: number, nextPageSize: number) {
+    const next = feePayablesPager.changePage(nextPage, nextPageSize)
+    appliedFeePayablesPageRef.current = next.page === 1 ? '' : String(next.page)
+    urlQuery.update({ fee_payables_page: next.page === 1 ? null : next.page })
+    await loadFeePayables(next.page, next.pageSize)
+  }
+
+  useEffect(() => {
+    if (appliedPartnerFeeInvoicesPageRef.current === partnerFeeInvoicesUrlPage) return
+    appliedPartnerFeeInvoicesPageRef.current = partnerFeeInvoicesUrlPage
+    const nextPage = parsePageParam(urlQuery.params, 'fee_invoices_page')
+    partnerFeeInvoicesPager.setPage(nextPage)
+    void loadPartnerFeeInvoices(undefined, nextPage, partnerFeeInvoicesPager.pageSize)
+  }, [partnerFeeInvoicesUrlPage])
+
+  useEffect(() => {
+    if (appliedFeePaymentRequestsPageRef.current === feePaymentRequestsUrlPage) return
+    appliedFeePaymentRequestsPageRef.current = feePaymentRequestsUrlPage
+    const nextPage = parsePageParam(urlQuery.params, 'fee_requests_page')
+    feePaymentRequestsPager.setPage(nextPage)
+    void loadFeePaymentRequests(undefined, nextPage, feePaymentRequestsPager.pageSize)
+  }, [feePaymentRequestsUrlPage])
+
+  useEffect(() => {
+    if (appliedFeePayablesPageRef.current === feePayablesUrlPage) return
+    appliedFeePayablesPageRef.current = feePayablesUrlPage
+    const nextPage = parsePageParam(urlQuery.params, 'fee_payables_page')
+    feePayablesPager.setPage(nextPage)
+    void loadFeePayables(nextPage, feePayablesPager.pageSize)
+  }, [feePayablesUrlPage])
+
   const selectedFeePaymentRequestCanApprove =
     selectedFeePaymentRequest?.status === 'submitted' &&
     canApproveAssignedRecord(currentUser, selectedFeePaymentRequest.reviewer_id, 'finance:view') &&
     selectedFeePaymentRequest.requester_user_id !== currentUser.id
 
   return {
+    changeFeePayablesPage,
+    changeFeePaymentRequestsPage,
+    changePartnerFeeInvoicesPage,
     feeInvoiceModalOpen,
     feeInvoicePartnerFilter,
     feeInvoiceSearch,
@@ -320,11 +425,16 @@ export function useFeesModule(env: FinanceModuleEnv) {
     feePayableSearch,
     feePayableShipmentFilter,
     feePayableStatusFilter,
+    feePayableTotalAmount,
     feePayableTypeFilter,
     feePayables,
+    feePayablesPagination: feePayablesPager.pagination,
+    feePayablesTotal: feePayablesPager.total,
     feePaymentApprovalForm,
     feePaymentRequestForm,
     feePaymentRequests,
+    feePaymentRequestsPagination: feePaymentRequestsPager.pagination,
+    feePaymentRequestsTotal: feePaymentRequestsPager.total,
     loadFeePayables,
     loadFeePaymentRequests,
     loadPartnerFeeInvoices,
@@ -334,6 +444,8 @@ export function useFeesModule(env: FinanceModuleEnv) {
     partnerFeeInvoiceForm,
     partnerFeeInvoiceNoError,
     partnerFeeInvoices,
+    partnerFeeInvoicesPagination: partnerFeeInvoicesPager.pagination,
+    partnerFeeInvoicesTotal: partnerFeeInvoicesPager.total,
     selectedFeePaymentRequest,
     selectedFeePaymentRequestCanApprove,
     selectedPartnerFeeInvoice,

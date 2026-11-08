@@ -139,6 +139,27 @@ class ReimbursementRepository:
         mapped = [await self._map(row) for row in rows]
         return mapped, int(total or 0)
 
+    async def summarize(
+        self,
+        *,
+        q: str | None,
+        status: str | None,
+        category: str | None,
+        applicant_user_id: str | None,
+    ) -> Decimal:
+        """同一筛选条件下的报销金额合计，不受分页影响。"""
+        statement = select(
+            func.coalesce(func.sum(Reimbursement.amount), 0)
+        ).select_from(Reimbursement)
+        for condition in self._conditions(
+            q=q,
+            status=status,
+            category=category,
+            applicant_user_id=applicant_user_id,
+        ):
+            statement = statement.where(condition)
+        return self._decimal(await self.session.scalar(statement))
+
     async def approve(
         self,
         *,

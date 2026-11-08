@@ -75,12 +75,16 @@ export function listReimbursements(filters: {
   status?: string
   category?: string
   applicant_user_id?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<ReimbursementList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.status) params.set('status', filters.status)
   if (filters.category) params.set('category', filters.category)
   if (filters.applicant_user_id) params.set('applicant_user_id', filters.applicant_user_id)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<ReimbursementList>(`/finance/reimbursements${suffix}`)
 }

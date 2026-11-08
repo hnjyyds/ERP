@@ -1,4 +1,3 @@
-from collections.abc import Iterable
 from decimal import Decimal
 
 from app.db.uow import UnitOfWork
@@ -252,7 +251,16 @@ class FeePaymentService:
         return FeePayableListResponse(
             items=[self._fee_payable_response(row) for row in rows],
             total=total,
-            total_payable_amount=self._money_sum(row.payable_amount for row in rows),
+            total_payable_amount=self._money(
+                await self._repository.summarize_fee_payables(
+                    q=q,
+                    status=status,
+                    fee_type=fee_type,
+                    partner_id=partner_id,
+                    sales_user_id=sales_user_id,
+                    shipment_no=shipment_no,
+                )
+            ),
         )
 
     async def _resolve_partner(
@@ -442,8 +450,8 @@ class FeePaymentService:
         if "finance:view" not in current_user.permissions:
             raise PermissionDeniedError
 
-    def _money_sum(self, values: Iterable[str]) -> str:
-        return f"{sum((self._decimal(value) for value in values), Decimal('0')):.2f}"
+    def _money(self, value: Decimal | int | str | None) -> str:
+        return f"{self._decimal(value):.2f}"
 
     def _decimal(self, value: Decimal | int | str | None) -> Decimal:
         return Decimal(str(value or 0))

@@ -276,6 +276,25 @@ class FinancialSettlementRepository:
         total = await self.session.scalar(count_statement)
         return [self._map_settlement(row) for row in rows], int(total or 0)
 
+    async def summarize_settlements(
+        self,
+        *,
+        q: str | None,
+        status: str | None,
+        shipment_no: str | None,
+    ) -> tuple[Decimal, Decimal]:
+        """同一筛选条件下的销售收入与毛利合计，不受分页影响。"""
+        statement = select(
+            func.coalesce(func.sum(FinancialSettlement.sales_income), 0),
+            func.coalesce(func.sum(FinancialSettlement.gross_profit), 0),
+        ).select_from(FinancialSettlement)
+        for condition in self._settlement_conditions(
+            q=q, status=status, shipment_no=shipment_no
+        ):
+            statement = statement.where(condition)
+        row = (await self.session.execute(statement)).one()
+        return self._decimal(row[0]), self._decimal(row[1])
+
     async def list_cost_items(self, settlement_id: str) -> list[ProfitCostLinkRow]:
         rows = await self.session.scalars(
             select(ProfitCostLink)

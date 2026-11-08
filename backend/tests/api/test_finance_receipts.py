@@ -171,7 +171,21 @@ async def test_finance_receipt_flow_claim_allocate_and_receivables(
         params={"q": "BR-API-001", "status": "allocated"},
     )
     assert list_response.status_code == 200
-    assert list_response.json()["data"]["total"] == 1
+    list_data = list_response.json()["data"]
+    assert list_data["total"] == 1
+    assert list_data["total_amount"] == "500.00"
+    assert list_data["unallocated_amount"] == "0.00"
+    assert list_data["currency"] == "USD"
+
+    paged_response = await api_client.get(
+        "/api/v1/finance/receipts",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        params={"q": "BR-API-001", "status": "allocated", "limit": 1, "offset": 1},
+    )
+    paged = paged_response.json()["data"]
+    assert paged["items"] == []
+    assert paged["total_amount"] == list_data["total_amount"]
+    assert paged["unallocated_amount"] == list_data["unallocated_amount"]
 
     receivable_response = await api_client.get(
         "/api/v1/finance/receivables",

@@ -1,4 +1,3 @@
-from collections.abc import Iterable
 from decimal import Decimal
 
 from app.db.uow import UnitOfWork
@@ -236,7 +235,14 @@ class PaymentService:
         return PayableListResponse(
             items=[self._payable_response(row) for row in rows],
             total=total,
-            total_payable_amount=self._money_sum(row.payable_amount for row in rows),
+            total_payable_amount=self._money(
+                await self._repository.summarize_payables(
+                    q=q,
+                    status=status,
+                    supplier_id=supplier_id,
+                    purchase_contract_no=purchase_contract_no,
+                )
+            ),
         )
 
     async def _resolve_purchase_invoice_notice(
@@ -406,8 +412,8 @@ class PaymentService:
         if "finance:view" not in current_user.permissions:
             raise PermissionDeniedError
 
-    def _money_sum(self, values: Iterable[str]) -> str:
-        return f"{sum((self._decimal(value) for value in values), Decimal('0')):.2f}"
+    def _money(self, value: Decimal | int | str | None) -> str:
+        return f"{self._decimal(value):.2f}"
 
     def _decimal(self, value: Decimal | int | str | None) -> Decimal:
         return Decimal(str(value or 0))

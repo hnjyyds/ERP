@@ -28,11 +28,16 @@ type Props = {
 export function ReceiptsView({ model, shell }: Props) {
   const {
     allocationForm,
+    changeReceiptsPage,
+    changeReceivablesPage,
     claimForm,
-    loadReceipts,
-    loadReceivables,
     loadingReceipts,
     loadingReceivables,
+    receiptCurrency,
+    receiptsPagination,
+    receiptsTotal,
+    receivablesPagination,
+    receivablesTotal,
     receiptCustomerFilter,
     receiptForm,
     receiptModalOpen,
@@ -64,6 +69,7 @@ export function ReceiptsView({ model, shell }: Props) {
     submittingClaim,
     submittingReceipt,
     totalReceiptAmount,
+    totalReceivableAmount,
     totalUnallocatedAmount,
   } = model
   const { detailId, goModule, goDetail, moduleAlerts, moduleHeader } = shell
@@ -97,7 +103,7 @@ export function ReceiptsView({ model, shell }: Props) {
                 className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadReceipts()
+                  void changeReceiptsPage(1, receiptsPagination.pageSize)
                 }}
               >
                 <label>
@@ -144,16 +150,13 @@ export function ReceiptsView({ model, shell }: Props) {
             </div>
 
             <div className="finance-receipt-strip">
-              <span>{t('finance.receipt.metric.listCount', { count: receipts.length })}</span>
+              <span>{t('finance.receipt.metric.listCount', { count: receiptsTotal })}</span>
               <strong>
-                {formatFinanceAmount(totalReceiptAmount.toFixed(2), receipts[0]?.currency ?? 'USD')}
+                {formatFinanceAmount(totalReceiptAmount, receiptCurrency ?? 'USD')}
               </strong>
               <span>
                 {t('finance.receipt.field.unallocatedAmount')}{' '}
-                {formatFinanceAmount(
-                  totalUnallocatedAmount.toFixed(2),
-                  receipts[0]?.currency ?? 'USD',
-                )}
+                {formatFinanceAmount(totalUnallocatedAmount, receiptCurrency ?? 'USD')}
               </span>
             </div>
 
@@ -186,7 +189,12 @@ export function ReceiptsView({ model, shell }: Props) {
               ]}
               dataSource={receipts}
               loading={loadingReceipts}
-              pagination={false}
+              pagination={{
+                ...receiptsPagination,
+                onChange: (nextPage, nextPageSize) => {
+                  void changeReceiptsPage(nextPage, nextPageSize)
+                },
+              }}
               rowClassName={(record) => (record.id === selectedReceipt?.id ? 'selected-row' : '')}
               rowKey="id"
               size="small"
@@ -584,7 +592,7 @@ export function ReceiptsView({ model, shell }: Props) {
                 className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadReceivables()
+                  void changeReceivablesPage(1, receivablesPagination.pageSize)
                 }}
               >
                 <label>
@@ -614,6 +622,12 @@ export function ReceiptsView({ model, shell }: Props) {
                 </Button>
               </form>
             </div>
+            <div className="finance-receipt-strip">
+              <span>{t('finance.receipt.metric.listCount', { count: receivablesTotal })}</span>
+              <strong>
+                {formatFinanceAmount(totalReceivableAmount, receivables[0]?.currency ?? '')}
+              </strong>
+            </div>
             <Table<ReceivableItem>
               columns={[
                 {
@@ -642,7 +656,12 @@ export function ReceiptsView({ model, shell }: Props) {
               ]}
               dataSource={receivables}
               loading={loadingReceivables}
-              pagination={false}
+              pagination={{
+                ...receivablesPagination,
+                onChange: (nextPage, nextPageSize) => {
+                  void changeReceivablesPage(nextPage, nextPageSize)
+                },
+              }}
               rowKey="contract_id"
               size="small"
             />
