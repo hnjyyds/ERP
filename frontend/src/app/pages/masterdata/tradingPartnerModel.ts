@@ -15,14 +15,14 @@ import type {
   SupplierCreatePayload,
   SupplierTransaction,
   SupplierUpdatePayload,
-} from '../../../api'
-import { translate, type TranslationKey } from '../../../locales'
+} from '@/api'
+import { translate, type TranslationKey } from '@/locales'
 import {
   partnerStatusOptions,
   partnerTypeOptions,
   type LocalizedOption,
-} from '../../../shared/formOptions'
-import { getRuntimeSettings } from '../appHelpers'
+} from '@/shared/formOptions'
+import { getRuntimeSettings } from '@/app/pages/appHelpers'
 
 export { partnerTypeOptions }
 

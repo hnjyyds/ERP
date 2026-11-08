@@ -1,5 +1,5 @@
-import { getRuntimeSettings } from '../app/pages/appHelpers'
-import { translate, type TranslationKey } from '../locales'
+import { getRuntimeSettings } from '@/app/pages/appHelpers'
+import { translate, type TranslationKey } from '@/locales'
 import { apiBaseUrl, readApiError, request } from './core'
 import type { ApiResponse } from './core'
 

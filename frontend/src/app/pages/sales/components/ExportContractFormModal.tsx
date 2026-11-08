@@ -2,9 +2,9 @@ import { Button, Input, Modal, Select, Table } from 'antd'
 import { Plus } from 'lucide-react'
 import type { FormEvent } from 'react'
 
-import type { AssignableUser, Customer } from '../../../../api'
-import { t } from '../../../appI18n'
-import { formatMoney } from '../../appHelpers'
+import type { AssignableUser, Customer } from '@/api'
+import { t } from '@/app/appI18n'
+import { formatMoney } from '@/app/pages/appHelpers'
 import {
   assignableUserOptionLabel,
   customerOptionLabel,
@@ -12,7 +12,7 @@ import {
   renderCustomerOptions,
   type ExportContractFormState,
   type ExportContractLineFormState,
-} from '../exportContractHelpers'
+} from '@/app/pages/sales/exportContractHelpers'
 
 type ExportContractFormModalProps = {
   open: boolean

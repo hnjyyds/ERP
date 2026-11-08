@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { apiBaseUrl } from '../core'
-import { listProducts } from '../masterdata-products'
-import { listSampleRequests } from '../sample'
+import { apiBaseUrl } from '@/api/core'
+import { listProducts } from '@/api/masterdata-products'
+import { listSampleRequests } from '@/api/sample'
 
 const fetchMock = vi.fn()
 

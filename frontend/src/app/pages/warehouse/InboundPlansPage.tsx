@@ -18,12 +18,12 @@ import {
   type InboundPlan,
   type InboundPlanGeneratePayload,
   type InboundPlanSchedulePayload,
-} from '../../../api'
-import { warehouseInboundPlanPath, moduleDetailPath } from '../../routes'
-import { FormSelect, ListPageShell, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
-import { useFormModal } from '../../../shared/useFormModal'
-import { showError } from '../../../shared/errors'
-import { inboundPlanStatusOptions, inboundPlanTypeOptions } from '../../../shared/formOptions'
+} from '@/api'
+import { warehouseInboundPlanPath, moduleDetailPath } from '@/app/routes'
+import { FormSelect, ListPageShell, Metric, PanelTitle, RemoteSelect } from '@/shared/ui'
+import { useFormModal } from '@/shared/useFormModal'
+import { showError } from '@/shared/errors'
+import { inboundPlanStatusOptions, inboundPlanTypeOptions } from '@/shared/formOptions'
 import {
   daysFromTodayInputValue,
   formatDate,
@@ -33,8 +33,8 @@ import {
   todayInputValue as _todayInputValue,
   type RoutedDetailPageProps,
   emptyToNull,
-} from '../appHelpers'
-import { t } from '../../appI18n'
+} from '@/app/pages/appHelpers'
+import { t } from '@/app/appI18n'
 
 type InboundPlanGenerateFormState = {
   purchase_contract_id: string

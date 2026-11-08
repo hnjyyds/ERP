@@ -1,7 +1,7 @@
 import { Button, Modal } from 'antd'
 import type { FormEvent, ReactNode } from 'react'
 
-import { t } from '../../app/appI18n'
+import { t } from '@/app/appI18n'
 
 type FormModalProps = {
   open: boolean

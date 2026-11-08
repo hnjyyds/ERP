@@ -8,8 +8,8 @@ import {
   listReceivables,
   type BankReceipt,
   type ReceivableItem,
-} from '../../../../api'
-import { showError } from '../../../../shared/errors'
+} from '@/api'
+import { showError } from '@/shared/errors'
 import {
   BankReceiptFormState,
   ReceiptClaimFormState,
@@ -20,10 +20,10 @@ import {
   bankReceiptPayload,
   receiptClaimPayload,
   receiptAllocationPayload,
-} from '../financeHelpers'
-import { t } from '../../../appI18n'
+} from '@/app/pages/finance/financeHelpers'
+import { t } from '@/app/appI18n'
 
-import type { FinanceModuleEnv } from '../financePageTypes'
+import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 
 export function useReceiptsModule(env: FinanceModuleEnv) {
   const { activeModule, detailId, setMessage, setError } = env

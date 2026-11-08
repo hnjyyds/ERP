@@ -1,4 +1,4 @@
-import { downloadBase64File } from '../../../shared/print'
+import { downloadBase64File } from '@/shared/print'
 import {
   Alert,
   Button,
@@ -34,14 +34,14 @@ import {
   listAssignableUsers,
   listProducts,
   listSuppliers,
-} from '../../../api'
-import { purchaseContractPath, moduleDetailPath } from '../../routes'
-import { FormModal, FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
-import { showError, showWarningDialog } from '../../../shared/errors'
+} from '@/api'
+import { purchaseContractPath, moduleDetailPath } from '@/app/routes'
+import { FormModal, FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { showError, showWarningDialog } from '@/shared/errors'
 import {
   purchaseContractStatusOptions,
   purchaseContractSourceTypeOptions,
-} from '../../../shared/formOptions'
+} from '@/shared/formOptions'
 import {
   canApproveAssignedRecord,
   formatDate,
@@ -49,9 +49,9 @@ import {
   nullableText as _nullableText,
   todayInputValue,
   type RoutedDetailPageProps,
-} from '../appHelpers'
-import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
-import { t } from '../../appI18n'
+} from '@/app/pages/appHelpers'
+import { ApprovalAssigneeSelect } from '@/app/components/ApprovalAssigneeSelect'
+import { t } from '@/app/appI18n'
 import { PurchaseContractFormModal } from './components/PurchaseContractFormModal'
 import {
   initialPurchaseContractApproveForm,

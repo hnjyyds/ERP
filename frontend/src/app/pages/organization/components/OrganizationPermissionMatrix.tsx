@@ -1,11 +1,11 @@
-import { t } from '../../../appI18n'
+import { t } from '@/app/appI18n'
 import {
   countSelectedPermissions,
   permissionCategoryLabel,
   permissionSectionText,
   type OrganizationPermissionGroup,
   type OrganizationPermissionSection,
-} from '../organizationHelpers'
+} from '@/app/pages/organization/organizationHelpers'
 
 type OrganizationPermissionMatrixProps = {
   groups: OrganizationPermissionGroup[]

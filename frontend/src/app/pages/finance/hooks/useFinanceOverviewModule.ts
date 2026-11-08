@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { getFinanceOverview, type FinanceOverview } from '../../../../api'
-import { showError } from '../../../../shared/errors'
-import { t } from '../../../appI18n'
+import { getFinanceOverview, type FinanceOverview } from '@/api'
+import { showError } from '@/shared/errors'
+import { t } from '@/app/appI18n'
 
-import type { FinanceModuleEnv } from '../financePageTypes'
+import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 
 export function useFinanceOverviewModule(env: Pick<FinanceModuleEnv, 'setError'>) {
   const { setError } = env

@@ -18,12 +18,12 @@ import {
   ExportContractPurchaseStatus,
   ExportContractShipmentStatus,
   ShipmentLine,
-} from '../../../api'
-import { shipmentPath, moduleDetailPath } from '../../routes'
-import { FormSelect, ListPageShell, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
-import { showError } from '../../../shared/errors'
-import { shipmentStatusOptions, freightMethodOptions } from '../../../shared/formOptions'
-import { useFormModal } from '../../../shared/useFormModal'
+} from '@/api'
+import { shipmentPath, moduleDetailPath } from '@/app/routes'
+import { FormSelect, ListPageShell, Metric, PanelTitle, RemoteSelect } from '@/shared/ui'
+import { showError } from '@/shared/errors'
+import { shipmentStatusOptions, freightMethodOptions } from '@/shared/formOptions'
+import { useFormModal } from '@/shared/useFormModal'
 import {
   canApproveAssignedRecord,
   formatDate,
@@ -32,9 +32,9 @@ import {
   todayInputValue,
   type RoutedDetailPageProps,
   emptyToNull,
-} from '../appHelpers'
-import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
-import { t } from '../../appI18n'
+} from '@/app/pages/appHelpers'
+import { ApprovalAssigneeSelect } from '@/app/components/ApprovalAssigneeSelect'
+import { t } from '@/app/appI18n'
 
 function freightMethodLabel(value: string): string {
   const option = freightMethodOptions.find((item) => item.value === value)

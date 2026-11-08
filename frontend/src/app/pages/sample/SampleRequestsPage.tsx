@@ -28,14 +28,14 @@ import {
   type SampleRecord as _SampleRecord,
   type SampleRecordCreatePayload as _SampleRecordCreatePayload,
   SampleRecordImagePayload,
-} from '../../../api'
-import { sampleRequestPath, moduleDetailPath } from '../../routes'
-import { t } from '../../appI18n'
-import { FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
-import { showError } from '../../../shared/errors'
-import { useFormModal } from '../../../shared/useFormModal'
-import { useTablePagination } from '../../../shared/useTablePagination'
-import { openSampleRequestPrint } from '../../../shared/print'
+} from '@/api'
+import { sampleRequestPath, moduleDetailPath } from '@/app/routes'
+import { t } from '@/app/appI18n'
+import { FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { showError } from '@/shared/errors'
+import { useFormModal } from '@/shared/useFormModal'
+import { useTablePagination } from '@/shared/useTablePagination'
+import { openSampleRequestPrint } from '@/shared/print'
 import {
   sampleStatusOptions,
   sampleDestinationOptions,
@@ -44,15 +44,15 @@ import {
   samplePayeeTypeOptions,
   sampleRecordTypeOptions,
   sampleSourceTypeOptions as _sampleSourceTypeOptions,
-} from '../../../shared/formOptions'
+} from '@/shared/formOptions'
 import {
   formatDate,
   nullableText,
   todayInputValue,
   type RoutedDetailPageProps,
   emptyToNull,
-} from '../appHelpers'
-import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
+} from '@/app/pages/appHelpers'
+import { ApprovalAssigneeSelect } from '@/app/components/ApprovalAssigneeSelect'
 
 type SampleRecordFormState = {
   code: string

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
-import type { UserAvatarType } from '../../api'
-import { t, type TranslationKey } from '../../app/appI18n'
+import type { UserAvatarType } from '@/api'
+import { t, type TranslationKey } from '@/app/appI18n'
 
 type PersonAvatarPresetId =
   | 'person-tech-01'

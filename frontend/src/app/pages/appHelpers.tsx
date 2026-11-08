@@ -1,9 +1,9 @@
 import { Tag } from 'antd'
 import type { ReactNode as _ReactNode } from 'react'
-import type { AppLanguage, AppTimeZone, CurrentUser, MenuItem } from '../../api'
-import { translate, type TranslationKey } from '../../locales'
-import { partnerTypeOptions } from '../../shared/formOptions'
-import { routeDefinitionFor } from '../routes'
+import type { AppLanguage, AppTimeZone, CurrentUser, MenuItem } from '@/api'
+import { translate, type TranslationKey } from '@/locales'
+import { partnerTypeOptions } from '@/shared/formOptions'
+import { routeDefinitionFor } from '@/app/routes'
 
 export const superAdminPermission = 'system:super_admin'
 

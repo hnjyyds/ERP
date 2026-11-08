@@ -26,8 +26,8 @@ const { pendingTask } = vi.hoisted(() => ({
   },
 }))
 
-vi.mock('../../../api', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../../api')>()
+vi.mock('@/api', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/api')>()
   return {
     ...actual,
     listQualityInspections: vi.fn().mockResolvedValue({
@@ -71,8 +71,8 @@ import {
   listPurchaseContracts,
   listQualityInspections,
   updateQualityInspection,
-} from '../../../api'
-import { MyQualityTasksPage } from '../quality/MyQualityTasksPage'
+} from '@/api'
+import { MyQualityTasksPage } from '@/app/pages/quality/MyQualityTasksPage'
 
 describe('MyQualityTasksPage', () => {
   const currentUser = {

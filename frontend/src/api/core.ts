@@ -2,8 +2,8 @@ import {
   ApiError,
   friendlyMessageFor,
   type ApiErrorDetail,
-} from '../shared/errors'
-import { getRuntimeSettings } from '../app/pages/appHelpers'
+} from '@/shared/errors'
+import { getRuntimeSettings } from '@/app/pages/appHelpers'
 
 export interface ApiResponse<T> {
   success: boolean

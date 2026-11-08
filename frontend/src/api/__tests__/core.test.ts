@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { getRuntimeSettings, setRuntimeSettings } from '../../app/pages/appHelpers'
-import { translate } from '../../locales'
-import { ApiError, friendlyMessageFor } from '../../shared/errors'
-import { apiBaseUrl, readApiError, request } from '../core'
+import { getRuntimeSettings, setRuntimeSettings } from '@/app/pages/appHelpers'
+import { translate } from '@/locales'
+import { ApiError, friendlyMessageFor } from '@/shared/errors'
+import { apiBaseUrl, readApiError, request } from '@/api/core'
 
 const originalSettings = { ...getRuntimeSettings() }
 

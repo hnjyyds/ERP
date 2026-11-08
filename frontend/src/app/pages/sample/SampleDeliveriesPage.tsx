@@ -27,12 +27,12 @@ import {
   SampleDeliveryFee,
   SampleDeliveryLine,
   SampleDeliveryStatusStatistic,
-} from '../../../api'
-import { sampleDeliveryPath, moduleDetailPath } from '../../routes'
-import { t } from '../../appI18n'
-import { FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
-import { showError } from '../../../shared/errors'
-import { downloadCsv } from '../../../shared/print'
+} from '@/api'
+import { sampleDeliveryPath, moduleDetailPath } from '@/app/routes'
+import { t } from '@/app/appI18n'
+import { FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { showError } from '@/shared/errors'
+import { downloadCsv } from '@/shared/print'
 import {
   sampleDeliveryStatusOptions,
   sampleDeliveryFeeTypeOptions,
@@ -40,7 +40,7 @@ import {
   sampleDeliveryTrackingStatusOptions,
   sampleRecordTypeOptions,
   sampleRecordStatusOptions,
-} from '../../../shared/formOptions'
+} from '@/shared/formOptions'
 import {
   canApproveAssignedRecord,
   formatDate,
@@ -49,8 +49,8 @@ import {
   todayInputValue,
   type RoutedDetailPageProps,
   emptyToNull,
-} from '../appHelpers'
-import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
+} from '@/app/pages/appHelpers'
+import { ApprovalAssigneeSelect } from '@/app/components/ApprovalAssigneeSelect'
 
 function sampleDeliveryFeeTypeLabel(value: string): string {
   const option = sampleDeliveryFeeTypeOptions.find((item) => item.value === value)

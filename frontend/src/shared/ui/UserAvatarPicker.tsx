@@ -2,8 +2,8 @@ import { ChevronDown, ImagePlus, UploadCloud } from 'lucide-react'
 import type { ChangeEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 
-import type { UserAvatarType } from '../../api'
-import { t, type TranslationKey } from '../../app/appI18n'
+import type { UserAvatarType } from '@/api'
+import { t, type TranslationKey } from '@/app/appI18n'
 import { UserAvatar, avatarPresets, resolveAvatarPreset, type AvatarPreset } from './UserAvatar'
 
 export type UserAvatarPickerValue = {

@@ -1,8 +1,8 @@
 import { Alert, Select } from 'antd'
 import { useEffect, useMemo, useState } from 'react'
 
-import { listAssignableUsers, type AssignableUser } from '../../api'
-import { t } from '../appI18n'
+import { listAssignableUsers, type AssignableUser } from '@/api'
+import { t } from '@/app/appI18n'
 
 type Props = {
   currentUserId: string

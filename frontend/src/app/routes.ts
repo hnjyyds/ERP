@@ -1,4 +1,4 @@
-import type { TranslationKey } from '../locales'
+import type { TranslationKey } from '@/locales'
 
 export type NavGroupId =
   | 'masterdata'

@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render } from '@testing-library/react'
 
-vi.mock('../masterdata/TradingPartnerPage', () => ({
+vi.mock('@/app/pages/masterdata/TradingPartnerPage', () => ({
   TradingPartnerPage: () => <div data-testid="trading-partner-page" />,
 }))
 
-import { CustomersPage } from '../masterdata/CustomersPage'
+import { CustomersPage } from '@/app/pages/masterdata/CustomersPage'
 
 describe('CustomersPage', () => {
   beforeEach(() => {

@@ -1,7 +1,7 @@
 import { Modal as _Modal, message } from 'antd'
 
-import { getRuntimeSettings } from '../app/pages/appHelpers'
-import { translate, type TranslationKey } from '../locales'
+import { getRuntimeSettings } from '@/app/pages/appHelpers'
+import { translate, type TranslationKey } from '@/locales'
 
 export type ApiErrorDetail = {
   field: string

@@ -14,10 +14,10 @@ import {
   getI18nConfig,
   hasAuthToken,
   updateCurrentUserAvatar,
-} from '../api'
+} from '@/api'
 import { canAccessPath, dashboardPath, loginPath } from './routes'
-import { showError, showSuccess } from '../shared/errors'
-import type { UserAvatarPickerValue } from '../shared/ui'
+import { showError, showSuccess } from '@/shared/errors'
+import type { UserAvatarPickerValue } from '@/shared/ui'
 import { fallbackI18nConfig, normalizeSettings, t } from './appI18n'
 import { setRuntimeSettings, type AppSettings } from './pages/appHelpers'
 import { AppShell } from './components/shell/AppShell'

@@ -7,17 +7,17 @@ import type {
   Product,
   PurchaseContractCreatePayload,
   Supplier,
-} from '../../../../api'
-import { purchaseContractSourceTypeOptions } from '../../../../shared/formOptions'
-import { FormSelect, PanelTitle } from '../../../../shared/ui'
-import { t } from '../../../appI18n'
+} from '@/api'
+import { purchaseContractSourceTypeOptions } from '@/shared/formOptions'
+import { FormSelect, PanelTitle } from '@/shared/ui'
+import { t } from '@/app/appI18n'
 import {
   renderAssignableUserOptions,
   renderProductOptions,
   renderSupplierOptions,
   type PurchaseContractFormState,
   type PurchaseContractGenerateFormState,
-} from '../purchaseContractHelpers'
+} from '@/app/pages/purchase/purchaseContractHelpers'
 
 type PurchaseContractFormModalProps = {
   open: boolean

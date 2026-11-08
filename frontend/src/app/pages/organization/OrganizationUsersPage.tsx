@@ -47,10 +47,10 @@ import {
   type OrganizationUserCreatePayload,
   type OrganizationUserCreateResult,
   type OrganizationUserUpdatePayload,
-} from '../../../api'
-import { showError } from '../../../shared/errors'
-import { Metric, UserAvatar, UserAvatarPicker, defaultAvatarPreset } from '../../../shared/ui'
-import { t } from '../../appI18n'
+} from '@/api'
+import { showError } from '@/shared/errors'
+import { Metric, UserAvatar, UserAvatarPicker, defaultAvatarPreset } from '@/shared/ui'
+import { t } from '@/app/appI18n'
 import { OrganizationCompanySection } from './components/OrganizationCompanySection'
 import { OrganizationPermissionMatrix } from './components/OrganizationPermissionMatrix'
 import {

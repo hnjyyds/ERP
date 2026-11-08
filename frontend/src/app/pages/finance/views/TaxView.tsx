@@ -8,22 +8,22 @@ import {
   Save,
   ShieldCheck,
 } from 'lucide-react'
-import { type VerificationDocument, type VerificationUsageItem } from '../../../../api'
-import { FormSelect, PanelTitle } from '../../../../shared/ui'
-import { t } from '../../../appI18n'
+import { type VerificationDocument, type VerificationUsageItem } from '@/api'
+import { FormSelect, PanelTitle } from '@/shared/ui'
+import { t } from '@/app/appI18n'
 import {
   verificationDocumentStatusOptions,
   verificationReminderStatusOptions,
-} from '../../../../shared/formOptions'
-import { formatDate, formatFinanceAmount, nullableText } from '../../appHelpers'
+} from '@/shared/formOptions'
+import { formatDate, formatFinanceAmount, nullableText } from '@/app/pages/appHelpers'
 import {
   initialTaxRefundForm,
   verificationDocumentStatusLabel,
   verificationDocumentStatusTag,
   verificationReminderStatusTag,
-} from '../financeHelpers'
-import type { TaxModel } from '../hooks/useTaxModule'
-import type { FinanceViewShell } from '../financePageTypes'
+} from '@/app/pages/finance/financeHelpers'
+import type { TaxModel } from '@/app/pages/finance/hooks/useTaxModule'
+import type { FinanceViewShell } from '@/app/pages/finance/financePageTypes'
 
 type Props = {
   model: TaxModel

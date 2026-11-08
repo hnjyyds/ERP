@@ -1,4 +1,4 @@
-import type { AppLanguage } from '../api'
+import type { AppLanguage } from '@/api'
 import enUS from './en-US.json'
 import zhCN from './zh-CN.json'
 

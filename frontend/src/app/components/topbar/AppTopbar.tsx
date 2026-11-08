@@ -1,8 +1,8 @@
 import { Alert } from 'antd'
 import { Settings } from 'lucide-react'
-import type { MenuItem } from '../../../api'
-import { pageTitle } from '../../pages/appHelpers'
-import { t } from '../../appI18n'
+import type { MenuItem } from '@/api'
+import { pageTitle } from '@/app/pages/appHelpers'
+import { t } from '@/app/appI18n'
 
 type Props = {
   activePath: string

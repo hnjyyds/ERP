@@ -112,8 +112,8 @@ class IntersectionObserverMock {
 window.IntersectionObserver = IntersectionObserverMock as unknown as typeof IntersectionObserver
 
 // ── API mock（自动包含所有真实导出 + 列表函数默认返回空数据）──
-vi.mock('../api', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../api')>()
+vi.mock('@/api', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/api')>()
   // 把所有 list* / get* / export* 函数 mock 为返回空数据，避免页面的 useEffect 发起真实请求
   const emptyList = {
     data: [],

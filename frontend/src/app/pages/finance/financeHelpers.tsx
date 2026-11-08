@@ -50,12 +50,12 @@ import type {
   FeePaymentQueryReport,
   CustomsReceiptCollectionReport,
   TaxRefundStatisticsReport,
-} from '../../../api'
-import { translate, type TranslationKey } from '../../../locales'
-import { daysFromTodayInputValue, emptyToNull, getRuntimeSettings, todayInputValue } from '../appHelpers'
-import { type LocalizedOption, allocationTypeOptions, feePaymentRequestStatusOptions, feeTypeOptions, miscFeeAllocationMethodOptions, miscFeeCategoryOptions, miscFeeItemStatusOptions, partnerFeeInvoiceStatusOptions, paymentRequestStatusOptions, paymentTypeOptions, profitCostTypeOptions, purchaseInvoiceNoticeStatusOptions, receiptStatusOptions, receiptTypeOptions, reportingDocumentTypeOptions, reportingStatusOptions, sampleFeeTypeOptions, settlementStatusOptions, shipmentStatusOptions, supplierInvoiceStatusOptions, verificationDocumentStatusOptions, verificationReminderStatusOptions } from '../../../shared/formOptions'
+} from '@/api'
+import { translate, type TranslationKey } from '@/locales'
+import { daysFromTodayInputValue, emptyToNull, getRuntimeSettings, todayInputValue } from '@/app/pages/appHelpers'
+import { type LocalizedOption, allocationTypeOptions, feePaymentRequestStatusOptions, feeTypeOptions, miscFeeAllocationMethodOptions, miscFeeCategoryOptions, miscFeeItemStatusOptions, partnerFeeInvoiceStatusOptions, paymentRequestStatusOptions, paymentTypeOptions, profitCostTypeOptions, purchaseInvoiceNoticeStatusOptions, receiptStatusOptions, receiptTypeOptions, reportingDocumentTypeOptions, reportingStatusOptions, sampleFeeTypeOptions, settlementStatusOptions, shipmentStatusOptions, supplierInvoiceStatusOptions, verificationDocumentStatusOptions, verificationReminderStatusOptions } from '@/shared/formOptions'
 
-import type { FinanceModule } from '../../routes'
+import type { FinanceModule } from '@/app/routes'
 
 function optionLabel(options: LocalizedOption[], value: string): string {
   const option = options.find((item) => item.value === value)

@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import React from 'react'
 
 // ── Mock API module (must be inline, no external variables due to hoisting) ──
-vi.mock('../../../api', () => ({
+vi.mock('@/api', () => ({
   addExportContractAdvancePayment: vi.fn(),
   approveExportContract: vi.fn(),
   cancelExportContract: vi.fn(),
@@ -22,13 +22,13 @@ vi.mock('../../../api', () => ({
 }))
 
 // ── Mock routes（通过 importOriginal 自动包含所有真实路由导出）───
-vi.mock('../../routes', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../routes')>()
+vi.mock('@/app/routes', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/app/routes')>()
   return { ...actual }
 })
 
 // ── Mock shared modules ──────────────────────────────────────────
-vi.mock('../../../shared/ui', () => {
+vi.mock('@/shared/ui', () => {
   return {
     FormModal: ({
       open,
@@ -85,17 +85,17 @@ vi.mock('../../../shared/ui', () => {
   }
 })
 
-vi.mock('../../../shared/errors', () => ({
+vi.mock('@/shared/errors', () => ({
   showError: vi.fn(),
   showWarningDialog: vi.fn(),
 }))
 
-vi.mock('../../../shared/print', () => ({
+vi.mock('@/shared/print', () => ({
   downloadCsv: vi.fn(),
   openExportContractPrint: vi.fn(),
 }))
 
-vi.mock('../../../shared/formOptions', () => ({
+vi.mock('@/shared/formOptions', () => ({
   exportContractStatusOptions: [
     { value: 'draft', labelKey: 'sales.status.draft' },
     { value: 'submitted', labelKey: 'sales.status.submitted' },
@@ -105,10 +105,10 @@ vi.mock('../../../shared/formOptions', () => ({
 }))
 
 // Import after all mocks
-import { ExportContractsPage } from '../sales/ExportContractsPage'
-import type { ExportContract } from '../../../api'
+import { ExportContractsPage } from '@/app/pages/sales/ExportContractsPage'
+import type { ExportContract } from '@/api'
 // Re-import mocked modules to get typed references
-const api = await vi.importMock<Record<string, ReturnType<typeof vi.fn>>>('../../../api')
+const api = await vi.importMock<Record<string, ReturnType<typeof vi.fn>>>('@/api')
 
 describe('ExportContractsPage', () => {
   const onNavigate = vi.fn()

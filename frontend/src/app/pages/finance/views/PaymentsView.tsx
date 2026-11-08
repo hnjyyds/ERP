@@ -4,11 +4,11 @@ import {
   type PayableItem,
   type SupplierInvoice,
   type SupplierPaymentRequest,
-} from '../../../../api'
-import { FormSelect, PanelTitle } from '../../../../shared/ui'
-import { supplierInvoiceStatusOptions, paymentTypeOptions } from '../../../../shared/formOptions'
-import { formatFinanceAmount, nullableText } from '../../appHelpers'
-import { t } from '../../../appI18n'
+} from '@/api'
+import { FormSelect, PanelTitle } from '@/shared/ui'
+import { supplierInvoiceStatusOptions, paymentTypeOptions } from '@/shared/formOptions'
+import { formatFinanceAmount, nullableText } from '@/app/pages/appHelpers'
+import { t } from '@/app/appI18n'
 import {
   initialPaymentRequestForm,
   initialPaymentApprovalForm,
@@ -16,10 +16,10 @@ import {
   supplierInvoiceStatusTag,
   paymentRequestStatusTag,
   paymentTypeLabel,
-} from '../financeHelpers'
-import { ApprovalAssigneeSelect } from '../../../components/ApprovalAssigneeSelect'
-import type { PaymentsModel } from '../hooks/usePaymentsModule'
-import type { FinanceViewShell } from '../financePageTypes'
+} from '@/app/pages/finance/financeHelpers'
+import { ApprovalAssigneeSelect } from '@/app/components/ApprovalAssigneeSelect'
+import type { PaymentsModel } from '@/app/pages/finance/hooks/usePaymentsModule'
+import type { FinanceViewShell } from '@/app/pages/finance/financePageTypes'
 
 type Props = {
   model: PaymentsModel

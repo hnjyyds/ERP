@@ -10,11 +10,11 @@ import {
   type PartnerContactPayload as ApiPartnerContactPayload,
   type PartnerCreatePayload as ApiPartnerCreatePayload,
   type PartnerUpdatePayload as ApiPartnerUpdatePayload,
-} from '../../../api'
+} from '@/api'
 import { TradingPartnerPage } from './TradingPartnerPage'
 import type { PartnerContactPayload, PartnerCreatePayload, PartnerUpdatePayload } from './tradingPartnerModel'
-import { t } from '../../appI18n'
-import { moduleDetailPath, partnerPath } from '../../routes'
+import { t } from '@/app/appI18n'
+import { moduleDetailPath, partnerPath } from '@/app/routes'
 
 type PartnersPageProps = {
   detailId: string | null

@@ -16,10 +16,10 @@ import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import type { FormEvent, MouseEvent } from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { showError, showWarningDialog } from '../../../shared/errors'
-import { useFormModal } from '../../../shared/useFormModal'
-import { ListPageShell, Metric, PanelTitle, useColumnView, type ColumnOption } from '../../../shared/ui'
-import { t } from '../../appI18n'
+import { showError, showWarningDialog } from '@/shared/errors'
+import { useFormModal } from '@/shared/useFormModal'
+import { ListPageShell, Metric, PanelTitle, useColumnView, type ColumnOption } from '@/shared/ui'
+import { t } from '@/app/appI18n'
 import {
   contactPayload,
   entityToForm,

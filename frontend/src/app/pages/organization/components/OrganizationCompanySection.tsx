@@ -1,9 +1,9 @@
 import { Building2, Pencil } from 'lucide-react'
 import { Skeleton } from 'antd'
 
-import type { CompanyInfo } from '../../../../api'
-import { t } from '../../../appI18n'
-import { formatOrganizationDateTime } from '../organizationHelpers'
+import type { CompanyInfo } from '@/api'
+import { t } from '@/app/appI18n'
+import { formatOrganizationDateTime } from '@/app/pages/organization/organizationHelpers'
 
 type OrganizationCompanySectionProps = {
   companyInfo: CompanyInfo | null

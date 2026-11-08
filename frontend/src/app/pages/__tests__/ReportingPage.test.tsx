@@ -2,15 +2,15 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { ApprovalDocument, ApprovalQuery, ReportingStatistics } from '../../../api'
+import type { ApprovalDocument, ApprovalQuery, ReportingStatistics } from '@/api'
 
-vi.mock('../../appI18n', () => ({
+vi.mock('@/app/appI18n', () => ({
   t: (key: string, opts?: Record<string, unknown>) =>
     opts?.count != null ? `${key}${opts.count}` : key,
 }))
 
-vi.mock('../../../api', async () => {
-  const actual = await vi.importActual<typeof import('../../../api')>('../../../api')
+vi.mock('@/api', async () => {
+  const actual = await vi.importActual<typeof import('@/api')>('@/api')
   return {
     ...actual,
     listApprovalDocuments: vi.fn(),
@@ -18,8 +18,8 @@ vi.mock('../../../api', async () => {
   }
 })
 
-import { listApprovalDocuments, listReportingStatistics } from '../../../api'
-import { ReportingPage } from '../reporting/ReportingPage'
+import { listApprovalDocuments, listReportingStatistics } from '@/api'
+import { ReportingPage } from '@/app/pages/reporting/ReportingPage'
 
 const emptyStatistics: ReportingStatistics = {
   summary: {

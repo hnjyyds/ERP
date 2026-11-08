@@ -1,11 +1,11 @@
 import { Button, Input, Table, Tag } from 'antd'
 import { FileText, Plus, Search, RefreshCw, Save, Ship } from 'lucide-react'
-import { type PortImportBatch, type CustomsDeclarationRecord } from '../../../../api'
-import { FormSelect, PanelTitle } from '../../../../shared/ui'
-import { formatFinanceAmount, nullableText } from '../../appHelpers'
-import { t } from '../../../appI18n'
-import type { PortDataModel } from '../hooks/usePortDataModule'
-import type { FinanceViewShell } from '../financePageTypes'
+import { type PortImportBatch, type CustomsDeclarationRecord } from '@/api'
+import { FormSelect, PanelTitle } from '@/shared/ui'
+import { formatFinanceAmount, nullableText } from '@/app/pages/appHelpers'
+import { t } from '@/app/appI18n'
+import type { PortDataModel } from '@/app/pages/finance/hooks/usePortDataModule'
+import type { FinanceViewShell } from '@/app/pages/finance/financePageTypes'
 
 type Props = {
   model: PortDataModel

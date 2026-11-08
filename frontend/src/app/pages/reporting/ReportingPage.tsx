@@ -11,15 +11,15 @@ import {
   type StatusAmountStatistic,
   listApprovalDocuments,
   listReportingStatistics,
-} from '../../../api'
-import { showError } from '../../../shared/errors'
-import { t } from '../../appI18n'
+} from '@/api'
+import { showError } from '@/shared/errors'
+import { t } from '@/app/appI18n'
 import {
   exportContractStatusOptions,
   reportingDocumentTypeOptions,
   reportingStatusOptions,
-} from '../../../shared/formOptions'
-import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+} from '@/shared/formOptions'
+import { FormSelect, Metric, PanelTitle } from '@/shared/ui'
 import { Button, Input, Table, Tag } from 'antd'
 import {
   ArrowRight,
@@ -30,13 +30,13 @@ import {
   ShieldCheck,
 } from 'lucide-react'
 import { type ReactNode, useEffect, useState } from 'react'
-import { exportContractPath, moduleDetailPath, purchaseContractPath } from '../../routes'
+import { exportContractPath, moduleDetailPath, purchaseContractPath } from '@/app/routes'
 import {
   formatDate,
   formatFinanceAmount,
   nullableText,
   type ModuleNavigationProps,
-} from '../appHelpers'
+} from '@/app/pages/appHelpers'
 
 type FollowupTemplateFormState = {
   name: string

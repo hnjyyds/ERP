@@ -1,6 +1,6 @@
 import { ChevronRight } from 'lucide-react'
-import { t } from '../../../appI18n'
-import type { FinanceViewShell } from '../financePageTypes'
+import { t } from '@/app/appI18n'
+import type { FinanceViewShell } from '@/app/pages/finance/financePageTypes'
 
 type Props = {
   shell: FinanceViewShell

@@ -1,5 +1,5 @@
-import { type AppLanguage, type AppTimeZone, type I18nConfig } from '../api'
-import { translate, type TranslationKey, type TranslationParams } from '../locales'
+import { type AppLanguage, type AppTimeZone, type I18nConfig } from '@/api'
+import { translate, type TranslationKey, type TranslationParams } from '@/locales'
 import { getRuntimeSettings } from './pages/appHelpers'
 
 export type { TranslationKey, TranslationParams }

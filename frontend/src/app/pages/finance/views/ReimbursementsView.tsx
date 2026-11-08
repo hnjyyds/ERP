@@ -1,13 +1,13 @@
 import { Alert, Button, Descriptions, Input, Modal, Table } from 'antd'
 import { Plus, Search, ClipboardCheck, Receipt, Save } from 'lucide-react'
-import { type Reimbursement } from '../../../../api'
-import { FormSelect, PanelTitle } from '../../../../shared/ui'
-import { canApproveAssignedRecord, formatFinanceAmount } from '../../appHelpers'
-import { reimbursementCategoryLabel, reimbursementStatusTag } from '../financeHelpers'
-import { ApprovalAssigneeSelect } from '../../../components/ApprovalAssigneeSelect'
-import { t } from '../../../appI18n'
-import type { ReimbursementsModel } from '../hooks/useReimbursementsModule'
-import type { FinanceViewShell } from '../financePageTypes'
+import { type Reimbursement } from '@/api'
+import { FormSelect, PanelTitle } from '@/shared/ui'
+import { canApproveAssignedRecord, formatFinanceAmount } from '@/app/pages/appHelpers'
+import { reimbursementCategoryLabel, reimbursementStatusTag } from '@/app/pages/finance/financeHelpers'
+import { ApprovalAssigneeSelect } from '@/app/components/ApprovalAssigneeSelect'
+import { t } from '@/app/appI18n'
+import type { ReimbursementsModel } from '@/app/pages/finance/hooks/useReimbursementsModule'
+import type { FinanceViewShell } from '@/app/pages/finance/financePageTypes'
 
 type Props = {
   model: ReimbursementsModel

@@ -1,4 +1,4 @@
-import { downloadCsv } from '../../../../shared/print'
+import { downloadCsv } from '@/shared/print'
 import { useEffect, useState } from 'react'
 import {
   getReceiptUsageReport,
@@ -23,11 +23,11 @@ import {
   exportTaxRefundStatisticsReport,
   drilldownFinanceReport,
   explainFinanceReport,
-} from '../../../../api'
-import { showError } from '../../../../shared/errors'
-import { t } from '../../../appI18n'
+} from '@/api'
+import { showError } from '@/shared/errors'
+import { t } from '@/app/appI18n'
 
-import type { FinanceModuleEnv } from '../financePageTypes'
+import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 
 export function useReportsModule(env: FinanceModuleEnv) {
   const { activeModule, setMessage, setError } = env

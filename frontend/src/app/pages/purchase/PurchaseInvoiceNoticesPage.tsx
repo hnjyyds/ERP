@@ -14,13 +14,13 @@ import {
   type PurchaseInvoiceNoticeReceivePayload,
   type PurchaseInvoiceNoticeReminder,
   type PurchaseInvoiceNoticeSendPayload,
-} from '../../../api'
-import { purchaseInvoiceNoticePath, moduleDetailPath } from '../../routes'
-import { FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
-import { t } from '../../appI18n'
-import { showError } from '../../../shared/errors'
-import { useFormModal } from '../../../shared/useFormModal'
-import { purchaseInvoiceNoticeStatusOptions } from '../../../shared/formOptions'
+} from '@/api'
+import { purchaseInvoiceNoticePath, moduleDetailPath } from '@/app/routes'
+import { FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { t } from '@/app/appI18n'
+import { showError } from '@/shared/errors'
+import { useFormModal } from '@/shared/useFormModal'
+import { purchaseInvoiceNoticeStatusOptions } from '@/shared/formOptions'
 import {
   formatDate,
   formatMoney,
@@ -28,7 +28,7 @@ import {
   todayInputValue,
   type RoutedDetailPageProps,
   emptyToNull,
-} from '../appHelpers'
+} from '@/app/pages/appHelpers'
 
 type PurchaseInvoiceNoticeFormState = {
   customs_declaration_id: string

@@ -1,14 +1,14 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 
-import type { CurrentUser } from '../../../api'
-import { t } from '../../appI18n'
+import type { CurrentUser } from '@/api'
+import { t } from '@/app/appI18n'
 import {
   canApproveAssignedRecord,
   formatDate,
   severityTag,
   setRuntimeSettings,
-} from '../appHelpers'
+} from '@/app/pages/appHelpers'
 
 function currentUser(permissions: string[]): CurrentUser {
   return {

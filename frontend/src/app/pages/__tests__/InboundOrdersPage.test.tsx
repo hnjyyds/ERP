@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { fireEvent as _fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-vi.mock('../../../api', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../../api')>()
+vi.mock('@/api', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/api')>()
   return {
     ...actual,
     approveInboundOrder: vi.fn().mockRejectedValue(new Error('stop after payload capture')),
@@ -74,7 +74,7 @@ vi.mock('../../../api', async (importOriginal) => {
   }
 })
 
-import { InboundOrdersPage } from '../warehouse/InboundOrdersPage'
+import { InboundOrdersPage } from '@/app/pages/warehouse/InboundOrdersPage'
 import {
   generateInboundOrderFromPlan,
   listAssignableUsers,
@@ -84,7 +84,7 @@ import {
   submitInboundOrder,
   type CurrentUser,
   type InboundOrder,
-} from '../../../api'
+} from '@/api'
 
 describe('InboundOrdersPage', () => {
   const onNavigate = vi.fn()

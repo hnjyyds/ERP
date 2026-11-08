@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-vi.mock('../../../api', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../../api')>()
+vi.mock('@/api', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/api')>()
   return {
     ...actual,
     listProducts: vi.fn(),
@@ -12,8 +12,8 @@ vi.mock('../../../api', async (importOriginal) => {
   }
 })
 
-import { ProductsPage } from '../masterdata/ProductsPage'
-import { listProducts, type Product } from '../../../api'
+import { ProductsPage } from '@/app/pages/masterdata/ProductsPage'
+import { listProducts, type Product } from '@/api'
 
 const productFixture: Product = {
   id: 'product-1',

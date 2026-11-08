@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { FinancePage } from '../finance/FinancePage'
-import * as api from '../../../api'
-import type { CurrentUser, SupplierInvoice, SupplierPaymentRequest } from '../../../api'
+import { FinancePage } from '@/app/pages/finance/FinancePage'
+import * as api from '@/api'
+import type { CurrentUser, SupplierInvoice, SupplierPaymentRequest } from '@/api'
 
 const currentUser: CurrentUser = {
   id: 'u-finance',

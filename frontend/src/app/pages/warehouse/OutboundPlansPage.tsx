@@ -20,16 +20,16 @@ import {
   type OutboundPlanSchedulePayload,
   ShipmentPlan,
   listShipments,
-} from '../../../api'
-import { warehouseOutboundPlanPath, moduleDetailPath } from '../../routes'
-import { FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
-import { useFormModal } from '../../../shared/useFormModal'
-import { showError } from '../../../shared/errors'
+} from '@/api'
+import { warehouseOutboundPlanPath, moduleDetailPath } from '@/app/routes'
+import { FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { useFormModal } from '@/shared/useFormModal'
+import { showError } from '@/shared/errors'
 import {
   outboundPlanStatusOptions,
   outboundPlanTypeOptions,
   outboundPlanSourceTypeOptions,
-} from '../../../shared/formOptions'
+} from '@/shared/formOptions'
 import {
   daysFromTodayInputValue,
   formatDate,
@@ -40,8 +40,8 @@ import {
   type RoutedDetailPageProps,
   emptyToNull,
   trimDecimal,
-} from '../appHelpers'
-import { t } from '../../appI18n'
+} from '@/app/pages/appHelpers'
+import { t } from '@/app/appI18n'
 
 type OutboundPlanGenerateFormState = {
   shipment_plan_id: string

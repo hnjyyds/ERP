@@ -10,9 +10,9 @@ import {
   type PayableItem,
   type SupplierInvoice,
   type SupplierPaymentRequest,
-} from '../../../../api'
-import { showError } from '../../../../shared/errors'
-import { canApproveAssignedRecord } from '../../appHelpers'
+} from '@/api'
+import { showError } from '@/shared/errors'
+import { canApproveAssignedRecord } from '@/app/pages/appHelpers'
 import {
   SupplierInvoiceFormState,
   PaymentRequestFormState,
@@ -23,10 +23,10 @@ import {
   supplierInvoicePayload,
   paymentRequestPayload,
   paymentApprovalPayload,
-} from '../financeHelpers'
-import { t } from '../../../appI18n'
+} from '@/app/pages/finance/financeHelpers'
+import { t } from '@/app/appI18n'
 
-import type { FinanceModuleEnv } from '../financePageTypes'
+import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 
 export function usePaymentsModule(env: FinanceModuleEnv) {
   const { activeModule, detailId, currentUser, setMessage, setError } = env

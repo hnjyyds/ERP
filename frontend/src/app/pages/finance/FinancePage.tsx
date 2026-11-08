@@ -13,17 +13,17 @@ import {
 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useEffect } from 'react'
-import { type CurrentUser } from '../../../api'
+import { type CurrentUser } from '@/api'
 import {
   financePath,
   financeModulePathByModule,
   financeDetailPath,
   type FinanceModule,
   type FinanceView,
-} from '../../routes'
-import { Metric } from '../../../shared/ui'
-import { t } from '../../appI18n'
-import { formatFinanceAmount, type ModuleNavigationProps } from '../appHelpers'
+} from '@/app/routes'
+import { Metric } from '@/shared/ui'
+import { t } from '@/app/appI18n'
+import { formatFinanceAmount, type ModuleNavigationProps } from '@/app/pages/appHelpers'
 
 import { useFinanceFeedback } from './hooks/useFinanceFeedback'
 import { useFinanceOverviewModule } from './hooks/useFinanceOverviewModule'

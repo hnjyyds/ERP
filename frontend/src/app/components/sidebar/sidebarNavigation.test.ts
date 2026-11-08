@@ -1,13 +1,13 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import type { MenuItem } from '../../../api'
+import type { MenuItem } from '@/api'
 import { getSidebarMenuGroups } from './sidebarNavigation'
 
-vi.mock('../../pages/appHelpers', () => ({
+vi.mock('@/app/pages/appHelpers', () => ({
   getRuntimeSettings: () => ({ language: 'zh-CN' }),
 }))
 
-vi.mock('../../../locales', () => ({
+vi.mock('@/locales', () => ({
   translate: (_language: string, key: string) => key,
 }))
 

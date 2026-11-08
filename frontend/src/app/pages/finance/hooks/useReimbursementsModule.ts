@@ -7,12 +7,12 @@ import {
   listReimbursements,
   type Reimbursement,
   type ReimbursementCreatePayload,
-} from '../../../../api'
-import { showError } from '../../../../shared/errors'
-import { canApproveAssignedRecord } from '../../appHelpers'
-import { t } from '../../../appI18n'
+} from '@/api'
+import { showError } from '@/shared/errors'
+import { canApproveAssignedRecord } from '@/app/pages/appHelpers'
+import { t } from '@/app/appI18n'
 
-import type { FinanceModuleEnv } from '../financePageTypes'
+import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 
 export function useReimbursementsModule(env: FinanceModuleEnv) {
   const { activeModule, detailId, currentUser, setMessage, setError } = env

@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react'
 import { Skeleton } from 'antd'
-import type { AuthSession, Dashboard, MenuItem } from '../../../api'
+import type { AuthSession, Dashboard, MenuItem } from '@/api'
 import {
   isDetailPathFor,
   moduleDetailId,
@@ -38,128 +38,128 @@ import {
   warehouseOutboundOrderPath,
   isFinancePath,
   parseFinanceView,
-} from '../../routes'
-import { PageErrorBoundary } from '../PageErrorBoundary'
+} from '@/app/routes'
+import { PageErrorBoundary } from '@/app/components/PageErrorBoundary'
 
 // Lazy pages
 const DashboardPage = React.lazy(() =>
-  import('../../pages/dashboard/DashboardPage').then((m) => ({ default: m.DashboardPage })),
+  import('@/app/pages/dashboard/DashboardPage').then((m) => ({ default: m.DashboardPage })),
 )
 const DashboardTodosPage = React.lazy(() =>
-  import('../../pages/dashboard/DashboardPage').then((m) => ({ default: m.DashboardTodosPage })),
+  import('@/app/pages/dashboard/DashboardPage').then((m) => ({ default: m.DashboardTodosPage })),
 )
 const DashboardSchedulesPage = React.lazy(() =>
-  import('../../pages/dashboard/DashboardPage').then((m) => ({
+  import('@/app/pages/dashboard/DashboardPage').then((m) => ({
     default: m.DashboardSchedulesPage,
   })),
 )
 const DashboardNotificationsPage = React.lazy(() =>
-  import('../../pages/dashboard/DashboardPage').then((m) => ({
+  import('@/app/pages/dashboard/DashboardPage').then((m) => ({
     default: m.DashboardNotificationsPage,
   })),
 )
 const DashboardAnnouncementsPage = React.lazy(() =>
-  import('../../pages/dashboard/DashboardPage').then((m) => ({
+  import('@/app/pages/dashboard/DashboardPage').then((m) => ({
     default: m.DashboardAnnouncementsPage,
   })),
 )
 const OrganizationUsersPage = React.lazy(() =>
-  import('../../pages/organization/OrganizationUsersPage').then((m) => ({
+  import('@/app/pages/organization/OrganizationUsersPage').then((m) => ({
     default: m.OrganizationUsersPage,
   })),
 )
 const McpSettingsPage = React.lazy(() =>
-  import('../../pages/system/McpSettingsPage').then((m) => ({ default: m.McpSettingsPage })),
+  import('@/app/pages/system/McpSettingsPage').then((m) => ({ default: m.McpSettingsPage })),
 )
 const ProductsPage = React.lazy(() =>
-  import('../../pages/masterdata/ProductsPage').then((m) => ({ default: m.ProductsPage })),
+  import('@/app/pages/masterdata/ProductsPage').then((m) => ({ default: m.ProductsPage })),
 )
 const CustomersPage = React.lazy(() =>
-  import('../../pages/masterdata/CustomersPage').then((m) => ({ default: m.CustomersPage })),
+  import('@/app/pages/masterdata/CustomersPage').then((m) => ({ default: m.CustomersPage })),
 )
 const SuppliersPage = React.lazy(() =>
-  import('../../pages/masterdata/SuppliersPage').then((m) => ({ default: m.SuppliersPage })),
+  import('@/app/pages/masterdata/SuppliersPage').then((m) => ({ default: m.SuppliersPage })),
 )
 const PartnersPage = React.lazy(() =>
-  import('../../pages/masterdata/PartnersPage').then((m) => ({ default: m.PartnersPage })),
+  import('@/app/pages/masterdata/PartnersPage').then((m) => ({ default: m.PartnersPage })),
 )
 const DocumentPartiesPage = React.lazy(() =>
-  import('../../pages/masterdata/DocumentPartiesPage').then((m) => ({
+  import('@/app/pages/masterdata/DocumentPartiesPage').then((m) => ({
     default: m.DocumentPartiesPage,
   })),
 )
 const SampleRequestsPage = React.lazy(() =>
-  import('../../pages/sample/SampleRequestsPage').then((m) => ({ default: m.SampleRequestsPage })),
+  import('@/app/pages/sample/SampleRequestsPage').then((m) => ({ default: m.SampleRequestsPage })),
 )
 const SampleRecordsPage = React.lazy(() =>
-  import('../../pages/sample/SampleRecordsPage').then((m) => ({ default: m.SampleRecordsPage })),
+  import('@/app/pages/sample/SampleRecordsPage').then((m) => ({ default: m.SampleRecordsPage })),
 )
 const SampleDeliveriesPage = React.lazy(() =>
-  import('../../pages/sample/SampleDeliveriesPage').then((m) => ({
+  import('@/app/pages/sample/SampleDeliveriesPage').then((m) => ({
     default: m.SampleDeliveriesPage,
   })),
 )
 const ExportQuotationsPage = React.lazy(() =>
-  import('../../pages/sales/ExportQuotationsPage').then((m) => ({
+  import('@/app/pages/sales/ExportQuotationsPage').then((m) => ({
     default: m.ExportQuotationsPage,
   })),
 )
 const ExportContractsPage = React.lazy(() =>
-  import('../../pages/sales/ExportContractsPage').then((m) => ({ default: m.ExportContractsPage })),
+  import('@/app/pages/sales/ExportContractsPage').then((m) => ({ default: m.ExportContractsPage })),
 )
 const ShipmentsPage = React.lazy(() =>
-  import('../../pages/sales/ShipmentsPage').then((m) => ({ default: m.ShipmentsPage })),
+  import('@/app/pages/sales/ShipmentsPage').then((m) => ({ default: m.ShipmentsPage })),
 )
 const PurchaseInquiriesPage = React.lazy(() =>
-  import('../../pages/purchase/PurchaseInquiriesPage').then((m) => ({
+  import('@/app/pages/purchase/PurchaseInquiriesPage').then((m) => ({
     default: m.PurchaseInquiriesPage,
   })),
 )
 const PurchaseContractsPage = React.lazy(() =>
-  import('../../pages/purchase/PurchaseContractsPage').then((m) => ({
+  import('@/app/pages/purchase/PurchaseContractsPage').then((m) => ({
     default: m.PurchaseContractsPage,
   })),
 )
 const PurchaseInvoiceNoticesPage = React.lazy(() =>
-  import('../../pages/purchase/PurchaseInvoiceNoticesPage').then((m) => ({
+  import('@/app/pages/purchase/PurchaseInvoiceNoticesPage').then((m) => ({
     default: m.PurchaseInvoiceNoticesPage,
   })),
 )
 const FollowupPage = React.lazy(() =>
-  import('../../pages/purchase/FollowupPage').then((m) => ({ default: m.FollowupPage })),
+  import('@/app/pages/purchase/FollowupPage').then((m) => ({ default: m.FollowupPage })),
 )
 const QualityInspectionsPage = React.lazy(() =>
-  import('../../pages/quality/QualityInspectionsPage').then((m) => ({
+  import('@/app/pages/quality/QualityInspectionsPage').then((m) => ({
     default: m.QualityInspectionsPage,
   })),
 )
 const MyQualityTasksPage = React.lazy(() =>
-  import('../../pages/quality/MyQualityTasksPage').then((m) => ({
+  import('@/app/pages/quality/MyQualityTasksPage').then((m) => ({
     default: m.MyQualityTasksPage,
   })),
 )
 const InboundPlansPage = React.lazy(() =>
-  import('../../pages/warehouse/InboundPlansPage').then((m) => ({ default: m.InboundPlansPage })),
+  import('@/app/pages/warehouse/InboundPlansPage').then((m) => ({ default: m.InboundPlansPage })),
 )
 const InboundOrdersPage = React.lazy(() =>
-  import('../../pages/warehouse/InboundOrdersPage').then((m) => ({ default: m.InboundOrdersPage })),
+  import('@/app/pages/warehouse/InboundOrdersPage').then((m) => ({ default: m.InboundOrdersPage })),
 )
 const OutboundPlansPage = React.lazy(() =>
-  import('../../pages/warehouse/OutboundPlansPage').then((m) => ({ default: m.OutboundPlansPage })),
+  import('@/app/pages/warehouse/OutboundPlansPage').then((m) => ({ default: m.OutboundPlansPage })),
 )
 const OutboundOrdersPage = React.lazy(() =>
-  import('../../pages/warehouse/OutboundOrdersPage').then((m) => ({
+  import('@/app/pages/warehouse/OutboundOrdersPage').then((m) => ({
     default: m.OutboundOrdersPage,
   })),
 )
 const ReportingPage = React.lazy(() =>
-  import('../../pages/reporting/ReportingPage').then((m) => ({ default: m.ReportingPage })),
+  import('@/app/pages/reporting/ReportingPage').then((m) => ({ default: m.ReportingPage })),
 )
 const FinancePage = React.lazy(() =>
-  import('../../pages/finance/FinancePage').then((m) => ({ default: m.FinancePage })),
+  import('@/app/pages/finance/FinancePage').then((m) => ({ default: m.FinancePage })),
 )
 const AccessDeniedPage = React.lazy(() =>
-  import('../../pages/reporting/ReportingPage').then((m) => ({ default: m.AccessDeniedPage })),
+  import('@/app/pages/reporting/ReportingPage').then((m) => ({ default: m.AccessDeniedPage })),
 )
 
 type Props = {

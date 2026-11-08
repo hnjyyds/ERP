@@ -1,6 +1,6 @@
-import { printExportContract, printSampleRequest } from '../api'
-import { getRuntimeSettings } from '../app/pages/appHelpers'
-import { translate, type TranslationKey } from '../locales'
+import { printExportContract, printSampleRequest } from '@/api'
+import { getRuntimeSettings } from '@/app/pages/appHelpers'
+import { translate, type TranslationKey } from '@/locales'
 import { showError } from './errors'
 
 function tr(key: TranslationKey) {

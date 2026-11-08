@@ -3,8 +3,8 @@ import { KeyRound, LayoutDashboard, UserRound } from 'lucide-react'
 import type { FormEvent } from 'react'
 import { useState } from 'react'
 
-import { login, setAuthToken, type AuthSession } from '../../../api'
-import { t } from '../../appI18n'
+import { login, setAuthToken, type AuthSession } from '@/api'
+import { t } from '@/app/appI18n'
 
 export function LoginPage({
   error,

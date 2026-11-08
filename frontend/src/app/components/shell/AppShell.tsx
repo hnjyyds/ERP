@@ -1,12 +1,12 @@
 import type { ComponentProps } from 'react'
 
-import type { AuthSession, Dashboard, MenuItem } from '../../../api'
-import { dashboardPath } from '../../routes'
-import { AppRouter } from '../router/AppRouter'
-import { SettingsModal } from '../settings/SettingsModal'
-import { AppSidebar } from '../sidebar/AppSidebar'
-import { AppTopbar } from '../topbar/AppTopbar'
-import type { SidebarGroup } from '../sidebar/sidebarNavigation'
+import type { AuthSession, Dashboard, MenuItem } from '@/api'
+import { dashboardPath } from '@/app/routes'
+import { AppRouter } from '@/app/components/router/AppRouter'
+import { SettingsModal } from '@/app/components/settings/SettingsModal'
+import { AppSidebar } from '@/app/components/sidebar/AppSidebar'
+import { AppTopbar } from '@/app/components/topbar/AppTopbar'
+import type { SidebarGroup } from '@/app/components/sidebar/sidebarNavigation'
 
 type Props = {
   activePath: string

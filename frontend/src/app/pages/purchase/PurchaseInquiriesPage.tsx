@@ -19,13 +19,13 @@ import {
   type SupplierQuotation,
   type SupplierQuotationPayload,
   SupplierSampleEvidence,
-} from '../../../api'
-import { purchaseInquiryPath, moduleDetailPath } from '../../routes'
-import { t } from '../../appI18n'
-import { FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
-import { useFormModal } from '../../../shared/useFormModal'
-import { showError } from '../../../shared/errors'
-import { purchaseInquiryStatusOptions } from '../../../shared/formOptions'
+} from '@/api'
+import { purchaseInquiryPath, moduleDetailPath } from '@/app/routes'
+import { t } from '@/app/appI18n'
+import { FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { useFormModal } from '@/shared/useFormModal'
+import { showError } from '@/shared/errors'
+import { purchaseInquiryStatusOptions } from '@/shared/formOptions'
 import {
   formatDate,
   formatMoney,
@@ -33,7 +33,7 @@ import {
   todayInputValue,
   type RoutedDetailPageProps,
   emptyToNull,
-} from '../appHelpers'
+} from '@/app/pages/appHelpers'
 
 function sampleRecordStatusLabel(value: string): string {
   if (value === 'registered') return t('purchase.inquiry.detail.sampleStatusRegistered')

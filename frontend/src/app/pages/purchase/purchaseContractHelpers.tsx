@@ -9,13 +9,13 @@ import type {
   PurchaseContractCreatePayload,
   PurchaseContractGeneratePayload,
   Supplier,
-} from '../../../api'
+} from '@/api'
 import {
   purchaseContractSourceTypeOptions,
   purchaseContractStatusOptions,
-} from '../../../shared/formOptions'
-import { t } from '../../appI18n'
-import { emptyToNull, todayInputValue } from '../appHelpers'
+} from '@/shared/formOptions'
+import { t } from '@/app/appI18n'
+import { emptyToNull, todayInputValue } from '@/app/pages/appHelpers'
 
 export function supplierOptionLabel(supplier: Supplier): string {
   return [supplier.code, supplier.cn_name, supplier.en_name].filter(Boolean).join(' / ')

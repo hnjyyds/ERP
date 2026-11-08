@@ -5,17 +5,17 @@ import {
   FinancePartnerTypeSummary,
   FinanceShipmentProfit,
   FinanceStatusAmount,
-} from '../../../../api'
-import { PanelTitle } from '../../../../shared/ui'
-import { t } from '../../../appI18n'
-import { formatDate, formatFinanceAmount, formatPercent, partnerTypeLabel } from '../../appHelpers'
+} from '@/api'
+import { PanelTitle } from '@/shared/ui'
+import { t } from '@/app/appI18n'
+import { formatDate, formatFinanceAmount, formatPercent, partnerTypeLabel } from '@/app/pages/appHelpers'
 import {
   shipmentStatusLabel,
   purchaseInvoiceNoticeStatusLabel,
   samplePaymentStatusLabel,
-} from '../financeHelpers'
-import type { FinanceOverviewModel } from '../hooks/useFinanceOverviewModule'
-import type { FinanceViewShell } from '../financePageTypes'
+} from '@/app/pages/finance/financeHelpers'
+import type { FinanceOverviewModel } from '@/app/pages/finance/hooks/useFinanceOverviewModule'
+import type { FinanceViewShell } from '@/app/pages/finance/financePageTypes'
 
 type Props = {
   model: FinanceOverviewModel

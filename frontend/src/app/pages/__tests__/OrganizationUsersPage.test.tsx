@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import * as api from '../../../api'
-import { OrganizationUsersPage } from '../organization/OrganizationUsersPage'
-import type { CurrentUser } from '../../../api'
+import * as api from '@/api'
+import { OrganizationUsersPage } from '@/app/pages/organization/OrganizationUsersPage'
+import type { CurrentUser } from '@/api'
 
 const mockCurrentUser: CurrentUser = {
   id: 'test-user-id',

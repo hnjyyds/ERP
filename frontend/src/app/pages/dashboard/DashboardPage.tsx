@@ -3,12 +3,12 @@ import { ArrowRight, AtSign, Bell, CalendarClock, CheckCircle2, ClipboardCheck, 
 import type { FormEvent, ReactNode as _ReactNode } from 'react'
 import { Component as _Component, useEffect, useMemo as _useMemo, useState } from 'react'
 import type { ErrorInfo as _ErrorInfo } from 'react'
-import { createAnnouncement, createScheduleEvent, createTodos, deleteScheduleEvent, getDashboard as _getDashboard, listAssignableUsers, markNotificationRead, type AssignableUser, type Announcement as _Announcement, type AnnouncementCreatePayload, type AppLanguage as _AppLanguage, type AppTimeZone, type CurrentUser, type Dashboard, type I18nConfig as _I18nConfig, type MenuItem as _MenuItem, type NotificationItem, type ScheduleCreatePayload, type ScheduleEvent, type TodoCreatePayload, type TodoTask } from '../../../api'
-import { dashboardAnnouncementsPath, dashboardNotificationsPath, dashboardSchedulesPath, dashboardTodosPath, exportContractPath, exportQuotationPath, financeDetailPath, followupPath, moduleDetailPath, moduleNestedDetailPath, myQualityTasksPath, purchaseContractPath, reportingPath, sampleDeliveryPath, shipmentPath, dashboardPath, warehouseInboundOrderPath, warehouseOutboundOrderPath } from '../../routes'
-import { Metric, PanelTitle, UserAvatar, defaultAvatarPreset } from '../../../shared/ui'
-import { showError } from '../../../shared/errors'
-import { t } from '../../appI18n'
-import { formatDate, formatDateTime, formatTime, parseApiDate, getRuntimeSettings, severityTag, canCreateAnnouncement, type AppSettings } from '../appHelpers'
+import { createAnnouncement, createScheduleEvent, createTodos, deleteScheduleEvent, getDashboard as _getDashboard, listAssignableUsers, markNotificationRead, type AssignableUser, type Announcement as _Announcement, type AnnouncementCreatePayload, type AppLanguage as _AppLanguage, type AppTimeZone, type CurrentUser, type Dashboard, type I18nConfig as _I18nConfig, type MenuItem as _MenuItem, type NotificationItem, type ScheduleCreatePayload, type ScheduleEvent, type TodoCreatePayload, type TodoTask } from '@/api'
+import { dashboardAnnouncementsPath, dashboardNotificationsPath, dashboardSchedulesPath, dashboardTodosPath, exportContractPath, exportQuotationPath, financeDetailPath, followupPath, moduleDetailPath, moduleNestedDetailPath, myQualityTasksPath, purchaseContractPath, reportingPath, sampleDeliveryPath, shipmentPath, dashboardPath, warehouseInboundOrderPath, warehouseOutboundOrderPath } from '@/app/routes'
+import { Metric, PanelTitle, UserAvatar, defaultAvatarPreset } from '@/shared/ui'
+import { showError } from '@/shared/errors'
+import { t } from '@/app/appI18n'
+import { formatDate, formatDateTime, formatTime, parseApiDate, getRuntimeSettings, severityTag, canCreateAnnouncement, type AppSettings } from '@/app/pages/appHelpers'
 
 type DashboardScheduleFormState = {
   title: string

@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import * as api from '../../../api'
-import type { PurchaseFollowPlan } from '../../../api'
-import { FollowupPage } from '../purchase/FollowupPage'
+import * as api from '@/api'
+import type { PurchaseFollowPlan } from '@/api'
+import { FollowupPage } from '@/app/pages/purchase/FollowupPage'
 
 const followupPlan: PurchaseFollowPlan = {
   id: 'followup-plan-1',

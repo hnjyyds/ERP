@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import {
   TradingPartnerPage,
   type TradingPartnerPageProps,
-} from '../masterdata/TradingPartnerPage'
+} from '@/app/pages/masterdata/TradingPartnerPage'
 
 const unusedMutation = vi.fn(async () => {
   throw new Error('not used in render test')

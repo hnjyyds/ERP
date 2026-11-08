@@ -11,10 +11,10 @@ import type {
   ExportContractCreatePayload,
   ExportContractSignaturePayload,
   Product,
-} from '../../../api'
-import { exportContractStatusOptions } from '../../../shared/formOptions'
-import { t } from '../../appI18n'
-import { emptyToNull, todayInputValue } from '../appHelpers'
+} from '@/api'
+import { exportContractStatusOptions } from '@/shared/formOptions'
+import { t } from '@/app/appI18n'
+import { emptyToNull, todayInputValue } from '@/app/pages/appHelpers'
 
 export function customerDisplayName(customer: Customer): string {
   return customer.cn_name || customer.en_name || customer.code

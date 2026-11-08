@@ -1,4 +1,4 @@
-import type { TranslationKey } from '../locales'
+import type { TranslationKey } from '@/locales'
 
 /** 选项只存 value 与域内文案 key，渲染时再按当前语言取 label。 */
 export type LocalizedOption = {

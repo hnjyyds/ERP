@@ -10,11 +10,11 @@ import {
   type CustomerContactPayload,
   type CustomerCreatePayload,
   type CustomerUpdatePayload,
-} from '../../../api'
+} from '@/api'
 import type { PartnerContactPayload, PartnerCreatePayload, PartnerUpdatePayload } from './tradingPartnerModel'
 import { TradingPartnerPage } from './TradingPartnerPage'
-import { t } from '../../appI18n'
-import { customerPath, moduleDetailPath } from '../../routes'
+import { t } from '@/app/appI18n'
+import { customerPath, moduleDetailPath } from '@/app/routes'
 
 type CustomersPageProps = {
   detailId: string | null

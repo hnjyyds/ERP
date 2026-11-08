@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { daysFromTodayInputValue, todayInputValue } from '../appHelpers'
+import { daysFromTodayInputValue, todayInputValue } from '@/app/pages/appHelpers'
 
 describe('date input defaults', () => {
   afterEach(() => {

@@ -25,8 +25,8 @@ import {
   X,
   type LucideIcon,
 } from 'lucide-react'
-import type { MenuItem } from '../../../api'
-import { t } from '../../appI18n'
+import type { MenuItem } from '@/api'
+import { t } from '@/app/appI18n'
 import type { SidebarGroup, SidebarItem as _SidebarItem } from './sidebarNavigation'
 
 type Props = {

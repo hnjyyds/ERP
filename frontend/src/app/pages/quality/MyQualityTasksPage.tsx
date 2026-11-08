@@ -22,11 +22,11 @@ import {
   type QualityInspection,
   type QualityInspectionPayload,
   type QualityInspectionStatus,
-} from '../../../api'
-import type { LocalizedOption } from '../../../shared/formOptions'
-import { showError, showWarningDialog } from '../../../shared/errors'
-import { FormSelect, ListPageShell, Metric } from '../../../shared/ui'
-import { t } from '../../appI18n'
+} from '@/api'
+import type { LocalizedOption } from '@/shared/formOptions'
+import { showError, showWarningDialog } from '@/shared/errors'
+import { FormSelect, ListPageShell, Metric } from '@/shared/ui'
+import { t } from '@/app/appI18n'
 
 type Props = { currentUser: CurrentUser }
 

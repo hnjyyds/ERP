@@ -1,14 +1,14 @@
 import { Button, Input, Modal, Table } from 'antd'
 import { ArrowLeft, Plus, Search, CheckCircle2, Save, ShieldCheck } from 'lucide-react'
-import { type BankReceipt, type ReceivableItem } from '../../../../api'
-import { FormSelect, PanelTitle } from '../../../../shared/ui'
+import { type BankReceipt, type ReceivableItem } from '@/api'
+import { FormSelect, PanelTitle } from '@/shared/ui'
 import {
   receiptStatusOptions,
   receiptTypeOptions,
   allocationTypeOptions,
-} from '../../../../shared/formOptions'
-import { formatDate, formatFinanceAmount, nullableText } from '../../appHelpers'
-import { t } from '../../../appI18n'
+} from '@/shared/formOptions'
+import { formatDate, formatFinanceAmount, nullableText } from '@/app/pages/appHelpers'
+import { t } from '@/app/appI18n'
 import {
   initialReceiptAllocationForm,
   receiptStatusLabel,
@@ -16,9 +16,9 @@ import {
   receiptTypeLabel,
   allocationTypeLabel,
   receivableStatusTag,
-} from '../financeHelpers'
-import type { ReceiptsModel } from '../hooks/useReceiptsModule'
-import type { FinanceViewShell } from '../financePageTypes'
+} from '@/app/pages/finance/financeHelpers'
+import type { ReceiptsModel } from '@/app/pages/finance/hooks/useReceiptsModule'
+import type { FinanceViewShell } from '@/app/pages/finance/financePageTypes'
 
 type Props = {
   model: ReceiptsModel

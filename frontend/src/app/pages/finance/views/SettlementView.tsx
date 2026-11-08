@@ -1,17 +1,17 @@
 import { Button, Descriptions, Input, Modal, Table } from 'antd'
 import { ArrowLeft, Plus, Search, CheckCircle2, PackagePlus, Save, Wallet } from 'lucide-react'
-import { type FinancialSettlement, type ProfitCostItem } from '../../../../api'
-import { FormSelect, PanelTitle } from '../../../../shared/ui'
-import { formatDate, formatFinanceAmount, formatPercent, nullableText } from '../../appHelpers'
+import { type FinancialSettlement, type ProfitCostItem } from '@/api'
+import { FormSelect, PanelTitle } from '@/shared/ui'
+import { formatDate, formatFinanceAmount, formatPercent, nullableText } from '@/app/pages/appHelpers'
 import {
   initialManualProfitCostForm,
   settlementStatusTag,
   profitCostTypeLabel,
   profitCostDirectionTag,
-} from '../financeHelpers'
-import { t } from '../../../appI18n'
-import type { SettlementModel } from '../hooks/useSettlementModule'
-import type { FinanceViewShell } from '../financePageTypes'
+} from '@/app/pages/finance/financeHelpers'
+import { t } from '@/app/appI18n'
+import type { SettlementModel } from '@/app/pages/finance/hooks/useSettlementModule'
+import type { FinanceViewShell } from '@/app/pages/finance/financePageTypes'
 
 type Props = {
   model: SettlementModel

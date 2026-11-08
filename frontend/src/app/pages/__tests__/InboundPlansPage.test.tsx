@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { InboundPlansPage } from '../warehouse/InboundPlansPage'
+import { InboundPlansPage } from '@/app/pages/warehouse/InboundPlansPage'
 
 describe('InboundPlansPage', () => {
   const onNavigate = vi.fn()

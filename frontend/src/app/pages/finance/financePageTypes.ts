@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
-import type { CurrentUser } from '../../../api'
-import type { FinanceModule } from '../../routes'
+import type { CurrentUser } from '@/api'
+import type { FinanceModule } from '@/app/routes'
 
 export type FinanceModuleEnv = {
   activeModule: FinanceModule

@@ -8,9 +8,9 @@ import {
   listMiscFeeItems,
   type MiscFeeAllocation,
   type MiscFeeItem,
-} from '../../../../api'
-import { showError } from '../../../../shared/errors'
-import { t } from '../../../appI18n'
+} from '@/api'
+import { showError } from '@/shared/errors'
+import { t } from '@/app/appI18n'
 import {
   MiscFeeItemFormState,
   MiscFeeAllocationFormState,
@@ -18,9 +18,9 @@ import {
   initialMiscFeeAllocationForm,
   miscFeeItemPayload,
   miscFeeAllocationPayload,
-} from '../financeHelpers'
+} from '@/app/pages/finance/financeHelpers'
 
-import type { FinanceModuleEnv } from '../financePageTypes'
+import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 
 export function useMiscModule(env: FinanceModuleEnv) {
   const { activeModule, detailId, setMessage, setError, loadOverview } = env

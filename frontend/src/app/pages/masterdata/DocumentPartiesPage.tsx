@@ -21,13 +21,13 @@ import {
   type DocumentParty,
   type DocumentPartyCreatePayload,
   type DocumentPartyUpdatePayload,
-} from '../../../api'
-import { showError, showWarningDialog } from '../../../shared/errors'
-import { documentPartyTypeOptions, type LocalizedOption } from '../../../shared/formOptions'
-import { useFormModal } from '../../../shared/useFormModal'
-import { ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
-import { t } from '../../appI18n'
-import { documentPartyPath, moduleDetailPath } from '../../routes'
+} from '@/api'
+import { showError, showWarningDialog } from '@/shared/errors'
+import { documentPartyTypeOptions, type LocalizedOption } from '@/shared/formOptions'
+import { useFormModal } from '@/shared/useFormModal'
+import { ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { t } from '@/app/appI18n'
+import { documentPartyPath, moduleDetailPath } from '@/app/routes'
 
 type DocumentPartyFormState = {
   code: string

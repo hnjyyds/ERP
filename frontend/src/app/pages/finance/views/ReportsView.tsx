@@ -7,12 +7,12 @@ import {
   type FeePaymentQueryRow,
   type CustomsReceiptCollectionRow,
   type TaxRefundCurrencyTotal,
-} from '../../../../api'
-import { FormSelect, PanelTitle } from '../../../../shared/ui'
-import { formatFinanceAmount, nullableText } from '../../appHelpers'
-import { t, type TranslationKey } from '../../../appI18n'
-import type { ReportsModel } from '../hooks/useReportsModule'
-import type { FinanceViewShell } from '../financePageTypes'
+} from '@/api'
+import { FormSelect, PanelTitle } from '@/shared/ui'
+import { formatFinanceAmount, nullableText } from '@/app/pages/appHelpers'
+import { t, type TranslationKey } from '@/app/appI18n'
+import type { ReportsModel } from '@/app/pages/finance/hooks/useReportsModule'
+import type { FinanceViewShell } from '@/app/pages/finance/financePageTypes'
 
 type Props = {
   model: ReportsModel

@@ -1,20 +1,20 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-vi.mock('../../../api', () => ({
+vi.mock('@/api', () => ({
   createMcpCredential: vi.fn(),
   getMcpSettings: vi.fn(),
   updateMcpSettings: vi.fn(),
 }))
 
-vi.mock('../../../shared/errors', () => ({
+vi.mock('@/shared/errors', () => ({
   showError: vi.fn(),
   showSuccess: vi.fn(),
 }))
 
-import { McpSettingsPage } from '../system/McpSettingsPage'
+import { McpSettingsPage } from '@/app/pages/system/McpSettingsPage'
 
-const api = await vi.importMock<Record<string, ReturnType<typeof vi.fn>>>('../../../api')
+const api = await vi.importMock<Record<string, ReturnType<typeof vi.fn>>>('@/api')
 
 const disabledSettings = {
   enabled: false,

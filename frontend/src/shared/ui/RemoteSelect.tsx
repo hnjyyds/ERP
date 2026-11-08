@@ -1,7 +1,7 @@
 import { Select, Tag as _Tag } from 'antd'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { t } from '../../app/appI18n'
+import { t } from '@/app/appI18n'
 
 type RemoteSelectOption = {
   label: string

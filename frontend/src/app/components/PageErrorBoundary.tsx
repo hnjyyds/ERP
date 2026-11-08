@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import type { ErrorInfo, ReactNode } from 'react'
 
-import { t } from '../appI18n'
+import { t } from '@/app/appI18n'
 
 type PageErrorBoundaryProps = { children: ReactNode; pageKey: string }
 type PageErrorBoundaryState = { failed: boolean; message: string }

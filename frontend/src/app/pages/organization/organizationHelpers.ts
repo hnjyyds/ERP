@@ -8,9 +8,9 @@ import type {
   OrganizationRole,
   OrganizationUser,
   UserAvatarType,
-} from '../../../api'
-import { defaultAvatarPreset } from '../../../shared/ui'
-import { t, type TranslationKey } from '../../appI18n'
+} from '@/api'
+import { defaultAvatarPreset } from '@/shared/ui'
+import { t, type TranslationKey } from '@/app/appI18n'
 
 export const superAdminPermission = 'system:super_admin'
 

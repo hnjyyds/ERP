@@ -37,17 +37,17 @@ import {
   listOutboundPlans,
   listInventoryBalances,
   listInventoryLedgers,
-} from '../../../api'
-import { warehouseOutboundOrderPath, moduleDetailPath } from '../../routes'
-import { FormModal, FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
-import { showError } from '../../../shared/errors'
+} from '@/api'
+import { warehouseOutboundOrderPath, moduleDetailPath } from '@/app/routes'
+import { FormModal, FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { showError } from '@/shared/errors'
 import {
   outboundOrderStatusOptions,
   outboundOrderModeOptions,
   outboundPlanTypeOptions,
   outboundPlanStatusOptions,
   outboundPlanSourceTypeOptions,
-} from '../../../shared/formOptions'
+} from '@/shared/formOptions'
 import {
   canApproveAssignedRecord,
   formatDate,
@@ -58,9 +58,9 @@ import {
   type RoutedDetailPageProps,
   emptyToNull,
   trimDecimal,
-} from '../appHelpers'
-import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
-import { t } from '../../appI18n'
+} from '@/app/pages/appHelpers'
+import { ApprovalAssigneeSelect } from '@/app/components/ApprovalAssigneeSelect'
+import { t } from '@/app/appI18n'
 
 function outboundPlanStatusLabel(value: string): string {
   const option = outboundPlanStatusOptions.find((item) => item.value === value)

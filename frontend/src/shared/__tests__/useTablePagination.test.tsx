@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 
-import { useTablePagination } from '../useTablePagination'
+import { useTablePagination } from '@/shared/useTablePagination'
 
 describe('useTablePagination', () => {
   it('切换页码时保留每页条数', () => {

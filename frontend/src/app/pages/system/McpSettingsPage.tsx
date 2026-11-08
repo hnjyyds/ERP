@@ -18,10 +18,10 @@ import {
   updateMcpSettings,
   type McpCredential,
   type McpSettings,
-} from '../../../api'
-import { showError, showSuccess } from '../../../shared/errors'
-import { t } from '../../appI18n'
-import { getRuntimeSettings } from '../appHelpers'
+} from '@/api'
+import { showError, showSuccess } from '@/shared/errors'
+import { t } from '@/app/appI18n'
+import { getRuntimeSettings } from '@/app/pages/appHelpers'
 
 type ConnectionItemProps = {
   label: string

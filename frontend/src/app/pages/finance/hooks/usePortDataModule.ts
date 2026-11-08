@@ -9,11 +9,11 @@ import {
   type PortImportBatchCreatePayload,
   type CustomsDeclarationRecord,
   CustomsDeclarationRecordCreatePayload,
-} from '../../../../api'
-import { showError } from '../../../../shared/errors'
-import { t } from '../../../appI18n'
+} from '@/api'
+import { showError } from '@/shared/errors'
+import { t } from '@/app/appI18n'
 
-import type { FinanceModuleEnv } from '../financePageTypes'
+import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 
 export function usePortDataModule(
   env: FinanceModuleEnv,

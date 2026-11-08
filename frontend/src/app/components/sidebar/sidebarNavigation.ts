@@ -10,15 +10,15 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 
-import { type MenuItem } from '../../../api'
-import { translate, type TranslationKey } from '../../../locales'
-import { getRuntimeSettings } from '../../pages/appHelpers'
+import { type MenuItem } from '@/api'
+import { translate, type TranslationKey } from '@/locales'
+import { getRuntimeSettings } from '@/app/pages/appHelpers'
 import {
   dashboardPath,
   navChildrenForGroup,
   navPathsForGroup,
   type NavGroupId,
-} from '../../routes'
+} from '@/app/routes'
 
 const sidebarNavGroupDefinitions: Array<{
   id: NavGroupId

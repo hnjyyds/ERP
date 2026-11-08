@@ -3,11 +3,11 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 // Mock the t function from appI18n
-vi.mock('../../appI18n', () => ({
+vi.mock('@/app/appI18n', () => ({
   t: (key: string) => key,
 }))
 
-import { DashboardPage, DashboardTodosPage } from '../dashboard/DashboardPage'
+import { DashboardPage, DashboardTodosPage } from '@/app/pages/dashboard/DashboardPage'
 
 const mockCurrentUser = {
   id: 'user-1',

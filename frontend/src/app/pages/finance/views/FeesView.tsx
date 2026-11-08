@@ -4,25 +4,25 @@ import {
   type FeePayableItem,
   type FeePaymentRequest,
   type PartnerFeeInvoice,
-} from '../../../../api'
-import { FormSelect, PanelTitle } from '../../../../shared/ui'
+} from '@/api'
+import { FormSelect, PanelTitle } from '@/shared/ui'
 import {
   partnerFeeInvoiceStatusOptions,
   feeTypeOptions,
   partnerTypeOptions,
-} from '../../../../shared/formOptions'
-import { t } from '../../../appI18n'
-import { formatFinanceAmount, nullableText } from '../../appHelpers'
+} from '@/shared/formOptions'
+import { t } from '@/app/appI18n'
+import { formatFinanceAmount, nullableText } from '@/app/pages/appHelpers'
 import {
   initialFeePaymentRequestForm,
   initialFeePaymentApprovalForm,
   partnerFeeInvoiceStatusTag,
   feePaymentRequestStatusTag,
   feeTypeLabel,
-} from '../financeHelpers'
-import { ApprovalAssigneeSelect } from '../../../components/ApprovalAssigneeSelect'
-import type { FeesModel } from '../hooks/useFeesModule'
-import type { FinanceViewShell } from '../financePageTypes'
+} from '@/app/pages/finance/financeHelpers'
+import { ApprovalAssigneeSelect } from '@/app/components/ApprovalAssigneeSelect'
+import type { FeesModel } from '@/app/pages/finance/hooks/useFeesModule'
+import type { FinanceViewShell } from '@/app/pages/finance/financePageTypes'
 
 type Props = {
   model: FeesModel

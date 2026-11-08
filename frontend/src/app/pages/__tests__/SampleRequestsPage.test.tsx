@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { SampleRequestsPage } from '../sample/SampleRequestsPage'
+import { SampleRequestsPage } from '@/app/pages/sample/SampleRequestsPage'
 
 describe('SampleRequestsPage', () => {
   const onNavigate = vi.fn()

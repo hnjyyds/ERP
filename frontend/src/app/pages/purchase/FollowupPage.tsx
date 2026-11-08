@@ -38,7 +38,7 @@ import {
   type PurchaseFollowNode,
   type PurchaseFollowPlan,
   type PurchaseFollowPlanGeneratePayload,
-} from '../../../api'
+} from '@/api'
 import {
   followupPath,
   moduleDetailPath,
@@ -46,23 +46,23 @@ import {
   qualityInspectionPath,
   warehouseInboundOrderPath,
   warehouseOutboundOrderPath,
-} from '../../routes'
-import { FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
-import { showError } from '../../../shared/errors'
+} from '@/app/routes'
+import { FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { showError } from '@/shared/errors'
 import {
   followupStatusOptions,
   followupNodeOptions,
   followupSourceTypeOptions,
   followupNodeLabelKeys,
-} from '../../../shared/formOptions'
+} from '@/shared/formOptions'
 import {
   formatDate,
   nullableText as _nullableText,
   todayInputValue,
   type RoutedDetailPageProps,
   emptyToNull,
-} from '../appHelpers'
-import { t } from '../../appI18n'
+} from '@/app/pages/appHelpers'
+import { t } from '@/app/appI18n'
 
 function followupNodeLabel(value: string, fallback = value): string {
   const key = followupNodeLabelKeys[value]

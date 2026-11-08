@@ -27,16 +27,16 @@ import {
   SampleDelivery,
   Supplier,
   listCustomers,
-} from '../../../api'
-import { exportQuotationPath, moduleDetailPath } from '../../routes'
-import { FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
-import { showError } from '../../../shared/errors'
-import { downloadCsv as _downloadCsv } from '../../../shared/print'
+} from '@/api'
+import { exportQuotationPath, moduleDetailPath } from '@/app/routes'
+import { FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { showError } from '@/shared/errors'
+import { downloadCsv as _downloadCsv } from '@/shared/print'
 import {
   exportQuotationStatusOptions,
   freightMethodOptions,
   sampleDeliveryStatusOptions,
-} from '../../../shared/formOptions'
+} from '@/shared/formOptions'
 import {
   canApproveAssignedRecord,
   formatDate,
@@ -46,9 +46,9 @@ import {
   todayInputValue,
   type RoutedDetailPageProps,
   emptyToNull,
-} from '../appHelpers'
-import { t } from '../../appI18n'
-import { ApprovalAssigneeSelect } from '../../components/ApprovalAssigneeSelect'
+} from '@/app/pages/appHelpers'
+import { t } from '@/app/appI18n'
+import { ApprovalAssigneeSelect } from '@/app/components/ApprovalAssigneeSelect'
 
 function sampleDeliveryStatusLabel(value: string): string {
   const option = sampleDeliveryStatusOptions.find((item) => item.value === value)

@@ -3,7 +3,7 @@ import { Button, Dropdown, Menu, Tooltip, type MenuProps } from 'antd'
 import { SlidersHorizontal } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
 
-import { t } from '../../app/appI18n'
+import { t } from '@/app/appI18n'
 
 const STORAGE_PREFIX = 'xinpei_view_columns:'
 

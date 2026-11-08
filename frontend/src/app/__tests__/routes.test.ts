@@ -10,7 +10,7 @@ import {
   routeDefinitionFor,
   routeRegistry,
   shipmentPath,
-} from '../routes'
+} from '@/app/routes'
 
 describe('route access', () => {
   it('allows dashboard subpages only when the dashboard menu is assigned', () => {

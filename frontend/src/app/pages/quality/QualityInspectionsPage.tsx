@@ -28,14 +28,14 @@ import {
   type QualityInspectionInboundEligibility,
   type QualityInspectionPayload,
   type QualityInspectionStatus,
-} from '../../../api'
-import type { LocalizedOption } from '../../../shared/formOptions'
-import { ApiError, showError, showWarningDialog } from '../../../shared/errors'
-import { useFormModal } from '../../../shared/useFormModal'
-import { FormSelect, ListPageShell, Metric, PanelTitle, RemoteSelect } from '../../../shared/ui'
-import { t, type TranslationKey } from '../../appI18n'
-import { moduleDetailPath, qualityInspectionPath } from '../../routes'
-import { emptyToNull, formatDate, nullableText, type RoutedDetailPageProps } from '../appHelpers'
+} from '@/api'
+import type { LocalizedOption } from '@/shared/formOptions'
+import { ApiError, showError, showWarningDialog } from '@/shared/errors'
+import { useFormModal } from '@/shared/useFormModal'
+import { FormSelect, ListPageShell, Metric, PanelTitle, RemoteSelect } from '@/shared/ui'
+import { t, type TranslationKey } from '@/app/appI18n'
+import { moduleDetailPath, qualityInspectionPath } from '@/app/routes'
+import { emptyToNull, formatDate, nullableText, type RoutedDetailPageProps } from '@/app/pages/appHelpers'
 
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 type QualityInspectionAssigneeFilter = 'all' | 'mine'

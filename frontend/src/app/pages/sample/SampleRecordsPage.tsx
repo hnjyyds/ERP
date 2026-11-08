@@ -17,25 +17,25 @@ import {
   type SampleRecordStockEventPayload,
   SampleRequest,
   SampleRequestToRecordPayload,
-} from '../../../api'
-import { sampleRecordPath, moduleDetailPath } from '../../routes'
-import { t } from '../../appI18n'
-import { FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
-import { showError } from '../../../shared/errors'
-import { downloadCsv } from '../../../shared/print'
+} from '@/api'
+import { sampleRecordPath, moduleDetailPath } from '@/app/routes'
+import { t } from '@/app/appI18n'
+import { FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { showError } from '@/shared/errors'
+import { downloadCsv } from '@/shared/print'
 import {
   sampleRecordTypeOptions,
   sampleRecordStatusOptions,
   sampleSourceTypeOptions,
   sampleStockEventTypeOptions,
-} from '../../../shared/formOptions'
+} from '@/shared/formOptions'
 import {
   formatDate,
   nullableText,
   todayInputValue,
   type RoutedDetailPageProps,
   emptyToNull,
-} from '../appHelpers'
+} from '@/app/pages/appHelpers'
 
 type SampleRecordFormState = {
   code: string

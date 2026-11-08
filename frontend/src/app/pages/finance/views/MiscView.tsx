@@ -1,23 +1,23 @@
 import { Button, Input, Modal, Table } from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search, Save, ShieldCheck, Wallet } from 'lucide-react'
-import { type MiscFeeAllocation, type MiscFeeItem } from '../../../../api'
-import { FormSelect, PanelTitle } from '../../../../shared/ui'
+import { type MiscFeeAllocation, type MiscFeeItem } from '@/api'
+import { FormSelect, PanelTitle } from '@/shared/ui'
 import {
   miscFeeCategoryOptions,
   miscFeeAllocationMethodOptions,
   miscFeeItemStatusOptions,
-} from '../../../../shared/formOptions'
-import { formatDate, formatFinanceAmount, nullableText } from '../../appHelpers'
-import { t } from '../../../appI18n'
+} from '@/shared/formOptions'
+import { formatDate, formatFinanceAmount, nullableText } from '@/app/pages/appHelpers'
+import { t } from '@/app/appI18n'
 import {
   initialMiscFeeAllocationForm,
   miscFeeCategoryLabel,
   miscFeeAllocationMethodLabel,
   miscFeeItemStatusLabel,
   miscFeeItemStatusTag,
-} from '../financeHelpers'
-import type { MiscModel } from '../hooks/useMiscModule'
-import type { FinanceViewShell } from '../financePageTypes'
+} from '@/app/pages/finance/financeHelpers'
+import type { MiscModel } from '@/app/pages/finance/hooks/useMiscModule'
+import type { FinanceViewShell } from '@/app/pages/finance/financePageTypes'
 
 type Props = {
   model: MiscModel

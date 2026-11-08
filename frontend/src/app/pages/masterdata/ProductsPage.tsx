@@ -36,14 +36,14 @@ import {
   type ProductImportResult,
   type ProductTransaction,
   type ProductUpdatePayload,
-} from '../../../api'
-import { showError, showSuccess, showWarningDialog } from '../../../shared/errors'
-import { downloadCsv } from '../../../shared/print'
-import { ListPageShell, Metric, PanelTitle, useColumnView, type ColumnOption } from '../../../shared/ui'
-import { useTablePagination } from '../../../shared/useTablePagination'
-import { parsePageParam, useUrlQuery } from '../../../shared/useUrlQuery'
-import { t, type TranslationKey } from '../../appI18n'
-import { productDetailPath, productPath } from '../../routes'
+} from '@/api'
+import { showError, showSuccess, showWarningDialog } from '@/shared/errors'
+import { downloadCsv } from '@/shared/print'
+import { ListPageShell, Metric, PanelTitle, useColumnView, type ColumnOption } from '@/shared/ui'
+import { useTablePagination } from '@/shared/useTablePagination'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
+import { t, type TranslationKey } from '@/app/appI18n'
+import { productDetailPath, productPath } from '@/app/routes'
 
 function buildProductColumnOptions(): ColumnOption[] {
   return [
