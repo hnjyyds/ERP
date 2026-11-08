@@ -1,3 +1,11 @@
+/* 层叠顺序（唯一入口，禁止在 main.tsx 再单独引入分片）：
+   1. design-system.css：--ui-* tokens 与 --erp-* 别名、基础 reset
+   2. 基础/组件
+   3. 业务页分片
+   4. ux-pass.css：页面级补丁
+   5. responsive-cascade.css：响应式
+   回退：删除首行 @import 并把 './design-system.css' 放回 main.tsx 最后一行。 */
+@import './design-system.css';
 @import './styles/base-shell.css';
 @import './styles/finance-shell.css';
 @import './styles/masterdata-pages.css';
@@ -6,10 +14,10 @@
 @import './styles/organization.css';
 @import './styles/organization-members.css';
 @import './styles/antd-and-login.css';
-@import './styles/ux-pass.css';
 @import './styles/navigation-settings.css';
 @import './styles/shared-primitives.css';
 @import './styles/form-contract-pages.css';
 @import './styles/finance-reporting.css';
 @import './styles/modal-quality.css';
+@import './styles/ux-pass.css';
 @import './styles/responsive-cascade.css';

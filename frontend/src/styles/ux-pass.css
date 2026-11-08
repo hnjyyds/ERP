@@ -1,21 +1,6 @@
-/* ux-pass — 2026 运营体验统一层：设计变量、外壳、面板、表格与响应式
-   由 styles.css 按区块拆出，顺序由 styles.css 的 @import 保证。 */
-/* 2026 operational UX pass: shared rules for every business page. */
-:root {
-  --erp-bg: #f4f6f8;
-  --erp-surface: #ffffff;
-  --erp-surface-soft: #f8f9fb;
-  --erp-surface-strong: #eef1f4;
-  --erp-border: #dfe3e8;
-  --erp-border-soft: #e9ecf0;
-  --erp-text: #20242c;
-  --erp-muted: #606875;
-  --erp-faint: #7b8491;
-  --erp-primary: #315bd6;
-  --erp-primary-strong: #2448b5;
-  --erp-accent: #315bd6;
-  --erp-accent-strong: #2448b5;
-}
+/* ux-pass — 2026 运营体验统一层：外壳、面板、表格与响应式
+   由 styles.css 按区块拆出，顺序由 styles.css 的 @import 保证。
+   token 统一由 design-system.css 定义：--ui-* 为唯一来源，--erp-* 仅作别名。 */
 
 body,
 .react-shell,

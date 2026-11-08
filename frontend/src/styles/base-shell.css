@@ -1,21 +1,7 @@
 /* base-shell — 应用外壳：变量、重置、侧栏 / 顶栏、各业务页根类
    由 styles.css 按区块拆出，顺序由 styles.css 的 @import 保证。 */
 :root {
-  --erp-bg: #F5F7FA;
-  --erp-surface: #FFFFFF;
-  --erp-surface-soft: #FAFBFC;
-  --erp-surface-strong: #F0F2F5;
-  --erp-sidebar: #F5F7FA;
-  --erp-border: #E0E3E8;
-  --erp-border-soft: #EBEEF2;
-  --erp-text: #1D2129;
-  --erp-muted: #667085;
-  --erp-faint: #6B7280;
-  --erp-primary: #4F6EF7;
-  --erp-primary-strong: #3A56D4;
-  --erp-accent: #4F6EF7;
-  --erp-accent-strong: #3A56D4;
-  --erp-danger: #FF3B30;
+  /* token 统一由 design-system.css 提供，--erp-* 仅为兼容别名。 */
   color: #1D2129;
   background: #F5F7FA;
   font-family:
