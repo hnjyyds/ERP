@@ -22,7 +22,7 @@ import {
 } from '../../../api'
 import { purchaseInquiryPath, moduleDetailPath } from '../../routes'
 import { t } from '../../appI18n'
-import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
 import { useFormModal } from '../../../shared/useFormModal'
 import { showError } from '../../../shared/errors'
 import { purchaseInquiryStatusOptions } from '../../../shared/formOptions'
@@ -439,11 +439,12 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
 
       <section className="business-grid purchase-inquiry-grid">
         {!detailId ? (
-          <section className="workspace-panel list-panel product-list-panel">
-            <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title={t('purchase.inquiry.list.title')} />
-              <form
-                className="inline-filters"
+          <ListPageShell
+            className="product-list-panel"
+            icon={<Search size={18} />}
+            title={t('purchase.inquiry.list.title')}
+            toolbar={<form
+              className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
                   void loadInquiries()
@@ -493,8 +494,8 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                 <Button htmlType="button" icon={<Plus size={16} />} onClick={openCreateInquiry}>
                   {t('purchase.inquiry.list.create')}
                 </Button>
-              </form>
-            </div>
+              </form>}
+            >
 
             <Table<PurchaseInquiry>
               columns={[
@@ -566,7 +567,7 @@ export function PurchaseInquiriesPage({ detailId, onNavigate }: RoutedDetailPage
                 onClick: () => setSelectedInquiryId(record.id),
               })}
             />
-          </section>
+          </ListPageShell>
         ) : null}
 
         <Modal

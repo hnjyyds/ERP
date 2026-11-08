@@ -36,7 +36,7 @@ import {
   listSuppliers,
 } from '../../../api'
 import { purchaseContractPath, moduleDetailPath } from '../../routes'
-import { FormModal, FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { FormModal, FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
 import { showError, showWarningDialog } from '../../../shared/errors'
 import {
   purchaseContractStatusOptions,
@@ -584,11 +584,12 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
 
       <section className="business-grid purchase-contract-grid">
         {!detailId ? (
-          <section className="workspace-panel list-panel product-list-panel">
-            <div className="panel-heading toolbar-heading">
-              <PanelTitle icon={<Search size={18} />} title={t('purchase.contract.list.title')} />
-              <form
-                className="inline-filters single-line-filter-toolbar"
+          <ListPageShell
+            className="product-list-panel"
+            icon={<Search size={18} />}
+            title={t('purchase.contract.list.title')}
+            toolbar={<form
+              className="inline-filters single-line-filter-toolbar"
                 onSubmit={(event) => {
                   event.preventDefault()
                   void loadContracts()
@@ -656,8 +657,8 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                 >
                   {t('purchase.contract.list.generate')}
                 </Button>
-              </form>
-            </div>
+              </form>}
+            >
 
             <Table<PurchaseContract>
               columns={[
@@ -725,7 +726,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
                 onClick: () => setSelectedContractId(record.id),
               })}
             />
-          </section>
+          </ListPageShell>
         ) : null}
 
         <PurchaseContractFormModal

@@ -16,7 +16,7 @@ import {
   type PurchaseInvoiceNoticeSendPayload,
 } from '../../../api'
 import { purchaseInvoiceNoticePath, moduleDetailPath } from '../../routes'
-import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
 import { t } from '../../appI18n'
 import { showError } from '../../../shared/errors'
 import { useFormModal } from '../../../shared/useFormModal'
@@ -423,14 +423,12 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
 
       <section className="business-grid purchase-invoice-grid">
         {!detailId ? (
-          <section className="workspace-panel list-panel product-list-panel">
-            <div className="panel-heading toolbar-heading">
-              <PanelTitle
-                icon={<Search size={18} />}
-                title={t('purchase.invoiceNotice.list.title')}
-              />
-              <form
-                className="inline-filters"
+          <ListPageShell
+            className="product-list-panel"
+            icon={<Search size={18} />}
+            title={t('purchase.invoiceNotice.list.title')}
+            toolbar={<form
+              className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
                   void loadNotices()
@@ -488,8 +486,8 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                 >
                   {t('purchase.invoiceNotice.list.generate')}
                 </Button>
-              </form>
-            </div>
+              </form>}
+            >
 
             <Table<PurchaseInvoiceNotice>
               columns={[
@@ -553,7 +551,7 @@ export function PurchaseInvoiceNoticesPage({ detailId, onNavigate }: RoutedDetai
                 onClick: () => setSelectedNoticeId(record.id),
               })}
             />
-          </section>
+          </ListPageShell>
         ) : null}
 
         <Modal

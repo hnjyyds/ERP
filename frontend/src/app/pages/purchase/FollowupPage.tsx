@@ -47,7 +47,7 @@ import {
   warehouseInboundOrderPath,
   warehouseOutboundOrderPath,
 } from '../../routes'
-import { FormSelect, Metric, PanelTitle } from '../../../shared/ui'
+import { FormSelect, ListPageShell, Metric, PanelTitle } from '../../../shared/ui'
 import { showError } from '../../../shared/errors'
 import {
   followupStatusOptions,
@@ -694,14 +694,12 @@ export function FollowupPage({
 
       <section className="business-grid followup-grid">
         {!detailId ? (
-          <section className="workspace-panel list-panel product-list-panel">
-            <div className="panel-heading toolbar-heading">
-              <PanelTitle
-                icon={<Search size={18} />}
-                title={t('purchase.followup.list.title')}
-              />
-              <form
-                className="inline-filters single-line-filter-toolbar"
+          <ListPageShell
+            className="product-list-panel"
+            icon={<Search size={18} />}
+            title={t('purchase.followup.list.title')}
+            toolbar={<form
+              className="inline-filters single-line-filter-toolbar"
                 onSubmit={(event) => {
                   event.preventDefault()
                   void loadFollowupWorkspace()
@@ -755,8 +753,8 @@ export function FollowupPage({
                 >
                   {t('purchase.followup.list.configureGenerate')}
                 </Button>
-              </form>
-            </div>
+              </form>}
+            >
 
             <Table<PurchaseFollowPlan>
               columns={[
@@ -814,7 +812,7 @@ export function FollowupPage({
                 onClick: () => setSelectedPlanId(record.id),
               })}
             />
-          </section>
+          </ListPageShell>
         ) : null}
 
         <Modal
