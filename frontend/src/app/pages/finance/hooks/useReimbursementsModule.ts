@@ -16,6 +16,23 @@ import { t } from '@/app/appI18n'
 
 import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 
+type ReimbursementFilters = { q: string; status: string; category: string }
+
+function reimbursementFiltersFromParams(params: URLSearchParams): ReimbursementFilters {
+  return {
+    q: params.get('reimbursements_q') ?? '',
+    status: params.get('reimbursements_status') ?? '',
+    category: params.get('reimbursements_category') ?? '',
+  }
+}
+
+function reimbursementSignature(params: URLSearchParams): string {
+  return JSON.stringify([
+    parsePageParam(params, 'reimbursements_page'),
+    reimbursementFiltersFromParams(params),
+  ])
+}
+
 export function useReimbursementsModule(env: FinanceModuleEnv) {
   const { activeModule, detailId, currentUser, setMessage, setError } = env
 
@@ -29,19 +46,15 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
     parsePageParam(urlQuery.params, 'reimbursements_page'),
   )
 
-  const reimbursementsUrlPage = urlQuery.params.get('reimbursements_page') ?? ''
+  const [reimbursementFilters, setReimbursementFilters] = useState(() =>
+    reimbursementFiltersFromParams(urlQuery.params),
+  )
 
-  const appliedReimbursementsPageRef = useRef(reimbursementsUrlPage)
+  const appliedReimbursementSignatureRef = useRef(reimbursementSignature(urlQuery.params))
 
   const [reimbursementsTotalAmount, setReimbursementsTotalAmount] = useState('0.00')
 
   const [selectedReimbursementId, setSelectedReimbursementId] = useState<string | null>(null)
-
-  const [reimbursementSearch, setReimbursementSearch] = useState('')
-
-  const [reimbursementStatusFilter, setReimbursementStatusFilter] = useState('')
-
-  const [reimbursementCategoryFilter, setReimbursementCategoryFilter] = useState('')
 
   const [loadingReimbursements, setLoadingReimbursements] = useState(false)
 
@@ -70,16 +83,18 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
     preferredId?: string,
     pageOverride?: number,
     pageSizeOverride?: number,
+    filtersOverride?: ReimbursementFilters,
   ) {
     setLoadingReimbursements(true)
     setError('')
     try {
+      const filters = filtersOverride ?? reimbursementFilters
       const page = pageOverride ?? reimbursementsPager.page
       const pageSize = pageSizeOverride ?? reimbursementsPager.pageSize
       const result = await listReimbursements({
-        q: reimbursementSearch.trim() || undefined,
-        status: reimbursementStatusFilter || undefined,
-        category: reimbursementCategoryFilter || undefined,
+        q: filters.q.trim() || undefined,
+        status: filters.status || undefined,
+        category: filters.category || undefined,
         limit: pageSize,
         offset: (page - 1) * pageSize,
       })
@@ -202,18 +217,28 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
 
   async function changeReimbursementsPage(nextPage: number, nextPageSize: number) {
     const next = reimbursementsPager.changePage(nextPage, nextPageSize)
-    appliedReimbursementsPageRef.current = next.page === 1 ? '' : String(next.page)
-    urlQuery.update({ reimbursements_page: next.page === 1 ? null : next.page })
-    await loadReimbursements(undefined, next.page, next.pageSize)
+    const nextSearch = urlQuery.update({
+      reimbursements_page: next.page === 1 ? null : next.page,
+      reimbursements_q: reimbursementFilters.q,
+      reimbursements_status: reimbursementFilters.status,
+      reimbursements_category: reimbursementFilters.category,
+    })
+    appliedReimbursementSignatureRef.current = reimbursementSignature(
+      new URLSearchParams(nextSearch),
+    )
+    await loadReimbursements(undefined, next.page, next.pageSize, reimbursementFilters)
   }
 
   useEffect(() => {
-    if (appliedReimbursementsPageRef.current === reimbursementsUrlPage) return
-    appliedReimbursementsPageRef.current = reimbursementsUrlPage
+    const signature = reimbursementSignature(urlQuery.params)
+    if (appliedReimbursementSignatureRef.current === signature) return
+    appliedReimbursementSignatureRef.current = signature
+    const filters = reimbursementFiltersFromParams(urlQuery.params)
     const nextPage = parsePageParam(urlQuery.params, 'reimbursements_page')
+    setReimbursementFilters(filters)
     reimbursementsPager.setPage(nextPage)
-    void loadReimbursements(undefined, nextPage, reimbursementsPager.pageSize)
-  }, [reimbursementsUrlPage])
+    void loadReimbursements(undefined, nextPage, reimbursementsPager.pageSize, filters)
+  }, [urlQuery.search])
 
   return {
     changeReimbursementsPage,
@@ -221,23 +246,26 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
     handleReimbursementPay,
     loadReimbursements,
     loadingReimbursements,
-    reimbursementCategoryFilter,
+    reimbursementCategoryFilter: reimbursementFilters.category,
     reimbursementForm,
     reimbursementModalOpen,
     reimbursementPayMethod,
-    reimbursementSearch,
-    reimbursementStatusFilter,
+    reimbursementSearch: reimbursementFilters.q,
+    reimbursementStatusFilter: reimbursementFilters.status,
     reimbursements,
     reimbursementsPagination: reimbursementsPager.pagination,
     reimbursementsTotal: reimbursementsPager.total,
     reimbursementsTotalAmount,
     selectedReimbursementId,
-    setReimbursementCategoryFilter,
+    setReimbursementCategoryFilter: (value: string) =>
+      setReimbursementFilters((current) => ({ ...current, category: value })),
     setReimbursementForm,
     setReimbursementModalOpen,
     setReimbursementPayMethod,
-    setReimbursementSearch,
-    setReimbursementStatusFilter,
+    setReimbursementSearch: (value: string) =>
+      setReimbursementFilters((current) => ({ ...current, q: value })),
+    setReimbursementStatusFilter: (value: string) =>
+      setReimbursementFilters((current) => ({ ...current, status: value })),
     setSelectedReimbursementId,
     submitReimbursement,
     submittingReimbursement,

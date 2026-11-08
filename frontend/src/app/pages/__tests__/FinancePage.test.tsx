@@ -227,4 +227,80 @@ describe('FinancePage', () => {
     expect(window.location.search).toContain('receipts_page=2')
     expect(screen.getAllByText('USD 1,200.00').length).toBe(summaryBefore)
   })
+
+  it('restores receipt filters and page from the URL on direct load', async () => {
+    window.history.replaceState(
+      {},
+      '',
+      '/finance/receipts?receipts_q=BR-2026&receipts_status=claimed&receipts_page=2',
+    )
+    vi.spyOn(api, 'listBankReceipts').mockResolvedValue({
+      items: [],
+      total: 120,
+      total_amount: '0.00',
+      unallocated_amount: '0.00',
+      currency: 'USD',
+    })
+    vi.spyOn(api, 'listReceivables').mockResolvedValue({
+      items: [],
+      total: 0,
+      total_receivable_amount: '0.00',
+    })
+
+    render(
+      <FinancePage
+        currentUser={currentUser}
+        view={{ module: 'receipts', id: null }}
+        onNavigate={onNavigate}
+      />,
+    )
+
+    expect(await screen.findByDisplayValue('BR-2026')).toBeInTheDocument()
+    expect(screen.getByTitle('已认领')).toBeInTheDocument()
+    expect(api.listBankReceipts).toHaveBeenCalledWith(
+      expect.objectContaining({ q: 'BR-2026', status: 'claimed', limit: 50, offset: 50 }),
+    )
+  })
+
+  it('writes receipt filters to the URL, resets to page 1 and keeps other list keys', async () => {
+    window.history.replaceState(
+      {},
+      '',
+      '/finance/receipts?receipts_page=2&payables_q=SI-KEEP&payables_page=3',
+    )
+    vi.spyOn(api, 'listBankReceipts').mockResolvedValue({
+      items: [],
+      total: 120,
+      total_amount: '0.00',
+      unallocated_amount: '0.00',
+      currency: 'USD',
+    })
+    vi.spyOn(api, 'listReceivables').mockResolvedValue({
+      items: [],
+      total: 0,
+      total_receivable_amount: '0.00',
+    })
+
+    render(
+      <FinancePage
+        currentUser={currentUser}
+        view={{ module: 'receipts', id: null }}
+        onNavigate={onNavigate}
+      />,
+    )
+
+    const searchInput = await screen.findByLabelText('水单搜索')
+    fireEvent.change(searchInput, { target: { value: 'BR-2026' } })
+    fireEvent.click(screen.getAllByRole('button', { name: '查询' })[0])
+
+    await waitFor(() => {
+      expect(api.listBankReceipts).toHaveBeenLastCalledWith(
+        expect.objectContaining({ q: 'BR-2026', limit: 50, offset: 0 }),
+      )
+    })
+    expect(window.location.search).toContain('receipts_q=BR-2026')
+    expect(window.location.search).not.toContain('receipts_page=')
+    expect(window.location.search).toContain('payables_q=SI-KEEP')
+    expect(window.location.search).toContain('payables_page=3')
+  })
 })

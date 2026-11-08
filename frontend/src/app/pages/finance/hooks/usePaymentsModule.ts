@@ -30,6 +30,39 @@ import { t } from '@/app/appI18n'
 
 import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 
+type InvoiceFilters = { q: string; status: string; supplier: string; contract: string }
+
+type PayableFilters = { q: string; status: string; supplier: string; contract: string }
+
+function invoiceFiltersFromParams(params: URLSearchParams): InvoiceFilters {
+  return {
+    q: params.get('supplier_invoices_q') ?? '',
+    status: params.get('supplier_invoices_status') ?? '',
+    supplier: params.get('supplier_invoices_supplier') ?? '',
+    contract: params.get('supplier_invoices_contract') ?? '',
+  }
+}
+
+function payableFiltersFromParams(params: URLSearchParams): PayableFilters {
+  return {
+    q: params.get('payables_q') ?? '',
+    status: params.get('payables_status') ?? '',
+    supplier: params.get('payables_supplier') ?? '',
+    contract: params.get('payables_contract') ?? '',
+  }
+}
+
+function invoiceSignature(params: URLSearchParams): string {
+  return JSON.stringify([
+    parsePageParam(params, 'supplier_invoices_page'),
+    invoiceFiltersFromParams(params),
+  ])
+}
+
+function payableSignature(params: URLSearchParams): string {
+  return JSON.stringify([parsePageParam(params, 'payables_page'), payableFiltersFromParams(params)])
+}
+
 export function usePaymentsModule(env: FinanceModuleEnv) {
   const { activeModule, detailId, currentUser, setMessage, setError } = env
 
@@ -58,43 +91,27 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
 
   const [payableTotalAmount, setPayableTotalAmount] = useState('0.00')
 
-  const supplierInvoicesUrlPage = urlQuery.params.get('supplier_invoices_page') ?? ''
+  const [invoiceFilters, setInvoiceFilters] = useState(() => invoiceFiltersFromParams(urlQuery.params))
 
-  const appliedSupplierInvoicesPageRef = useRef(supplierInvoicesUrlPage)
+  const appliedInvoiceSignatureRef = useRef(invoiceSignature(urlQuery.params))
 
   const paymentRequestsUrlPage = urlQuery.params.get('payment_requests_page') ?? ''
 
   const appliedPaymentRequestsPageRef = useRef(paymentRequestsUrlPage)
 
-  const payablesUrlPage = urlQuery.params.get('payables_page') ?? ''
+  const [payableFilters, setPayableFilters] = useState(() => payableFiltersFromParams(urlQuery.params))
 
-  const appliedPayablesPageRef = useRef(payablesUrlPage)
+  const appliedPayableSignatureRef = useRef(payableSignature(urlQuery.params))
 
   const [selectedSupplierInvoiceId, setSelectedSupplierInvoiceId] = useState<string | null>(null)
 
   const [selectedPaymentRequestId, setSelectedPaymentRequestId] = useState<string | null>(null)
-
-  const [invoiceSearch, setInvoiceSearch] = useState('')
-
-  const [invoiceStatusFilter, setInvoiceStatusFilter] = useState('')
-
-  const [invoiceSupplierFilter, setInvoiceSupplierFilter] = useState('')
-
-  const [invoiceContractFilter, setInvoiceContractFilter] = useState('')
 
   const [paymentRequestSearch, _setPaymentRequestSearch] = useState('')
 
   const [paymentRequestStatusFilter, _setPaymentRequestStatusFilter] = useState('')
 
   const [paymentRequestTypeFilter, _setPaymentRequestTypeFilter] = useState('')
-
-  const [payableSearch, setPayableSearch] = useState('')
-
-  const [payableStatusFilter, setPayableStatusFilter] = useState('')
-
-  const [payableSupplierFilter, setPayableSupplierFilter] = useState('')
-
-  const [payableContractFilter, setPayableContractFilter] = useState('')
 
   const [supplierInvoiceForm, setSupplierInvoiceForm] = useState<SupplierInvoiceFormState>(() =>
     initialSupplierInvoiceForm(),
@@ -169,17 +186,19 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     preferredId?: string,
     pageOverride?: number,
     pageSizeOverride?: number,
+    filtersOverride?: InvoiceFilters,
   ) {
     setLoadingSupplierInvoices(true)
     setError('')
     try {
+      const filters = filtersOverride ?? invoiceFilters
       const page = pageOverride ?? supplierInvoicesPager.page
       const pageSize = pageSizeOverride ?? supplierInvoicesPager.pageSize
       const result = await listSupplierInvoices({
-        q: invoiceSearch.trim() || undefined,
-        status: invoiceStatusFilter || undefined,
-        supplier_id: invoiceSupplierFilter.trim() || undefined,
-        purchase_contract_no: invoiceContractFilter.trim() || undefined,
+        q: filters.q.trim() || undefined,
+        status: filters.status || undefined,
+        supplier_id: filters.supplier.trim() || undefined,
+        purchase_contract_no: filters.contract.trim() || undefined,
         limit: pageSize,
         offset: (page - 1) * pageSize,
       })
@@ -217,7 +236,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
         q: paymentRequestSearch.trim() || undefined,
         status: paymentRequestStatusFilter || undefined,
         payment_type: paymentRequestTypeFilter || undefined,
-        supplier_id: invoiceSupplierFilter.trim() || undefined,
+        supplier_id: invoiceFilters.supplier.trim() || undefined,
         limit: pageSize,
         offset: (page - 1) * pageSize,
       })
@@ -238,17 +257,22 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     }
   }
 
-  async function loadPayables(pageOverride?: number, pageSizeOverride?: number) {
+  async function loadPayables(
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: PayableFilters,
+  ) {
     setLoadingPayables(true)
     setError('')
     try {
+      const filters = filtersOverride ?? payableFilters
       const page = pageOverride ?? payablesPager.page
       const pageSize = pageSizeOverride ?? payablesPager.pageSize
       const result = await listPayables({
-        q: payableSearch.trim() || undefined,
-        status: payableStatusFilter || undefined,
-        supplier_id: payableSupplierFilter.trim() || undefined,
-        purchase_contract_no: payableContractFilter.trim() || undefined,
+        q: filters.q.trim() || undefined,
+        status: filters.status || undefined,
+        supplier_id: filters.supplier.trim() || undefined,
+        purchase_contract_no: filters.contract.trim() || undefined,
         limit: pageSize,
         offset: (page - 1) * pageSize,
       })
@@ -347,9 +371,15 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
 
   async function changeSupplierInvoicesPage(nextPage: number, nextPageSize: number) {
     const next = supplierInvoicesPager.changePage(nextPage, nextPageSize)
-    appliedSupplierInvoicesPageRef.current = next.page === 1 ? '' : String(next.page)
-    urlQuery.update({ supplier_invoices_page: next.page === 1 ? null : next.page })
-    await loadSupplierInvoices(undefined, next.page, next.pageSize)
+    const nextSearch = urlQuery.update({
+      supplier_invoices_page: next.page === 1 ? null : next.page,
+      supplier_invoices_q: invoiceFilters.q,
+      supplier_invoices_status: invoiceFilters.status,
+      supplier_invoices_supplier: invoiceFilters.supplier,
+      supplier_invoices_contract: invoiceFilters.contract,
+    })
+    appliedInvoiceSignatureRef.current = invoiceSignature(new URLSearchParams(nextSearch))
+    await loadSupplierInvoices(undefined, next.page, next.pageSize, invoiceFilters)
   }
 
   async function changePaymentRequestsPage(nextPage: number, nextPageSize: number) {
@@ -361,18 +391,27 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
 
   async function changePayablesPage(nextPage: number, nextPageSize: number) {
     const next = payablesPager.changePage(nextPage, nextPageSize)
-    appliedPayablesPageRef.current = next.page === 1 ? '' : String(next.page)
-    urlQuery.update({ payables_page: next.page === 1 ? null : next.page })
-    await loadPayables(next.page, next.pageSize)
+    const nextSearch = urlQuery.update({
+      payables_page: next.page === 1 ? null : next.page,
+      payables_q: payableFilters.q,
+      payables_status: payableFilters.status,
+      payables_supplier: payableFilters.supplier,
+      payables_contract: payableFilters.contract,
+    })
+    appliedPayableSignatureRef.current = payableSignature(new URLSearchParams(nextSearch))
+    await loadPayables(next.page, next.pageSize, payableFilters)
   }
 
   useEffect(() => {
-    if (appliedSupplierInvoicesPageRef.current === supplierInvoicesUrlPage) return
-    appliedSupplierInvoicesPageRef.current = supplierInvoicesUrlPage
+    const signature = invoiceSignature(urlQuery.params)
+    if (appliedInvoiceSignatureRef.current === signature) return
+    appliedInvoiceSignatureRef.current = signature
+    const filters = invoiceFiltersFromParams(urlQuery.params)
     const nextPage = parsePageParam(urlQuery.params, 'supplier_invoices_page')
+    setInvoiceFilters(filters)
     supplierInvoicesPager.setPage(nextPage)
-    void loadSupplierInvoices(undefined, nextPage, supplierInvoicesPager.pageSize)
-  }, [supplierInvoicesUrlPage])
+    void loadSupplierInvoices(undefined, nextPage, supplierInvoicesPager.pageSize, filters)
+  }, [urlQuery.search])
 
   useEffect(() => {
     if (appliedPaymentRequestsPageRef.current === paymentRequestsUrlPage) return
@@ -383,12 +422,15 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
   }, [paymentRequestsUrlPage])
 
   useEffect(() => {
-    if (appliedPayablesPageRef.current === payablesUrlPage) return
-    appliedPayablesPageRef.current = payablesUrlPage
+    const signature = payableSignature(urlQuery.params)
+    if (appliedPayableSignatureRef.current === signature) return
+    appliedPayableSignatureRef.current = signature
+    const filters = payableFiltersFromParams(urlQuery.params)
     const nextPage = parsePageParam(urlQuery.params, 'payables_page')
+    setPayableFilters(filters)
     payablesPager.setPage(nextPage)
-    void loadPayables(nextPage, payablesPager.pageSize)
-  }, [payablesUrlPage])
+    void loadPayables(nextPage, payablesPager.pageSize, filters)
+  }, [urlQuery.search])
 
   const selectedPaymentRequestCanApprove =
     selectedPaymentRequest?.status === 'submitted' &&
@@ -399,21 +441,21 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     changePayablesPage,
     changePaymentRequestsPage,
     changeSupplierInvoicesPage,
-    invoiceContractFilter,
+    invoiceContractFilter: invoiceFilters.contract,
     invoiceModalOpen,
-    invoiceSearch,
-    invoiceStatusFilter,
-    invoiceSupplierFilter,
+    invoiceSearch: invoiceFilters.q,
+    invoiceStatusFilter: invoiceFilters.status,
+    invoiceSupplierFilter: invoiceFilters.supplier,
     loadPayables,
     loadPaymentRequests,
     loadSupplierInvoices,
     loadingPayables,
     loadingPaymentRequests,
     loadingSupplierInvoices,
-    payableContractFilter,
-    payableSearch,
-    payableStatusFilter,
-    payableSupplierFilter,
+    payableContractFilter: payableFilters.contract,
+    payableSearch: payableFilters.q,
+    payableStatusFilter: payableFilters.status,
+    payableSupplierFilter: payableFilters.supplier,
     payableTotalAmount,
     payables,
     payablesPagination: payablesPager.pagination,
@@ -426,15 +468,23 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     selectedPaymentRequest,
     selectedPaymentRequestCanApprove,
     selectedSupplierInvoice,
-    setInvoiceContractFilter,
+    setInvoiceContractFilter: (value: string) =>
+      setInvoiceFilters((current) => ({ ...current, contract: value })),
     setInvoiceModalOpen,
-    setInvoiceSearch,
-    setInvoiceStatusFilter,
-    setInvoiceSupplierFilter,
-    setPayableContractFilter,
-    setPayableSearch,
-    setPayableStatusFilter,
-    setPayableSupplierFilter,
+    setInvoiceSearch: (value: string) =>
+      setInvoiceFilters((current) => ({ ...current, q: value })),
+    setInvoiceStatusFilter: (value: string) =>
+      setInvoiceFilters((current) => ({ ...current, status: value })),
+    setInvoiceSupplierFilter: (value: string) =>
+      setInvoiceFilters((current) => ({ ...current, supplier: value })),
+    setPayableContractFilter: (value: string) =>
+      setPayableFilters((current) => ({ ...current, contract: value })),
+    setPayableSearch: (value: string) =>
+      setPayableFilters((current) => ({ ...current, q: value })),
+    setPayableStatusFilter: (value: string) =>
+      setPayableFilters((current) => ({ ...current, status: value })),
+    setPayableSupplierFilter: (value: string) =>
+      setPayableFilters((current) => ({ ...current, supplier: value })),
     setPaymentApprovalForm,
     setPaymentRequestForm,
     setSelectedPaymentRequestId,

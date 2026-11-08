@@ -17,6 +17,23 @@ import { t } from '@/app/appI18n'
 
 import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 
+type CustomsRecordFilters = { declaration: string; receipt: string; tradeType: string }
+
+function customsRecordFiltersFromParams(params: URLSearchParams): CustomsRecordFilters {
+  return {
+    declaration: params.get('port_records_q') ?? '',
+    receipt: params.get('port_records_receipt') ?? '',
+    tradeType: params.get('port_records_trade_type') ?? '',
+  }
+}
+
+function customsRecordSignature(params: URLSearchParams): string {
+  return JSON.stringify([
+    parsePageParam(params, 'port_records_page'),
+    customsRecordFiltersFromParams(params),
+  ])
+}
+
 export function usePortDataModule(
   env: FinanceModuleEnv,
   loadFinanceReport: (report: string) => Promise<void>,
@@ -43,9 +60,11 @@ export function usePortDataModule(
 
   const appliedBatchesPageRef = useRef(batchesUrlPage)
 
-  const recordsUrlPage = urlQuery.params.get('port_records_page') ?? ''
+  const [customsRecordFilters, setCustomsRecordFilters] = useState(() =>
+    customsRecordFiltersFromParams(urlQuery.params),
+  )
 
-  const appliedRecordsPageRef = useRef(recordsUrlPage)
+  const appliedCustomsRecordSignatureRef = useRef(customsRecordSignature(urlQuery.params))
 
   const [loadingPortBatches, setLoadingPortBatches] = useState(false)
 
@@ -54,12 +73,6 @@ export function usePortDataModule(
   const [submittingPortBatch, setSubmittingPortBatch] = useState(false)
 
   const [portBatchSourceFilter, _setPortBatchSourceFilter] = useState('')
-
-  const [customsDeclarationFilter, setCustomsDeclarationFilter] = useState('')
-
-  const [customsReceiptFilter, setCustomsReceiptFilter] = useState('')
-
-  const [customsTradeTypeFilter, setCustomsTradeTypeFilter] = useState('')
 
   const [portBatchForm, setPortBatchForm] = useState({
     batch_no: '',
@@ -105,16 +118,21 @@ export function usePortDataModule(
     }
   }
 
-  async function loadCustomsRecords(pageOverride?: number, pageSizeOverride?: number) {
+  async function loadCustomsRecords(
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: CustomsRecordFilters,
+  ) {
     setLoadingCustomsRecords(true)
     setError('')
     try {
+      const filters = filtersOverride ?? customsRecordFilters
       const page = pageOverride ?? recordsPager.page
       const pageSize = pageSizeOverride ?? recordsPager.pageSize
       const result = await listCustomsDeclarationRecords({
-        declaration_no: customsDeclarationFilter.trim() || undefined,
-        customs_receipt_no: customsReceiptFilter.trim() || undefined,
-        trade_type: customsTradeTypeFilter || undefined,
+        declaration_no: filters.declaration.trim() || undefined,
+        customs_receipt_no: filters.receipt.trim() || undefined,
+        trade_type: filters.tradeType || undefined,
         limit: pageSize,
         offset: (page - 1) * pageSize,
       })
@@ -201,9 +219,16 @@ export function usePortDataModule(
 
   async function changeCustomsRecordsPage(nextPage: number, nextPageSize: number) {
     const next = recordsPager.changePage(nextPage, nextPageSize)
-    appliedRecordsPageRef.current = next.page === 1 ? '' : String(next.page)
-    urlQuery.update({ port_records_page: next.page === 1 ? null : next.page })
-    await loadCustomsRecords(next.page, next.pageSize)
+    const nextSearch = urlQuery.update({
+      port_records_page: next.page === 1 ? null : next.page,
+      port_records_q: customsRecordFilters.declaration,
+      port_records_receipt: customsRecordFilters.receipt,
+      port_records_trade_type: customsRecordFilters.tradeType,
+    })
+    appliedCustomsRecordSignatureRef.current = customsRecordSignature(
+      new URLSearchParams(nextSearch),
+    )
+    await loadCustomsRecords(next.page, next.pageSize, customsRecordFilters)
   }
 
   async function changePortImportBatchesPage(nextPage: number, nextPageSize: number) {
@@ -214,12 +239,15 @@ export function usePortDataModule(
   }
 
   useEffect(() => {
-    if (appliedRecordsPageRef.current === recordsUrlPage) return
-    appliedRecordsPageRef.current = recordsUrlPage
+    const signature = customsRecordSignature(urlQuery.params)
+    if (appliedCustomsRecordSignatureRef.current === signature) return
+    appliedCustomsRecordSignatureRef.current = signature
+    const filters = customsRecordFiltersFromParams(urlQuery.params)
     const nextPage = parsePageParam(urlQuery.params, 'port_records_page')
+    setCustomsRecordFilters(filters)
     recordsPager.setPage(nextPage)
-    void loadCustomsRecords(nextPage, recordsPager.pageSize)
-  }, [recordsUrlPage])
+    void loadCustomsRecords(nextPage, recordsPager.pageSize, filters)
+  }, [urlQuery.search])
 
   useEffect(() => {
     if (appliedBatchesPageRef.current === batchesUrlPage) return
@@ -233,12 +261,12 @@ export function usePortDataModule(
     autoMatchPortCustomsReceipts,
     changeCustomsRecordsPage,
     changePortImportBatchesPage,
-    customsDeclarationFilter,
-    customsReceiptFilter,
+    customsDeclarationFilter: customsRecordFilters.declaration,
+    customsReceiptFilter: customsRecordFilters.receipt,
     customsRecords,
     customsRecordsPagination: recordsPager.pagination,
     customsRecordsTotal: recordsPager.total,
-    customsTradeTypeFilter,
+    customsTradeTypeFilter: customsRecordFilters.tradeType,
     loadCustomsRecords,
     loadPortImportBatches,
     loadingCustomsRecords,
@@ -249,9 +277,12 @@ export function usePortDataModule(
     portImportBatchesPagination: batchesPager.pagination,
     portImportBatchesTotal: batchesPager.total,
     portRecordForm,
-    setCustomsDeclarationFilter,
-    setCustomsReceiptFilter,
-    setCustomsTradeTypeFilter,
+    setCustomsDeclarationFilter: (value: string) =>
+      setCustomsRecordFilters((current) => ({ ...current, declaration: value })),
+    setCustomsReceiptFilter: (value: string) =>
+      setCustomsRecordFilters((current) => ({ ...current, receipt: value })),
+    setCustomsTradeTypeFilter: (value: string) =>
+      setCustomsRecordFilters((current) => ({ ...current, tradeType: value })),
     setPortBatchForm,
     setPortRecordForm,
     submitPortBatch,

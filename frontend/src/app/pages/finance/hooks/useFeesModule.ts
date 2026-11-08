@@ -30,6 +30,56 @@ import { t } from '@/app/appI18n'
 
 import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 
+type FeeInvoiceFilters = {
+  q: string
+  status: string
+  type: string
+  partner: string
+  shipment: string
+}
+
+type FeePayableFilters = {
+  q: string
+  status: string
+  type: string
+  partner: string
+  shipment: string
+}
+
+function feeInvoiceFiltersFromParams(params: URLSearchParams): FeeInvoiceFilters {
+  return {
+    q: params.get('fee_invoices_q') ?? '',
+    status: params.get('fee_invoices_status') ?? '',
+    type: params.get('fee_invoices_type') ?? '',
+    partner: params.get('fee_invoices_partner') ?? '',
+    shipment: params.get('fee_invoices_shipment') ?? '',
+  }
+}
+
+function feePayableFiltersFromParams(params: URLSearchParams): FeePayableFilters {
+  return {
+    q: params.get('fee_payables_q') ?? '',
+    status: params.get('fee_payables_status') ?? '',
+    type: params.get('fee_payables_type') ?? '',
+    partner: params.get('fee_payables_partner') ?? '',
+    shipment: params.get('fee_payables_shipment') ?? '',
+  }
+}
+
+function feeInvoiceSignature(params: URLSearchParams): string {
+  return JSON.stringify([
+    parsePageParam(params, 'fee_invoices_page'),
+    feeInvoiceFiltersFromParams(params),
+  ])
+}
+
+function feePayableSignature(params: URLSearchParams): string {
+  return JSON.stringify([
+    parsePageParam(params, 'fee_payables_page'),
+    feePayableFiltersFromParams(params),
+  ])
+}
+
 export function useFeesModule(env: FinanceModuleEnv) {
   const { activeModule, detailId, currentUser, setMessage, setError } = env
 
@@ -58,17 +108,21 @@ export function useFeesModule(env: FinanceModuleEnv) {
 
   const [feePayableTotalAmount, setFeePayableTotalAmount] = useState('0.00')
 
-  const partnerFeeInvoicesUrlPage = urlQuery.params.get('fee_invoices_page') ?? ''
+  const [feeInvoiceFilters, setFeeInvoiceFilters] = useState(() =>
+    feeInvoiceFiltersFromParams(urlQuery.params),
+  )
 
-  const appliedPartnerFeeInvoicesPageRef = useRef(partnerFeeInvoicesUrlPage)
+  const appliedFeeInvoiceSignatureRef = useRef(feeInvoiceSignature(urlQuery.params))
 
   const feePaymentRequestsUrlPage = urlQuery.params.get('fee_requests_page') ?? ''
 
   const appliedFeePaymentRequestsPageRef = useRef(feePaymentRequestsUrlPage)
 
-  const feePayablesUrlPage = urlQuery.params.get('fee_payables_page') ?? ''
+  const [feePayableFilters, setFeePayableFilters] = useState(() =>
+    feePayableFiltersFromParams(urlQuery.params),
+  )
 
-  const appliedFeePayablesPageRef = useRef(feePayablesUrlPage)
+  const appliedFeePayableSignatureRef = useRef(feePayableSignature(urlQuery.params))
 
   const [selectedPartnerFeeInvoiceId, setSelectedPartnerFeeInvoiceId] = useState<string | null>(
     null,
@@ -78,31 +132,11 @@ export function useFeesModule(env: FinanceModuleEnv) {
     null,
   )
 
-  const [feeInvoiceSearch, setFeeInvoiceSearch] = useState('')
-
-  const [feeInvoiceStatusFilter, setFeeInvoiceStatusFilter] = useState('')
-
-  const [feeInvoiceTypeFilter, setFeeInvoiceTypeFilter] = useState('')
-
-  const [feeInvoicePartnerFilter, setFeeInvoicePartnerFilter] = useState('')
-
-  const [feeInvoiceShipmentFilter, setFeeInvoiceShipmentFilter] = useState('')
-
   const [feePaymentRequestSearch, _setFeePaymentRequestSearch] = useState('')
 
   const [feePaymentRequestStatusFilter, _setFeePaymentRequestStatusFilter] = useState('')
 
   const [feePaymentRequestTypeFilter, _setFeePaymentRequestTypeFilter] = useState('')
-
-  const [feePayableSearch, setFeePayableSearch] = useState('')
-
-  const [feePayableStatusFilter, setFeePayableStatusFilter] = useState('')
-
-  const [feePayableTypeFilter, setFeePayableTypeFilter] = useState('')
-
-  const [feePayablePartnerFilter, setFeePayablePartnerFilter] = useState('')
-
-  const [feePayableShipmentFilter, setFeePayableShipmentFilter] = useState('')
 
   const [partnerFeeInvoiceForm, setPartnerFeeInvoiceForm] = useState<PartnerFeeInvoiceFormState>(
     () => initialPartnerFeeInvoiceForm(),
@@ -178,18 +212,20 @@ export function useFeesModule(env: FinanceModuleEnv) {
     preferredId?: string,
     pageOverride?: number,
     pageSizeOverride?: number,
+    filtersOverride?: FeeInvoiceFilters,
   ) {
     setLoadingPartnerFeeInvoices(true)
     setError('')
     try {
+      const filters = filtersOverride ?? feeInvoiceFilters
       const page = pageOverride ?? partnerFeeInvoicesPager.page
       const pageSize = pageSizeOverride ?? partnerFeeInvoicesPager.pageSize
       const result = await listPartnerFeeInvoices({
-        q: feeInvoiceSearch.trim() || undefined,
-        status: feeInvoiceStatusFilter || undefined,
-        fee_type: feeInvoiceTypeFilter || undefined,
-        partner_id: feeInvoicePartnerFilter.trim() || undefined,
-        shipment_no: feeInvoiceShipmentFilter.trim() || undefined,
+        q: filters.q.trim() || undefined,
+        status: filters.status || undefined,
+        fee_type: filters.type || undefined,
+        partner_id: filters.partner.trim() || undefined,
+        shipment_no: filters.shipment.trim() || undefined,
         limit: pageSize,
         offset: (page - 1) * pageSize,
       })
@@ -227,8 +263,8 @@ export function useFeesModule(env: FinanceModuleEnv) {
         q: feePaymentRequestSearch.trim() || undefined,
         status: feePaymentRequestStatusFilter || undefined,
         fee_type: feePaymentRequestTypeFilter || undefined,
-        partner_id: feeInvoicePartnerFilter.trim() || undefined,
-        shipment_no: feeInvoiceShipmentFilter.trim() || undefined,
+        partner_id: feeInvoiceFilters.partner.trim() || undefined,
+        shipment_no: feeInvoiceFilters.shipment.trim() || undefined,
         limit: pageSize,
         offset: (page - 1) * pageSize,
       })
@@ -249,18 +285,23 @@ export function useFeesModule(env: FinanceModuleEnv) {
     }
   }
 
-  async function loadFeePayables(pageOverride?: number, pageSizeOverride?: number) {
+  async function loadFeePayables(
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: FeePayableFilters,
+  ) {
     setLoadingFeePayables(true)
     setError('')
     try {
+      const filters = filtersOverride ?? feePayableFilters
       const page = pageOverride ?? feePayablesPager.page
       const pageSize = pageSizeOverride ?? feePayablesPager.pageSize
       const result = await listFeePayables({
-        q: feePayableSearch.trim() || undefined,
-        status: feePayableStatusFilter || undefined,
-        fee_type: feePayableTypeFilter || undefined,
-        partner_id: feePayablePartnerFilter.trim() || undefined,
-        shipment_no: feePayableShipmentFilter.trim() || undefined,
+        q: filters.q.trim() || undefined,
+        status: filters.status || undefined,
+        fee_type: filters.type || undefined,
+        partner_id: filters.partner.trim() || undefined,
+        shipment_no: filters.shipment.trim() || undefined,
         limit: pageSize,
         offset: (page - 1) * pageSize,
       })
@@ -363,9 +404,16 @@ export function useFeesModule(env: FinanceModuleEnv) {
 
   async function changePartnerFeeInvoicesPage(nextPage: number, nextPageSize: number) {
     const next = partnerFeeInvoicesPager.changePage(nextPage, nextPageSize)
-    appliedPartnerFeeInvoicesPageRef.current = next.page === 1 ? '' : String(next.page)
-    urlQuery.update({ fee_invoices_page: next.page === 1 ? null : next.page })
-    await loadPartnerFeeInvoices(undefined, next.page, next.pageSize)
+    const nextSearch = urlQuery.update({
+      fee_invoices_page: next.page === 1 ? null : next.page,
+      fee_invoices_q: feeInvoiceFilters.q,
+      fee_invoices_status: feeInvoiceFilters.status,
+      fee_invoices_type: feeInvoiceFilters.type,
+      fee_invoices_partner: feeInvoiceFilters.partner,
+      fee_invoices_shipment: feeInvoiceFilters.shipment,
+    })
+    appliedFeeInvoiceSignatureRef.current = feeInvoiceSignature(new URLSearchParams(nextSearch))
+    await loadPartnerFeeInvoices(undefined, next.page, next.pageSize, feeInvoiceFilters)
   }
 
   async function changeFeePaymentRequestsPage(nextPage: number, nextPageSize: number) {
@@ -377,18 +425,28 @@ export function useFeesModule(env: FinanceModuleEnv) {
 
   async function changeFeePayablesPage(nextPage: number, nextPageSize: number) {
     const next = feePayablesPager.changePage(nextPage, nextPageSize)
-    appliedFeePayablesPageRef.current = next.page === 1 ? '' : String(next.page)
-    urlQuery.update({ fee_payables_page: next.page === 1 ? null : next.page })
-    await loadFeePayables(next.page, next.pageSize)
+    const nextSearch = urlQuery.update({
+      fee_payables_page: next.page === 1 ? null : next.page,
+      fee_payables_q: feePayableFilters.q,
+      fee_payables_status: feePayableFilters.status,
+      fee_payables_type: feePayableFilters.type,
+      fee_payables_partner: feePayableFilters.partner,
+      fee_payables_shipment: feePayableFilters.shipment,
+    })
+    appliedFeePayableSignatureRef.current = feePayableSignature(new URLSearchParams(nextSearch))
+    await loadFeePayables(next.page, next.pageSize, feePayableFilters)
   }
 
   useEffect(() => {
-    if (appliedPartnerFeeInvoicesPageRef.current === partnerFeeInvoicesUrlPage) return
-    appliedPartnerFeeInvoicesPageRef.current = partnerFeeInvoicesUrlPage
+    const signature = feeInvoiceSignature(urlQuery.params)
+    if (appliedFeeInvoiceSignatureRef.current === signature) return
+    appliedFeeInvoiceSignatureRef.current = signature
+    const filters = feeInvoiceFiltersFromParams(urlQuery.params)
     const nextPage = parsePageParam(urlQuery.params, 'fee_invoices_page')
+    setFeeInvoiceFilters(filters)
     partnerFeeInvoicesPager.setPage(nextPage)
-    void loadPartnerFeeInvoices(undefined, nextPage, partnerFeeInvoicesPager.pageSize)
-  }, [partnerFeeInvoicesUrlPage])
+    void loadPartnerFeeInvoices(undefined, nextPage, partnerFeeInvoicesPager.pageSize, filters)
+  }, [urlQuery.search])
 
   useEffect(() => {
     if (appliedFeePaymentRequestsPageRef.current === feePaymentRequestsUrlPage) return
@@ -399,12 +457,15 @@ export function useFeesModule(env: FinanceModuleEnv) {
   }, [feePaymentRequestsUrlPage])
 
   useEffect(() => {
-    if (appliedFeePayablesPageRef.current === feePayablesUrlPage) return
-    appliedFeePayablesPageRef.current = feePayablesUrlPage
+    const signature = feePayableSignature(urlQuery.params)
+    if (appliedFeePayableSignatureRef.current === signature) return
+    appliedFeePayableSignatureRef.current = signature
+    const filters = feePayableFiltersFromParams(urlQuery.params)
     const nextPage = parsePageParam(urlQuery.params, 'fee_payables_page')
+    setFeePayableFilters(filters)
     feePayablesPager.setPage(nextPage)
-    void loadFeePayables(nextPage, feePayablesPager.pageSize)
-  }, [feePayablesUrlPage])
+    void loadFeePayables(nextPage, feePayablesPager.pageSize, filters)
+  }, [urlQuery.search])
 
   const selectedFeePaymentRequestCanApprove =
     selectedFeePaymentRequest?.status === 'submitted' &&
@@ -416,17 +477,17 @@ export function useFeesModule(env: FinanceModuleEnv) {
     changeFeePaymentRequestsPage,
     changePartnerFeeInvoicesPage,
     feeInvoiceModalOpen,
-    feeInvoicePartnerFilter,
-    feeInvoiceSearch,
-    feeInvoiceShipmentFilter,
-    feeInvoiceStatusFilter,
-    feeInvoiceTypeFilter,
-    feePayablePartnerFilter,
-    feePayableSearch,
-    feePayableShipmentFilter,
-    feePayableStatusFilter,
+    feeInvoicePartnerFilter: feeInvoiceFilters.partner,
+    feeInvoiceSearch: feeInvoiceFilters.q,
+    feeInvoiceShipmentFilter: feeInvoiceFilters.shipment,
+    feeInvoiceStatusFilter: feeInvoiceFilters.status,
+    feeInvoiceTypeFilter: feeInvoiceFilters.type,
+    feePayablePartnerFilter: feePayableFilters.partner,
+    feePayableSearch: feePayableFilters.q,
+    feePayableShipmentFilter: feePayableFilters.shipment,
+    feePayableStatusFilter: feePayableFilters.status,
     feePayableTotalAmount,
-    feePayableTypeFilter,
+    feePayableTypeFilter: feePayableFilters.type,
     feePayables,
     feePayablesPagination: feePayablesPager.pagination,
     feePayablesTotal: feePayablesPager.total,
@@ -450,16 +511,26 @@ export function useFeesModule(env: FinanceModuleEnv) {
     selectedFeePaymentRequestCanApprove,
     selectedPartnerFeeInvoice,
     setFeeInvoiceModalOpen,
-    setFeeInvoicePartnerFilter,
-    setFeeInvoiceSearch,
-    setFeeInvoiceShipmentFilter,
-    setFeeInvoiceStatusFilter,
-    setFeeInvoiceTypeFilter,
-    setFeePayablePartnerFilter,
-    setFeePayableSearch,
-    setFeePayableShipmentFilter,
-    setFeePayableStatusFilter,
-    setFeePayableTypeFilter,
+    setFeeInvoicePartnerFilter: (value: string) =>
+      setFeeInvoiceFilters((current) => ({ ...current, partner: value })),
+    setFeeInvoiceSearch: (value: string) =>
+      setFeeInvoiceFilters((current) => ({ ...current, q: value })),
+    setFeeInvoiceShipmentFilter: (value: string) =>
+      setFeeInvoiceFilters((current) => ({ ...current, shipment: value })),
+    setFeeInvoiceStatusFilter: (value: string) =>
+      setFeeInvoiceFilters((current) => ({ ...current, status: value })),
+    setFeeInvoiceTypeFilter: (value: string) =>
+      setFeeInvoiceFilters((current) => ({ ...current, type: value })),
+    setFeePayablePartnerFilter: (value: string) =>
+      setFeePayableFilters((current) => ({ ...current, partner: value })),
+    setFeePayableSearch: (value: string) =>
+      setFeePayableFilters((current) => ({ ...current, q: value })),
+    setFeePayableShipmentFilter: (value: string) =>
+      setFeePayableFilters((current) => ({ ...current, shipment: value })),
+    setFeePayableStatusFilter: (value: string) =>
+      setFeePayableFilters((current) => ({ ...current, status: value })),
+    setFeePayableTypeFilter: (value: string) =>
+      setFeePayableFilters((current) => ({ ...current, type: value })),
     setFeePaymentApprovalForm,
     setFeePaymentRequestForm,
     setPartnerFeeInvoiceForm,

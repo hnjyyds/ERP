@@ -24,6 +24,41 @@ import {
 
 import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 
+type MiscItemFilters = { q: string; category: string; status: string }
+
+type MiscAllocationFilters = { q: string; category: string; shipment: string; sales: string }
+
+function miscItemFiltersFromParams(params: URLSearchParams): MiscItemFilters {
+  return {
+    q: params.get('misc_items_q') ?? '',
+    category: params.get('misc_items_category') ?? '',
+    status: params.get('misc_items_status') ?? '',
+  }
+}
+
+function miscAllocationFiltersFromParams(params: URLSearchParams): MiscAllocationFilters {
+  return {
+    q: params.get('misc_allocations_q') ?? '',
+    category: params.get('misc_allocations_category') ?? '',
+    shipment: params.get('misc_allocations_shipment') ?? '',
+    sales: params.get('misc_allocations_sales') ?? '',
+  }
+}
+
+function miscItemSignature(params: URLSearchParams): string {
+  return JSON.stringify([
+    parsePageParam(params, 'misc_items_page'),
+    miscItemFiltersFromParams(params),
+  ])
+}
+
+function miscAllocationSignature(params: URLSearchParams): string {
+  return JSON.stringify([
+    parsePageParam(params, 'misc_allocations_page'),
+    miscAllocationFiltersFromParams(params),
+  ])
+}
+
 export function useMiscModule(env: FinanceModuleEnv) {
   const { activeModule, detailId, setMessage, setError, loadOverview } = env
 
@@ -39,13 +74,17 @@ export function useMiscModule(env: FinanceModuleEnv) {
     parsePageParam(urlQuery.params, 'misc_allocations_page'),
   )
 
-  const miscFeeItemsUrlPage = urlQuery.params.get('misc_items_page') ?? ''
+  const [miscItemFilters, setMiscItemFilters] = useState(() =>
+    miscItemFiltersFromParams(urlQuery.params),
+  )
 
-  const appliedMiscFeeItemsPageRef = useRef(miscFeeItemsUrlPage)
+  const appliedMiscItemsSignatureRef = useRef(miscItemSignature(urlQuery.params))
 
-  const miscFeeAllocationsUrlPage = urlQuery.params.get('misc_allocations_page') ?? ''
+  const [miscAllocationFilters, setMiscAllocationFilters] = useState(() =>
+    miscAllocationFiltersFromParams(urlQuery.params),
+  )
 
-  const appliedMiscFeeAllocationsPageRef = useRef(miscFeeAllocationsUrlPage)
+  const appliedMiscAllocationsSignatureRef = useRef(miscAllocationSignature(urlQuery.params))
 
   const [miscFeeItems, setMiscFeeItems] = useState<MiscFeeItem[]>([])
 
@@ -55,25 +94,7 @@ export function useMiscModule(env: FinanceModuleEnv) {
 
   const [selectedMiscFeeItemId, setSelectedMiscFeeItemId] = useState<string | null>(null)
 
-  const [miscFeeItemSearch, setMiscFeeItemSearch] = useState('')
-
-  const [miscFeeItemCategoryFilter, setMiscFeeItemCategoryFilter] = useState('')
-
-  const [miscFeeItemStatusFilter, setMiscFeeItemStatusFilter] = useState('')
-
   const [miscFeeItemCodeError, setMiscFeeItemCodeError] = useState('')
-
-  const [miscFeeAllocationSearch, setMiscFeeAllocationSearch] = useState('')
-
-  const [miscFeeAllocationCategoryFilter, setMiscFeeAllocationCategoryFilter] = useState('')
-
-  const [miscFeeAllocationShipmentFilter, setMiscFeeAllocationShipmentFilter] = useState('')
-
-  const [miscFeeAllocationSalesFilter, setMiscFeeAllocationSalesFilter] = useState('')
-
-  const [miscFeeSummaryShipmentFilter, setMiscFeeSummaryShipmentFilter] = useState('')
-
-  const [miscFeeSummaryCategoryFilter, setMiscFeeSummaryCategoryFilter] = useState('')
 
   const [miscFeeItemForm, setMiscFeeItemForm] = useState<MiscFeeItemFormState>(() =>
     initialMiscFeeItemForm(),
@@ -113,16 +134,18 @@ export function useMiscModule(env: FinanceModuleEnv) {
     preferredId?: string,
     pageOverride?: number,
     pageSizeOverride?: number,
+    filtersOverride?: MiscItemFilters,
   ) {
     setLoadingMiscFeeItems(true)
     setError('')
     try {
+      const filters = filtersOverride ?? miscItemFilters
       const page = pageOverride ?? miscFeeItemsPager.page
       const pageSize = pageSizeOverride ?? miscFeeItemsPager.pageSize
       const result = await listMiscFeeItems({
-        q: miscFeeItemSearch.trim() || undefined,
-        category: miscFeeItemCategoryFilter || undefined,
-        status: miscFeeItemStatusFilter || undefined,
+        q: filters.q.trim() || undefined,
+        category: filters.category || undefined,
+        status: filters.status || undefined,
         limit: pageSize,
         offset: (page - 1) * pageSize,
       })
@@ -146,17 +169,22 @@ export function useMiscModule(env: FinanceModuleEnv) {
     }
   }
 
-  async function loadMiscFeeAllocations(pageOverride?: number, pageSizeOverride?: number) {
+  async function loadMiscFeeAllocations(
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: MiscAllocationFilters,
+  ) {
     setLoadingMiscFeeAllocations(true)
     setError('')
     try {
+      const filters = filtersOverride ?? miscAllocationFilters
       const page = pageOverride ?? miscFeeAllocationsPager.page
       const pageSize = pageSizeOverride ?? miscFeeAllocationsPager.pageSize
       const result = await listMiscFeeAllocations({
-        q: miscFeeAllocationSearch.trim() || undefined,
-        category: miscFeeAllocationCategoryFilter || undefined,
-        shipment_no: miscFeeAllocationShipmentFilter.trim() || undefined,
-        sales_user_id: miscFeeAllocationSalesFilter.trim() || undefined,
+        q: filters.q.trim() || undefined,
+        category: filters.category || undefined,
+        shipment_no: filters.shipment.trim() || undefined,
+        sales_user_id: filters.sales.trim() || undefined,
         limit: pageSize,
         offset: (page - 1) * pageSize,
       })
@@ -169,13 +197,14 @@ export function useMiscModule(env: FinanceModuleEnv) {
     }
   }
 
-  async function loadMiscFeeAllocationSummary() {
+  async function loadMiscFeeAllocationSummary(filtersOverride?: MiscAllocationFilters) {
     setLoadingMiscFeeSummary(true)
     setError('')
     try {
+      const filters = filtersOverride ?? miscAllocationFilters
       const result = await listMiscFeeAllocationSummary({
-        shipment_no: miscFeeSummaryShipmentFilter.trim() || undefined,
-        category: miscFeeSummaryCategoryFilter || undefined,
+        shipment_no: filters.shipment.trim() || undefined,
+        category: filters.category || undefined,
       })
       setMiscFeeAllocationSummary(result.items)
     } catch (caught) {
@@ -187,33 +216,54 @@ export function useMiscModule(env: FinanceModuleEnv) {
 
   async function changeMiscFeeItemsPage(nextPage: number, nextPageSize: number) {
     const next = miscFeeItemsPager.changePage(nextPage, nextPageSize)
-    appliedMiscFeeItemsPageRef.current = next.page === 1 ? '' : String(next.page)
-    urlQuery.update({ misc_items_page: next.page === 1 ? null : next.page })
-    await loadMiscFeeItems(undefined, next.page, next.pageSize)
+    const nextSearch = urlQuery.update({
+      misc_items_page: next.page === 1 ? null : next.page,
+      misc_items_q: miscItemFilters.q,
+      misc_items_category: miscItemFilters.category,
+      misc_items_status: miscItemFilters.status,
+    })
+    appliedMiscItemsSignatureRef.current = miscItemSignature(new URLSearchParams(nextSearch))
+    await loadMiscFeeItems(undefined, next.page, next.pageSize, miscItemFilters)
   }
 
   async function changeMiscFeeAllocationsPage(nextPage: number, nextPageSize: number) {
     const next = miscFeeAllocationsPager.changePage(nextPage, nextPageSize)
-    appliedMiscFeeAllocationsPageRef.current = next.page === 1 ? '' : String(next.page)
-    urlQuery.update({ misc_allocations_page: next.page === 1 ? null : next.page })
-    await loadMiscFeeAllocations(next.page, next.pageSize)
+    const nextSearch = urlQuery.update({
+      misc_allocations_page: next.page === 1 ? null : next.page,
+      misc_allocations_q: miscAllocationFilters.q,
+      misc_allocations_category: miscAllocationFilters.category,
+      misc_allocations_shipment: miscAllocationFilters.shipment,
+      misc_allocations_sales: miscAllocationFilters.sales,
+    })
+    appliedMiscAllocationsSignatureRef.current = miscAllocationSignature(
+      new URLSearchParams(nextSearch),
+    )
+    await loadMiscFeeAllocations(next.page, next.pageSize, miscAllocationFilters)
+    await loadMiscFeeAllocationSummary(miscAllocationFilters)
   }
 
   useEffect(() => {
-    if (appliedMiscFeeItemsPageRef.current === miscFeeItemsUrlPage) return
-    appliedMiscFeeItemsPageRef.current = miscFeeItemsUrlPage
+    const signature = miscItemSignature(urlQuery.params)
+    if (appliedMiscItemsSignatureRef.current === signature) return
+    appliedMiscItemsSignatureRef.current = signature
+    const filters = miscItemFiltersFromParams(urlQuery.params)
     const nextPage = parsePageParam(urlQuery.params, 'misc_items_page')
+    setMiscItemFilters(filters)
     miscFeeItemsPager.setPage(nextPage)
-    void loadMiscFeeItems(undefined, nextPage, miscFeeItemsPager.pageSize)
-  }, [miscFeeItemsUrlPage])
+    void loadMiscFeeItems(undefined, nextPage, miscFeeItemsPager.pageSize, filters)
+  }, [urlQuery.search])
 
   useEffect(() => {
-    if (appliedMiscFeeAllocationsPageRef.current === miscFeeAllocationsUrlPage) return
-    appliedMiscFeeAllocationsPageRef.current = miscFeeAllocationsUrlPage
+    const signature = miscAllocationSignature(urlQuery.params)
+    if (appliedMiscAllocationsSignatureRef.current === signature) return
+    appliedMiscAllocationsSignatureRef.current = signature
+    const filters = miscAllocationFiltersFromParams(urlQuery.params)
     const nextPage = parsePageParam(urlQuery.params, 'misc_allocations_page')
+    setMiscAllocationFilters(filters)
     miscFeeAllocationsPager.setPage(nextPage)
-    void loadMiscFeeAllocations(nextPage, miscFeeAllocationsPager.pageSize)
-  }, [miscFeeAllocationsUrlPage])
+    void loadMiscFeeAllocations(nextPage, miscFeeAllocationsPager.pageSize, filters)
+    void loadMiscFeeAllocationSummary(filters)
+  }, [urlQuery.search])
 
   async function submitMiscFeeItem(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -272,36 +322,45 @@ export function useMiscModule(env: FinanceModuleEnv) {
     loadingMiscFeeAllocations,
     loadingMiscFeeItems,
     loadingMiscFeeSummary,
-    miscFeeAllocationCategoryFilter,
+    miscFeeAllocationCategoryFilter: miscAllocationFilters.category,
     miscFeeAllocationForm,
-    miscFeeAllocationSalesFilter,
-    miscFeeAllocationSearch,
-    miscFeeAllocationShipmentFilter,
+    miscFeeAllocationSalesFilter: miscAllocationFilters.sales,
+    miscFeeAllocationSearch: miscAllocationFilters.q,
+    miscFeeAllocationShipmentFilter: miscAllocationFilters.shipment,
     miscFeeAllocations,
     miscFeeAllocationsPagination: miscFeeAllocationsPager.pagination,
     miscFeeAllocationsTotal: miscFeeAllocationsPager.total,
-    miscFeeItemCategoryFilter,
+    miscFeeItemCategoryFilter: miscItemFilters.category,
     miscFeeItemCodeError,
     miscFeeItemForm,
-    miscFeeItemSearch,
-    miscFeeItemStatusFilter,
+    miscFeeItemSearch: miscItemFilters.q,
+    miscFeeItemStatusFilter: miscItemFilters.status,
     miscFeeItems,
     miscFeeItemsPagination: miscFeeItemsPager.pagination,
     miscFeeItemsTotal: miscFeeItemsPager.total,
     miscItemModalOpen,
     selectedMiscFeeItem,
-    setMiscFeeAllocationCategoryFilter,
+    setMiscFeeAllocationCategoryFilter: (value: string) =>
+      setMiscAllocationFilters((current) => ({ ...current, category: value })),
     setMiscFeeAllocationForm,
-    setMiscFeeAllocationSalesFilter,
-    setMiscFeeAllocationSearch,
-    setMiscFeeAllocationShipmentFilter,
-    setMiscFeeItemCategoryFilter,
+    setMiscFeeAllocationSalesFilter: (value: string) =>
+      setMiscAllocationFilters((current) => ({ ...current, sales: value })),
+    setMiscFeeAllocationSearch: (value: string) =>
+      setMiscAllocationFilters((current) => ({ ...current, q: value })),
+    setMiscFeeAllocationShipmentFilter: (value: string) =>
+      setMiscAllocationFilters((current) => ({ ...current, shipment: value })),
+    setMiscFeeItemCategoryFilter: (value: string) =>
+      setMiscItemFilters((current) => ({ ...current, category: value })),
     setMiscFeeItemCodeError,
     setMiscFeeItemForm,
-    setMiscFeeItemSearch,
-    setMiscFeeItemStatusFilter,
-    setMiscFeeSummaryCategoryFilter,
-    setMiscFeeSummaryShipmentFilter,
+    setMiscFeeItemSearch: (value: string) =>
+      setMiscItemFilters((current) => ({ ...current, q: value })),
+    setMiscFeeItemStatusFilter: (value: string) =>
+      setMiscItemFilters((current) => ({ ...current, status: value })),
+    setMiscFeeSummaryCategoryFilter: (value: string) =>
+      setMiscAllocationFilters((current) => ({ ...current, category: value })),
+    setMiscFeeSummaryShipmentFilter: (value: string) =>
+      setMiscAllocationFilters((current) => ({ ...current, shipment: value })),
     setMiscItemModalOpen,
     setSelectedMiscFeeItemId,
     submitMiscFeeAllocation,

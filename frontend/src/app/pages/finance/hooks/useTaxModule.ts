@@ -31,6 +31,46 @@ import {
 
 import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 
+type DocumentFilters = {
+  q: string
+  status: string
+  reminder: string
+  owner: string
+  shipment: string
+}
+
+type UsageFilters = { q: string; status: string; reminder: string; shipment: string }
+
+function documentFiltersFromParams(params: URLSearchParams): DocumentFilters {
+  return {
+    q: params.get('documents_q') ?? '',
+    status: params.get('documents_status') ?? '',
+    reminder: params.get('documents_reminder') ?? '',
+    owner: params.get('documents_owner') ?? '',
+    shipment: params.get('documents_shipment') ?? '',
+  }
+}
+
+function usageFiltersFromParams(params: URLSearchParams): UsageFilters {
+  return {
+    q: params.get('usage_q') ?? '',
+    status: params.get('usage_status') ?? '',
+    reminder: params.get('usage_reminder') ?? '',
+    shipment: params.get('usage_shipment') ?? '',
+  }
+}
+
+function documentSignature(params: URLSearchParams): string {
+  return JSON.stringify([
+    parsePageParam(params, 'documents_page'),
+    documentFiltersFromParams(params),
+  ])
+}
+
+function usageSignature(params: URLSearchParams): string {
+  return JSON.stringify(usageFiltersFromParams(params))
+}
+
 export function useTaxModule(env: FinanceModuleEnv) {
   const { activeModule, detailId, setMessage, setError, loadOverview } = env
 
@@ -41,9 +81,15 @@ export function useTaxModule(env: FinanceModuleEnv) {
     parsePageParam(urlQuery.params, 'documents_page'),
   )
 
-  const verificationDocumentsUrlPage = urlQuery.params.get('documents_page') ?? ''
+  const [documentFilters, setDocumentFilters] = useState(() =>
+    documentFiltersFromParams(urlQuery.params),
+  )
 
-  const appliedVerificationDocumentsPageRef = useRef(verificationDocumentsUrlPage)
+  const appliedDocumentSignatureRef = useRef(documentSignature(urlQuery.params))
+
+  const [usageFilters, setUsageFilters] = useState(() => usageFiltersFromParams(urlQuery.params))
+
+  const appliedUsageSignatureRef = useRef(usageSignature(urlQuery.params))
 
   const [verificationDocuments, setVerificationDocuments] = useState<VerificationDocument[]>([])
 
@@ -52,24 +98,6 @@ export function useTaxModule(env: FinanceModuleEnv) {
   const [selectedVerificationDocumentId, setSelectedVerificationDocumentId] = useState<
     string | null
   >(null)
-
-  const [verificationSearch, setVerificationSearch] = useState('')
-
-  const [verificationStatusFilter, setVerificationStatusFilter] = useState('')
-
-  const [verificationReminderFilter, setVerificationReminderFilter] = useState('')
-
-  const [verificationOwnerFilter, setVerificationOwnerFilter] = useState('')
-
-  const [verificationShipmentFilter, setVerificationShipmentFilter] = useState('')
-
-  const [verificationUsageSearch, setVerificationUsageSearch] = useState('')
-
-  const [verificationUsageStatusFilter, setVerificationUsageStatusFilter] = useState('')
-
-  const [verificationUsageReminderFilter, setVerificationUsageReminderFilter] = useState('')
-
-  const [verificationUsageShipmentFilter, setVerificationUsageShipmentFilter] = useState('')
 
   const [verificationDocumentForm, setVerificationDocumentForm] =
     useState<VerificationDocumentFormState>(() => initialVerificationDocumentForm())
@@ -129,18 +157,20 @@ export function useTaxModule(env: FinanceModuleEnv) {
     preferredId?: string,
     pageOverride?: number,
     pageSizeOverride?: number,
+    filtersOverride?: DocumentFilters,
   ) {
     setLoadingVerificationDocuments(true)
     setError('')
     try {
+      const filters = filtersOverride ?? documentFilters
       const page = pageOverride ?? verificationDocumentsPager.page
       const pageSize = pageSizeOverride ?? verificationDocumentsPager.pageSize
       const result = await listVerificationDocuments({
-        q: verificationSearch.trim() || undefined,
-        status: verificationStatusFilter || undefined,
-        owner_user_id: verificationOwnerFilter.trim() || undefined,
-        shipment_no: verificationShipmentFilter.trim() || undefined,
-        reminder_status: verificationReminderFilter || undefined,
+        q: filters.q.trim() || undefined,
+        status: filters.status || undefined,
+        owner_user_id: filters.owner.trim() || undefined,
+        shipment_no: filters.shipment.trim() || undefined,
+        reminder_status: filters.reminder || undefined,
         limit: pageSize,
         offset: (page - 1) * pageSize,
       })
@@ -166,28 +196,59 @@ export function useTaxModule(env: FinanceModuleEnv) {
 
   async function changeVerificationDocumentsPage(nextPage: number, nextPageSize: number) {
     const next = verificationDocumentsPager.changePage(nextPage, nextPageSize)
-    appliedVerificationDocumentsPageRef.current = next.page === 1 ? '' : String(next.page)
-    urlQuery.update({ documents_page: next.page === 1 ? null : next.page })
-    await loadVerificationDocuments(undefined, next.page, next.pageSize)
+    const nextSearch = urlQuery.update({
+      documents_page: next.page === 1 ? null : next.page,
+      documents_q: documentFilters.q,
+      documents_status: documentFilters.status,
+      documents_reminder: documentFilters.reminder,
+      documents_owner: documentFilters.owner,
+      documents_shipment: documentFilters.shipment,
+    })
+    appliedDocumentSignatureRef.current = documentSignature(new URLSearchParams(nextSearch))
+    await loadVerificationDocuments(undefined, next.page, next.pageSize, documentFilters)
   }
 
   useEffect(() => {
-    if (appliedVerificationDocumentsPageRef.current === verificationDocumentsUrlPage) return
-    appliedVerificationDocumentsPageRef.current = verificationDocumentsUrlPage
+    const signature = documentSignature(urlQuery.params)
+    if (appliedDocumentSignatureRef.current === signature) return
+    appliedDocumentSignatureRef.current = signature
+    const filters = documentFiltersFromParams(urlQuery.params)
     const nextPage = parsePageParam(urlQuery.params, 'documents_page')
+    setDocumentFilters(filters)
     verificationDocumentsPager.setPage(nextPage)
-    void loadVerificationDocuments(undefined, nextPage, verificationDocumentsPager.pageSize)
-  }, [verificationDocumentsUrlPage])
+    void loadVerificationDocuments(undefined, nextPage, verificationDocumentsPager.pageSize, filters)
+  }, [urlQuery.search])
 
-  async function loadVerificationUsage() {
+  async function applyVerificationUsageFilters() {
+    const nextSearch = urlQuery.update({
+      usage_q: usageFilters.q,
+      usage_status: usageFilters.status,
+      usage_reminder: usageFilters.reminder,
+      usage_shipment: usageFilters.shipment,
+    })
+    appliedUsageSignatureRef.current = usageSignature(new URLSearchParams(nextSearch))
+    await loadVerificationUsage(usageFilters)
+  }
+
+  useEffect(() => {
+    const signature = usageSignature(urlQuery.params)
+    if (appliedUsageSignatureRef.current === signature) return
+    appliedUsageSignatureRef.current = signature
+    const filters = usageFiltersFromParams(urlQuery.params)
+    setUsageFilters(filters)
+    void loadVerificationUsage(filters)
+  }, [urlQuery.search])
+
+  async function loadVerificationUsage(filtersOverride?: UsageFilters) {
     setLoadingVerificationUsage(true)
     setError('')
     try {
+      const filters = filtersOverride ?? usageFilters
       const result = await listVerificationUsage({
-        q: verificationUsageSearch.trim() || undefined,
-        status: verificationUsageStatusFilter || undefined,
-        shipment_no: verificationUsageShipmentFilter.trim() || undefined,
-        reminder_status: verificationUsageReminderFilter || undefined,
+        q: filters.q.trim() || undefined,
+        status: filters.status || undefined,
+        shipment_no: filters.shipment.trim() || undefined,
+        reminder_status: filters.reminder || undefined,
       })
       setVerificationUsage(result.items)
     } catch (caught) {
@@ -318,6 +379,7 @@ export function useTaxModule(env: FinanceModuleEnv) {
       Number(selectedVerificationDocument.unrefunded_amount) > 0)
 
   return {
+    applyVerificationUsageFilters,
     changeVerificationDocumentsPage,
     customsReceiptErrors,
     customsReceiptForm,
@@ -335,16 +397,25 @@ export function useTaxModule(env: FinanceModuleEnv) {
     setTaxDocumentModalOpen,
     setTaxRefundForm,
     setVerificationDocumentForm,
-    setVerificationOwnerFilter,
+    setVerificationOwnerFilter: (value: string) =>
+      setDocumentFilters((current) => ({ ...current, owner: value })),
     setVerificationRegisterForm,
-    setVerificationReminderFilter,
-    setVerificationSearch,
-    setVerificationShipmentFilter,
-    setVerificationStatusFilter,
-    setVerificationUsageReminderFilter,
-    setVerificationUsageSearch,
-    setVerificationUsageShipmentFilter,
-    setVerificationUsageStatusFilter,
+    setVerificationReminderFilter: (value: string) =>
+      setDocumentFilters((current) => ({ ...current, reminder: value })),
+    setVerificationSearch: (value: string) =>
+      setDocumentFilters((current) => ({ ...current, q: value })),
+    setVerificationShipmentFilter: (value: string) =>
+      setDocumentFilters((current) => ({ ...current, shipment: value })),
+    setVerificationStatusFilter: (value: string) =>
+      setDocumentFilters((current) => ({ ...current, status: value })),
+    setVerificationUsageReminderFilter: (value: string) =>
+      setUsageFilters((current) => ({ ...current, reminder: value })),
+    setVerificationUsageSearch: (value: string) =>
+      setUsageFilters((current) => ({ ...current, q: value })),
+    setVerificationUsageShipmentFilter: (value: string) =>
+      setUsageFilters((current) => ({ ...current, shipment: value })),
+    setVerificationUsageStatusFilter: (value: string) =>
+      setUsageFilters((current) => ({ ...current, status: value })),
     submitCustomsReceipt,
     submitTaxRefund,
     submitVerificationDocument,
@@ -359,17 +430,17 @@ export function useTaxModule(env: FinanceModuleEnv) {
     verificationDocuments,
     verificationDocumentsPagination: verificationDocumentsPager.pagination,
     verificationDocumentsTotal: verificationDocumentsPager.total,
-    verificationOwnerFilter,
+    verificationOwnerFilter: documentFilters.owner,
     verificationRegisterForm,
-    verificationReminderFilter,
-    verificationSearch,
-    verificationShipmentFilter,
-    verificationStatusFilter,
+    verificationReminderFilter: documentFilters.reminder,
+    verificationSearch: documentFilters.q,
+    verificationShipmentFilter: documentFilters.shipment,
+    verificationStatusFilter: documentFilters.status,
     verificationUsage,
-    verificationUsageReminderFilter,
-    verificationUsageSearch,
-    verificationUsageShipmentFilter,
-    verificationUsageStatusFilter,
+    verificationUsageReminderFilter: usageFilters.reminder,
+    verificationUsageSearch: usageFilters.q,
+    verificationUsageShipmentFilter: usageFilters.shipment,
+    verificationUsageStatusFilter: usageFilters.status,
   }
 }
 

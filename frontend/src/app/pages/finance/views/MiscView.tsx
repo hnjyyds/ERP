@@ -28,7 +28,6 @@ export function MiscView({ model, shell }: Props) {
   const {
     changeMiscFeeAllocationsPage,
     changeMiscFeeItemsPage,
-    loadMiscFeeAllocationSummary,
     loadingMiscFeeAllocations,
     loadingMiscFeeItems,
     loadingMiscFeeSummary,
@@ -529,7 +528,6 @@ export function MiscView({ model, shell }: Props) {
                 onSubmit={(event) => {
                   event.preventDefault()
                   void changeMiscFeeAllocationsPage(1, miscFeeAllocationsPagination.pageSize)
-                  void loadMiscFeeAllocationSummary()
                 }}
               >
                 <label>

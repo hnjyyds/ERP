@@ -22,6 +22,35 @@ import {
 
 import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 
+type SettlementFilters = { q: string; shipment: string }
+
+type ProfitFilters = { q: string; shipment: string }
+
+function settlementFiltersFromParams(params: URLSearchParams): SettlementFilters {
+  return {
+    q: params.get('settlements_q') ?? '',
+    shipment: params.get('settlements_shipment') ?? '',
+  }
+}
+
+function profitFiltersFromParams(params: URLSearchParams): ProfitFilters {
+  return {
+    q: params.get('profits_q') ?? '',
+    shipment: params.get('profits_shipment') ?? '',
+  }
+}
+
+function settlementSignature(params: URLSearchParams): string {
+  return JSON.stringify([
+    parsePageParam(params, 'settlements_page'),
+    settlementFiltersFromParams(params),
+  ])
+}
+
+function profitSignature(params: URLSearchParams): string {
+  return JSON.stringify([parsePageParam(params, 'profits_page'), profitFiltersFromParams(params)])
+}
+
 export function useSettlementModule(env: FinanceModuleEnv) {
   const { activeModule, detailId, setMessage, setError, loadOverview } = env
 
@@ -48,25 +77,19 @@ export function useSettlementModule(env: FinanceModuleEnv) {
   const [totalProfitCalculationGrossProfit, setTotalProfitCalculationGrossProfit] =
     useState('0.00')
 
-  const settlementsUrlPage = urlQuery.params.get('settlements_page') ?? ''
+  const [settlementFilters, setSettlementFilters] = useState(() =>
+    settlementFiltersFromParams(urlQuery.params),
+  )
 
-  const appliedSettlementsPageRef = useRef(settlementsUrlPage)
+  const appliedSettlementSignatureRef = useRef(settlementSignature(urlQuery.params))
 
-  const profitsUrlPage = urlQuery.params.get('profits_page') ?? ''
+  const [profitFilters, setProfitFilters] = useState(() => profitFiltersFromParams(urlQuery.params))
 
-  const appliedProfitsPageRef = useRef(profitsUrlPage)
+  const appliedProfitSignatureRef = useRef(profitSignature(urlQuery.params))
 
   const [selectedFinancialSettlementId, setSelectedFinancialSettlementId] = useState<string | null>(
     null,
   )
-
-  const [settlementSearch, setSettlementSearch] = useState('')
-
-  const [settlementShipmentFilter, setSettlementShipmentFilter] = useState('')
-
-  const [profitCalculationSearch, setProfitCalculationSearch] = useState('')
-
-  const [profitCalculationShipmentFilter, setProfitCalculationShipmentFilter] = useState('')
 
   const [settlementForm, setSettlementForm] = useState<FinancialSettlementFormState>(() =>
     initialFinancialSettlementForm(),
@@ -111,16 +134,18 @@ export function useSettlementModule(env: FinanceModuleEnv) {
     preferredId?: string,
     pageOverride?: number,
     pageSizeOverride?: number,
+    filtersOverride?: SettlementFilters,
   ) {
     setLoadingFinancialSettlements(true)
     setError('')
     try {
+      const filters = filtersOverride ?? settlementFilters
       const page = pageOverride ?? settlementsPager.page
       const pageSize = pageSizeOverride ?? settlementsPager.pageSize
       const result = await listFinancialSettlements({
-        q: settlementSearch.trim() || undefined,
+        q: filters.q.trim() || undefined,
         status: 'locked',
-        shipment_no: settlementShipmentFilter.trim() || undefined,
+        shipment_no: filters.shipment.trim() || undefined,
         limit: pageSize,
         offset: (page - 1) * pageSize,
       })
@@ -146,15 +171,20 @@ export function useSettlementModule(env: FinanceModuleEnv) {
     }
   }
 
-  async function loadProfitCalculations(pageOverride?: number, pageSizeOverride?: number) {
+  async function loadProfitCalculations(
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: ProfitFilters,
+  ) {
     setLoadingProfitCalculations(true)
     setError('')
     try {
+      const filters = filtersOverride ?? profitFilters
       const page = pageOverride ?? profitsPager.page
       const pageSize = pageSizeOverride ?? profitsPager.pageSize
       const result = await listProfitCalculations({
-        q: profitCalculationSearch.trim() || undefined,
-        shipment_no: profitCalculationShipmentFilter.trim() || undefined,
+        q: filters.q.trim() || undefined,
+        shipment_no: filters.shipment.trim() || undefined,
         limit: pageSize,
         offset: (page - 1) * pageSize,
       })
@@ -216,33 +246,47 @@ export function useSettlementModule(env: FinanceModuleEnv) {
 
   async function changeFinancialSettlementsPage(nextPage: number, nextPageSize: number) {
     const next = settlementsPager.changePage(nextPage, nextPageSize)
-    appliedSettlementsPageRef.current = next.page === 1 ? '' : String(next.page)
-    urlQuery.update({ settlements_page: next.page === 1 ? null : next.page })
-    await loadFinancialSettlements(undefined, next.page, next.pageSize)
+    const nextSearch = urlQuery.update({
+      settlements_page: next.page === 1 ? null : next.page,
+      settlements_q: settlementFilters.q,
+      settlements_shipment: settlementFilters.shipment,
+    })
+    appliedSettlementSignatureRef.current = settlementSignature(new URLSearchParams(nextSearch))
+    await loadFinancialSettlements(undefined, next.page, next.pageSize, settlementFilters)
   }
 
   async function changeProfitCalculationsPage(nextPage: number, nextPageSize: number) {
     const next = profitsPager.changePage(nextPage, nextPageSize)
-    appliedProfitsPageRef.current = next.page === 1 ? '' : String(next.page)
-    urlQuery.update({ profits_page: next.page === 1 ? null : next.page })
-    await loadProfitCalculations(next.page, next.pageSize)
+    const nextSearch = urlQuery.update({
+      profits_page: next.page === 1 ? null : next.page,
+      profits_q: profitFilters.q,
+      profits_shipment: profitFilters.shipment,
+    })
+    appliedProfitSignatureRef.current = profitSignature(new URLSearchParams(nextSearch))
+    await loadProfitCalculations(next.page, next.pageSize, profitFilters)
   }
 
   useEffect(() => {
-    if (appliedSettlementsPageRef.current === settlementsUrlPage) return
-    appliedSettlementsPageRef.current = settlementsUrlPage
+    const signature = settlementSignature(urlQuery.params)
+    if (appliedSettlementSignatureRef.current === signature) return
+    appliedSettlementSignatureRef.current = signature
+    const filters = settlementFiltersFromParams(urlQuery.params)
     const nextPage = parsePageParam(urlQuery.params, 'settlements_page')
+    setSettlementFilters(filters)
     settlementsPager.setPage(nextPage)
-    void loadFinancialSettlements(undefined, nextPage, settlementsPager.pageSize)
-  }, [settlementsUrlPage])
+    void loadFinancialSettlements(undefined, nextPage, settlementsPager.pageSize, filters)
+  }, [urlQuery.search])
 
   useEffect(() => {
-    if (appliedProfitsPageRef.current === profitsUrlPage) return
-    appliedProfitsPageRef.current = profitsUrlPage
+    const signature = profitSignature(urlQuery.params)
+    if (appliedProfitSignatureRef.current === signature) return
+    appliedProfitSignatureRef.current = signature
+    const filters = profitFiltersFromParams(urlQuery.params)
     const nextPage = parsePageParam(urlQuery.params, 'profits_page')
+    setProfitFilters(filters)
     profitsPager.setPage(nextPage)
-    void loadProfitCalculations(nextPage, profitsPager.pageSize)
-  }, [profitsUrlPage])
+    void loadProfitCalculations(nextPage, profitsPager.pageSize, filters)
+  }, [urlQuery.search])
 
   return {
     changeFinancialSettlementsPage,
@@ -255,24 +299,28 @@ export function useSettlementModule(env: FinanceModuleEnv) {
     loadingFinancialSettlements,
     loadingProfitCalculations,
     manualProfitCostForm,
-    profitCalculationSearch,
-    profitCalculationShipmentFilter,
+    profitCalculationSearch: profitFilters.q,
+    profitCalculationShipmentFilter: profitFilters.shipment,
     profitCalculations,
     profitCalculationsPagination: profitsPager.pagination,
     profitCalculationsTotal: profitsPager.total,
     selectedFinancialSettlement,
     setManualProfitCostForm,
-    setProfitCalculationSearch,
-    setProfitCalculationShipmentFilter,
+    setProfitCalculationSearch: (value: string) =>
+      setProfitFilters((current) => ({ ...current, q: value })),
+    setProfitCalculationShipmentFilter: (value: string) =>
+      setProfitFilters((current) => ({ ...current, shipment: value })),
     setSelectedFinancialSettlementId,
     setSettlementForm,
     setSettlementModalOpen,
-    setSettlementSearch,
-    setSettlementShipmentFilter,
+    setSettlementSearch: (value: string) =>
+      setSettlementFilters((current) => ({ ...current, q: value })),
+    setSettlementShipmentFilter: (value: string) =>
+      setSettlementFilters((current) => ({ ...current, shipment: value })),
     settlementForm,
     settlementModalOpen,
-    settlementSearch,
-    settlementShipmentFilter,
+    settlementSearch: settlementFilters.q,
+    settlementShipmentFilter: settlementFilters.shipment,
     submitFinancialSettlement,
     submitManualProfitCost,
     submittingManualProfitCost,

@@ -27,6 +27,37 @@ import { t } from '@/app/appI18n'
 
 import type { FinanceModuleEnv } from '@/app/pages/finance/financePageTypes'
 
+type ReceiptFilters = { q: string; status: string; customer: string }
+
+type ReceivableFilters = { q: string; contract: string; invoice: string }
+
+function receiptFiltersFromParams(params: URLSearchParams): ReceiptFilters {
+  return {
+    q: params.get('receipts_q') ?? '',
+    status: params.get('receipts_status') ?? '',
+    customer: params.get('receipts_customer') ?? '',
+  }
+}
+
+function receivableFiltersFromParams(params: URLSearchParams): ReceivableFilters {
+  return {
+    q: params.get('receivables_q') ?? '',
+    contract: params.get('receivables_contract') ?? '',
+    invoice: params.get('receivables_invoice') ?? '',
+  }
+}
+
+function receiptSignature(params: URLSearchParams): string {
+  return JSON.stringify([parsePageParam(params, 'receipts_page'), receiptFiltersFromParams(params)])
+}
+
+function receivableSignature(params: URLSearchParams): string {
+  return JSON.stringify([
+    parsePageParam(params, 'receivables_page'),
+    receivableFiltersFromParams(params),
+  ])
+}
+
 export function useReceiptsModule(env: FinanceModuleEnv) {
   const { activeModule, detailId, setMessage, setError } = env
 
@@ -54,27 +85,19 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
 
   const [receivableTotal, setReceivableTotal] = useState('0.00')
 
-  const receiptsUrlPage = urlQuery.params.get('receipts_page') ?? ''
+  const [receiptFilters, setReceiptFilters] = useState(() =>
+    receiptFiltersFromParams(urlQuery.params),
+  )
 
-  const appliedReceiptsPageRef = useRef(receiptsUrlPage)
+  const appliedReceiptsSignatureRef = useRef(receiptSignature(urlQuery.params))
 
-  const receivablesUrlPage = urlQuery.params.get('receivables_page') ?? ''
+  const [receivableFilters, setReceivableFilters] = useState(() =>
+    receivableFiltersFromParams(urlQuery.params),
+  )
 
-  const appliedReceivablesPageRef = useRef(receivablesUrlPage)
+  const appliedReceivablesSignatureRef = useRef(receivableSignature(urlQuery.params))
 
   const [selectedReceiptId, setSelectedReceiptId] = useState<string | null>(null)
-
-  const [receiptSearch, setReceiptSearch] = useState('')
-
-  const [receiptStatusFilter, setReceiptStatusFilter] = useState('')
-
-  const [receiptCustomerFilter, setReceiptCustomerFilter] = useState('')
-
-  const [receivableSearch, setReceivableSearch] = useState('')
-
-  const [receivableContractFilter, setReceivableContractFilter] = useState('')
-
-  const [receivableInvoiceFilter, setReceivableInvoiceFilter] = useState('')
 
   const [receiptForm, setReceiptForm] = useState<BankReceiptFormState>(() =>
     initialBankReceiptForm(),
@@ -103,16 +126,22 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
     [receipts, selectedReceiptId],
   )
 
-  async function loadReceipts(preferredId?: string, pageOverride?: number, pageSizeOverride?: number) {
+  async function loadReceipts(
+    preferredId?: string,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: ReceiptFilters,
+  ) {
     setLoadingReceipts(true)
     setError('')
     try {
+      const filters = filtersOverride ?? receiptFilters
       const page = pageOverride ?? receiptsPager.page
       const pageSize = pageSizeOverride ?? receiptsPager.pageSize
       const result = await listBankReceipts({
-        q: receiptSearch.trim() || undefined,
-        status: receiptStatusFilter || undefined,
-        customer_id: receiptCustomerFilter.trim() || undefined,
+        q: filters.q.trim() || undefined,
+        status: filters.status || undefined,
+        customer_id: filters.customer.trim() || undefined,
         limit: pageSize,
         offset: (page - 1) * pageSize,
       })
@@ -139,16 +168,21 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
     }
   }
 
-  async function loadReceivables(pageOverride?: number, pageSizeOverride?: number) {
+  async function loadReceivables(
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: ReceivableFilters,
+  ) {
     setLoadingReceivables(true)
     setError('')
     try {
+      const filters = filtersOverride ?? receivableFilters
       const page = pageOverride ?? receivablesPager.page
       const pageSize = pageSizeOverride ?? receivablesPager.pageSize
       const result = await listReceivables({
-        q: receivableSearch.trim() || undefined,
-        contract_no: receivableContractFilter.trim() || undefined,
-        invoice_no: receivableInvoiceFilter.trim() || undefined,
+        q: filters.q.trim() || undefined,
+        contract_no: filters.contract.trim() || undefined,
+        invoice_no: filters.invoice.trim() || undefined,
         limit: pageSize,
         offset: (page - 1) * pageSize,
       })
@@ -225,33 +259,49 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
 
   async function changeReceiptsPage(nextPage: number, nextPageSize: number) {
     const next = receiptsPager.changePage(nextPage, nextPageSize)
-    appliedReceiptsPageRef.current = next.page === 1 ? '' : String(next.page)
-    urlQuery.update({ receipts_page: next.page === 1 ? null : next.page })
-    await loadReceipts(undefined, next.page, next.pageSize)
+    const nextSearch = urlQuery.update({
+      receipts_page: next.page === 1 ? null : next.page,
+      receipts_q: receiptFilters.q,
+      receipts_status: receiptFilters.status,
+      receipts_customer: receiptFilters.customer,
+    })
+    appliedReceiptsSignatureRef.current = receiptSignature(new URLSearchParams(nextSearch))
+    await loadReceipts(undefined, next.page, next.pageSize, receiptFilters)
   }
 
   async function changeReceivablesPage(nextPage: number, nextPageSize: number) {
     const next = receivablesPager.changePage(nextPage, nextPageSize)
-    appliedReceivablesPageRef.current = next.page === 1 ? '' : String(next.page)
-    urlQuery.update({ receivables_page: next.page === 1 ? null : next.page })
-    await loadReceivables(next.page, next.pageSize)
+    const nextSearch = urlQuery.update({
+      receivables_page: next.page === 1 ? null : next.page,
+      receivables_q: receivableFilters.q,
+      receivables_contract: receivableFilters.contract,
+      receivables_invoice: receivableFilters.invoice,
+    })
+    appliedReceivablesSignatureRef.current = receivableSignature(new URLSearchParams(nextSearch))
+    await loadReceivables(next.page, next.pageSize, receivableFilters)
   }
 
   useEffect(() => {
-    if (appliedReceiptsPageRef.current === receiptsUrlPage) return
-    appliedReceiptsPageRef.current = receiptsUrlPage
+    const signature = receiptSignature(urlQuery.params)
+    if (appliedReceiptsSignatureRef.current === signature) return
+    appliedReceiptsSignatureRef.current = signature
+    const filters = receiptFiltersFromParams(urlQuery.params)
     const nextPage = parsePageParam(urlQuery.params, 'receipts_page')
+    setReceiptFilters(filters)
     receiptsPager.setPage(nextPage)
-    void loadReceipts(undefined, nextPage, receiptsPager.pageSize)
-  }, [receiptsUrlPage])
+    void loadReceipts(undefined, nextPage, receiptsPager.pageSize, filters)
+  }, [urlQuery.search])
 
   useEffect(() => {
-    if (appliedReceivablesPageRef.current === receivablesUrlPage) return
-    appliedReceivablesPageRef.current = receivablesUrlPage
+    const signature = receivableSignature(urlQuery.params)
+    if (appliedReceivablesSignatureRef.current === signature) return
+    appliedReceivablesSignatureRef.current = signature
+    const filters = receivableFiltersFromParams(urlQuery.params)
     const nextPage = parsePageParam(urlQuery.params, 'receivables_page')
+    setReceivableFilters(filters)
     receivablesPager.setPage(nextPage)
-    void loadReceivables(nextPage, receivablesPager.pageSize)
-  }, [receivablesUrlPage])
+    void loadReceivables(nextPage, receivablesPager.pageSize, filters)
+  }, [urlQuery.search])
 
   const totalReceiptAmount = receiptTotals.totalAmount
 
@@ -282,29 +332,35 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
     receivablesPagination: receivablesPager.pagination,
     receivablesTotal: receivablesPager.total,
     totalReceivableAmount,
-    receiptCustomerFilter,
+    receiptCustomerFilter: receiptFilters.customer,
     receiptForm,
     receiptModalOpen,
-    receiptSearch,
-    receiptStatusFilter,
+    receiptSearch: receiptFilters.q,
+    receiptStatusFilter: receiptFilters.status,
     receipts,
-    receivableContractFilter,
-    receivableInvoiceFilter,
-    receivableSearch,
+    receivableContractFilter: receivableFilters.contract,
+    receivableInvoiceFilter: receivableFilters.invoice,
+    receivableSearch: receivableFilters.q,
     receivables,
     selectedReceipt,
     selectedReceiptCanAllocate,
     selectedReceiptCanClaim,
     setAllocationForm,
     setClaimForm,
-    setReceiptCustomerFilter,
+    setReceiptCustomerFilter: (value: string) =>
+      setReceiptFilters((current) => ({ ...current, customer: value })),
     setReceiptForm,
     setReceiptModalOpen,
-    setReceiptSearch,
-    setReceiptStatusFilter,
-    setReceivableContractFilter,
-    setReceivableInvoiceFilter,
-    setReceivableSearch,
+    setReceiptSearch: (value: string) =>
+      setReceiptFilters((current) => ({ ...current, q: value })),
+    setReceiptStatusFilter: (value: string) =>
+      setReceiptFilters((current) => ({ ...current, status: value })),
+    setReceivableContractFilter: (value: string) =>
+      setReceivableFilters((current) => ({ ...current, contract: value })),
+    setReceivableInvoiceFilter: (value: string) =>
+      setReceivableFilters((current) => ({ ...current, invoice: value })),
+    setReceivableSearch: (value: string) =>
+      setReceivableFilters((current) => ({ ...current, q: value })),
     setSelectedReceiptId,
     submitAllocation,
     submitClaim,

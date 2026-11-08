@@ -32,10 +32,10 @@ type Props = {
 
 export function TaxView({ model, shell }: Props) {
   const {
+    applyVerificationUsageFilters,
     changeVerificationDocumentsPage,
     customsReceiptErrors,
     customsReceiptForm,
-    loadVerificationUsage,
     loadingVerificationDocuments,
     loadingVerificationUsage,
     selectedVerificationCanRefund,
@@ -666,7 +666,7 @@ export function TaxView({ model, shell }: Props) {
                 className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadVerificationUsage()
+                  void applyVerificationUsageFilters()
                 }}
               >
                 <label>
