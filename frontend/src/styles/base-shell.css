@@ -164,6 +164,89 @@ body {
   transform: translateY(-1px);
 }
 
+.topbar-bell-button .ant-badge {
+  line-height: 0;
+}
+
+.topbar-notification-panel {
+  display: grid;
+  width: 320px;
+  gap: 8px;
+}
+
+.topbar-notification-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.topbar-notification-head button,
+.topbar-notification-all {
+  border: 0;
+  background: transparent;
+  color: #2f54eb;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0;
+}
+
+.topbar-notification-head button:disabled {
+  color: #c0c4cc;
+  cursor: default;
+}
+
+.topbar-notification-list {
+  display: grid;
+  gap: 6px;
+  max-height: 280px;
+  margin: 0;
+  overflow: auto;
+  padding: 0;
+  list-style: none;
+}
+
+.topbar-notification-item {
+  display: grid;
+  width: 100%;
+  gap: 2px;
+  border: 0;
+  border-radius: 8px;
+  background: #f5f7fa;
+  cursor: pointer;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.topbar-notification-item:hover {
+  background: #eef1f6;
+}
+
+.topbar-notification-item strong {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.topbar-notification-item span {
+  color: #4e5969;
+  font-size: 12px;
+}
+
+.topbar-notification-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f5222d;
+}
+
+.topbar-notification-empty {
+  color: #8c8f9c;
+  font-size: 12px;
+  padding: 12px 0;
+  text-align: center;
+}
+
 .workspace-alert {
   margin-bottom: 16px;
 }

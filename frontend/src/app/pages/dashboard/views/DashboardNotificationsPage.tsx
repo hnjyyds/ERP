@@ -1,7 +1,13 @@
 import { Skeleton, Tag } from 'antd'
 import { Bell } from 'lucide-react'
 import { useState } from 'react'
-import { markNotificationRead, type Dashboard, type NotificationItem } from '@/api'
+import {
+  deleteNotification,
+  markAllNotificationsRead,
+  markNotificationRead,
+  type Dashboard,
+  type NotificationItem,
+} from '@/api'
 import { PanelTitle } from '@/shared/ui'
 import { showError } from '@/shared/errors'
 import { t } from '@/app/appI18n'
@@ -11,10 +17,14 @@ export function DashboardNotificationsPage({
   dashboard,
   loading,
   onRefresh,
+  canNavigatePath,
+  onNavigate,
 }: {
   dashboard: Dashboard | null
   loading: boolean
   onRefresh: () => Promise<void>
+  canNavigatePath: (path: string) => boolean
+  onNavigate: (path: string) => void
 }) {
   const [busyAction, setBusyAction] = useState<string | null>(null)
   const [actionMessage, setActionMessage] = useState('')
@@ -25,19 +35,33 @@ export function DashboardNotificationsPage({
   }
 
   const notifications = dashboard?.notifications ?? []
+  const unreadCount = dashboard?.summary.unread_notification_count ?? 0
 
-  async function readNotification(notification: NotificationItem) {
-    setBusyAction(`notification-${notification.id}`)
+  async function runAction(
+    key: string,
+    action: () => Promise<void>,
+    message: string,
+  ) {
+    setBusyAction(key)
     setActionMessage('')
     setActionError('')
     try {
-      await markNotificationRead(notification.id)
-      setActionMessage(t('dashboard.notificationHandled'))
+      await action()
+      setActionMessage(message)
       await onRefresh()
     } catch (caught) {
       showError(caught, t('dashboard.operationFailed'))
     } finally {
       setBusyAction(null)
+    }
+  }
+
+  async function openNotification(notification: NotificationItem) {
+    if (!notification.is_read) {
+      await markNotificationRead(notification.id)
+    }
+    if (notification.target_path && canNavigatePath(notification.target_path)) {
+      onNavigate(notification.target_path)
     }
   }
 
@@ -48,7 +72,25 @@ export function DashboardNotificationsPage({
       <section className="workspace-panel dashboard-panel dashboard-full-panel">
         <div className="dashboard-panel-heading dashboard-page-heading">
           <PanelTitle icon={<Bell size={18} />} title={t('dashboard.messages')} />
-          <span className="dashboard-section-count">{notifications.length}</span>
+          <div className="dashboard-reminder-actions">
+            <span className="dashboard-section-count">{notifications.length}</span>
+            <button
+              className="table-action"
+              disabled={busyAction === 'read-all' || unreadCount === 0}
+              type="button"
+              onClick={() =>
+                void runAction(
+                  'read-all',
+                  async () => {
+                    await markAllNotificationsRead()
+                  },
+                  t('dashboard.notificationHandled'),
+                )
+              }
+            >
+              {t('dashboard.markAllRead')}
+            </button>
+          </div>
         </div>
         {notifications.length ? (
           <div className="dashboard-reminder-list">
@@ -67,11 +109,51 @@ export function DashboardNotificationsPage({
                       className="table-action"
                       disabled={busyAction === `notification-${notification.id}`}
                       type="button"
-                      onClick={() => void readNotification(notification)}
+                      onClick={() =>
+                        void runAction(
+                          `notification-${notification.id}`,
+                          async () => {
+                            await markNotificationRead(notification.id)
+                          },
+                          t('dashboard.notificationHandled'),
+                        )
+                      }
                     >
                       {t('dashboard.handle')}
                     </button>
                   )}
+                  {notification.target_path ? (
+                    <button
+                      className="table-action"
+                      disabled={busyAction === `open-${notification.id}`}
+                      type="button"
+                      onClick={() =>
+                        void runAction(
+                          `open-${notification.id}`,
+                          async () => openNotification(notification),
+                          '',
+                        )
+                      }
+                    >
+                      {t('dashboard.viewDocument')}
+                    </button>
+                  ) : null}
+                  <button
+                    className="table-action"
+                    disabled={busyAction === `delete-${notification.id}`}
+                    type="button"
+                    onClick={() =>
+                      void runAction(
+                        `delete-${notification.id}`,
+                        async () => {
+                          await deleteNotification(notification.id)
+                        },
+                        t('dashboard.notificationDeleted'),
+                      )
+                    }
+                  >
+                    {t('dashboard.deleteNotification')}
+                  </button>
                 </div>
               </article>
             ))}

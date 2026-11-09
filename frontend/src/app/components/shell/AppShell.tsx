@@ -53,6 +53,11 @@ export function AppShell({
             activePath={activePath}
             activeMenu={activeMenu}
             error={error}
+            canNavigatePath={canNavigatePath}
+            notifications={dashboard?.notifications ?? []}
+            unreadCount={dashboard?.summary.unread_notification_count ?? 0}
+            onNavigate={onNavigate}
+            onRefreshDashboard={onRefreshDashboard}
             onOpenSettings={onOpenSettings}
           />
           <AppRouter

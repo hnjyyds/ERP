@@ -43,6 +43,7 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.dashboard.notification_writer import notify
 from app.modules.system.numbering.generator import create_with_generated_code
 
 
@@ -307,9 +308,7 @@ class PurchaseContractService:
         )
         async with UnitOfWork(self._repository.session):
             submitted = await self._repository.submit_contract(
-                contract.id,
-                reviewer_id=reviewer.id,
-                reviewer_name=reviewer.display_name,
+                contract.id, reviewer_id=reviewer.id, reviewer_name=reviewer.display_name
             )
             if submitted is None:
                 raise PurchaseContractNotFoundError
@@ -317,6 +316,7 @@ class PurchaseContractService:
                 self._repository.session, current_user, "submit", "purchase_contract",
                 contract.id, contract.code, "提交采购合同",
             )
+            await notify(self._repository, current_user, submitted, "submit", "purchase_contract")
         return await self._response_builder.build(submitted)
 
     async def approve_contract(
@@ -328,8 +328,7 @@ class PurchaseContractService:
     ) -> PurchaseContractResponse:
         self._require(current_user, "purchase:contract:approve")
         contract = await self._get_accessible_contract(
-            current_user=current_user,
-            contract_id=contract_id,
+            current_user=current_user, contract_id=contract_id
         )
         if contract.approval_status != "submitted":
             raise ValueError("只有已提交采购合同可以审批")
@@ -356,6 +355,10 @@ class PurchaseContractService:
                 self._repository.session, current_user, action, "purchase_contract",
                 reviewed.id, reviewed.code, summary,
                 {"reason": (payload.rejection_reason or "").strip() or None},
+            )
+            await notify(
+                self._repository, current_user, reviewed, action, "purchase_contract",
+                reason=(payload.rejection_reason or "").strip() or None,
             )
             if payload.decision == "approved":
                 await self._write_back_export_purchase_progress(reviewed.id)

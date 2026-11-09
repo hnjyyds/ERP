@@ -95,8 +95,27 @@ class NotificationResponse(BaseModel):
     title: str
     message: str
     severity: str
+    source_type: str | None
+    source_id: str | None
+    event: str | None
+    target_path: str | None
     is_read: bool
+    read_at: datetime | None
     created_at: datetime
+
+
+class NotificationListResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    items: list[NotificationResponse]
+    total: int
+    unread_count: int
+
+
+class NotificationReadAllResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    updated: int
 
 
 class ScheduleEventResponse(BaseModel):

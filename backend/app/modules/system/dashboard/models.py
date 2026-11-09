@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 
-from sqlalchemy import Boolean, DateTime, Integer, String, Text
+from sqlalchemy import Boolean, DateTime, Index, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -39,13 +39,34 @@ class TodoTask(Base):
 
 class Notification(Base):
     __tablename__ = "notifications"
+    __table_args__ = (
+        Index(
+            "ux_notifications_source_event_owner",
+            "source_type",
+            "source_id",
+            "event",
+            "owner_user_id",
+            unique=True,
+        ),
+        Index(
+            "ix_notifications_owner_read_created",
+            "owner_user_id",
+            "is_read",
+            "created_at",
+        ),
+    )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_new_id)
     owner_user_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     message: Mapped[str] = mapped_column(Text, nullable=False)
     severity: Mapped[str] = mapped_column(String(30), default="info", nullable=False)
+    source_type: Mapped[str | None] = mapped_column(String(60), nullable=True)
+    source_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    event: Mapped[str | None] = mapped_column(String(60), nullable=True)
+    target_path: Mapped[str | None] = mapped_column(String(300), nullable=True)
     is_read: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    read_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
 

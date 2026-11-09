@@ -38,6 +38,7 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.dashboard.notification_writer import notify
 from app.modules.system.numbering.generator import create_with_generated_code
 
 
@@ -228,9 +229,7 @@ class SampleDeliveryService:
         )
         async with UnitOfWork(self._repository.session):
             submitted = await self._repository.submit_delivery(
-                delivery_id,
-                reviewer_id=reviewer.id,
-                reviewer_name=reviewer.display_name,
+                delivery_id, reviewer_id=reviewer.id, reviewer_name=reviewer.display_name
             )
             if submitted is None:
                 raise SampleDeliveryNotFoundError
@@ -238,6 +237,7 @@ class SampleDeliveryService:
                 self._repository.session, current_user, "submit", "sample_delivery",
                 submitted.id, submitted.code, "提交寄样单",
             )
+            await notify(self._repository, current_user, submitted, "submit", "sample_delivery")
         return await self._delivery_response(submitted)
 
     async def approve_delivery(
@@ -249,8 +249,7 @@ class SampleDeliveryService:
     ) -> SampleDeliveryResponse:
         self._require(current_user, "sample:delivery:approve")
         delivery = await self._get_accessible_delivery(
-            current_user=current_user,
-            delivery_id=delivery_id,
+            current_user=current_user, delivery_id=delivery_id
         )
         if delivery.status != "submitted":
             raise ValueError("只有已提交寄样单可以审核")
@@ -270,10 +269,8 @@ class SampleDeliveryService:
         await self._ensure_stock_available(lines)
         async with UnitOfWork(self._repository.session):
             approved = await self._repository.approve_delivery(
-                delivery_id=delivery_id,
-                approved_at=payload.approved_at,
-                reviewer_id=current_user.id,
-                reviewer_name=current_user.display_name,
+                delivery_id=delivery_id, approved_at=payload.approved_at,
+                reviewer_id=current_user.id, reviewer_name=current_user.display_name,
             )
             if approved is None:
                 raise SampleDeliveryNotFoundError
@@ -292,6 +289,7 @@ class SampleDeliveryService:
                 self._repository.session, current_user, "approve", "sample_delivery",
                 approved.id, approved.code, "审批通过寄样单",
             )
+            await notify(self._repository, current_user, approved, "approve", "sample_delivery")
         return await self._delivery_response(approved)
 
     async def reject_delivery(
@@ -330,6 +328,10 @@ class SampleDeliveryService:
                 rejected.id, rejected.code, "驳回寄样单",
                 {"reason": payload.rejection_reason},
             )
+            await notify(
+                self._repository, current_user, rejected, "reject", "sample_delivery",
+                reason=payload.rejection_reason,
+            )
         return await self._delivery_response(rejected)
 
     async def withdraw_delivery(
@@ -341,8 +343,7 @@ class SampleDeliveryService:
     ) -> SampleDeliveryResponse:
         self._require(current_user, "sample:delivery:edit")
         delivery = await self._get_accessible_delivery(
-            current_user=current_user,
-            delivery_id=delivery_id,
+            current_user=current_user, delivery_id=delivery_id
         )
         if delivery.status != "submitted":
             raise ValueError("只有已提交寄样单可以撤回")
@@ -360,6 +361,7 @@ class SampleDeliveryService:
                 self._repository.session, current_user, "withdraw", "sample_delivery",
                 withdrawn.id, withdrawn.code, "撤回寄样单",
             )
+            await notify(self._repository, current_user, withdrawn, "withdraw", "sample_delivery")
         return await self._delivery_response(withdrawn)
 
     async def update_tracking(

@@ -50,6 +50,7 @@ from app.modules.system.auth.permissions import (
 )
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.dashboard.notification_writer import notify
 from app.modules.system.numbering.generator import create_with_generated_code
 
 
@@ -235,9 +236,7 @@ class ExportContractService:
         )
         async with UnitOfWork(self._repository.session):
             submitted = await self._repository.submit_contract(
-                contract.id,
-                reviewer_id=reviewer.id,
-                reviewer_name=reviewer.display_name,
+                contract.id, reviewer_id=reviewer.id, reviewer_name=reviewer.display_name
             )
             if submitted is None:
                 raise ExportContractNotFoundError
@@ -245,6 +244,7 @@ class ExportContractService:
                 self._repository.session, current_user, "submit", "export_contract",
                 contract.id, contract.code, "提交出口合同",
             )
+            await notify(self._repository, current_user, submitted, "submit", "export_contract")
         return await self._contract_response(submitted)
 
     async def approve_contract(
@@ -293,6 +293,7 @@ class ExportContractService:
                 self._repository.session, current_user, "approve", "export_contract",
                 approved.id, approved.code, "审批通过出口合同",
             )
+            await notify(self._repository, current_user, approved, "approve", "export_contract")
         return await self._contract_response(approved)
 
     async def cancel_contract(

@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Path, status
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
 
 from app.api.auth_dependencies import CurrentUserDep
 from app.modules.system.auth.permissions import SUPER_ADMIN_PERMISSION
@@ -12,7 +12,9 @@ from app.modules.system.dashboard.schemas import (
     AnnouncementCreate,
     AnnouncementResponse,
     DashboardResponse,
+    NotificationListResponse,
     NotificationPath,
+    NotificationReadAllResponse,
     NotificationResponse,
     ScheduleCreate,
     ScheduleEventPath,
@@ -173,6 +175,43 @@ async def update_todo_task(
         assignee=assignee,
     )
     return ApiResponse(data=todo)
+
+
+@router.get("/notifications", response_model=ApiResponse[NotificationListResponse])
+async def list_notifications(
+    current_user: CurrentUserDep,
+    service: Annotated[DashboardService, Depends(get_dashboard_service)],
+    unread_only: Annotated[bool, Query(description="是否只看未读。")] = False,
+) -> ApiResponse[NotificationListResponse]:
+    notifications = await service.list_notifications(
+        user_id=current_user.id,
+        unread_only=unread_only,
+    )
+    return ApiResponse(data=notifications)
+
+
+@router.post("/notifications/read-all", response_model=ApiResponse[NotificationReadAllResponse])
+async def mark_all_notifications_read(
+    current_user: CurrentUserDep,
+    service: Annotated[DashboardService, Depends(get_dashboard_service)],
+) -> ApiResponse[NotificationReadAllResponse]:
+    result = await service.mark_all_notifications_read(user_id=current_user.id)
+    return ApiResponse(data=result)
+
+
+@router.delete("/notifications/{notification_id}", response_model=ApiResponse[NotificationResponse])
+async def delete_notification(
+    path: Annotated[NotificationPath, Depends(_resolve_notification_path)],
+    current_user: CurrentUserDep,
+    service: Annotated[DashboardService, Depends(get_dashboard_service)],
+) -> ApiResponse[NotificationResponse]:
+    notification = await service.delete_notification(
+        user_id=current_user.id,
+        notification_id=path.notification_id,
+    )
+    if notification is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="提醒不存在")
+    return ApiResponse(data=notification)
 
 
 @router.patch(

@@ -46,6 +46,7 @@ from app.modules.system.auth.permissions import (
 )
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.dashboard.notification_writer import notify
 from app.modules.system.numbering.generator import create_with_generated_code
 
 
@@ -232,6 +233,7 @@ class ExportQuotationService:
                 self._repository.session, current_user, "submit", "export_quotation",
                 quotation.id, quotation.code, "提交报价",
             )
+            await notify(self._repository, current_user, submitted, "submit", "export_quotation")
         return await self._quotation_response(submitted)
 
     async def approve_quotation(
@@ -267,6 +269,7 @@ class ExportQuotationService:
                 self._repository.session, current_user, "approve", "export_quotation",
                 quotation.id, quotation.code, "审批通过报价",
             )
+            await notify(self._repository, current_user, quotation, "approve", "export_quotation")
         return await self._quotation_response(approved)
 
     async def reject_quotation(
@@ -305,6 +308,10 @@ class ExportQuotationService:
                 quotation.id, quotation.code, "驳回报价",
                 {"reason": payload.rejection_reason},
             )
+            await notify(
+                self._repository, current_user, quotation, "reject", "export_quotation",
+                reason=payload.rejection_reason,
+            )
         return await self._quotation_response(rejected)
 
     async def withdraw_quotation(
@@ -336,6 +343,7 @@ class ExportQuotationService:
                 self._repository.session, current_user, "withdraw", "export_quotation",
                 quotation.id, quotation.code, "撤回报价",
             )
+            await notify(self._repository, current_user, quotation, "withdraw", "export_quotation")
         return await self._quotation_response(withdrawn)
 
     async def _ensure_no_downstream_contract(self, quotation: ExportQuotationRow) -> None:

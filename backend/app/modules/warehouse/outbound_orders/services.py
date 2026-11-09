@@ -12,6 +12,7 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.dashboard.notification_writer import notify
 from app.modules.system.numbering.generator import create_with_generated_code
 from app.modules.warehouse.inventory.services import InventoryService
 from app.modules.warehouse.outbound_orders.repositories import (
@@ -172,6 +173,7 @@ class OutboundOrderService:
                 self._repository.session, current_user, "submit", "outbound_order",
                 submitted.id, submitted.code, "提交出库单",
             )
+            await notify(self._repository, current_user, submitted, "submit", "outbound_order")
         return await self._order_response(submitted)
 
     async def approve_order(
@@ -226,6 +228,7 @@ class OutboundOrderService:
                 self._repository.session, current_user, "approve", "outbound_order",
                 approved.id, approved.code, "审批通过出库单",
             )
+            await notify(self._repository, current_user, approved, "approve", "outbound_order")
         await self._complete_followup_nodes(
             order=approved,
             lines=lines,

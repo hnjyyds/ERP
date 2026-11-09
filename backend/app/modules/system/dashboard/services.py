@@ -24,6 +24,8 @@ from app.modules.system.dashboard.schemas import (
     AnnouncementResponse,
     DashboardResponse,
     DashboardSummary,
+    NotificationListResponse,
+    NotificationReadAllResponse,
     NotificationResponse,
     ScheduleCreate,
     ScheduleEventResponse,
@@ -298,6 +300,23 @@ class DashboardService:
             raise TodoNotFoundError("待办不存在")
         return self._todo_response(updated)
 
+    async def list_notifications(
+        self,
+        *,
+        user_id: str,
+        unread_only: bool,
+    ) -> NotificationListResponse:
+        rows, total = await self._repository.list_notification_page(
+            user_id=user_id,
+            unread_only=unread_only,
+        )
+        unread_count = await self._repository.count_unread_notifications(user_id)
+        return NotificationListResponse(
+            items=[self._notification_response(row) for row in rows],
+            total=total,
+            unread_count=unread_count,
+        )
+
     async def mark_notification_read(
         self,
         *,
@@ -306,6 +325,28 @@ class DashboardService:
     ) -> NotificationResponse | None:
         async with UnitOfWork(self._repository.session):
             row = await self._repository.mark_notification_read(
+                user_id=user_id,
+                notification_id=notification_id,
+                read_at=datetime.now(UTC),
+            )
+        return self._notification_response(row) if row else None
+
+    async def mark_all_notifications_read(self, *, user_id: str) -> NotificationReadAllResponse:
+        async with UnitOfWork(self._repository.session):
+            updated = await self._repository.mark_all_notifications_read(
+                user_id=user_id,
+                read_at=datetime.now(UTC),
+            )
+        return NotificationReadAllResponse(updated=updated)
+
+    async def delete_notification(
+        self,
+        *,
+        user_id: str,
+        notification_id: str,
+    ) -> NotificationResponse | None:
+        async with UnitOfWork(self._repository.session):
+            row = await self._repository.delete_notification(
                 user_id=user_id,
                 notification_id=notification_id,
             )
@@ -499,7 +540,12 @@ class DashboardService:
             title=row.title,
             message=row.message,
             severity=row.severity,
+            source_type=row.source_type,
+            source_id=row.source_id,
+            event=row.event,
+            target_path=row.target_path,
             is_read=row.is_read,
+            read_at=row.read_at,
             created_at=row.created_at,
         )
 

@@ -29,8 +29,23 @@ export interface NotificationItem {
   title: string
   message: string
   severity: string
+  source_type: string | null
+  source_id: string | null
+  event: string | null
+  target_path: string | null
   is_read: boolean
+  read_at: string | null
   created_at: string
+}
+
+export interface NotificationList {
+  items: NotificationItem[]
+  total: number
+  unread_count: number
+}
+
+export interface NotificationReadAllResult {
+  updated: number
 }
 
 export interface ScheduleEvent {
@@ -128,6 +143,27 @@ export function updateTodoTask(todoId: string, payload: TodoUpdatePayload): Prom
     method: 'PATCH',
     body: JSON.stringify(payload),
   })
+}
+
+export function listNotifications(params?: {
+  unreadOnly?: boolean
+  page?: number
+  pageSize?: number
+}): Promise<NotificationList> {
+  const search = new URLSearchParams()
+  if (params?.unreadOnly) search.set('unread_only', 'true')
+  if (params?.page) search.set('page', String(params.page))
+  if (params?.pageSize) search.set('page_size', String(params.pageSize))
+  const query = search.toString()
+  return request<NotificationList>(`/notifications${query ? `?${query}` : ''}`)
+}
+
+export function markAllNotificationsRead(): Promise<NotificationReadAllResult> {
+  return request<NotificationReadAllResult>('/notifications/read-all', { method: 'POST' })
+}
+
+export function deleteNotification(notificationId: string): Promise<NotificationItem> {
+  return request<NotificationItem>(`/notifications/${notificationId}`, { method: 'DELETE' })
 }
 
 export function markNotificationRead(notificationId: string): Promise<NotificationItem> {

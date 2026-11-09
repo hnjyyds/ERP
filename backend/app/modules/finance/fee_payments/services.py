@@ -30,6 +30,7 @@ from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.dashboard.notification_writer import notify
 from app.modules.system.numbering.generator import create_with_generated_code
 
 
@@ -152,6 +153,9 @@ class FeePaymentService:
                     self._repository.session, current_user, "submit", "fee_payment_request",
                     created.id, created.request_no, "提交付费申请",
                 )
+                await notify(
+                    self._repository, current_user, created, "submit", "fee_payment_request",
+                )
                 return created
 
         request = await create_with_generated_code("finance.fee_payment_request", create)
@@ -232,6 +236,7 @@ class FeePaymentService:
                 self._repository.session, current_user, "approve", "fee_payment_request",
                 approved.id, approved.request_no, "审批通过付费申请",
             )
+            await notify(self._repository, current_user, approved, "approve", "fee_payment_request")
         return self._fee_payment_request_response(approved)
 
     async def list_fee_payables(

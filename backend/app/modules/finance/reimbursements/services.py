@@ -21,6 +21,7 @@ from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.dashboard.notification_writer import notify
 
 
 class PermissionDeniedError(Exception):
@@ -79,6 +80,7 @@ class ReimbursementService:
                 self._repository.session, current_user, "submit", "reimbursement",
                 reimbursement.id, reimbursement.reimbursement_no, "提交报销单",
             )
+            await notify(self._repository, current_user, reimbursement, "submit", "reimbursement")
         return self._response(reimbursement)
 
     async def list_reimbursements(
@@ -147,6 +149,10 @@ class ReimbursementService:
                 self._repository.session, current_user, action, "reimbursement",
                 reimbursement.id, reimbursement.reimbursement_no, summary,
                 {"reason": payload.approval_remark},
+            )
+            await notify(
+                self._repository, current_user, reimbursement, action, "reimbursement",
+                reason=payload.approval_remark,
             )
         return self._response(reimbursement)
 

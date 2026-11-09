@@ -11,6 +11,7 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.dashboard.notification_writer import notify
 from app.modules.system.numbering.generator import create_with_generated_code
 from app.modules.warehouse.inbound_orders.repositories import (
     InboundOrderLineRow,
@@ -176,6 +177,7 @@ class InboundOrderService:
                 self._repository.session, current_user, "submit", "inbound_order",
                 submitted.id, submitted.code, "提交入库单",
             )
+            await notify(self._repository, current_user, submitted, "submit", "inbound_order")
         return await self._order_response(submitted)
 
     async def approve_order(
@@ -227,6 +229,7 @@ class InboundOrderService:
                 self._repository.session, current_user, "approve", "inbound_order",
                 approved.id, approved.code, "审批通过入库单",
             )
+            await notify(self._repository, current_user, approved, "approve", "inbound_order")
         if approved.inbound_mode == "formal":
             await self._followup_service.complete_node_from_source(
                 purchase_contract_id=approved.purchase_contract_id,

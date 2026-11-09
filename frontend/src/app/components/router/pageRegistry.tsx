@@ -211,6 +211,8 @@ const pageRenderers: Partial<Record<RouteKey, PageRenderer>> = {
     <DashboardNotificationsPage
       dashboard={context.dashboard}
       loading={context.loadingDashboard}
+      canNavigatePath={context.canNavigatePath}
+      onNavigate={context.onNavigate}
       onRefresh={context.onRefreshDashboard}
     />
   ),

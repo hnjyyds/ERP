@@ -32,6 +32,7 @@ from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.dashboard.notification_writer import notify
 from app.modules.system.numbering.generator import create_with_generated_code
 
 
@@ -146,6 +147,7 @@ class PaymentService:
                     self._repository.session, current_user, "submit", "payment_request",
                     created.id, created.request_no, "提交付款申请",
                 )
+                await notify(self._repository, current_user, created, "submit", "payment_request")
                 return created
 
         payment_request = await create_with_generated_code("finance.payment_request", create)
@@ -222,6 +224,7 @@ class PaymentService:
                 self._repository.session, current_user, "approve", "payment_request",
                 approved.id, approved.request_no, "审批通过付款申请",
             )
+            await notify(self._repository, current_user, approved, "approve", "payment_request")
         return self._payment_request_response(approved)
 
     async def list_payables(

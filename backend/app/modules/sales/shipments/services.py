@@ -38,6 +38,7 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.dashboard.notification_writer import notify
 from app.modules.system.numbering.generator import create_with_generated_code
 
 
@@ -202,6 +203,7 @@ class ShipmentPlanService:
                 self._repository.session, current_user, "submit", "shipment",
                 submitted.id, submitted.code, "提交出货明细",
             )
+            await notify(self._repository, current_user, submitted, "submit", "shipment")
         return await self._shipment_response(submitted)
 
     async def approve_shipment(
@@ -249,6 +251,7 @@ class ShipmentPlanService:
                 self._repository.session, current_user, "approve", "shipment",
                 approved.id, approved.code, "审批通过出货明细",
             )
+            await notify(self._repository, current_user, approved, "approve", "shipment")
         return await self._shipment_response(approved)
 
     async def withdraw_shipment(
@@ -280,6 +283,7 @@ class ShipmentPlanService:
                 self._repository.session, current_user, "withdraw", "shipment",
                 withdrawn.id, withdrawn.code, "撤回出货明细",
             )
+            await notify(self._repository, current_user, withdrawn, "withdraw", "shipment")
         return await self._shipment_response(withdrawn)
 
     async def reject_shipment(
@@ -315,6 +319,10 @@ class ShipmentPlanService:
                 self._repository.session, current_user, "reject", "shipment",
                 rejected.id, rejected.code, "驳回出货明细",
                 {"reason": payload.rejection_reason},
+            )
+            await notify(
+                self._repository, current_user, rejected, "reject", "shipment",
+                reason=payload.rejection_reason,
             )
         return await self._shipment_response(rejected)
 

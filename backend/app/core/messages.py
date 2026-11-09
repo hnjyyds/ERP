@@ -84,6 +84,13 @@ MESSAGE_CATALOG: dict[str, dict[str, str]] = {
         "entity.warehouse.outbound_orders": "出库单",
         "entity.warehouse.outbound_plans": "出库计划",
         "entity.fallback": "业务资源",
+        # 业务通知
+        "notification.approval.title": "审批通知",
+        "notification.approval.submitted": "{actor} 提交了{entity} {no}，请及时审批",
+        "notification.approval.approved": "{actor} 已审批通过{entity} {no}",
+        "notification.approval.rejected": "{actor} 驳回了{entity} {no}",
+        "notification.approval.rejected_with_reason": "{actor} 驳回了{entity} {no}，原因：{reason}",
+        "notification.approval.withdrawn": "{actor} 撤回了{entity} {no}，无需继续审批",
         # 校验错误明细
         "validation.required": "为必填项",
         "validation.empty": "不能为空",
@@ -184,6 +191,14 @@ MESSAGE_CATALOG: dict[str, dict[str, str]] = {
         "entity.warehouse.outbound_orders": "Outbound order",
         "entity.warehouse.outbound_plans": "Outbound plan",
         "entity.fallback": "business resource",
+        "notification.approval.title": "Approval notification",
+        "notification.approval.submitted": "{actor} submitted {entity} {no} for your approval",
+        "notification.approval.approved": "{actor} approved {entity} {no}",
+        "notification.approval.rejected": "{actor} rejected {entity} {no}",
+        "notification.approval.rejected_with_reason": "{actor} rejected {entity} {no}: {reason}",
+        "notification.approval.withdrawn": (
+            "{actor} withdrew {entity} {no}; no further approval is needed"
+        ),
         "validation.required": "is required",
         "validation.empty": "must not be empty",
         "validation.min_length": "must be at least {min} characters",

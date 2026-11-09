@@ -6,6 +6,7 @@ from typing import TypeVar
 from sqlalchemy import Select, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.system.dashboard.models import (
     CompanyAnnouncement,
     DashboardShortcut,
@@ -47,7 +48,12 @@ class NotificationRow:
     title: str
     message: str
     severity: str
+    source_type: str | None
+    source_id: str | None
+    event: str | None
+    target_path: str | None
     is_read: bool
+    read_at: datetime | None
     created_at: datetime
 
 
@@ -141,18 +147,81 @@ class DashboardRepository:
             .where(Notification.owner_user_id == user_id)
             .order_by(Notification.created_at.desc())
         )
-        return [
-            NotificationRow(
-                id=item.id,
-                owner_user_id=item.owner_user_id,
-                title=item.title,
-                message=item.message,
-                severity=item.severity,
-                is_read=item.is_read,
-                created_at=item.created_at,
+        return [self._map_notification(item) for item in await self._scalars(statement)]
+
+    async def list_notification_page(
+        self,
+        *,
+        user_id: str,
+        unread_only: bool,
+        limit: int | None = None,
+        offset: int | None = None,
+    ) -> tuple[list[NotificationRow], int]:
+        conditions = [Notification.owner_user_id == user_id]
+        if unread_only:
+            conditions.append(Notification.is_read.is_(False))
+        total = int(
+            await self.session.scalar(
+                select(func.count()).select_from(Notification).where(*conditions)
             )
-            for item in await self._scalars(statement)
-        ]
+            or 0
+        )
+        statement = (
+            select(Notification)
+            .where(*conditions)
+            .order_by(Notification.created_at.desc(), Notification.id.desc())
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        rows = (await self.session.scalars(statement)).all()
+        return [self._map_notification(item) for item in rows], total
+
+    async def count_unread_notifications(self, user_id: str) -> int:
+        return int(
+            await self.session.scalar(
+                select(func.count())
+                .select_from(Notification)
+                .where(
+                    Notification.owner_user_id == user_id,
+                    Notification.is_read.is_(False),
+                )
+            )
+            or 0
+        )
+
+    async def mark_all_notifications_read(self, *, user_id: str, read_at: datetime) -> int:
+        unread = (
+            await self.session.scalars(
+                select(Notification).where(
+                    Notification.owner_user_id == user_id,
+                    Notification.is_read.is_(False),
+                )
+            )
+        ).all()
+        for item in unread:
+            item.is_read = True
+            item.read_at = read_at
+        await self.session.flush()
+        return len(unread)
+
+    async def delete_notification(
+        self,
+        *,
+        user_id: str,
+        notification_id: str,
+    ) -> NotificationRow | None:
+        notification = await self.session.scalar(
+            select(Notification).where(
+                Notification.id == notification_id,
+                Notification.owner_user_id == user_id,
+            )
+        )
+        if notification is None:
+            return None
+        row = self._map_notification(notification)
+        await self.session.delete(notification)
+        await self.session.flush()
+        return row
 
     async def list_schedule_events(self, user_id: str) -> list[ScheduleEventRow]:
         statement = (
@@ -311,6 +380,7 @@ class DashboardRepository:
         *,
         user_id: str,
         notification_id: str,
+        read_at: datetime,
     ) -> NotificationRow | None:
         notification = await self.session.scalar(
             select(Notification).where(
@@ -320,7 +390,9 @@ class DashboardRepository:
         )
         if notification is None:
             return None
-        notification.is_read = True
+        if not notification.is_read:
+            notification.is_read = True
+            notification.read_at = read_at
         await self.session.flush()
         return self._map_notification(notification)
 
@@ -392,7 +464,12 @@ class DashboardRepository:
             title=item.title,
             message=item.message,
             severity=item.severity,
+            source_type=item.source_type,
+            source_id=item.source_id,
+            event=item.event,
+            target_path=item.target_path,
             is_read=item.is_read,
+            read_at=item.read_at,
             created_at=item.created_at,
         )
 
