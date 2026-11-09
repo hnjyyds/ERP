@@ -1,4 +1,4 @@
-import { Banner as SemiBanner, Button as SemiButton, Input as SemiInput } from '@douyinfe/semi-ui'
+import { Alert, Button, Input } from 'antd'
 import { KeyRound, LayoutDashboard, UserRound } from 'lucide-react'
 import type { FormEvent } from 'react'
 import { useState } from 'react'
@@ -85,48 +85,48 @@ export function LoginPage({
           </div>
 
           {formError ? (
-            <SemiBanner
-              bordered
+            <Alert
               className="login-error"
               description={formError}
+              showIcon
               title={t('auth.errorTitle')}
-              type="danger"
+              type="error"
             />
           ) : null}
 
           <form className="login-form" onSubmit={submit}>
             <label htmlFor="login-username">
               {t('auth.field.username')}
-              <SemiInput
+              <Input
                 id="login-username"
+                allowClear
                 autoComplete="username"
                 prefix={<UserRound aria-hidden="true" size={16} />}
-                showClear
                 size="large"
                 value={username}
-                onChange={(value) => {
-                  setUsername(value)
+                onChange={(event) => {
+                  setUsername(event.target.value)
                   setFormError('')
                 }}
               />
             </label>
             <label htmlFor="login-password">
               {t('auth.field.password')}
-              <SemiInput
+              <Input
                 id="login-password"
                 autoComplete="current-password"
-                mode="password"
                 prefix={<KeyRound aria-hidden="true" size={16} />}
                 size="large"
+                type="password"
                 value={password}
-                onChange={(value) => {
-                  setPassword(value)
+                onChange={(event) => {
+                  setPassword(event.target.value)
                   setFormError('')
                 }}
               />
             </label>
             {showRequiredMessage ? <p className="login-form-hint">{requiredMessage}</p> : null}
-            <SemiButton
+            <Button
               block
               className="login-submit"
               disabled={!canSubmit}
@@ -134,11 +134,10 @@ export function LoginPage({
               icon={<LayoutDashboard size={16} />}
               loading={submitting}
               size="large"
-              theme="solid"
               type="primary"
             >
               {t('auth.action.login')}
-            </SemiButton>
+            </Button>
           </form>
         </section>
       </section>

@@ -366,8 +366,12 @@
   font-weight: 750;
 }
 
-.login-form .semi-input-wrapper {
-  min-height: 52px;
+.login-form .ant-input-affix-wrapper {
+  width: 100%;
+  max-width: none !important;
+  min-height: 52px !important;
+  height: 52px !important;
+  padding: 0 12px 0 0;
   border: 1px solid #d1cabc;
   border-radius: 6px;
   background: #FFFFFF;
@@ -376,38 +380,43 @@
     background-color 0.18s ease-out;
 }
 
-.login-form .semi-input-wrapper .semi-input {
+.login-form .ant-input-affix-wrapper .ant-input {
+  height: 50px !important;
   padding-left: 12px;
-  font-size: 1rem;
+  background: transparent;
+  font-size: 1rem !important;
   font-weight: 700;
 }
 
-.login-form .semi-input-wrapper-focus {
+.login-form .ant-input-affix-wrapper-focused {
   border-color: #8C8F9C;
   box-shadow: 0 0 0 3px rgba(140, 143, 156, 0.14);
 }
 
-.login-form .semi-input-prefix {
+.login-form .ant-input-prefix {
   display: inline-flex;
   align-self: stretch;
   align-items: center;
   justify-content: center;
   width: 48px;
   min-width: 48px;
+  height: 50px;
   margin-right: 0;
   border-right: 1px solid color-mix(in srgb, var(--erp-primary) 22%, white);
   color: var(--erp-primary-strong);
 }
 
-.login-form .semi-input-prefix svg,
-.login-form .semi-input-suffix svg {
+.login-form .ant-input-prefix svg,
+.login-form .ant-input-suffix svg {
   width: 18px;
   height: 18px;
 }
 
 .login-submit {
-  min-height: 52px;
+  min-height: 52px !important;
+  height: 52px !important;
   margin-top: 4px;
+  padding: 0 16px;
   border-color: color-mix(in srgb, var(--erp-primary-strong) 80%, #000);
   border-radius: 6px;
   background: var(--erp-primary);
@@ -440,7 +449,7 @@
 }
 
 .login-submit:disabled,
-.login-submit.semi-button-disabled {
+.login-submit.ant-btn-disabled {
   border-color: color-mix(in srgb, var(--erp-primary) 30%, white);
   background: color-mix(in srgb, var(--erp-primary) 30%, white);
   box-shadow: none;
@@ -449,7 +458,7 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .login-form .semi-input-wrapper:hover {
+  .login-form .ant-input-affix-wrapper:hover {
     border-color: color-mix(in srgb, var(--erp-primary) 40%, white);
     background: color-mix(in srgb, var(--erp-primary) 3%, white);
   }
@@ -462,7 +471,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .login-panel,
-  .login-form .semi-input-wrapper,
+  .login-form .ant-input-affix-wrapper,
   .login-submit {
     transition-duration: 0.01ms;
   }

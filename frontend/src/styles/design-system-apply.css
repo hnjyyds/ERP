@@ -650,8 +650,7 @@ body .ant-tag {
 
 body .ant-modal-content,
 body .ant-dropdown,
-body .ant-select-dropdown,
-body .semi-modal-content {
+body .ant-select-dropdown {
   border: 1px solid var(--ui-border);
   border-radius: var(--ui-radius-panel);
   box-shadow: var(--ui-shadow-overlay);
