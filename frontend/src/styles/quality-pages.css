@@ -48,3 +48,16 @@
   border-color: #ead6b6;
   background: #fbf6ec;
 }
+
+.quality-inspection-grid {
+  gap: 14px;
+}
+
+.business-grid.quality-inspection-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+
+.quality-inspection-page .product-detail-panel {
+  overflow-x: auto;
+}

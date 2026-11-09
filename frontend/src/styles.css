@@ -9,8 +9,9 @@
 @import './design-system.css';
 @import './styles/base-shell.css';
 @import './styles/finance-shell.css';
+@import './styles/shared-page-primitives.css';
 @import './styles/masterdata-pages.css';
-@import './styles/workflow-pages.css';
+@import './styles/workspace-shell.css';
 @import './styles/warehouse-pages.css';
 @import './styles/sample-pages.css';
 @import './styles/purchase-pages.css';
@@ -25,7 +26,6 @@
 @import './styles/ux-pass.css';
 @import './styles/navigation-settings.css';
 @import './styles/shared-primitives.css';
-@import './styles/form-contract-pages.css';
 @import './styles/finance-reporting.css';
 @import './styles/modal-quality.css';
 @import './styles/responsive-cascade.css';

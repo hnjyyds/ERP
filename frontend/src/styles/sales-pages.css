@@ -19,3 +19,8 @@
 .shipment-grid {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
 }
+
+.export-quotation-grid,
+.export-contract-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+}

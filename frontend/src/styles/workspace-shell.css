@@ -1,4 +1,5 @@
-/* workflow-pages — 采购 / 质量 / 仓库等流程页共享外壳 — 由原分片按业务域拆出，声明内容未改动。 */
+/* workspace-shell — 采购 / 质量 / 仓库等流程页共享的工作区外壳，跨业务域复用。
+   单域规则已归位到 purchase-pages.css；共享表单原语见 shared-primitives.css。 */
 
 .purchase-inquiry-page,
 .purchase-contract-page,
@@ -196,159 +197,6 @@
   max-height: min(38vh, 420px);
 }
 
-/* 采购合同详情摘要按业务语义分组，避免状态、责任人和金额混在一张难读的网格里。 */
-.contract-summary-intro {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin: 16px 0 12px;
-  border-left: 3px solid var(--erp-primary);
-  background: var(--erp-surface-soft);
-  padding: 10px 12px;
-}
-
-
-
-.contract-summary-intro strong {
-  color: var(--erp-text);
-  font-size: 14px;
-  font-weight: 800;
-}
-
-
-
-.contract-summary-intro span {
-  color: var(--erp-muted);
-  font-size: 13px;
-}
-
-
-
-.contract-summary-sections {
-  display: grid;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-
-
-.contract-summary-section {
-  overflow: hidden;
-  border: 1px solid var(--erp-border-soft);
-  border-radius: 8px;
-  background: var(--erp-surface);
-}
-
-
-
-.contract-summary-section-heading {
-  border-bottom: 1px solid var(--erp-border-soft);
-  background: var(--erp-surface-soft);
-  padding: 10px 14px 9px;
-}
-
-
-
-.contract-summary-section-heading h3 {
-  margin: 0;
-  color: var(--erp-text);
-  font-size: 14px;
-  font-weight: 800;
-  line-height: 1.35;
-}
-
-
-
-.contract-summary-section-heading p {
-  margin: 3px 0 0;
-  color: var(--erp-muted);
-  font-size: 12px;
-  line-height: 1.45;
-}
-
-
-
-.contract-summary-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1px;
-  margin: 0;
-  background: var(--erp-border-soft);
-}
-
-
-
-.contract-summary-grid > div {
-  min-width: 0;
-  background: var(--erp-surface);
-  padding: 11px 14px 12px;
-}
-
-
-
-.contract-summary-grid dt {
-  color: var(--erp-muted);
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1.35;
-}
-
-
-
-.contract-summary-grid dd {
-  min-height: 21px;
-  margin: 5px 0 0;
-  overflow-wrap: anywhere;
-  color: var(--erp-text);
-  font-size: 14px;
-  font-weight: 650;
-  line-height: 1.45;
-}
-
-
-
-.contract-status-chip {
-  display: inline-flex;
-  align-items: center;
-  min-height: 24px;
-  border-radius: 999px;
-  background: #F0F2F5;
-  padding: 2px 9px;
-  color: var(--erp-muted);
-  font-size: 12px;
-  font-weight: 800;
-}
-
-
-
-.contract-status-chip[data-status="submitted"] {
-  background: #FFF4D6;
-  color: #9A6700;
-}
-
-
-
-.contract-status-chip[data-status="approved"] {
-  background: #E8F7EE;
-  color: #217A45;
-}
-
-
-
-.contract-status-chip[data-status="draft"] {
-  background: #EEF1F5;
-  color: #596273;
-}
-
-
-
-.contract-status-chip[data-status="rejected"] {
-  background: #FDECEC;
-  color: #B42318;
-}
-
-
-
 .export-contract-page .ant-table-wrapper,
 .export-contract-page .ant-table-container,
 .export-contract-page .ant-table-content,
@@ -390,12 +238,4 @@
 .finance-page .ant-table-content {
   max-width: 100%;
   overflow-x: auto;
-}
-
-
-
-.panel-kicker.contract-code-label {
-  margin-right: auto;
-  color: var(--erp-primary-strong);
-  letter-spacing: 0.02em;
 }

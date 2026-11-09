@@ -1,0 +1,223 @@
+/* shared-page-primitives — 基础资料页分片中的跨业务域骨架与筛选/工具栏原语。
+   位置固定在业务页分片之前，保持原有层叠顺序。 */
+
+/* ===== 跨业务域共享的页面骨架与表单原语 =====
+   从 masterdata-pages.css 归位：这些选择器被两个以上业务域使用，
+   不属于任何单一页面分片。 */
+
+.inline-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px 14px;
+  margin-bottom: 14px;
+  min-width: 0;
+}
+
+.inline-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 0 1 auto;
+  min-width: 0;
+  color: #4E5259;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.inline-filters label .ant-input,
+.inline-filters label .ant-input-affix-wrapper,
+.inline-filters label .ant-select,
+.inline-filters label select,
+.inline-filters label .ant-input-number {
+  max-width: 300px;
+}
+
+.inline-filters .inline-filter-search {
+  min-width: 260px;
+}
+
+.inline-filter-fields {
+  display: grid;
+  grid-template-columns: minmax(240px, 1.35fr) minmax(180px, 1fr) minmax(180px, 0.9fr) minmax(180px, 0.9fr);
+  gap: 12px;
+  align-items: end;
+}
+
+.inline-filter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+  border-top: 0;
+  padding-top: 0;
+}
+
+.toolbar-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+/* toolbar-heading 后面紧跟的筛选表单 */
+.toolbar-heading + .inline-filters {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+  background: #3c8af1 !important;
+}
+
+.toolbar-create-button {
+  border-color: #E0E3E8 !important;
+  background: #FFFFFF !important;
+  color: #4d4a42 !important;
+  box-shadow: none;
+}
+
+.toolbar-create-button:hover,
+.toolbar-create-button:focus-visible {
+  border-color: #93C5FD !important;
+  background: #5c9ff6 !important;
+  color: #1D4ED8 !important;
+}
+
+.inline-filters .ant-select,
+.record-form .ant-select,
+.dashboard-form .ant-select {
+  width: 100%;
+}
+
+.inline-filters .ant-select-selector,
+.record-form .ant-select-selector,
+.dashboard-form .ant-select-selector {
+  min-height: 34px;
+  border-color: #bfcabf !important;
+  background: var(--erp-surface) !important;
+}
+
+.inline-filters .ant-select-focused .ant-select-selector,
+.record-form .ant-select-focused .ant-select-selector,
+.dashboard-form .ant-select-focused .ant-select-selector {
+  border-color: var(--erp-primary) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--erp-primary) 20%, transparent) !important;
+}
+
+.inline-filters select,
+.record-form select {
+  min-height: 34px;
+  border: 1px solid #bfcabf;
+  border-radius: 6px;
+  background: var(--erp-surface);
+  color: var(--erp-text);
+  padding: 0 10px;
+}
+
+.inline-filters select:focus,
+.record-form select:focus,
+.search-form input:focus,
+.record-form input:not(.ant-select-input):focus,
+.record-form textarea:focus {
+  border-color: var(--erp-primary);
+  outline: 2px solid color-mix(in srgb, var(--erp-primary) 20%, transparent);
+  outline-offset: 1px;
+}
+
+.selected-row > td {
+  background: #EEF1FE !important;
+}
+
+.compact-section {
+  margin-top: 16px;
+}
+
+.section-actions,
+.table-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-actions {
+  justify-content: flex-end;
+}
+
+.table-actions {
+  justify-content: flex-start;
+  color: #fff !important;
+}
+
+.list-panel {
+  min-height: 0;
+}
+
+.business-grid {
+  display: grid;
+  grid-template-columns: minmax(440px, 1.08fr) minmax(360px, 0.72fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.form-panel {
+  grid-row: span 2;
+}
+
+.detail-panel {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 981px) {
+  .form-panel {
+    position: sticky;
+    top: 92px;
+    max-height: calc(100vh - 112px);
+    overflow: auto;
+  }
+}
+
+.workflow-modal-content {
+  display: grid;
+  gap: 16px;
+  max-height: min(76vh, 760px);
+  overflow: auto;
+}
+
+.workflow-modal-content > .panel-title {
+  margin-bottom: 0;
+}
+
+.workflow-modal-content .record-form {
+  gap: 12px;
+}
+
+.workflow-modal-content .record-form > .ant-btn {
+  justify-self: start;
+  min-height: 38px;
+  margin-top: 4px;
+  padding-inline: 18px;
+}
+
+.export-preview {
+  display: grid;
+  gap: 8px;
+  border: 1px solid #E0E3E8;
+  border-radius: 8px;
+  background: #FAFBFC;
+  padding: 14px;
+}
+
+.export-preview pre {
+  max-height: 220px;
+  overflow: auto;
+  margin: 0;
+  color: #1D2129;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}

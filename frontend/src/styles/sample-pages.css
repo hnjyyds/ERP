@@ -300,3 +300,13 @@
 .sample-modal-form > .modal-actions .inline-submit {
   min-width: 108px;
 }
+
+.sample-request-grid,
+.sample-record-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+
+.sample-delivery-grid {
+  grid-template-columns: minmax(0, 1fr);
+}

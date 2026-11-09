@@ -21,3 +21,159 @@
 .followup-page .summary-strip {
   grid-template-columns: repeat(5, minmax(120px, 1fr));
 }
+
+/* 采购 / 跟单页栅格：单列上下分层（原 masterdata-pages.css 跨域块按域归位）。 */
+.purchase-inquiry-grid,
+.purchase-contract-grid,
+.purchase-invoice-grid,
+.followup-grid {
+  gap: 14px;
+}
+
+.business-grid.purchase-inquiry-grid,
+.business-grid.purchase-contract-grid,
+.business-grid.purchase-invoice-grid,
+.business-grid.followup-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+
+.purchase-inquiry-page .product-detail-panel,
+.purchase-contract-page .product-detail-panel,
+.purchase-invoice-page .product-detail-panel,
+.followup-page .product-detail-panel {
+  overflow-x: auto;
+}
+
+/* 采购合同详情：合同编号标签与摘要分组。 */
+.panel-kicker {
+  align-self: center;
+  color: var(--erp-muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.panel-kicker.contract-code-label {
+  margin-right: auto;
+  color: var(--erp-primary-strong);
+  letter-spacing: 0.02em;
+}
+
+/* 采购合同详情摘要按业务语义分组，避免状态、责任人和金额混在一张难读的网格里。 */
+.contract-summary-intro {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 16px 0 12px;
+  border-left: 3px solid var(--erp-primary);
+  background: var(--erp-surface-soft);
+  padding: 10px 12px;
+}
+
+.contract-summary-intro strong {
+  color: var(--erp-text);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.contract-summary-intro span {
+  color: var(--erp-muted);
+  font-size: 13px;
+}
+
+.contract-summary-sections {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.contract-summary-section {
+  overflow: hidden;
+  border: 1px solid var(--erp-border-soft);
+  border-radius: 8px;
+  background: var(--erp-surface);
+}
+
+.contract-summary-section-heading {
+  border-bottom: 1px solid var(--erp-border-soft);
+  background: var(--erp-surface-soft);
+  padding: 10px 14px 9px;
+}
+
+.contract-summary-section-heading h3 {
+  margin: 0;
+  color: var(--erp-text);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.contract-summary-section-heading p {
+  margin: 3px 0 0;
+  color: var(--erp-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.contract-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1px;
+  margin: 0;
+  background: var(--erp-border-soft);
+}
+
+.contract-summary-grid > div {
+  min-width: 0;
+  background: var(--erp-surface);
+  padding: 11px 14px 12px;
+}
+
+.contract-summary-grid dt {
+  color: var(--erp-muted);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.contract-summary-grid dd {
+  min-height: 21px;
+  margin: 5px 0 0;
+  overflow-wrap: anywhere;
+  color: var(--erp-text);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.contract-status-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border-radius: 999px;
+  background: #F0F2F5;
+  padding: 2px 9px;
+  color: var(--erp-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.contract-status-chip[data-status="submitted"] {
+  background: #FFF4D6;
+  color: #9A6700;
+}
+
+.contract-status-chip[data-status="approved"] {
+  background: #E8F7EE;
+  color: #217A45;
+}
+
+.contract-status-chip[data-status="draft"] {
+  background: #EEF1F5;
+  color: #596273;
+}
+
+.contract-status-chip[data-status="rejected"] {
+  background: #FDECEC;
+  color: #B42318;
+}
