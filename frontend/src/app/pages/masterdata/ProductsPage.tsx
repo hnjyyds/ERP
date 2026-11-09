@@ -114,7 +114,8 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
   const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
   const [summary, setSummary] = useState({ with_image_count: 0, accessory_count: 0 })
   const [loading, setLoading] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
+  const [productSubmitting, setProductSubmitting] = useState(false)
+  const [accessorySubmitting, setAccessorySubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [exportResult, setExportResult] = useState<ProductExport | null>(null)
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
@@ -261,7 +262,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
       showWarningDialog(missing)
       return
     }
-    setSubmitting(true)
+    setProductSubmitting(true)
     setMessage('')
     setExportResult(null)
     try {
@@ -282,7 +283,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
     } catch (caught) {
       showError(caught, t('masterdata.product.saveFailed'))
     } finally {
-      setSubmitting(false)
+      setProductSubmitting(false)
     }
   }
 
@@ -347,7 +348,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
   async function submitAccessory(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!selectedProduct) return
-    setSubmitting(true)
+    setAccessorySubmitting(true)
     setMessage('')
     try {
       const accessory =
@@ -384,7 +385,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
     } catch (caught) {
       showError(caught, t('masterdata.product.accessory.saveFailed'))
     } finally {
-      setSubmitting(false)
+      setAccessorySubmitting(false)
     }
   }
 
@@ -1041,7 +1042,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
             <button className="secondary-inline" type="button" onClick={() => setProductModalMode(null)}>
               {t('common.cancel')}
             </button>
-            <button className="inline-submit" disabled={submitting} type="submit">
+            <button className="inline-submit" disabled={productSubmitting} type="submit">
               {productModalMode === 'edit'
                 ? t('masterdata.product.save')
                 : t('masterdata.product.create')}
@@ -1112,7 +1113,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
             <button className="secondary-inline" type="button" onClick={() => setAccessoryModalMode(null)}>
               {t('common.cancel')}
             </button>
-            <button className="inline-submit" disabled={submitting} type="submit">
+            <button className="inline-submit" disabled={accessorySubmitting} type="submit">
               {accessoryModalMode === 'edit'
                 ? t('masterdata.product.accessory.save')
                 : t('masterdata.product.accessory.add')}
