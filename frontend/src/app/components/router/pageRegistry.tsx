@@ -194,6 +194,7 @@ const pageRenderers: Partial<Record<RouteKey, PageRenderer>> = {
       loading={context.loadingDashboard}
       canNavigatePath={context.canNavigatePath}
       onNavigate={context.onNavigate}
+      onRefresh={context.onRefreshDashboard}
     />
   ),
   dashboardSchedules: (context) => (

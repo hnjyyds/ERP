@@ -53,12 +53,8 @@ SOURCE_MESSAGES: dict[str, str] = {
     "商品编码已存在": "The product code already exists",
     # 采购
     "供应商报价不存在": "Supplier quotation not found",
-    "供应商报价明细不属于该询价单": (
-        "The supplier quotation line item does not belong to this inquiry"
-    ),
-    "已有供应商报价的采购询价不可编辑": (
-        "A purchase inquiry with supplier quotations cannot be edited"
-    ),
+    "供应商报价明细不属于该询价单": "The supplier quotation line item does not belong to this inquiry",
+    "已有供应商报价的采购询价不可编辑": "A purchase inquiry with supplier quotations cannot be edited",
     "只有草稿采购询价可以编辑": "Only draft purchase inquiries can be edited",
     "采购询价状态无效": "Invalid purchase inquiry status",
     "来源出口合同不存在": "The source export contract does not exist",
@@ -124,9 +120,7 @@ SOURCE_MESSAGES: dict[str, str] = {
     "QC 通过时不良数量必须为 0": "The defective quantity must be 0 when the QC task passes",
     "QC 通过时所有明细必须通过": "All line items must pass when the QC task passes",
     "不合格数量不能大于查验数量": "The defective quantity cannot exceed the inspected quantity",
-    "仅已完成且未通过的 QC 任务可以创建复检": (
-        "Only completed QC tasks that failed can be re-inspected"
-    ),
+    "仅已完成且未通过的 QC 任务可以创建复检": "Only completed QC tasks that failed can be re-inspected",
     "仅待执行或执行中的 QC 任务可以取消": "Only pending or in-progress QC tasks can be cancelled",
     "仅待执行或执行中的 QC 任务可以调整排期": (
         "Only pending or in-progress QC tasks can be rescheduled"
@@ -142,9 +136,7 @@ SOURCE_MESSAGES: dict[str, str] = {
     "异常关闭说明不能为空": "The anomaly closure note must not be empty",
     "未完成的 QC 任务不能填写查验结果": "An incomplete QC task cannot have an inspection result",
     "未完成的 QC 任务必须填写排期时间": "An incomplete QC task must include a scheduled time",
-    "该 QC 任务已经存在待执行的复检任务": (
-        "A pending re-inspection already exists for this QC task"
-    ),
+    "该 QC 任务已经存在待执行的复检任务": "A pending re-inspection already exists for this QC task",
     "该 QC 异常已经关闭": "This QC anomaly is already closed",
     "请先关闭全部 QC 异常，再创建复检任务": (
         "Close all QC anomalies before creating a re-inspection"
@@ -233,17 +225,13 @@ SOURCE_MESSAGES: dict[str, str] = {
     "该寄样单号已登记过发货数量，不能重复记账": (
         "This sample delivery number already has a delivered quantity entry"
     ),
-    "该寄样单已有发货记账，不能重复入账": (
-        "This sample delivery already has a delivered stock entry"
-    ),
+    "该寄样单已有发货记账，不能重复入账": "This sample delivery already has a delivered stock entry",
     "打样去向无效": "Invalid sampling destination",
     "新建打样申请只能是草稿、已发送或进行中": (
         "New sample requests can only be draft, sent, or in progress"
     ),
     "已取消的打样申请不能更新进度": "Cancelled sample requests cannot update progress",
-    "打样进度不能将申请置为已取消": (
-        "Progress updates cannot mark a sample request as cancelled"
-    ),
+    "打样进度不能将申请置为已取消": "Progress updates cannot mark a sample request as cancelled",
     "只有客户确认阶段才能完成打样": (
         "Sampling can only be completed at the customer confirmation stage"
     ),
@@ -421,9 +409,7 @@ SOURCE_MESSAGES: dict[str, str] = {
         "The approved fee payment amount cannot exceed the unpaid expense invoice amount"
     ),
     # 财务：收款
-    "分摊合同号和合同标识不一致": (
-        "The allocation contract number and contract ID do not match"
-    ),
+    "分摊合同号和合同标识不一致": "The allocation contract number and contract ID do not match",
     "发票分摊必须填写出口发票号": "Invoice allocation requires the export invoice number",
     "只有待认领水单可以认领": "Only unclaimed bank slips can be claimed",
     "合同分摊必须选择出口合同": "Contract allocation requires selecting an export contract",
@@ -644,6 +630,15 @@ SOURCE_MESSAGES: dict[str, str] = {
     "个人待办中存在未指定审批人的单据": "Some personal to-dos have no assigned approver",
     "日程不存在": "Schedule not found",
     "结束时间必须晚于开始时间": "End time must be later than start time",
+    "待办不存在": "Todo not found",
+    "待办负责人不存在或已停用": "Todo assignee does not exist or is disabled",
+    "待办已结束，不可再修改": "This todo is closed and can no longer be changed",
+    "只有负责人或超管可以完成待办": "Only the assignee or super admin can complete this todo",
+    "只有创建人或超管可以取消待办": "Only the creator or super admin can cancel this todo",
+    "只有创建人或超管可以改派待办": "Only the creator or super admin can reassign this todo",
+    "只有创建人或负责人可以修改截止时间": (
+        "Only the creator or assignee can change the due time"
+    ),
     "无权限发布公告": "No permission to publish announcements",
     "提醒不存在": "Reminder not found",
     "快捷入口不存在": "Shortcut not found",

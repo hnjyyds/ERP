@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Path, status
 from app.api.auth_dependencies import CurrentUserDep
 from app.modules.system.auth.permissions import SUPER_ADMIN_PERMISSION
 from app.modules.system.auth.providers import get_auth_service
-from app.modules.system.auth.schemas import CurrentUserResponse
+from app.modules.system.auth.schemas import AssignableUserResponse, CurrentUserResponse
 from app.modules.system.auth.services import AuthService
 from app.modules.system.dashboard.providers import get_dashboard_service
 from app.modules.system.dashboard.schemas import (
@@ -23,6 +23,9 @@ from app.modules.system.dashboard.schemas import (
     ShortcutResponse,
     TodoCreate,
     TodoCreateResponse,
+    TodoTaskPath,
+    TodoTaskResponse,
+    TodoUpdate,
 )
 from app.modules.system.dashboard.services import (
     DashboardService,
@@ -52,6 +55,12 @@ def _resolve_shortcut_path(
     shortcut_id: Annotated[str, Path(min_length=1, max_length=80)],
 ) -> ShortcutPath:
     return ShortcutPath(shortcut_id=shortcut_id)
+
+
+def _resolve_todo_path(
+    todo_id: Annotated[str, Path(min_length=1, max_length=80)],
+) -> TodoTaskPath:
+    return TodoTaskPath(todo_id=todo_id)
 
 
 @router.get("/dashboard", response_model=ApiResponse[DashboardResponse])
@@ -143,6 +152,27 @@ async def create_todo_tasks(
         assignees=assignees,
     )
     return ApiResponse(data=todos)
+
+
+@router.patch("/todos/{todo_id}", response_model=ApiResponse[TodoTaskResponse])
+async def update_todo_task(
+    path: Annotated[TodoTaskPath, Depends(_resolve_todo_path)],
+    payload: TodoUpdate,
+    current_user: CurrentUserDep,
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[DashboardService, Depends(get_dashboard_service)],
+) -> ApiResponse[TodoTaskResponse]:
+    assignee: AssignableUserResponse | None = None
+    if payload.owner_user_id:
+        users = await auth_service.list_assignable_users_by_ids([payload.owner_user_id])
+        assignee = users[0] if users else None
+    todo = await service.update_todo_task(
+        current_user=current_user,
+        todo_id=path.todo_id,
+        payload=payload,
+        assignee=assignee,
+    )
+    return ApiResponse(data=todo)
 
 
 @router.patch(

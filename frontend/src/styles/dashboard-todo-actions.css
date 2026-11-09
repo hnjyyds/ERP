@@ -1,0 +1,11 @@
+.dashboard-todo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 2px 8px;
+}
+
+.dashboard-todo-auto-close {
+  color: var(--erp-muted);
+  font-size: 0.8125rem;
+}

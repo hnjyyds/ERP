@@ -36,6 +36,7 @@ class TodoTaskResponse(BaseModel):
     source_id: str | None
     due_at: datetime | None
     status: str
+    is_overdue: bool
     assignment_type: Literal["assigned", "self"]
 
 
@@ -45,6 +46,7 @@ class TodoCreate(BaseModel):
     title: str = Field(min_length=1, max_length=200)
     content: str = Field(min_length=1, max_length=2000)
     assignee_user_ids: list[str] = Field(min_length=1, max_length=20)
+    due_at: datetime | None = None
 
     @model_validator(mode="after")
     def normalize_assignees(self) -> "TodoCreate":
@@ -63,6 +65,26 @@ class TodoCreateResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[TodoTaskResponse]
+
+
+class TodoUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    status: Literal["completed", "cancelled"] | None = None
+    owner_user_id: str | None = Field(default=None, min_length=1, max_length=64)
+    due_at: datetime | None = None
+
+    @model_validator(mode="after")
+    def require_changes(self) -> "TodoUpdate":
+        if not self.model_fields_set:
+            raise ValueError("at least one field must be provided")
+        return self
+
+
+class TodoTaskPath(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    todo_id: str = Field(min_length=1, max_length=80)
 
 
 class NotificationResponse(BaseModel):

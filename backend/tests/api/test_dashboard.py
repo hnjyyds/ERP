@@ -143,6 +143,7 @@ async def test_dashboard_includes_only_active_quality_tasks_assigned_to_current_
     assert response.status_code == 200
     dashboard = response.json()["data"]
     assert dashboard["summary"]["todo_count"] == 1
+    assert isinstance(dashboard["todos"][0].pop("is_overdue"), bool)
     assert dashboard["todos"] == [
         {
             "id": "qc-dashboard-active",
@@ -614,6 +615,240 @@ async def test_personal_todo_create_rejects_unexpected_fields(
     )
 
     assert response.status_code == 422
+
+
+async def test_todo_create_accepts_due_at_and_returns_overdue_flag(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+
+    overdue_response = await api_client.post(
+        "/api/v1/todos",
+        headers=headers,
+        json={
+            "title": "已逾期待办",
+            "content": "按 datetime 判断逾期",
+            "assignee_user_ids": ["u-001"],
+            "due_at": "2020-01-01T09:00:00+08:00",
+        },
+    )
+    future_response = await api_client.post(
+        "/api/v1/todos",
+        headers=headers,
+        json={
+            "title": "未来待办",
+            "content": "尚未到期",
+            "assignee_user_ids": ["u-001"],
+            "due_at": "2099-01-01T09:00:00+08:00",
+        },
+    )
+
+    assert overdue_response.status_code == 201
+    assert future_response.status_code == 201
+    assert overdue_response.json()["data"]["items"][0]["is_overdue"] is True
+    assert future_response.json()["data"]["items"][0]["is_overdue"] is False
+
+    dashboard = (
+        await api_client.get("/api/v1/dashboard", headers=headers)
+    ).json()["data"]
+    flags = {item["title"]: item["is_overdue"] for item in dashboard["todos"]}
+    assert flags["已逾期待办"] is True
+    assert flags["未来待办"] is False
+
+
+async def test_todo_owner_can_complete_and_completed_todo_is_hidden(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    created = (
+        await api_client.post(
+            "/api/v1/todos",
+            headers=headers,
+            json={
+                "title": "完成我",
+                "content": "负责人完成后不可撤销",
+                "assignee_user_ids": ["u-001"],
+            },
+        )
+    ).json()["data"]["items"][0]
+
+    complete_response = await api_client.patch(
+        f"/api/v1/todos/{created['id']}",
+        headers=headers,
+        json={"status": "completed"},
+    )
+
+    assert complete_response.status_code == 200
+    assert complete_response.json()["data"]["status"] == "completed"
+    assert complete_response.json()["data"]["is_overdue"] is False
+
+    dashboard = (
+        await api_client.get("/api/v1/dashboard", headers=headers)
+    ).json()["data"]
+    assert created["id"] not in {item["id"] for item in dashboard["todos"]}
+
+    reopen_response = await api_client.patch(
+        f"/api/v1/todos/{created['id']}",
+        headers=headers,
+        json={"status": "cancelled"},
+    )
+    assert reopen_response.status_code == 422
+
+
+async def test_todo_complete_requires_owner_or_super_admin(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    finance_token = await _login_token(api_client, username="finance", password="finance123")
+    admin_token = await _login_token(api_client, username="admin", password="admin123")
+    created = (
+        await api_client.post(
+            "/api/v1/todos",
+            headers={"Authorization": f"Bearer {token}"},
+            json={
+                "title": "仅负责人可完成",
+                "content": "创建人不是负责人",
+                "assignee_user_ids": ["u-finance"],
+            },
+        )
+    ).json()["data"]["items"][0]
+
+    creator_response = await api_client.patch(
+        f"/api/v1/todos/{created['id']}",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"status": "completed"},
+    )
+    admin_response = await api_client.patch(
+        f"/api/v1/todos/{created['id']}",
+        headers={"Authorization": f"Bearer {admin_token}"},
+        json={"status": "completed"},
+    )
+
+    assert creator_response.status_code == 403
+    assert admin_response.status_code == 200
+    finance_dashboard = (
+        await api_client.get(
+            "/api/v1/dashboard",
+            headers={"Authorization": f"Bearer {finance_token}"},
+        )
+    ).json()["data"]
+    assert created["id"] not in {item["id"] for item in finance_dashboard["todos"]}
+
+
+async def test_todo_cancel_requires_creator_or_super_admin(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    finance_token = await _login_token(api_client, username="finance", password="finance123")
+    created = (
+        await api_client.post(
+            "/api/v1/todos",
+            headers={"Authorization": f"Bearer {token}"},
+            json={
+                "title": "取消我",
+                "content": "仅创建人或超管可取消",
+                "assignee_user_ids": ["u-finance"],
+            },
+        )
+    ).json()["data"]["items"][0]
+
+    denied = await api_client.patch(
+        f"/api/v1/todos/{created['id']}",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        json={"status": "cancelled"},
+    )
+    cancelled = await api_client.patch(
+        f"/api/v1/todos/{created['id']}",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"status": "cancelled"},
+    )
+
+    assert denied.status_code == 403
+    assert cancelled.status_code == 200
+    assert cancelled.json()["data"]["status"] == "cancelled"
+
+
+async def test_todo_reassign_and_due_time_updates(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    finance_token = await _login_token(api_client, username="finance", password="finance123")
+    created = (
+        await api_client.post(
+            "/api/v1/todos",
+            headers=headers,
+            json={
+                "title": "改派与改期",
+                "content": "创建人可改派，负责人可改期",
+                "assignee_user_ids": ["u-finance"],
+            },
+        )
+    ).json()["data"]["items"][0]
+
+    finance_reassign = await api_client.patch(
+        f"/api/v1/todos/{created['id']}",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        json={"owner_user_id": "u-001"},
+    )
+    assert finance_reassign.status_code == 403
+
+    reassigned = await api_client.patch(
+        f"/api/v1/todos/{created['id']}",
+        headers=headers,
+        json={"owner_user_id": "u-001"},
+    )
+    assert reassigned.status_code == 200
+    assert reassigned.json()["data"]["owner_user_id"] == "u-001"
+
+    missing_assignee = await api_client.patch(
+        f"/api/v1/todos/{created['id']}",
+        headers=headers,
+        json={"owner_user_id": "u-missing"},
+    )
+    assert missing_assignee.status_code == 404
+
+    due_update = await api_client.patch(
+        f"/api/v1/todos/{created['id']}",
+        headers=headers,
+        json={"due_at": "2020-01-01T09:00:00+08:00"},
+    )
+    assert due_update.status_code == 200
+    assert due_update.json()["data"]["is_overdue"] is True
+
+
+async def test_todo_due_time_update_denied_for_unrelated_user(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    finance_token = await _login_token(api_client, username="finance", password="finance123")
+    created = (
+        await api_client.post(
+            "/api/v1/todos",
+            headers={"Authorization": f"Bearer {token}"},
+            json={
+                "title": "仅创建人或负责人可改期",
+                "content": "无关用户不可修改",
+                "assignee_user_ids": ["u-001"],
+            },
+        )
+    ).json()["data"]["items"][0]
+
+    response = await api_client.patch(
+        f"/api/v1/todos/{created['id']}",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        json={"due_at": "2026-12-31T09:00:00+08:00"},
+    )
+
+    assert response.status_code == 403
 
 
 async def test_schedule_create_is_visible_on_dashboard(

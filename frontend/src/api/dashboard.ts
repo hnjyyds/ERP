@@ -19,6 +19,7 @@ export interface TodoTask {
   source_id: string | null
   due_at: string | null
   status: string
+  is_overdue: boolean
   assignment_type: 'assigned' | 'self'
 }
 
@@ -84,6 +85,13 @@ export interface TodoCreatePayload {
   title: string
   content: string
   assignee_user_ids: string[]
+  due_at?: string | null
+}
+
+export interface TodoUpdatePayload {
+  status?: 'completed' | 'cancelled'
+  owner_user_id?: string
+  due_at?: string | null
 }
 
 export interface TodoCreateResult {
@@ -111,6 +119,13 @@ export function createAnnouncement(payload: AnnouncementCreatePayload): Promise<
 export function createTodos(payload: TodoCreatePayload): Promise<TodoCreateResult> {
   return request<TodoCreateResult>('/todos', {
     method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function updateTodoTask(todoId: string, payload: TodoUpdatePayload): Promise<TodoTask> {
+  return request<TodoTask>(`/todos/${todoId}`, {
+    method: 'PATCH',
     body: JSON.stringify(payload),
   })
 }

@@ -107,10 +107,33 @@ class DashboardRepository:
     async def list_todos(self, user_id: str) -> list[TodoTaskRow]:
         statement = (
             select(TodoTask)
-            .where(TodoTask.owner_user_id == user_id)
+            .where(TodoTask.owner_user_id == user_id, TodoTask.status == "pending")
             .order_by(TodoTask.due_at.asc().nulls_last(), TodoTask.id.asc())
         )
         return [self._map_todo_task(item) for item in await self._scalars(statement)]
+
+    async def get_todo_task(self, todo_id: str) -> TodoTaskRow | None:
+        task = await self.session.get(TodoTask, todo_id)
+        return self._map_todo_task(task) if task else None
+
+    async def update_todo_task(
+        self,
+        *,
+        todo_id: str,
+        status: str,
+        owner_user_id: str,
+        owner_user_name: str | None,
+        due_at: datetime | None,
+    ) -> TodoTaskRow | None:
+        task = await self.session.get(TodoTask, todo_id)
+        if task is None:
+            return None
+        task.status = status
+        task.owner_user_id = owner_user_id
+        task.owner_user_name = owner_user_name
+        task.due_at = due_at
+        await self.session.flush()
+        return self._map_todo_task(task)
 
     async def list_notifications(self, user_id: str) -> list[NotificationRow]:
         statement = (

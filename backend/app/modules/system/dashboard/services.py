@@ -33,10 +33,23 @@ from app.modules.system.dashboard.schemas import (
     TodoCreate,
     TodoCreateResponse,
     TodoTaskResponse,
+    TodoUpdate,
 )
 
 
 class TodoAssigneeNotFoundError(Exception):
+    pass
+
+
+class TodoNotFoundError(Exception):
+    pass
+
+
+class TodoPermissionDeniedError(Exception):
+    pass
+
+
+class TodoStateError(Exception):
     pass
 
 
@@ -52,6 +65,14 @@ def _as_utc(value: datetime) -> datetime:
 def _to_utc_naive(value: datetime) -> datetime:
     """写入前统一转成 UTC 墙钟时间，避免 SQLite 丢时区后语义漂移。"""
     return value.astimezone(UTC).replace(tzinfo=None) if value.tzinfo else value
+
+
+def _is_overdue(due_at: datetime | None, *, status: str | None = None) -> bool:
+    if due_at is None:
+        return False
+    if status is not None and status != "pending":
+        return False
+    return _as_utc(due_at) < datetime.now(UTC)
 
 
 class DashboardService:
@@ -206,7 +227,7 @@ class DashboardService:
             user_id for user_id in payload.assignee_user_ids if user_id not in assignees_by_id
         ]
         if missing_assignees:
-            raise TodoAssigneeNotFoundError
+            raise TodoAssigneeNotFoundError("待办负责人不存在或已停用")
 
         ordered_assignees = [
             TodoAssigneeRow(
@@ -222,8 +243,60 @@ class DashboardService:
                 creator_user_id=current_user.id,
                 creator_user_name=current_user.display_name,
                 assignees=ordered_assignees,
+                due_at=_to_utc_naive(payload.due_at) if payload.due_at else None,
             )
         return TodoCreateResponse(items=[self._todo_response(row) for row in rows])
+
+    async def update_todo_task(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        todo_id: str,
+        payload: TodoUpdate,
+        assignee: AssignableUserResponse | None,
+    ) -> TodoTaskResponse:
+        changes = payload.model_dump(exclude_unset=True)
+        is_super_admin = SUPER_ADMIN_PERMISSION in current_user.permissions
+        async with UnitOfWork(self._repository.session):
+            row = await self._repository.get_todo_task(todo_id)
+            if row is None:
+                raise TodoNotFoundError("待办不存在")
+            if row.status != "pending":
+                raise TodoStateError("待办已结束，不可再修改")
+
+            is_owner = row.owner_user_id == current_user.id
+            is_creator = row.creator_user_id == current_user.id
+
+            status = changes.get("status", row.status)
+            if status == "completed" and not (is_owner or is_super_admin):
+                raise TodoPermissionDeniedError("只有负责人或超管可以完成待办")
+            if status == "cancelled" and not (is_creator or is_super_admin):
+                raise TodoPermissionDeniedError("只有创建人或超管可以取消待办")
+
+            owner_user_id = row.owner_user_id
+            owner_user_name = row.owner_user_name
+            if "owner_user_id" in changes:
+                if not (is_creator or is_super_admin):
+                    raise TodoPermissionDeniedError("只有创建人或超管可以改派待办")
+                if assignee is None:
+                    raise TodoAssigneeNotFoundError("待办负责人不存在或已停用")
+                owner_user_id = assignee.id
+                owner_user_name = assignee.display_name
+
+            if "due_at" in changes and not (is_owner or is_creator or is_super_admin):
+                raise TodoPermissionDeniedError("只有创建人或负责人可以修改截止时间")
+            due_at = changes["due_at"] if "due_at" in changes else row.due_at
+
+            updated = await self._repository.update_todo_task(
+                todo_id=todo_id,
+                status=status,
+                owner_user_id=owner_user_id,
+                owner_user_name=owner_user_name,
+                due_at=_to_utc_naive(due_at) if due_at else None,
+            )
+        if updated is None:
+            raise TodoNotFoundError("待办不存在")
+        return self._todo_response(updated)
 
     async def mark_notification_read(
         self,
@@ -288,6 +361,7 @@ class DashboardService:
             source_id=row.source_id,
             due_at=row.due_at,
             status=row.status,
+            is_overdue=_is_overdue(row.due_at, status=row.status),
             assignment_type=(
                 "self"
                 if row.source_type == "manual" and row.creator_user_id == row.owner_user_id
@@ -311,6 +385,7 @@ class DashboardService:
             source_id=row.id,
             due_at=row.scheduled_at,
             status=row.status,
+            is_overdue=_is_overdue(row.scheduled_at),
             assignment_type="assigned",
         )
 
@@ -327,6 +402,7 @@ class DashboardService:
             source_id=row.follow_plan_id,
             due_at=datetime.combine(row.planned_date, time(hour=9)),
             status=row.status,
+            is_overdue=_is_overdue(datetime.combine(row.planned_date, time(hour=9))),
             assignment_type="assigned",
         )
 
@@ -358,6 +434,7 @@ class DashboardService:
             source_id=row.id,
             due_at=due_at,
             status="pending",
+            is_overdue=_is_overdue(due_at),
             assignment_type="assigned",
         )
 
@@ -398,6 +475,7 @@ class DashboardService:
             source_id=row.source_id,
             due_at=None,
             status="pending",
+            is_overdue=False,
             assignment_type="assigned",
         )
 

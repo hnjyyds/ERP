@@ -34,6 +34,7 @@ export type DashboardTodoFormState = {
   title: string
   content: string
   assignee_user_ids: string[]
+  due_at: string
 }
 
 function timeZoneOffsetMinutes(timeZone: AppTimeZone) {
@@ -96,6 +97,7 @@ export function initialDashboardTodoForm(currentUser?: CurrentUser): DashboardTo
     title: '',
     content: '',
     assignee_user_ids: currentUser ? [currentUser.id] : [],
+    due_at: '',
   }
 }
 
@@ -173,12 +175,15 @@ function dateKey(date: Date, settings: AppSettings = getRuntimeSettings()) {
   return `${map.year}-${map.month}-${map.day}`
 }
 
-export function todoDueState(value: string | null): Exclude<TodoDueState, 'all'> {
+export function todoDueState(
+  value: string | null,
+  isOverdue = false,
+): Exclude<TodoDueState, 'all'> {
+  if (isOverdue) return 'overdue'
   const dueDate = parseApiDate(value)
   if (!dueDate) return 'none'
   const dueDateKey = dateKey(dueDate)
   const todayKey = dateKey(new Date())
-  if (dueDateKey < todayKey) return 'overdue'
   if (dueDateKey === todayKey) return 'today'
   return 'upcoming'
 }
@@ -194,7 +199,7 @@ export function todoDueStateLabel(state: Exclude<TodoDueState, 'all'>) {
 }
 
 export function todoDueSortValue(todo: TodoTask) {
-  const state = todoDueState(todo.due_at)
+  const state = todoDueState(todo.due_at, todo.is_overdue)
   const rank = { overdue: 0, today: 1, upcoming: 2, none: 3 }[state]
   return [rank, parseApiDate(todo.due_at)?.getTime() ?? Number.MAX_SAFE_INTEGER] as const
 }

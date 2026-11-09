@@ -1,8 +1,16 @@
-import { Input, Segmented, Select, Skeleton, Table } from 'antd'
+import { Input, Modal, Segmented, Select, Skeleton, Table } from 'antd'
 import { ArrowRight, ClipboardCheck, Search } from 'lucide-react'
 import { useState } from 'react'
-import type { CurrentUser, Dashboard, TodoTask } from '@/api'
+import {
+  listAssignableUsers,
+  updateTodoTask,
+  type AssignableUser,
+  type CurrentUser,
+  type Dashboard,
+  type TodoTask,
+} from '@/api'
 import { PanelTitle } from '@/shared/ui'
+import { showError } from '@/shared/errors'
 import { t } from '@/app/appI18n'
 import { formatDate } from '@/app/pages/appHelpers'
 import {
@@ -21,17 +29,24 @@ export function DashboardTodosPage({
   loading,
   canNavigatePath,
   onNavigate,
+  onRefresh,
 }: {
   currentUser: CurrentUser
   dashboard: Dashboard | null
   loading: boolean
   canNavigatePath: (path: string) => boolean
   onNavigate: (path: string) => void
+  onRefresh: () => Promise<void>
 }) {
   const [scope, setScope] = useState<TodoScope>('assigned')
   const [searchValue, setSearchValue] = useState('')
   const [sourceFilter, setSourceFilter] = useState('all')
   const [dueFilter, setDueFilter] = useState<TodoDueState>('all')
+  const [reassignTodo, setReassignTodo] = useState<TodoTask | null>(null)
+  const [reassignTarget, setReassignTarget] = useState('')
+  const [assignableUsers, setAssignableUsers] = useState<AssignableUser[]>([])
+  const [busyAction, setBusyAction] = useState<string | null>(null)
+  const [feedback, setFeedback] = useState('')
 
   if (loading && !dashboard) {
     return <Skeleton active paragraph={{ rows: 8 }} />
@@ -46,7 +61,9 @@ export function DashboardTodosPage({
   const filteredTodos = scopedTodos
     .filter((todo) => {
       if (sourceFilter !== 'all' && todo.source_type !== sourceFilter) return false
-      if (dueFilter !== 'all' && todoDueState(todo.due_at) !== dueFilter) return false
+      if (dueFilter !== 'all' && todoDueState(todo.due_at, todo.is_overdue) !== dueFilter) {
+        return false
+      }
       if (!normalizedSearch) return true
       return [
         todo.title,
@@ -70,6 +87,97 @@ export function DashboardTodosPage({
     setSearchValue('')
     setSourceFilter('all')
     setDueFilter('all')
+  }
+
+  function canComplete(todo: TodoTask) {
+    return (
+      todo.source_type === 'manual' &&
+      todo.status === 'pending' &&
+      (isSuperAdmin || todo.owner_user_id === currentUser.id)
+    )
+  }
+
+  function canManage(todo: TodoTask) {
+    return (
+      todo.source_type === 'manual' &&
+      todo.status === 'pending' &&
+      (isSuperAdmin || todo.creator_user_id === currentUser.id)
+    )
+  }
+
+  async function runTodoAction(
+    todo: TodoTask,
+    actionKey: string,
+    action: () => Promise<unknown>,
+    successKey: Parameters<typeof t>[0],
+  ) {
+    setBusyAction(`${actionKey}-${todo.id}`)
+    setFeedback('')
+    try {
+      await action()
+      setFeedback(t(successKey))
+      await onRefresh()
+    } catch (caught) {
+      showError(caught, t('dashboard.operationFailed'))
+    } finally {
+      setBusyAction(null)
+    }
+  }
+
+  function confirmComplete(todo: TodoTask) {
+    Modal.confirm({
+      centered: true,
+      title: t('dashboard.completeTodoConfirm'),
+      content: t('dashboard.completeTodoIrreversible'),
+      okText: t('dashboard.completeTodo'),
+      cancelText: t('common.cancel'),
+      onOk: () =>
+        runTodoAction(
+          todo,
+          'complete',
+          () => updateTodoTask(todo.id, { status: 'completed' }),
+          'dashboard.todoCompleted',
+        ),
+    })
+  }
+
+  function confirmCancel(todo: TodoTask) {
+    Modal.confirm({
+      centered: true,
+      title: t('dashboard.cancelTodoConfirm'),
+      okText: t('dashboard.cancelTodoConfirmOk'),
+      cancelText: t('common.cancel'),
+      onOk: () =>
+        runTodoAction(
+          todo,
+          'cancel',
+          () => updateTodoTask(todo.id, { status: 'cancelled' }),
+          'dashboard.todoCancelled',
+        ),
+    })
+  }
+
+  async function openReassign(todo: TodoTask) {
+    setReassignTodo(todo)
+    setReassignTarget('')
+    if (assignableUsers.length) return
+    try {
+      const result = await listAssignableUsers()
+      setAssignableUsers(result.users)
+    } catch (caught) {
+      showError(caught, t('dashboard.operationFailed'))
+    }
+  }
+
+  async function submitReassign() {
+    if (!reassignTodo || !reassignTarget) return
+    await runTodoAction(
+      reassignTodo,
+      'reassign',
+      () => updateTodoTask(reassignTodo.id, { owner_user_id: reassignTarget }),
+      'dashboard.todoReassigned',
+    )
+    setReassignTodo(null)
   }
 
   return (
@@ -165,8 +273,8 @@ export function DashboardTodosPage({
               key: 'due',
               title: t('dashboard.dueColumn'),
               width: 170,
-              render: (value: string | null) => {
-                const state = todoDueState(value)
+              render: (value: string | null, todo) => {
+                const state = todoDueState(value, todo.is_overdue)
                 return (
                   <div className="dashboard-todo-due">
                     <time>{value ? formatDate(value) : t('common.notSet')}</time>
@@ -182,19 +290,60 @@ export function DashboardTodosPage({
               fixed: 'right',
               key: 'action',
               title: t('dashboard.actionColumn'),
-              width: 96,
+              width: 220,
               render: (_value, todo) => {
                 const targetPath = todoTargetPath(todo)
-                return canNavigatePath(targetPath) ? (
-                  <button
-                    className="dashboard-todo-action"
-                    type="button"
-                    onClick={() => onNavigate(targetPath)}
-                  >
-                    <span>{t('dashboard.goHandle')}</span>
-                    <ArrowRight aria-hidden="true" size={15} />
-                  </button>
-                ) : null
+                return (
+                  <div className="dashboard-todo-actions">
+                    {canNavigatePath(targetPath) ? (
+                      <button
+                        className="dashboard-todo-action"
+                        type="button"
+                        onClick={() => onNavigate(targetPath)}
+                      >
+                        <span>{t('dashboard.goHandle')}</span>
+                        <ArrowRight aria-hidden="true" size={15} />
+                      </button>
+                    ) : null}
+                    {todo.source_type === 'manual' ? (
+                      <>
+                        {canComplete(todo) ? (
+                          <button
+                            className="dashboard-todo-action"
+                            disabled={busyAction === `complete-${todo.id}`}
+                            type="button"
+                            onClick={() => confirmComplete(todo)}
+                          >
+                            {t('dashboard.completeTodo')}
+                          </button>
+                        ) : null}
+                        {canManage(todo) ? (
+                          <button
+                            className="dashboard-todo-action"
+                            type="button"
+                            onClick={() => void openReassign(todo)}
+                          >
+                            {t('dashboard.reassignTodo')}
+                          </button>
+                        ) : null}
+                        {canManage(todo) ? (
+                          <button
+                            className="dashboard-todo-action"
+                            disabled={busyAction === `cancel-${todo.id}`}
+                            type="button"
+                            onClick={() => confirmCancel(todo)}
+                          >
+                            {t('dashboard.cancelTodo')}
+                          </button>
+                        ) : null}
+                      </>
+                    ) : (
+                      <span className="dashboard-todo-auto-close">
+                        {t('dashboard.todoAutoClose')}
+                      </span>
+                    )}
+                  </div>
+                )
               },
             },
           ]}
@@ -216,10 +365,52 @@ export function DashboardTodosPage({
           }}
           pagination={{ hideOnSinglePage: true, pageSize: 10, showSizeChanger: false }}
           rowKey="id"
-          scroll={{ x: 826 }}
+          scroll={{ x: 1050 }}
           size="middle"
         />
+        {feedback ? <div className="dashboard-feedback success">{feedback}</div> : null}
       </section>
+
+      <Modal
+        centered
+        footer={null}
+        open={Boolean(reassignTodo)}
+        title={t('dashboard.reassignTodo')}
+        width={480}
+        onCancel={() => setReassignTodo(null)}
+      >
+        <div className="dashboard-form modal-dashboard-form">
+          <label>
+            <span>{t('dashboard.reassignTarget')}</span>
+            <Select
+              showSearch
+              aria-label={t('dashboard.reassignTarget')}
+              optionFilterProp="label"
+              options={assignableUsers
+                .filter((user) => user.id !== reassignTodo?.owner_user_id)
+                .map((user) => ({
+                  label: `${user.display_name} · ${user.department_name}`,
+                  value: user.id,
+                }))}
+              value={reassignTarget || undefined}
+              onChange={setReassignTarget}
+            />
+          </label>
+          <div className="modal-actions">
+            <button className="secondary-inline" type="button" onClick={() => setReassignTodo(null)}>
+              {t('common.cancel')}
+            </button>
+            <button
+              className="inline-submit"
+              disabled={!reassignTarget || busyAction === `reassign-${reassignTodo?.id}`}
+              type="button"
+              onClick={() => void submitReassign()}
+            >
+              {t('dashboard.reassignTodo')}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </section>
   )
 }

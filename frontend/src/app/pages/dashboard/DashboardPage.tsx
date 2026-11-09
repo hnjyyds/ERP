@@ -123,8 +123,10 @@ export function DashboardPage({
   const summary = dashboard?.summary
   const allTodos = dashboard?.todos ?? []
   const previewTodos = sortTodosByUrgency(allTodos).slice(0, 3)
-  const overdueTodoCount = allTodos.filter((todo) => todoDueState(todo.due_at) === 'overdue').length
-  const dueTodayTodoCount = allTodos.filter((todo) => todoDueState(todo.due_at) === 'today').length
+  const overdueTodoCount = allTodos.filter((todo) => todo.is_overdue).length
+  const dueTodayTodoCount = allTodos.filter(
+    (todo) => todoDueState(todo.due_at, todo.is_overdue) === 'today',
+  ).length
   const previewNotifications = dashboard?.notifications.slice(0, 1) ?? []
   const previewSchedules = dashboard?.schedule_events.slice(0, 3) ?? []
   const previewAnnouncements = dashboard?.announcements.slice(0, 1) ?? []
@@ -281,6 +283,7 @@ export function DashboardPage({
       title: todoForm.title.trim(),
       content: todoForm.content.trim(),
       assignee_user_ids: todoForm.assignee_user_ids,
+      due_at: todoForm.due_at ? dateTimeLocalToIso(todoForm.due_at) : null,
     }
     if (!payload.title || !payload.content) {
       setActionError(t('dashboard.todoRequired'))
@@ -469,6 +472,15 @@ export function DashboardPage({
               value={todoForm.content}
               onChange={(event) => setTodoForm({ ...todoForm, content: event.target.value })}
             />
+            <label>
+              <span>{t('dashboard.dueAtOptional')}</span>
+              <input
+                aria-label={t('dashboard.dueAt')}
+                type="datetime-local"
+                value={todoForm.due_at}
+                onChange={(event) => setTodoForm({ ...todoForm, due_at: event.target.value })}
+              />
+            </label>
             <div className="todo-composer-footer">
               <div className="todo-composer-assignees" aria-label={t('dashboard.assignees')}>
                 {selectedTodoAssignees.length ? (

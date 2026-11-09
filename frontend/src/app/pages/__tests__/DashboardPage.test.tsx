@@ -69,6 +69,7 @@ describe('DashboardPage', () => {
         loading={false}
         canNavigatePath={() => true}
         onNavigate={vi.fn()}
+        onRefresh={() => Promise.resolve()}
       />,
     )
     expect(screen.getAllByText('dashboard.globalTodos')).toHaveLength(2)
@@ -86,6 +87,7 @@ describe('DashboardPage', () => {
         loading={false}
         canNavigatePath={() => true}
         onNavigate={vi.fn()}
+        onRefresh={() => Promise.resolve()}
       />,
     )
     expect(screen.getAllByText('dashboard.myTodos')).toHaveLength(2)
@@ -107,6 +109,7 @@ describe('DashboardPage', () => {
           source_id: 'followup-plan-1',
           due_at: '2026-08-07T09:00:00',
           status: 'pending',
+          is_overdue: false,
           assignment_type: 'assigned' as const,
         },
         {
@@ -121,6 +124,7 @@ describe('DashboardPage', () => {
           source_id: 'quality-task-1',
           due_at: '2026-08-08T09:00:00',
           status: 'pending',
+          is_overdue: false,
           assignment_type: 'assigned' as const,
         },
       ],
@@ -133,6 +137,7 @@ describe('DashboardPage', () => {
         loading={false}
         canNavigatePath={() => true}
         onNavigate={vi.fn()}
+        onRefresh={() => Promise.resolve()}
       />,
     )
 
@@ -157,6 +162,7 @@ describe('DashboardPage', () => {
           source_id: 'followup-plan-1',
           due_at: '2026-08-07T09:00:00',
           status: 'pending',
+          is_overdue: false,
           assignment_type: 'assigned' as const,
         },
         {
@@ -171,6 +177,7 @@ describe('DashboardPage', () => {
           source_id: null,
           due_at: null,
           status: 'pending',
+          is_overdue: false,
           assignment_type: 'self' as const,
         },
       ],
@@ -183,6 +190,7 @@ describe('DashboardPage', () => {
         loading={false}
         canNavigatePath={() => true}
         onNavigate={vi.fn()}
+        onRefresh={() => Promise.resolve()}
       />,
     )
 
@@ -209,6 +217,7 @@ describe('DashboardPage', () => {
           source_id: 'followup-plan-1',
           due_at: '2020-01-01T09:00:00',
           status: 'pending',
+          is_overdue: true,
           assignment_type: 'assigned' as const,
         },
       ],
@@ -221,6 +230,7 @@ describe('DashboardPage', () => {
         loading={false}
         canNavigatePath={() => true}
         onNavigate={vi.fn()}
+        onRefresh={() => Promise.resolve()}
       />,
     )
 
@@ -234,22 +244,22 @@ describe('DashboardPage', () => {
         {
           id: 'future-task-1', owner_user_id: 'user-1', owner_user_name: 'Admin', creator_user_id: null,
           creator_user_name: null, title: '未来任务一', content: '未来业务', source_type: 'manual', source_id: null,
-          due_at: '2099-01-01T09:00:00', status: 'pending', assignment_type: 'assigned' as const,
+          due_at: '2099-01-01T09:00:00', status: 'pending', is_overdue: false, assignment_type: 'assigned' as const,
         },
         {
           id: 'future-task-2', owner_user_id: 'user-1', owner_user_name: 'Admin', creator_user_id: null,
           creator_user_name: null, title: '未来任务二', content: '未来业务', source_type: 'manual', source_id: null,
-          due_at: '2099-01-02T09:00:00', status: 'pending', assignment_type: 'assigned' as const,
+          due_at: '2099-01-02T09:00:00', status: 'pending', is_overdue: false, assignment_type: 'assigned' as const,
         },
         {
           id: 'overdue-task', owner_user_id: 'owner-2', owner_user_name: '采购员张敏', creator_user_id: null,
           creator_user_name: null, title: '逾期采购确认', content: '供应商交期待确认', source_type: 'followup_plan', source_id: 'plan-1',
-          due_at: '2020-01-01T09:00:00', status: 'pending', assignment_type: 'assigned' as const,
+          due_at: '2020-01-01T09:00:00', status: 'pending', is_overdue: true, assignment_type: 'assigned' as const,
         },
         {
           id: 'future-task-3', owner_user_id: 'user-1', owner_user_name: 'Admin', creator_user_id: null,
           creator_user_name: null, title: '未来任务三', content: '未来业务', source_type: 'manual', source_id: null,
-          due_at: '2099-01-03T09:00:00', status: 'pending', assignment_type: 'assigned' as const,
+          due_at: '2099-01-03T09:00:00', status: 'pending', is_overdue: false, assignment_type: 'assigned' as const,
         },
       ],
     }
@@ -354,6 +364,7 @@ describe('DashboardPage', () => {
           source_id: 'qc-task-1',
           due_at: '2026-08-20T09:30:00',
           status: 'pending',
+          is_overdue: false,
           assignment_type: 'assigned' as const,
         },
       ],
@@ -390,6 +401,7 @@ describe('DashboardPage', () => {
           source_id: 'followup-plan-1',
           due_at: '2026-08-07T09:00:00',
           status: 'pending',
+          is_overdue: false,
           assignment_type: 'assigned' as const,
         },
       ],
@@ -427,6 +439,7 @@ describe('DashboardPage', () => {
           source_id: 'inbound-order-1',
           due_at: '2026-08-20T09:30:00',
           status: 'pending',
+          is_overdue: false,
           assignment_type: 'assigned' as const,
         },
       ],
@@ -463,6 +476,7 @@ describe('DashboardPage', () => {
           source_id: 'supplier-invoice-1',
           due_at: null,
           status: 'pending',
+          is_overdue: false,
           assignment_type: 'assigned' as const,
         },
       ],
