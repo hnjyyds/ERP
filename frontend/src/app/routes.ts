@@ -12,14 +12,12 @@ export type NavGroupId =
 export type RouteDefinition = {
   /** 路径唯一来源：其他模块只允许从这里引用，不再手写字符串。 */
   path: string
-  /** 页面标题文案键；缺省时回退到后端菜单标题。 */
+  /** 页面标题文案（前端职责）；侧栏菜单标题以后端菜单为准。 */
   titleKey?: TranslationKey
   /** 侧边栏分组；未设置表示不进入侧边栏。 */
   navGroup?: NavGroupId
   /** 是否为分组内的子项（如财务各模块）。 */
   navChild?: boolean
-  /** 侧边栏子项文案键（后端菜单缺失时兜底）。 */
-  navLabelKey?: TranslationKey
   /** 是否支持 /{id} 详情路径。 */
   detailRoot?: boolean
   /** 访问该路径所需的菜单路径；缺省为该条目自身路径。 */
@@ -122,7 +120,6 @@ const routeDefinitions = {
     titleKey: 'nav.page.financeOverview',
     navGroup: 'finance',
     navChild: true,
-    navLabelKey: 'nav.item.financeOverview',
     menuPath: '/finance',
   },
   financeReceipts: {
@@ -130,7 +127,6 @@ const routeDefinitions = {
     titleKey: 'nav.page.financeReceipts',
     navGroup: 'finance',
     navChild: true,
-    navLabelKey: 'nav.item.financeReceipts',
     menuPath: '/finance',
   },
   financePayments: {
@@ -138,7 +134,6 @@ const routeDefinitions = {
     titleKey: 'nav.page.financePayments',
     navGroup: 'finance',
     navChild: true,
-    navLabelKey: 'nav.item.financePayments',
     menuPath: '/finance',
   },
   financeFees: {
@@ -146,7 +141,6 @@ const routeDefinitions = {
     titleKey: 'nav.page.financeFees',
     navGroup: 'finance',
     navChild: true,
-    navLabelKey: 'nav.item.financeFees',
     menuPath: '/finance',
   },
   financeTax: {
@@ -154,7 +148,6 @@ const routeDefinitions = {
     titleKey: 'nav.page.financeTax',
     navGroup: 'finance',
     navChild: true,
-    navLabelKey: 'nav.item.financeTax',
     menuPath: '/finance',
   },
   financeMisc: {
@@ -162,7 +155,6 @@ const routeDefinitions = {
     titleKey: 'nav.page.financeMisc',
     navGroup: 'finance',
     navChild: true,
-    navLabelKey: 'nav.item.financeMisc',
     menuPath: '/finance',
   },
   financeSettlement: {
@@ -170,7 +162,6 @@ const routeDefinitions = {
     titleKey: 'nav.page.financeSettlement',
     navGroup: 'finance',
     navChild: true,
-    navLabelKey: 'nav.item.financeSettlement',
     menuPath: '/finance',
   },
   financeReimbursements: {
@@ -178,7 +169,6 @@ const routeDefinitions = {
     titleKey: 'nav.page.financeReimbursements',
     navGroup: 'finance',
     navChild: true,
-    navLabelKey: 'nav.item.financeReimbursements',
     menuPath: '/finance',
   },
   financePortData: {
@@ -186,7 +176,6 @@ const routeDefinitions = {
     titleKey: 'nav.page.financePortData',
     navGroup: 'finance',
     navChild: true,
-    navLabelKey: 'nav.item.financePortData',
     menuPath: '/finance',
   },
   financeReports: {
@@ -194,7 +183,6 @@ const routeDefinitions = {
     titleKey: 'nav.page.financeReports',
     navGroup: 'finance',
     navChild: true,
-    navLabelKey: 'nav.item.financeReports',
     menuPath: '/finance',
   },
   reporting: {
@@ -288,13 +276,11 @@ export function navPathsForGroup(group: NavGroupId): string[] {
     .map((route) => route.path)
 }
 
-/** 侧边栏某分组下的子项（如财务各模块）。 */
-export function navChildrenForGroup(
-  group: NavGroupId,
-): Array<{ path: string; labelKey?: TranslationKey }> {
+/** 侧边栏某分组下的子项（如财务各模块）；顺序由后端菜单 sort_order 决定。 */
+export function navChildrenForGroup(group: NavGroupId): string[] {
   return routeRegistry
     .filter((route) => route.navGroup === group && route.navChild)
-    .map((route) => ({ path: route.path, labelKey: route.navLabelKey }))
+    .map((route) => route.path)
 }
 
 const detailRootPaths = routeRegistry

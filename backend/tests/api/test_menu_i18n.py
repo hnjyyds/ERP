@@ -17,13 +17,13 @@ _DEMO_MENUS_EN = [
     "Order Center",
     "Purchase Contracts",
     "QC Center",
-    "Follow-up Center",
     "My QC Tasks",
+    "Follow-up Center",
     "Inbound Receipts",
     "Executive Dashboard",
     "Export Quotations",
-    "Sampling",
     "Sample Records",
+    "Sampling",
     "Sample Deliveries",
     "Partners",
     "Document Parties",
@@ -79,6 +79,16 @@ async def test_menus_endpoint_returns_english_labels(
     assert [item["label"] for item in response.json()["data"]["menus"]] == [
         "Dashboard",
         "Finance Summary",
+        "Business Overview",
+        "Receipts",
+        "Payments",
+        "Fee Payments",
+        "Tax Verification & Refund",
+        "Misc. Fees",
+        "Settlement & Costing",
+        "Reimbursements",
+        "Port Data",
+        "Financial Reports",
     ]
 
 
@@ -123,4 +133,14 @@ async def test_default_language_keeps_chinese_menu_labels(
     assert [item["label"] for item in response.json()["data"]["menus"]] == [
         "工作台",
         "财务摘要",
+        "经营总览",
+        "收款管理",
+        "付款管理",
+        "付费管理",
+        "核销退税",
+        "杂费管理",
+        "结算核算",
+        "报销管理",
+        "口岸数据",
+        "财务报表",
     ]

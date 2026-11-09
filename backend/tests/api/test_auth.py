@@ -116,13 +116,13 @@ async def test_login_returns_token_user_and_permission_menus(
         "订单中心",
         "采购合同",
         "QC 中心",
-        "跟单中心",
         "我的 QC 任务",
+        "跟单中心",
         "入仓",
         "老板看板",
         "出口报价",
-        "打样管理",
         "样品登记",
+        "打样管理",
         "寄样管理",
         "合作伙伴",
         "单证资料",
@@ -179,6 +179,16 @@ async def test_current_user_and_menus_require_bearer_token(
     assert [item["label"] for item in menus_response.json()["data"]["menus"]] == [
         "工作台",
         "财务摘要",
+        "经营总览",
+        "收款管理",
+        "付款管理",
+        "付费管理",
+        "核销退税",
+        "杂费管理",
+        "结算核算",
+        "报销管理",
+        "口岸数据",
+        "财务报表",
     ]
 
     unauthorized_response = await api_client.get("/api/v1/system/menus")

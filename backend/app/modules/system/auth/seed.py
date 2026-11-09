@@ -61,6 +61,7 @@ async def seed_system_demo_data(session: AsyncSession) -> None:
         if existing_menu is None:
             continue
         existing_menu.label = menu.label
+        existing_menu.label_en = menu.label_en
         existing_menu.path = menu.path
         existing_menu.icon = menu.icon
         existing_menu.required_permission = menu.required_permission

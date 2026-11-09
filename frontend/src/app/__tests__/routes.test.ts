@@ -113,9 +113,7 @@ describe('route registry', () => {
       '/masterdata/partners',
       '/masterdata/document-parties',
     ])
-    expect(navChildrenForGroup('finance').map((child) => child.path)).toContain(
-      financeReportsPath,
-    )
+    expect(navChildrenForGroup('finance')).toContain(financeReportsPath)
   })
 })
 
@@ -165,5 +163,38 @@ describe('navigation contract', () => {
       (path, index) => seededMenuPaths.indexOf(path) !== index,
     )
     expect(duplicated, `后端菜单路径重复：${duplicated.join('、')}`).toEqual([])
+  })
+
+  it('keeps child menu metadata on the backend', () => {
+    const missing = routeRegistry
+      .filter((route) => route.navChild)
+      .map((route) => route.path)
+      .filter((path) => !seededMenuPaths.includes(path))
+    expect(
+      missing,
+      `侧栏子菜单只在前端注册、后端菜单缺失：${missing.join('、')}`,
+    ).toEqual([])
+  })
+
+  it('seeds all 35 business menus, including 10 finance modules', () => {
+    const financePaths = seededMenuPaths.filter((path) => path.startsWith('/finance/'))
+    // 35 个业务菜单 + 工作台根路径。
+    expect(seededMenuPaths.filter((path) => path !== dashboardPath)).toHaveLength(35)
+    expect(financePaths).toHaveLength(10)
+    expect(financePaths).toContain(financeReportsPath)
+  })
+
+  it('keeps menu titles, english labels, icons and permissions on the backend', () => {
+    const entries = [...menuSection.matchAll(/MenuItem\(\s*([\s\S]*?)\n {8}\)/g)].map(
+      (match) => match[1],
+    )
+    expect(entries).toHaveLength(36)
+    for (const entry of entries) {
+      expect(entry).toMatch(/\blabel="[^"]+"/)
+      expect(entry).toMatch(/\blabel_en="[^"]+"/)
+      expect(entry).toMatch(/\bicon="[^"]+"/)
+      expect(entry).toMatch(/\brequired_permission="[^"]+"/)
+      expect(entry).toMatch(/\bsort_order=\d+/)
+    }
   })
 })

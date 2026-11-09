@@ -61,18 +61,53 @@ describe('getSidebarMenuGroups', () => {
   })
 
   it('keeps finance children intact', () => {
+    const financeChildPaths = [
+      '/finance/overview',
+      '/finance/receipts',
+      '/finance/payments',
+      '/finance/fees',
+      '/finance/tax',
+      '/finance/misc',
+      '/finance/settlement',
+      '/finance/reimbursements',
+      '/finance/port-data',
+      '/finance/reports',
+    ]
     const groups = getSidebarMenuGroups([
       menu('/finance'),
-      menu('/finance/receipts'),
-      menu('/finance/payments'),
+      ...financeChildPaths.map((path) => menu(path)),
     ])
 
     const finance = groups.find((group) => group.id === 'finance')
 
     const childPaths = finance?.items[0].children?.map((child) => child.path)
 
-    expect(childPaths).toContain('/finance/receipts')
-    expect(childPaths).toContain('/finance/payments')
-    expect(childPaths).toHaveLength(10)
+    expect(childPaths).toEqual(financeChildPaths)
+    expect(groups.some((group) => group.id === 'other')).toBe(false)
+  })
+
+  it('renders finance children in backend menu order', () => {
+    const groups = getSidebarMenuGroups([
+      menu('/finance/payments'),
+      menu('/finance'),
+      menu('/finance/receipts'),
+    ])
+
+    const finance = groups.find((group) => group.id === 'finance')
+
+    expect(finance?.items[0].children?.map((child) => child.path)).toEqual([
+      '/finance/payments',
+      '/finance/receipts',
+    ])
+  })
+
+  it('omits child routes that the backend did not grant', () => {
+    const groups = getSidebarMenuGroups([menu('/finance'), menu('/finance/receipts')])
+
+    const finance = groups.find((group) => group.id === 'finance')
+
+    expect(finance?.items[0].children?.map((child) => child.path)).toEqual([
+      '/finance/receipts',
+    ])
   })
 })

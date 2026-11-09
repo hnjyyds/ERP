@@ -34,17 +34,13 @@ const sidebarNavGroupDefinitions: Array<{
   { id: 'legacyPurchase', labelKey: 'nav.group.legacyPurchase', icon: ClipboardCheck },
 ]
 
-const sidebarNavGroups = sidebarNavGroupDefinitions.map((group) => {
-  const children = navChildrenForGroup(group.id).map((child) => ({
-    path: child.path,
-    labelKey: child.labelKey ?? ('nav.page.businessModule' as TranslationKey),
-  }))
-  return {
-    ...group,
-    paths: navPathsForGroup(group.id),
-    ...(children.length > 0 ? { children } : {}),
-  }
-})
+const sidebarNavGroups = sidebarNavGroupDefinitions.map((group) => ({
+  ...group,
+  /** 分组内一级菜单路径（仅用于归属判断）。 */
+  paths: navPathsForGroup(group.id),
+  /** 分组内二级菜单路径（仅用于归属判断）。 */
+  childPaths: navChildrenForGroup(group.id),
+}))
 
 export type SidebarChild = { path: string; label: string; active: boolean }
 export type SidebarItem = MenuItem & { children?: SidebarChild[] }
@@ -57,27 +53,24 @@ export type SidebarGroup = {
 
 export function getSidebarMenuGroups(menus: MenuItem[]): SidebarGroup[] {
   const language = getRuntimeSettings().language
-  const menuByPath = new Map(menus.map((item) => [item.path, item]))
   const groupedPaths = new Set<string>()
   const groups = sidebarNavGroups
     .map((group) => {
-      const items: SidebarItem[] = group.paths
-        .map((path) => menuByPath.get(path))
-        .filter((item): item is MenuItem => Boolean(item))
-        .map((menu) => {
-          if (group.children && menu.path === group.paths[0]) {
-            return {
-              ...menu,
-              children: group.children.map((child) => ({
-                path: child.path,
-                label: menuByPath.get(child.path)?.label ?? translate(language, child.labelKey),
-                active: false,
-              })),
-            }
-          }
-          return menu
-        })
+      const pathSet = new Set(group.paths)
+      const childPathSet = new Set(group.childPaths)
+      // 标题、顺序、权限均来自后端菜单，前端只决定它们落在哪个分组。
+      const children: SidebarChild[] = menus
+        .filter((menu) => childPathSet.has(menu.path))
+        .map((menu) => ({ path: menu.path, label: menu.label, active: false }))
+      const items: SidebarItem[] = menus
+        .filter((menu) => pathSet.has(menu.path))
+        .map((menu) =>
+          children.length > 0 && menu.path === group.paths[0]
+            ? { ...menu, children }
+            : menu,
+        )
       items.forEach((item) => groupedPaths.add(item.path))
+      children.forEach((child) => groupedPaths.add(child.path))
       return { ...group, label: translate(language, group.labelKey), items }
     })
     .filter((group) => group.items.length > 0)
