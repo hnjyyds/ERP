@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 
@@ -315,14 +315,18 @@ describe('ExportContractsPage', () => {
     await user.click(screen.getByRole('checkbox', { name: /不锈钢保温杯/ }))
     await user.click(screen.getByRole('button', { name: '添加 2 项' }))
 
-    expect(await screen.findByText('环保购物袋')).toBeTruthy()
-    expect(screen.getByText('不锈钢保温杯')).toBeTruthy()
-    await user.type(
-      screen.getByRole('textbox', { name: '环保购物袋条形码' }),
-      '000123456789012345678901234567890123456789',
-    )
-    await user.clear(screen.getByRole('spinbutton', { name: '环保购物袋数量' }))
-    await user.type(screen.getByRole('spinbutton', { name: '环保购物袋数量' }), '12')
+    // 两行各自拥有独立条形码输入框，直接等待输入框出现即可确认两行已渲染；
+    // 不去断言商品名文本，避免与正在关闭的商品抽屉里的同名条目冲突。
+    const bagBarcode = await screen.findByRole('textbox', { name: '环保购物袋条形码' })
+    expect(screen.getByRole('textbox', { name: '不锈钢保温杯条形码' })).toBeTruthy()
+    // 42 位条形码逐字符输入会产生 42 次受控重渲染，在并行跑全量时会把用例拖过 5s 超时；
+    // 这里用一次 change 事件写入同样的最终值，断言的仍是完整 payload。
+    fireEvent.change(bagBarcode, {
+      target: { value: '000123456789012345678901234567890123456789' },
+    })
+    fireEvent.change(screen.getByRole('spinbutton', { name: '环保购物袋数量' }), {
+      target: { value: '12' },
+    })
     await user.click(screen.getByRole('button', { name: '新增出口合同' }))
 
     await waitFor(() => {
