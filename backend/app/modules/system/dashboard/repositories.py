@@ -198,6 +198,45 @@ class DashboardRepository:
         await self.session.flush()
         return row
 
+    async def get_schedule_event(
+        self,
+        *,
+        user_id: str,
+        schedule_id: str,
+    ) -> ScheduleEventRow | None:
+        event = await self.session.scalar(
+            select(ScheduleEvent).where(
+                ScheduleEvent.id == schedule_id,
+                ScheduleEvent.owner_user_id == user_id,
+            )
+        )
+        return self._map_schedule_event(event) if event else None
+
+    async def update_schedule_event(
+        self,
+        *,
+        user_id: str,
+        schedule_id: str,
+        title: str,
+        description: str | None,
+        starts_at: datetime,
+        ends_at: datetime,
+    ) -> ScheduleEventRow | None:
+        event = await self.session.scalar(
+            select(ScheduleEvent).where(
+                ScheduleEvent.id == schedule_id,
+                ScheduleEvent.owner_user_id == user_id,
+            )
+        )
+        if event is None:
+            return None
+        event.title = title
+        event.description = description
+        event.starts_at = starts_at
+        event.ends_at = ends_at
+        await self.session.flush()
+        return self._map_schedule_event(event)
+
     async def create_announcement(
         self,
         *,

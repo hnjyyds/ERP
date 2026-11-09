@@ -141,6 +141,18 @@ export function createScheduleEvent(payload: ScheduleCreatePayload): Promise<Sch
   })
 }
 
+export type ScheduleUpdatePayload = Partial<ScheduleCreatePayload>
+
+export function updateScheduleEvent(
+  scheduleId: string,
+  payload: ScheduleUpdatePayload,
+): Promise<ScheduleEvent> {
+  return request<ScheduleEvent>(`/schedules/${scheduleId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
+}
+
 export function deleteScheduleEvent(scheduleId: string): Promise<ScheduleEvent> {
   return request<ScheduleEvent>(`/schedules/${scheduleId}`, {
     method: 'DELETE',

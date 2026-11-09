@@ -1,4 +1,4 @@
-import type { AppTimeZone, CurrentUser, TodoTask } from '@/api'
+import type { AppTimeZone, CurrentUser, ScheduleEvent, TodoTask } from '@/api'
 import {
   dashboardPath,
   exportContractPath,
@@ -70,6 +70,20 @@ export function initialDashboardScheduleForm(): DashboardScheduleFormState {
     description: '',
     starts_at: dateTimeLocalValue(startsAt),
     ends_at: dateTimeLocalValue(endsAt),
+  }
+}
+
+export function dashboardScheduleFormFromEvent(
+  event: ScheduleEvent,
+  settings: AppSettings = getRuntimeSettings(),
+): DashboardScheduleFormState {
+  const startsAt = parseApiDate(event.starts_at) ?? new Date()
+  const endsAt = parseApiDate(event.ends_at) ?? startsAt
+  return {
+    title: event.title,
+    description: event.description ?? '',
+    starts_at: dateTimeLocalValue(startsAt, settings),
+    ends_at: dateTimeLocalValue(endsAt, settings),
   }
 }
 

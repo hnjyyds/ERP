@@ -1,5 +1,5 @@
 import { Modal, Skeleton } from 'antd'
-import { AtSign, Bell, CalendarClock, CheckCircle2, ClipboardCheck, FileText, Trash2 } from 'lucide-react'
+import { AtSign, Bell, CalendarClock, CheckCircle2, ClipboardCheck, FileText } from 'lucide-react'
 import type { FormEvent } from 'react'
 import { useEffect, useState } from 'react'
 import {
@@ -11,6 +11,7 @@ import {
   deleteScheduleEvent,
   listAssignableUsers,
   markNotificationRead,
+  updateScheduleEvent,
   type AssignableUser,
   type AnnouncementCreatePayload,
   type CurrentUser,
@@ -31,8 +32,9 @@ import {
 import { Metric, UserAvatar, defaultAvatarPreset } from '@/shared/ui'
 import { showError } from '@/shared/errors'
 import { t } from '@/app/appI18n'
-import { canCreateAnnouncement, formatDateTime } from '@/app/pages/appHelpers'
+import { canCreateAnnouncement } from '@/app/pages/appHelpers'
 import {
+  dashboardScheduleFormFromEvent,
   dateTimeLocalToIso,
   initialDashboardAnnouncementForm,
   initialDashboardScheduleForm,
@@ -51,6 +53,7 @@ import {
   DashboardTodoPreviewPanel,
 } from './views/DashboardOverviewPanels'
 import { DashboardShortcutsPanel } from './views/DashboardShortcutsPanel'
+import { DashboardScheduleDetailModal } from './views/DashboardScheduleDetailModal'
 
 export function DashboardPage({
   currentUser,
@@ -82,6 +85,7 @@ export function DashboardPage({
   const [assignableUsers, setAssignableUsers] = useState<AssignableUser[]>([])
   const [assigneePickerOpen, setAssigneePickerOpen] = useState(false)
   const [createModal, setCreateModal] = useState<'todo' | 'schedule' | 'announcement' | null>(null)
+  const [editingScheduleId, setEditingScheduleId] = useState<string | null>(null)
   const [selectedSchedule, setSelectedSchedule] = useState<ScheduleEvent | null>(null)
   const [busyAction, setBusyAction] = useState<string | null>(null)
   const [actionMessage, setActionMessage] = useState('')
@@ -152,7 +156,15 @@ export function DashboardPage({
   }
 
   function openScheduleModal() {
+    setEditingScheduleId(null)
     setScheduleForm(initialDashboardScheduleForm())
+    setCreateModal('schedule')
+  }
+
+  function openScheduleEdit(schedule: ScheduleEvent) {
+    setEditingScheduleId(schedule.id)
+    setScheduleForm(dashboardScheduleFormFromEvent(schedule))
+    setSelectedSchedule(null)
     setCreateModal('schedule')
   }
 
@@ -217,18 +229,23 @@ export function DashboardPage({
     }
     const payload: ScheduleCreatePayload = {
       title: scheduleForm.title.trim(),
-      description: scheduleForm.description.trim() || undefined,
+      description: scheduleForm.description.trim(),
       starts_at: dateTimeLocalToIso(scheduleForm.starts_at),
       ends_at: dateTimeLocalToIso(scheduleForm.ends_at),
     }
     await runDashboardAction(
-      'schedule',
+      editingScheduleId ? 'schedule-edit' : 'schedule',
       async () => {
-        await createScheduleEvent(payload)
+        if (editingScheduleId) {
+          await updateScheduleEvent(editingScheduleId, payload)
+        } else {
+          await createScheduleEvent(payload)
+        }
         setScheduleForm(initialDashboardScheduleForm())
+        setEditingScheduleId(null)
         setCreateModal(null)
       },
-      t('dashboard.scheduleCreated'),
+      t(editingScheduleId ? 'dashboard.scheduleUpdated' : 'dashboard.scheduleCreated'),
     )
   }
 
@@ -413,64 +430,16 @@ export function DashboardPage({
         />
       </div>
 
-      <Modal
-        centered
-        footer={null}
-        open={Boolean(selectedSchedule)}
-        title={t('dashboard.scheduleDetail')}
-        width={560}
-        onCancel={() => setSelectedSchedule(null)}
-      >
-        {selectedSchedule ? (
-          <section className="dashboard-detail">
-            <header className="dashboard-detail-heading">
-              <strong>{selectedSchedule.title}</strong>
-              <span>
-                {t('dashboard.timeRange', {
-                  start: formatDateTime(selectedSchedule.starts_at),
-                  end: formatDateTime(selectedSchedule.ends_at),
-                })}
-              </span>
-            </header>
-            <dl className="dashboard-detail-list">
-              <div>
-                <dt>{t('dashboard.start')}</dt>
-                <dd>{formatDateTime(selectedSchedule.starts_at)}</dd>
-              </div>
-              <div>
-                <dt>{t('dashboard.end')}</dt>
-                <dd>{formatDateTime(selectedSchedule.ends_at)}</dd>
-              </div>
-              <div>
-                <dt>{t('dashboard.createdAt')}</dt>
-                <dd>{formatDateTime(selectedSchedule.created_at)}</dd>
-              </div>
-            </dl>
-            <div className="dashboard-detail-note">
-              <span>{t('dashboard.note')}</span>
-              <p>{selectedSchedule.description?.trim() || t('dashboard.noNote')}</p>
-            </div>
-            <div className="modal-actions split">
-              <button
-                className="danger-inline"
-                disabled={busyAction === `schedule-delete-${selectedSchedule.id}`}
-                type="button"
-                onClick={() => confirmRemoveSchedule(selectedSchedule)}
-              >
-                <Trash2 size={15} />
-                {t('dashboard.deleteSchedule')}
-              </button>
-              <button
-                className="secondary-inline"
-                type="button"
-                onClick={() => setSelectedSchedule(null)}
-              >
-                {t('common.close')}
-              </button>
-            </div>
-          </section>
-        ) : null}
-      </Modal>
+      <DashboardScheduleDetailModal
+        deleting={
+          Boolean(selectedSchedule) &&
+          busyAction === `schedule-delete-${selectedSchedule?.id}`
+        }
+        schedule={selectedSchedule}
+        onClose={() => setSelectedSchedule(null)}
+        onDelete={confirmRemoveSchedule}
+        onEdit={openScheduleEdit}
+      />
 
       <Modal
         centered
@@ -583,9 +552,12 @@ export function DashboardPage({
         centered
         footer={null}
         open={createModal === 'schedule'}
-        title={t('dashboard.addSchedule')}
+        title={editingScheduleId ? t('dashboard.editSchedule') : t('dashboard.addSchedule')}
         width={620}
-        onCancel={() => setCreateModal(null)}
+        onCancel={() => {
+          setCreateModal(null)
+          setEditingScheduleId(null)
+        }}
       >
         <form className="dashboard-form modal-dashboard-form" onSubmit={submitSchedule}>
           <label>
@@ -632,11 +604,22 @@ export function DashboardPage({
             />
           </label>
           <div className="modal-actions">
-            <button className="secondary-inline" type="button" onClick={() => setCreateModal(null)}>
+            <button
+              className="secondary-inline"
+              type="button"
+              onClick={() => {
+                setCreateModal(null)
+                setEditingScheduleId(null)
+              }}
+            >
               {t('common.cancel')}
             </button>
-            <button className="inline-submit" disabled={busyAction === 'schedule'} type="submit">
-              {t('dashboard.addSchedule')}
+            <button
+              className="inline-submit"
+              disabled={busyAction === 'schedule' || busyAction === 'schedule-edit'}
+              type="submit"
+            >
+              {editingScheduleId ? t('dashboard.saveSchedule') : t('dashboard.addSchedule')}
             </button>
           </div>
         </form>

@@ -689,6 +689,93 @@ async def test_schedule_delete_is_limited_to_owner_and_refreshes_dashboard(
     assert dashboard["summary"]["today_schedule_count"] == 1
 
 
+async def test_schedule_update_changes_fields_and_allows_clearing_note(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    create_response = await api_client.post(
+        "/api/v1/schedules",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "title": "待编辑日程",
+            "description": "原备注",
+            "starts_at": "2026-06-16T09:00:00+08:00",
+            "ends_at": "2026-06-16T10:00:00+08:00",
+        },
+    )
+    schedule = create_response.json()["data"]
+
+    update_response = await api_client.patch(
+        f"/api/v1/schedules/{schedule['id']}",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "title": "已编辑日程",
+            "description": None,
+            "starts_at": "2026-06-16T11:00:00+08:00",
+            "ends_at": "2026-06-16T12:30:00+08:00",
+        },
+    )
+
+    assert update_response.status_code == 200
+    updated = update_response.json()["data"]
+    assert updated["title"] == "已编辑日程"
+    assert updated["description"] is None
+    assert updated["owner_user_id"] == "u-001"
+    assert updated["starts_at"] != schedule["starts_at"]
+
+
+async def test_schedule_update_rejects_end_before_start(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    create_response = await api_client.post(
+        "/api/v1/schedules",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "title": "时间校验日程",
+            "starts_at": "2026-06-17T09:00:00+08:00",
+            "ends_at": "2026-06-17T10:00:00+08:00",
+        },
+    )
+    schedule = create_response.json()["data"]
+
+    update_response = await api_client.patch(
+        f"/api/v1/schedules/{schedule['id']}",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"starts_at": "2026-06-17T11:00:00+08:00"},
+    )
+
+    assert update_response.status_code == 422
+
+
+async def test_schedule_update_is_limited_to_owner(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    admin_token = await _login_token(api_client, username="admin", password="admin123")
+    create_response = await api_client.post(
+        "/api/v1/schedules",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "title": "仅本人可改",
+            "starts_at": "2026-06-18T09:00:00+08:00",
+            "ends_at": "2026-06-18T10:00:00+08:00",
+        },
+    )
+    schedule = create_response.json()["data"]
+
+    update_response = await api_client.patch(
+        f"/api/v1/schedules/{schedule['id']}",
+        headers={"Authorization": f"Bearer {admin_token}"},
+        json={"title": "越权修改"},
+    )
+
+    assert update_response.status_code == 404
+
+
 async def test_announcement_create_is_visible_on_dashboard(
     api_client: AsyncClient,
     seeded_system: None,

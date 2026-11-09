@@ -17,6 +17,7 @@ from app.modules.system.dashboard.schemas import (
     ScheduleCreate,
     ScheduleEventPath,
     ScheduleEventResponse,
+    ScheduleUpdate,
     ShortcutCreate,
     ShortcutPath,
     ShortcutResponse,
@@ -85,6 +86,23 @@ async def delete_schedule_event(
     schedule_event = await service.delete_schedule_event(
         user_id=current_user.id,
         schedule_id=path.schedule_id,
+    )
+    if schedule_event is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="日程不存在")
+    return ApiResponse(data=schedule_event)
+
+
+@router.patch("/schedules/{schedule_id}", response_model=ApiResponse[ScheduleEventResponse])
+async def update_schedule_event(
+    path: Annotated[ScheduleEventPath, Depends(_resolve_schedule_event_path)],
+    payload: ScheduleUpdate,
+    current_user: CurrentUserDep,
+    service: Annotated[DashboardService, Depends(get_dashboard_service)],
+) -> ApiResponse[ScheduleEventResponse]:
+    schedule_event = await service.update_schedule_event(
+        user_id=current_user.id,
+        schedule_id=path.schedule_id,
+        payload=payload,
     )
     if schedule_event is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="日程不存在")

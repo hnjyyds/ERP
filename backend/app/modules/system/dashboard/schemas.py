@@ -161,3 +161,18 @@ class ScheduleCreate(BaseModel):
         if self.ends_at <= self.starts_at:
             raise ValueError("ends_at must be later than starts_at")
         return self
+
+
+class ScheduleUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    title: str | None = Field(default=None, min_length=1, max_length=200)
+    description: str | None = Field(default=None, max_length=2000)
+    starts_at: datetime | None = None
+    ends_at: datetime | None = None
+
+    @model_validator(mode="after")
+    def require_changes(self) -> "ScheduleUpdate":
+        if not self.model_fields_set:
+            raise ValueError("at least one field must be provided")
+        return self

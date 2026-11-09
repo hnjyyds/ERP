@@ -131,9 +131,7 @@ SOURCE_MESSAGES: dict[str, str] = {
     "仅待执行或执行中的 QC 任务可以调整排期": (
         "Only pending or in-progress QC tasks can be rescheduled"
     ),
-    "仅最新一笔未通过的 QC 任务可以创建复检": (
-        "Only the latest failed QC task can be re-inspected"
-    ),
+    "仅最新一笔未通过的 QC 任务可以创建复检": "Only the latest failed QC task can be re-inspected",
     "取消原因不能为空": "Cancellation reason must not be empty",
     "同一采购合同明细不能重复登记 QC 结果": (
         "The same purchase contract line item cannot be recorded twice"
@@ -645,6 +643,7 @@ SOURCE_MESSAGES: dict[str, str] = {
     "仅支持 JPEG / PNG / GIF / WebP 图片": "Only JPEG / PNG / GIF / WebP images are supported",
     "个人待办中存在未指定审批人的单据": "Some personal to-dos have no assigned approver",
     "日程不存在": "Schedule not found",
+    "结束时间必须晚于开始时间": "End time must be later than start time",
     "无权限发布公告": "No permission to publish announcements",
     "提醒不存在": "Reminder not found",
     "快捷入口不存在": "Shortcut not found",

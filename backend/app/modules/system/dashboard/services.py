@@ -27,6 +27,7 @@ from app.modules.system.dashboard.schemas import (
     NotificationResponse,
     ScheduleCreate,
     ScheduleEventResponse,
+    ScheduleUpdate,
     ShortcutCreate,
     ShortcutResponse,
     TodoCreate,
@@ -37,6 +38,20 @@ from app.modules.system.dashboard.schemas import (
 
 class TodoAssigneeNotFoundError(Exception):
     pass
+
+
+class ScheduleTimeRangeError(Exception):
+    pass
+
+
+def _as_utc(value: datetime) -> datetime:
+    """SQLite 读回的时间可能丢失时区，按 UTC 处理后再比较。"""
+    return value if value.tzinfo else value.replace(tzinfo=UTC)
+
+
+def _to_utc_naive(value: datetime) -> datetime:
+    """写入前统一转成 UTC 墙钟时间，避免 SQLite 丢时区后语义漂移。"""
+    return value.astimezone(UTC).replace(tzinfo=None) if value.tzinfo else value
 
 
 class DashboardService:
@@ -122,8 +137,8 @@ class DashboardService:
                 user_id=user_id,
                 title=payload.title,
                 description=payload.description,
-                starts_at=payload.starts_at,
-                ends_at=payload.ends_at,
+                starts_at=_to_utc_naive(payload.starts_at),
+                ends_at=_to_utc_naive(payload.ends_at),
                 created_at=datetime.now(UTC),
             )
         return self._schedule_response(row)
@@ -138,6 +153,35 @@ class DashboardService:
             row = await self._repository.delete_schedule_event(
                 user_id=user_id,
                 schedule_id=schedule_id,
+            )
+        return self._schedule_response(row) if row else None
+
+    async def update_schedule_event(
+        self,
+        *,
+        user_id: str,
+        schedule_id: str,
+        payload: ScheduleUpdate,
+    ) -> ScheduleEventResponse | None:
+        changes = payload.model_dump(exclude_unset=True)
+        async with UnitOfWork(self._repository.session):
+            existing = await self._repository.get_schedule_event(
+                user_id=user_id,
+                schedule_id=schedule_id,
+            )
+            if existing is None:
+                return None
+            starts_at = _to_utc_naive(changes.get("starts_at", existing.starts_at))
+            ends_at = _to_utc_naive(changes.get("ends_at", existing.ends_at))
+            if _as_utc(ends_at) <= _as_utc(starts_at):
+                raise ScheduleTimeRangeError("结束时间必须晚于开始时间")
+            row = await self._repository.update_schedule_event(
+                user_id=user_id,
+                schedule_id=schedule_id,
+                title=changes.get("title", existing.title),
+                description=changes.get("description", existing.description),
+                starts_at=starts_at,
+                ends_at=ends_at,
             )
         return self._schedule_response(row) if row else None
 
