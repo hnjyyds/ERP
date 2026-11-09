@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from datetime import UTC, date, datetime, time
 from decimal import Decimal
 
@@ -7,6 +6,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.elements import ColumnElement
 
 from app.core.pagination import resolve_limit, resolve_offset
+from app.modules.quality.inspections.mappers import (
+    map_quality_attachment,
+    map_quality_inspection,
+    map_quality_inspection_event,
+    map_quality_inspection_line,
+    map_quality_issue,
+)
 from app.modules.quality.inspections.models import (
     QualityInspection,
     QualityInspectionAttachment,
@@ -14,92 +20,13 @@ from app.modules.quality.inspections.models import (
     QualityInspectionLine,
     QualityIssue,
 )
-
-
-@dataclass(frozen=True)
-class QualityInspectionRow:
-    id: str
-    code: str
-    purchase_contract_id: str
-    purchase_contract_no: str
-    supplier_id: str | None
-    supplier_name: str
-    status: str
-    scheduled_at: datetime
-    inspected_at: date
-    result: str
-    inspector_id: str | None
-    inspector_name: str
-    qc_user_id: str | None
-    qc_user_name: str | None
-    issue_summary: str | None
-    attachment_group_id: str | None
-    parent_inspection_id: str | None
-    reinspection_no: int
-    cancel_reason: str | None
-    owner_user_id: str
-    created_at: datetime
-    updated_at: datetime
-
-
-@dataclass(frozen=True)
-class QualityInspectionLineRow:
-    id: str
-    inspection_id: str
-    purchase_contract_line_id: str | None
-    product_id: str | None
-    product_code: str | None
-    product_name: str
-    inspected_quantity: str
-    failed_quantity: str
-    unit: str
-    result: str
-    remark: str | None
-    created_at: datetime
-
-
-@dataclass(frozen=True)
-class QualityIssueRow:
-    id: str
-    inspection_id: str
-    line_id: str | None
-    issue_type: str
-    severity: str
-    description: str
-    corrective_action: str | None
-    status: str
-    attachment_group_id: str | None
-    resolution_note: str | None
-    resolved_at: datetime | None
-    resolved_by_id: str | None
-    resolved_by_name: str | None
-    created_at: datetime
-
-
-@dataclass(frozen=True)
-class QualityAttachmentRow:
-    id: str
-    inspection_id: str
-    issue_id: str | None
-    category: str
-    filename: str
-    url: str
-    uploaded_by_id: str
-    uploaded_by_name: str
-    created_at: datetime
-
-
-@dataclass(frozen=True)
-class QualityInspectionEventRow:
-    id: str
-    inspection_id: str
-    event_type: str
-    from_status: str | None
-    to_status: str | None
-    notes: str | None
-    actor_user_id: str
-    actor_user_name: str
-    created_at: datetime
+from app.modules.quality.inspections.rows import (
+    QualityAttachmentRow,
+    QualityInspectionEventRow,
+    QualityInspectionLineRow,
+    QualityInspectionRow,
+    QualityIssueRow,
+)
 
 
 class QualityInspectionRepository:
@@ -150,7 +77,7 @@ class QualityInspectionRepository:
         )
         self.session.add(inspection)
         await self.session.flush()
-        return self._map_inspection(inspection)
+        return map_quality_inspection(inspection)
 
     async def update_inspection(
         self,
@@ -182,7 +109,7 @@ class QualityInspectionRepository:
         inspection.attachment_group_id = attachment_group_id
         inspection.updated_at = datetime.now(UTC)
         await self.session.flush()
-        return self._map_inspection(inspection)
+        return map_quality_inspection(inspection)
 
     async def reschedule_inspection(
         self,
@@ -196,7 +123,7 @@ class QualityInspectionRepository:
         inspection.scheduled_at = scheduled_at
         inspection.updated_at = datetime.now(UTC)
         await self.session.flush()
-        return self._map_inspection(inspection)
+        return map_quality_inspection(inspection)
 
     async def cancel_inspection(
         self,
@@ -211,7 +138,7 @@ class QualityInspectionRepository:
         inspection.cancel_reason = reason
         inspection.updated_at = datetime.now(UTC)
         await self.session.flush()
-        return self._map_inspection(inspection)
+        return map_quality_inspection(inspection)
 
     async def add_line(
         self,
@@ -241,7 +168,7 @@ class QualityInspectionRepository:
         )
         self.session.add(line)
         await self.session.flush()
-        return self._map_line(line)
+        return map_quality_inspection_line(line)
 
     async def add_issue(
         self,
@@ -267,11 +194,11 @@ class QualityInspectionRepository:
         )
         self.session.add(issue)
         await self.session.flush()
-        return self._map_issue(issue)
+        return map_quality_issue(issue)
 
     async def get_issue(self, issue_id: str) -> QualityIssueRow | None:
         issue = await self.session.get(QualityIssue, issue_id)
-        return self._map_issue(issue) if issue is not None else None
+        return map_quality_issue(issue) if issue is not None else None
 
     async def resolve_issue(
         self,
@@ -290,7 +217,7 @@ class QualityInspectionRepository:
         issue.resolved_by_id = resolved_by_id
         issue.resolved_by_name = resolved_by_name
         await self.session.flush()
-        return self._map_issue(issue)
+        return map_quality_issue(issue)
 
     async def add_attachment(
         self,
@@ -314,7 +241,7 @@ class QualityInspectionRepository:
         )
         self.session.add(attachment)
         await self.session.flush()
-        return self._map_attachment(attachment)
+        return map_quality_attachment(attachment)
 
     async def list_attachments(self, inspection_id: str) -> list[QualityAttachmentRow]:
         return await self.list_attachments_for_inspections([inspection_id])
@@ -334,7 +261,7 @@ class QualityInspectionRepository:
                 QualityInspectionAttachment.id.asc(),
             )
         )
-        return [self._map_attachment(row) for row in rows]
+        return [map_quality_attachment(row) for row in rows]
 
     async def add_event(
         self,
@@ -358,7 +285,7 @@ class QualityInspectionRepository:
         )
         self.session.add(event)
         await self.session.flush()
-        return self._map_event(event)
+        return map_quality_inspection_event(event)
 
     async def list_events(self, inspection_id: str) -> list[QualityInspectionEventRow]:
         return await self.list_events_for_inspections([inspection_id])
@@ -378,7 +305,7 @@ class QualityInspectionRepository:
                 QualityInspectionEvent.id.asc(),
             )
         )
-        return [self._map_event(row) for row in rows]
+        return [map_quality_inspection_event(row) for row in rows]
 
     async def replace_lines_and_issues(
         self,
@@ -406,7 +333,7 @@ class QualityInspectionRepository:
         inspection = await self.session.get(QualityInspection, inspection_id)
         if inspection is None:
             return None
-        return self._map_inspection(inspection)
+        return map_quality_inspection(inspection)
 
     async def list_lines(self, inspection_id: str) -> list[QualityInspectionLineRow]:
         return await self.list_lines_for_inspections([inspection_id])
@@ -426,7 +353,7 @@ class QualityInspectionRepository:
                 QualityInspectionLine.id.asc(),
             )
         )
-        return [self._map_line(row) for row in rows]
+        return [map_quality_inspection_line(row) for row in rows]
 
     async def list_issues(self, inspection_id: str) -> list[QualityIssueRow]:
         return await self.list_issues_for_inspections([inspection_id])
@@ -446,7 +373,7 @@ class QualityInspectionRepository:
                 QualityIssue.id.asc(),
             )
         )
-        return [self._map_issue(row) for row in rows]
+        return [map_quality_issue(row) for row in rows]
 
     async def list_inspections(
         self,
@@ -489,7 +416,7 @@ class QualityInspectionRepository:
         )
         rows = await self._inspection_scalars(statement)
         total = await self.session.scalar(count_statement)
-        return [self._map_inspection(row) for row in rows], int(total or 0)
+        return [map_quality_inspection(row) for row in rows], int(total or 0)
 
     async def summarize_inspections(
         self,
@@ -632,7 +559,7 @@ class QualityInspectionRepository:
         )
         if inspection is None:
             return None
-        return self._map_inspection(inspection)
+        return map_quality_inspection(inspection)
 
     async def get_active_reinspection(
         self,
@@ -644,7 +571,7 @@ class QualityInspectionRepository:
             .where(QualityInspection.status.in_(("pending", "in_progress")))
             .order_by(QualityInspection.created_at.desc())
         )
-        return self._map_inspection(inspection) if inspection is not None else None
+        return map_quality_inspection(inspection) if inspection is not None else None
 
     async def has_passed_inspection(self, purchase_contract_id: str) -> bool:
         count = await self.session.scalar(
@@ -662,96 +589,3 @@ class QualityInspectionRepository:
     ) -> list[QualityInspection]:
         result = await self.session.scalars(statement)
         return list(result.unique())
-
-    def _map_inspection(self, inspection: QualityInspection) -> QualityInspectionRow:
-        return QualityInspectionRow(
-            id=inspection.id,
-            code=inspection.code,
-            purchase_contract_id=inspection.purchase_contract_id,
-            purchase_contract_no=inspection.purchase_contract_no,
-            supplier_id=inspection.supplier_id,
-            supplier_name=inspection.supplier_name,
-            status=inspection.status,
-            scheduled_at=inspection.scheduled_at
-            or datetime.combine(inspection.inspected_at, time(hour=9)),
-            inspected_at=inspection.inspected_at,
-            result=inspection.result,
-            inspector_id=inspection.inspector_id,
-            inspector_name=inspection.inspector_name,
-            qc_user_id=inspection.qc_user_id,
-            qc_user_name=inspection.qc_user_name,
-            issue_summary=inspection.issue_summary,
-            attachment_group_id=inspection.attachment_group_id,
-            parent_inspection_id=inspection.parent_inspection_id,
-            reinspection_no=inspection.reinspection_no,
-            cancel_reason=inspection.cancel_reason,
-            owner_user_id=inspection.owner_user_id,
-            created_at=inspection.created_at,
-            updated_at=inspection.updated_at,
-        )
-
-    def _map_line(self, line: QualityInspectionLine) -> QualityInspectionLineRow:
-        return QualityInspectionLineRow(
-            id=line.id,
-            inspection_id=line.inspection_id,
-            purchase_contract_line_id=line.purchase_contract_line_id,
-            product_id=line.product_id,
-            product_code=line.product_code,
-            product_name=line.product_name,
-            inspected_quantity=self._quantity(line.inspected_quantity),
-            failed_quantity=self._quantity(line.failed_quantity),
-            unit=line.unit,
-            result=line.result,
-            remark=line.remark,
-            created_at=line.created_at,
-        )
-
-    def _map_issue(self, issue: QualityIssue) -> QualityIssueRow:
-        return QualityIssueRow(
-            id=issue.id,
-            inspection_id=issue.inspection_id,
-            line_id=issue.line_id,
-            issue_type=issue.issue_type,
-            severity=issue.severity,
-            description=issue.description,
-            corrective_action=issue.corrective_action,
-            status=issue.status,
-            attachment_group_id=issue.attachment_group_id,
-            resolution_note=issue.resolution_note,
-            resolved_at=issue.resolved_at,
-            resolved_by_id=issue.resolved_by_id,
-            resolved_by_name=issue.resolved_by_name,
-            created_at=issue.created_at,
-        )
-
-    def _map_attachment(
-        self,
-        attachment: QualityInspectionAttachment,
-    ) -> QualityAttachmentRow:
-        return QualityAttachmentRow(
-            id=attachment.id,
-            inspection_id=attachment.inspection_id,
-            issue_id=attachment.issue_id,
-            category=attachment.category,
-            filename=attachment.filename,
-            url=attachment.url,
-            uploaded_by_id=attachment.uploaded_by_id,
-            uploaded_by_name=attachment.uploaded_by_name,
-            created_at=attachment.created_at,
-        )
-
-    def _map_event(self, event: QualityInspectionEvent) -> QualityInspectionEventRow:
-        return QualityInspectionEventRow(
-            id=event.id,
-            inspection_id=event.inspection_id,
-            event_type=event.event_type,
-            from_status=event.from_status,
-            to_status=event.to_status,
-            notes=event.notes,
-            actor_user_id=event.actor_user_id,
-            actor_user_name=event.actor_user_name,
-            created_at=event.created_at,
-        )
-
-    def _quantity(self, value: Decimal) -> str:
-        return f"{value:.4f}".rstrip("0").rstrip(".")

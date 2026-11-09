@@ -5,6 +5,12 @@ from sqlalchemy import Select, delete, exists, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.pagination import resolve_limit, resolve_offset
+from app.modules.purchase.contracts.mappers import (
+    map_purchase_contract,
+    map_purchase_contract_line,
+    map_purchase_reminder,
+    map_purchase_source_link,
+)
 from app.modules.purchase.contracts.models import (
     PurchaseContract,
     PurchaseContractLine,
@@ -68,7 +74,7 @@ class PurchaseContractRepository:
         )
         self.session.add(contract)
         await self.session.flush()
-        return self._map_contract(contract)
+        return map_purchase_contract(contract)
 
     async def update_contract(
         self,
@@ -110,7 +116,7 @@ class PurchaseContractRepository:
             contract.reviewer_id = None
             contract.reviewer_name = None
         await self.session.flush()
-        return self._map_contract(contract)
+        return map_purchase_contract(contract)
 
     async def add_line(
         self,
@@ -148,7 +154,7 @@ class PurchaseContractRepository:
         )
         self.session.add(line)
         await self.session.flush()
-        return self._map_line(line)
+        return map_purchase_contract_line(line)
 
     async def delete_lines(self, contract_id: str) -> None:
         await self.session.execute(
@@ -182,7 +188,7 @@ class PurchaseContractRepository:
         )
         self.session.add(link)
         await self.session.flush()
-        return self._map_source_link(link)
+        return map_purchase_source_link(link)
 
     async def delete_source_links(self, contract_id: str) -> None:
         await self.session.execute(
@@ -212,7 +218,7 @@ class PurchaseContractRepository:
         )
         self.session.add(reminder)
         await self.session.flush()
-        return self._map_reminder(reminder)
+        return map_purchase_reminder(reminder)
 
     async def delete_reminders(self, contract_id: str) -> None:
         await self.session.execute(
@@ -242,7 +248,7 @@ class PurchaseContractRepository:
         contract.total_amount = total_amount
         contract.received_quantity = received_quantity
         await self.session.flush()
-        return self._map_contract(contract)
+        return map_purchase_contract(contract)
 
     async def increase_line_received_quantity(
         self,
@@ -254,13 +260,13 @@ class PurchaseContractRepository:
             return None
         line.received_quantity += Decimal(str(quantity))
         await self.session.flush()
-        return self._map_line(line)
+        return map_purchase_contract_line(line)
 
     async def get_contract(self, contract_id: str) -> PurchaseContractRow | None:
         contract = await self._get_contract_model(contract_id)
         if contract is None:
             return None
-        return self._map_contract(contract)
+        return map_purchase_contract(contract)
 
     async def list_lines(self, contract_id: str) -> list[PurchaseContractLineRow]:
         rows = await self.session.scalars(
@@ -268,7 +274,7 @@ class PurchaseContractRepository:
             .where(PurchaseContractLine.contract_id == contract_id)
             .order_by(PurchaseContractLine.created_at.asc(), PurchaseContractLine.id.asc())
         )
-        return [self._map_line(row) for row in rows]
+        return [map_purchase_contract_line(row) for row in rows]
 
     async def list_contracts_by_source_line(
         self,
@@ -289,7 +295,7 @@ class PurchaseContractRepository:
             .where(line_exists)
             .order_by(PurchaseContract.contract_date.asc(), PurchaseContract.code.asc())
         )
-        return [self._map_contract(row) for row in rows]
+        return [map_purchase_contract(row) for row in rows]
 
     async def list_source_links(
         self,
@@ -303,7 +309,7 @@ class PurchaseContractRepository:
                 PurchaseContractSourceLink.id.asc(),
             )
         )
-        return [self._map_source_link(row) for row in rows]
+        return [map_purchase_source_link(row) for row in rows]
 
     async def list_reminders(
         self,
@@ -317,7 +323,7 @@ class PurchaseContractRepository:
             PurchaseContractReminder.reminder_type.desc(),
         )
         rows = await self.session.scalars(statement)
-        return [self._map_reminder(row) for row in rows]
+        return [map_purchase_reminder(row) for row in rows]
 
     async def list_details(
         self,
@@ -342,7 +348,7 @@ class PurchaseContractRepository:
             )
         )
         for line_model in line_rows:
-            details[line_model.contract_id].lines.append(self._map_line(line_model))
+            details[line_model.contract_id].lines.append(map_purchase_contract_line(line_model))
 
         source_rows = await self.session.scalars(
             select(PurchaseContractSourceLink)
@@ -355,7 +361,7 @@ class PurchaseContractRepository:
         )
         for source_model in source_rows:
             details[source_model.contract_id].source_links.append(
-                self._map_source_link(source_model)
+                map_purchase_source_link(source_model)
             )
 
         reminder_rows = await self.session.scalars(
@@ -368,7 +374,7 @@ class PurchaseContractRepository:
             )
         )
         for reminder_model in reminder_rows:
-            details[reminder_model.contract_id].reminders.append(self._map_reminder(reminder_model))
+            details[reminder_model.contract_id].reminders.append(map_purchase_reminder(reminder_model))
 
         return details
 
@@ -402,7 +408,7 @@ class PurchaseContractRepository:
         )
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)
-        return [self._map_contract(row) for row in rows], int(total or 0)
+        return [map_purchase_contract(row) for row in rows], int(total or 0)
 
     async def summarize_contracts(
         self,
@@ -505,7 +511,7 @@ class PurchaseContractRepository:
         contract.reviewer_id = reviewer_id
         contract.reviewer_name = reviewer_name
         await self.session.flush()
-        return self._map_contract(contract)
+        return map_purchase_contract(contract)
 
     async def review_contract(
         self,
@@ -534,7 +540,7 @@ class PurchaseContractRepository:
             contract.rejected_at = reviewed_at
             contract.rejection_reason = rejection_reason
         await self.session.flush()
-        return self._map_contract(contract)
+        return map_purchase_contract(contract)
 
     async def approve_contract(
         self,
@@ -571,7 +577,7 @@ class PurchaseContractRepository:
         contract.cancelled_by_name = cancelled_by_name
         contract.cancelled_at = cancelled_at
         await self.session.flush()
-        return self._map_contract(contract)
+        return map_purchase_contract(contract)
 
     async def get_reissued_contract(
         self,
@@ -584,7 +590,7 @@ class PurchaseContractRepository:
             .order_by(PurchaseContract.created_at.asc())
             .limit(1)
         )
-        return self._map_contract(contract) if contract is not None else None
+        return map_purchase_contract(contract) if contract is not None else None
 
     async def has_other_approved_purchase_for_source_line(
         self,
@@ -612,105 +618,3 @@ class PurchaseContractRepository:
     async def _scalars(self, statement: Select[tuple[PurchaseContract]]) -> list[PurchaseContract]:
         result = await self.session.scalars(statement)
         return list(result.unique())
-
-    def _map_contract(self, contract: PurchaseContract) -> PurchaseContractRow:
-        unreceived_quantity = contract.total_quantity - contract.received_quantity
-        unpaid_amount = contract.total_amount - contract.paid_amount
-        return PurchaseContractRow(
-            id=contract.id,
-            code=contract.code,
-            contract_date=contract.contract_date,
-            supplier_id=contract.supplier_id,
-            supplier_name=contract.supplier_name,
-            buyer_user_id=contract.buyer_user_id,
-            buyer_user_name=contract.buyer_user_name,
-            qc_user_id=contract.qc_user_id,
-            qc_user_name=contract.qc_user_name,
-            currency=contract.currency,
-            delivery_date=contract.delivery_date,
-            payment_terms=contract.payment_terms,
-            source_type=contract.source_type,
-            remarks=contract.remarks,
-            approval_status=contract.approval_status,
-            submitted_at=contract.submitted_at,
-            approved_at=contract.approved_at,
-            rejected_at=contract.rejected_at,
-            rejection_reason=contract.rejection_reason,
-            reviewer_id=contract.reviewer_id,
-            reviewer_name=contract.reviewer_name,
-            total_quantity=self._quantity(contract.total_quantity),
-            total_amount=self._money(contract.total_amount),
-            received_quantity=self._quantity(contract.received_quantity),
-            unreceived_quantity=self._quantity(unreceived_quantity),
-            paid_amount=self._money(contract.paid_amount),
-            unpaid_amount=self._money(unpaid_amount),
-            cancelled_at=contract.cancelled_at,
-            cancelled_by_id=contract.cancelled_by_id,
-            cancelled_by_name=contract.cancelled_by_name,
-            cancel_reason=contract.cancel_reason,
-            reissued_from_id=contract.reissued_from_id,
-            reissued_from_code=contract.reissued_from_code,
-            reissue_reason=contract.reissue_reason,
-            owner_user_id=contract.owner_user_id,
-            created_at=contract.created_at,
-        )
-
-    def _map_line(self, line: PurchaseContractLine) -> PurchaseContractLineRow:
-        unreceived_quantity = line.quantity - line.received_quantity
-        return PurchaseContractLineRow(
-            id=line.id,
-            contract_id=line.contract_id,
-            product_id=line.product_id,
-            product_code=line.product_code,
-            product_name=line.product_name,
-            specification=line.specification,
-            model=line.model,
-            quantity=line.quantity,
-            unit=line.unit,
-            unit_price=line.unit_price,
-            amount=self._money(line.amount),
-            received_quantity=line.received_quantity,
-            unreceived_quantity=self._quantity(unreceived_quantity),
-            source_export_contract_id=line.source_export_contract_id,
-            source_export_contract_no=line.source_export_contract_no,
-            source_export_contract_line_id=line.source_export_contract_line_id,
-            remark=line.remark,
-            created_at=line.created_at,
-        )
-
-    def _map_source_link(
-        self,
-        link: PurchaseContractSourceLink,
-    ) -> PurchaseContractSourceLinkRow:
-        return PurchaseContractSourceLinkRow(
-            id=link.id,
-            contract_id=link.contract_id,
-            export_contract_id=link.export_contract_id,
-            export_contract_no=link.export_contract_no,
-            export_contract_line_id=link.export_contract_line_id,
-            customer_name=link.customer_name,
-            product_id=link.product_id,
-            product_code=link.product_code,
-            demand_quantity=self._quantity(link.demand_quantity),
-            unit=link.unit,
-            created_at=link.created_at,
-        )
-
-    def _map_reminder(self, reminder: PurchaseContractReminder) -> PurchaseContractReminderRow:
-        return PurchaseContractReminderRow(
-            id=reminder.id,
-            contract_id=reminder.contract_id,
-            reminder_type=reminder.reminder_type,
-            title=reminder.title,
-            due_date=reminder.due_date,
-            amount=self._money(reminder.amount) if reminder.amount is not None else None,
-            currency=reminder.currency,
-            status=reminder.status,
-            created_at=reminder.created_at,
-        )
-
-    def _money(self, value: Decimal) -> str:
-        return f"{value:.2f}"
-
-    def _quantity(self, value: Decimal) -> str:
-        return f"{value:.4f}".rstrip("0").rstrip(".")
