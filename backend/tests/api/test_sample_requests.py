@@ -193,7 +193,19 @@ async def test_sample_request_filters_by_date_range_and_converts_completed_reque
         f"/api/v1/sample/requests/{request_id}/progress",
         headers=headers,
         json={
-            "stage": "finished",
+            "stage": "sent_to_factory",
+            "status": "in_progress",
+            "occurred_at": "2026-06-21",
+            "note": "外发工厂打样。",
+            "handler_name": "Li Wei",
+        },
+    )
+
+    await api_client.post(
+        f"/api/v1/sample/requests/{request_id}/progress",
+        headers=headers,
+        json={
+            "stage": "customer_confirmed",
             "status": "completed",
             "occurred_at": "2026-06-24",
             "note": "打样完成，转确认样。",

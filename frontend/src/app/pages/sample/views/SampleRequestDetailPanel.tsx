@@ -64,6 +64,18 @@ export function SampleRequestDetailPanel({
   loadRequestIntoRecordForm,
   submitRecordFromRequest,
 }: Props) {
+  // 完成状态只能由“客户确认”阶段触发，且申请需已进入进行中；取消不在进度入口开放。
+  const progressStatusOptions = sampleStatusOptions.filter((item) => {
+    if (item.value === 'cancelled') return false
+    if (item.value === 'completed') {
+      return (
+        progressForm.stage === 'customer_confirmed' &&
+        ['in_progress', 'completed'].includes(selectedRequest?.status ?? '')
+      )
+    }
+    return true
+  })
+
   return (
     <section className="workspace-panel detail-panel product-detail-panel">
       <div className="panel-heading toolbar-heading">
@@ -180,7 +192,7 @@ export function SampleRequestDetailPanel({
                   setProgressForm({ ...progressForm, status: event.target.value })
                 }
               >
-                {sampleStatusOptions.map((item) => (
+                {progressStatusOptions.map((item) => (
                   <option key={item.value} value={item.value}>
                     {t(item.labelKey)}
                   </option>

@@ -185,3 +185,102 @@ async def test_sample_request_service_rejects_invalid_status(
                     strict=False,
                 ),
             )
+
+
+async def test_sample_request_service_rejects_terminal_status_on_create(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        service = _make_service(session)
+        current_user = _user_with_permissions(["sample:request:edit"], user_id="u-001")
+        with pytest.raises(ValueError, match="只能是草稿"):
+            await service.create_request(
+                current_user=current_user,
+                payload=_sample_payload("SR-GUARD-001", status="completed"),
+            )
+        with pytest.raises(ValueError, match="只能是草稿"):
+            await service.create_request(
+                current_user=current_user,
+                payload=_sample_payload("SR-GUARD-002", status="cancelled"),
+            )
+
+
+async def test_sample_request_service_enforces_progress_transitions(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        service = _make_service(session)
+        current_user = _user_with_permissions(
+            ["sample:request:edit", "sample:request:view"],
+            user_id="u-001",
+        )
+        sample_request = await service.create_request(
+            current_user=current_user,
+            payload=_sample_payload("SR-GUARD-003"),
+        )
+        # 草稿不能直接完成，必须先进入进行中。
+        with pytest.raises(ValueError, match="只有客户确认阶段"):
+            await service.add_progress(
+                current_user=current_user,
+                request_id=sample_request.id,
+                payload=SampleProgressCreate(
+                    stage="request_created",
+                    status="completed",
+                    occurred_at=date(2026, 6, 21),
+                ),
+            )
+        with pytest.raises(ValueError, match="进入进行中后才能完成"):
+            await service.add_progress(
+                current_user=current_user,
+                request_id=sample_request.id,
+                payload=SampleProgressCreate(
+                    stage="customer_confirmed",
+                    status="completed",
+                    occurred_at=date(2026, 6, 21),
+                ),
+            )
+        await service.add_progress(
+            current_user=current_user,
+            request_id=sample_request.id,
+            payload=SampleProgressCreate(
+                stage="sent_to_factory",
+                status="in_progress",
+                occurred_at=date(2026, 6, 22),
+            ),
+        )
+        with pytest.raises(ValueError, match="不能回退"):
+            await service.add_progress(
+                current_user=current_user,
+                request_id=sample_request.id,
+                payload=SampleProgressCreate(
+                    stage="in_house",
+                    status="sent",
+                    occurred_at=date(2026, 6, 23),
+                ),
+            )
+        with pytest.raises(ValueError, match="不能将申请置为已取消"):
+            await service.add_progress(
+                current_user=current_user,
+                request_id=sample_request.id,
+                payload=SampleProgressCreate(
+                    stage="in_house",
+                    status="cancelled",
+                    occurred_at=date(2026, 6, 23),
+                ),
+            )
+        completed = await service.add_progress(
+            current_user=current_user,
+            request_id=sample_request.id,
+            payload=SampleProgressCreate(
+                stage="customer_confirmed",
+                status="completed",
+                occurred_at=date(2026, 6, 24),
+            ),
+        )
+        refreshed = await service.get_request(
+            current_user=current_user,
+            request_id=sample_request.id,
+        )
+
+    assert completed.status == "completed"
+    assert refreshed.status == "completed"

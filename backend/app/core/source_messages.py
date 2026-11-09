@@ -221,6 +221,20 @@ SOURCE_MESSAGES: dict[str, str] = {
         "This sample delivery already has a delivered stock entry"
     ),
     "打样去向无效": "Invalid sampling destination",
+    "新建打样申请只能是草稿、已发送或进行中": (
+        "New sample requests can only be draft, sent, or in progress"
+    ),
+    "已取消的打样申请不能更新进度": "Cancelled sample requests cannot update progress",
+    "打样进度不能将申请置为已取消": (
+        "Progress updates cannot mark a sample request as cancelled"
+    ),
+    "只有客户确认阶段才能完成打样": (
+        "Sampling can only be completed at the customer confirmation stage"
+    ),
+    "打样申请进入进行中后才能完成": (
+        "A sample request must be in progress before it can be completed"
+    ),
+    "打样进度状态不能回退": "Sample request progress cannot move backwards",
     "打样完成后才能转为样品登记": (
         "Sampling must be completed before converting to a sample record"
     ),

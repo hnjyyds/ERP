@@ -42,6 +42,9 @@ class PermissionDeniedError(Exception):
     pass
 
 
+_SAMPLE_STATUS_RANK = {"draft": 0, "sent": 1, "in_progress": 2, "completed": 3}
+
+
 class SampleRequestNotFoundError(Exception):
     pass
 
@@ -80,6 +83,8 @@ class SampleRequestService:
     ) -> SampleRequestResponse:
         self._require(current_user, "sample:request:edit")
         self._validate_status(payload.status)
+        if payload.status in {"completed", "cancelled"}:
+            raise ValueError("新建打样申请只能是草稿、已发送或进行中")
         self._validate_destination(payload.destination)
 
         async def create_request_row(code: str) -> SampleRequestRow:
@@ -182,7 +187,11 @@ class SampleRequestService:
     ) -> SampleProgressResponse:
         self._require(current_user, "sample:request:edit")
         self._validate_status(payload.status)
-        await self._get_accessible_request(current_user=current_user, request_id=request_id)
+        sample_request = await self._get_accessible_request(
+            current_user=current_user,
+            request_id=request_id,
+        )
+        self._validate_progress_transition(sample_request.status, payload)
         async with UnitOfWork(self._repository.session):
             progress = await self._repository.add_progress(
                 sample_request_id=request_id,
@@ -396,6 +405,23 @@ class SampleRequestService:
     def _validate_destination(self, destination: str) -> None:
         if destination not in VALID_SAMPLE_DESTINATIONS:
             raise ValueError("打样去向无效")
+
+    def _validate_progress_transition(
+        self,
+        current_status: str,
+        payload: SampleProgressCreate,
+    ) -> None:
+        if current_status == "cancelled":
+            raise ValueError("已取消的打样申请不能更新进度")
+        if payload.status == "cancelled":
+            raise ValueError("打样进度不能将申请置为已取消")
+        if payload.status == "completed":
+            if payload.stage != "customer_confirmed":
+                raise ValueError("只有客户确认阶段才能完成打样")
+            if current_status not in {"in_progress", "completed"}:
+                raise ValueError("打样申请进入进行中后才能完成")
+        if _SAMPLE_STATUS_RANK[payload.status] < _SAMPLE_STATUS_RANK[current_status]:
+            raise ValueError("打样进度状态不能回退")
 
     def _payment_request_no(self) -> str:
         return f"SAMPLE-FEE-{datetime.now(UTC).strftime('%Y%m%d%H%M%S%f')}"

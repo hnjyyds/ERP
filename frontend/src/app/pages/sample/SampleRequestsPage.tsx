@@ -463,11 +463,13 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                 value={form.status}
                 onChange={(event) => setForm({ ...form, status: event.target.value })}
               >
-                {sampleStatusOptions.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {t(item.labelKey)}
-                  </option>
-                ))}
+                {sampleStatusOptions
+                  .filter((item) => item.value !== 'completed' && item.value !== 'cancelled')
+                  .map((item) => (
+                    <option key={item.value} value={item.value}>
+                      {t(item.labelKey)}
+                    </option>
+                  ))}
               </FormSelect>
             </label>
             <label>
