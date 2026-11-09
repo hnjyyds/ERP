@@ -465,7 +465,9 @@ async def test_organization_write_endpoints_reject_regular_user(
         body = response.json()
         assert body["code"] == "PERMISSION_DENIED", f"{method} {path}"
         # 公司信息由 CompanyService 独立把关，文案与组织管理区分。
-        expected_message = "缺少公司信息权限" if path == "/organization/company" else "缺少组织管理权限"
+        expected_message = (
+            "缺少公司信息权限" if path == "/organization/company" else "缺少组织管理权限"
+        )
         assert body["message"] == expected_message, f"{method} {path}"
 
 
