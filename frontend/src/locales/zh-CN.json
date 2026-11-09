@@ -3586,7 +3586,17 @@
         "editDraft": "编辑草稿",
         "submitReview": "提交审核",
         "approve": "审核通过",
+        "reject": "驳回",
+        "withdraw": "撤回",
         "updateTracking": "更新物流"
+      },
+      "reject": {
+        "title": "驳回寄样单",
+        "rejectedAt": "驳回日期",
+        "reason": "驳回原因",
+        "reasonPlaceholder": "请填写驳回原因",
+        "confirm": "确认驳回",
+        "cancel": "取消"
       },
       "field": {
         "code": "寄样单号",
@@ -3632,6 +3642,8 @@
         "notFilled": "未填",
         "notLinked": "未关联",
         "notReviewed": "未审核",
+        "rejectionReason": "驳回原因：{reason}",
+        "rejectedAt": "驳回日期：{date}",
         "designatedReviewer": "指定审批人",
         "trackingSection": "物流跟踪",
         "noLines": "暂无寄样明细",
@@ -3697,6 +3709,10 @@
         "notReviewer": "该寄样单应由 {reviewer} 审批",
         "approved": "已审核寄样单 {code}",
         "approveFailed": "寄样单审核失败",
+        "rejected": "已驳回寄样单 {code}",
+        "rejectFailed": "寄样单驳回失败",
+        "withdrawn": "已撤回寄样单 {code}",
+        "withdrawFailed": "寄样单撤回失败",
         "trackingUpdated": "已更新物流 {trackingNo}",
         "trackingUpdateFailed": "物流跟踪更新失败",
         "exported_one": "已导出 {count} 条寄样记录",
@@ -3705,7 +3721,8 @@
         "awaitingReview": "等待 {reviewer} 审批"
       },
       "validation": {
-        "reviewerRequired": "请选择审批人"
+        "reviewerRequired": "请选择审批人",
+        "rejectReasonRequired": "请填写驳回原因"
       }
     }
   },

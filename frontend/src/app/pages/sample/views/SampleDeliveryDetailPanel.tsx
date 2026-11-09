@@ -45,6 +45,8 @@ type Props = {
   onEdit: (delivery: SampleDelivery) => void
   onSubmitReview: () => void
   onApprove: () => void
+  onWithdraw: () => void
+  onOpenReject: () => void
   onSubmitTracking: (event: FormEvent<HTMLFormElement>) => void
   onReviewerChange: (reviewerId: string) => void
   onTrackingFormChange: (form: SampleDeliveryTrackingFormState) => void
@@ -64,6 +66,8 @@ export function SampleDeliveryDetailPanel({
   onEdit,
   onSubmitReview,
   onApprove,
+  onWithdraw,
+  onOpenReject,
   onSubmitTracking,
   onReviewerChange,
   onTrackingFormChange,
@@ -149,9 +153,26 @@ export function SampleDeliveryDetailPanel({
             <p>{selectedDelivery.remark ?? selectedDelivery.recipient_address}</p>
           </div>
 
+          {selectedDelivery.rejection_reason ? (
+            <Alert
+              description={
+                selectedDelivery.rejected_at
+                  ? t('sample.delivery.panel.rejectedAt', {
+                      date: formatDate(selectedDelivery.rejected_at),
+                    })
+                  : undefined
+              }
+              showIcon
+              title={t('sample.delivery.panel.rejectionReason', {
+                reason: selectedDelivery.rejection_reason,
+              })}
+              type="warning"
+            />
+          ) : null}
+
           <div className="delivery-action-row">
             <Button
-              disabled={selectedDelivery.status !== 'draft'}
+              disabled={!['draft', 'rejected'].includes(selectedDelivery.status)}
               onClick={() => onEdit(selectedDelivery)}
             >
               {t('sample.delivery.action.editDraft')}
@@ -186,6 +207,36 @@ export function SampleDeliveryDetailPanel({
             >
               {t('sample.delivery.action.approve')}
             </Button>
+            {selectedDelivery.status === 'submitted' ? (
+              <>
+                <Button
+                  disabled={
+                    !(
+                      selectedDelivery.owner_user_id === currentUser.id ||
+                      currentUser.permissions.includes('system:super_admin')
+                    )
+                  }
+                  loading={submitting}
+                  onClick={onWithdraw}
+                >
+                  {t('sample.delivery.action.withdraw')}
+                </Button>
+                <Button
+                  danger
+                  disabled={
+                    !canApproveAssignedRecord(
+                      currentUser,
+                      selectedDelivery.reviewer_id,
+                      'sample:delivery:approve',
+                    )
+                  }
+                  loading={submitting}
+                  onClick={onOpenReject}
+                >
+                  {t('sample.delivery.action.reject')}
+                </Button>
+              </>
+            ) : null}
           </div>
           {selectedDelivery.status === 'submitted' &&
           !canApproveAssignedRecord(

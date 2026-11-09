@@ -10,9 +10,11 @@ import {
   getSampleDeliverySampleHistory,
   getSampleDeliveryStatistics,
   listSampleDeliveries,
+  rejectSampleDelivery,
   submitSampleDelivery,
   updateSampleDelivery,
   updateSampleDeliveryTracking,
+  withdrawSampleDelivery,
   type CurrentUser,
   type SampleDelivery,
   type SampleDeliveryFeeStatistics,
@@ -33,19 +35,23 @@ import {
   initialSampleDeliveryApproveForm,
   initialSampleDeliveryFeeStatistics,
   initialSampleDeliveryForm,
+  initialSampleDeliveryRejectForm,
   initialSampleDeliveryStatistics,
   initialSampleDeliveryTrackingForm,
   sampleDeliveryApprovePayload,
   sampleDeliveryPayload,
+  sampleDeliveryRejectPayload,
   sampleDeliveryToForm,
   sampleDeliveryTrackingPayload,
   type SampleDeliveryApproveFormState,
   type SampleDeliveryFormState,
+  type SampleDeliveryRejectFormState,
   type SampleDeliveryTrackingFormState,
 } from './sampleDeliveryHelpers'
 import { SampleDeliveryDetailPanel } from './views/SampleDeliveryDetailPanel'
 import { SampleDeliveryFormModal } from './views/SampleDeliveryFormModal'
 import { SampleDeliveryListView } from './views/SampleDeliveryListView'
+import { SampleDeliveryRejectModal } from './views/SampleDeliveryRejectModal'
 
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 
@@ -78,6 +84,10 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
   const [trackingForm, setTrackingForm] = useState<SampleDeliveryTrackingFormState>(() =>
     initialSampleDeliveryTrackingForm(),
   )
+  const [rejectForm, setRejectForm] = useState<SampleDeliveryRejectFormState>(() =>
+    initialSampleDeliveryRejectForm(),
+  )
+  const [rejectOpen, setRejectOpen] = useState(false)
 
   const selectedDelivery = useMemo(() => {
     if (detailId) return deliveries.find((item) => item.id === detailId) ?? null
@@ -97,6 +107,8 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
   useEffect(() => {
     syncDeliveryActionForms(selectedDelivery)
     setReviewerId(selectedDelivery?.reviewer_id ?? '')
+    setRejectForm(initialSampleDeliveryRejectForm(selectedDelivery?.delivery_date))
+    setRejectOpen(false)
     void loadSelectedDeliveryHistories(selectedDelivery)
   }, [selectedDelivery?.id, selectedDelivery?.status, selectedDelivery?.tracking_no])
 
@@ -299,6 +311,63 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
     }
   }
 
+  async function rejectDelivery() {
+    if (!selectedDelivery) return
+    if (
+      !canApproveAssignedRecord(
+        currentUser,
+        selectedDelivery.reviewer_id,
+        'sample:delivery:approve',
+      )
+    ) {
+      showError(
+        new Error(
+          t('sample.delivery.message.notReviewer', {
+            reviewer:
+              selectedDelivery.reviewer_name ?? t('sample.delivery.panel.designatedReviewer'),
+          }),
+        ),
+      )
+      return
+    }
+    if (!rejectForm.rejection_reason.trim()) {
+      showError(new Error(t('sample.delivery.validation.rejectReasonRequired')))
+      return
+    }
+    setSubmitting(true)
+    setMessage('')
+    try {
+      const rejected = await rejectSampleDelivery(
+        selectedDelivery.id,
+        sampleDeliveryRejectPayload(rejectForm),
+      )
+      setMessage(t('sample.delivery.message.rejected', { code: rejected.code }))
+      setRejectOpen(false)
+      upsertDelivery(rejected)
+      await loadDeliveries(rejected.id)
+    } catch (caught) {
+      showError(caught, t('sample.delivery.message.rejectFailed'))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  async function withdrawDelivery() {
+    if (!selectedDelivery) return
+    setSubmitting(true)
+    setMessage('')
+    try {
+      const withdrawn = await withdrawSampleDelivery(selectedDelivery.id)
+      setMessage(t('sample.delivery.message.withdrawn', { code: withdrawn.code }))
+      upsertDelivery(withdrawn)
+      await loadDeliveries(withdrawn.id)
+    } catch (caught) {
+      showError(caught, t('sample.delivery.message.withdrawFailed'))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   async function submitTracking(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!selectedDelivery) return
@@ -406,6 +475,15 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
           onSaveDraft={() => void saveDeliveryDraft()}
         />
 
+        <SampleDeliveryRejectModal
+          form={rejectForm}
+          open={rejectOpen}
+          submitting={submitting}
+          onCancel={() => setRejectOpen(false)}
+          onConfirm={() => void rejectDelivery()}
+          onFormChange={setRejectForm}
+        />
+
         {detailId ? (
           <SampleDeliveryDetailPanel
             selectedDelivery={selectedDelivery}
@@ -421,6 +499,8 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
             onEdit={openEditDelivery}
             onSubmitReview={submitDeliveryForReview}
             onApprove={approveDelivery}
+            onWithdraw={withdrawDelivery}
+            onOpenReject={() => setRejectOpen(true)}
             onSubmitTracking={submitTracking}
             onReviewerChange={setReviewerId}
             onTrackingFormChange={setTrackingForm}

@@ -336,6 +336,121 @@ describe('SampleDeliveriesPage', () => {
     expect(quoteHistorySpy).toHaveBeenCalledWith({ customer_id: 'c-1', product_id: 'p-1' })
   })
 
+  it('撤回与驳回入口仅在已提交寄样单显示', async () => {
+    vi.spyOn(api, 'listSampleDeliveries').mockResolvedValue({
+      items: [
+        {
+          ...delivery,
+          status: 'submitted',
+          reviewer_id: 'u-admin',
+          reviewer_name: '管理员',
+        },
+      ],
+      total: 1,
+    })
+    const first = render(
+      <SampleDeliveriesPage currentUser={currentUser} detailId="sd-1" onNavigate={onNavigate} />,
+    )
+
+    expect(await screen.findByRole('button', { name: /撤\s*回/ })).toBeEnabled()
+    expect(screen.getByRole('button', { name: /驳\s*回/ })).toBeEnabled()
+    first.unmount()
+
+    vi.spyOn(api, 'listSampleDeliveries').mockResolvedValue({ items: [delivery], total: 1 })
+    render(
+      <SampleDeliveriesPage currentUser={currentUser} detailId="sd-1" onNavigate={onNavigate} />,
+    )
+
+    await screen.findByRole('button', { name: '编辑草稿' })
+    expect(screen.queryByRole('button', { name: /撤\s*回/ })).toBeNull()
+    expect(screen.queryByRole('button', { name: /驳\s*回/ })).toBeNull()
+  })
+
+  it('驳回原因必填，填写后提交驳回请求', async () => {
+    vi.spyOn(api, 'listSampleDeliveries').mockResolvedValue({
+      items: [
+        {
+          ...delivery,
+          status: 'submitted',
+          reviewer_id: 'u-admin',
+          reviewer_name: '管理员',
+        },
+      ],
+      total: 1,
+    })
+    const rejectSpy = vi
+      .spyOn(api, 'rejectSampleDelivery')
+      .mockResolvedValue({ ...delivery, status: 'rejected' })
+
+    render(
+      <SampleDeliveriesPage currentUser={currentUser} detailId="sd-1" onNavigate={onNavigate} />,
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: /驳\s*回/ }))
+    const dialog = await screen.findByRole('dialog')
+    const confirm = within(dialog).getByRole('button', { name: '确认驳回' })
+    expect(confirm).toBeDisabled()
+
+    await userEvent.type(within(dialog).getByLabelText(/驳回原因/), '收件地址不完整')
+    await userEvent.click(confirm)
+
+    await waitFor(() => {
+      expect(rejectSpy).toHaveBeenCalledWith('sd-1', {
+        rejected_at: '2026-08-01',
+        rejection_reason: '收件地址不完整',
+      })
+    })
+  })
+
+  it('撤回提交后调用撤回接口', async () => {
+    vi.spyOn(api, 'listSampleDeliveries').mockResolvedValue({
+      items: [
+        {
+          ...delivery,
+          status: 'submitted',
+          reviewer_id: 'u-admin',
+          reviewer_name: '管理员',
+        },
+      ],
+      total: 1,
+    })
+    const withdrawSpy = vi
+      .spyOn(api, 'withdrawSampleDelivery')
+      .mockResolvedValue({ ...delivery, status: 'draft' })
+
+    render(
+      <SampleDeliveriesPage currentUser={currentUser} detailId="sd-1" onNavigate={onNavigate} />,
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: /撤\s*回/ }))
+
+    await waitFor(() => {
+      expect(withdrawSpy).toHaveBeenCalledWith('sd-1')
+    })
+  })
+
+  it('已驳回寄样单展示原因且可编辑', async () => {
+    vi.spyOn(api, 'listSampleDeliveries').mockResolvedValue({
+      items: [
+        {
+          ...delivery,
+          status: 'rejected',
+          rejected_at: '2026-08-02',
+          rejection_reason: '收件地址不完整',
+        },
+      ],
+      total: 1,
+    })
+
+    render(
+      <SampleDeliveriesPage currentUser={currentUser} detailId="sd-1" onNavigate={onNavigate} />,
+    )
+
+    expect(await screen.findByText('驳回原因：收件地址不完整')).toBeTruthy()
+    expect(screen.getByText('驳回日期：2026-08-02')).toBeTruthy()
+    expect(screen.getByRole('button', { name: '编辑草稿' })).toBeEnabled()
+  })
+
   it('详情页返回列表跳转寄样单列表路径', async () => {
     vi.spyOn(api, 'listSampleDeliveries').mockResolvedValue({ items: [delivery], total: 1 })
 

@@ -3,6 +3,7 @@ import type {
   SampleDeliveryApprovePayload,
   SampleDeliveryCreatePayload,
   SampleDeliveryFeeStatistics,
+  SampleDeliveryRejectPayload,
   SampleDeliveryStatistics,
   SampleDeliveryTrackingPayload,
 } from '@/api'
@@ -79,6 +80,11 @@ export type SampleDeliveryTrackingFormState = {
   status: string
 }
 
+export type SampleDeliveryRejectFormState = {
+  rejected_at: string
+  rejection_reason: string
+}
+
 export function initialSampleDeliveryFeeStatistics(): SampleDeliveryFeeStatistics {
   return {
     items: [],
@@ -144,6 +150,15 @@ export function initialSampleDeliveryTrackingForm(): SampleDeliveryTrackingFormS
     express_company: 'DHL',
     tracking_no: '',
     status: 'shipped',
+  }
+}
+
+export function initialSampleDeliveryRejectForm(
+  rejectedAt?: string,
+): SampleDeliveryRejectFormState {
+  return {
+    rejected_at: rejectedAt ?? todayInputValue(),
+    rejection_reason: '',
   }
 }
 
@@ -242,5 +257,14 @@ export function sampleDeliveryTrackingPayload(
     express_company: form.express_company.trim(),
     tracking_no: form.tracking_no.trim(),
     status: form.status,
+  }
+}
+
+export function sampleDeliveryRejectPayload(
+  form: SampleDeliveryRejectFormState,
+): SampleDeliveryRejectPayload {
+  return {
+    rejected_at: form.rejected_at,
+    rejection_reason: form.rejection_reason.trim(),
   }
 }

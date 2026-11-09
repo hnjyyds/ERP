@@ -314,6 +314,8 @@ export interface SampleDelivery {
   status: string
   submitted_at: string | null
   approved_at: string | null
+  rejected_at: string | null
+  rejection_reason: string | null
   reviewer_id: string | null
   reviewer_name: string | null
   owner_user_id: string
@@ -370,6 +372,11 @@ export interface SampleDeliveryCreatePayload {
 export interface SampleDeliveryApprovePayload {
   reviewer_name?: string
   approved_at: string
+}
+
+export interface SampleDeliveryRejectPayload {
+  rejected_at: string
+  rejection_reason: string
 }
 
 export interface SampleDeliveryTrackingPayload {
@@ -613,6 +620,22 @@ export function approveSampleDelivery(
   return request<SampleDelivery>(`/sample/deliveries/${deliveryId}/approve`, {
     method: 'POST',
     body: JSON.stringify(payload),
+  })
+}
+
+export function rejectSampleDelivery(
+  deliveryId: string,
+  payload: SampleDeliveryRejectPayload,
+): Promise<SampleDelivery> {
+  return request<SampleDelivery>(`/sample/deliveries/${deliveryId}/reject`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function withdrawSampleDelivery(deliveryId: string): Promise<SampleDelivery> {
+  return request<SampleDelivery>(`/sample/deliveries/${deliveryId}/withdraw`, {
+    method: 'POST',
   })
 }
 

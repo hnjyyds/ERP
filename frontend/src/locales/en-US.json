@@ -3586,7 +3586,17 @@
         "editDraft": "Edit Draft",
         "submitReview": "Submit for Approval",
         "approve": "Approve",
+        "reject": "Reject",
+        "withdraw": "Withdraw",
         "updateTracking": "Update Tracking"
+      },
+      "reject": {
+        "title": "Reject sample delivery",
+        "rejectedAt": "Rejection date",
+        "reason": "Rejection reason",
+        "reasonPlaceholder": "Enter the rejection reason",
+        "confirm": "Reject",
+        "cancel": "Cancel"
       },
       "field": {
         "code": "Sample Delivery No.",
@@ -3632,6 +3642,8 @@
         "notFilled": "Not filled",
         "notLinked": "Not linked",
         "notReviewed": "Not reviewed",
+        "rejectionReason": "Rejection reason: {reason}",
+        "rejectedAt": "Rejected on: {date}",
         "designatedReviewer": "the designated approver",
         "trackingSection": "Tracking",
         "noLines": "No delivery lines",
@@ -3697,6 +3709,10 @@
         "notReviewer": "This sample delivery should be approved by {reviewer}",
         "approved": "Sample delivery {code} approved",
         "approveFailed": "Failed to approve sample delivery",
+        "rejected": "Sample delivery {code} rejected",
+        "rejectFailed": "Failed to reject sample delivery",
+        "withdrawn": "Sample delivery {code} withdrawn",
+        "withdrawFailed": "Failed to withdraw sample delivery",
         "trackingUpdated": "Tracking updated: {trackingNo}",
         "trackingUpdateFailed": "Failed to update tracking",
         "exported_one": "Exported {count} sample delivery record",
@@ -3705,7 +3721,8 @@
         "awaitingReview": "Awaiting approval by {reviewer}"
       },
       "validation": {
-        "reviewerRequired": "Please select an approver"
+        "reviewerRequired": "Please select an approver",
+        "rejectReasonRequired": "Enter the rejection reason"
       }
     }
   },
