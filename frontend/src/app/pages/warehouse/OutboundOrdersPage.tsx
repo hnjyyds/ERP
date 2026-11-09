@@ -92,7 +92,7 @@ export function OutboundOrdersPage({ currentUser, detailId, onNavigate }: Props)
 
       <OutboundOrderCancelModal
         open={workflow.cancelModalOpen}
-        submitting={workflow.submitting}
+        submitting={workflow.cancelSubmitting}
         reason={workflow.cancelReason}
         reasonError={workflow.cancelReasonError}
         onReasonChange={workflow.changeCancelReason}

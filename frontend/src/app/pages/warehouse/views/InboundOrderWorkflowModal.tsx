@@ -194,7 +194,7 @@ export function InboundOrderWorkflowModal({
             disabled={!workflow.canGenerateFromSelectedPlan}
             htmlType="submit"
             icon={<PackagePlus size={16} />}
-            loading={workflow.submitting}
+            loading={workflow.generateSubmitting}
           >
             {t('warehouse.inboundOrder.action.generate')}
           </Button>
@@ -206,7 +206,7 @@ export function InboundOrderWorkflowModal({
             disabled={!selectedOrder || selectedOrder.status !== 'draft'}
             htmlType="button"
             icon={<Send size={16} />}
-            loading={workflow.submitting}
+            loading={workflow.submitSubmitting}
             onClick={() => void workflow.submitSelectedInboundOrder()}
           >
             {t('warehouse.inboundOrder.action.submit')}
@@ -284,7 +284,7 @@ export function InboundOrderWorkflowModal({
             }
             htmlType="submit"
             icon={<CheckCircle2 size={16} />}
-            loading={workflow.submitting}
+            loading={workflow.approveSubmitting}
             type="primary"
           >
             {t('warehouse.inboundOrder.action.approve')}

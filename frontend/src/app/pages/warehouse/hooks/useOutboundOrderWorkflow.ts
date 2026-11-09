@@ -52,7 +52,10 @@ export function useOutboundOrderWorkflow({
     initialOutboundOrderApprovalForm(),
   )
   const [outboundOrderModalOpen, setOutboundOrderModalOpen] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
+  const [generateSubmitting, setGenerateSubmitting] = useState(false)
+  const [submitSubmitting, setSubmitSubmitting] = useState(false)
+  const [approveSubmitting, setApproveSubmitting] = useState(false)
+  const [cancelSubmitting, setCancelSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [cancelModalOpen, setCancelModalOpen] = useState(false)
   const [cancelReason, setCancelReason] = useState('')
@@ -114,7 +117,7 @@ export function useOutboundOrderWorkflow({
 
   async function generateOutboundOrder(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setSubmitting(true)
+    setGenerateSubmitting(true)
     setMessage('')
     try {
       const order = await generateOutboundOrderFromPlan(outboundOrderPayload(form))
@@ -125,7 +128,7 @@ export function useOutboundOrderWorkflow({
     } catch (caught) {
       showError(caught, t('warehouse.outboundOrder.message.generateFailed'))
     } finally {
-      setSubmitting(false)
+      setGenerateSubmitting(false)
     }
   }
 
@@ -135,7 +138,7 @@ export function useOutboundOrderWorkflow({
       showError(new Error(t('warehouse.outboundOrder.validation.reviewerRequired')))
       return
     }
-    setSubmitting(true)
+    setSubmitSubmitting(true)
     setMessage('')
     try {
       const order = await submitOutboundOrder(selectedOrder.id, { reviewer_id: reviewerId })
@@ -145,7 +148,7 @@ export function useOutboundOrderWorkflow({
     } catch (caught) {
       showError(caught, t('warehouse.outboundOrder.message.submitFailed'))
     } finally {
-      setSubmitting(false)
+      setSubmitSubmitting(false)
     }
   }
 
@@ -172,7 +175,7 @@ export function useOutboundOrderWorkflow({
       setCancelReasonError(t('warehouse.outboundOrder.validation.cancelReasonRequired'))
       return
     }
-    setSubmitting(true)
+    setCancelSubmitting(true)
     setMessage('')
     try {
       const order = await cancelOutboundOrder(selectedOrder.id, { reason })
@@ -182,7 +185,7 @@ export function useOutboundOrderWorkflow({
     } catch (caught) {
       showError(caught, t('warehouse.outboundOrder.message.cancelFailed'))
     } finally {
-      setSubmitting(false)
+      setCancelSubmitting(false)
     }
   }
 
@@ -202,7 +205,7 @@ export function useOutboundOrderWorkflow({
       )
       return
     }
-    setSubmitting(true)
+    setApproveSubmitting(true)
     setMessage('')
     try {
       const order = await approveOutboundOrder(
@@ -220,7 +223,7 @@ export function useOutboundOrderWorkflow({
     } catch (caught) {
       showError(caught, t('warehouse.outboundOrder.message.approveFailed'))
     } finally {
-      setSubmitting(false)
+      setApproveSubmitting(false)
     }
   }
 
@@ -232,7 +235,10 @@ export function useOutboundOrderWorkflow({
     approvalForm,
     setApprovalForm,
     outboundOrderModalOpen,
-    submitting,
+    generateSubmitting,
+    submitSubmitting,
+    approveSubmitting,
+    cancelSubmitting,
     message,
     cancelModalOpen,
     cancelReason,

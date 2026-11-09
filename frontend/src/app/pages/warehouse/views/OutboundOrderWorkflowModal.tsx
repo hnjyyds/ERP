@@ -168,7 +168,7 @@ export function OutboundOrderWorkflowModal({
             disabled={!workflow.form.plan_id}
             htmlType="submit"
             icon={<PackagePlus size={16} />}
-            loading={workflow.submitting}
+            loading={workflow.generateSubmitting}
           >
             {t('warehouse.outboundOrder.action.generate')}
           </Button>
@@ -192,7 +192,7 @@ export function OutboundOrderWorkflowModal({
             disabled={!selectedOrder || selectedOrder.status !== 'draft' || !workflow.reviewerId}
             htmlType="button"
             icon={<Send size={16} />}
-            loading={workflow.submitting}
+            loading={workflow.submitSubmitting}
             onClick={() => void workflow.submitSelectedOutboundOrder()}
           >
             {t('warehouse.outboundOrder.action.submit')}
@@ -241,7 +241,7 @@ export function OutboundOrderWorkflowModal({
             }
             htmlType="submit"
             icon={<CheckCircle2 size={16} />}
-            loading={workflow.submitting}
+            loading={workflow.approveSubmitting}
             type="primary"
           >
             {t('warehouse.outboundOrder.action.approve')}

@@ -54,7 +54,10 @@ export function useInboundOrderWorkflow({
   const [inboundOrderModalOpen, setInboundOrderModalOpen] = useState(false)
   const [loadingAssignableUsers, setLoadingAssignableUsers] = useState(false)
   const [assignableUsersLoaded, setAssignableUsersLoaded] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
+  const [generateSubmitting, setGenerateSubmitting] = useState(false)
+  const [submitSubmitting, setSubmitSubmitting] = useState(false)
+  const [approveSubmitting, setApproveSubmitting] = useState(false)
+  const [cancelSubmitting, setCancelSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [cancelModalOpen, setCancelModalOpen] = useState(false)
   const [cancelReason, setCancelReason] = useState('')
@@ -152,7 +155,7 @@ export function useInboundOrderWorkflow({
 
   async function generateInboundOrder(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setSubmitting(true)
+    setGenerateSubmitting(true)
     setMessage('')
     try {
       const order = await generateInboundOrderFromPlan(inboundOrderPayload(form))
@@ -163,7 +166,7 @@ export function useInboundOrderWorkflow({
     } catch (caught) {
       showError(caught, t('warehouse.inboundOrder.message.generateFailed'))
     } finally {
-      setSubmitting(false)
+      setGenerateSubmitting(false)
     }
   }
 
@@ -173,7 +176,7 @@ export function useInboundOrderWorkflow({
       showError(new Error(t('warehouse.inboundOrder.validation.reviewerRequired')))
       return
     }
-    setSubmitting(true)
+    setSubmitSubmitting(true)
     setMessage('')
     try {
       const order = await submitInboundOrder(selectedOrder.id, {
@@ -185,7 +188,7 @@ export function useInboundOrderWorkflow({
     } catch (caught) {
       showError(caught, t('warehouse.inboundOrder.message.submitFailed'))
     } finally {
-      setSubmitting(false)
+      setSubmitSubmitting(false)
     }
   }
 
@@ -212,7 +215,7 @@ export function useInboundOrderWorkflow({
       setCancelReasonError(t('warehouse.inboundOrder.validation.cancelReasonRequired'))
       return
     }
-    setSubmitting(true)
+    setCancelSubmitting(true)
     setMessage('')
     try {
       const order = await cancelInboundOrder(selectedOrder.id, { reason })
@@ -222,7 +225,7 @@ export function useInboundOrderWorkflow({
     } catch (caught) {
       showError(caught, t('warehouse.inboundOrder.message.cancelFailed'))
     } finally {
-      setSubmitting(false)
+      setCancelSubmitting(false)
     }
   }
 
@@ -240,7 +243,7 @@ export function useInboundOrderWorkflow({
       )
       return
     }
-    setSubmitting(true)
+    setApproveSubmitting(true)
     setMessage('')
     try {
       const order = await approveInboundOrder(selectedOrder.id, inboundOrderApprovePayload(approvalForm))
@@ -255,7 +258,7 @@ export function useInboundOrderWorkflow({
     } catch (caught) {
       showError(caught, t('warehouse.inboundOrder.message.approveFailed'))
     } finally {
-      setSubmitting(false)
+      setApproveSubmitting(false)
     }
   }
 
@@ -267,7 +270,10 @@ export function useInboundOrderWorkflow({
     assignableUsers,
     loadingAssignableUsers,
     inboundOrderModalOpen,
-    submitting,
+    generateSubmitting,
+    submitSubmitting,
+    approveSubmitting,
+    cancelSubmitting,
     message,
     cancelModalOpen,
     cancelReason,

@@ -96,7 +96,7 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
 
       <InboundOrderCancelModal
         open={workflow.cancelModalOpen}
-        submitting={workflow.submitting}
+        submitting={workflow.cancelSubmitting}
         reason={workflow.cancelReason}
         reasonError={workflow.cancelReasonError}
         onReasonChange={workflow.changeCancelReason}
