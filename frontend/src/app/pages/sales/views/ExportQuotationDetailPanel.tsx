@@ -92,9 +92,26 @@ export function ExportQuotationDetailPanel({
             <p>{quotation.description ?? t('sales.quotation.detail.noDescription')}</p>
           </div>
 
+          {quotation.rejection_reason ? (
+            <Alert
+              description={
+                quotation.rejected_at
+                  ? t('sales.quotation.detail.rejectedAt', {
+                      date: formatDate(quotation.rejected_at),
+                    })
+                  : undefined
+              }
+              showIcon
+              title={t('sales.quotation.detail.rejectionReason', {
+                reason: quotation.rejection_reason,
+              })}
+              type="warning"
+            />
+          ) : null}
+
           <div className="delivery-action-row">
             <Button
-              disabled={quotation.approval_status !== 'draft'}
+              disabled={!['draft', 'rejected'].includes(quotation.approval_status)}
               onClick={() => workflow.loadQuotationIntoForm(quotation)}
             >
               {t('sales.quotation.action.loadForEdit')}
@@ -128,6 +145,25 @@ export function ExportQuotationDetailPanel({
             <Button loading={workflow.submitting} onClick={() => void workflow.exportQuotation('pdf')}>
               {t('sales.quotation.action.exportPdf')}
             </Button>
+            {quotation.approval_status === 'submitted' ? (
+              <>
+                <Button
+                  disabled={!workflow.canWithdrawSelectedQuotation}
+                  loading={workflow.submitting}
+                  onClick={() => void workflow.withdrawQuotation()}
+                >
+                  {t('sales.quotation.action.withdraw')}
+                </Button>
+                <Button
+                  danger
+                  disabled={!workflow.canApproveSelectedQuotation}
+                  loading={workflow.submitting}
+                  onClick={workflow.openRejectModal}
+                >
+                  {t('sales.quotation.action.reject')}
+                </Button>
+              </>
+            ) : null}
           </div>
           {quotation.approval_status === 'submitted' && !workflow.canApproveSelectedQuotation ? (
             <Alert

@@ -14,6 +14,7 @@ import type {
   ExportQuotationApprovePayload,
   ExportQuotationConfirmContractPayload,
   ExportQuotationCreatePayload,
+  ExportQuotationRejectPayload,
 } from '@/api'
 
 export function sampleDeliveryStatusLabel(value: string): string {
@@ -83,6 +84,11 @@ export type ExportQuotationApproveFormState = {
   approved_at: string
 }
 
+export type ExportQuotationRejectFormState = {
+  rejected_at: string
+  rejection_reason: string
+}
+
 export type ExportQuotationContractFormState = {
   confirmed_at: string
 }
@@ -125,6 +131,15 @@ export function initialExportQuotationApproveForm(): ExportQuotationApproveFormS
 export function initialExportQuotationContractForm(): ExportQuotationContractFormState {
   return {
     confirmed_at: todayInputValue(),
+  }
+}
+
+export function initialExportQuotationRejectForm(
+  rejectedAt?: string,
+): ExportQuotationRejectFormState {
+  return {
+    rejected_at: rejectedAt ?? todayInputValue(),
+    rejection_reason: '',
   }
 }
 
@@ -202,5 +217,14 @@ export function exportQuotationContractPayload(
 ): ExportQuotationConfirmContractPayload {
   return {
     confirmed_at: form.confirmed_at,
+  }
+}
+
+export function exportQuotationRejectPayload(
+  form: ExportQuotationRejectFormState,
+): ExportQuotationRejectPayload {
+  return {
+    rejected_at: form.rejected_at,
+    rejection_reason: form.rejection_reason.trim(),
   }
 }

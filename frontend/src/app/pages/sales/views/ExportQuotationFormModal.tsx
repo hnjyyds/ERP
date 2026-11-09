@@ -271,7 +271,10 @@ export function ExportQuotationFormModal({
         <div className="modal-actions">
           <Button onClick={workflow.closeQuotationForm}>{t('common.cancel')}</Button>
           <Button
-            disabled={!selectedQuotation || selectedQuotation.approval_status !== 'draft'}
+            disabled={
+              !selectedQuotation ||
+              !['draft', 'rejected'].includes(selectedQuotation.approval_status)
+            }
             loading={workflow.submitting}
             onClick={() => void workflow.saveQuotationDraft()}
           >

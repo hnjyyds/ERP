@@ -6,8 +6,10 @@ import {
   confirmExportQuotationContract,
   createExportQuotation,
   exportExportQuotation,
+  rejectExportQuotation,
   submitExportQuotation,
   updateExportQuotation,
+  withdrawExportQuotation,
   type CurrentUser,
   type Customer,
   type ExportQuotation,
@@ -23,13 +25,16 @@ import {
   exportQuotationApprovePayload,
   exportQuotationContractPayload,
   exportQuotationPayload,
+  exportQuotationRejectPayload,
   exportQuotationToForm,
   initialExportQuotationApproveForm,
   initialExportQuotationContractForm,
   initialExportQuotationForm,
+  initialExportQuotationRejectForm,
   type ExportQuotationApproveFormState,
   type ExportQuotationContractFormState,
   type ExportQuotationFormState,
+  type ExportQuotationRejectFormState,
 } from '../exportQuotationHelpers'
 
 const APPROVE_PERMISSION = 'sales:quotation:approve'
@@ -68,6 +73,10 @@ export function useExportQuotationWorkflow({
   const [contractForm, setContractForm] = useState<ExportQuotationContractFormState>(() =>
     initialExportQuotationContractForm(),
   )
+  const [rejectForm, setRejectForm] = useState<ExportQuotationRejectFormState>(() =>
+    initialExportQuotationRejectForm(),
+  )
+  const [rejectOpen, setRejectOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [exportPreview, setExportPreview] = useState('')
@@ -76,6 +85,12 @@ export function useExportQuotationWorkflow({
   const canApproveSelectedQuotation = Boolean(
     selectedQuotation &&
       canApproveAssignedRecord(currentUser, selectedQuotation.reviewer_id, APPROVE_PERMISSION),
+  )
+  const canWithdrawSelectedQuotation = Boolean(
+    selectedQuotation &&
+      selectedQuotation.approval_status === 'submitted' &&
+      (selectedQuotation.owner_user_id === currentUser.id ||
+        currentUser.permissions.includes('system:super_admin')),
   )
 
   useEffect(() => {
@@ -86,6 +101,8 @@ export function useExportQuotationWorkflow({
     setContractForm({
       confirmed_at: selectedQuotation?.approved_at ?? todayInputValue(),
     })
+    setRejectForm(initialExportQuotationRejectForm(selectedQuotation?.quote_date))
+    setRejectOpen(false)
     setReviewerId(selectedQuotation?.reviewer_id ?? '')
   }, [selectedQuotation?.id, selectedQuotation?.approval_status])
 
@@ -201,6 +218,64 @@ export function useExportQuotationWorkflow({
     }
   }
 
+  async function rejectQuotation() {
+    if (!selectedQuotation) return
+    if (!canApproveSelectedQuotation) {
+      showError(
+        new Error(
+          t('sales.quotation.action.approverMismatch', {
+            name:
+              selectedQuotation.reviewer_name ?? t('sales.quotation.action.defaultReviewer'),
+          }),
+        ),
+      )
+      return
+    }
+    if (!rejectForm.rejection_reason.trim()) {
+      showError(new Error(t('sales.quotation.validation.rejectReasonRequired')))
+      return
+    }
+    setSubmitting(true)
+    setMessage('')
+    try {
+      const rejected = await rejectExportQuotation(
+        selectedQuotation.id,
+        exportQuotationRejectPayload(rejectForm),
+      )
+      setMessage(t('sales.quotation.message.rejected', { code: rejected.code }))
+      setRejectOpen(false)
+      await applySavedQuotation(rejected)
+    } catch (caught) {
+      showError(caught, t('sales.quotation.message.rejectFailed'))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  async function withdrawQuotation() {
+    if (!selectedQuotation) return
+    setSubmitting(true)
+    setMessage('')
+    try {
+      const withdrawn = await withdrawExportQuotation(selectedQuotation.id)
+      setMessage(t('sales.quotation.message.withdrawn', { code: withdrawn.code }))
+      await applySavedQuotation(withdrawn)
+    } catch (caught) {
+      showError(caught, t('sales.quotation.message.withdrawFailed'))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  function openRejectModal() {
+    setRejectForm(initialExportQuotationRejectForm(selectedQuotation?.quote_date))
+    setRejectOpen(true)
+  }
+
+  function closeRejectModal() {
+    setRejectOpen(false)
+  }
+
   async function exportQuotation(format: 'pdf' | 'excel') {
     if (!selectedQuotation) return
     setSubmitting(true)
@@ -248,11 +323,15 @@ export function useExportQuotationWorkflow({
     setApproveForm,
     contractForm,
     setContractForm,
+    rejectForm,
+    setRejectForm,
+    rejectOpen,
     submitting,
     message,
     exportPreview,
     generatedContract,
     canApproveSelectedQuotation,
+    canWithdrawSelectedQuotation,
     applyCustomerToQuotationForm,
     loadQuotationIntoForm,
     openNewQuotationForm,
@@ -261,6 +340,10 @@ export function useExportQuotationWorkflow({
     saveQuotationDraft,
     submitQuotationForApproval,
     approveQuotation,
+    rejectQuotation,
+    withdrawQuotation,
+    openRejectModal,
+    closeRejectModal,
     exportQuotation,
     confirmContract,
   }

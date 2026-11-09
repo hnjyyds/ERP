@@ -11,6 +11,7 @@ import { useExportQuotationsList } from './hooks/useExportQuotationsList'
 import { ExportQuotationDetailPanel } from './views/ExportQuotationDetailPanel'
 import { ExportQuotationFormModal } from './views/ExportQuotationFormModal'
 import { ExportQuotationListPanel } from './views/ExportQuotationListPanel'
+import { ExportQuotationRejectModal } from './views/ExportQuotationRejectModal'
 
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 
@@ -60,6 +61,8 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
           loadingCustomers={list.loadingCustomers}
           selectedQuotation={list.selectedQuotation}
         />
+
+        <ExportQuotationRejectModal workflow={workflow} />
 
         {detailId ? (
           <ExportQuotationDetailPanel

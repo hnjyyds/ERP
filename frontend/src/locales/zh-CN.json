@@ -660,11 +660,21 @@
         "loadForEdit": "载入编辑",
         "submitForApproval": "提交审批",
         "approve": "审批通过",
+        "reject": "驳回",
+        "withdraw": "撤回",
         "exportPdf": "导出 PDF",
         "generateContract": "生成出口合同",
         "waitingApproval": "等待 {name} 审批",
         "approverMismatch": "该报价单应由 {name} 审批",
         "defaultReviewer": "指定审批人"
+      },
+      "reject": {
+        "title": "驳回出口报价",
+        "rejectedAt": "驳回日期",
+        "reason": "驳回原因",
+        "reasonPlaceholder": "请填写驳回原因",
+        "confirm": "确认驳回",
+        "cancel": "取消"
       },
       "detail": {
         "title": "报价单明细",
@@ -672,6 +682,8 @@
         "notFilled": "未填",
         "notApproved": "未审批",
         "notGenerated": "未生成",
+        "rejectionReason": "驳回原因：{reason}",
+        "rejectedAt": "驳回日期：{date}",
         "noDescription": "未填写报价描述",
         "generateContractTitle": "报价确认生成出口合同",
         "generatedContract": "已生成出口合同",
@@ -689,7 +701,8 @@
         "recordCount_other": "{count} 条"
       },
       "validation": {
-        "reviewerRequired": "请选择审批人"
+        "reviewerRequired": "请选择审批人",
+        "rejectReasonRequired": "请填写驳回原因"
       },
       "message": {
         "created": "已新增出口报价 {code}",
@@ -700,6 +713,10 @@
         "submitFailed": "出口报价提交失败",
         "approved": "已审批出口报价 {code}",
         "approveFailed": "出口报价审批失败",
+        "rejected": "已驳回出口报价 {code}",
+        "rejectFailed": "出口报价驳回失败",
+        "withdrawn": "已撤回出口报价 {code}",
+        "withdrawFailed": "出口报价撤回失败",
         "exportPreview": "已生成导出预览 {filename}",
         "exportFailed": "出口报价导出失败",
         "contractGenerated": "已生成出口合同 {contractNo}",

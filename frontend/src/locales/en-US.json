@@ -660,11 +660,21 @@
         "loadForEdit": "Load for editing",
         "submitForApproval": "Submit for approval",
         "approve": "Approve",
+        "reject": "Reject",
+        "withdraw": "Withdraw",
         "exportPdf": "Export PDF",
         "generateContract": "Generate export contract",
         "waitingApproval": "Waiting for {name} to approve",
         "approverMismatch": "This quotation should be approved by {name}",
         "defaultReviewer": "the assigned approver"
+      },
+      "reject": {
+        "title": "Reject export quotation",
+        "rejectedAt": "Rejection date",
+        "reason": "Rejection reason",
+        "reasonPlaceholder": "Enter the rejection reason",
+        "confirm": "Reject",
+        "cancel": "Cancel"
       },
       "detail": {
         "title": "Quotation detail",
@@ -672,6 +682,8 @@
         "notFilled": "Not filled",
         "notApproved": "Not approved",
         "notGenerated": "Not generated",
+        "rejectionReason": "Rejection reason: {reason}",
+        "rejectedAt": "Rejected on: {date}",
         "noDescription": "No quotation description",
         "generateContractTitle": "Confirm quotation and generate export contract",
         "generatedContract": "Export contract generated",
@@ -689,7 +701,8 @@
         "recordCount_other": "{count} records"
       },
       "validation": {
-        "reviewerRequired": "Select an approver"
+        "reviewerRequired": "Select an approver",
+        "rejectReasonRequired": "Enter the rejection reason"
       },
       "message": {
         "created": "Export quotation {code} created",
@@ -700,6 +713,10 @@
         "submitFailed": "Failed to submit export quotation",
         "approved": "Export quotation {code} approved",
         "approveFailed": "Failed to approve export quotation",
+        "rejected": "Export quotation {code} rejected",
+        "rejectFailed": "Failed to reject export quotation",
+        "withdrawn": "Export quotation {code} withdrawn",
+        "withdrawFailed": "Failed to withdraw export quotation",
         "exportPreview": "Export preview generated: {filename}",
         "exportFailed": "Failed to export quotation",
         "contractGenerated": "Export contract {contractNo} generated",

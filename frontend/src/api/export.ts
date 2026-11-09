@@ -37,6 +37,8 @@ export interface ExportQuotation {
   approval_status: string
   submitted_at: string | null
   approved_at: string | null
+  rejected_at: string | null
+  rejection_reason: string | null
   reviewer_id: string | null
   reviewer_name: string | null
   confirmed_at: string | null
@@ -91,6 +93,11 @@ export interface ExportQuotationCreatePayload {
 export interface ExportQuotationApprovePayload {
   reviewer_name?: string
   approved_at: string
+}
+
+export interface ExportQuotationRejectPayload {
+  rejected_at: string
+  rejection_reason: string
 }
 
 export interface ExportQuotationConfirmContractPayload {
@@ -491,6 +498,22 @@ export function approveExportQuotation(
   return request<ExportQuotation>(`/sales/quotations/${quotationId}/approve`, {
     method: 'POST',
     body: JSON.stringify(payload),
+  })
+}
+
+export function rejectExportQuotation(
+  quotationId: string,
+  payload: ExportQuotationRejectPayload,
+): Promise<ExportQuotation> {
+  return request<ExportQuotation>(`/sales/quotations/${quotationId}/reject`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function withdrawExportQuotation(quotationId: string): Promise<ExportQuotation> {
+  return request<ExportQuotation>(`/sales/quotations/${quotationId}/withdraw`, {
+    method: 'POST',
   })
 }
 

@@ -336,6 +336,108 @@ describe('ExportQuotationsPage', () => {
     expect(fieldByLabel('销售单价')).toHaveValue(12.5)
   })
 
+  it('撤回与驳回入口仅在已提交报价显示', async () => {
+    window.history.replaceState({}, '', '/')
+    mockDetailReferences()
+    const manager = {
+      ...currentUser,
+      id: 'u-manager',
+      roles: ['manager'],
+      permissions: ['sales:quotation:approve'],
+    }
+    mockQuotationList(
+      quotationWith({
+        approval_status: 'submitted',
+        reviewer_id: 'u-manager',
+        reviewer_name: '业务主管',
+        owner_user_id: 'u-manager',
+      }),
+    )
+    const first = render(
+      <ExportQuotationsPage currentUser={manager} detailId="q-1" onNavigate={onNavigate} />,
+    )
+
+    expect(await screen.findByRole('button', { name: /撤\s*回/ })).toBeEnabled()
+    expect(screen.getByRole('button', { name: /驳\s*回/ })).toBeEnabled()
+    first.unmount()
+
+    mockQuotationList(quotationWith({ approval_status: 'draft' }))
+    render(<ExportQuotationsPage currentUser={manager} detailId="q-1" onNavigate={onNavigate} />)
+
+    await screen.findByRole('button', { name: '生成出口合同' })
+    expect(screen.queryByRole('button', { name: /撤\s*回/ })).toBeNull()
+    expect(screen.queryByRole('button', { name: /驳\s*回/ })).toBeNull()
+  })
+
+  it('驳回原因必填，填写后提交驳回请求', async () => {
+    window.history.replaceState({}, '', '/')
+    mockDetailReferences()
+    const manager = {
+      ...currentUser,
+      id: 'u-manager',
+      roles: ['manager'],
+      permissions: ['sales:quotation:approve'],
+    }
+    mockQuotationList(
+      quotationWith({
+        approval_status: 'submitted',
+        reviewer_id: 'u-manager',
+        reviewer_name: '业务主管',
+        owner_user_id: 'u-manager',
+      }),
+    )
+    const rejectSpy = vi
+      .spyOn(api, 'rejectExportQuotation')
+      .mockResolvedValue(quotationWith({ approval_status: 'rejected' }))
+    const user = userEvent.setup()
+    render(<ExportQuotationsPage currentUser={manager} detailId="q-1" onNavigate={onNavigate} />)
+
+    await user.click(await screen.findByRole('button', { name: /驳\s*回/ }))
+    const dialog = within(await screen.findByRole('dialog'))
+    const confirm = dialog.getByRole('button', { name: '确认驳回' })
+    expect(confirm).toBeDisabled()
+
+    await user.type(dialog.getByLabelText(/驳回原因/), '价格偏高')
+    await user.click(confirm)
+
+    await waitFor(() => {
+      expect(rejectSpy).toHaveBeenCalledWith('q-1', {
+        rejected_at: '2026-10-01',
+        rejection_reason: '价格偏高',
+      })
+    })
+  })
+
+  it('撤回提交后调用撤回接口', async () => {
+    window.history.replaceState({}, '', '/')
+    mockDetailReferences()
+    const manager = {
+      ...currentUser,
+      id: 'u-manager',
+      roles: ['manager'],
+      permissions: ['sales:quotation:approve'],
+    }
+    mockQuotationList(
+      quotationWith({
+        approval_status: 'submitted',
+        reviewer_id: 'u-manager',
+        reviewer_name: '业务主管',
+        owner_user_id: 'u-manager',
+      }),
+    )
+    const withdrawSpy = vi
+      .spyOn(api, 'withdrawExportQuotation')
+      .mockResolvedValue(quotationWith({ approval_status: 'draft' }))
+    const user = userEvent.setup()
+    render(<ExportQuotationsPage currentUser={manager} detailId="q-1" onNavigate={onNavigate} />)
+
+    await user.click(await screen.findByRole('button', { name: /撤\s*回/ }))
+
+    await waitFor(() => {
+      expect(withdrawSpy).toHaveBeenCalledWith('q-1')
+    })
+  })
+
   it('生成出口合同仅在已审批报价上可用，成功后展示合同号', async () => {
     window.history.replaceState({}, '', '/')
     mockDetailReferences()
