@@ -201,6 +201,15 @@ SOURCE_MESSAGES: dict[str, str] = {
     "只有已提交寄样单可以审核": "Only submitted sample delivery orders can be reviewed",
     "只有草稿寄样单可以提交": "Only draft sample delivery orders can be submitted",
     "只有草稿寄样单可以编辑": "Only draft sample delivery orders can be edited",
+    "物流更新只能将寄样单标记为已审批或已发货": (
+        "Tracking updates can only mark a sample delivery as approved or shipped"
+    ),
+    "只有已审批或已发货的寄样单可以更新物流": (
+        "Only approved or shipped sample delivery orders can update tracking"
+    ),
+    "已发货的寄样单不能回退物流状态": (
+        "Shipped sample delivery orders cannot revert their tracking status"
+    ),
     "打样去向无效": "Invalid sampling destination",
     "打样完成后才能转为样品登记": (
         "Sampling must be completed before converting to a sample record"

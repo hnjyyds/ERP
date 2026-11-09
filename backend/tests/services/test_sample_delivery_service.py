@@ -315,3 +315,103 @@ async def test_sample_delivery_service_rejects_approve_when_stock_is_insufficien
                     approved_at=date(2026, 6, 25),
                 ),
             )
+
+
+async def test_sample_delivery_service_enforces_tracking_state_transitions(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        record_service = _make_record_service(session)
+        delivery_service = _make_service(session)
+        editor = _user_with_permissions(
+            [
+                "sample:delivery:edit",
+                "sample:delivery:view",
+                "sample:record:edit",
+            ],
+            user_id="u-001",
+        )
+        sample_record_id = await _create_sample_record(record_service, editor)
+        delivery = await delivery_service.create_delivery(
+            current_user=editor,
+            payload=_delivery_payload(sample_record_id),
+        )
+        shipped_payload = SampleDeliveryTrackingUpdate(
+            express_company="DHL",
+            tracking_no="DHL-SVC-001",
+            status="shipped",
+        )
+
+        with pytest.raises(ValueError, match="只有已审批或已发货"):
+            await delivery_service.update_tracking(
+                current_user=editor,
+                delivery_id=delivery.id,
+                payload=shipped_payload,
+            )
+
+        await delivery_service.submit_delivery(
+            current_user=editor,
+            delivery_id=delivery.id,
+            payload=SampleDeliverySubmit(reviewer_id="u-admin"),
+        )
+        with pytest.raises(ValueError, match="只有已审批或已发货"):
+            await delivery_service.update_tracking(
+                current_user=editor,
+                delivery_id=delivery.id,
+                payload=shipped_payload,
+            )
+
+        reviewer = _user_with_permissions(
+            ["sample:delivery:approve", "sample:delivery:view"],
+            user_id="u-admin",
+            data_scope="all",
+        )
+        await delivery_service.approve_delivery(
+            current_user=reviewer,
+            delivery_id=delivery.id,
+            payload=SampleDeliveryApprove(
+                reviewer_name="演示业务主管",
+                approved_at=date(2026, 6, 25),
+            ),
+        )
+
+        with pytest.raises(ValueError, match="只能将寄样单标记为已审批或已发货"):
+            await delivery_service.update_tracking(
+                current_user=editor,
+                delivery_id=delivery.id,
+                payload=SampleDeliveryTrackingUpdate(
+                    express_company="DHL",
+                    tracking_no="DHL-SVC-001",
+                    status="submitted",
+                ),
+            )
+
+        staged = await delivery_service.update_tracking(
+            current_user=editor,
+            delivery_id=delivery.id,
+            payload=SampleDeliveryTrackingUpdate(
+                express_company="DHL",
+                tracking_no="DHL-SVC-001",
+                status="approved",
+            ),
+        )
+        shipped = await delivery_service.update_tracking(
+            current_user=editor,
+            delivery_id=delivery.id,
+            payload=shipped_payload,
+        )
+
+        with pytest.raises(ValueError, match="不能回退物流状态"):
+            await delivery_service.update_tracking(
+                current_user=editor,
+                delivery_id=delivery.id,
+                payload=SampleDeliveryTrackingUpdate(
+                    express_company="DHL",
+                    tracking_no="DHL-SVC-001",
+                    status="approved",
+                ),
+            )
+
+    assert staged.status == "approved"
+    assert shipped.status == "shipped"

@@ -268,17 +268,26 @@ class SampleDeliveryService:
     ) -> SampleDeliveryResponse:
         self._require(current_user, "sample:delivery:edit")
         self._validate_status(payload.status)
-        await self._get_accessible_delivery(current_user=current_user, delivery_id=delivery_id)
+        if payload.status not in {"approved", "shipped"}:
+            raise ValueError("物流更新只能将寄样单标记为已审批或已发货")
+        delivery = await self._get_accessible_delivery(
+            current_user=current_user,
+            delivery_id=delivery_id,
+        )
+        if delivery.status not in {"approved", "shipped"}:
+            raise ValueError("只有已审批或已发货的寄样单可以更新物流")
+        if delivery.status == "shipped" and payload.status != "shipped":
+            raise ValueError("已发货的寄样单不能回退物流状态")
         async with UnitOfWork(self._repository.session):
-            delivery = await self._repository.update_tracking(
+            updated = await self._repository.update_tracking(
                 delivery_id=delivery_id,
                 express_company=payload.express_company,
                 tracking_no=payload.tracking_no,
                 status=payload.status,
             )
-            if delivery is None:
+            if updated is None:
                 raise SampleDeliveryNotFoundError
-        return await self._delivery_response(delivery)
+        return await self._delivery_response(updated)
 
     async def get_fee_statistics(
         self,

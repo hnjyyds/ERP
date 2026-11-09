@@ -68,6 +68,17 @@ export function SampleDeliveryDetailPanel({
   onReviewerChange,
   onTrackingFormChange,
 }: Props) {
+  // 物流只能在审批通过后写入；已发货后不允许再回退状态。
+  const trackingEditable = Boolean(
+    selectedDelivery && ['approved', 'shipped'].includes(selectedDelivery.status),
+  )
+  const trackingStatusOptions = trackingEditable
+    ? sampleDeliveryTrackingStatusOptions.filter(
+        (item) =>
+          item.value !== 'submitted' &&
+          (selectedDelivery?.status !== 'shipped' || item.value === 'shipped'),
+      )
+    : sampleDeliveryTrackingStatusOptions
   return (
     <section className="workspace-panel detail-panel product-detail-panel">
       <div className="panel-heading toolbar-heading">
@@ -198,6 +209,7 @@ export function SampleDeliveryDetailPanel({
               <label>
                 {t('sample.delivery.field.expressCompany')}
                 <Input
+                  disabled={!trackingEditable}
                   value={trackingForm.express_company}
                   onChange={(event) =>
                     onTrackingFormChange({ ...trackingForm, express_company: event.target.value })
@@ -207,6 +219,7 @@ export function SampleDeliveryDetailPanel({
               <label>
                 {t('sample.delivery.field.trackingNo')}
                 <Input
+                  disabled={!trackingEditable}
                   value={trackingForm.tracking_no}
                   onChange={(event) =>
                     onTrackingFormChange({ ...trackingForm, tracking_no: event.target.value })
@@ -216,12 +229,13 @@ export function SampleDeliveryDetailPanel({
               <label>
                 {t('sample.delivery.field.trackingStatus')}
                 <FormSelect
+                  disabled={!trackingEditable}
                   value={trackingForm.status}
                   onChange={(event) =>
                     onTrackingFormChange({ ...trackingForm, status: event.target.value })
                   }
                 >
-                  {sampleDeliveryTrackingStatusOptions.map((item) => (
+                  {trackingStatusOptions.map((item) => (
                     <option key={item.value} value={item.value}>
                       {t(item.labelKey)}
                     </option>
@@ -229,7 +243,7 @@ export function SampleDeliveryDetailPanel({
                 </FormSelect>
               </label>
             </div>
-            <Button htmlType="submit" loading={submitting}>
+            <Button disabled={!trackingEditable} htmlType="submit" loading={submitting}>
               {t('sample.delivery.action.updateTracking')}
             </Button>
           </form>

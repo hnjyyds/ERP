@@ -167,7 +167,10 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
     setTrackingForm({
       express_company: delivery?.express_company ?? 'DHL',
       tracking_no: delivery?.tracking_no ?? '',
-      status: delivery?.status === 'approved' ? 'shipped' : 'submitted',
+      status:
+        delivery?.status === 'approved' || delivery?.status === 'shipped'
+          ? 'shipped'
+          : 'submitted',
     })
   }
 
