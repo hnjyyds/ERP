@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import * as api from '@/api'
 import type { SampleDelivery } from '@/api'
 import { SampleDeliveriesPage } from '@/app/pages/sample/SampleDeliveriesPage'
+import { sampleDeliveryPath } from '@/app/routes'
 
 vi.mock('@/shared/print', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/shared/print')>()
@@ -295,5 +296,54 @@ describe('SampleDeliveriesPage', () => {
     expect(trackingSpy.mock.calls[0][0]).toBe('sd-1')
     expect(trackingSpy.mock.calls[0][1]).toMatchObject({ tracking_no: 'DHL-999' })
     expect(await screen.findByText('已更新物流 DHL-999')).toBeTruthy()
+  })
+
+  it('详情页按样品与客户、产品加载样品和报价历史', async () => {
+    vi.spyOn(api, 'listSampleDeliveries').mockResolvedValue({
+      items: [
+        {
+          ...delivery,
+          lines: [
+            {
+              id: 'line-1',
+              sample_record_id: 'sr-1',
+              sample_code: 'S-001',
+              sample_type: 'confirm_sample',
+              product_id: 'p-1',
+              product_code: 'P-001',
+              product_name: '新品杯',
+              quantity: '2',
+              unit: 'pcs',
+              remark: null,
+            },
+          ],
+        } as unknown as SampleDelivery,
+      ],
+      total: 1,
+    })
+    const sampleHistorySpy = vi
+      .spyOn(api, 'getSampleDeliverySampleHistory')
+      .mockResolvedValue({ items: [delivery], total: 1 })
+    const quoteHistorySpy = vi
+      .spyOn(api, 'getSampleDeliveryQuoteHistory')
+      .mockResolvedValue({ items: [], total: 0 })
+
+    render(
+      <SampleDeliveriesPage currentUser={currentUser} detailId="sd-1" onNavigate={onNavigate} />,
+    )
+
+    await waitFor(() => expect(sampleHistorySpy).toHaveBeenCalledWith('sr-1'))
+    expect(quoteHistorySpy).toHaveBeenCalledWith({ customer_id: 'c-1', product_id: 'p-1' })
+  })
+
+  it('详情页返回列表跳转寄样单列表路径', async () => {
+    vi.spyOn(api, 'listSampleDeliveries').mockResolvedValue({ items: [delivery], total: 1 })
+
+    render(
+      <SampleDeliveriesPage currentUser={currentUser} detailId="sd-1" onNavigate={onNavigate} />,
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: '返回列表' }))
+    expect(onNavigate).toHaveBeenCalledWith(sampleDeliveryPath)
   })
 })
