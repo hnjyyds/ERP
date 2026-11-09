@@ -102,9 +102,17 @@ export interface DocumentParty {
   owner_user_id: string
 }
 
+export interface DocumentPartyListSummary {
+  total: number
+  default_count: number
+  consignee_count: number
+  issuing_bank_count: number
+}
+
 export interface DocumentPartyList {
   items: DocumentParty[]
   total: number
+  summary?: DocumentPartyListSummary
 }
 
 export interface DocumentPartyCreatePayload {
@@ -207,11 +215,17 @@ export function listDocumentParties(filters: {
   q?: string
   party_type?: string
   customer_id?: string
+  status?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<DocumentPartyList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
   if (filters.party_type) params.set('party_type', filters.party_type)
   if (filters.customer_id) params.set('customer_id', filters.customer_id)
+  if (filters.status) params.set('status', filters.status)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<DocumentPartyList>(`/masterdata/document-parties${suffix}`)
 }

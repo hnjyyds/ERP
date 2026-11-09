@@ -190,12 +190,80 @@ class DocumentPartyRepository:
         party_type: str | None = None,
         customer_id: str | None = None,
         owner_user_ids: list[str] | None = None,
+        status: str | None = None,
         active_only: bool = False,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[DocumentPartyRow], int]:
-        statement = select(DocumentParty)
-        count_statement = select(func.count()).select_from(DocumentParty)
+        conditions = self._party_conditions(
+            q=q,
+            party_type=party_type,
+            customer_id=customer_id,
+            owner_user_ids=owner_user_ids,
+            status=status,
+            active_only=active_only,
+        )
+        statement = select(DocumentParty).where(*conditions)
+        count_statement = select(func.count()).select_from(DocumentParty).where(*conditions)
+        statement = (
+            statement.order_by(
+                DocumentParty.is_default.desc(),
+                DocumentParty.created_at.desc(),
+                DocumentParty.code.asc(),
+            )
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        rows = await self._scalars(statement)
+        total = await self.session.scalar(count_statement)
+        return [self._map_party(row) for row in rows], int(total or 0)
+
+    async def summarize_parties(
+        self,
+        *,
+        q: str | None = None,
+        party_type: str | None = None,
+        customer_id: str | None = None,
+        owner_user_ids: list[str] | None = None,
+        status: str | None = None,
+        active_only: bool = False,
+    ) -> tuple[int, int, int, int]:
+        conditions = self._party_conditions(
+            q=q,
+            party_type=party_type,
+            customer_id=customer_id,
+            owner_user_ids=owner_user_ids,
+            status=status,
+            active_only=active_only,
+        )
+        base = select(func.count()).select_from(DocumentParty).where(*conditions)
+        total = await self.session.scalar(base)
+        default_count = await self.session.scalar(
+            base.where(DocumentParty.is_default.is_(True))
+        )
+        consignee_count = await self.session.scalar(
+            base.where(DocumentParty.party_type == "consignee")
+        )
+        issuing_bank_count = await self.session.scalar(
+            base.where(DocumentParty.party_type == "issuing_bank")
+        )
+        return (
+            int(total or 0),
+            int(default_count or 0),
+            int(consignee_count or 0),
+            int(issuing_bank_count or 0),
+        )
+
+    def _party_conditions(
+        self,
+        *,
+        q: str | None,
+        party_type: str | None,
+        customer_id: str | None,
+        owner_user_ids: list[str] | None,
+        status: str | None,
+        active_only: bool,
+    ) -> list:
         conditions = []
         if q:
             pattern = f"%{q}%"
@@ -219,24 +287,11 @@ class DocumentPartyRepository:
             conditions.append(DocumentParty.customer_id == customer_id)
         if owner_user_ids is not None:
             conditions.append(DocumentParty.owner_user_id.in_(owner_user_ids))
-        if active_only:
+        if status:
+            conditions.append(DocumentParty.status == status)
+        elif active_only:
             conditions.append(DocumentParty.status == "active")
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-
-        statement = (
-            statement.order_by(
-                DocumentParty.is_default.desc(),
-                DocumentParty.created_at.desc(),
-                DocumentParty.code.asc(),
-            )
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        rows = await self._scalars(statement)
-        total = await self.session.scalar(count_statement)
-        return [self._map_party(row) for row in rows], int(total or 0)
+        return conditions
 
     async def _scalars(self, statement: Select[tuple[DocumentParty]]) -> list[DocumentParty]:
         result = await self.session.scalars(statement)

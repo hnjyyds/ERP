@@ -77,8 +77,18 @@ class DocumentPartyResponse(BaseModel):
     owner_user_id: str
 
 
+class DocumentPartyListSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    total: int
+    default_count: int
+    consignee_count: int
+    issuing_bank_count: int
+
+
 class DocumentPartyListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[DocumentPartyResponse]
     total: int
+    summary: DocumentPartyListSummary | None = None

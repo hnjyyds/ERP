@@ -25,12 +25,18 @@ async def list_document_parties(
     q: Annotated[str | None, Query(max_length=120)] = None,
     party_type: Annotated[str | None, Query(max_length=40)] = None,
     customer_id: Annotated[str | None, Query(max_length=36)] = None,
+    status: Annotated[str | None, Query(max_length=20)] = None,
+    limit: Annotated[int, Query(ge=1, le=200)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
 ) -> ApiResponse[DocumentPartyListResponse]:
     parties = await service.list_parties(
         current_user=user,
         q=q,
         party_type=party_type,
         customer_id=customer_id,
+        status=status,
+        limit=limit,
+        offset=offset,
     )
     return ApiResponse(data=parties)
 

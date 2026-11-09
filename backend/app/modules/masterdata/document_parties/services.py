@@ -7,6 +7,7 @@ from app.modules.masterdata.document_parties.schemas import (
     VALID_DOCUMENT_PARTY_TYPES,
     DocumentPartyCreate,
     DocumentPartyListResponse,
+    DocumentPartyListSummary,
     DocumentPartyResponse,
     DocumentPartyUpdate,
 )
@@ -119,6 +120,9 @@ class DocumentPartyService:
         q: str | None,
         party_type: str | None,
         customer_id: str | None,
+        status: str | None = None,
+        limit: int = 50,
+        offset: int = 0,
     ) -> DocumentPartyListResponse:
         self._require(current_user, "masterdata:document_party:view")
         if party_type is not None:
@@ -131,10 +135,28 @@ class DocumentPartyService:
             party_type=party_type,
             customer_id=customer_id,
             owner_user_ids=owner_user_ids,
+            status=status,
+            limit=limit,
+            offset=offset,
+        )
+        summary_total, default_count, consignee_count, issuing_bank_count = (
+            await self._repository.summarize_parties(
+                q=q,
+                party_type=party_type,
+                customer_id=customer_id,
+                owner_user_ids=owner_user_ids,
+                status=status,
+            )
         )
         return DocumentPartyListResponse(
             items=[self._party_response(party) for party in parties],
             total=total,
+            summary=DocumentPartyListSummary(
+                total=summary_total,
+                default_count=default_count,
+                consignee_count=consignee_count,
+                issuing_bank_count=issuing_bank_count,
+            ),
         )
 
     async def lookup_parties(

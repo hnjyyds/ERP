@@ -11,7 +11,7 @@ import {
 } from 'lucide-react'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import type { FormEvent, MouseEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import {
   createDocumentParty,
@@ -20,11 +20,14 @@ import {
   updateDocumentParty,
   type DocumentParty,
   type DocumentPartyCreatePayload,
+  type DocumentPartyListSummary,
   type DocumentPartyUpdatePayload,
 } from '@/api'
 import { showError, showWarningDialog } from '@/shared/errors'
 import { documentPartyTypeOptions, type LocalizedOption } from '@/shared/formOptions'
 import { useFormModal } from '@/shared/useFormModal'
+import { useTablePagination } from '@/shared/useTablePagination'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { ListPageShell, Metric, PanelTitle } from '@/shared/ui'
 import { t } from '@/app/appI18n'
 import { documentPartyPath, moduleDetailPath } from '@/app/routes'
@@ -60,14 +63,20 @@ type DocumentPartiesPageProps = {
 }
 
 export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPageProps) {
+  const urlQuery = useUrlQuery()
+  const initialParams = useRef(urlQuery.params)
+  const appliedUrlSearchRef = useRef(urlQuery.search)
   const [parties, setParties] = useState<DocumentParty[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [typeFilter, setTypeFilter] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
+  const [search, setSearch] = useState(initialParams.current.get('q') ?? '')
+  const [typeFilter, setTypeFilter] = useState(initialParams.current.get('party_type') ?? '')
+  const [statusFilter, setStatusFilter] = useState(initialParams.current.get('status') ?? '')
+  const [summary, setSummary] = useState<DocumentPartyListSummary | null>(null)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [editingPartyId, setEditingPartyId] = useState<string | null>(null)
+  const { page, pageSize, total, setTotal, setPage, changePage, pagination } =
+    useTablePagination(50, parsePageParam(initialParams.current))
   const {
     open: partyModalOpen,
     form,
@@ -103,24 +112,41 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
     return option ? t(option.labelKey) : value
   }
 
-  const filteredParties = useMemo(
-    () => parties.filter((item) => !statusFilter || item.status === statusFilter),
-    [parties, statusFilter],
-  )
-
   const selectedParty = useMemo(
     () => {
       if (detailId) {
         return parties.find((item) => item.id === detailId) ?? null
       }
-      return filteredParties.find((item) => item.id === selectedId) ?? filteredParties[0] ?? null
+      return parties.find((item) => item.id === selectedId) ?? parties[0] ?? null
     },
-    [detailId, filteredParties, parties, selectedId],
+    [detailId, parties, selectedId],
   )
 
   useEffect(() => {
     void loadParties()
   }, [])
+
+  useEffect(() => {
+    if (appliedUrlSearchRef.current === urlQuery.search) return
+    appliedUrlSearchRef.current = urlQuery.search
+    const params = urlQuery.params
+    const nextSearch = params.get('q') ?? ''
+    const nextType = params.get('party_type') ?? ''
+    const nextStatus = params.get('status') ?? ''
+    const nextPage = parsePageParam(params)
+    setSearch(nextSearch)
+    setTypeFilter(nextType)
+    setStatusFilter(nextStatus)
+    setPage(nextPage)
+    void loadParties({
+      pageOverride: nextPage,
+      filters: {
+        q: nextSearch.trim() || undefined,
+        party_type: nextType || undefined,
+        status: nextStatus || undefined,
+      },
+    })
+  }, [urlQuery.search])
 
   useEffect(() => {
     if (detailId && parties.length > 0 && !parties.some((item) => item.id === detailId)) {
@@ -138,14 +164,28 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
     openDetail(party)
   }
 
-  async function loadParties() {
+  async function loadParties(options?: {
+    pageOverride?: number
+    pageSizeOverride?: number
+    filters?: { q?: string; party_type?: string; status?: string }
+  }) {
+    const nextPage = options?.pageOverride ?? page
+    const nextPageSize = options?.pageSizeOverride ?? pageSize
+    const filters = options?.filters ?? {
+      q: search.trim() || undefined,
+      party_type: typeFilter || undefined,
+      status: statusFilter || undefined,
+    }
     setLoading(true)
     try {
       const result = await listDocumentParties({
-        q: search.trim() || undefined,
-        party_type: typeFilter || undefined,
+        ...filters,
+        limit: nextPageSize,
+        offset: (nextPage - 1) * nextPageSize,
       })
       setParties(result.items)
+      setTotal(result.total)
+      setSummary(result.summary ?? null)
       setSelectedId((current) => {
         if (current && result.items.some((item) => item.id === current)) return current
         return result.items[0]?.id ?? null
@@ -194,10 +234,11 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
           setMessage(t('masterdata.documentParty.saved'))
         } else {
           const created = await createDocumentParty(documentPartyPayload(form))
-          setParties((current) => [created, ...current])
           setSelectedId(created.id)
           setMessage(t('masterdata.documentParty.created'))
+          void loadParties({ pageOverride: 1 })
         }
+        if (editingPartyId) void loadParties()
       },
       (caught) => showError(caught, t('masterdata.documentParty.saveFailed')),
     )
@@ -217,6 +258,7 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
           const updated = await deactivateDocumentParty(selectedParty.id)
           setParties((current) => current.map((item) => (item.id === updated.id ? updated : item)))
           setMessage(t('masterdata.documentParty.deactivated'))
+          void loadParties()
         } catch (caught) {
           showError(caught, t('masterdata.documentParty.deactivateFailed'))
         }
@@ -227,18 +269,18 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
   return (
     <section className="masterdata-page document-party-page masterdata-entity-page">
       <div className="summary-strip" aria-label={t('masterdata.documentParty.overviewAria')}>
-        <Metric label={t('masterdata.documentParty.entityLabel')} value={parties.length} />
+        <Metric label={t('masterdata.documentParty.entityLabel')} value={summary?.total ?? total} />
         <Metric
           label={t('masterdata.documentParty.defaultMetric')}
-          value={parties.filter((item) => item.is_default).length}
+          value={summary?.default_count ?? 0}
         />
         <Metric
           label={t('masterdata.documentParty.consigneeMetric')}
-          value={parties.filter((item) => item.party_type === 'consignee').length}
+          value={summary?.consignee_count ?? 0}
         />
         <Metric
           label={t('masterdata.documentParty.issuingBankMetric')}
-          value={parties.filter((item) => item.party_type === 'issuing_bank').length}
+          value={summary?.issuing_bank_count ?? 0}
         />
       </div>
 
@@ -260,7 +302,14 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
               className="inline-filters"
               onSubmit={(event) => {
                 event.preventDefault()
-                void loadParties()
+                setPage(1)
+                appliedUrlSearchRef.current = urlQuery.update({
+                  q: search.trim(),
+                  party_type: typeFilter,
+                  status: statusFilter,
+                  page: null,
+                })
+                void loadParties({ pageOverride: 1 })
               }}
             >
               <label className="inline-filter-search">
@@ -334,9 +383,22 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
                 ),
               },
             ]}
-            dataSource={filteredParties}
+            dataSource={parties}
             loading={loading}
-            pagination={false}
+            pagination={{
+              ...pagination,
+              total,
+              onChange: (nextPage, nextPageSize) => {
+                const next = changePage(nextPage, nextPageSize)
+                appliedUrlSearchRef.current = urlQuery.update({
+                  page: next.page === 1 ? null : next.page,
+                })
+                void loadParties({
+                  pageOverride: next.page,
+                  pageSizeOverride: next.pageSize,
+                })
+              },
+            }}
             rowClassName={(record) => (record.id === selectedParty?.id ? 'selected-row' : '')}
             rowKey="id"
             size="small"

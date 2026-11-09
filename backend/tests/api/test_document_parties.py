@@ -129,6 +129,57 @@ async def test_document_party_create_detail_search_update_and_lookup(
     assert inactive_lookup_response.json()["data"]["total"] == 0
 
 
+async def test_document_party_list_supports_pagination_and_summary(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    for index, party_type in enumerate(["consignee", "consignee", "issuing_bank"], start=1):
+        payload = _party_payload(code=f"DP-PAGE-00{index}") | {
+            "party_type": party_type,
+            "is_default": index == 1,
+        }
+        created = await api_client.post(
+            "/api/v1/masterdata/document-parties", headers=headers, json=payload
+        )
+        assert created.status_code == 201
+
+    first_page = await api_client.get(
+        "/api/v1/masterdata/document-parties",
+        headers=headers,
+        params={"q": "DP-PAGE", "limit": 2, "offset": 0},
+    )
+    assert first_page.status_code == 200
+    first_data = first_page.json()["data"]
+    assert first_data["total"] == 3
+    assert len(first_data["items"]) == 2
+    assert first_data["summary"] == {
+        "total": 3,
+        "default_count": 1,
+        "consignee_count": 2,
+        "issuing_bank_count": 1,
+    }
+
+    second_page = await api_client.get(
+        "/api/v1/masterdata/document-parties",
+        headers=headers,
+        params={"q": "DP-PAGE", "limit": 2, "offset": 2},
+    )
+    assert second_page.status_code == 200
+    second_data = second_page.json()["data"]
+    assert second_data["total"] == 3
+    assert len(second_data["items"]) == 1
+
+    filtered = await api_client.get(
+        "/api/v1/masterdata/document-parties",
+        headers=headers,
+        params={"q": "DP-PAGE", "status": "inactive"},
+    )
+    assert filtered.status_code == 200
+    assert filtered.json()["data"]["total"] == 0
+
+
 async def test_document_party_rejects_duplicate_code(
     api_client: AsyncClient,
     seeded_system: None,
