@@ -229,6 +229,16 @@ export function routeDefinition(key: RouteKey): RouteDefinition {
   return routeDefinitions[key]
 }
 
+const routeKeyByPath = new Map<string, RouteKey>(
+  (Object.keys(routeDefinitions) as RouteKey[]).map((key) => [routeDefinitions[key].path, key]),
+)
+
+/** 当前路径命中的注册表键；供页面注册表解析组件。 */
+export function routeKeyForPath(path: string): RouteKey | null {
+  const route = routeDefinitionFor(path)
+  return route ? routeKeyByPath.get(route.path) ?? null : null
+}
+
 export const loginPath = '/login'
 export const dashboardPath = routeDefinitions.dashboard.path
 export const dashboardTodosPath = routeDefinitions.dashboardTodos.path

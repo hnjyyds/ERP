@@ -14,6 +14,7 @@ import {
   routeRegistry,
   shipmentPath,
 } from '@/app/routes'
+import { resolvePageRenderer } from '@/app/components/router/pageRegistry'
 
 describe('route access', () => {
   it('allows dashboard subpages only when the dashboard menu is assigned', () => {
@@ -115,6 +116,24 @@ describe('route registry', () => {
     expect(navChildrenForGroup('finance').map((child) => child.path)).toContain(
       financeReportsPath,
     )
+  })
+})
+
+describe('page registry', () => {
+  it('only renders exact paths for entries without detailRoot', () => {
+    expect(resolvePageRenderer('/organization/users')).not.toBeNull()
+    expect(resolvePageRenderer('/organization/users/user-1')).toBeNull()
+    expect(resolvePageRenderer('/reporting/report-1')).toBeNull()
+  })
+
+  it('renders detail paths for detail roots and finance modules', () => {
+    expect(resolvePageRenderer(productPath)).not.toBeNull()
+    expect(resolvePageRenderer(`${productPath}/product-1`)).not.toBeNull()
+    expect(resolvePageRenderer('/finance/payments/payment-1')).not.toBeNull()
+  })
+
+  it('returns null for unregistered paths', () => {
+    expect(resolvePageRenderer('/not-registered')).toBeNull()
   })
 })
 
