@@ -16,7 +16,7 @@ export function buildScenarios({ productId, inboundOrderId, contractId }) {
     { name: 'products-list', path: '/masterdata/products' },
     { name: 'inbound-list', path: '/warehouse/inbound-orders' },
     { name: 'purchase-contracts', path: '/purchase/contracts' },
-    { name: 'inbound-modal', path: '/warehouse/inbound-orders', clickText: '生成/审批入库单' },
+    { name: 'inbound-modal', path: '/warehouse/inbound-orders', clickTestId: 'inbound-workflow-open' },
     {
       name: 'narrow-420-inbound',
       path: '/warehouse/inbound-orders',

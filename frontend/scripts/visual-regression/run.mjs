@@ -286,9 +286,13 @@ async function capture(args) {
         await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {})
         await page.evaluate(() => document.fonts.ready.catch(() => {}))
         await page.waitForTimeout(400)
-        if (scenario.clickText) {
+        // 页面被 ErrorBoundary 兜住时，截图仍会“成功”，但等于没有任何覆盖，直接判失败。
+        if (await page.locator('.dashboard-feedback.error').count()) {
+          throw new Error('页面渲染失败（命中 PageErrorBoundary），该场景未实际覆盖')
+        }
+        if (scenario.clickTestId) {
           await page
-            .locator('button', { hasText: scenario.clickText })
+            .locator(`[data-testid="${scenario.clickTestId}"]`)
             .first()
             .click({ timeout: 8000 })
           await page.waitForSelector('.ant-modal-body', { timeout: 8000 })

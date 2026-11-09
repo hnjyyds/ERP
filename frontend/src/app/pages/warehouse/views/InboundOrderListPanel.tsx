@@ -93,7 +93,13 @@ export function InboundOrderListPanel({ model, onOpenModal }: Props) {
           <Button htmlType="submit" icon={<Search size={16} />}>
             {t('warehouse.inboundOrder.list.query')}
           </Button>
-          <Button htmlType="button" type="primary" icon={<Plus size={16} />} onClick={onOpenModal}>
+          <Button
+            data-testid="inbound-workflow-open"
+            htmlType="button"
+            type="primary"
+            icon={<Plus size={16} />}
+            onClick={onOpenModal}
+          >
             {t('warehouse.inboundOrder.list.generateOrApprove')}
           </Button>
         </form>
