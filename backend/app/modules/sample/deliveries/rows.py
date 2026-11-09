@@ -27,6 +27,8 @@ class SampleDeliveryRow:
     status: str
     submitted_at: date | None
     approved_at: date | None
+    rejected_at: date | None
+    rejection_reason: str | None
     reviewer_id: str | None
     reviewer_name: str | None
     owner_user_id: str

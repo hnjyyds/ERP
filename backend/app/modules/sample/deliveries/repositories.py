@@ -102,6 +102,7 @@ class SampleDeliveryRepository:
         quote_id: str | None,
         quote_no: str | None,
         remark: str | None,
+        reset_to_draft: bool = False,
     ) -> SampleDeliveryRow | None:
         delivery = await self.session.scalar(
             select(SampleDelivery).where(SampleDelivery.id == delivery_id)
@@ -123,6 +124,8 @@ class SampleDeliveryRepository:
         delivery.quote_id = quote_id
         delivery.quote_no = quote_no
         delivery.remark = remark
+        if reset_to_draft:
+            delivery.status = "draft"
         await self.session.flush()
         return self._map_delivery(delivery)
 
@@ -214,6 +217,8 @@ class SampleDeliveryRepository:
         delivery.submitted_at = date.today()
         delivery.reviewer_id = reviewer_id
         delivery.reviewer_name = reviewer_name
+        delivery.rejected_at = None
+        delivery.rejection_reason = None
         await self.session.flush()
         return self._map_delivery(delivery)
 
@@ -236,6 +241,45 @@ class SampleDeliveryRepository:
         if reviewer_name is not None:
             delivery.reviewer_name = reviewer_name
         delivery.approved_at = approved_at
+        delivery.rejected_at = None
+        delivery.rejection_reason = None
+        await self.session.flush()
+        return self._map_delivery(delivery)
+
+    async def reject_delivery(
+        self,
+        *,
+        delivery_id: str,
+        rejected_at: date,
+        rejection_reason: str,
+        reviewer_id: str | None = None,
+        reviewer_name: str | None = None,
+    ) -> SampleDeliveryRow | None:
+        delivery = await self.session.scalar(
+            select(SampleDelivery).where(SampleDelivery.id == delivery_id)
+        )
+        if delivery is None:
+            return None
+        delivery.status = "rejected"
+        delivery.rejected_at = rejected_at
+        delivery.rejection_reason = rejection_reason
+        if reviewer_id is not None:
+            delivery.reviewer_id = reviewer_id
+        if reviewer_name is not None:
+            delivery.reviewer_name = reviewer_name
+        await self.session.flush()
+        return self._map_delivery(delivery)
+
+    async def withdraw_delivery(self, delivery_id: str) -> SampleDeliveryRow | None:
+        delivery = await self.session.scalar(
+            select(SampleDelivery).where(SampleDelivery.id == delivery_id)
+        )
+        if delivery is None:
+            return None
+        delivery.status = "draft"
+        delivery.submitted_at = None
+        delivery.reviewer_id = None
+        delivery.reviewer_name = None
         await self.session.flush()
         return self._map_delivery(delivery)
 
@@ -609,6 +653,8 @@ class SampleDeliveryRepository:
             status=delivery.status,
             submitted_at=delivery.submitted_at,
             approved_at=delivery.approved_at,
+            rejected_at=delivery.rejected_at,
+            rejection_reason=delivery.rejection_reason,
             reviewer_id=delivery.reviewer_id,
             reviewer_name=delivery.reviewer_name,
             owner_user_id=delivery.owner_user_id,

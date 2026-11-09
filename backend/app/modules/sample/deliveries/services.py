@@ -6,12 +6,12 @@ from io import StringIO
 from app.core.messages import localize_labels
 from app.db.uow import UnitOfWork
 from app.modules.sample.deliveries.repositories import (
-    SampleDeliveryFeeRow,
     SampleDeliveryFeeStatisticRow,
     SampleDeliveryLineRow,
     SampleDeliveryRepository,
     SampleDeliveryRow,
 )
+from app.modules.sample.deliveries.responses import build_delivery_response
 from app.modules.sample.deliveries.schemas import (
     VALID_SAMPLE_DELIVERY_STATUSES,
     SampleDeliveryApprove,
@@ -19,16 +19,16 @@ from app.modules.sample.deliveries.schemas import (
     SampleDeliveryCustomerStatisticResponse,
     SampleDeliveryExportResponse,
     SampleDeliveryExpressStatisticResponse,
-    SampleDeliveryFeeResponse,
     SampleDeliveryFeeStatisticResponse,
     SampleDeliveryFeeStatisticsResponse,
-    SampleDeliveryLineResponse,
     SampleDeliveryListResponse,
+    SampleDeliveryReject,
     SampleDeliveryResponse,
     SampleDeliveryStatisticsResponse,
     SampleDeliveryStatusStatisticResponse,
     SampleDeliverySubmit,
     SampleDeliveryTrackingUpdate,
+    SampleDeliveryWithdraw,
 )
 from app.modules.sample.records.repositories import SampleRecordRepository
 from app.modules.system.auth.assignees import AssigneeValidator
@@ -111,8 +111,8 @@ class SampleDeliveryService:
             current_user=current_user,
             delivery_id=delivery_id,
         )
-        if delivery.status != "draft":
-            raise ValueError("只有草稿寄样单可以编辑")
+        if delivery.status not in {"draft", "rejected"}:
+            raise ValueError("只有草稿或已驳回的寄样单可以编辑")
         async with UnitOfWork(self._repository.session):
             updated = await self._repository.update_delivery(
                 delivery_id=delivery.id,
@@ -131,6 +131,7 @@ class SampleDeliveryService:
                 quote_id=payload.quote_id,
                 quote_no=payload.quote_no,
                 remark=payload.remark,
+                reset_to_draft=delivery.status == "rejected",
             )
             if updated is None:
                 raise SampleDeliveryNotFoundError
@@ -264,6 +265,65 @@ class SampleDeliveryService:
                     note=None,
                 )
         return await self._delivery_response(approved)
+
+    async def reject_delivery(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        delivery_id: str,
+        payload: SampleDeliveryReject,
+    ) -> SampleDeliveryResponse:
+        self._require(current_user, "sample:delivery:approve")
+        delivery = await self._get_accessible_delivery(
+            current_user=current_user,
+            delivery_id=delivery_id,
+        )
+        if delivery.status != "submitted":
+            raise ValueError("只有已提交寄样单可以驳回")
+        if not can_approve_assigned_record(
+            current_user_id=current_user.id,
+            reviewer_id=delivery.reviewer_id,
+            permissions=current_user.permissions,
+        ):
+            raise PermissionDeniedError
+        await self._ensure_no_downstream_effects(delivery)
+        async with UnitOfWork(self._repository.session):
+            rejected = await self._repository.reject_delivery(
+                delivery_id=delivery_id,
+                rejected_at=payload.rejected_at,
+                rejection_reason=payload.rejection_reason,
+                reviewer_id=current_user.id,
+                reviewer_name=current_user.display_name,
+            )
+            if rejected is None:
+                raise SampleDeliveryNotFoundError
+        return await self._delivery_response(rejected)
+
+    async def withdraw_delivery(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        delivery_id: str,
+        payload: SampleDeliveryWithdraw,
+    ) -> SampleDeliveryResponse:
+        self._require(current_user, "sample:delivery:edit")
+        delivery = await self._get_accessible_delivery(
+            current_user=current_user,
+            delivery_id=delivery_id,
+        )
+        if delivery.status != "submitted":
+            raise ValueError("只有已提交寄样单可以撤回")
+        if (
+            delivery.owner_user_id != current_user.id
+            and "system:super_admin" not in current_user.permissions
+        ):
+            raise PermissionDeniedError
+        await self._ensure_no_downstream_effects(delivery)
+        async with UnitOfWork(self._repository.session):
+            withdrawn = await self._repository.withdraw_delivery(delivery_id)
+            if withdrawn is None:
+                raise SampleDeliveryNotFoundError
+        return await self._delivery_response(withdrawn)
 
     async def update_tracking(
         self,
@@ -542,6 +602,17 @@ class SampleDeliveryService:
             if summary is None or summary.retained_quantity < quantity:
                 raise ValueError("样品留样数量不足")
 
+    async def _ensure_no_downstream_effects(self, delivery: SampleDeliveryRow) -> None:
+        if delivery.status == "shipped":
+            raise ValueError("寄样单已发货或已产生发货记账，不能驳回或撤回")
+        lines = await self._repository.list_lines(delivery.id)
+        for sample_record_id in {line.sample_record_id for line in lines}:
+            if await self._sample_record_repository.delivered_stock_event_exists(
+                sample_record_id=sample_record_id,
+                delivery_no=delivery.code,
+            ):
+                raise ValueError("寄样单已发货或已产生发货记账，不能驳回或撤回")
+
     async def _get_accessible_delivery(
         self,
         *,
@@ -568,65 +639,7 @@ class SampleDeliveryService:
             raise ValueError("寄样状态无效")
 
     async def _delivery_response(self, delivery: SampleDeliveryRow) -> SampleDeliveryResponse:
-        lines = await self._repository.list_lines(delivery.id)
-        fees = await self._repository.list_fees(delivery.id)
-        fee_total = Decimal("0")
-        for fee in fees:
-            fee_total += fee.amount
-        return SampleDeliveryResponse(
-            id=delivery.id,
-            code=delivery.code,
-            delivery_date=delivery.delivery_date,
-            customer_id=delivery.customer_id,
-            customer_name=delivery.customer_name,
-            supplier_id=delivery.supplier_id,
-            supplier_name=delivery.supplier_name,
-            factory_id=delivery.factory_id,
-            factory_name=delivery.factory_name,
-            recipient_name=delivery.recipient_name,
-            recipient_company=delivery.recipient_company,
-            recipient_address=delivery.recipient_address,
-            express_company=delivery.express_company,
-            tracking_no=delivery.tracking_no,
-            quote_id=delivery.quote_id,
-            quote_no=delivery.quote_no,
-            remark=delivery.remark,
-            status=delivery.status,
-            submitted_at=delivery.submitted_at,
-            approved_at=delivery.approved_at,
-            reviewer_id=delivery.reviewer_id,
-            reviewer_name=delivery.reviewer_name,
-            owner_user_id=delivery.owner_user_id,
-            lines=[self._line_response(line) for line in lines],
-            fees=[self._fee_response(fee) for fee in fees],
-            fee_total=self._money(fee_total),
-        )
-
-    def _line_response(self, line: SampleDeliveryLineRow) -> SampleDeliveryLineResponse:
-        return SampleDeliveryLineResponse(
-            id=line.id,
-            delivery_id=line.delivery_id,
-            sample_record_id=line.sample_record_id,
-            sample_code=line.sample_code,
-            sample_type=line.sample_type,
-            product_id=line.product_id,
-            product_code=line.product_code,
-            product_name=line.product_name,
-            quantity=self._quantity(line.quantity),
-            unit=line.unit,
-            remark=line.remark,
-        )
-
-    def _fee_response(self, fee: SampleDeliveryFeeRow) -> SampleDeliveryFeeResponse:
-        return SampleDeliveryFeeResponse(
-            id=fee.id,
-            delivery_id=fee.delivery_id,
-            fee_type=fee.fee_type,
-            amount=self._money(fee.amount),
-            currency=fee.currency,
-            payer_type=fee.payer_type,
-            remark=fee.remark,
-        )
+        return await build_delivery_response(delivery, self._repository)
 
     def _fee_statistic_response(
         self,

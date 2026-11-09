@@ -9,10 +9,12 @@ from app.modules.sample.deliveries.schemas import (
     SampleDeliveryCreate,
     SampleDeliveryFeeCreate,
     SampleDeliveryLineCreate,
+    SampleDeliveryReject,
     SampleDeliverySubmit,
     SampleDeliveryTrackingUpdate,
+    SampleDeliveryWithdraw,
 )
-from app.modules.sample.deliveries.services import SampleDeliveryService
+from app.modules.sample.deliveries.services import PermissionDeniedError, SampleDeliveryService
 from app.modules.sample.records.repositories import SampleRecordRepository
 from app.modules.sample.records.schemas import SampleRecordCreate, SampleStockEventCreate
 from app.modules.sample.records.services import SampleRecordService
@@ -521,3 +523,258 @@ async def test_sample_delivery_service_rejects_duplicate_stock_entry_on_approve(
     assert detail.stock_summary.delivered_quantity == "1"
     assert detail.stock_summary.retained_quantity == "4"
     assert delivery_after.status == "submitted"
+
+
+async def test_sample_delivery_service_reject_edit_and_resubmit(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        record_service = _make_record_service(session)
+        delivery_service = _make_service(session)
+        owner = _user_with_permissions(
+            ["sample:delivery:edit", "sample:delivery:view", "sample:record:edit"],
+            user_id="u-001",
+        )
+        sample_record_id = await _create_sample_record(record_service, owner)
+        delivery = await delivery_service.create_delivery(
+            current_user=owner,
+            payload=_delivery_payload(sample_record_id),
+        )
+        await delivery_service.submit_delivery(
+            current_user=owner,
+            delivery_id=delivery.id,
+            payload=SampleDeliverySubmit(reviewer_id="u-admin"),
+        )
+        reviewer = _user_with_permissions(
+            ["system:super_admin", "sample:delivery:approve", "sample:delivery:view"],
+            user_id="u-boss",
+            data_scope="all",
+        )
+        rejected = await delivery_service.reject_delivery(
+            current_user=reviewer,
+            delivery_id=delivery.id,
+            payload=SampleDeliveryReject(
+                rejected_at=date(2026, 7, 1),
+                rejection_reason="收件地址不完整",
+            ),
+        )
+        payload = _delivery_payload(sample_record_id)
+        payload.recipient_address = "客户地址 8 楼 802"
+        updated = await delivery_service.update_delivery(
+            current_user=owner,
+            delivery_id=delivery.id,
+            payload=payload,
+        )
+        resubmitted = await delivery_service.submit_delivery(
+            current_user=owner,
+            delivery_id=delivery.id,
+            payload=SampleDeliverySubmit(reviewer_id="u-admin"),
+        )
+
+    assert rejected.status == "rejected"
+    assert rejected.rejected_at == date(2026, 7, 1)
+    assert rejected.rejection_reason == "收件地址不完整"
+    assert updated.status == "draft"
+    assert updated.rejection_reason == "收件地址不完整"
+    assert resubmitted.status == "submitted"
+    assert resubmitted.rejected_at is None
+    assert resubmitted.rejection_reason is None
+
+
+async def test_sample_delivery_service_enforces_reject_reviewer_and_status(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        record_service = _make_record_service(session)
+        delivery_service = _make_service(session)
+        owner = _user_with_permissions(
+            ["sample:delivery:edit", "sample:delivery:view", "sample:record:edit"],
+            user_id="u-001",
+        )
+        sample_record_id = await _create_sample_record(record_service, owner)
+        delivery = await delivery_service.create_delivery(
+            current_user=owner,
+            payload=_delivery_payload(sample_record_id),
+        )
+        reviewer = _user_with_permissions(
+            ["system:super_admin", "sample:delivery:approve", "sample:delivery:view"],
+            user_id="u-boss",
+            data_scope="all",
+        )
+        with pytest.raises(ValueError, match="只有已提交寄样单可以驳回"):
+            await delivery_service.reject_delivery(
+                current_user=reviewer,
+                delivery_id=delivery.id,
+                payload=SampleDeliveryReject(
+                    rejected_at=date(2026, 7, 1),
+                    rejection_reason="草稿不可驳回",
+                ),
+            )
+
+        await delivery_service.submit_delivery(
+            current_user=owner,
+            delivery_id=delivery.id,
+            payload=SampleDeliverySubmit(reviewer_id="u-admin"),
+        )
+        other_reviewer = _user_with_permissions(
+            ["sample:delivery:approve", "sample:delivery:view"],
+            user_id="u-other",
+            data_scope="all",
+        )
+        with pytest.raises(PermissionDeniedError):
+            await delivery_service.reject_delivery(
+                current_user=other_reviewer,
+                delivery_id=delivery.id,
+                payload=SampleDeliveryReject(
+                    rejected_at=date(2026, 7, 1),
+                    rejection_reason="非指定审批人",
+                ),
+            )
+        with pytest.raises(PermissionDeniedError):
+            await delivery_service.reject_delivery(
+                current_user=owner,
+                delivery_id=delivery.id,
+                payload=SampleDeliveryReject(
+                    rejected_at=date(2026, 7, 1),
+                    rejection_reason="无审批权限",
+                ),
+            )
+
+        rejected = await delivery_service.reject_delivery(
+            current_user=reviewer,
+            delivery_id=delivery.id,
+            payload=SampleDeliveryReject(
+                rejected_at=date(2026, 7, 1),
+                rejection_reason="资料不全",
+            ),
+        )
+        with pytest.raises(ValueError, match="只有已提交寄样单可以驳回"):
+            await delivery_service.reject_delivery(
+                current_user=reviewer,
+                delivery_id=delivery.id,
+                payload=SampleDeliveryReject(
+                    rejected_at=date(2026, 7, 2),
+                    rejection_reason="重复驳回",
+                ),
+            )
+
+    assert rejected.status == "rejected"
+
+
+async def test_sample_delivery_service_withdraw_rules(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        record_service = _make_record_service(session)
+        delivery_service = _make_service(session)
+        owner = _user_with_permissions(
+            ["sample:delivery:edit", "sample:delivery:view", "sample:record:edit"],
+            user_id="u-001",
+        )
+        sample_record_id = await _create_sample_record(record_service, owner)
+        delivery = await delivery_service.create_delivery(
+            current_user=owner,
+            payload=_delivery_payload(sample_record_id),
+        )
+        await delivery_service.submit_delivery(
+            current_user=owner,
+            delivery_id=delivery.id,
+            payload=SampleDeliverySubmit(reviewer_id="u-admin"),
+        )
+        stranger = _user_with_permissions(
+            ["sample:delivery:edit", "sample:delivery:view"],
+            user_id="u-other",
+            data_scope="all",
+        )
+        with pytest.raises(PermissionDeniedError):
+            await delivery_service.withdraw_delivery(
+                current_user=stranger,
+                delivery_id=delivery.id,
+                payload=SampleDeliveryWithdraw(),
+            )
+
+        admin = _user_with_permissions(
+            ["system:super_admin", "sample:delivery:edit", "sample:delivery:view"],
+            user_id="u-boss",
+            data_scope="all",
+        )
+        withdrawn = await delivery_service.withdraw_delivery(
+            current_user=admin,
+            delivery_id=delivery.id,
+            payload=SampleDeliveryWithdraw(),
+        )
+        with pytest.raises(ValueError, match="只有已提交寄样单可以撤回"):
+            await delivery_service.withdraw_delivery(
+                current_user=owner,
+                delivery_id=delivery.id,
+                payload=SampleDeliveryWithdraw(),
+            )
+
+    assert withdrawn.status == "draft"
+    assert withdrawn.submitted_at is None
+    assert withdrawn.reviewer_id is None
+    assert withdrawn.reviewer_name is None
+
+
+async def test_sample_delivery_service_blocks_reject_and_withdraw_after_downstream(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        record_service = _make_record_service(session)
+        delivery_service = _make_service(session)
+        record_repository = SampleRecordRepository(session)
+        owner = _user_with_permissions(
+            ["sample:delivery:edit", "sample:delivery:view", "sample:record:edit"],
+            user_id="u-001",
+        )
+        sample_record_id = await _create_sample_record(record_service, owner)
+        delivery = await delivery_service.create_delivery(
+            current_user=owner,
+            payload=_delivery_payload(sample_record_id),
+        )
+        await delivery_service.submit_delivery(
+            current_user=owner,
+            delivery_id=delivery.id,
+            payload=SampleDeliverySubmit(reviewer_id="u-admin"),
+        )
+        await record_repository.add_stock_event(
+            sample_record_id=sample_record_id,
+            event_type="delivered",
+            quantity="2",
+            unit="pcs",
+            occurred_at=date(2026, 6, 25),
+            delivery_no=delivery.code,
+            recipient="客户 A",
+            note=None,
+        )
+        reviewer = _user_with_permissions(
+            ["system:super_admin", "sample:delivery:approve", "sample:delivery:view"],
+            user_id="u-boss",
+            data_scope="all",
+        )
+        with pytest.raises(ValueError, match="不能驳回或撤回"):
+            await delivery_service.reject_delivery(
+                current_user=reviewer,
+                delivery_id=delivery.id,
+                payload=SampleDeliveryReject(
+                    rejected_at=date(2026, 7, 1),
+                    rejection_reason="已有发货记账",
+                ),
+            )
+        with pytest.raises(ValueError, match="不能驳回或撤回"):
+            await delivery_service.withdraw_delivery(
+                current_user=owner,
+                delivery_id=delivery.id,
+                payload=SampleDeliveryWithdraw(),
+            )
+        current = await delivery_service.get_delivery(
+            current_user=owner,
+            delivery_id=delivery.id,
+        )
+
+    assert current.status == "submitted"
+    assert current.rejection_reason is None

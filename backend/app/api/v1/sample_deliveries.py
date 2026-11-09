@@ -11,10 +11,12 @@ from app.modules.sample.deliveries.schemas import (
     SampleDeliveryExportResponse,
     SampleDeliveryFeeStatisticsResponse,
     SampleDeliveryListResponse,
+    SampleDeliveryReject,
     SampleDeliveryResponse,
     SampleDeliveryStatisticsResponse,
     SampleDeliverySubmit,
     SampleDeliveryTrackingUpdate,
+    SampleDeliveryWithdraw,
 )
 from app.modules.sample.deliveries.services import (
     SampleDeliveryService,
@@ -200,6 +202,35 @@ async def approve_sample_delivery(
         current_user=user,
         delivery_id=delivery_id,
         payload=payload,
+    )
+    return ApiResponse(data=delivery)
+
+
+@router.post("/{delivery_id}/reject", response_model=ApiResponse[SampleDeliveryResponse])
+async def reject_sample_delivery(
+    delivery_id: str,
+    payload: SampleDeliveryReject,
+    user: CurrentUserDep,
+    service: Annotated[SampleDeliveryService, Depends(get_sample_delivery_service)],
+) -> ApiResponse[SampleDeliveryResponse]:
+    delivery = await service.reject_delivery(
+        current_user=user,
+        delivery_id=delivery_id,
+        payload=payload,
+    )
+    return ApiResponse(data=delivery)
+
+
+@router.post("/{delivery_id}/withdraw", response_model=ApiResponse[SampleDeliveryResponse])
+async def withdraw_sample_delivery(
+    delivery_id: str,
+    user: CurrentUserDep,
+    service: Annotated[SampleDeliveryService, Depends(get_sample_delivery_service)],
+) -> ApiResponse[SampleDeliveryResponse]:
+    delivery = await service.withdraw_delivery(
+        current_user=user,
+        delivery_id=delivery_id,
+        payload=SampleDeliveryWithdraw(),
     )
     return ApiResponse(data=delivery)
 

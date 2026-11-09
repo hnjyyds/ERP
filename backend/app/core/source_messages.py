@@ -183,6 +183,15 @@ SOURCE_MESSAGES: dict[str, str] = {
     ),
     "报价审批状态无效": "Invalid quotation approval status",
     "报价导出格式无效": "Invalid quotation export format",
+    "只有草稿或已驳回的寄样单可以编辑": (
+        "Only draft or rejected sample deliveries can be edited"
+    ),
+    "只有已提交寄样单可以驳回": "Only submitted sample deliveries can be rejected",
+    "只有已提交寄样单可以撤回": "Only submitted sample deliveries can be withdrawn",
+    "寄样单已发货或已产生发货记账，不能驳回或撤回": (
+        "The sample delivery is shipped or has stock entries and cannot be "
+        "withdrawn or rejected"
+    ),
     "出货数量不能超过合同未出货数量": (
         "The shipment quantity cannot exceed the contract's unshipped quantity"
     ),

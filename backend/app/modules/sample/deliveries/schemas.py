@@ -67,6 +67,17 @@ class SampleDeliverySubmit(ApprovalSubmit):
     """Submit a delivery to one designated reviewer."""
 
 
+class SampleDeliveryReject(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    rejected_at: date
+    rejection_reason: str = Field(min_length=1, max_length=2000)
+
+
+class SampleDeliveryWithdraw(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
 class SampleDeliveryTrackingUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -126,6 +137,8 @@ class SampleDeliveryResponse(BaseModel):
     status: str
     submitted_at: date | None
     approved_at: date | None
+    rejected_at: date | None = None
+    rejection_reason: str | None = None
     reviewer_id: str | None = None
     reviewer_name: str | None = None
     owner_user_id: str
