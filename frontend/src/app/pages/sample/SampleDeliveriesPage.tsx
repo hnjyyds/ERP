@@ -1,6 +1,6 @@
 import { Alert } from 'antd'
 import type { FormEvent, MouseEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   approveSampleDelivery,
   createSampleDelivery,
@@ -18,6 +18,7 @@ import {
   type CurrentUser,
   type SampleDelivery,
   type SampleDeliveryFeeStatistics,
+  type SampleDeliveryListSummary,
   type SampleDeliveryStatistics,
 } from '@/api'
 import { sampleDeliveryPath, moduleDetailPath } from '@/app/routes'
@@ -25,6 +26,8 @@ import { t } from '@/app/appI18n'
 import { Metric } from '@/shared/ui'
 import { showError } from '@/shared/errors'
 import { downloadCsv } from '@/shared/print'
+import { useTablePagination } from '@/shared/useTablePagination'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import {
   canApproveAssignedRecord,
   formatMoney,
@@ -56,14 +59,24 @@ import { SampleDeliveryRejectModal } from './views/SampleDeliveryRejectModal'
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 
 export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Props) {
+  const urlQuery = useUrlQuery()
+  const initialParams = useRef(urlQuery.params)
+  const appliedUrlSearchRef = useRef(urlQuery.search)
   const [deliveries, setDeliveries] = useState<SampleDelivery[]>([])
   const [selectedDeliveryId, setSelectedDeliveryId] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [customerFilter, setCustomerFilter] = useState('')
-  const [expressFilter, setExpressFilter] = useState('')
-  const [dateFromFilter, setDateFromFilter] = useState('')
-  const [dateToFilter, setDateToFilter] = useState('')
+  const [search, setSearch] = useState(initialParams.current.get('q') ?? '')
+  const [statusFilter, setStatusFilter] = useState(initialParams.current.get('status') ?? '')
+  const [customerFilter, setCustomerFilter] = useState(
+    initialParams.current.get('customer_id') ?? '',
+  )
+  const [expressFilter, setExpressFilter] = useState(
+    initialParams.current.get('express_company') ?? '',
+  )
+  const [dateFromFilter, setDateFromFilter] = useState(
+    initialParams.current.get('date_from') ?? '',
+  )
+  const [dateToFilter, setDateToFilter] = useState(initialParams.current.get('date_to') ?? '')
+  const [summary, setSummary] = useState<SampleDeliveryListSummary | null>(null)
   const [feeStatistics, setFeeStatistics] = useState<SampleDeliveryFeeStatistics>(() =>
     initialSampleDeliveryFeeStatistics(),
   )
@@ -88,6 +101,8 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
     initialSampleDeliveryRejectForm(),
   )
   const [rejectOpen, setRejectOpen] = useState(false)
+  const { page, pageSize, total, setTotal, setPage, changePage, pagination } =
+    useTablePagination(50, parsePageParam(initialParams.current))
 
   const selectedDelivery = useMemo(() => {
     if (detailId) return deliveries.find((item) => item.id === detailId) ?? null
@@ -97,6 +112,37 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
   useEffect(() => {
     void loadDeliveries()
   }, [])
+
+  useEffect(() => {
+    if (appliedUrlSearchRef.current === urlQuery.search) return
+    appliedUrlSearchRef.current = urlQuery.search
+    const params = urlQuery.params
+    const nextSearch = params.get('q') ?? ''
+    const nextStatus = params.get('status') ?? ''
+    const nextCustomer = params.get('customer_id') ?? ''
+    const nextExpress = params.get('express_company') ?? ''
+    const nextDateFrom = params.get('date_from') ?? ''
+    const nextDateTo = params.get('date_to') ?? ''
+    const nextPage = parsePageParam(params)
+    setSearch(nextSearch)
+    setStatusFilter(nextStatus)
+    setCustomerFilter(nextCustomer)
+    setExpressFilter(nextExpress)
+    setDateFromFilter(nextDateFrom)
+    setDateToFilter(nextDateTo)
+    setPage(nextPage)
+    void loadDeliveries(undefined, {
+      pageOverride: nextPage,
+      filters: {
+        q: nextSearch.trim() || undefined,
+        status: nextStatus || undefined,
+        customer_id: nextCustomer.trim() || undefined,
+        express_company: nextExpress.trim() || undefined,
+        date_from: nextDateFrom || undefined,
+        date_to: nextDateTo || undefined,
+      },
+    })
+  }, [urlQuery.search])
 
   useEffect(() => {
     if (detailId && deliveries.length > 0 && !deliveries.some((item) => item.id === detailId)) {
@@ -112,28 +158,48 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
     void loadSelectedDeliveryHistories(selectedDelivery)
   }, [selectedDelivery?.id, selectedDelivery?.status, selectedDelivery?.tracking_no])
 
-  async function loadDeliveries(preferredId?: string) {
+  async function loadDeliveries(preferredId?: string, options?: {
+    pageOverride?: number
+    pageSizeOverride?: number
+    filters?: {
+      q?: string
+      status?: string
+      customer_id?: string
+      express_company?: string
+      date_from?: string
+      date_to?: string
+    }
+  }) {
     setLoading(true)
     try {
       const reportFilters = {
+        customer_id: (options?.filters?.customer_id ?? customerFilter).trim() || undefined,
+        date_from: options?.filters?.date_from ?? (dateFromFilter || undefined),
+        date_to: options?.filters?.date_to ?? (dateToFilter || undefined),
+        express_company: (options?.filters?.express_company ?? expressFilter).trim() || undefined,
+      }
+      const filters = options?.filters ?? {
+        q: search.trim() || undefined,
+        status: statusFilter || undefined,
         customer_id: customerFilter.trim() || undefined,
+        express_company: expressFilter.trim() || undefined,
         date_from: dateFromFilter || undefined,
         date_to: dateToFilter || undefined,
-        express_company: expressFilter.trim() || undefined,
       }
+      const nextPage = options?.pageOverride ?? page
+      const nextPageSize = options?.pageSizeOverride ?? pageSize
       const [result, feeStats, deliveryStats] = await Promise.all([
         listSampleDeliveries({
-          q: search.trim() || undefined,
-          status: statusFilter || undefined,
-          customer_id: customerFilter.trim() || undefined,
-          express_company: expressFilter.trim() || undefined,
-          date_from: dateFromFilter || undefined,
-          date_to: dateToFilter || undefined,
+          ...filters,
+          limit: nextPageSize,
+          offset: (nextPage - 1) * nextPageSize,
         }),
         getSampleDeliveryFeeStatistics(reportFilters),
         getSampleDeliveryStatistics(reportFilters),
       ])
       setDeliveries(result.items)
+      setTotal(result.total)
+      setSummary(result.summary ?? null)
       setFeeStatistics(feeStats)
       setDeliveryStatistics(deliveryStats)
       const nextSelectedId =
@@ -226,7 +292,9 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
       setForm(initialSampleDeliveryForm())
       setDeliveryModalMode(null)
       upsertDelivery(created)
-      await loadDeliveries(created.id)
+      setPage(1)
+      appliedUrlSearchRef.current = urlQuery.update({ page: null })
+      await loadDeliveries(created.id, { pageOverride: 1 })
       setDeliveries((current) =>
         current.some((delivery) => delivery.id === created.id) ? current : [created, ...current],
       )
@@ -392,6 +460,20 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
     }
   }
 
+  function applyFilters() {
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      q: search.trim(),
+      status: statusFilter,
+      customer_id: customerFilter.trim(),
+      express_company: expressFilter.trim(),
+      date_from: dateFromFilter,
+      date_to: dateToFilter,
+      page: null,
+    })
+    void loadDeliveries(undefined, { pageOverride: 1 })
+  }
+
   async function downloadDeliveryExport() {
     setSubmitting(true)
     setMessage('')
@@ -414,14 +496,17 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
   return (
     <section className="sample-delivery-page">
       <div className="summary-strip" aria-label={t('sample.delivery.pageAria')}>
-        <Metric label={t('sample.delivery.metric.deliveryCount')} value={deliveries.length} />
+        <Metric
+          label={t('sample.delivery.metric.deliveryCount')}
+          value={summary?.total ?? total}
+        />
         <Metric
           label={t('sample.delivery.metric.pendingCount')}
-          value={deliveries.filter((item) => item.status === 'submitted').length}
+          value={summary?.pending_count ?? 0}
         />
         <Metric
           label={t('sample.delivery.metric.approvedCount')}
-          value={deliveries.filter((item) => ['approved', 'shipped'].includes(item.status)).length}
+          value={summary?.approved_count ?? 0}
         />
         <Metric
           label={t('sample.delivery.metric.totalQuantity')}
@@ -456,7 +541,19 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
             onExpressChange={setExpressFilter}
             onDateFromChange={setDateFromFilter}
             onDateToChange={setDateToFilter}
-            onQuery={() => void loadDeliveries()}
+            onQuery={applyFilters}
+            pagination={pagination}
+            total={total}
+            onPageChange={(nextPage, nextPageSize) => {
+              const next = changePage(nextPage, nextPageSize)
+              appliedUrlSearchRef.current = urlQuery.update({
+                page: next.page === 1 ? null : next.page,
+              })
+              void loadDeliveries(undefined, {
+                pageOverride: next.page,
+                pageSizeOverride: next.pageSize,
+              })
+            }}
             onExport={() => void downloadDeliveryExport()}
             onCreate={openCreateDelivery}
             onOpenDetail={stopAndOpenDeliveryDetail}

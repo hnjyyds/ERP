@@ -22,6 +22,7 @@ from app.modules.sample.deliveries.schemas import (
     SampleDeliveryFeeStatisticResponse,
     SampleDeliveryFeeStatisticsResponse,
     SampleDeliveryListResponse,
+    SampleDeliveryListSummary,
     SampleDeliveryReject,
     SampleDeliveryResponse,
     SampleDeliveryStatisticsResponse,
@@ -162,6 +163,8 @@ class SampleDeliveryService:
         express_company: str | None,
         date_from: date | None,
         date_to: date | None,
+        limit: int = 50,
+        offset: int = 0,
     ) -> SampleDeliveryListResponse:
         self._require(current_user, "sample:delivery:view")
         if status is not None:
@@ -179,10 +182,26 @@ class SampleDeliveryService:
             date_from=date_from,
             date_to=date_to,
             owner_user_ids=owner_user_ids,
+            limit=limit,
+            offset=offset,
+        )
+        pending_count, approved_count = await self._repository.count_delivery_statuses(
+            q=q,
+            status=status,
+            customer_id=customer_id,
+            express_company=express_company,
+            date_from=date_from,
+            date_to=date_to,
+            owner_user_ids=owner_user_ids,
         )
         return SampleDeliveryListResponse(
             items=[await self._delivery_response(delivery) for delivery in deliveries],
             total=total,
+            summary=SampleDeliveryListSummary(
+                total=total,
+                pending_count=pending_count,
+                approved_count=approved_count,
+            ),
         )
 
     async def submit_delivery(

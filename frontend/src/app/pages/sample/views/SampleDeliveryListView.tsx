@@ -1,4 +1,5 @@
 import { Button, Input, Table } from 'antd'
+import type { TablePaginationConfig } from 'antd'
 import { Plus, Search } from 'lucide-react'
 import type { MouseEvent } from 'react'
 import type { SampleDelivery } from '@/api'
@@ -26,6 +27,9 @@ type Props = {
   onDateFromChange: (value: string) => void
   onDateToChange: (value: string) => void
   onQuery: () => void
+  pagination: TablePaginationConfig
+  total: number
+  onPageChange: (page: number, pageSize: number) => void
   onExport: () => void
   onCreate: () => void
   onOpenDetail: (event: MouseEvent<HTMLElement>, delivery: SampleDelivery) => void
@@ -50,6 +54,9 @@ export function SampleDeliveryListView({
   onDateFromChange,
   onDateToChange,
   onQuery,
+  pagination,
+  total,
+  onPageChange,
   onExport,
   onCreate,
   onOpenDetail,
@@ -183,7 +190,11 @@ export function SampleDeliveryListView({
         ]}
         dataSource={deliveries}
         loading={loading}
-        pagination={false}
+        pagination={{
+          ...pagination,
+          total,
+          onChange: (nextPage, nextPageSize) => onPageChange(nextPage, nextPageSize),
+        }}
         rowClassName={(record) => (record.id === selectedId ? 'selected-row' : '')}
         rowKey="id"
         size="small"

@@ -358,6 +358,65 @@ async def test_sample_delivery_reject_and_withdraw_endpoints(
     assert repeated_withdraw.status_code == 422
 
 
+async def test_sample_delivery_list_supports_pagination_and_summary(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
+    sample_record = await _create_sample_record(api_client, token)
+    created = []
+    for code in ("SD-PAGE-001", "SD-PAGE-002", "SD-PAGE-003"):
+        payload = _delivery_payload(sample_record, code=code)
+        payload["customer_name"] = "分页测试客户"
+        payload["lines"][0]["quantity"] = "1"
+        response = await api_client.post(
+            "/api/v1/sample/deliveries",
+            headers={"Authorization": f"Bearer {token}"},
+            json=payload,
+        )
+        assert response.status_code == 201
+        created.append(response.json()["data"])
+
+    for delivery in created[1:]:
+        submit_response = await api_client.post(
+            f"/api/v1/sample/deliveries/{delivery['id']}/submit",
+            headers={"Authorization": f"Bearer {token}"},
+            json={"reviewer_id": "u-admin"},
+        )
+        assert submit_response.status_code == 200
+    approve_response = await api_client.post(
+        f"/api/v1/sample/deliveries/{created[1]['id']}/approve",
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"approved_at": "2026-06-25"},
+    )
+    assert approve_response.status_code == 200
+
+    first_page = await api_client.get(
+        "/api/v1/sample/deliveries",
+        headers={"Authorization": f"Bearer {token}"},
+        params={"q": "分页测试客户", "limit": 2, "offset": 0},
+    )
+    assert first_page.status_code == 200
+    first_data = first_page.json()["data"]
+    assert first_data["total"] == 3
+    assert len(first_data["items"]) == 2
+    assert first_data["summary"] == {
+        "total": 3,
+        "pending_count": 1,
+        "approved_count": 1,
+    }
+
+    second_page = await api_client.get(
+        "/api/v1/sample/deliveries",
+        headers={"Authorization": f"Bearer {token}"},
+        params={"q": "分页测试客户", "limit": 2, "offset": 2},
+    )
+    assert second_page.status_code == 200
+    assert second_page.json()["data"]["total"] == 3
+    assert len(second_page.json()["data"]["items"]) == 1
+
+
 async def test_sample_delivery_endpoints_require_login(
     api_client: AsyncClient,
     seeded_system: None,

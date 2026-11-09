@@ -2,10 +2,11 @@ from datetime import date
 from decimal import Decimal
 from typing import TypeVar
 
-from sqlalchemy import Select, delete, distinct, func, or_, select
+from sqlalchemy import Select, case, delete, distinct, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.pagination import resolve_limit, resolve_offset
+from app.modules.sample.deliveries.filters import build_delivery_conditions
 from app.modules.sample.deliveries.models import (
     SampleDelivery,
     SampleDeliveryFee,
@@ -317,44 +318,15 @@ class SampleDeliveryRepository:
     ) -> tuple[list[SampleDeliveryRow], int]:
         statement = select(SampleDelivery)
         count_statement = select(func.count()).select_from(SampleDelivery)
-        conditions = []
-        if q:
-            pattern = f"%{q}%"
-            line_exists = (
-                select(SampleDeliveryLine.id)
-                .where(SampleDeliveryLine.delivery_id == SampleDelivery.id)
-                .where(
-                    or_(
-                        SampleDeliveryLine.sample_code.ilike(pattern),
-                        SampleDeliveryLine.product_code.ilike(pattern),
-                        SampleDeliveryLine.product_name.ilike(pattern),
-                    )
-                )
-                .exists()
-            )
-            conditions.append(
-                or_(
-                    SampleDelivery.code.ilike(pattern),
-                    SampleDelivery.customer_name.ilike(pattern),
-                    SampleDelivery.recipient_name.ilike(pattern),
-                    SampleDelivery.express_company.ilike(pattern),
-                    SampleDelivery.tracking_no.ilike(pattern),
-                    SampleDelivery.quote_no.ilike(pattern),
-                    line_exists,
-                )
-            )
-        if status:
-            conditions.append(SampleDelivery.status == status)
-        if customer_id:
-            conditions.append(SampleDelivery.customer_id == customer_id)
-        if express_company:
-            conditions.append(SampleDelivery.express_company == express_company)
-        if date_from:
-            conditions.append(SampleDelivery.delivery_date >= date_from)
-        if date_to:
-            conditions.append(SampleDelivery.delivery_date <= date_to)
-        if owner_user_ids is not None:
-            conditions.append(SampleDelivery.owner_user_id.in_(owner_user_ids))
+        conditions = build_delivery_conditions(
+            q=q,
+            status=status,
+            customer_id=customer_id,
+            express_company=express_company,
+            date_from=date_from,
+            date_to=date_to,
+            owner_user_ids=owner_user_ids,
+        )
         for condition in conditions:
             statement = statement.where(condition)
             count_statement = count_statement.where(condition)
@@ -367,6 +339,40 @@ class SampleDeliveryRepository:
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)
         return [self._map_delivery(row) for row in rows], int(total or 0)
+
+    async def count_delivery_statuses(
+        self,
+        *,
+        q: str | None = None,
+        status: str | None = None,
+        customer_id: str | None = None,
+        express_company: str | None = None,
+        date_from: date | None = None,
+        date_to: date | None = None,
+        owner_user_ids: list[str] | None = None,
+    ) -> tuple[int, int]:
+        conditions = build_delivery_conditions(
+            q=q,
+            status=status,
+            customer_id=customer_id,
+            express_company=express_company,
+            date_from=date_from,
+            date_to=date_to,
+            owner_user_ids=owner_user_ids,
+        )
+        statement = select(
+            func.sum(case((SampleDelivery.status == "submitted", 1), else_=0)),
+            func.sum(
+                case(
+                    (SampleDelivery.status.in_(REPORTABLE_SAMPLE_DELIVERY_STATUSES), 1),
+                    else_=0,
+                )
+            ),
+        ).select_from(SampleDelivery)
+        for condition in conditions:
+            statement = statement.where(condition)
+        pending_count, approved_count = (await self.session.execute(statement)).one()
+        return int(pending_count or 0), int(approved_count or 0)
 
     async def list_lines(self, delivery_id: str) -> list[SampleDeliveryLineRow]:
         rows = await self.session.scalars(

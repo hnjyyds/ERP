@@ -330,9 +330,16 @@ export interface SampleDelivery {
   fee_total: string
 }
 
+export interface SampleDeliveryListSummary {
+  total: number
+  pending_count: number
+  approved_count: number
+}
+
 export interface SampleDeliveryList {
   items: SampleDelivery[]
   total: number
+  summary?: SampleDeliveryListSummary
 }
 
 export interface SampleDeliveryLinePayload {
@@ -582,6 +589,8 @@ export function listSampleDeliveries(filters: {
   express_company?: string
   date_from?: string
   date_to?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<SampleDeliveryList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
@@ -590,6 +599,8 @@ export function listSampleDeliveries(filters: {
   if (filters.express_company) params.set('express_company', filters.express_company)
   if (filters.date_from) params.set('date_from', filters.date_from)
   if (filters.date_to) params.set('date_to', filters.date_to)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<SampleDeliveryList>(`/sample/deliveries${suffix}`)
 }

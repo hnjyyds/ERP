@@ -11,6 +11,16 @@ vi.mock('@/shared/print', async (importOriginal) => {
   return { ...actual, downloadCsv: vi.fn() }
 })
 
+vi.mock('@/shared/ui', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/shared/ui')>()
+  return {
+    ...actual,
+    Metric: ({ label, value }: { label: string; value: number | string }) => (
+      <span data-testid="metric">{`${label}: ${value}`}</span>
+    ),
+  }
+})
+
 const delivery = {
   id: 'sd-1',
   code: 'SD-001',
@@ -60,6 +70,7 @@ describe('SampleDeliveriesPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    window.history.replaceState({}, '', sampleDeliveryPath)
     vi.spyOn(api, 'getSampleDeliveryFeeStatistics').mockResolvedValue(
       emptyFeeStatistics as never,
     )
@@ -90,6 +101,52 @@ describe('SampleDeliveriesPage', () => {
     await waitFor(() => expect(listSpy).toHaveBeenCalledTimes(1))
     expect(api.getSampleDeliveryFeeStatistics).toHaveBeenCalledTimes(1)
     expect(api.getSampleDeliveryStatistics).toHaveBeenCalledTimes(1)
+  })
+
+  it('按 URL 页码请求服务端分页，并用后端汇总渲染指标', async () => {
+    window.history.replaceState({}, '', `${sampleDeliveryPath}?page=2`)
+    const listSpy = vi.spyOn(api, 'listSampleDeliveries').mockResolvedValue({
+      items: [delivery],
+      total: 90,
+      summary: { total: 90, pending_count: 12, approved_count: 40 },
+    })
+
+    render(<SampleDeliveriesPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() =>
+      expect(listSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ limit: 50, offset: 50 }),
+      ),
+    )
+    const metrics = screen.getAllByTestId('metric').map((element) => element.textContent ?? '')
+    expect(metrics.some((text) => text.endsWith(': 90'))).toBe(true)
+    expect(metrics.some((text) => text.endsWith(': 12'))).toBe(true)
+    expect(metrics.some((text) => text.endsWith(': 40'))).toBe(true)
+  })
+
+  it('URL 筛选参数进入服务端请求', async () => {
+    window.history.replaceState(
+      {},
+      '',
+      `${sampleDeliveryPath}?status=submitted&customer_id=c-9&express_company=DHL`,
+    )
+    const listSpy = vi
+      .spyOn(api, 'listSampleDeliveries')
+      .mockResolvedValue({ items: [delivery], total: 1 })
+
+    render(<SampleDeliveriesPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() =>
+      expect(listSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          status: 'submitted',
+          customer_id: 'c-9',
+          express_company: 'DHL',
+          limit: 50,
+          offset: 0,
+        }),
+      ),
+    )
   })
 
   it('筛选查询同时作用于列表与报表统计', async () => {

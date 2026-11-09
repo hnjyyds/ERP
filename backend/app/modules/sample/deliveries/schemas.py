@@ -147,11 +147,20 @@ class SampleDeliveryResponse(BaseModel):
     fee_total: str
 
 
+class SampleDeliveryListSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    total: int
+    pending_count: int
+    approved_count: int
+
+
 class SampleDeliveryListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[SampleDeliveryResponse]
     total: int
+    summary: SampleDeliveryListSummary | None = None
 
 
 class SampleDeliveryFeeStatisticResponse(BaseModel):

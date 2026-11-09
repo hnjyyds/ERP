@@ -36,6 +36,8 @@ async def list_sample_deliveries(
     express_company: Annotated[str | None, Query(max_length=120)] = None,
     date_from: date | None = None,
     date_to: date | None = None,
+    limit: Annotated[int, Query(ge=1, le=200)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
 ) -> ApiResponse[SampleDeliveryListResponse]:
     deliveries = await service.list_deliveries(
         current_user=user,
@@ -45,6 +47,8 @@ async def list_sample_deliveries(
         express_company=express_company,
         date_from=date_from,
         date_to=date_to,
+        limit=limit,
+        offset=offset,
     )
     return ApiResponse(data=deliveries)
 
