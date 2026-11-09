@@ -210,6 +210,16 @@ SOURCE_MESSAGES: dict[str, str] = {
     "已发货的寄样单不能回退物流状态": (
         "Shipped sample delivery orders cannot revert their tracking status"
     ),
+    "寄样单发货数量由寄样单审批写入，不能手工登记": (
+        "Delivered quantities are written when the sample delivery is approved and "
+        "cannot be entered manually"
+    ),
+    "该寄样单号已登记过发货数量，不能重复记账": (
+        "This sample delivery number already has a delivered quantity entry"
+    ),
+    "该寄样单已有发货记账，不能重复入账": (
+        "This sample delivery already has a delivered stock entry"
+    ),
     "打样去向无效": "Invalid sampling destination",
     "打样完成后才能转为样品登记": (
         "Sampling must be completed before converting to a sample record"

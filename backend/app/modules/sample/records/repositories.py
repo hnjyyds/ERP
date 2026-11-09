@@ -6,6 +6,7 @@ from sqlalchemy import Select, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.pagination import resolve_limit, resolve_offset
+from app.modules.sample.deliveries.models import SampleDelivery
 from app.modules.sample.records.models import (
     SampleFollowupEvent,
     SampleImage,
@@ -331,6 +332,27 @@ class SampleRecordRepository:
         if summary is None:
             return None
         return self._map_stock_summary(summary)
+
+    async def delivery_code_exists(self, code: str) -> bool:
+        delivery_id = await self.session.scalar(
+            select(SampleDelivery.id).where(SampleDelivery.code == code).limit(1)
+        )
+        return delivery_id is not None
+
+    async def delivered_stock_event_exists(
+        self,
+        *,
+        sample_record_id: str,
+        delivery_no: str,
+    ) -> bool:
+        event_id = await self.session.scalar(
+            select(SampleStockEvent.id)
+            .where(SampleStockEvent.sample_record_id == sample_record_id)
+            .where(SampleStockEvent.event_type == "delivered")
+            .where(SampleStockEvent.delivery_no == delivery_no)
+            .limit(1)
+        )
+        return event_id is not None
 
     async def list_followup_events(self, record_id: str) -> list[SampleFollowupEventRow]:
         rows = await self.session.scalars(

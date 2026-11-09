@@ -14,7 +14,7 @@ from app.modules.sample.deliveries.schemas import (
 )
 from app.modules.sample.deliveries.services import SampleDeliveryService
 from app.modules.sample.records.repositories import SampleRecordRepository
-from app.modules.sample.records.schemas import SampleRecordCreate
+from app.modules.sample.records.schemas import SampleRecordCreate, SampleStockEventCreate
 from app.modules.sample.records.services import SampleRecordService
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
@@ -415,3 +415,109 @@ async def test_sample_delivery_service_enforces_tracking_state_transitions(
 
     assert staged.status == "approved"
     assert shipped.status == "shipped"
+
+
+async def test_sample_record_service_rejects_manual_entry_for_delivery_code(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        record_service = _make_record_service(session)
+        delivery_service = _make_service(session)
+        current_user = _user_with_permissions(
+            ["sample:delivery:edit", "sample:record:edit", "sample:record:view"],
+            user_id="u-001",
+        )
+        sample_record_id = await _create_sample_record(record_service, current_user)
+        delivery = await delivery_service.create_delivery(
+            current_user=current_user,
+            payload=_delivery_payload(sample_record_id),
+        )
+
+        with pytest.raises(ValueError, match="不能手工登记"):
+            await record_service.add_stock_event(
+                current_user=current_user,
+                record_id=sample_record_id,
+                payload=SampleStockEventCreate(
+                    event_type="delivered",
+                    quantity="1",
+                    unit="pcs",
+                    occurred_at=date(2026, 6, 25),
+                    delivery_no=delivery.code,
+                    recipient="客户 A",
+                    note="试图绕过审批",
+                ),
+            )
+        detail = await record_service.get_record(
+            current_user=current_user,
+            record_id=sample_record_id,
+        )
+
+    assert detail.stock_summary.delivered_quantity == "0"
+    assert detail.stock_summary.retained_quantity == "5"
+
+
+async def test_sample_delivery_service_rejects_duplicate_stock_entry_on_approve(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        record_service = _make_record_service(session)
+        delivery_service = _make_service(session)
+        record_repository = SampleRecordRepository(session)
+        current_user = _user_with_permissions(
+            [
+                "sample:delivery:edit",
+                "sample:delivery:view",
+                "sample:record:edit",
+                "sample:record:view",
+            ],
+            user_id="u-001",
+        )
+        sample_record_id = await _create_sample_record(record_service, current_user)
+        delivery = await delivery_service.create_delivery(
+            current_user=current_user,
+            payload=_delivery_payload(sample_record_id),
+        )
+        await delivery_service.submit_delivery(
+            current_user=current_user,
+            delivery_id=delivery.id,
+            payload=SampleDeliverySubmit(reviewer_id="u-admin"),
+        )
+        # 模拟修复前的历史数据：同一寄样单号已有手工发货记账。
+        await record_repository.add_stock_event(
+            sample_record_id=sample_record_id,
+            event_type="delivered",
+            quantity="1",
+            unit="pcs",
+            occurred_at=date(2026, 6, 25),
+            delivery_no=delivery.code,
+            recipient="客户 A",
+            note="历史手工记账",
+        )
+        reviewer = _user_with_permissions(
+            ["system:super_admin", "sample:delivery:approve", "sample:delivery:view"],
+            user_id="u-boss",
+            data_scope="all",
+        )
+
+        with pytest.raises(ValueError, match="不能重复入账"):
+            await delivery_service.approve_delivery(
+                current_user=reviewer,
+                delivery_id=delivery.id,
+                payload=SampleDeliveryApprove(
+                    reviewer_name="演示业务主管",
+                    approved_at=date(2026, 6, 25),
+                ),
+            )
+        detail = await record_service.get_record(
+            current_user=current_user,
+            record_id=sample_record_id,
+        )
+        delivery_after = await delivery_service.get_delivery(
+            current_user=reviewer,
+            delivery_id=delivery.id,
+        )
+
+    assert detail.stock_summary.delivered_quantity == "1"
+    assert detail.stock_summary.retained_quantity == "4"
+    assert delivery_after.status == "submitted"

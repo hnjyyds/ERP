@@ -170,6 +170,14 @@ class SampleRecordService:
         self._require(current_user, "sample:record:edit")
         self._validate_stock_event(payload.event_type)
         await self._get_accessible_record(current_user=current_user, record_id=record_id)
+        if payload.event_type == "delivered" and payload.delivery_no:
+            if await self._repository.delivery_code_exists(payload.delivery_no):
+                raise ValueError("寄样单发货数量由寄样单审批写入，不能手工登记")
+            if await self._repository.delivered_stock_event_exists(
+                sample_record_id=record_id,
+                delivery_no=payload.delivery_no,
+            ):
+                raise ValueError("该寄样单号已登记过发货数量，不能重复记账")
         if payload.event_type == "delivered":
             await self._ensure_can_deliver(record_id, payload.quantity)
         async with UnitOfWork(self._repository.session):

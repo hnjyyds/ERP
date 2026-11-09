@@ -236,6 +236,12 @@ class SampleDeliveryService:
         ):
             raise PermissionDeniedError
         lines = await self._repository.list_lines(delivery_id)
+        for sample_record_id in {line.sample_record_id for line in lines}:
+            if await self._sample_record_repository.delivered_stock_event_exists(
+                sample_record_id=sample_record_id,
+                delivery_no=delivery.code,
+            ):
+                raise ValueError("该寄样单已有发货记账，不能重复入账")
         await self._ensure_stock_available(lines)
         async with UnitOfWork(self._repository.session):
             approved = await self._repository.approve_delivery(

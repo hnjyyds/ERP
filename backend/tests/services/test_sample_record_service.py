@@ -172,3 +172,66 @@ async def test_sample_record_service_rejects_invalid_sample_type(
                     strict=False,
                 ),
             )
+
+
+async def test_sample_record_service_rejects_duplicate_delivered_event(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        service = _make_service(session)
+        current_user = _user_with_permissions(
+            ["sample:record:edit", "sample:record:view"],
+            user_id="u-001",
+        )
+        sample_record = await service.create_record(
+            current_user=current_user,
+            payload=_sample_record_payload("SM-SVC-DUP-001"),
+        )
+        await service.add_stock_event(
+            current_user=current_user,
+            record_id=sample_record.id,
+            payload=SampleStockEventCreate(
+                event_type="delivered",
+                quantity="1",
+                unit="pcs",
+                occurred_at=date(2026, 6, 24),
+                delivery_no="SD-MANUAL-001",
+                recipient="客户 A",
+                note="手工寄样",
+            ),
+        )
+        with pytest.raises(ValueError, match="不能重复记账"):
+            await service.add_stock_event(
+                current_user=current_user,
+                record_id=sample_record.id,
+                payload=SampleStockEventCreate(
+                    event_type="delivered",
+                    quantity="1",
+                    unit="pcs",
+                    occurred_at=date(2026, 6, 24),
+                    delivery_no="SD-MANUAL-001",
+                    recipient="客户 A",
+                    note="重复录入",
+                ),
+            )
+        # 不填寄样单号的手工登记仍然可用，方便补录系统外的样品流转。
+        await service.add_stock_event(
+            current_user=current_user,
+            record_id=sample_record.id,
+            payload=SampleStockEventCreate(
+                event_type="delivered",
+                quantity="1",
+                unit="pcs",
+                occurred_at=date(2026, 6, 24),
+                delivery_no=None,
+                recipient="客户 A",
+                note="补录线下寄样",
+            ),
+        )
+        refreshed = await service.get_record(
+            current_user=current_user,
+            record_id=sample_record.id,
+        )
+
+    assert refreshed.stock_summary.delivered_quantity == "2"
+    assert refreshed.stock_summary.retained_quantity == "3"
