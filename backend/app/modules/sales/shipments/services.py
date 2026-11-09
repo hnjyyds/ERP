@@ -28,6 +28,7 @@ from app.modules.sales.shipments.schemas import (
     ShipmentReminderListResponse,
     ShipmentReminderResponse,
     ShipmentSubmit,
+    ShipmentWithdraw,
 )
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
@@ -238,6 +239,37 @@ class ShipmentPlanService:
             if approved is None:
                 raise ShipmentNotFoundError
         return await self._shipment_response(approved)
+
+    async def withdraw_shipment(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        shipment_id: str,
+        payload: ShipmentWithdraw,
+    ) -> ShipmentPlanResponse:
+        del payload
+        self._require(current_user, "sales:shipment:edit")
+        plan = await self._get_accessible_plan(
+            current_user=current_user,
+            shipment_id=shipment_id,
+        )
+        if plan.approval_status != "submitted":
+            raise ValueError("只有已提交出货明细可以撤回")
+        if (
+            plan.owner_user_id != current_user.id
+            and "system:super_admin" not in current_user.permissions
+        ):
+            raise PermissionDeniedError
+        await self._ensure_no_downstream_outbound_plan(plan)
+        async with UnitOfWork(self._repository.session):
+            withdrawn = await self._repository.withdraw_plan(plan.id)
+            if withdrawn is None:
+                raise ShipmentNotFoundError
+        return await self._shipment_response(withdrawn)
+
+    async def _ensure_no_downstream_outbound_plan(self, plan: ShipmentPlanRow) -> None:
+        if await self._repository.has_outbound_plan(plan.id):
+            raise ValueError("出货明细已生成出库计划，不能撤回")
 
     async def list_reminders(
         self,

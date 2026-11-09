@@ -11,12 +11,14 @@ from app.modules.sales.shipments.schemas import (
     ShipmentContractSelection,
     ShipmentPlanGenerate,
     ShipmentSubmit,
+    ShipmentWithdraw,
 )
-from app.modules.sales.shipments.services import ShipmentPlanService
+from app.modules.sales.shipments.services import PermissionDeniedError, ShipmentPlanService
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.auth.seed import seed_system_demo_data
+from app.modules.warehouse.outbound_plans.repositories import OutboundPlanRepository
 
 
 def _make_service(
@@ -261,4 +263,179 @@ async def test_shipment_service_rejects_over_unshipped_quantity(
                         )
                     ],
                 ),
+            )
+
+
+_SHIPMENT_WORKFLOW_PERMISSIONS = [
+    "sales:shipment:approve",
+    "sales:shipment:edit",
+    "sales:shipment:view",
+]
+
+
+async def _submitted_plan(
+    service: ShipmentPlanService,
+    contract_id: str,
+    *,
+    current_user: CurrentUserResponse,
+) -> str:
+    plan = await service.generate_from_contracts(
+        current_user=current_user,
+        payload=_shipment_payload(contract_id),
+    )
+    await service.submit_shipment(
+        current_user=current_user,
+        shipment_id=plan.id,
+        payload=ShipmentSubmit(reviewer_id="u-admin"),
+    )
+    return plan.id
+
+
+async def test_shipment_service_withdraws_submitted_plan_and_clears_reviewer(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        contract_repository = ExportContractRepository(session)
+        shipment_repository = ShipmentPlanRepository(session)
+        contract_id, _line_id = await _create_contract(
+            contract_repository,
+            code="EC-SHIP-WITHDRAW",
+            product_id="product-a",
+            product_code="BAG-40",
+            product_name="Eco Bag",
+            quantity="1000",
+            unit_price="1.40",
+        )
+        service = _make_service(shipment_repository, contract_repository)
+        owner = _user_with_permissions(_SHIPMENT_WORKFLOW_PERMISSIONS)
+        shipment_id = await _submitted_plan(service, contract_id, current_user=owner)
+
+        withdrawn = await service.withdraw_shipment(
+            current_user=owner,
+            shipment_id=shipment_id,
+            payload=ShipmentWithdraw(),
+        )
+
+    assert withdrawn.approval_status == "draft"
+    assert withdrawn.submitted_at is None
+    assert withdrawn.reviewer_id is None
+    assert withdrawn.reviewer_name is None
+    assert withdrawn.approved_at is None
+
+
+async def test_shipment_service_rejects_withdraw_when_not_submitted(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        contract_repository = ExportContractRepository(session)
+        shipment_repository = ShipmentPlanRepository(session)
+        contract_id, _line_id = await _create_contract(
+            contract_repository,
+            code="EC-SHIP-DRAFT-WITHDRAW",
+            product_id="product-a",
+            product_code="BAG-40",
+            product_name="Eco Bag",
+            quantity="1000",
+            unit_price="1.40",
+        )
+        service = _make_service(shipment_repository, contract_repository)
+        owner = _user_with_permissions(_SHIPMENT_WORKFLOW_PERMISSIONS)
+        plan = await service.generate_from_contracts(
+            current_user=owner,
+            payload=_shipment_payload(contract_id),
+        )
+
+        with pytest.raises(ValueError):
+            await service.withdraw_shipment(
+                current_user=owner,
+                shipment_id=plan.id,
+                payload=ShipmentWithdraw(),
+            )
+
+
+async def test_shipment_service_withdraw_requires_owner_or_super_admin(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        contract_repository = ExportContractRepository(session)
+        shipment_repository = ShipmentPlanRepository(session)
+        contract_id, _line_id = await _create_contract(
+            contract_repository,
+            code="EC-SHIP-OWNER",
+            product_id="product-a",
+            product_code="BAG-40",
+            product_name="Eco Bag",
+            quantity="1000",
+            unit_price="1.40",
+        )
+        service = _make_service(shipment_repository, contract_repository)
+        owner = _user_with_permissions(_SHIPMENT_WORKFLOW_PERMISSIONS)
+        shipment_id = await _submitted_plan(service, contract_id, current_user=owner)
+        other = _user_with_permissions(
+            _SHIPMENT_WORKFLOW_PERMISSIONS,
+            user_id="u-other",
+            data_scope="all",
+        )
+
+        with pytest.raises(PermissionDeniedError):
+            await service.withdraw_shipment(
+                current_user=other,
+                shipment_id=shipment_id,
+                payload=ShipmentWithdraw(),
+            )
+
+        admin = _user_with_permissions(
+            ["system:super_admin", "sales:shipment:view", "sales:shipment:edit"],
+            user_id="u-boss",
+            data_scope="all",
+        )
+        withdrawn = await service.withdraw_shipment(
+            current_user=admin,
+            shipment_id=shipment_id,
+            payload=ShipmentWithdraw(),
+        )
+
+    assert withdrawn.approval_status == "draft"
+
+
+async def test_shipment_service_rejects_withdraw_when_outbound_plan_exists(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        contract_repository = ExportContractRepository(session)
+        shipment_repository = ShipmentPlanRepository(session)
+        contract_id, _line_id = await _create_contract(
+            contract_repository,
+            code="EC-SHIP-DOWNSTREAM",
+            product_id="product-a",
+            product_code="BAG-40",
+            product_name="Eco Bag",
+            quantity="1000",
+            unit_price="1.40",
+        )
+        service = _make_service(shipment_repository, contract_repository)
+        owner = _user_with_permissions(_SHIPMENT_WORKFLOW_PERMISSIONS)
+        shipment_id = await _submitted_plan(service, contract_id, current_user=owner)
+        outbound_repository = OutboundPlanRepository(session)
+        await outbound_repository.create_plan(
+            code="OP-SP-SVC-001",
+            source_type="shipment_plan",
+            source_id=shipment_id,
+            source_code="SP-SVC-001",
+            outbound_type="export",
+            planned_date=date(2026, 8, 20),
+            status="planned",
+            customer_id="customer-a",
+            customer_name="客户 A",
+            owner_user_id="u-001",
+        )
+
+        with pytest.raises(ValueError):
+            await service.withdraw_shipment(
+                current_user=owner,
+                shipment_id=shipment_id,
+                payload=ShipmentWithdraw(),
             )

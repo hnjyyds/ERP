@@ -182,6 +182,59 @@ async def test_shipment_flow_from_contracts_approval_reminder_and_contract_write
     assert refreshed_contract["statistics"]["shipped_quantity"] == "550"
 
 
+async def test_shipment_withdraw_returns_plan_to_draft_and_clears_reviewer(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    contract = await _approved_contract(
+        api_client,
+        token,
+        _contract_payload("EC-SHIP-API-WITHDRAW"),
+    )
+    create_response = await api_client.post(
+        "/api/v1/sales/shipments/from-contracts",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "code": "SP-API-WITHDRAW",
+            "shipment_date": "2026-08-18",
+            "planned_ship_date": "2026-08-20",
+            "shipping_method": "sea",
+            "port_of_loading": "Ningbo",
+            "port_of_destination": "Hamburg",
+            "estimated_payable_amount": "100.00",
+            "selections": [{"contract_id": contract["id"], "quantity": "300"}],
+        },
+    )
+    assert create_response.status_code == 201
+    shipment = create_response.json()["data"]
+
+    submit_response = await api_client.post(
+        f"/api/v1/sales/shipments/{shipment['id']}/submit",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
+    )
+    assert submit_response.status_code == 200
+    assert submit_response.json()["data"]["reviewer_id"] == "u-admin"
+
+    withdraw_response = await api_client.post(
+        f"/api/v1/sales/shipments/{shipment['id']}/withdraw",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert withdraw_response.status_code == 200
+    withdrawn = withdraw_response.json()["data"]
+    assert withdrawn["approval_status"] == "draft"
+    assert withdrawn["submitted_at"] is None
+    assert withdrawn["reviewer_id"] is None
+    assert withdrawn["reviewer_name"] is None
+
+    invalid_response = await api_client.post(
+        f"/api/v1/sales/shipments/{shipment['id']}/withdraw",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert invalid_response.status_code == 422
+
+
 async def test_shipment_endpoints_require_login(
     api_client: AsyncClient,
     seeded_system: None,

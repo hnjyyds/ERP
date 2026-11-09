@@ -49,6 +49,10 @@ class ShipmentSubmit(ApprovalSubmit):
     """Submit a shipment plan to one designated reviewer."""
 
 
+class ShipmentWithdraw(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
 class ShipmentLineResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 

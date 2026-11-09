@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.sales.shipments.models import ShipmentLine, ShipmentPlan
+from app.modules.warehouse.outbound_plans.models import OutboundPlan
 
 
 @dataclass(frozen=True)
@@ -357,6 +358,26 @@ class ShipmentPlanRepository:
         plan.reminder_status = "done"
         await self.session.flush()
         return self._map_plan(plan)
+
+    async def withdraw_plan(self, shipment_id: str) -> ShipmentPlanRow | None:
+        plan = await self.session.scalar(select(ShipmentPlan).where(ShipmentPlan.id == shipment_id))
+        if plan is None:
+            return None
+        plan.approval_status = "draft"
+        plan.submitted_at = None
+        plan.reviewer_id = None
+        plan.reviewer_name = None
+        await self.session.flush()
+        return self._map_plan(plan)
+
+    async def has_outbound_plan(self, shipment_id: str) -> bool:
+        outbound_plan_id = await self.session.scalar(
+            select(OutboundPlan.id)
+            .where(OutboundPlan.source_type == "shipment_plan")
+            .where(OutboundPlan.source_id == shipment_id)
+            .limit(1)
+        )
+        return outbound_plan_id is not None
 
     async def list_reminders(
         self,

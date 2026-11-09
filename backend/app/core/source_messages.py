@@ -197,7 +197,11 @@ SOURCE_MESSAGES: dict[str, str] = {
     ),
     "出货审批状态无效": "Invalid shipment approval status",
     "只有已提交出货明细可以审批": "Only submitted shipment lines can be approved",
+    "只有已提交出货明细可以撤回": "Only submitted shipment lines can be withdrawn",
     "只有草稿出货明细可以提交": "Only draft shipment lines can be submitted",
+    "出货明细已生成出库计划，不能撤回": (
+        "The shipment has generated an outbound plan and cannot be withdrawn"
+    ),
     "只能从已审批出口合同生成出货明细": (
         "Shipment lines can only be generated from approved export contracts"
     ),

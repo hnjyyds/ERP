@@ -11,6 +11,7 @@ from app.modules.sales.shipments.schemas import (
     ShipmentPlanResponse,
     ShipmentReminderListResponse,
     ShipmentSubmit,
+    ShipmentWithdraw,
 )
 from app.modules.sales.shipments.services import (
     ShipmentPlanService,
@@ -86,6 +87,20 @@ async def submit_shipment(
         current_user=user,
         shipment_id=shipment_id,
         payload=payload,
+    )
+    return ApiResponse(data=shipment)
+
+
+@router.post("/{shipment_id}/withdraw", response_model=ApiResponse[ShipmentPlanResponse])
+async def withdraw_shipment(
+    shipment_id: str,
+    user: CurrentUserDep,
+    service: Annotated[ShipmentPlanService, Depends(get_shipment_plan_service)],
+) -> ApiResponse[ShipmentPlanResponse]:
+    shipment = await service.withdraw_shipment(
+        current_user=user,
+        shipment_id=shipment_id,
+        payload=ShipmentWithdraw(),
     )
     return ApiResponse(data=shipment)
 
