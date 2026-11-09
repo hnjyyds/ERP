@@ -252,6 +252,9 @@ async function capture(args) {
 
   const browser = await launchBrowser()
   const failures = []
+  // 冻结“当前时间”：倒计时、逾期判断、日期默认值都直接读 Date，
+  // 不固定的话两轮抓图相隔几分钟就可能产生差异。
+  const fixedNow = process.env.VISUAL_NOW ?? '2026-11-09T10:00:00+08:00'
   try {
     for (const scenario of scenarios) {
       const viewport = scenario.viewport ?? { width: 1440, height: 900 }
@@ -261,6 +264,23 @@ async function capture(args) {
         timezoneId: 'Asia/Shanghai',
         deviceScaleFactor: 1,
       })
+      await context.addInitScript((fixedIso) => {
+        const RealDate = Date
+        const fixed = new RealDate(fixedIso).getTime()
+        class FixedDate extends RealDate {
+          constructor(...params) {
+            if (params.length === 0) super(fixed)
+            else super(...params)
+          }
+
+          static now() {
+            return fixed
+          }
+        }
+        FixedDate.parse = RealDate.parse
+        FixedDate.UTC = RealDate.UTC
+        window.Date = FixedDate
+      }, fixedNow)
       if (scenario.auth !== false) {
         await context.addInitScript(
           (value) => localStorage.setItem('xinpei_access_token', value),
