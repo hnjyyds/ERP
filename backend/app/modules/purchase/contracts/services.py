@@ -3,6 +3,7 @@ from datetime import timedelta
 from decimal import Decimal
 
 from app.db.uow import UnitOfWork
+from app.modules.followup.services import FollowupService
 from app.modules.masterdata.products.repositories import ProductAccessoryRow, ProductRepository
 from app.modules.purchase.contracts.cancellation import (
     cancel_purchase_contract,
@@ -74,12 +75,14 @@ class PurchaseContractService:
         purchase_repository: PurchaseContractRepository,
         export_contract_repository: ExportContractRepository,
         product_repository: ProductRepository,
+        followup_service: FollowupService,
         data_scope_resolver: DataScopeResolver,
         auth_repository: AuthRepository,
     ) -> None:
         self._repository = purchase_repository
         self._export_contract_repository = export_contract_repository
         self._product_repository = product_repository
+        self._followup_service = followup_service
         self._data_scope_resolver = data_scope_resolver
         self._auth_repository = auth_repository
         self._assignee_validator = AssigneeValidator(auth_repository)
@@ -623,19 +626,7 @@ class PurchaseContractService:
             await self._export_contract_repository.refresh_statistics(export_contract_id)
 
     async def _ensure_followup_plan(self, contract: PurchaseContractRow) -> None:
-        from app.modules.followup.repositories import FollowupRepository
-        from app.modules.followup.services import FollowupService
-        from app.modules.sample.records.repositories import SampleRecordRepository
-        from app.modules.system.auth.data_scope import DataScopeResolver
-        from app.modules.system.auth.repositories import AuthRepository
-
-        followup_service = FollowupService(
-            followup_repository=FollowupRepository(self._repository.session),
-            purchase_contract_repository=self._repository,
-            sample_record_repository=SampleRecordRepository(self._repository.session),
-            data_scope_resolver=DataScopeResolver(AuthRepository(self._repository.session)),
-        )
-        await followup_service.ensure_plan_for_contract(contract=contract)
+        await self._followup_service.ensure_plan_for_contract(contract=contract)
 
     async def _ensure_inbound_plan(self, contract: PurchaseContractRow) -> None:
         from app.modules.system.auth.data_scope import DataScopeResolver

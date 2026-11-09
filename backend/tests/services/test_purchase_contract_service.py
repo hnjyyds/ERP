@@ -3,6 +3,8 @@ from datetime import date
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from app.modules.followup.repositories import FollowupRepository
+from app.modules.followup.services import FollowupService
 from app.modules.masterdata.products.repositories import ProductRepository
 from app.modules.purchase.contracts.repositories import PurchaseContractRepository
 from app.modules.purchase.contracts.schemas import (
@@ -18,6 +20,7 @@ from app.modules.purchase.contracts.services import (
     PurchaseContractService,
 )
 from app.modules.sales.contracts.repositories import ExportContractRepository
+from app.modules.sample.records.repositories import SampleRecordRepository
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
@@ -26,11 +29,19 @@ from app.modules.system.auth.seed import seed_system_demo_data
 
 def _make_service(session: AsyncSession) -> PurchaseContractService:
     auth_repository = AuthRepository(session)
+    data_scope_resolver = DataScopeResolver(auth_repository)
+    purchase_contract_repository = PurchaseContractRepository(session)
     return PurchaseContractService(
-        purchase_repository=PurchaseContractRepository(session),
+        purchase_repository=purchase_contract_repository,
         export_contract_repository=ExportContractRepository(session),
         product_repository=ProductRepository(session),
-        data_scope_resolver=DataScopeResolver(auth_repository),
+        followup_service=FollowupService(
+            followup_repository=FollowupRepository(session),
+            purchase_contract_repository=purchase_contract_repository,
+            sample_record_repository=SampleRecordRepository(session),
+            data_scope_resolver=data_scope_resolver,
+        ),
+        data_scope_resolver=data_scope_resolver,
         auth_repository=auth_repository,
     )
 
