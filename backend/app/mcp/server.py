@@ -152,6 +152,13 @@ CustomerCreditGradeFilter = Annotated[
         examples=["A"],
     ),
 ]
+CustomerStatusFilter = Annotated[
+    str | None,
+    Field(
+        description="Filter by customer status; common values are active and inactive.",
+        examples=["active"],
+    ),
+]
 ApprovalStatusFilter = Annotated[
     str | None,
     Field(
@@ -314,6 +321,7 @@ def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
         q: CustomerSearchQuery = None,
         country: CustomerCountryFilter = None,
         credit_grade: CustomerCreditGradeFilter = None,
+        status: CustomerStatusFilter = None,
         limit: PageLimit = 50,
         offset: PageOffset = 0,
     ) -> CustomerListResponse:
@@ -324,6 +332,7 @@ def create_mcp_server(service: ErpMcpCrudService) -> FastMCP:
                 q=q,
                 country=country,
                 credit_grade=credit_grade,
+                status=status,
                 limit=limit,
                 offset=offset,
             )

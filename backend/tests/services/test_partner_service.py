@@ -92,6 +92,7 @@ async def test_partner_service_filters_private_partner_without_view_all(
             current_user=_user_with_permissions(["masterdata:partner:view"], user_id="u-other"),
             q=None,
             partner_type=None,
+            status=None,
         )
 
     assert result.total == 0

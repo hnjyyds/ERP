@@ -133,6 +133,26 @@ async def test_mcp_service_supports_product_customer_and_export_order_crud(
         confirm=True,
     )
     assert deleted_customer.status == "inactive"
+    inactive_page = await service.list_customers(
+        user_id=user_id,
+        q="MCP-C-001",
+        country=None,
+        credit_grade=None,
+        status="inactive",
+        limit=10,
+        offset=0,
+    )
+    assert inactive_page.total == 1
+    active_page = await service.list_customers(
+        user_id=user_id,
+        q="MCP-C-001",
+        country=None,
+        credit_grade=None,
+        status="active",
+        limit=10,
+        offset=0,
+    )
+    assert active_page.total == 0
 
     order_payload = ExportContractCreate(
         code="MCP-EC-001",

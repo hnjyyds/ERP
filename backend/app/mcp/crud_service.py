@@ -129,6 +129,7 @@ class ErpMcpCrudService:
         q: str | None,
         country: str | None,
         credit_grade: str | None,
+        status: str | None = None,
         limit: int,
         offset: int,
     ) -> CustomerListResponse:
@@ -139,6 +140,7 @@ class ErpMcpCrudService:
                 q=q,
                 country=country,
                 credit_grade=credit_grade,
+                status=status,
                 limit=limit,
                 offset=offset,
             )

@@ -146,6 +146,7 @@ async def test_supplier_service_filters_private_supplier_without_view_all(
             q=None,
             country=None,
             credit_grade=None,
+            status=None,
         )
 
     assert result.total == 0
