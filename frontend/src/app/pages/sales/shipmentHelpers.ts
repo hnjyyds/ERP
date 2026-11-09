@@ -1,4 +1,8 @@
-import type { ShipmentApprovePayload, ShipmentPlanGeneratePayload } from '@/api'
+import type {
+  ShipmentApprovePayload,
+  ShipmentPlanGeneratePayload,
+  ShipmentRejectPayload,
+} from '@/api'
 import { emptyToNull, todayInputValue } from '@/app/pages/appHelpers'
 import { t } from '@/app/appI18n'
 import { freightMethodOptions, shipmentStatusOptions } from '@/shared/formOptions'
@@ -27,6 +31,11 @@ export type ShipmentApproveFormState = {
   approved_at: string
 }
 
+export type ShipmentRejectFormState = {
+  rejected_at: string
+  rejection_reason: string
+}
+
 export function initialShipmentForm(): ShipmentFormState {
   return {
     code: '',
@@ -52,6 +61,13 @@ export function initialShipmentApproveForm(): ShipmentApproveFormState {
   return {
     reviewer_name: '',
     approved_at: todayInputValue(),
+  }
+}
+
+export function initialShipmentRejectForm(): ShipmentRejectFormState {
+  return {
+    rejected_at: todayInputValue(),
+    rejection_reason: '',
   }
 }
 
@@ -89,6 +105,13 @@ export function shipmentApprovePayload(form: ShipmentApproveFormState): Shipment
   return {
     reviewer_name: form.reviewer_name.trim(),
     approved_at: form.approved_at,
+  }
+}
+
+export function shipmentRejectPayload(form: ShipmentRejectFormState): ShipmentRejectPayload {
+  return {
+    rejected_at: form.rejected_at,
+    rejection_reason: form.rejection_reason.trim(),
   }
 }
 

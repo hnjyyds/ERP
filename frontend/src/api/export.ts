@@ -391,6 +391,8 @@ export interface ShipmentPlan {
   approval_status: string
   submitted_at: string | null
   approved_at: string | null
+  rejected_at: string | null
+  rejection_reason: string | null
   reviewer_id: string | null
   reviewer_name: string | null
   remarks: string | null
@@ -443,6 +445,11 @@ export interface ShipmentPlanGeneratePayload {
 export interface ShipmentApprovePayload {
   reviewer_name?: string
   approved_at: string
+}
+
+export interface ShipmentRejectPayload {
+  rejected_at: string
+  rejection_reason: string
 }
 
 export function listExportQuotations(filters: {
@@ -715,6 +722,22 @@ export function approveShipment(
 
 export function withdrawShipment(shipmentId: string): Promise<ShipmentPlan> {
   return request<ShipmentPlan>(`/sales/shipments/${shipmentId}/withdraw`, {
+    method: 'POST',
+  })
+}
+
+export function rejectShipment(
+  shipmentId: string,
+  payload: ShipmentRejectPayload,
+): Promise<ShipmentPlan> {
+  return request<ShipmentPlan>(`/sales/shipments/${shipmentId}/reject`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function resyncShipmentFromContracts(shipmentId: string): Promise<ShipmentPlan> {
+  return request<ShipmentPlan>(`/sales/shipments/${shipmentId}/resync-from-contracts`, {
     method: 'POST',
   })
 }

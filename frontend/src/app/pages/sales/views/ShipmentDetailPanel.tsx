@@ -121,15 +121,46 @@ export function ShipmentDetailPanel({ currentUser, shipment, reminders, workflow
               {t('sales.shipment.action.submitForApproval')}
             </Button>
             {shipment.approval_status === 'submitted' ? (
+              <>
+                <Button
+                  disabled={!workflow.canWithdrawSelected}
+                  loading={workflow.submitting}
+                  onClick={() => void workflow.withdrawSelectedShipment()}
+                >
+                  {t('sales.shipment.action.withdraw')}
+                </Button>
+                <Button
+                  danger
+                  disabled={!workflow.canRejectSelected}
+                  onClick={workflow.openRejectModal}
+                >
+                  {t('sales.shipment.action.reject')}
+                </Button>
+              </>
+            ) : null}
+            {workflow.canResyncSelected ? (
               <Button
-                disabled={!workflow.canWithdrawSelected}
-                loading={workflow.submitting}
-                onClick={() => void workflow.withdrawSelectedShipment()}
+                loading={workflow.resyncSubmitting}
+                onClick={() => void workflow.resyncSelectedShipment()}
               >
-                {t('sales.shipment.action.withdraw')}
+                {t('sales.shipment.action.resyncFromContracts')}
               </Button>
             ) : null}
           </div>
+
+          {shipment.rejection_reason ? (
+            <Alert
+              description={shipment.rejection_reason}
+              showIcon
+              title={t('sales.shipment.detail.rejectionTitle', {
+                date: formatDate(shipment.rejected_at),
+              })}
+              type="warning"
+            />
+          ) : null}
+          {workflow.canResyncSelected ? (
+            <p className="form-hint">{t('sales.shipment.detail.resyncHint')}</p>
+          ) : null}
 
           <form
             className="record-form accessory-form approval-form"

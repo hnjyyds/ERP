@@ -12,6 +12,7 @@ import { useShipmentWorkflow } from './hooks/useShipmentWorkflow'
 import { ShipmentDetailPanel } from './views/ShipmentDetailPanel'
 import { ShipmentGenerateModal } from './views/ShipmentGenerateModal'
 import { ShipmentListPanel } from './views/ShipmentListPanel'
+import { ShipmentRejectModal } from './views/ShipmentRejectModal'
 
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 
@@ -58,6 +59,15 @@ export function ShipmentsPage({ currentUser, detailId, onNavigate }: Props) {
         ) : null}
 
         {!detailId ? <ShipmentGenerateModal workflow={workflow} /> : null}
+
+        <ShipmentRejectModal
+          form={workflow.rejectForm}
+          open={workflow.rejectOpen}
+          submitting={workflow.rejectSubmitting}
+          onCancel={workflow.closeRejectModal}
+          onConfirm={() => void workflow.rejectSelectedShipment()}
+          onFormChange={workflow.setRejectForm}
+        />
 
         {detailId ? (
           <ShipmentDetailPanel

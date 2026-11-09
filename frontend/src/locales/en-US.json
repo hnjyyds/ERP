@@ -804,6 +804,8 @@
         "submitForApproval": "Submit for approval",
         "approve": "Approve",
         "withdraw": "Withdraw",
+        "reject": "Reject",
+        "resyncFromContracts": "Resync from contracts",
         "waitingApproval": "Waiting for {name} to approve",
         "approverMismatch": "This shipment should be approved by {name}",
         "defaultReviewer": "the assigned approver"
@@ -827,6 +829,8 @@
         "noReminders": "No shipment reminders",
         "notFilled": "Not filled",
         "notApproved": "Not approved",
+        "rejectionTitle": "Rejected on {date}",
+        "resyncHint": "Resyncing refreshes lines from the current contract details and unshipped quantity, then returns the shipment to draft; an increased contract quantity does not expand the original shipment quantity.",
         "emptyTitle": "No shipments",
         "emptyDescription": "Return to the list and select a shipment to view details",
         "reminderPending": "Reminder pending",
@@ -836,7 +840,16 @@
         "recordCount_other": "{count} records"
       },
       "validation": {
-        "reviewerRequired": "Select an approver"
+        "reviewerRequired": "Select an approver",
+        "rejectionReasonRequired": "Enter a rejection reason"
+      },
+      "reject": {
+        "title": "Reject shipment",
+        "rejectedAt": "Rejection date",
+        "reason": "Rejection reason",
+        "reasonPlaceholder": "Explain the reason; it will be saved with the rejection record",
+        "confirm": "Confirm rejection",
+        "cancel": "Cancel"
       },
       "message": {
         "generated": "Shipment {code} generated",
@@ -846,7 +859,11 @@
         "approved": "Shipment {code} approved",
         "approveFailed": "Failed to approve shipment",
         "withdrawn": "Shipment {code} withdrawn",
-        "withdrawFailed": "Failed to withdraw shipment"
+        "withdrawFailed": "Failed to withdraw shipment",
+        "rejected": "Shipment {code} rejected",
+        "rejectFailed": "Failed to reject shipment",
+        "resynced": "Shipment {code} resynced from contracts",
+        "resyncFailed": "Failed to resync shipment"
       }
     }
   },

@@ -804,6 +804,8 @@
         "submitForApproval": "提交审批",
         "approve": "审批通过",
         "withdraw": "撤回",
+        "reject": "驳回",
+        "resyncFromContracts": "从合同重新同步",
         "waitingApproval": "等待 {name} 审批",
         "approverMismatch": "该出货单应由 {name} 审批",
         "defaultReviewer": "指定审批人"
@@ -827,6 +829,8 @@
         "noReminders": "暂无出货提醒",
         "notFilled": "未填",
         "notApproved": "未审批",
+        "rejectionTitle": "{date} 被驳回",
+        "resyncHint": "重新同步会按合同当前明细与未出货数量刷新出货行并回到草稿；合同数量增加不会自动扩大原出货数量。",
         "emptyTitle": "暂无出货明细",
         "emptyDescription": "请返回列表选择出货记录查看详情",
         "reminderPending": "待提醒",
@@ -836,7 +840,16 @@
         "recordCount_other": "{count} 条"
       },
       "validation": {
-        "reviewerRequired": "请选择审批人"
+        "reviewerRequired": "请选择审批人",
+        "rejectionReasonRequired": "请填写驳回原因"
+      },
+      "reject": {
+        "title": "驳回出货明细",
+        "rejectedAt": "驳回日期",
+        "reason": "驳回原因",
+        "reasonPlaceholder": "说明驳回原因，将随驳回记录保存",
+        "confirm": "确认驳回",
+        "cancel": "取消"
       },
       "message": {
         "generated": "已生成出货明细 {code}",
@@ -846,7 +859,11 @@
         "approved": "已审批出货明细 {code}",
         "approveFailed": "出货明细审批失败",
         "withdrawn": "已撤回出货明细 {code}",
-        "withdrawFailed": "出货明细撤回失败"
+        "withdrawFailed": "出货明细撤回失败",
+        "rejected": "已驳回出货明细 {code}",
+        "rejectFailed": "出货明细驳回失败",
+        "resynced": "已从合同重新同步出货明细 {code}",
+        "resyncFailed": "出货明细重新同步失败"
       }
     }
   },

@@ -339,4 +339,119 @@ describe('ShipmentsPage', () => {
     expect(await screen.findByText('收付款和利润概览')).toBeTruthy()
     expect(screen.queryByRole('button', { name: /撤\s*回/ })).not.toBeInTheDocument()
   })
+
+  it('指定审批人驳回并记录原因后刷新', async () => {
+    vi.spyOn(api, 'listShipments').mockResolvedValue({
+      items: [{ ...detailShipment, reviewer_id: 'u-sales', reviewer_name: '销售A' }],
+      total: 1,
+      summary: emptySummary,
+    })
+    const rejectSpy = vi.spyOn(api, 'rejectShipment').mockResolvedValue({
+      ...detailShipment,
+      reviewer_id: 'u-sales',
+      reviewer_name: '销售A',
+      approval_status: 'rejected',
+      rejected_at: '2026-08-19',
+      rejection_reason: '单证信息有误',
+    })
+
+    render(
+      <ShipmentsPage
+        currentUser={{ ...currentUser, id: 'u-sales', permissions: ['sales:shipment:approve'] }}
+        detailId="s-1"
+        onNavigate={onNavigate}
+      />,
+    )
+
+    const rejectButton = await screen.findByRole('button', { name: /驳\s*回/ })
+    expect(rejectButton).toBeEnabled()
+
+    await userEvent.click(rejectButton)
+    await userEvent.type(await screen.findByLabelText(/驳回原因/), '单证信息有误')
+    await userEvent.click(screen.getByRole('button', { name: '确认驳回' }))
+
+    await waitFor(() => expect(rejectSpy).toHaveBeenCalledTimes(1))
+    expect(rejectSpy.mock.calls[0][0]).toBe('s-1')
+    expect(rejectSpy.mock.calls[0][1]).toMatchObject({
+      rejection_reason: '单证信息有误',
+      rejected_at: expect.any(String),
+    })
+    expect(await screen.findByText('已驳回出货明细 S-001')).toBeTruthy()
+    expect(await screen.findByText('单证信息有误')).toBeTruthy()
+  })
+
+  it('驳回弹窗要求填写原因后才可确认', async () => {
+    vi.spyOn(api, 'listShipments').mockResolvedValue({
+      items: [{ ...detailShipment, reviewer_id: 'u-sales', reviewer_name: '销售A' }],
+      total: 1,
+      summary: emptySummary,
+    })
+
+    render(
+      <ShipmentsPage
+        currentUser={{ ...currentUser, id: 'u-sales', permissions: ['sales:shipment:approve'] }}
+        detailId="s-1"
+        onNavigate={onNavigate}
+      />,
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: /驳\s*回/ }))
+    expect(await screen.findByRole('button', { name: '确认驳回' })).toBeDisabled()
+  })
+
+  it('非指定审批人不可驳回', async () => {
+    vi.spyOn(api, 'listShipments').mockResolvedValue({
+      items: [{ ...detailShipment, reviewer_id: 'u-owner' }],
+      total: 1,
+      summary: emptySummary,
+    })
+
+    render(
+      <ShipmentsPage
+        currentUser={{ ...currentUser, id: 'u-sales', permissions: ['sales:shipment:approve'] }}
+        detailId="s-1"
+        onNavigate={onNavigate}
+      />,
+    )
+
+    expect(await screen.findByRole('button', { name: /驳\s*回/ })).toBeDisabled()
+  })
+
+  it('已驳回明细展示原因与重新同步入口，点击后回到草稿', async () => {
+    const rejectedShipment = {
+      ...detailShipment,
+      owner_user_id: 'u-sales',
+      approval_status: 'rejected',
+      rejected_at: '2026-08-19',
+      rejection_reason: '请同步最新合同价',
+      submitted_at: null,
+      reviewer_id: null,
+      reviewer_name: null,
+    }
+    vi.spyOn(api, 'listShipments').mockResolvedValue({
+      items: [rejectedShipment],
+      total: 1,
+      summary: emptySummary,
+    })
+    const resyncSpy = vi.spyOn(api, 'resyncShipmentFromContracts').mockResolvedValue({
+      ...rejectedShipment,
+      approval_status: 'draft',
+      finance_overview: { ...rejectedShipment.finance_overview, receivable_amount: '600.00' },
+    })
+
+    render(
+      <ShipmentsPage
+        currentUser={{ ...currentUser, id: 'u-sales', permissions: ['sales:shipment:edit'] }}
+        detailId="s-1"
+        onNavigate={onNavigate}
+      />,
+    )
+
+    expect(await screen.findByText('请同步最新合同价')).toBeTruthy()
+    const resyncButton = await screen.findByRole('button', { name: '从合同重新同步' })
+    await userEvent.click(resyncButton)
+
+    await waitFor(() => expect(resyncSpy).toHaveBeenCalledWith('s-1'))
+    expect(await screen.findByText('已从合同重新同步出货明细 S-001')).toBeTruthy()
+  })
 })

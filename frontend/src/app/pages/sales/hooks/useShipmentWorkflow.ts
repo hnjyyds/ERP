@@ -5,6 +5,8 @@ import {
   approveShipment,
   generateShipmentFromContracts,
   listExportContracts,
+  rejectShipment,
+  resyncShipmentFromContracts,
   submitShipment,
   withdrawShipment,
   type CurrentUser,
@@ -18,10 +20,13 @@ import { useFormModal } from '@/shared/useFormModal'
 import {
   initialShipmentApproveForm,
   initialShipmentForm,
+  initialShipmentRejectForm,
   shipmentApprovePayload,
   shipmentGeneratePayload,
+  shipmentRejectPayload,
   type ShipmentApproveFormState,
   type ShipmentFormState,
+  type ShipmentRejectFormState,
 } from '../shipmentHelpers'
 
 const SHIPMENT_APPROVE_PERMISSION = 'sales:shipment:approve'
@@ -56,6 +61,12 @@ export function useShipmentWorkflow({
   const [approveForm, setApproveForm] = useState<ShipmentApproveFormState>(() =>
     initialShipmentApproveForm(),
   )
+  const [rejectOpen, setRejectOpen] = useState(false)
+  const [rejectForm, setRejectForm] = useState<ShipmentRejectFormState>(() =>
+    initialShipmentRejectForm(),
+  )
+  const [rejectSubmitting, setRejectSubmitting] = useState(false)
+  const [resyncSubmitting, setResyncSubmitting] = useState(false)
 
   const fetchExportContractOptions = useCallback(async (query: string) => {
     const result = await listExportContracts({
@@ -95,6 +106,76 @@ export function useShipmentWorkflow({
       (selectedShipment.owner_user_id === currentUser.id ||
         currentUser.permissions.includes('system:super_admin')),
   )
+
+  const canRejectSelected = Boolean(
+    selectedShipment && selectedShipment.approval_status === 'submitted' && canApproveSelected,
+  )
+
+  const canResyncSelected = Boolean(
+    selectedShipment &&
+      (selectedShipment.approval_status === 'rejected' ||
+        (selectedShipment.approval_status === 'draft' && selectedShipment.rejection_reason)),
+  )
+
+  function openRejectModal() {
+    setRejectForm(initialShipmentRejectForm())
+    setRejectOpen(true)
+  }
+
+  function closeRejectModal() {
+    setRejectOpen(false)
+    setRejectForm(initialShipmentRejectForm())
+  }
+
+  async function rejectSelectedShipment() {
+    if (!selectedShipment) return
+    if (!canApproveAssignedRecord(currentUser, selectedShipment.reviewer_id, SHIPMENT_APPROVE_PERMISSION)) {
+      showError(
+        new Error(
+          t('sales.shipment.action.approverMismatch', {
+            name: selectedShipment.reviewer_name ?? t('sales.shipment.action.defaultReviewer'),
+          }),
+        ),
+      )
+      return
+    }
+    if (!rejectForm.rejection_reason.trim()) {
+      showError(new Error(t('sales.shipment.validation.rejectionReasonRequired')))
+      return
+    }
+    setRejectSubmitting(true)
+    setMessage('')
+    try {
+      const rejected = await rejectShipment(
+        selectedShipment.id,
+        shipmentRejectPayload(rejectForm),
+      )
+      setMessage(t('sales.shipment.message.rejected', { code: rejected.code }))
+      setRejectOpen(false)
+      upsertShipment(rejected)
+      await Promise.all([reloadShipments(rejected.id), reloadReminders()])
+    } catch (caught) {
+      showError(caught, t('sales.shipment.message.rejectFailed'))
+    } finally {
+      setRejectSubmitting(false)
+    }
+  }
+
+  async function resyncSelectedShipment() {
+    if (!selectedShipment) return
+    setResyncSubmitting(true)
+    setMessage('')
+    try {
+      const resynced = await resyncShipmentFromContracts(selectedShipment.id)
+      setMessage(t('sales.shipment.message.resynced', { code: resynced.code }))
+      upsertShipment(resynced)
+      await Promise.all([reloadShipments(resynced.id), reloadReminders()])
+    } catch (caught) {
+      showError(caught, t('sales.shipment.message.resyncFailed'))
+    } finally {
+      setResyncSubmitting(false)
+    }
+  }
 
   async function submitGeneratedShipment(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -200,11 +281,22 @@ export function useShipmentWorkflow({
     setApproveForm,
     canApproveSelected,
     canWithdrawSelected,
+    canRejectSelected,
+    canResyncSelected,
+    rejectOpen,
+    rejectForm,
+    setRejectForm,
+    rejectSubmitting,
+    resyncSubmitting,
     fetchExportContractOptions,
     submitGeneratedShipment,
     submitShipmentForApproval,
     withdrawSelectedShipment,
     approveSelectedShipment,
+    openRejectModal,
+    closeRejectModal,
+    rejectSelectedShipment,
+    resyncSelectedShipment,
     openGenerateForm,
     closeGenerateForm: closeShipmentForm,
   }
