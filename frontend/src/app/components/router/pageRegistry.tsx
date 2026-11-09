@@ -180,6 +180,7 @@ const pageRenderers: Partial<Record<RouteKey, PageRenderer>> = {
     <DashboardPage
       currentUser={context.session.user}
       dashboard={context.dashboard}
+      menus={context.session.menus}
       loading={context.loadingDashboard}
       canNavigatePath={context.canNavigatePath}
       onNavigate={context.onNavigate}

@@ -1,0 +1,103 @@
+.dashboard-shortcut-panel {
+  grid-column: 1 / -1;
+}
+
+.dashboard-shortcut-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.dashboard-shortcut {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  border: 1px solid rgba(235, 238, 242, 0.92);
+  border-radius: 8px;
+  background: rgba(255, 254, 251, 0.86);
+  color: #1d2129;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 660;
+  padding: 0 16px;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+
+.dashboard-shortcut:hover:not(:disabled) {
+  border-color: rgba(154, 91, 22, 0.38);
+  background: rgba(250, 246, 236, 0.9);
+  transform: translateY(-1px);
+}
+
+.dashboard-shortcut:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.dashboard-shortcut-icon {
+  display: inline-grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 8px;
+  background: rgba(154, 91, 22, 0.1);
+  color: #8a5a18;
+}
+
+.dashboard-shortcut-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dashboard-shortcut-empty > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dashboard-shortcut-empty span {
+  color: #8c8f9c;
+  font-size: 0.875rem;
+}
+
+.dashboard-shortcut-manager {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dashboard-shortcut-managed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 240px;
+  overflow: auto;
+}
+
+.dashboard-shortcut-managed-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid rgba(235, 238, 242, 0.9);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.dashboard-shortcut-managed-row div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.dashboard-shortcut-managed-row small {
+  color: #8c8f9c;
+  overflow-wrap: anywhere;
+}

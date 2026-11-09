@@ -4,8 +4,10 @@ import type { FormEvent } from 'react'
 import { useEffect, useState } from 'react'
 import {
   createAnnouncement,
+  createDashboardShortcut,
   createScheduleEvent,
   createTodos,
+  deleteDashboardShortcut,
   deleteScheduleEvent,
   listAssignableUsers,
   markNotificationRead,
@@ -13,9 +15,11 @@ import {
   type AnnouncementCreatePayload,
   type CurrentUser,
   type Dashboard,
+  type MenuItem,
   type NotificationItem,
   type ScheduleCreatePayload,
   type ScheduleEvent,
+  type ShortcutCreatePayload,
   type TodoCreatePayload,
 } from '@/api'
 import {
@@ -46,10 +50,12 @@ import {
   DashboardSchedulePreviewPanel,
   DashboardTodoPreviewPanel,
 } from './views/DashboardOverviewPanels'
+import { DashboardShortcutsPanel } from './views/DashboardShortcutsPanel'
 
 export function DashboardPage({
   currentUser,
   dashboard,
+  menus,
   loading,
   canNavigatePath,
   onNavigate,
@@ -57,6 +63,7 @@ export function DashboardPage({
 }: {
   currentUser: CurrentUser
   dashboard: Dashboard | null
+  menus: MenuItem[]
   loading: boolean
   canNavigatePath: (path: string) => boolean
   onNavigate: (path: string) => void
@@ -288,6 +295,16 @@ export function DashboardPage({
     )
   }
 
+  async function createShortcut(payload: ShortcutCreatePayload) {
+    await createDashboardShortcut(payload)
+    await onRefresh()
+  }
+
+  async function deleteShortcut(shortcutId: string) {
+    await deleteDashboardShortcut(shortcutId)
+    await onRefresh()
+  }
+
   function confirmRemoveSchedule(schedule: ScheduleEvent) {
     Modal.confirm({
       centered: true,
@@ -341,6 +358,15 @@ export function DashboardPage({
 
       {actionError ? <div className="dashboard-feedback error">{actionError}</div> : null}
       {actionMessage ? <div className="dashboard-feedback success">{actionMessage}</div> : null}
+
+      <DashboardShortcutsPanel
+        canNavigatePath={canNavigatePath}
+        menus={menus}
+        shortcuts={dashboard?.shortcuts ?? []}
+        onCreate={createShortcut}
+        onDelete={deleteShortcut}
+        onNavigate={onNavigate}
+      />
 
       <div className="dashboard-toolbar" aria-label={t('dashboard.aria')}>
         <button type="button" onClick={openScheduleModal}>

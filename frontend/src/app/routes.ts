@@ -401,12 +401,13 @@ export function financeDetailPath(module: FinanceModule, id: string, itemId?: st
 
 /** 按最长路径匹配注册表条目；'/' 仅精确匹配，避免吞掉其他路径。 */
 export function routeDefinitionFor(path: string): RouteDefinition | null {
+  const pathname = path.split('?')[0]
   let matched: RouteDefinition | null = null
   for (const route of routeRegistry) {
     const matches =
       route.path === '/'
-        ? path === '/'
-        : path === route.path || path.startsWith(`${route.path}/`)
+        ? pathname === '/'
+        : pathname === route.path || pathname.startsWith(`${route.path}/`)
     if (!matches) continue
     if (!matched || route.path.length > matched.path.length) matched = route
   }

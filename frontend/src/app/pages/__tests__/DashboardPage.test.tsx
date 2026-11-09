@@ -40,6 +40,7 @@ const emptyDashboard = {
 const defaultProps = {
   currentUser: mockCurrentUser,
   dashboard: emptyDashboard,
+  menus: [],
   loading: false,
   canNavigatePath: () => true,
   onNavigate: vi.fn(),
