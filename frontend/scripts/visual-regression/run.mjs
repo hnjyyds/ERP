@@ -306,10 +306,12 @@ async function capture(args) {
         await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {})
         await page.evaluate(() => document.fonts.ready.catch(() => {}))
         await page.waitForTimeout(400)
-        // 页面被 ErrorBoundary 兜住时，截图仍会“成功”，但等于没有任何覆盖，直接判失败。
-        // 只匹配 ErrorBoundary 的 section[role=alert]，避免误伤页面内的非致命 actionError。
-        if (await page.locator('section.dashboard-feedback.error[role="alert"]').count()) {
-          throw new Error('页面渲染失败（命中 PageErrorBoundary），该场景未实际覆盖')
+        // 页面被 ErrorBoundary 或首屏加载错误兜住时，截图仍会“成功”，但等于没有任何覆盖。
+        // 这里在任何交互之前，出现错误横幅只可能来自首屏加载（如接口字段缺失），直接判失败。
+        const errorBanner = page.locator('section.dashboard-feedback.error')
+        if (await errorBanner.count()) {
+          const text = ((await errorBanner.first().textContent()) ?? '').trim().slice(0, 120)
+          throw new Error(`页面渲染失败（${text || '未捕获错误'}），该场景未实际覆盖`)
         }
         if (scenario.clickTestId) {
           await page
