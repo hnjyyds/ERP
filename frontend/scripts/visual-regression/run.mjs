@@ -287,7 +287,8 @@ async function capture(args) {
         await page.evaluate(() => document.fonts.ready.catch(() => {}))
         await page.waitForTimeout(400)
         // 页面被 ErrorBoundary 兜住时，截图仍会“成功”，但等于没有任何覆盖，直接判失败。
-        if (await page.locator('.dashboard-feedback.error').count()) {
+        // 只匹配 ErrorBoundary 的 section[role=alert]，避免误伤页面内的非致命 actionError。
+        if (await page.locator('section.dashboard-feedback.error[role="alert"]').count()) {
           throw new Error('页面渲染失败（命中 PageErrorBoundary），该场景未实际覆盖')
         }
         if (scenario.clickTestId) {
