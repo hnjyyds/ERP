@@ -17,6 +17,7 @@ from app.modules.masterdata.partners.schemas import (
     PartnerResponse,
     PartnerUpdate,
 )
+from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 
@@ -74,6 +75,10 @@ class PartnerService:
                     phone=contact.phone,
                     is_primary=contact.is_primary,
                 )
+            await record_audit(
+                self._repository.session, current_user, "create", "partner",
+                partner.id, partner.code, "新增合作伙伴",
+            )
         return await self._partner_response(partner)
 
     async def update_partner(
@@ -99,6 +104,10 @@ class PartnerService:
             )
             if partner is None:
                 raise PartnerNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "update", "partner",
+                partner.id, partner.code, "修改合作伙伴",
+            )
         return await self._partner_response(partner)
 
     async def add_contact(
@@ -249,6 +258,10 @@ class PartnerService:
             )
             if partner is None:
                 raise PartnerNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "delete", "partner",
+                partner.id, partner.code, "停用合作伙伴",
+            )
         return await self._partner_response(partner)
 
     async def _get_accessible_partner(

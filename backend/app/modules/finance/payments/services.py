@@ -27,6 +27,7 @@ from app.modules.purchase.invoice_notices.repositories import (
     PurchaseInvoiceNoticeRepository,
     PurchaseInvoiceNoticeRow,
 )
+from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
@@ -128,7 +129,7 @@ class PaymentService:
 
         async def create(request_no: str) -> PaymentRequestRow:
             async with UnitOfWork(self._repository.session):
-                return await self._repository.create_payment_request(
+                created = await self._repository.create_payment_request(
                     request_no=request_no,
                     invoice=invoice,
                     payment_type=payload.payment_type,
@@ -141,6 +142,11 @@ class PaymentService:
                     reviewer_name=reviewer.display_name,
                     remark=payload.remark,
                 )
+                await record_audit(
+                    self._repository.session, current_user, "submit", "payment_request",
+                    created.id, created.request_no, "提交付款申请",
+                )
+                return created
 
         payment_request = await create_with_generated_code("finance.payment_request", create)
         return self._payment_request_response(payment_request)
@@ -212,6 +218,10 @@ class PaymentService:
             refreshed = await self._repository.refresh_supplier_invoice_status(invoice.id)
             if refreshed is None:
                 raise PaymentNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "approve", "payment_request",
+                approved.id, approved.request_no, "审批通过付款申请",
+            )
         return self._payment_request_response(approved)
 
     async def list_payables(

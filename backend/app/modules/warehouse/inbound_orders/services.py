@@ -6,6 +6,7 @@ from app.db.uow import UnitOfWork
 from app.modules.followup.services import FollowupService
 from app.modules.purchase.contracts.repositories import PurchaseContractRepository
 from app.modules.quality.inspections.repositories import QualityInspectionRepository
+from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
@@ -171,6 +172,10 @@ class InboundOrderService:
             )
             if submitted is None:
                 raise InboundOrderNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "submit", "inbound_order",
+                submitted.id, submitted.code, "提交入库单",
+            )
         return await self._order_response(submitted)
 
     async def approve_order(
@@ -218,6 +223,10 @@ class InboundOrderService:
                 )
                 if refreshed_plan is None:
                     raise InboundOrderPlanNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "approve", "inbound_order",
+                approved.id, approved.code, "审批通过入库单",
+            )
         if approved.inbound_mode == "formal":
             await self._followup_service.complete_node_from_source(
                 purchase_contract_id=approved.purchase_contract_id,
@@ -259,6 +268,10 @@ class InboundOrderService:
             )
             if cancelled is None:
                 raise InboundOrderNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "cancel", "inbound_order",
+                cancelled.id, cancelled.code, "作废入库单", {"reason": reason},
+            )
         return await self._order_response(cancelled)
 
     async def list_orders(

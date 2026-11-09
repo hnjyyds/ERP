@@ -45,7 +45,8 @@
       "products": "Products, prices, and quality requirements",
       "customers": "Customers and order requirements",
       "warehouseInboundOrders": "Inbound and inventory confirmation",
-      "mcpSettings": "MCP and AI data access"
+      "mcpSettings": "MCP and AI data access",
+      "auditLogs": "Write operation audit trail"
     },
     "aria": {
       "businessNavigation": "Business navigation",
@@ -4454,6 +4455,60 @@
         "updated": "{name} permissions updated",
         "saveFailed": "Failed to save permissions"
       }
+    }
+  },
+  "auditLogs": {
+    "title": "Audit Logs",
+    "description": "Write operations only. Query and export are available to super administrators.",
+    "filter": {
+      "actorPlaceholder": "Operator name or user ID",
+      "resourcePlaceholder": "All modules",
+      "actionPlaceholder": "All actions",
+      "keywordPlaceholder": "Document number keyword",
+      "search": "Search",
+      "reset": "Reset",
+      "export": "Export CSV"
+    },
+    "table": {
+      "createdAt": "Time",
+      "actor": "Operator",
+      "action": "Action",
+      "resourceType": "Module",
+      "resourceNo": "Document No.",
+      "summary": "Summary"
+    },
+    "resource": {
+      "product": "Product",
+      "customer": "Customer",
+      "supplier": "Supplier",
+      "partner": "Partner",
+      "export_quotation": "Quotation",
+      "export_contract": "Export Contract",
+      "purchase_contract": "Purchase Contract",
+      "sample_delivery": "Sample Delivery",
+      "shipment": "Shipment",
+      "inbound_order": "Inbound Order",
+      "outbound_order": "Outbound Order",
+      "payment_request": "Payment",
+      "fee_payment_request": "Fee Payment",
+      "reimbursement": "Reimbursement"
+    },
+    "action": {
+      "create": "Create",
+      "update": "Update",
+      "delete": "Deactivate",
+      "submit": "Submit",
+      "approve": "Approve",
+      "reject": "Reject",
+      "withdraw": "Withdraw",
+      "cancel": "Void",
+      "reopen": "Reopen"
+    },
+    "message": {
+      "empty": "No audit records",
+      "loadFailed": "Failed to load audit logs",
+      "exportFailed": "Failed to export audit logs",
+      "exported": "Exported {count} audit records"
     }
   },
   "system": {

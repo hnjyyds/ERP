@@ -6,6 +6,7 @@ export {
   setAuthToken,
 } from './api/core'
 export * from './api/system'
+export * from './api/audit'
 export * from './api/dashboard'
 export * from './api/finance-overview'
 export * from './api/reporting'

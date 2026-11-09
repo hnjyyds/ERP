@@ -30,6 +30,7 @@ from app.modules.sales.shipments import models as shipment_models  # noqa: F401
 from app.modules.sample.deliveries import models as sample_delivery_models  # noqa: F401
 from app.modules.sample.records import models as sample_record_models  # noqa: F401
 from app.modules.sample.requests import models as sample_request_models  # noqa: F401
+from app.modules.system.audit_logs import models as audit_log_models  # noqa: F401
 from app.modules.system.auth import models as auth_models  # noqa: F401
 from app.modules.system.company import models as company_models  # noqa: F401
 from app.modules.system.dashboard import models as dashboard_models  # noqa: F401

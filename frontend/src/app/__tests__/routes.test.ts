@@ -176,10 +176,10 @@ describe('navigation contract', () => {
     ).toEqual([])
   })
 
-  it('seeds all 35 business menus, including 10 finance modules', () => {
+  it('seeds all 36 business menus, including 10 finance modules', () => {
     const financePaths = seededMenuPaths.filter((path) => path.startsWith('/finance/'))
-    // 35 个业务菜单 + 工作台根路径。
-    expect(seededMenuPaths.filter((path) => path !== dashboardPath)).toHaveLength(35)
+    // 36 个业务菜单 + 工作台根路径。
+    expect(seededMenuPaths.filter((path) => path !== dashboardPath)).toHaveLength(36)
     expect(financePaths).toHaveLength(10)
     expect(financePaths).toContain(financeReportsPath)
   })
@@ -188,7 +188,7 @@ describe('navigation contract', () => {
     const entries = [...menuSection.matchAll(/MenuItem\(\s*([\s\S]*?)\n {8}\)/g)].map(
       (match) => match[1],
     )
-    expect(entries).toHaveLength(36)
+    expect(entries).toHaveLength(37)
     for (const entry of entries) {
       expect(entry).toMatch(/\blabel="[^"]+"/)
       expect(entry).toMatch(/\blabel_en="[^"]+"/)

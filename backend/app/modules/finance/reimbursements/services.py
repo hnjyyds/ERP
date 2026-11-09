@@ -16,6 +16,7 @@ from app.modules.finance.reimbursements.schemas import (
     ReimbursementPay,
     ReimbursementResponse,
 )
+from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.permissions import can_approve_assigned_record
 from app.modules.system.auth.repositories import AuthRepository
@@ -73,6 +74,10 @@ class ReimbursementService:
                 items=payload.items,
                 created_by_user_id=current_user.id,
                 created_by_user_name=current_user.display_name,
+            )
+            await record_audit(
+                self._repository.session, current_user, "submit", "reimbursement",
+                reimbursement.id, reimbursement.reimbursement_no, "提交报销单",
             )
         return self._response(reimbursement)
 
@@ -134,8 +139,15 @@ class ReimbursementService:
                 approved_by_user_id=current_user.id,
                 approved_by_user_name=current_user.display_name,
             )
-        if reimbursement is None:
-            raise ReimbursementNotFoundError
+            if reimbursement is None:
+                raise ReimbursementNotFoundError
+            action = "approve" if payload.approved else "reject"
+            summary = "审批通过报销单" if payload.approved else "驳回报销单"
+            await record_audit(
+                self._repository.session, current_user, action, "reimbursement",
+                reimbursement.id, reimbursement.reimbursement_no, summary,
+                {"reason": payload.approval_remark},
+            )
         return self._response(reimbursement)
 
     async def pay_reimbursement(

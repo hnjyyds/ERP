@@ -32,6 +32,7 @@ from app.modules.masterdata.products.schemas import (
     ProductTransactionResponse,
     ProductUpdate,
 )
+from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.warehouse.inventory.services import InventoryService
 
@@ -115,6 +116,10 @@ class ProductService:
                 )
                 for item in payload.accessories
             ]
+            await record_audit(
+                self._repository.session, current_user, "create", "product",
+                product.id, product.code, "新增商品",
+            )
         return self._product_response(product, accessories)
 
     async def update_product(
@@ -147,6 +152,10 @@ class ProductService:
             if product is None:
                 raise ProductNotFoundError
             accessories = await self._repository.list_accessories(product_id)
+            await record_audit(
+                self._repository.session, current_user, "update", "product",
+                product.id, product.code, "修改商品",
+            )
         return self._product_response(product, accessories)
 
     async def deactivate_product(
@@ -161,6 +170,10 @@ class ProductService:
             if product is None:
                 raise ProductNotFoundError
             accessories = await self._repository.list_accessories(product_id)
+            await record_audit(
+                self._repository.session, current_user, "delete", "product",
+                product.id, product.code, "停用商品",
+            )
         return self._product_response(product, accessories)
 
     async def add_accessory(

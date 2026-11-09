@@ -18,6 +18,7 @@ from app.modules.sales.contracts.schemas import (
     ExportContractReissue,
     ExportContractResponse,
 )
+from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.numbering.generator import create_with_generated_code
 
@@ -74,6 +75,11 @@ async def cancel_export_contract(
         cancelled = await service._repository.get_contract(contract.id)
         if cancelled is None:
             raise ExportContractNotFoundError
+        await record_audit(
+            service._repository.session, current_user, "cancel", "export_contract",
+            cancelled.id, cancelled.code, "作废出口合同",
+            {"reason": payload.reason.strip()},
+        )
     return await service._contract_response(cancelled)
 
 
@@ -148,6 +154,11 @@ async def reissue_export_contract(
             refreshed = await service._repository.refresh_statistics(reissued.id)
             if refreshed is None:
                 raise ExportContractNotFoundError
+            await record_audit(
+                service._repository.session, current_user, "reopen", "export_contract",
+                refreshed.id, refreshed.code, "重开出口合同",
+                {"reissued_from": contract.code, "reason": payload.reason.strip()},
+            )
             return refreshed
 
     reissued = await create_with_generated_code("sales.contract", create_reissue_row)

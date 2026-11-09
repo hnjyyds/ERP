@@ -25,13 +25,14 @@ from app.modules.sales.shipments.schemas import (
     ShipmentPlanGenerate,
     ShipmentPlanListResponse,
     ShipmentPlanResponse,
+    ShipmentReject,
     ShipmentReminderListResponse,
     ShipmentReminderResponse,
-    ShipmentReject,
     ShipmentResync,
     ShipmentSubmit,
     ShipmentWithdraw,
 )
+from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
@@ -197,6 +198,10 @@ class ShipmentPlanService:
             )
             if submitted is None:
                 raise ShipmentNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "submit", "shipment",
+                submitted.id, submitted.code, "提交出货明细",
+            )
         return await self._shipment_response(submitted)
 
     async def approve_shipment(
@@ -240,6 +245,10 @@ class ShipmentPlanService:
             )
             if approved is None:
                 raise ShipmentNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "approve", "shipment",
+                approved.id, approved.code, "审批通过出货明细",
+            )
         return await self._shipment_response(approved)
 
     async def withdraw_shipment(
@@ -267,6 +276,10 @@ class ShipmentPlanService:
             withdrawn = await self._repository.withdraw_plan(plan.id)
             if withdrawn is None:
                 raise ShipmentNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "withdraw", "shipment",
+                withdrawn.id, withdrawn.code, "撤回出货明细",
+            )
         return await self._shipment_response(withdrawn)
 
     async def reject_shipment(
@@ -298,6 +311,11 @@ class ShipmentPlanService:
             )
             if rejected is None:
                 raise ShipmentNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "reject", "shipment",
+                rejected.id, rejected.code, "驳回出货明细",
+                {"reason": payload.rejection_reason},
+            )
         return await self._shipment_response(rejected)
 
     async def resync_from_contracts(

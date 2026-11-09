@@ -63,6 +63,9 @@ const OrganizationUsersPage = React.lazy(() =>
 const McpSettingsPage = React.lazy(() =>
   import('@/app/pages/system/McpSettingsPage').then((m) => ({ default: m.McpSettingsPage })),
 )
+const AuditLogsPage = React.lazy(() =>
+  import('@/app/pages/system/AuditLogsPage').then((m) => ({ default: m.AuditLogsPage })),
+)
 const ProductsPage = React.lazy(() =>
   import('@/app/pages/masterdata/ProductsPage').then((m) => ({ default: m.ProductsPage })),
 )
@@ -219,6 +222,7 @@ const pageRenderers: Partial<Record<RouteKey, PageRenderer>> = {
   ),
   organizationUsers: (context) => <OrganizationUsersPage currentUser={context.session.user} />,
   mcpSettings: () => <McpSettingsPage />,
+  auditLogs: () => <AuditLogsPage />,
   product: (context) => (
     <ProductsPage
       detailId={moduleDetailId(productPath, context.activePath)}

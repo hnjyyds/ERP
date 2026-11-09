@@ -6,6 +6,7 @@ from app.db.uow import UnitOfWork
 from app.modules.followup.services import FollowupService
 from app.modules.purchase.contracts.repositories import PurchaseContractRepository
 from app.modules.sales.shipments.repositories import ShipmentPlanRepository
+from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
@@ -167,6 +168,10 @@ class OutboundOrderService:
             )
             if submitted is None:
                 raise OutboundOrderNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "submit", "outbound_order",
+                submitted.id, submitted.code, "提交出库单",
+            )
         return await self._order_response(submitted)
 
     async def approve_order(
@@ -217,6 +222,10 @@ class OutboundOrderService:
             )
             if refreshed_plan is None:
                 raise OutboundOrderPlanNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "approve", "outbound_order",
+                approved.id, approved.code, "审批通过出库单",
+            )
         await self._complete_followup_nodes(
             order=approved,
             lines=lines,
@@ -254,6 +263,10 @@ class OutboundOrderService:
             )
             if cancelled is None:
                 raise OutboundOrderNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "cancel", "outbound_order",
+                cancelled.id, cancelled.code, "作废出库单", {"reason": reason},
+            )
         return await self._order_response(cancelled)
 
     async def list_orders(

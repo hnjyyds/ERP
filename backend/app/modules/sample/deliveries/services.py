@@ -32,6 +32,7 @@ from app.modules.sample.deliveries.schemas import (
     SampleDeliveryWithdraw,
 )
 from app.modules.sample.records.repositories import SampleRecordRepository
+from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
@@ -233,6 +234,10 @@ class SampleDeliveryService:
             )
             if submitted is None:
                 raise SampleDeliveryNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "submit", "sample_delivery",
+                submitted.id, submitted.code, "提交寄样单",
+            )
         return await self._delivery_response(submitted)
 
     async def approve_delivery(
@@ -283,6 +288,10 @@ class SampleDeliveryService:
                     recipient=approved.recipient_company or approved.customer_name,
                     note=None,
                 )
+            await record_audit(
+                self._repository.session, current_user, "approve", "sample_delivery",
+                approved.id, approved.code, "审批通过寄样单",
+            )
         return await self._delivery_response(approved)
 
     async def reject_delivery(
@@ -316,6 +325,11 @@ class SampleDeliveryService:
             )
             if rejected is None:
                 raise SampleDeliveryNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "reject", "sample_delivery",
+                rejected.id, rejected.code, "驳回寄样单",
+                {"reason": payload.rejection_reason},
+            )
         return await self._delivery_response(rejected)
 
     async def withdraw_delivery(
@@ -342,6 +356,10 @@ class SampleDeliveryService:
             withdrawn = await self._repository.withdraw_delivery(delivery_id)
             if withdrawn is None:
                 raise SampleDeliveryNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "withdraw", "sample_delivery",
+                withdrawn.id, withdrawn.code, "撤回寄样单",
+            )
         return await self._delivery_response(withdrawn)
 
     async def update_tracking(

@@ -196,6 +196,11 @@ const routeDefinitions = {
     titleKey: 'nav.page.mcpSettings',
     navGroup: 'system',
   },
+  auditLogs: {
+    path: '/system/audit-logs',
+    titleKey: 'nav.page.auditLogs',
+    navGroup: 'system',
+  },
   purchaseInquiry: {
     path: '/purchase/inquiries',
     navGroup: 'legacyPurchase',
@@ -235,6 +240,7 @@ export const dashboardNotificationsPath = routeDefinitions.dashboardNotification
 export const dashboardAnnouncementsPath = routeDefinitions.dashboardAnnouncements.path
 export const organizationUsersPath = routeDefinitions.organizationUsers.path
 export const mcpSettingsPath = routeDefinitions.mcpSettings.path
+export const auditLogsPath = routeDefinitions.auditLogs.path
 export const productPath = routeDefinitions.product.path
 export const customerPath = routeDefinitions.customer.path
 export const supplierPath = routeDefinitions.supplier.path

@@ -21,6 +21,7 @@ from app.modules.masterdata.suppliers.schemas import (
     SupplierTransactionResponse,
     SupplierUpdate,
 )
+from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 
@@ -77,6 +78,10 @@ class SupplierService:
                 )
             if payload.credit_profile is not None:
                 await self._upsert_credit_profile(supplier.id, payload.credit_profile)
+            await record_audit(
+                self._repository.session, current_user, "create", "supplier",
+                supplier.id, supplier.code, "新增供应商",
+            )
         return await self._supplier_response(
             supplier,
             can_view_credit_limit=self._can_view_credit_limit(current_user),
@@ -106,6 +111,10 @@ class SupplierService:
                 raise SupplierNotFoundError
             if payload.credit_profile is not None:
                 await self._upsert_credit_profile(supplier_id, payload.credit_profile)
+            await record_audit(
+                self._repository.session, current_user, "update", "supplier",
+                supplier.id, supplier.code, "修改供应商",
+            )
         return await self._supplier_response(
             supplier,
             can_view_credit_limit=self._can_view_credit_limit(current_user),
@@ -269,6 +278,10 @@ class SupplierService:
             )
             if supplier is None:
                 raise SupplierNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "delete", "supplier",
+                supplier.id, supplier.code, "停用供应商",
+            )
         return await self._supplier_response(
             supplier,
             can_view_credit_limit=self._can_view_credit_limit(current_user),

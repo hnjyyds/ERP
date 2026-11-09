@@ -21,6 +21,7 @@ from app.modules.masterdata.customers.schemas import (
     CustomerTransactionResponse,
     CustomerUpdate,
 )
+from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 
@@ -77,6 +78,10 @@ class CustomerService:
                 )
             if payload.credit_profile is not None:
                 await self._upsert_credit_profile(customer.id, payload.credit_profile)
+            await record_audit(
+                self._repository.session, current_user, "create", "customer",
+                customer.id, customer.code, "新增客户",
+            )
         return await self._customer_response(
             customer,
             can_view_credit_limit=self._can_view_credit_limit(current_user),
@@ -106,6 +111,10 @@ class CustomerService:
                 raise CustomerNotFoundError
             if payload.credit_profile is not None:
                 await self._upsert_credit_profile(customer_id, payload.credit_profile)
+            await record_audit(
+                self._repository.session, current_user, "update", "customer",
+                customer.id, customer.code, "修改客户",
+            )
         return await self._customer_response(
             customer,
             can_view_credit_limit=self._can_view_credit_limit(current_user),
@@ -273,6 +282,10 @@ class CustomerService:
             )
             if customer is None:
                 raise CustomerNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "delete", "customer",
+                customer.id, customer.code, "停用客户",
+            )
         return await self._customer_response(
             customer,
             can_view_credit_limit=self._can_view_credit_limit(current_user),

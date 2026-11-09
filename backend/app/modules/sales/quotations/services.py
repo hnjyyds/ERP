@@ -17,6 +17,7 @@ from app.modules.sales.quotations.repositories import (
     ExportQuotationRepository,
     ExportQuotationRow,
 )
+from app.modules.sales.quotations.sample_responses import build_sample_delivery_response
 from app.modules.sales.quotations.schemas import (
     VALID_QUOTATION_EXPORT_FORMATS,
     VALID_QUOTATION_STATUSES,
@@ -34,9 +35,9 @@ from app.modules.sales.quotations.schemas import (
     ExportQuotationSubmit,
     ExportQuotationWithdraw,
 )
-from app.modules.sales.quotations.sample_responses import build_sample_delivery_response
 from app.modules.sample.deliveries.repositories import SampleDeliveryRepository
 from app.modules.sample.deliveries.schemas import SampleDeliveryListResponse
+from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import (
@@ -227,6 +228,10 @@ class ExportQuotationService:
             )
             if submitted is None:
                 raise ExportQuotationNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "submit", "export_quotation",
+                quotation.id, quotation.code, "提交报价",
+            )
         return await self._quotation_response(submitted)
 
     async def approve_quotation(
@@ -258,6 +263,10 @@ class ExportQuotationService:
             )
             if approved is None:
                 raise ExportQuotationNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "approve", "export_quotation",
+                quotation.id, quotation.code, "审批通过报价",
+            )
         return await self._quotation_response(approved)
 
     async def reject_quotation(
@@ -291,6 +300,11 @@ class ExportQuotationService:
             )
             if rejected is None:
                 raise ExportQuotationNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "reject", "export_quotation",
+                quotation.id, quotation.code, "驳回报价",
+                {"reason": payload.rejection_reason},
+            )
         return await self._quotation_response(rejected)
 
     async def withdraw_quotation(
@@ -318,6 +332,10 @@ class ExportQuotationService:
             withdrawn = await self._repository.withdraw_quotation(quotation.id)
             if withdrawn is None:
                 raise ExportQuotationNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "withdraw", "export_quotation",
+                quotation.id, quotation.code, "撤回报价",
+            )
         return await self._quotation_response(withdrawn)
 
     async def _ensure_no_downstream_contract(self, quotation: ExportQuotationRow) -> None:

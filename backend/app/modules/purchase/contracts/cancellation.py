@@ -16,6 +16,7 @@ from app.modules.purchase.contracts.schemas import (
     PurchaseContractResponse,
 )
 from app.modules.sales.contracts.cancellation import decrease_line_purchased_quantity
+from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.numbering.generator import create_with_generated_code
 
@@ -61,6 +62,11 @@ async def cancel_purchase_contract(
         )
         if cancelled is None:
             raise PurchaseContractNotFoundError
+        await record_audit(
+            service._repository.session, current_user, "cancel", "purchase_contract",
+            cancelled.id, cancelled.code, "作废采购合同",
+            {"reason": payload.reason.strip()},
+        )
     return await service._response_builder.build(cancelled)
 
 
@@ -141,6 +147,11 @@ async def reissue_purchase_contract(
             refreshed = await service._repository.refresh_statistics(reissued.id)
             if refreshed is None:
                 raise PurchaseContractNotFoundError
+            await record_audit(
+                service._repository.session, current_user, "reopen", "purchase_contract",
+                refreshed.id, refreshed.code, "重开采购合同",
+                {"reissued_from": contract.code, "reason": payload.reason.strip()},
+            )
             await service._rebuild_reminders(refreshed)
             return refreshed
 

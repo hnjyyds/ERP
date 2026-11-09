@@ -37,6 +37,7 @@ from app.modules.sales.contracts.repositories import (
     ExportContractRepository,
     ExportContractRow,
 )
+from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import can_approve_assigned_record
@@ -312,6 +313,10 @@ class PurchaseContractService:
             )
             if submitted is None:
                 raise PurchaseContractNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "submit", "purchase_contract",
+                contract.id, contract.code, "提交采购合同",
+            )
         return await self._response_builder.build(submitted)
 
     async def approve_contract(
@@ -345,6 +350,13 @@ class PurchaseContractService:
             )
             if reviewed is None:
                 raise PurchaseContractNotFoundError
+            action = "approve" if payload.decision == "approved" else "reject"
+            summary = "审批通过采购合同" if payload.decision == "approved" else "驳回采购合同"
+            await record_audit(
+                self._repository.session, current_user, action, "purchase_contract",
+                reviewed.id, reviewed.code, summary,
+                {"reason": (payload.rejection_reason or "").strip() or None},
+            )
             if payload.decision == "approved":
                 await self._write_back_export_purchase_progress(reviewed.id)
                 await self._ensure_followup_plan(reviewed)

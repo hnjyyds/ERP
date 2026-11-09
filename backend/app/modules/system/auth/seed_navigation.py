@@ -51,6 +51,16 @@ def system_menus() -> list[MenuItem]:
             is_active=True,
         ),
         MenuItem(
+            id="menu-system-audit-logs",
+            label="审计日志",
+            label_en="Audit Logs",
+            path="/system/audit-logs",
+            icon="scroll-text",
+            required_permission="system:super_admin",
+            sort_order=94,
+            is_active=True,
+        ),
+        MenuItem(
             id="menu-products",
             label="产品资料",
             label_en="Products",

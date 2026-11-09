@@ -41,6 +41,7 @@ from app.modules.sales.contracts.schemas import (
     ExportContractStatisticsResponse,
     ExportContractSubmit,
 )
+from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import (
@@ -240,6 +241,10 @@ class ExportContractService:
             )
             if submitted is None:
                 raise ExportContractNotFoundError
+            await record_audit(
+                self._repository.session, current_user, "submit", "export_contract",
+                contract.id, contract.code, "提交出口合同",
+            )
         return await self._contract_response(submitted)
 
     async def approve_contract(
@@ -283,6 +288,10 @@ class ExportContractService:
                     },
                     ensure_ascii=False,
                 ),
+            )
+            await record_audit(
+                self._repository.session, current_user, "approve", "export_contract",
+                approved.id, approved.code, "审批通过出口合同",
             )
         return await self._contract_response(approved)
 
