@@ -7,7 +7,8 @@ vi.mock('@/app/appI18n', () => ({
   t: (key: string) => key,
 }))
 
-import { DashboardPage, DashboardTodosPage } from '@/app/pages/dashboard/DashboardPage'
+import { DashboardPage } from '@/app/pages/dashboard/DashboardPage'
+import { DashboardTodosPage } from '@/app/pages/dashboard/views/DashboardTodosPage'
 
 const mockCurrentUser = {
   id: 'user-1',

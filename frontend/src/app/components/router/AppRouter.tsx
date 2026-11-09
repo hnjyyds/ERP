@@ -46,20 +46,22 @@ const DashboardPage = React.lazy(() =>
   import('@/app/pages/dashboard/DashboardPage').then((m) => ({ default: m.DashboardPage })),
 )
 const DashboardTodosPage = React.lazy(() =>
-  import('@/app/pages/dashboard/DashboardPage').then((m) => ({ default: m.DashboardTodosPage })),
+  import('@/app/pages/dashboard/views/DashboardTodosPage').then((m) => ({
+    default: m.DashboardTodosPage,
+  })),
 )
 const DashboardSchedulesPage = React.lazy(() =>
-  import('@/app/pages/dashboard/DashboardPage').then((m) => ({
+  import('@/app/pages/dashboard/views/DashboardSchedulesPage').then((m) => ({
     default: m.DashboardSchedulesPage,
   })),
 )
 const DashboardNotificationsPage = React.lazy(() =>
-  import('@/app/pages/dashboard/DashboardPage').then((m) => ({
+  import('@/app/pages/dashboard/views/DashboardNotificationsPage').then((m) => ({
     default: m.DashboardNotificationsPage,
   })),
 )
 const DashboardAnnouncementsPage = React.lazy(() =>
-  import('@/app/pages/dashboard/DashboardPage').then((m) => ({
+  import('@/app/pages/dashboard/views/DashboardAnnouncementsPage').then((m) => ({
     default: m.DashboardAnnouncementsPage,
   })),
 )
