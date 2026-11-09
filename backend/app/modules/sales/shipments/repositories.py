@@ -36,6 +36,8 @@ class ShipmentPlanRow:
     approval_status: str
     submitted_at: date | None
     approved_at: date | None
+    rejected_at: date | None
+    rejection_reason: str | None
     reviewer_id: str | None
     reviewer_name: str | None
     remarks: str | None
@@ -335,6 +337,8 @@ class ShipmentPlanRepository:
         plan.submitted_at = plan.shipment_date
         plan.reviewer_id = reviewer_id
         plan.reviewer_name = reviewer_name
+        plan.rejected_at = None
+        plan.rejection_reason = None
         await self.session.flush()
         return self._map_plan(plan)
 
@@ -356,8 +360,46 @@ class ShipmentPlanRepository:
             plan.reviewer_name = reviewer_name
         plan.approved_at = approved_at
         plan.reminder_status = "done"
+        plan.rejected_at = None
+        plan.rejection_reason = None
         await self.session.flush()
         return self._map_plan(plan)
+
+    async def reject_plan(
+        self,
+        *,
+        shipment_id: str,
+        rejected_at: date,
+        rejection_reason: str,
+    ) -> ShipmentPlanRow | None:
+        plan = await self.session.scalar(select(ShipmentPlan).where(ShipmentPlan.id == shipment_id))
+        if plan is None:
+            return None
+        plan.approval_status = "rejected"
+        plan.rejected_at = rejected_at
+        plan.rejection_reason = rejection_reason
+        await self.session.flush()
+        return self._map_plan(plan)
+
+    async def resync_plan(self, shipment_id: str) -> ShipmentPlanRow | None:
+        plan = await self.session.scalar(select(ShipmentPlan).where(ShipmentPlan.id == shipment_id))
+        if plan is None:
+            return None
+        plan.approval_status = "draft"
+        plan.submitted_at = None
+        plan.approved_at = None
+        plan.reviewer_id = None
+        plan.reviewer_name = None
+        await self.session.flush()
+        return self._map_plan(plan)
+
+    async def delete_lines(self, shipment_id: str) -> None:
+        lines = await self.session.scalars(
+            select(ShipmentLine).where(ShipmentLine.shipment_id == shipment_id)
+        )
+        for line in lines:
+            await self.session.delete(line)
+        await self.session.flush()
 
     async def withdraw_plan(self, shipment_id: str) -> ShipmentPlanRow | None:
         plan = await self.session.scalar(select(ShipmentPlan).where(ShipmentPlan.id == shipment_id))
@@ -421,6 +463,8 @@ class ShipmentPlanRepository:
             approval_status=plan.approval_status,
             submitted_at=plan.submitted_at,
             approved_at=plan.approved_at,
+            rejected_at=plan.rejected_at,
+            rejection_reason=plan.rejection_reason,
             reviewer_id=plan.reviewer_id,
             reviewer_name=plan.reviewer_name,
             remarks=plan.remarks,

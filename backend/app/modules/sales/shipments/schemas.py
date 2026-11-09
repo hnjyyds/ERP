@@ -53,6 +53,19 @@ class ShipmentWithdraw(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
+class ShipmentReject(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    rejected_at: date
+    rejection_reason: str = Field(min_length=1, max_length=2000)
+
+
+class ShipmentResync(BaseModel):
+    """从合同重新同步明细，不接受任何自由编辑字段。"""
+
+    model_config = ConfigDict(extra="forbid")
+
+
 class ShipmentLineResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -122,6 +135,8 @@ class ShipmentPlanResponse(BaseModel):
     approval_status: str
     submitted_at: date | None
     approved_at: date | None
+    rejected_at: date | None = None
+    rejection_reason: str | None = None
     reviewer_id: str | None = None
     reviewer_name: str | None = None
     remarks: str | None

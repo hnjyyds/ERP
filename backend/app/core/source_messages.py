@@ -173,9 +173,7 @@ SOURCE_MESSAGES: dict[str, str] = {
     "只有已审批报价可以生成出口合同": "Only approved quotations can generate export contracts",
     "只有已提交报价可以审批": "Only submitted quotations can be approved",
     "只有草稿报价可以提交": "Only draft quotations can be submitted",
-    "只有草稿或已驳回的报价可以编辑": (
-        "Only draft or rejected quotations can be edited"
-    ),
+    "只有草稿或已驳回的报价可以编辑": "Only draft or rejected quotations can be edited",
     "只有已提交报价可以驳回": "Only submitted quotations can be rejected",
     "只有已提交报价可以撤回": "Only submitted quotations can be withdrawn",
     "报价已生成出口合同，不能撤回或驳回": (
@@ -183,25 +181,25 @@ SOURCE_MESSAGES: dict[str, str] = {
     ),
     "报价审批状态无效": "Invalid quotation approval status",
     "报价导出格式无效": "Invalid quotation export format",
-    "只有草稿或已驳回的寄样单可以编辑": (
-        "Only draft or rejected sample deliveries can be edited"
-    ),
+    "只有草稿或已驳回的寄样单可以编辑": "Only draft or rejected sample deliveries can be edited",
     "只有已提交寄样单可以驳回": "Only submitted sample deliveries can be rejected",
     "只有已提交寄样单可以撤回": "Only submitted sample deliveries can be withdrawn",
     "寄样单已发货或已产生发货记账，不能驳回或撤回": (
         "The sample delivery is shipped or has stock entries and cannot be "
         "withdrawn or rejected"
     ),
-    "出货数量不能超过合同未出货数量": (
-        "The shipment quantity cannot exceed the contract's unshipped quantity"
-    ),
+    "出货数量不能超过合同未出货数量": "The shipment quantity cannot exceed the unshipped quantity",
     "出货审批状态无效": "Invalid shipment approval status",
     "只有已提交出货明细可以审批": "Only submitted shipment lines can be approved",
     "只有已提交出货明细可以撤回": "Only submitted shipment lines can be withdrawn",
     "只有草稿出货明细可以提交": "Only draft shipment lines can be submitted",
-    "出货明细已生成出库计划，不能撤回": (
-        "The shipment has generated an outbound plan and cannot be withdrawn"
-    ),
+    "出货明细已生成出库计划，不能撤回": "The shipment has an outbound plan and cannot be withdrawn",
+    "只有已提交出货明细可以驳回": "Only submitted shipment lines can be rejected",
+    "只有草稿或已驳回出货明细可以重新同步": "Only draft or rejected shipments can be resynced",
+    "出货明细已生成出库计划，不能驳回": "The shipment has an outbound plan and cannot be rejected",
+    "出货明细已生成出库计划，不能重新同步": "The shipment has an outbound plan and cannot be resynced",
+    "出货明细没有可同步的合同行": "The shipment has no contract lines to resync",
+    "合同已不存在或未审批，无法重新同步": "The contract is missing or unapproved; cannot resync",
     "只能从已审批出口合同生成出货明细": (
         "Shipment lines can only be generated from approved export contracts"
     ),
@@ -691,6 +689,10 @@ DYNAMIC_PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (
         re.compile(r"^商品 (?P<reference>.+) 缺少配件明细，无法生成采购合同$"),
         "Product {reference} has no accessory details; cannot generate the purchase contract",
+    ),
+    (
+        re.compile(r"^合同 (?P<code>.+) 的明细已删除，无法重新同步$"),
+        "The contract {code} line was deleted; cannot resync",
     ),
     (re.compile(r"^不能将自己设为(?P<role>.+)$"), "You cannot set yourself as the {role}"),
     (re.compile(r"^(?P<role>.+)不存在或已停用$"), "{role} does not exist or is disabled"),

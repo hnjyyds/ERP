@@ -10,6 +10,8 @@ from app.modules.sales.shipments.schemas import (
     ShipmentPlanListResponse,
     ShipmentPlanResponse,
     ShipmentReminderListResponse,
+    ShipmentReject,
+    ShipmentResync,
     ShipmentSubmit,
     ShipmentWithdraw,
 )
@@ -101,6 +103,35 @@ async def withdraw_shipment(
         current_user=user,
         shipment_id=shipment_id,
         payload=ShipmentWithdraw(),
+    )
+    return ApiResponse(data=shipment)
+
+
+@router.post("/{shipment_id}/reject", response_model=ApiResponse[ShipmentPlanResponse])
+async def reject_shipment(
+    shipment_id: str,
+    payload: ShipmentReject,
+    user: CurrentUserDep,
+    service: Annotated[ShipmentPlanService, Depends(get_shipment_plan_service)],
+) -> ApiResponse[ShipmentPlanResponse]:
+    shipment = await service.reject_shipment(
+        current_user=user,
+        shipment_id=shipment_id,
+        payload=payload,
+    )
+    return ApiResponse(data=shipment)
+
+
+@router.post("/{shipment_id}/resync-from-contracts", response_model=ApiResponse[ShipmentPlanResponse])
+async def resync_shipment_from_contracts(
+    shipment_id: str,
+    user: CurrentUserDep,
+    service: Annotated[ShipmentPlanService, Depends(get_shipment_plan_service)],
+) -> ApiResponse[ShipmentPlanResponse]:
+    shipment = await service.resync_from_contracts(
+        current_user=user,
+        shipment_id=shipment_id,
+        payload=ShipmentResync(),
     )
     return ApiResponse(data=shipment)
 

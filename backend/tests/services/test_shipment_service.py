@@ -2,14 +2,18 @@ from datetime import date
 from decimal import Decimal
 
 import pytest
+from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from app.modules.sales.contracts.models import ExportContractLine
 from app.modules.sales.contracts.repositories import ExportContractRepository
 from app.modules.sales.shipments.repositories import ShipmentPlanRepository
 from app.modules.sales.shipments.schemas import (
     ShipmentApprove,
     ShipmentContractSelection,
     ShipmentPlanGenerate,
+    ShipmentReject,
+    ShipmentResync,
     ShipmentSubmit,
     ShipmentWithdraw,
 )
@@ -438,4 +442,326 @@ async def test_shipment_service_rejects_withdraw_when_outbound_plan_exists(
                 current_user=owner,
                 shipment_id=shipment_id,
                 payload=ShipmentWithdraw(),
+            )
+
+
+def _reviewer(user_id: str = "u-admin", *, super_admin: bool = False) -> CurrentUserResponse:
+    permissions = ["sales:shipment:approve", "sales:shipment:view"]
+    if super_admin:
+        permissions.append("system:super_admin")
+    return _user_with_permissions(permissions, user_id=user_id, data_scope="all")
+
+
+async def test_shipment_service_rejects_submitted_plan_and_records_reason(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        contract_repository = ExportContractRepository(session)
+        shipment_repository = ShipmentPlanRepository(session)
+        contract_id, _line_id = await _create_contract(
+            contract_repository,
+            code="EC-SHIP-REJECT",
+            product_id="product-a",
+            product_code="BAG-40",
+            product_name="Eco Bag",
+            quantity="1000",
+            unit_price="1.40",
+            shipped_quantity="250",
+        )
+        service = _make_service(shipment_repository, contract_repository)
+        owner = _user_with_permissions(_SHIPMENT_WORKFLOW_PERMISSIONS)
+        shipment_id = await _submitted_plan(service, contract_id, current_user=owner)
+
+        rejected = await service.reject_shipment(
+            current_user=_reviewer(),
+            shipment_id=shipment_id,
+            payload=ShipmentReject(
+                rejected_at=date(2026, 8, 19),
+                rejection_reason="单证信息有误，请核对后重新提交",
+            ),
+        )
+        refreshed_contract = await contract_repository.get_contract(contract_id)
+
+    assert rejected.approval_status == "rejected"
+    assert rejected.rejected_at == date(2026, 8, 19)
+    assert rejected.rejection_reason == "单证信息有误，请核对后重新提交"
+    assert rejected.reviewer_id == "u-admin"
+    assert rejected.lines[0].quantity == "300"
+    assert refreshed_contract is not None
+    assert refreshed_contract.shipped_quantity == "250"
+
+
+async def test_shipment_service_reject_requires_assigned_reviewer(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        contract_repository = ExportContractRepository(session)
+        shipment_repository = ShipmentPlanRepository(session)
+        contract_id, _line_id = await _create_contract(
+            contract_repository,
+            code="EC-SHIP-REJECT-ASSIGNEE",
+            product_id="product-a",
+            product_code="BAG-40",
+            product_name="Eco Bag",
+            quantity="1000",
+            unit_price="1.40",
+        )
+        service = _make_service(shipment_repository, contract_repository)
+        owner = _user_with_permissions(_SHIPMENT_WORKFLOW_PERMISSIONS)
+        shipment_id = await _submitted_plan(service, contract_id, current_user=owner)
+
+        with pytest.raises(PermissionDeniedError):
+            await service.reject_shipment(
+                current_user=_reviewer("u-other"),
+                shipment_id=shipment_id,
+                payload=ShipmentReject(
+                    rejected_at=date(2026, 8, 19),
+                    rejection_reason="不是指定审批人",
+                ),
+            )
+
+
+async def test_shipment_service_reject_requires_submitted_status(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        contract_repository = ExportContractRepository(session)
+        shipment_repository = ShipmentPlanRepository(session)
+        contract_id, _line_id = await _create_contract(
+            contract_repository,
+            code="EC-SHIP-REJECT-DRAFT",
+            product_id="product-a",
+            product_code="BAG-40",
+            product_name="Eco Bag",
+            quantity="1000",
+            unit_price="1.40",
+        )
+        service = _make_service(shipment_repository, contract_repository)
+        owner = _user_with_permissions(_SHIPMENT_WORKFLOW_PERMISSIONS)
+        plan = await service.generate_from_contracts(
+            current_user=owner,
+            payload=_shipment_payload(contract_id),
+        )
+
+        with pytest.raises(ValueError):
+            await service.reject_shipment(
+                current_user=_reviewer(super_admin=True),
+                shipment_id=plan.id,
+                payload=ShipmentReject(
+                    rejected_at=date(2026, 8, 19),
+                    rejection_reason="草稿不能驳回",
+                ),
+            )
+
+
+async def test_shipment_service_reject_blocked_by_outbound_plan(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        contract_repository = ExportContractRepository(session)
+        shipment_repository = ShipmentPlanRepository(session)
+        contract_id, _line_id = await _create_contract(
+            contract_repository,
+            code="EC-SHIP-REJECT-DOWNSTREAM",
+            product_id="product-a",
+            product_code="BAG-40",
+            product_name="Eco Bag",
+            quantity="1000",
+            unit_price="1.40",
+        )
+        service = _make_service(shipment_repository, contract_repository)
+        owner = _user_with_permissions(_SHIPMENT_WORKFLOW_PERMISSIONS)
+        shipment_id = await _submitted_plan(service, contract_id, current_user=owner)
+        await OutboundPlanRepository(session).create_plan(
+            code="OP-SP-SVC-REJECT",
+            source_type="shipment_plan",
+            source_id=shipment_id,
+            source_code="SP-SVC-001",
+            outbound_type="export",
+            planned_date=date(2026, 8, 20),
+            status="planned",
+            customer_id="customer-a",
+            customer_name="客户 A",
+            owner_user_id="u-001",
+        )
+
+        with pytest.raises(ValueError):
+            await service.reject_shipment(
+                current_user=_reviewer(),
+                shipment_id=shipment_id,
+                payload=ShipmentReject(
+                    rejected_at=date(2026, 8, 19),
+                    rejection_reason="已生成出库计划",
+                ),
+            )
+
+
+async def test_shipment_service_resyncs_rejected_plan_from_current_contract(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        contract_repository = ExportContractRepository(session)
+        shipment_repository = ShipmentPlanRepository(session)
+        contract_id, line_id = await _create_contract(
+            contract_repository,
+            code="EC-SHIP-RESYNC",
+            product_id="product-a",
+            product_code="BAG-40",
+            product_name="Eco Bag",
+            quantity="1000",
+            unit_price="1.40",
+        )
+        service = _make_service(shipment_repository, contract_repository)
+        owner = _user_with_permissions(_SHIPMENT_WORKFLOW_PERMISSIONS)
+        shipment_id = await _submitted_plan(service, contract_id, current_user=owner)
+        await service.reject_shipment(
+            current_user=_reviewer(),
+            shipment_id=shipment_id,
+            payload=ShipmentReject(
+                rejected_at=date(2026, 8, 19),
+                rejection_reason="请同步最新合同价",
+            ),
+        )
+        await session.execute(
+            update(ExportContractLine)
+            .where(ExportContractLine.id == line_id)
+            .values(
+                product_name="Eco Bag v2",
+                unit_price=Decimal("2.00"),
+                quantity=Decimal("600"),
+            )
+        )
+        await contract_repository.refresh_statistics(contract_id)
+
+        resynced = await service.resync_from_contracts(
+            current_user=owner,
+            shipment_id=shipment_id,
+            payload=ShipmentResync(),
+        )
+
+    assert resynced.approval_status == "draft"
+    assert resynced.submitted_at is None
+    assert resynced.reviewer_id is None
+    assert resynced.reviewer_name is None
+    assert resynced.rejection_reason == "请同步最新合同价"
+    assert resynced.lines[0].product_name == "Eco Bag v2"
+    assert resynced.lines[0].unit_price == "2"
+    assert resynced.lines[0].quantity == "300"
+    assert resynced.finance_overview.receivable_amount == "600.00"
+
+
+async def test_shipment_service_resync_caps_quantity_by_contract_unshipped_quantity(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        contract_repository = ExportContractRepository(session)
+        shipment_repository = ShipmentPlanRepository(session)
+        contract_id, line_id = await _create_contract(
+            contract_repository,
+            code="EC-SHIP-RESYNC-CAP",
+            product_id="product-a",
+            product_code="BAG-40",
+            product_name="Eco Bag",
+            quantity="1000",
+            unit_price="1.40",
+        )
+        service = _make_service(shipment_repository, contract_repository)
+        owner = _user_with_permissions(_SHIPMENT_WORKFLOW_PERMISSIONS)
+        shipment_id = await _submitted_plan(service, contract_id, current_user=owner)
+        await service.reject_shipment(
+            current_user=_reviewer(),
+            shipment_id=shipment_id,
+            payload=ShipmentReject(
+                rejected_at=date(2026, 8, 19),
+                rejection_reason="合同数量已变化",
+            ),
+        )
+        await contract_repository.increase_line_shipped_quantity(
+            line_id=line_id,
+            quantity=Decimal("900"),
+        )
+        await contract_repository.refresh_statistics(contract_id)
+
+        resynced = await service.resync_from_contracts(
+            current_user=owner,
+            shipment_id=shipment_id,
+            payload=ShipmentResync(),
+        )
+
+    assert resynced.lines[0].quantity == "100"
+    assert resynced.finance_overview.receivable_amount == "140.00"
+
+
+async def test_shipment_service_resync_rejects_deleted_contract_line(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        contract_repository = ExportContractRepository(session)
+        shipment_repository = ShipmentPlanRepository(session)
+        contract_id, _line_id = await _create_contract(
+            contract_repository,
+            code="EC-SHIP-RESYNC-DELETED",
+            product_id="product-a",
+            product_code="BAG-40",
+            product_name="Eco Bag",
+            quantity="1000",
+            unit_price="1.40",
+        )
+        service = _make_service(shipment_repository, contract_repository)
+        owner = _user_with_permissions(_SHIPMENT_WORKFLOW_PERMISSIONS)
+        shipment_id = await _submitted_plan(service, contract_id, current_user=owner)
+        await service.reject_shipment(
+            current_user=_reviewer(),
+            shipment_id=shipment_id,
+            payload=ShipmentReject(
+                rejected_at=date(2026, 8, 19),
+                rejection_reason="合同明细被删除",
+            ),
+        )
+        await contract_repository.delete_lines(contract_id)
+
+        with pytest.raises(ValueError):
+            await service.resync_from_contracts(
+                current_user=owner,
+                shipment_id=shipment_id,
+                payload=ShipmentResync(),
+            )
+
+
+async def test_shipment_service_resync_requires_draft_or_rejected_status(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        contract_repository = ExportContractRepository(session)
+        shipment_repository = ShipmentPlanRepository(session)
+        contract_id, _line_id = await _create_contract(
+            contract_repository,
+            code="EC-SHIP-RESYNC-APPROVED",
+            product_id="product-a",
+            product_code="BAG-40",
+            product_name="Eco Bag",
+            quantity="1000",
+            unit_price="1.40",
+        )
+        service = _make_service(shipment_repository, contract_repository)
+        owner = _user_with_permissions(_SHIPMENT_WORKFLOW_PERMISSIONS)
+        shipment_id = await _submitted_plan(service, contract_id, current_user=owner)
+        await service.approve_shipment(
+            current_user=_reviewer(super_admin=True),
+            shipment_id=shipment_id,
+            payload=ShipmentApprove(reviewer_name="管理员", approved_at=date(2026, 8, 19)),
+        )
+
+        with pytest.raises(ValueError):
+            await service.resync_from_contracts(
+                current_user=owner,
+                shipment_id=shipment_id,
+                payload=ShipmentResync(),
             )

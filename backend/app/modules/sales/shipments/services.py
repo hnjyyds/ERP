@@ -27,6 +27,8 @@ from app.modules.sales.shipments.schemas import (
     ShipmentPlanResponse,
     ShipmentReminderListResponse,
     ShipmentReminderResponse,
+    ShipmentReject,
+    ShipmentResync,
     ShipmentSubmit,
     ShipmentWithdraw,
 )
@@ -260,16 +262,128 @@ class ShipmentPlanService:
             and "system:super_admin" not in current_user.permissions
         ):
             raise PermissionDeniedError
-        await self._ensure_no_downstream_outbound_plan(plan)
+        await self._ensure_no_downstream_outbound_plan(plan, action="撤回")
         async with UnitOfWork(self._repository.session):
             withdrawn = await self._repository.withdraw_plan(plan.id)
             if withdrawn is None:
                 raise ShipmentNotFoundError
         return await self._shipment_response(withdrawn)
 
-    async def _ensure_no_downstream_outbound_plan(self, plan: ShipmentPlanRow) -> None:
+    async def reject_shipment(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        shipment_id: str,
+        payload: ShipmentReject,
+    ) -> ShipmentPlanResponse:
+        self._require(current_user, "sales:shipment:approve")
+        plan = await self._get_accessible_plan(
+            current_user=current_user,
+            shipment_id=shipment_id,
+        )
+        if plan.approval_status != "submitted":
+            raise ValueError("只有已提交出货明细可以驳回")
+        if not can_approve_assigned_record(
+            current_user_id=current_user.id,
+            reviewer_id=plan.reviewer_id,
+            permissions=current_user.permissions,
+        ):
+            raise PermissionDeniedError
+        await self._ensure_no_downstream_outbound_plan(plan, action="驳回")
+        async with UnitOfWork(self._repository.session):
+            rejected = await self._repository.reject_plan(
+                shipment_id=plan.id,
+                rejected_at=payload.rejected_at,
+                rejection_reason=payload.rejection_reason,
+            )
+            if rejected is None:
+                raise ShipmentNotFoundError
+        return await self._shipment_response(rejected)
+
+    async def resync_from_contracts(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        shipment_id: str,
+        payload: ShipmentResync,
+    ) -> ShipmentPlanResponse:
+        """按合同当前明细重新同步出货行，回到草稿；不接受自由编辑。
+
+        合同明细在生成出货单后被改动时：
+        - 数量以「原出货数量」和「合同当前未出货数量」的较小值为准，合同减量会同步下调，
+          合同增量不会自动扩大原出货数量；
+        - 单价、品名、规格、型号、单位与计划出运日期按合同当前值刷新；
+        - 原出货行对应的合同明细被删除、或已无可出货数量时，拒绝同步并提示具体合同。
+        """
+        del payload
+        self._require(current_user, "sales:shipment:edit")
+        plan = await self._get_accessible_plan(
+            current_user=current_user,
+            shipment_id=shipment_id,
+        )
+        if plan.approval_status not in {"draft", "rejected"}:
+            raise ValueError("只有草稿或已驳回出货明细可以重新同步")
+        await self._ensure_no_downstream_outbound_plan(plan, action="重新同步")
+        lines = await self._repository.list_lines(plan.id)
+        if not lines:
+            raise ValueError("出货明细没有可同步的合同行")
+        contracts: dict[str, ExportContractRow] = {}
+        contract_lines: dict[str, dict[str, ExportContractLineRow]] = {}
+        for contract_id in {line.contract_id for line in lines}:
+            contract = await self._get_accessible_contract(
+                current_user=current_user,
+                contract_id=contract_id,
+            )
+            if contract.approval_status != "approved":
+                raise ValueError("合同已不存在或未审批，无法重新同步")
+            contracts[contract.id] = contract
+            contract_lines[contract.id] = {
+                line.id: line for line in await self._contract_repository.list_lines(contract.id)
+            }
+        synced: list[tuple[ShipmentLineRow, ExportContractLineRow, Decimal]] = []
+        for line in lines:
+            current_line = contract_lines[line.contract_id].get(line.contract_line_id)
+            if current_line is None:
+                raise ValueError(f"合同 {line.contract_no} 的明细已删除，无法重新同步")
+            unshipped = self._unshipped_quantity(current_line)
+            if unshipped <= 0:
+                raise ValueError("合同没有可出货数量")
+            synced.append((line, current_line, min(line.quantity, unshipped)))
+        async with UnitOfWork(self._repository.session):
+            await self._repository.delete_lines(plan.id)
+            for line, current_line, quantity in synced:
+                contract = contracts[line.contract_id]
+                await self._repository.add_line(
+                    shipment_id=plan.id,
+                    contract_id=contract.id,
+                    contract_no=contract.code,
+                    contract_line_id=current_line.id,
+                    product_id=current_line.product_id,
+                    product_code=current_line.product_code,
+                    product_name=current_line.product_name,
+                    specification=current_line.specification,
+                    model=current_line.model,
+                    quantity=quantity,
+                    unit=current_line.unit,
+                    unit_price=current_line.unit_price,
+                    amount=quantity * current_line.unit_price,
+                    planned_ship_date=contract.planned_ship_date,
+                )
+            if await self._repository.resync_plan(plan.id) is None:
+                raise ShipmentNotFoundError
+            refreshed = await self._repository.refresh_finance(plan.id)
+            if refreshed is None:
+                raise ShipmentNotFoundError
+        return await self._shipment_response(refreshed)
+
+    async def _ensure_no_downstream_outbound_plan(
+        self,
+        plan: ShipmentPlanRow,
+        *,
+        action: str = "撤回",
+    ) -> None:
         if await self._repository.has_outbound_plan(plan.id):
-            raise ValueError("出货明细已生成出库计划，不能撤回")
+            raise ValueError(f"出货明细已生成出库计划，不能{action}")
 
     async def list_reminders(
         self,
@@ -411,6 +525,8 @@ class ShipmentPlanService:
             approval_status=plan.approval_status,
             submitted_at=plan.submitted_at,
             approved_at=plan.approved_at,
+            rejected_at=plan.rejected_at,
+            rejection_reason=plan.rejection_reason,
             reviewer_id=plan.reviewer_id,
             reviewer_name=plan.reviewer_name,
             remarks=plan.remarks,

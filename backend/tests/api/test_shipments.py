@@ -235,6 +235,71 @@ async def test_shipment_withdraw_returns_plan_to_draft_and_clears_reviewer(
     assert invalid_response.status_code == 422
 
 
+async def test_shipment_reject_then_resync_from_contracts_returns_draft(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
+    contract = await _approved_contract(
+        api_client,
+        token,
+        _contract_payload("EC-SHIP-API-REJECT"),
+    )
+    create_response = await api_client.post(
+        "/api/v1/sales/shipments/from-contracts",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "code": "SP-API-REJECT",
+            "shipment_date": "2026-08-18",
+            "planned_ship_date": "2026-08-20",
+            "shipping_method": "sea",
+            "port_of_loading": "Ningbo",
+            "port_of_destination": "Hamburg",
+            "estimated_payable_amount": "100.00",
+            "selections": [{"contract_id": contract["id"], "quantity": "300"}],
+        },
+    )
+    assert create_response.status_code == 201
+    shipment_id = create_response.json()["data"]["id"]
+    await api_client.post(
+        f"/api/v1/sales/shipments/{shipment_id}/submit",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
+    )
+
+    missing_reason = await api_client.post(
+        f"/api/v1/sales/shipments/{shipment_id}/reject",
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"rejected_at": "2026-08-19"},
+    )
+    assert missing_reason.status_code == 422
+
+    reject_response = await api_client.post(
+        f"/api/v1/sales/shipments/{shipment_id}/reject",
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"rejected_at": "2026-08-19", "rejection_reason": "单证信息有误"},
+    )
+    assert reject_response.status_code == 200
+    rejected = reject_response.json()["data"]
+    assert rejected["approval_status"] == "rejected"
+    assert rejected["rejected_at"] == "2026-08-19"
+    assert rejected["rejection_reason"] == "单证信息有误"
+
+    resync_response = await api_client.post(
+        f"/api/v1/sales/shipments/{shipment_id}/resync-from-contracts",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert resync_response.status_code == 200
+    resynced = resync_response.json()["data"]
+    assert resynced["approval_status"] == "draft"
+    assert resynced["submitted_at"] is None
+    assert resynced["reviewer_id"] is None
+    assert resynced["rejection_reason"] == "单证信息有误"
+    assert resynced["lines"][0]["quantity"] == "300"
+    assert resynced["finance_overview"]["receivable_amount"] == "420.00"
+
+
 async def test_shipment_endpoints_require_login(
     api_client: AsyncClient,
     seeded_system: None,

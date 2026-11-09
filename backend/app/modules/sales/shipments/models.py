@@ -49,6 +49,8 @@ class ShipmentPlan(Base):
     )
     submitted_at: Mapped[date | None] = mapped_column(Date, index=True, nullable=True)
     approved_at: Mapped[date | None] = mapped_column(Date, index=True, nullable=True)
+    rejected_at: Mapped[date | None] = mapped_column(Date, index=True, nullable=True)
+    rejection_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     reviewer_id: Mapped[str | None] = mapped_column(String(64), index=True, nullable=True)
     reviewer_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
     remarks: Mapped[str | None] = mapped_column(Text, nullable=True)
