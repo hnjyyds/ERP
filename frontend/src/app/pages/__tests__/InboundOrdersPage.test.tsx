@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { message } from 'antd'
 import { useState } from 'react'
 
 vi.mock('@/api', async (importOriginal) => {
@@ -90,6 +91,7 @@ import {
   type InboundOrder,
 } from '@/api'
 import { setRuntimeSettings } from '@/app/pages/appHelpers'
+import { ApiError } from '@/shared/errors'
 
 describe('InboundOrdersPage', () => {
   const onNavigate = vi.fn()
@@ -464,6 +466,33 @@ describe('InboundOrdersPage', () => {
     })
   }
 
+  const mockInboundPlans = () => {
+    vi.mocked(listInboundPlans).mockResolvedValue({
+      items: [
+        {
+          id: 'inbound-plan-1',
+          code: 'IP-TEST-001',
+          purchase_contract_id: 'purchase-contract-1',
+          purchase_contract_no: 'PC-TEST-001',
+          supplier_id: 'supplier-1',
+          supplier_name: '测试供应商',
+          inbound_type: 'purchase',
+          planned_date: '2026-08-30',
+          status: 'scheduled',
+          warehouse_id: 'wh-company',
+          warehouse_name: '公司仓库',
+          location_id: 'loc-b-01',
+          location_name: 'B-01',
+          operator_name: '仓库主管',
+          owner_user_id: 'user-warehouse',
+          lines: [],
+        },
+      ],
+      total: 1,
+      summary: { planned_count: 0, scheduled_count: 1, total_quantity: '0', type_count: 1 },
+    })
+  }
+
   it('关闭后重新打开弹窗时表单回到当前订单的值', async () => {
     const user = userEvent.setup()
     mockOrderList(inboundOrderFixture())
@@ -598,6 +627,7 @@ describe('InboundOrdersPage', () => {
   })
 
   afterEach(() => {
+    message.destroy()
     setRuntimeSettings({ language: 'zh-CN', timeZone: 'Asia/Shanghai' })
   })
 
@@ -633,5 +663,156 @@ describe('InboundOrdersPage', () => {
     expect(screen.getByRole('columnheader', { name: 'Supplier' })).toBeInTheDocument()
     expect(screen.getByText('2026-08-30')).toBeInTheDocument()
     expect(screen.queryByText('2026-08-31')).not.toBeInTheDocument()
+  })
+
+  it.each(['0', '-3', 'abc', '1.5'])(
+    'page=%s 不是正整数时回退到第一页并按 offset 0 请求',
+    async (value) => {
+      window.history.replaceState({}, '', `/warehouse/inbound-orders?page=${value}`)
+      render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+      await waitFor(() => {
+        expect(listInboundOrders).toHaveBeenCalledWith(
+          expect.objectContaining({ limit: 50, offset: 0 }),
+        )
+      })
+    },
+  )
+
+  it('列表加载失败时提示错误并结束加载态', async () => {
+    vi.mocked(listInboundOrders).mockRejectedValueOnce(
+      new ApiError('入库单加载失败（测试）', 'SERVER_ERROR', 'boom'),
+    )
+    render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    expect(await screen.findByText('入库单加载失败（测试）')).toBeInTheDocument()
+  })
+
+  it('翻页写入 URL，回到第一页时移除 page 参数', async () => {
+    vi.mocked(listInboundOrders).mockResolvedValue({
+      items: [inboundOrderFixture()],
+      total: 120,
+      summary: { draft_count: 1, submitted_count: 0, approved_count: 0 },
+    })
+    const user = userEvent.setup()
+    render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() => expect(listInboundOrders).toHaveBeenCalled())
+
+    await user.click(screen.getByTitle('2'))
+    await waitFor(() => {
+      expect(new URLSearchParams(window.location.search).get('page')).toBe('2')
+    })
+    expect(listInboundOrders).toHaveBeenLastCalledWith(
+      expect.objectContaining({ limit: 50, offset: 50 }),
+    )
+
+    await user.click(screen.getByTitle('1'))
+    await waitFor(() => {
+      expect(new URLSearchParams(window.location.search).get('page')).toBeNull()
+    })
+    expect(listInboundOrders).toHaveBeenLastCalledWith(
+      expect.objectContaining({ limit: 50, offset: 0 }),
+    )
+  })
+
+  it('生成提交中只锁定生成按钮，同屏的提交审批与审批按钮不受影响', async () => {
+    const user = userEvent.setup()
+    mockOrderList(inboundOrderFixture())
+    mockInboundPlans()
+    let rejectGenerate!: (caught: unknown) => void
+    vi.mocked(generateInboundOrderFromPlan).mockImplementationOnce(
+      () =>
+        new Promise<InboundOrder>((_resolve, reject) => {
+          rejectGenerate = reject
+        }),
+    )
+    render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() => expect(screen.getByText('IO-TEST-001')).toBeTruthy())
+    await user.click(screen.getByText('生成/审批入库单'))
+
+    const modal = within(screen.getByRole('dialog'))
+    const generateButton = modal.getByRole('button', { name: /生成入库单/ })
+    await user.click(generateButton)
+    await waitFor(() => expect(generateInboundOrderFromPlan).toHaveBeenCalledTimes(1))
+
+    expect(generateButton.className).toContain('ant-btn-loading')
+    expect(modal.getByRole('button', { name: /提交审批/ }).className).not.toContain(
+      'ant-btn-loading',
+    )
+    expect(modal.getByRole('button', { name: /审批入库/ }).className).not.toContain(
+      'ant-btn-loading',
+    )
+
+    await act(async () => {
+      rejectGenerate(new ApiError('生成入库单失败（独立性测试）', 'SERVER_ERROR', 'boom'))
+    })
+
+    await waitFor(() =>
+      expect(modal.getByRole('button', { name: /生成入库单/ }).className).not.toContain(
+        'ant-btn-loading',
+      ),
+    )
+  })
+
+  it('生成失败时提示错误、保持弹窗并恢复生成按钮', async () => {
+    const user = userEvent.setup()
+    mockOrderList(inboundOrderFixture())
+    mockInboundPlans()
+    vi.mocked(generateInboundOrderFromPlan).mockRejectedValueOnce(
+      new ApiError('入库单生成失败（测试）', 'SERVER_ERROR', 'boom'),
+    )
+    render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() => expect(screen.getByText('IO-TEST-001')).toBeTruthy())
+    await user.click(screen.getByText('生成/审批入库单'))
+
+    const modal = within(screen.getByRole('dialog'))
+    const generateButton = modal.getByRole('button', { name: /生成入库单/ })
+    await user.click(generateButton)
+
+    expect(await screen.findByText('入库单生成失败（测试）')).toBeInTheDocument()
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    await waitFor(() => expect(generateButton.className).not.toContain('ant-btn-loading'))
+  })
+
+  it('提交审批的提交态与错误提示独立于生成表单', async () => {
+    const user = userEvent.setup()
+    mockOrderList(inboundOrderFixture())
+    mockInboundPlans()
+    let rejectSubmit!: (caught: unknown) => void
+    vi.mocked(submitInboundOrder).mockImplementationOnce(
+      () =>
+        new Promise<InboundOrder>((_resolve, reject) => {
+          rejectSubmit = reject
+        }),
+    )
+    render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() => expect(screen.getByText('IO-TEST-001')).toBeTruthy())
+    await user.click(screen.getByText('生成/审批入库单'))
+    await waitFor(() => expect(listAssignableUsers).toHaveBeenCalled())
+
+    const modal = within(screen.getByRole('dialog'))
+    await user.click(modal.getByRole('combobox', { name: '审批人' }))
+    await user.click(await screen.findByText('演示业务主管 / business_manager / 业务部'))
+
+    const submitButton = modal.getByRole('button', { name: /提交审批/ })
+    await user.click(submitButton)
+    await waitFor(() => expect(submitInboundOrder).toHaveBeenCalledTimes(1))
+
+    expect(submitButton.className).toContain('ant-btn-loading')
+    expect(modal.getByRole('button', { name: /生成入库单/ }).className).not.toContain(
+      'ant-btn-loading',
+    )
+
+    await act(async () => {
+      rejectSubmit(new ApiError('入库单提交失败（测试）', 'SERVER_ERROR', 'boom'))
+    })
+
+    expect(await screen.findByText('入库单提交失败（测试）')).toBeInTheDocument()
+    await waitFor(() => expect(submitButton.className).not.toContain('ant-btn-loading'))
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
   })
 })
