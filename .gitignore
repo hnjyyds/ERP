@@ -49,3 +49,8 @@ temp/
 
 # 视觉回归快照（本地生成，不入库）
 frontend/.visual-regression/
+.screenshots/
+
+# 本地生成物
+output/
+outputs/
