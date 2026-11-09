@@ -27,6 +27,8 @@ class ExportQuotationRow:
     approval_status: str
     submitted_at: date | None
     approved_at: date | None
+    rejected_at: date | None
+    rejection_reason: str | None
     reviewer_id: str | None
     reviewer_name: str | None
     confirmed_at: date | None
@@ -120,6 +122,7 @@ class ExportQuotationRepository:
         trade_term: str,
         valid_until: date | None,
         description: str | None,
+        reset_to_draft: bool = False,
     ) -> ExportQuotationRow | None:
         quotation = await self.session.scalar(
             select(ExportQuotation).where(ExportQuotation.id == quotation_id)
@@ -135,6 +138,8 @@ class ExportQuotationRepository:
         quotation.trade_term = trade_term
         quotation.valid_until = valid_until
         quotation.description = description
+        if reset_to_draft:
+            quotation.approval_status = "draft"
         await self.session.flush()
         return self._map_quotation(quotation)
 
@@ -341,6 +346,8 @@ class ExportQuotationRepository:
         quotation.submitted_at = quotation.quote_date
         quotation.reviewer_id = reviewer_id
         quotation.reviewer_name = reviewer_name
+        quotation.rejected_at = None
+        quotation.rejection_reason = None
         await self.session.flush()
         return self._map_quotation(quotation)
 
@@ -363,6 +370,45 @@ class ExportQuotationRepository:
         if reviewer_name is not None:
             quotation.reviewer_name = reviewer_name
         quotation.approved_at = approved_at
+        quotation.rejected_at = None
+        quotation.rejection_reason = None
+        await self.session.flush()
+        return self._map_quotation(quotation)
+
+    async def reject_quotation(
+        self,
+        *,
+        quotation_id: str,
+        rejected_at: date,
+        rejection_reason: str,
+        reviewer_id: str | None = None,
+        reviewer_name: str | None = None,
+    ) -> ExportQuotationRow | None:
+        quotation = await self.session.scalar(
+            select(ExportQuotation).where(ExportQuotation.id == quotation_id)
+        )
+        if quotation is None:
+            return None
+        quotation.approval_status = "rejected"
+        quotation.rejected_at = rejected_at
+        quotation.rejection_reason = rejection_reason
+        if reviewer_id is not None:
+            quotation.reviewer_id = reviewer_id
+        if reviewer_name is not None:
+            quotation.reviewer_name = reviewer_name
+        await self.session.flush()
+        return self._map_quotation(quotation)
+
+    async def withdraw_quotation(self, quotation_id: str) -> ExportQuotationRow | None:
+        quotation = await self.session.scalar(
+            select(ExportQuotation).where(ExportQuotation.id == quotation_id)
+        )
+        if quotation is None:
+            return None
+        quotation.approval_status = "draft"
+        quotation.submitted_at = None
+        quotation.reviewer_id = None
+        quotation.reviewer_name = None
         await self.session.flush()
         return self._map_quotation(quotation)
 
@@ -467,6 +513,8 @@ class ExportQuotationRepository:
             approval_status=quotation.approval_status,
             submitted_at=quotation.submitted_at,
             approved_at=quotation.approved_at,
+            rejected_at=quotation.rejected_at,
+            rejection_reason=quotation.rejection_reason,
             reviewer_id=quotation.reviewer_id,
             reviewer_name=quotation.reviewer_name,
             confirmed_at=quotation.confirmed_at,

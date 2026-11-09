@@ -3,15 +3,22 @@ from datetime import date
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from app.modules.sales.contracts.models import ExportContract
+from app.modules.sales.contracts.repositories import ExportContractRepository
 from app.modules.sales.quotations.repositories import ExportQuotationRepository
 from app.modules.sales.quotations.schemas import (
     ExportQuotationApprove,
     ExportQuotationConfirmContract,
     ExportQuotationCreate,
     ExportQuotationLineCreate,
+    ExportQuotationReject,
     ExportQuotationSubmit,
+    ExportQuotationWithdraw,
 )
-from app.modules.sales.quotations.services import ExportQuotationService
+from app.modules.sales.quotations.services import (
+    ExportQuotationService,
+    PermissionDeniedError,
+)
 from app.modules.sample.deliveries.repositories import SampleDeliveryRepository
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
@@ -23,6 +30,15 @@ def _make_service(session: AsyncSession) -> ExportQuotationService:
     return ExportQuotationService(
         ExportQuotationRepository(session),
         SampleDeliveryRepository(session),
+        data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+    )
+
+
+def _make_service_with_contracts(session: AsyncSession) -> ExportQuotationService:
+    return ExportQuotationService(
+        ExportQuotationRepository(session),
+        SampleDeliveryRepository(session),
+        ExportContractRepository(session),
         data_scope_resolver=DataScopeResolver(AuthRepository(session)),
     )
 
@@ -193,3 +209,231 @@ async def test_export_quotation_service_filters_private_records_without_view_all
         )
 
     assert result.total == 0
+
+
+async def test_export_quotation_service_reject_edit_and_resubmit(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        service = _make_service(session)
+        owner = _user_with_permissions(
+            ["sales:quotation:edit", "sales:quotation:view"],
+            user_id="u-001",
+        )
+        quotation = await service.create_quotation(
+            current_user=owner,
+            payload=_quotation_payload("QT-SVC-REJECT"),
+        )
+        await service.submit_quotation(
+            current_user=owner,
+            quotation_id=quotation.id,
+            payload=ExportQuotationSubmit(reviewer_id="u-admin"),
+        )
+        reviewer = _user_with_permissions(
+            ["system:super_admin", "sales:quotation:approve", "sales:quotation:view"],
+            user_id="u-boss",
+            data_scope="all",
+        )
+        rejected = await service.reject_quotation(
+            current_user=reviewer,
+            quotation_id=quotation.id,
+            payload=ExportQuotationReject(
+                rejected_at=date(2026, 7, 2),
+                rejection_reason="价格偏高，请复核运费",
+            ),
+        )
+        edited = await service.update_quotation(
+            current_user=owner,
+            quotation_id=quotation.id,
+            payload=_quotation_payload("QT-SVC-REJECT"),
+        )
+        resubmitted = await service.submit_quotation(
+            current_user=owner,
+            quotation_id=quotation.id,
+            payload=ExportQuotationSubmit(reviewer_id="u-admin"),
+        )
+        approved = await service.approve_quotation(
+            current_user=reviewer,
+            quotation_id=quotation.id,
+            payload=ExportQuotationApprove(
+                reviewer_name="演示业务主管",
+                approved_at=date(2026, 7, 3),
+            ),
+        )
+
+    assert rejected.approval_status == "rejected"
+    assert rejected.rejected_at == date(2026, 7, 2)
+    assert rejected.rejection_reason == "价格偏高，请复核运费"
+    assert rejected.reviewer_id == "u-boss"
+    assert edited.approval_status == "draft"
+    assert edited.rejection_reason == "价格偏高，请复核运费"
+    assert edited.rejected_at == date(2026, 7, 2)
+    assert resubmitted.approval_status == "submitted"
+    assert resubmitted.rejection_reason is None
+    assert resubmitted.rejected_at is None
+    assert approved.approval_status == "approved"
+
+
+async def test_export_quotation_service_enforces_reject_reviewer_and_status(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        service = _make_service(session)
+        owner = _user_with_permissions(
+            ["sales:quotation:edit", "sales:quotation:view"],
+            user_id="u-001",
+        )
+        quotation = await service.create_quotation(
+            current_user=owner,
+            payload=_quotation_payload("QT-SVC-REJECT-GUARD"),
+        )
+        other_reviewer = _user_with_permissions(
+            ["sales:quotation:approve", "sales:quotation:view"],
+            user_id="u-other-reviewer",
+            data_scope="all",
+        )
+        with pytest.raises(ValueError, match="只有已提交报价可以驳回"):
+            await service.reject_quotation(
+                current_user=other_reviewer,
+                quotation_id=quotation.id,
+                payload=ExportQuotationReject(
+                    rejected_at=date(2026, 7, 2),
+                    rejection_reason="草稿驳回",
+                ),
+            )
+        await service.submit_quotation(
+            current_user=owner,
+            quotation_id=quotation.id,
+            payload=ExportQuotationSubmit(reviewer_id="u-admin"),
+        )
+        with pytest.raises(PermissionDeniedError):
+            await service.reject_quotation(
+                current_user=other_reviewer,
+                quotation_id=quotation.id,
+                payload=ExportQuotationReject(
+                    rejected_at=date(2026, 7, 2),
+                    rejection_reason="非指定审批人",
+                ),
+            )
+
+
+async def test_export_quotation_service_withdraw_rules(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        service = _make_service(session)
+        owner = _user_with_permissions(
+            ["sales:quotation:edit", "sales:quotation:view"],
+            user_id="u-001",
+        )
+        quotation = await service.create_quotation(
+            current_user=owner,
+            payload=_quotation_payload("QT-SVC-WITHDRAW"),
+        )
+        with pytest.raises(ValueError, match="只有已提交报价可以撤回"):
+            await service.withdraw_quotation(
+                current_user=owner,
+                quotation_id=quotation.id,
+                payload=ExportQuotationWithdraw(),
+            )
+        await service.submit_quotation(
+            current_user=owner,
+            quotation_id=quotation.id,
+            payload=ExportQuotationSubmit(reviewer_id="u-admin"),
+        )
+        other_editor = _user_with_permissions(
+            ["sales:quotation:edit", "sales:quotation:view"],
+            user_id="u-other-editor",
+            data_scope="all",
+        )
+        with pytest.raises(PermissionDeniedError):
+            await service.withdraw_quotation(
+                current_user=other_editor,
+                quotation_id=quotation.id,
+                payload=ExportQuotationWithdraw(),
+            )
+        withdrawn = await service.withdraw_quotation(
+            current_user=owner,
+            quotation_id=quotation.id,
+            payload=ExportQuotationWithdraw(),
+        )
+        admin = _user_with_permissions(
+            ["system:super_admin", "sales:quotation:edit", "sales:quotation:view"],
+            user_id="u-boss",
+            data_scope="all",
+        )
+        await service.submit_quotation(
+            current_user=owner,
+            quotation_id=quotation.id,
+            payload=ExportQuotationSubmit(reviewer_id="u-admin"),
+        )
+        admin_withdrawn = await service.withdraw_quotation(
+            current_user=admin,
+            quotation_id=quotation.id,
+            payload=ExportQuotationWithdraw(),
+        )
+
+    assert withdrawn.approval_status == "draft"
+    assert withdrawn.submitted_at is None
+    assert withdrawn.reviewer_id is None
+    assert withdrawn.reviewer_name is None
+    assert admin_withdrawn.approval_status == "draft"
+
+
+async def test_export_quotation_service_blocks_reject_and_withdraw_after_contract(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        service = _make_service_with_contracts(session)
+        owner = _user_with_permissions(
+            ["sales:quotation:edit", "sales:quotation:view"],
+            user_id="u-001",
+        )
+        quotation = await service.create_quotation(
+            current_user=owner,
+            payload=_quotation_payload("QT-SVC-DOWNSTREAM"),
+        )
+        await service.submit_quotation(
+            current_user=owner,
+            quotation_id=quotation.id,
+            payload=ExportQuotationSubmit(reviewer_id="u-admin"),
+        )
+        session.add(
+            ExportContract(
+                code="EC-SVC-DOWNSTREAM",
+                contract_date=date(2026, 7, 2),
+                customer_name="客户 A",
+                currency="USD",
+                trade_term="FOB Ningbo",
+                planned_ship_date=date(2026, 8, 1),
+                payment_terms="T/T",
+                source_quotation_id=quotation.id,
+                source_quotation_no=quotation.code,
+                owner_user_id="u-001",
+            )
+        )
+        await session.flush()
+        reviewer = _user_with_permissions(
+            ["system:super_admin", "sales:quotation:approve", "sales:quotation:view"],
+            user_id="u-boss",
+            data_scope="all",
+        )
+        with pytest.raises(ValueError, match="已生成出口合同"):
+            await service.reject_quotation(
+                current_user=reviewer,
+                quotation_id=quotation.id,
+                payload=ExportQuotationReject(
+                    rejected_at=date(2026, 7, 2),
+                    rejection_reason="尝试驳回",
+                ),
+            )
+        with pytest.raises(ValueError, match="已生成出口合同"):
+            await service.withdraw_quotation(
+                current_user=owner,
+                quotation_id=quotation.id,
+                payload=ExportQuotationWithdraw(),
+            )

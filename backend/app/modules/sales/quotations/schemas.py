@@ -57,6 +57,17 @@ class ExportQuotationApprove(BaseModel):
     approved_at: date
 
 
+class ExportQuotationReject(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    rejected_at: date
+    rejection_reason: str = Field(min_length=1, max_length=2000)
+
+
+class ExportQuotationWithdraw(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
 class ExportQuotationSubmit(ApprovalSubmit):
     """Submit a quotation to one designated reviewer."""
 
@@ -107,6 +118,8 @@ class ExportQuotationResponse(BaseModel):
     approval_status: str
     submitted_at: date | None
     approved_at: date | None
+    rejected_at: date | None = None
+    rejection_reason: str | None = None
     reviewer_id: str | None = None
     reviewer_name: str | None = None
     confirmed_at: date | None

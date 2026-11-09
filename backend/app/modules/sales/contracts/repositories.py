@@ -217,6 +217,14 @@ class ExportContractRepository:
             return None
         return self._map_contract(contract)
 
+    async def contract_exists_for_quotation(self, quotation_id: str) -> bool:
+        contract_id = await self.session.scalar(
+            select(ExportContract.id)
+            .where(ExportContract.source_quotation_id == quotation_id)
+            .limit(1)
+        )
+        return contract_id is not None
+
     async def list_lines(self, contract_id: str) -> list[ExportContractLineRow]:
         rows = await self.session.scalars(
             select(ExportContractLine)

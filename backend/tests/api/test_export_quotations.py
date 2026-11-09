@@ -236,6 +236,74 @@ async def test_export_quotation_flow_history_references_samples_export_and_contr
     assert contract["total_amount"] == "1420.00"
 
 
+async def test_export_quotation_reject_and_withdraw_endpoints(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    reviewer_token = await _login_token(api_client, "admin", "admin123")
+
+    create_response = await api_client.post(
+        "/api/v1/sales/quotations",
+        headers={"Authorization": f"Bearer {token}"},
+        json=_quotation_payload("QT-E2E-REJECT"),
+    )
+    assert create_response.status_code == 201
+    quotation_id = create_response.json()["data"]["id"]
+    submit_response = await api_client.post(
+        f"/api/v1/sales/quotations/{quotation_id}/submit",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
+    )
+    assert submit_response.status_code == 200
+
+    empty_reason_response = await api_client.post(
+        f"/api/v1/sales/quotations/{quotation_id}/reject",
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"rejected_at": "2026-07-02", "rejection_reason": ""},
+    )
+    assert empty_reason_response.status_code == 422
+
+    reject_response = await api_client.post(
+        f"/api/v1/sales/quotations/{quotation_id}/reject",
+        headers={"Authorization": f"Bearer {reviewer_token}"},
+        json={"rejected_at": "2026-07-02", "rejection_reason": "价格偏高"},
+    )
+    assert reject_response.status_code == 200
+    rejected = reject_response.json()["data"]
+    assert rejected["approval_status"] == "rejected"
+    assert rejected["rejected_at"] == "2026-07-02"
+    assert rejected["rejection_reason"] == "价格偏高"
+
+    edit_response = await api_client.put(
+        f"/api/v1/sales/quotations/{quotation_id}",
+        headers={"Authorization": f"Bearer {token}"},
+        json=_quotation_payload("QT-E2E-REJECT"),
+    )
+    assert edit_response.status_code == 200
+    edited = edit_response.json()["data"]
+    assert edited["approval_status"] == "draft"
+    assert edited["rejection_reason"] == "价格偏高"
+
+    resubmit_response = await api_client.post(
+        f"/api/v1/sales/quotations/{quotation_id}/submit",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"reviewer_id": "u-admin"},
+    )
+    assert resubmit_response.status_code == 200
+    assert resubmit_response.json()["data"]["rejection_reason"] is None
+
+    withdraw_response = await api_client.post(
+        f"/api/v1/sales/quotations/{quotation_id}/withdraw",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert withdraw_response.status_code == 200
+    withdrawn = withdraw_response.json()["data"]
+    assert withdrawn["approval_status"] == "draft"
+    assert withdrawn["submitted_at"] is None
+    assert withdrawn["reviewer_id"] is None
+
+
 async def test_export_quotation_endpoints_require_login(
     api_client: AsyncClient,
     seeded_system: None,

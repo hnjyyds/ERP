@@ -13,8 +13,10 @@ from app.modules.sales.quotations.schemas import (
     ExportQuotationExportResponse,
     ExportQuotationListResponse,
     ExportQuotationPurchaseReferenceListResponse,
+    ExportQuotationReject,
     ExportQuotationResponse,
     ExportQuotationSubmit,
+    ExportQuotationWithdraw,
 )
 from app.modules.sales.quotations.services import (
     ExportQuotationService,
@@ -149,6 +151,35 @@ async def approve_export_quotation(
         current_user=user,
         quotation_id=quotation_id,
         payload=payload,
+    )
+    return ApiResponse(data=quotation)
+
+
+@router.post("/{quotation_id}/reject", response_model=ApiResponse[ExportQuotationResponse])
+async def reject_export_quotation(
+    quotation_id: str,
+    payload: ExportQuotationReject,
+    user: CurrentUserDep,
+    service: Annotated[ExportQuotationService, Depends(get_export_quotation_service)],
+) -> ApiResponse[ExportQuotationResponse]:
+    quotation = await service.reject_quotation(
+        current_user=user,
+        quotation_id=quotation_id,
+        payload=payload,
+    )
+    return ApiResponse(data=quotation)
+
+
+@router.post("/{quotation_id}/withdraw", response_model=ApiResponse[ExportQuotationResponse])
+async def withdraw_export_quotation(
+    quotation_id: str,
+    user: CurrentUserDep,
+    service: Annotated[ExportQuotationService, Depends(get_export_quotation_service)],
+) -> ApiResponse[ExportQuotationResponse]:
+    quotation = await service.withdraw_quotation(
+        current_user=user,
+        quotation_id=quotation_id,
+        payload=ExportQuotationWithdraw(),
     )
     return ApiResponse(data=quotation)
 

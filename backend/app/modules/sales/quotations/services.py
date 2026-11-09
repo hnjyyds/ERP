@@ -29,21 +29,14 @@ from app.modules.sales.quotations.schemas import (
     ExportQuotationListResponse,
     ExportQuotationPurchaseReferenceListResponse,
     ExportQuotationPurchaseReferenceResponse,
+    ExportQuotationReject,
     ExportQuotationResponse,
     ExportQuotationSubmit,
+    ExportQuotationWithdraw,
 )
-from app.modules.sample.deliveries.repositories import (
-    SampleDeliveryFeeRow,
-    SampleDeliveryLineRow,
-    SampleDeliveryRepository,
-    SampleDeliveryRow,
-)
-from app.modules.sample.deliveries.schemas import (
-    SampleDeliveryFeeResponse,
-    SampleDeliveryLineResponse,
-    SampleDeliveryListResponse,
-    SampleDeliveryResponse,
-)
+from app.modules.sales.quotations.sample_responses import build_sample_delivery_response
+from app.modules.sample.deliveries.repositories import SampleDeliveryRepository
+from app.modules.sample.deliveries.schemas import SampleDeliveryListResponse
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.permissions import (
@@ -134,8 +127,8 @@ class ExportQuotationService:
             current_user=current_user,
             quotation_id=quotation_id,
         )
-        if quotation.approval_status != "draft":
-            raise ValueError("只有草稿报价可以编辑")
+        if quotation.approval_status not in {"draft", "rejected"}:
+            raise ValueError("只有草稿或已驳回的报价可以编辑")
         async with UnitOfWork(self._repository.session):
             updated = await self._repository.update_quotation(
                 quotation_id=quotation.id,
@@ -148,6 +141,7 @@ class ExportQuotationService:
                 trade_term=payload.trade_term,
                 valid_until=payload.valid_until,
                 description=payload.description,
+                reset_to_draft=quotation.approval_status == "rejected",
             )
             if updated is None:
                 raise ExportQuotationNotFoundError
@@ -265,6 +259,76 @@ class ExportQuotationService:
             if approved is None:
                 raise ExportQuotationNotFoundError
         return await self._quotation_response(approved)
+
+    async def reject_quotation(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        quotation_id: str,
+        payload: ExportQuotationReject,
+    ) -> ExportQuotationResponse:
+        self._require(current_user, "sales:quotation:approve")
+        quotation = await self._get_accessible_quotation(
+            current_user=current_user,
+            quotation_id=quotation_id,
+        )
+        if quotation.approval_status != "submitted":
+            raise ValueError("只有已提交报价可以驳回")
+        if not can_approve_assigned_record(
+            current_user_id=current_user.id,
+            reviewer_id=quotation.reviewer_id,
+            permissions=current_user.permissions,
+        ):
+            raise PermissionDeniedError
+        await self._ensure_no_downstream_contract(quotation)
+        async with UnitOfWork(self._repository.session):
+            rejected = await self._repository.reject_quotation(
+                quotation_id=quotation.id,
+                rejected_at=payload.rejected_at,
+                rejection_reason=payload.rejection_reason,
+                reviewer_id=current_user.id,
+                reviewer_name=current_user.display_name,
+            )
+            if rejected is None:
+                raise ExportQuotationNotFoundError
+        return await self._quotation_response(rejected)
+
+    async def withdraw_quotation(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        quotation_id: str,
+        payload: ExportQuotationWithdraw,
+    ) -> ExportQuotationResponse:
+        del payload
+        self._require(current_user, "sales:quotation:edit")
+        quotation = await self._get_accessible_quotation(
+            current_user=current_user,
+            quotation_id=quotation_id,
+        )
+        if quotation.approval_status != "submitted":
+            raise ValueError("只有已提交报价可以撤回")
+        if (
+            quotation.owner_user_id != current_user.id
+            and "system:super_admin" not in current_user.permissions
+        ):
+            raise PermissionDeniedError
+        await self._ensure_no_downstream_contract(quotation)
+        async with UnitOfWork(self._repository.session):
+            withdrawn = await self._repository.withdraw_quotation(quotation.id)
+            if withdrawn is None:
+                raise ExportQuotationNotFoundError
+        return await self._quotation_response(withdrawn)
+
+    async def _ensure_no_downstream_contract(self, quotation: ExportQuotationRow) -> None:
+        if quotation.generated_contract_id or quotation.generated_contract_no:
+            raise ValueError("报价已生成出口合同，不能撤回或驳回")
+        if self._export_contract_repository is not None:
+            exists = await self._export_contract_repository.contract_exists_for_quotation(
+                quotation.id
+            )
+            if exists:
+                raise ValueError("报价已生成出口合同，不能撤回或驳回")
 
     async def confirm_contract(
         self,
@@ -413,7 +477,10 @@ class ExportQuotationService:
             product_id=first_product_id,
         )
         return SampleDeliveryListResponse(
-            items=[await self._sample_delivery_response(delivery) for delivery in deliveries],
+            items=[
+                await build_sample_delivery_response(delivery, self._sample_delivery_repository)
+                for delivery in deliveries
+            ],
             total=total,
         )
 
@@ -517,6 +584,8 @@ class ExportQuotationService:
             approval_status=quotation.approval_status,
             submitted_at=quotation.submitted_at,
             approved_at=quotation.approved_at,
+            rejected_at=quotation.rejected_at,
+            rejection_reason=quotation.rejection_reason,
             reviewer_id=quotation.reviewer_id,
             reviewer_name=quotation.reviewer_name,
             confirmed_at=quotation.confirmed_at,
@@ -589,75 +658,6 @@ class ExportQuotationService:
             trade_term=quotation.trade_term,
             total_amount=quotation.total_amount,
         )
-
-    async def _sample_delivery_response(
-        self,
-        delivery: SampleDeliveryRow,
-    ) -> SampleDeliveryResponse:
-        lines = await self._sample_delivery_repository.list_lines(delivery.id)
-        fees = await self._sample_delivery_repository.list_fees(delivery.id)
-        fee_total = Decimal("0")
-        for fee in fees:
-            fee_total += fee.amount
-        return SampleDeliveryResponse(
-            id=delivery.id,
-            code=delivery.code,
-            delivery_date=delivery.delivery_date,
-            customer_id=delivery.customer_id,
-            customer_name=delivery.customer_name,
-            supplier_id=delivery.supplier_id,
-            supplier_name=delivery.supplier_name,
-            factory_id=delivery.factory_id,
-            factory_name=delivery.factory_name,
-            recipient_name=delivery.recipient_name,
-            recipient_company=delivery.recipient_company,
-            recipient_address=delivery.recipient_address,
-            express_company=delivery.express_company,
-            tracking_no=delivery.tracking_no,
-            quote_id=delivery.quote_id,
-            quote_no=delivery.quote_no,
-            remark=delivery.remark,
-            status=delivery.status,
-            submitted_at=delivery.submitted_at,
-            approved_at=delivery.approved_at,
-            reviewer_name=delivery.reviewer_name,
-            owner_user_id=delivery.owner_user_id,
-            lines=[self._sample_delivery_line_response(line) for line in lines],
-            fees=[self._sample_delivery_fee_response(fee) for fee in fees],
-            fee_total=self._money(fee_total),
-        )
-
-    def _sample_delivery_line_response(
-        self,
-        line: SampleDeliveryLineRow,
-    ) -> SampleDeliveryLineResponse:
-        return SampleDeliveryLineResponse(
-            id=line.id,
-            delivery_id=line.delivery_id,
-            sample_record_id=line.sample_record_id,
-            sample_code=line.sample_code,
-            sample_type=line.sample_type,
-            product_id=line.product_id,
-            product_code=line.product_code,
-            product_name=line.product_name,
-            quantity=self._quantity(line.quantity),
-            unit=line.unit,
-            remark=line.remark,
-        )
-
-    def _sample_delivery_fee_response(self, fee: SampleDeliveryFeeRow) -> SampleDeliveryFeeResponse:
-        return SampleDeliveryFeeResponse(
-            id=fee.id,
-            delivery_id=fee.delivery_id,
-            fee_type=fee.fee_type,
-            amount=self._money(fee.amount),
-            currency=fee.currency,
-            payer_type=fee.payer_type,
-            remark=fee.remark,
-        )
-
-    def _money(self, value: Decimal) -> str:
-        return f"{value:.2f}"
 
     def _quantity(self, value: Decimal) -> str:
         return format_quantity(value)

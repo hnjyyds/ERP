@@ -173,7 +173,14 @@ SOURCE_MESSAGES: dict[str, str] = {
     "只有已审批报价可以生成出口合同": "Only approved quotations can generate export contracts",
     "只有已提交报价可以审批": "Only submitted quotations can be approved",
     "只有草稿报价可以提交": "Only draft quotations can be submitted",
-    "只有草稿报价可以编辑": "Only draft quotations can be edited",
+    "只有草稿或已驳回的报价可以编辑": (
+        "Only draft or rejected quotations can be edited"
+    ),
+    "只有已提交报价可以驳回": "Only submitted quotations can be rejected",
+    "只有已提交报价可以撤回": "Only submitted quotations can be withdrawn",
+    "报价已生成出口合同，不能撤回或驳回": (
+        "The quotation has generated an export contract and cannot be withdrawn or rejected"
+    ),
     "报价审批状态无效": "Invalid quotation approval status",
     "报价导出格式无效": "Invalid quotation export format",
     "出货数量不能超过合同未出货数量": (
