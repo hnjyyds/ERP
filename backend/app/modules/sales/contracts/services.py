@@ -43,7 +43,10 @@ from app.modules.sales.contracts.schemas import (
 )
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
-from app.modules.system.auth.permissions import can_approve_assigned_record
+from app.modules.system.auth.permissions import (
+    SALES_CONTRACT_EXPORT_PERMISSION,
+    can_approve_assigned_record,
+)
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.numbering.generator import create_with_generated_code
@@ -368,7 +371,7 @@ class ExportContractService:
         contract_id: str,
         export_format: str,
     ) -> ExportContractExportResponse:
-        self._require(current_user, "sales:contract:export")
+        self._require(current_user, SALES_CONTRACT_EXPORT_PERMISSION)
         if export_format not in VALID_CONTRACT_EXPORT_FORMATS:
             raise ValueError("合同导出格式无效")
         contract = await self._get_accessible_contract(

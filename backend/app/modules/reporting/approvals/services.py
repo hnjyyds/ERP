@@ -11,6 +11,7 @@ from app.modules.reporting.approvals.schemas import (
     ApprovalQueryResponse,
     ApprovalTypeSummaryResponse,
 )
+from app.modules.system.auth.permissions import REPORTING_VIEW_PERMISSION
 from app.modules.system.auth.schemas import CurrentUserResponse
 
 
@@ -106,5 +107,5 @@ class ApprovalQueryService:
             raise ValueError("审批状态无效")
 
     def _require_reporting(self, current_user: CurrentUserResponse) -> None:
-        if "reporting:view" not in current_user.permissions:
+        if REPORTING_VIEW_PERMISSION not in current_user.permissions:
             raise PermissionDeniedError

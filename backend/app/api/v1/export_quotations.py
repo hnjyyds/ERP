@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, status
 
 from app.api.auth_dependencies import CurrentUserDep
+from app.api.permission_dependencies import require_permissions
 from app.modules.sales.quotations.providers import get_export_quotation_service
 from app.modules.sales.quotations.schemas import (
     ExportQuotationApprove,
@@ -18,10 +19,21 @@ from app.modules.sales.quotations.schemas import (
 from app.modules.sales.quotations.services import (
     ExportQuotationService,
 )
+from app.modules.sales.quotations.services import (
+    PermissionDeniedError as QuotationPermissionDeniedError,
+)
 from app.modules.sample.deliveries.schemas import SampleDeliveryListResponse
+from app.modules.system.auth.permissions import SALES_QUOTATION_EXPORT_PERMISSION
 from app.schemas.responses import ApiResponse
 
 router = APIRouter(prefix="/sales/quotations", tags=["export-quotations"])
+
+_QUOTATION_EXPORT = Depends(
+    require_permissions(
+        SALES_QUOTATION_EXPORT_PERMISSION,
+        error=QuotationPermissionDeniedError,
+    )
+)
 
 
 @router.get("", response_model=ApiResponse[ExportQuotationListResponse])
@@ -175,7 +187,11 @@ async def get_export_quotation_sample_deliveries(
     return ApiResponse(data=deliveries)
 
 
-@router.get("/{quotation_id}/export", response_model=ApiResponse[ExportQuotationExportResponse])
+@router.get(
+    "/{quotation_id}/export",
+    response_model=ApiResponse[ExportQuotationExportResponse],
+    dependencies=[_QUOTATION_EXPORT],
+)
 async def export_export_quotation(
     quotation_id: str,
     user: CurrentUserDep,

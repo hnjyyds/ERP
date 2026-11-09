@@ -4,20 +4,47 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query
 
 from app.api.auth_dependencies import CurrentUserDep
+from app.api.permission_dependencies import require_permissions
 from app.modules.reporting.approvals.providers import get_approval_query_service
 from app.modules.reporting.approvals.schemas import ApprovalQueryResponse
 from app.modules.reporting.approvals.services import (
     ApprovalQueryService,
 )
+from app.modules.reporting.approvals.services import (
+    PermissionDeniedError as ApprovalPermissionDeniedError,
+)
 from app.modules.reporting.statistics.providers import get_reporting_statistics_service
 from app.modules.reporting.statistics.schemas import ReportingStatisticsResponse
-from app.modules.reporting.statistics.services import ReportingStatisticsService
+from app.modules.reporting.statistics.services import (
+    PermissionDeniedError as StatisticsPermissionDeniedError,
+)
+from app.modules.reporting.statistics.services import (
+    ReportingStatisticsService,
+)
+from app.modules.system.auth.permissions import REPORTING_VIEW_PERMISSION
 from app.schemas.responses import ApiResponse
 
 router = APIRouter(prefix="/reporting", tags=["reporting"])
 
+_APPROVAL_REPORTING_VIEW = Depends(
+    require_permissions(
+        REPORTING_VIEW_PERMISSION,
+        error=ApprovalPermissionDeniedError,
+    )
+)
+_STATISTICS_REPORTING_VIEW = Depends(
+    require_permissions(
+        REPORTING_VIEW_PERMISSION,
+        error=StatisticsPermissionDeniedError,
+    )
+)
 
-@router.get("/approvals", response_model=ApiResponse[ApprovalQueryResponse])
+
+@router.get(
+    "/approvals",
+    response_model=ApiResponse[ApprovalQueryResponse],
+    dependencies=[_APPROVAL_REPORTING_VIEW],
+)
 async def list_approval_documents(
     user: CurrentUserDep,
     service: Annotated[ApprovalQueryService, Depends(get_approval_query_service)],
@@ -38,7 +65,11 @@ async def list_approval_documents(
     return ApiResponse(data=approvals)
 
 
-@router.get("/statistics", response_model=ApiResponse[ReportingStatisticsResponse])
+@router.get(
+    "/statistics",
+    response_model=ApiResponse[ReportingStatisticsResponse],
+    dependencies=[_STATISTICS_REPORTING_VIEW],
+)
 async def get_reporting_statistics(
     user: CurrentUserDep,
     service: Annotated[ReportingStatisticsService, Depends(get_reporting_statistics_service)],

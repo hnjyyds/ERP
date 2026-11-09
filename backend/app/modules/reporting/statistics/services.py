@@ -20,6 +20,7 @@ from app.modules.reporting.statistics.schemas import (
     ShipmentStatisticItemResponse,
     StatusAmountStatisticResponse,
 )
+from app.modules.system.auth.permissions import REPORTING_VIEW_PERMISSION
 from app.modules.system.auth.schemas import CurrentUserResponse
 
 
@@ -230,7 +231,7 @@ class ReportingStatisticsService:
             raise ValueError("审批状态无效")
 
     def _require_reporting(self, current_user: CurrentUserResponse) -> None:
-        if "reporting:view" not in current_user.permissions:
+        if REPORTING_VIEW_PERMISSION not in current_user.permissions:
             raise PermissionDeniedError
 
     def _status_label(self, status: str) -> str:

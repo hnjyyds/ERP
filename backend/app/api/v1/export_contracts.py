@@ -3,6 +3,10 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, status
 
 from app.api.auth_dependencies import CurrentUserDep
+from app.api.permission_dependencies import require_permissions
+from app.modules.sales.contracts.errors import (
+    PermissionDeniedError as ContractPermissionDeniedError,
+)
 from app.modules.sales.contracts.providers import get_export_contract_service
 from app.modules.sales.contracts.schemas import (
     ExportContractAdvancePaymentCreate,
@@ -20,9 +24,17 @@ from app.modules.sales.contracts.schemas import (
 from app.modules.sales.contracts.services import (
     ExportContractService,
 )
+from app.modules.system.auth.permissions import SALES_CONTRACT_EXPORT_PERMISSION
 from app.schemas.responses import ApiResponse
 
 router = APIRouter(prefix="/sales/contracts", tags=["export-contracts"])
+
+_CONTRACT_EXPORT = Depends(
+    require_permissions(
+        SALES_CONTRACT_EXPORT_PERMISSION,
+        error=ContractPermissionDeniedError,
+    )
+)
 
 
 @router.get("", response_model=ApiResponse[ExportContractListResponse])
@@ -175,7 +187,11 @@ async def add_export_contract_advance_payment(
     return ApiResponse(data=payment)
 
 
-@router.get("/{contract_id}/export", response_model=ApiResponse[ExportContractExportResponse])
+@router.get(
+    "/{contract_id}/export",
+    response_model=ApiResponse[ExportContractExportResponse],
+    dependencies=[_CONTRACT_EXPORT],
+)
 async def export_export_contract(
     contract_id: str,
     user: CurrentUserDep,

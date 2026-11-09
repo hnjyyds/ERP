@@ -2,6 +2,9 @@ from collections.abc import Collection
 
 ANNOUNCEMENT_CREATE_PERMISSION = "announcement:create"
 SUPER_ADMIN_PERMISSION = "system:super_admin"
+REPORTING_VIEW_PERMISSION = "reporting:view"
+SALES_CONTRACT_EXPORT_PERMISSION = "sales:contract:export"
+SALES_QUOTATION_EXPORT_PERMISSION = "sales:quotation:export"
 
 
 def can_approve_assigned_record(

@@ -46,7 +46,10 @@ from app.modules.sample.deliveries.schemas import (
 )
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
-from app.modules.system.auth.permissions import can_approve_assigned_record
+from app.modules.system.auth.permissions import (
+    SALES_QUOTATION_EXPORT_PERMISSION,
+    can_approve_assigned_record,
+)
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.numbering.generator import create_with_generated_code
@@ -421,7 +424,7 @@ class ExportQuotationService:
         quotation_id: str,
         export_format: str,
     ) -> ExportQuotationExportResponse:
-        self._require(current_user, "sales:quotation:export")
+        self._require(current_user, SALES_QUOTATION_EXPORT_PERMISSION)
         if export_format not in VALID_QUOTATION_EXPORT_FORMATS:
             raise ValueError("报价导出格式无效")
         quotation = await self._get_accessible_quotation(
