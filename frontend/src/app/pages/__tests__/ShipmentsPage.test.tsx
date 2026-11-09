@@ -262,4 +262,81 @@ describe('ShipmentsPage', () => {
     expect(approveSpy.mock.calls[0][1]).toMatchObject({ reviewer_name: '销售A' })
     expect(await screen.findByText('已审批出货明细 S-001')).toBeTruthy()
   })
+
+  it('提交人可在已提交状态撤回并刷新', async () => {
+    vi.spyOn(api, 'listShipments').mockResolvedValue({
+      items: [{ ...detailShipment, owner_user_id: 'u-sales' }],
+      total: 1,
+      summary: emptySummary,
+    })
+    const withdrawSpy = vi.spyOn(api, 'withdrawShipment').mockResolvedValue({
+      ...detailShipment,
+      owner_user_id: 'u-sales',
+      approval_status: 'draft',
+      submitted_at: null,
+      reviewer_id: null,
+      reviewer_name: null,
+    })
+
+    render(
+      <ShipmentsPage
+        currentUser={{ ...currentUser, id: 'u-sales', permissions: ['sales:shipment:edit'] }}
+        detailId="s-1"
+        onNavigate={onNavigate}
+      />,
+    )
+
+    const withdrawButton = await screen.findByRole('button', { name: /撤\s*回/ })
+    expect(withdrawButton).toBeEnabled()
+
+    await userEvent.click(withdrawButton)
+
+    await waitFor(() => expect(withdrawSpy).toHaveBeenCalledWith('s-1'))
+    expect(await screen.findByText('已撤回出货明细 S-001')).toBeTruthy()
+  })
+
+  it('非提交人且非管理员不能撤回', async () => {
+    vi.spyOn(api, 'listShipments').mockResolvedValue({
+      items: [{ ...detailShipment, owner_user_id: 'u-owner' }],
+      total: 1,
+      summary: emptySummary,
+    })
+
+    render(
+      <ShipmentsPage
+        currentUser={{ ...currentUser, id: 'u-sales', permissions: ['sales:shipment:edit'] }}
+        detailId="s-1"
+        onNavigate={onNavigate}
+      />,
+    )
+
+    expect(await screen.findByRole('button', { name: /撤\s*回/ })).toBeDisabled()
+  })
+
+  it('草稿状态不展示撤回入口', async () => {
+    vi.spyOn(api, 'listShipments').mockResolvedValue({
+      items: [
+        {
+          ...detailShipment,
+          owner_user_id: 'u-sales',
+          approval_status: 'draft',
+          reviewer_id: null,
+          reviewer_name: null,
+        },
+      ],
+      total: 1,
+      summary: emptySummary,
+    })
+
+    render(
+      <ShipmentsPage
+        currentUser={{ ...currentUser, id: 'u-sales', permissions: ['sales:shipment:edit'] }}
+        detailId="s-1"
+        onNavigate={onNavigate}
+      />,
+    )
+
+    expect(await screen.findByText('收付款和利润概览')).toBeTruthy()
+    expect(screen.queryByRole('button', { name: /撤\s*回/ })).not.toBeInTheDocument()
+  })
 })

@@ -803,6 +803,7 @@
         "backToList": "返回列表",
         "submitForApproval": "提交审批",
         "approve": "审批通过",
+        "withdraw": "撤回",
         "waitingApproval": "等待 {name} 审批",
         "approverMismatch": "该出货单应由 {name} 审批",
         "defaultReviewer": "指定审批人"
@@ -843,7 +844,9 @@
         "submitted": "已提交出货明细 {code}",
         "submitFailed": "出货明细提交失败",
         "approved": "已审批出货明细 {code}",
-        "approveFailed": "出货明细审批失败"
+        "approveFailed": "出货明细审批失败",
+        "withdrawn": "已撤回出货明细 {code}",
+        "withdrawFailed": "出货明细撤回失败"
       }
     }
   },

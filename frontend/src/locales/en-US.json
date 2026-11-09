@@ -803,6 +803,7 @@
         "backToList": "Back to list",
         "submitForApproval": "Submit for approval",
         "approve": "Approve",
+        "withdraw": "Withdraw",
         "waitingApproval": "Waiting for {name} to approve",
         "approverMismatch": "This shipment should be approved by {name}",
         "defaultReviewer": "the assigned approver"
@@ -843,7 +844,9 @@
         "submitted": "Shipment {code} submitted",
         "submitFailed": "Failed to submit shipment",
         "approved": "Shipment {code} approved",
-        "approveFailed": "Failed to approve shipment"
+        "approveFailed": "Failed to approve shipment",
+        "withdrawn": "Shipment {code} withdrawn",
+        "withdrawFailed": "Failed to withdraw shipment"
       }
     }
   },

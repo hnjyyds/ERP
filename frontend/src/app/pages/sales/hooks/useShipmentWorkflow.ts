@@ -6,6 +6,7 @@ import {
   generateShipmentFromContracts,
   listExportContracts,
   submitShipment,
+  withdrawShipment,
   type CurrentUser,
   type ShipmentPlan,
 } from '@/api'
@@ -88,6 +89,13 @@ export function useShipmentWorkflow({
       ),
   )
 
+  const canWithdrawSelected = Boolean(
+    selectedShipment &&
+      selectedShipment.approval_status === 'submitted' &&
+      (selectedShipment.owner_user_id === currentUser.id ||
+        currentUser.permissions.includes('system:super_admin')),
+  )
+
   async function submitGeneratedShipment(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setMessage('')
@@ -118,6 +126,22 @@ export function useShipmentWorkflow({
       await Promise.all([reloadShipments(submitted.id), reloadReminders()])
     } catch (caught) {
       showError(caught, t('sales.shipment.message.submitFailed'))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  async function withdrawSelectedShipment() {
+    if (!selectedShipment) return
+    setSubmitting(true)
+    setMessage('')
+    try {
+      const withdrawn = await withdrawShipment(selectedShipment.id)
+      setMessage(t('sales.shipment.message.withdrawn', { code: withdrawn.code }))
+      upsertShipment(withdrawn)
+      await Promise.all([reloadShipments(withdrawn.id), reloadReminders()])
+    } catch (caught) {
+      showError(caught, t('sales.shipment.message.withdrawFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -175,9 +199,11 @@ export function useShipmentWorkflow({
     approveForm,
     setApproveForm,
     canApproveSelected,
+    canWithdrawSelected,
     fetchExportContractOptions,
     submitGeneratedShipment,
     submitShipmentForApproval,
+    withdrawSelectedShipment,
     approveSelectedShipment,
     openGenerateForm,
     closeGenerateForm: closeShipmentForm,

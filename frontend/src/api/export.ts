@@ -713,6 +713,12 @@ export function approveShipment(
   })
 }
 
+export function withdrawShipment(shipmentId: string): Promise<ShipmentPlan> {
+  return request<ShipmentPlan>(`/sales/shipments/${shipmentId}/withdraw`, {
+    method: 'POST',
+  })
+}
+
 export function listShipmentReminders(): Promise<ShipmentReminderList> {
   return request<ShipmentReminderList>('/sales/shipments/reminders')
 }

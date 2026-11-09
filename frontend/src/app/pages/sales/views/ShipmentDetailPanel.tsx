@@ -120,6 +120,15 @@ export function ShipmentDetailPanel({ currentUser, shipment, reminders, workflow
             >
               {t('sales.shipment.action.submitForApproval')}
             </Button>
+            {shipment.approval_status === 'submitted' ? (
+              <Button
+                disabled={!workflow.canWithdrawSelected}
+                loading={workflow.submitting}
+                onClick={() => void workflow.withdrawSelectedShipment()}
+              >
+                {t('sales.shipment.action.withdraw')}
+              </Button>
+            ) : null}
           </div>
 
           <form
