@@ -189,9 +189,15 @@ export interface SampleRecord {
   followup_events: SampleRecordFollowupEvent[]
 }
 
+export interface SampleRecordListSummary {
+  total: number
+  confirm_sample_count: number
+}
+
 export interface SampleRecordList {
   items: SampleRecord[]
   total: number
+  summary?: SampleRecordListSummary
 }
 
 export interface SampleRequestToRecordPayload {
@@ -500,6 +506,8 @@ export function listSampleRecords(filters: {
   sample_type?: string
   customer_id?: string
   purchase_contract_id?: string
+  limit?: number
+  offset?: number
 } = {}): Promise<SampleRecordList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
@@ -508,6 +516,8 @@ export function listSampleRecords(filters: {
   if (filters.purchase_contract_id) {
     params.set('purchase_contract_id', filters.purchase_contract_id)
   }
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<SampleRecordList>(`/sample/records${suffix}`)
 }

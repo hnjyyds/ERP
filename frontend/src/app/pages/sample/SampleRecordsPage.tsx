@@ -1,7 +1,7 @@
 import { Alert, Button, Input, Modal, Table } from 'antd'
 import { ArrowLeft, Images, LayoutDashboard, Plus, Search } from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   createSampleRecord,
   addSampleRecordImage,
@@ -13,6 +13,7 @@ import {
   type SampleRecordCreatePayload,
   type SampleRecordImage,
   type SampleRecordImagePayload,
+  type SampleRecordListSummary,
   type SampleRecordStockEvent,
   type SampleRecordStockEventPayload,
   SampleRequest,
@@ -21,6 +22,8 @@ import {
 import { sampleRecordPath, moduleDetailPath } from '@/app/routes'
 import { t } from '@/app/appI18n'
 import { FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { useTablePagination } from '@/shared/useTablePagination'
+import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { showError } from '@/shared/errors'
 import { downloadCsv } from '@/shared/print'
 import {
@@ -299,12 +302,20 @@ function sampleStockEventTypeLabel(value: string): string {
 }
 
 export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProps) {
+  const urlQuery = useUrlQuery()
+  const initialParams = useRef(urlQuery.params)
+  const appliedUrlSearchRef = useRef(urlQuery.search)
   const [records, setRecords] = useState<SampleRecord[]>([])
   const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [typeFilter, setTypeFilter] = useState('')
-  const [customerFilter, setCustomerFilter] = useState('')
-  const [purchaseContractFilter, setPurchaseContractFilter] = useState('')
+  const [search, setSearch] = useState(initialParams.current.get('q') ?? '')
+  const [typeFilter, setTypeFilter] = useState(initialParams.current.get('sample_type') ?? '')
+  const [customerFilter, setCustomerFilter] = useState(
+    initialParams.current.get('customer_id') ?? '',
+  )
+  const [purchaseContractFilter, setPurchaseContractFilter] = useState(
+    initialParams.current.get('purchase_contract_id') ?? '',
+  )
+  const [summary, setSummary] = useState<SampleRecordListSummary | null>(null)
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
@@ -316,6 +327,8 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
   const [stockForm, setStockForm] = useState<SampleRecordStockFormState>(() =>
     initialSampleRecordStockForm(),
   )
+  const { page, pageSize, total, setTotal, setPage, changePage, pagination } =
+    useTablePagination(50, parsePageParam(initialParams.current))
 
   const selectedRecord = useMemo(() => {
     if (detailId) return records.find((item) => item.id === detailId) ?? null
@@ -325,6 +338,31 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
   useEffect(() => {
     void loadRecords()
   }, [])
+
+  useEffect(() => {
+    if (appliedUrlSearchRef.current === urlQuery.search) return
+    appliedUrlSearchRef.current = urlQuery.search
+    const params = urlQuery.params
+    const nextSearch = params.get('q') ?? ''
+    const nextType = params.get('sample_type') ?? ''
+    const nextCustomer = params.get('customer_id') ?? ''
+    const nextContract = params.get('purchase_contract_id') ?? ''
+    const nextPage = parsePageParam(params)
+    setSearch(nextSearch)
+    setTypeFilter(nextType)
+    setCustomerFilter(nextCustomer)
+    setPurchaseContractFilter(nextContract)
+    setPage(nextPage)
+    void loadRecords(undefined, {
+      pageOverride: nextPage,
+      filters: {
+        q: nextSearch.trim() || undefined,
+        sample_type: nextType || undefined,
+        customer_id: nextCustomer.trim() || undefined,
+        purchase_contract_id: nextContract.trim() || undefined,
+      },
+    })
+  }, [urlQuery.search])
 
   useEffect(() => {
     if (detailId && records.length > 0 && !records.some((item) => item.id === detailId)) {
@@ -342,16 +380,34 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
     openRecordDetail(record)
   }
 
-  async function loadRecords(preferredId?: string) {
+  async function loadRecords(preferredId?: string, options?: {
+    pageOverride?: number
+    pageSizeOverride?: number
+    filters?: {
+      q?: string
+      sample_type?: string
+      customer_id?: string
+      purchase_contract_id?: string
+    }
+  }) {
+    const nextPage = options?.pageOverride ?? page
+    const nextPageSize = options?.pageSizeOverride ?? pageSize
+    const filters = options?.filters ?? {
+      q: search.trim() || undefined,
+      sample_type: typeFilter || undefined,
+      customer_id: customerFilter.trim() || undefined,
+      purchase_contract_id: purchaseContractFilter.trim() || undefined,
+    }
     setLoading(true)
     try {
       const result = await listSampleRecords({
-        q: search.trim() || undefined,
-        sample_type: typeFilter || undefined,
-        customer_id: customerFilter.trim() || undefined,
-        purchase_contract_id: purchaseContractFilter.trim() || undefined,
+        ...filters,
+        limit: nextPageSize,
+        offset: (nextPage - 1) * nextPageSize,
       })
       setRecords(result.items)
+      setTotal(result.total)
+      setSummary(result.summary ?? null)
       const nextSelectedId =
         preferredId ??
         (result.items.some((item) => item.id === selectedRecordId) ? selectedRecordId : null) ??
@@ -379,7 +435,9 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
       setMessage(t('sample.record.message.created', { code: created.code }))
       setForm(initialSampleRecordForm())
       setRecordModalOpen(false)
-      await loadRecords(created.id)
+      setPage(1)
+      appliedUrlSearchRef.current = urlQuery.update({ page: null })
+      await loadRecords(created.id, { pageOverride: 1 })
       setRecords((current) =>
         current.some((record) => record.id === created.id) ? current : [created, ...current],
       )
@@ -484,10 +542,13 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
   return (
     <section className="sample-record-page">
       <div className="summary-strip" aria-label={t('sample.record.pageAria')}>
-        <Metric label={t('sample.record.metric.sampleCount')} value={records.length} />
+        <Metric
+          label={t('sample.record.metric.sampleCount')}
+          value={summary?.total ?? total}
+        />
         <Metric
           label={t('sample.record.metric.confirmSampleCount')}
-          value={records.filter((item) => item.sample_type === 'confirm_sample').length}
+          value={summary?.confirm_sample_count ?? 0}
         />
         <Metric label={t('sample.record.metric.imageCount')} value={selectedRecord?.images.length ?? 0} />
         <Metric
@@ -510,7 +571,15 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
               className="inline-filters"
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void loadRecords()
+                  setPage(1)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    q: search.trim(),
+                    sample_type: typeFilter,
+                    customer_id: customerFilter.trim(),
+                    purchase_contract_id: purchaseContractFilter.trim(),
+                    page: null,
+                  })
+                  void loadRecords(undefined, { pageOverride: 1 })
                 }}
               >
                 <label className="inline-filter-search">
@@ -604,7 +673,20 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
               ]}
               dataSource={records}
               loading={loading}
-              pagination={false}
+              pagination={{
+                ...pagination,
+                total,
+                onChange: (nextPage, nextPageSize) => {
+                  const next = changePage(nextPage, nextPageSize)
+                  appliedUrlSearchRef.current = urlQuery.update({
+                    page: next.page === 1 ? null : next.page,
+                  })
+                  void loadRecords(undefined, {
+                    pageOverride: next.page,
+                    pageSizeOverride: next.pageSize,
+                  })
+                },
+              }}
               rowClassName={(record) => (record.id === selectedRecord?.id ? 'selected-row' : '')}
               rowKey="id"
               size="small"

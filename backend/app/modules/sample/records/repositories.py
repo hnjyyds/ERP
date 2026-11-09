@@ -270,8 +270,56 @@ class SampleRecordRepository:
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[SampleRecordRow], int]:
-        statement = select(SampleRecord)
-        count_statement = select(func.count()).select_from(SampleRecord)
+        conditions = self._record_conditions(
+            q=q,
+            sample_type=sample_type,
+            customer_id=customer_id,
+            purchase_contract_id=purchase_contract_id,
+            owner_user_ids=owner_user_ids,
+        )
+        statement = select(SampleRecord).where(*conditions)
+        count_statement = select(func.count()).select_from(SampleRecord).where(*conditions)
+        statement = (
+            statement.order_by(SampleRecord.received_at.desc(), SampleRecord.code.asc())
+            .limit(resolve_limit(limit))
+            .offset(resolve_offset(offset))
+        )
+        rows = await self._scalars(statement)
+        total = await self.session.scalar(count_statement)
+        return [self._map_record(row) for row in rows], int(total or 0)
+
+    async def summarize_records(
+        self,
+        *,
+        q: str | None = None,
+        sample_type: str | None = None,
+        customer_id: str | None = None,
+        purchase_contract_id: str | None = None,
+        owner_user_ids: list[str] | None = None,
+    ) -> tuple[int, int]:
+        conditions = self._record_conditions(
+            q=q,
+            sample_type=sample_type,
+            customer_id=customer_id,
+            purchase_contract_id=purchase_contract_id,
+            owner_user_ids=owner_user_ids,
+        )
+        base = select(func.count()).select_from(SampleRecord).where(*conditions)
+        total = await self.session.scalar(base)
+        confirm_sample_count = await self.session.scalar(
+            base.where(SampleRecord.sample_type == "confirm_sample")
+        )
+        return int(total or 0), int(confirm_sample_count or 0)
+
+    def _record_conditions(
+        self,
+        *,
+        q: str | None,
+        sample_type: str | None,
+        customer_id: str | None,
+        purchase_contract_id: str | None,
+        owner_user_ids: list[str] | None,
+    ) -> list:
         conditions = []
         if q:
             pattern = f"%{q}%"
@@ -296,18 +344,7 @@ class SampleRecordRepository:
             conditions.append(SampleRecord.purchase_contract_id == purchase_contract_id)
         if owner_user_ids is not None:
             conditions.append(SampleRecord.owner_user_id.in_(owner_user_ids))
-        for condition in conditions:
-            statement = statement.where(condition)
-            count_statement = count_statement.where(condition)
-
-        statement = (
-            statement.order_by(SampleRecord.received_at.desc(), SampleRecord.code.asc())
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
-        rows = await self._scalars(statement)
-        total = await self.session.scalar(count_statement)
-        return [self._map_record(row) for row in rows], int(total or 0)
+        return conditions
 
     async def list_images(self, record_id: str) -> list[SampleImageRow]:
         rows = await self.session.scalars(

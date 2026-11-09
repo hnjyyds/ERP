@@ -10,6 +10,16 @@ vi.mock('@/shared/print', async (importOriginal) => {
   return { ...actual, downloadCsv: vi.fn() }
 })
 
+vi.mock('@/shared/ui', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/shared/ui')>()
+  return {
+    ...actual,
+    Metric: ({ label, value }: { label: string; value: number | string }) => (
+      <span data-testid="metric">{`${label}: ${value}`}</span>
+    ),
+  }
+})
+
 const record = {
   id: 'rec-1',
   code: 'SP-001',
@@ -52,6 +62,7 @@ describe('SampleRecordsPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    window.history.replaceState({}, '', '/sample/records')
   })
 
   it('renders without crashing', () => {
@@ -79,8 +90,55 @@ describe('SampleRecordsPage', () => {
         sample_type: undefined,
         customer_id: undefined,
         purchase_contract_id: undefined,
+        limit: 50,
+        offset: 0,
       })
     })
+  })
+
+  it('按 URL 页码请求服务端分页，并用后端汇总渲染指标', async () => {
+    window.history.replaceState({}, '', '/sample/records?page=2')
+    const listSpy = vi.spyOn(api, 'listSampleRecords').mockResolvedValue({
+      items: [record],
+      total: 120,
+      summary: { total: 120, confirm_sample_count: 37 },
+    })
+
+    render(<SampleRecordsPage detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() =>
+      expect(listSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ limit: 50, offset: 50 }),
+      ),
+    )
+    const metrics = screen.getAllByTestId('metric').map((element) => element.textContent ?? '')
+    expect(metrics.some((text) => text.endsWith(': 120'))).toBe(true)
+    expect(metrics.some((text) => text.endsWith(': 37'))).toBe(true)
+  })
+
+  it('URL 筛选参数进入服务端请求', async () => {
+    window.history.replaceState(
+      {},
+      '',
+      '/sample/records?sample_type=bulk_sample&customer_id=c-9&purchase_contract_id=pc-9',
+    )
+    const listSpy = vi
+      .spyOn(api, 'listSampleRecords')
+      .mockResolvedValue({ items: [record], total: 1 })
+
+    render(<SampleRecordsPage detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() =>
+      expect(listSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sample_type: 'bulk_sample',
+          customer_id: 'c-9',
+          purchase_contract_id: 'pc-9',
+          limit: 50,
+          offset: 0,
+        }),
+      ),
+    )
   })
 
   it('提交筛选按条件重新查询', async () => {
@@ -102,8 +160,14 @@ describe('SampleRecordsPage', () => {
         sample_type: undefined,
         customer_id: 'c-9',
         purchase_contract_id: 'pc-9',
+        limit: 50,
+        offset: 0,
       })
     })
+    expect(window.location.search).toContain('q=SP-9')
+    expect(window.location.search).toContain('customer_id=c-9')
+    expect(window.location.search).toContain('purchase_contract_id=pc-9')
+    expect(window.location.search).not.toContain('page=')
   })
 
   it('新增样品提交表单并提示成功', async () => {

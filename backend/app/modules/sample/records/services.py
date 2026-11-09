@@ -23,6 +23,7 @@ from app.modules.sample.records.schemas import (
     SampleRecordImportRequest,
     SampleRecordImportResponse,
     SampleRecordListResponse,
+    SampleRecordListSummary,
     SampleRecordResponse,
     SampleStockEventCreate,
     SampleStockEventResponse,
@@ -128,6 +129,8 @@ class SampleRecordService:
         sample_type: str | None,
         customer_id: str | None,
         purchase_contract_id: str | None,
+        limit: int = 50,
+        offset: int = 0,
     ) -> SampleRecordListResponse:
         self._require(current_user, "sample:record:view")
         if sample_type is not None:
@@ -141,10 +144,23 @@ class SampleRecordService:
             customer_id=customer_id,
             purchase_contract_id=purchase_contract_id,
             owner_user_ids=owner_user_ids,
+            limit=limit,
+            offset=offset,
+        )
+        summary_total, confirm_sample_count = await self._repository.summarize_records(
+            q=q,
+            sample_type=sample_type,
+            customer_id=customer_id,
+            purchase_contract_id=purchase_contract_id,
+            owner_user_ids=owner_user_ids,
         )
         return SampleRecordListResponse(
             items=[await self._record_response(record) for record in records],
             total=total,
+            summary=SampleRecordListSummary(
+                total=summary_total,
+                confirm_sample_count=confirm_sample_count,
+            ),
         )
 
     async def add_image(

@@ -144,11 +144,19 @@ class SampleRecordResponse(BaseModel):
     followup_events: list[SampleFollowupEventResponse]
 
 
+class SampleRecordListSummary(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    total: int
+    confirm_sample_count: int
+
+
 class SampleRecordListResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     items: list[SampleRecordResponse]
     total: int
+    summary: SampleRecordListSummary | None = None
 
 
 class SampleRecordImportRequest(BaseModel):

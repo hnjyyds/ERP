@@ -32,6 +32,8 @@ async def list_sample_records(
     sample_type: Annotated[str | None, Query(max_length=40)] = None,
     customer_id: Annotated[str | None, Query(max_length=36)] = None,
     purchase_contract_id: Annotated[str | None, Query(max_length=36)] = None,
+    limit: Annotated[int, Query(ge=1, le=200)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
 ) -> ApiResponse[SampleRecordListResponse]:
     records = await service.list_records(
         current_user=user,
@@ -39,6 +41,8 @@ async def list_sample_records(
         sample_type=sample_type,
         customer_id=customer_id,
         purchase_contract_id=purchase_contract_id,
+        limit=limit,
+        offset=offset,
     )
     return ApiResponse(data=records)
 

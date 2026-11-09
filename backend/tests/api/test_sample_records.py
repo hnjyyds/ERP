@@ -139,6 +139,41 @@ async def test_sample_record_create_search_image_stock_and_delivery_link(
     assert refreshed["stock_events"][0]["delivery_no"] == "SD-2026-001"
 
 
+async def test_sample_record_list_supports_pagination_and_summary(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    for index, sample_type in enumerate(["confirm_sample", "confirm_sample", "bulk_sample"], start=1):
+        payload = _sample_record_payload(code=f"SM-PAGE-00{index}") | {
+            "sample_type": sample_type,
+            "product_name": f"PageRecord{index}",
+        }
+        created = await api_client.post("/api/v1/sample/records", headers=headers, json=payload)
+        assert created.status_code == 201
+
+    first_page = await api_client.get(
+        "/api/v1/sample/records",
+        headers=headers,
+        params={"q": "PageRecord", "limit": 2, "offset": 0},
+    )
+    assert first_page.status_code == 200
+    first_data = first_page.json()["data"]
+    assert first_data["total"] == 3
+    assert len(first_data["items"]) == 2
+    assert first_data["summary"] == {"total": 3, "confirm_sample_count": 2}
+
+    second_page = await api_client.get(
+        "/api/v1/sample/records",
+        headers=headers,
+        params={"q": "PageRecord", "limit": 2, "offset": 2},
+    )
+    assert second_page.status_code == 200
+    assert second_page.json()["data"]["total"] == 3
+    assert len(second_page.json()["data"]["items"]) == 1
+
+
 async def test_sample_record_import_export_and_followup_sync(
     api_client: AsyncClient,
     seeded_system: None,
