@@ -95,6 +95,43 @@ async def test_mcp_settings_reject_non_admin(
     assert "/system/mcp" not in menu_paths
 
 
+async def test_mcp_write_endpoints_reject_non_admin(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    demo_token = await _token(api_client, "demo", "demo123")
+    headers = {"Authorization": f"Bearer {demo_token}"}
+
+    update_response = await api_client.patch(
+        "/api/v1/system/mcp",
+        headers=headers,
+        json={"enabled": True},
+    )
+    assert update_response.status_code == 403
+    assert update_response.json()["code"] == "PERMISSION_DENIED"
+
+    credential_response = await api_client.post(
+        "/api/v1/system/mcp/credentials",
+        headers=headers,
+    )
+    assert credential_response.status_code == 403
+    assert credential_response.json()["code"] == "PERMISSION_DENIED"
+
+
+async def test_mcp_endpoints_reject_anonymous(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    for method, path in [
+        ("GET", "/api/v1/system/mcp"),
+        ("PATCH", "/api/v1/system/mcp"),
+        ("POST", "/api/v1/system/mcp/credentials"),
+    ]:
+        payload = {"enabled": True} if method == "PATCH" else None
+        response = await api_client.request(method, path, json=payload)
+        assert response.status_code == 401, f"{method} {path} -> {response.status_code}"
+
+
 async def test_mcp_availability_middleware_blocks_disabled_server(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:

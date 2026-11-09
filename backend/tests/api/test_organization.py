@@ -1,5 +1,30 @@
 from httpx import AsyncClient
 
+# 组织管理全部写接口（含重置密码、角色权限、公司信息）的最小合法请求体。
+_ORGANIZATION_WRITE_ENDPOINTS: list[tuple[str, str, dict[str, object] | None]] = [
+    (
+        "POST",
+        "/organization/users",
+        {
+            "username": "blocked.anonymous",
+            "display_name": "未授权用户",
+            "department_id": "dept-sales",
+            "role_ids": ["role-sales-manager"],
+        },
+    ),
+    ("PATCH", "/organization/users/u-001", {"display_name": "越权改名"}),
+    ("DELETE", "/organization/users/u-001", None),
+    ("POST", "/organization/users/u-001/reset-password", None),
+    ("POST", "/organization/departments", {"name": "越权部门"}),
+    ("PATCH", "/organization/departments/dept-sales", {"name": "越权部门"}),
+    ("DELETE", "/organization/departments/dept-sales", None),
+    ("POST", "/organization/roles", {"name": "越权角色", "code": "hacker", "permission_ids": []}),
+    ("PATCH", "/organization/roles/role-finance", {"name": "越权改名"}),
+    ("DELETE", "/organization/roles/role-finance", None),
+    ("PATCH", "/organization/roles/role-finance/permissions", {"permission_ids": []}),
+    ("PATCH", "/organization/company", {"name": "越权公司"}),
+]
+
 
 async def _token(client: AsyncClient, username: str, password: str) -> str:
     response = await client.post(
@@ -416,3 +441,49 @@ async def test_department_parent_cannot_form_cycle(
     )
     assert valid_response.status_code == 200
     assert valid_response.json()["data"]["parent_id"] == root["id"]
+
+
+async def test_organization_write_endpoints_reject_anonymous(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    for method, path, payload in _ORGANIZATION_WRITE_ENDPOINTS:
+        response = await api_client.request(method, f"/api/v1{path}", json=payload)
+        assert response.status_code == 401, f"{method} {path} -> {response.status_code}"
+
+
+async def test_organization_write_endpoints_reject_regular_user(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    demo_token = await _token(api_client, "demo", "demo123")
+    headers = {"Authorization": f"Bearer {demo_token}"}
+
+    for method, path, payload in _ORGANIZATION_WRITE_ENDPOINTS:
+        response = await api_client.request(method, f"/api/v1{path}", headers=headers, json=payload)
+        assert response.status_code == 403, f"{method} {path} -> {response.status_code}"
+        body = response.json()
+        assert body["code"] == "PERMISSION_DENIED", f"{method} {path}"
+        # 公司信息由 CompanyService 独立把关，文案与组织管理区分。
+        expected_message = "缺少公司信息权限" if path == "/organization/company" else "缺少组织管理权限"
+        assert body["message"] == expected_message, f"{method} {path}"
+
+
+async def test_cross_department_user_cannot_touch_other_department_user(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    # 采购专员与演示业务主管分属不同部门，但组织管理只认 super_admin；
+    # 这组用例锁定「跨部门越权」同样被拒，避免日后放宽为部门级管理时悄悄失去保护。
+    purchase_token = await _token(api_client, "purchase", "purchase123")
+    headers = {"Authorization": f"Bearer {purchase_token}"}
+
+    for method, path, payload in [
+        ("PATCH", "/organization/users/u-001", {"display_name": "跨部门改名"}),
+        ("DELETE", "/organization/users/u-001", None),
+        ("POST", "/organization/users/u-001/reset-password", None),
+    ]:
+        response = await api_client.request(method, f"/api/v1{path}", headers=headers, json=payload)
+        assert response.status_code == 403, f"{method} {path} -> {response.status_code}"
+        assert response.json()["code"] == "PERMISSION_DENIED"
+

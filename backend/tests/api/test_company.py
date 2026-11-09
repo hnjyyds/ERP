@@ -88,3 +88,14 @@ async def test_non_super_admin_cannot_update_company_info(
         json={"name": "越权公司"},
     )
     assert response.status_code == 403
+
+
+async def test_anonymous_cannot_update_company_info(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    response = await api_client.patch(
+        "/api/v1/organization/company",
+        json={"name": "匿名公司"},
+    )
+    assert response.status_code == 401
