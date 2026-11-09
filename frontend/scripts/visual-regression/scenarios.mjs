@@ -9,6 +9,14 @@ export function buildScenarios({ productId, inboundOrderId, contractId }) {
   const scenarios = [
     { name: 'login', path: '/login', auth: false },
     { name: 'dashboard', path: '/' },
+    { name: 'en-sidebar', path: '/', language: 'en-US', expandNav: true },
+    {
+      name: 'en-sidebar-1024',
+      path: '/',
+      language: 'en-US',
+      expandNav: true,
+      viewport: { width: 1024, height: 900 },
+    },
     { name: 'finance-home', path: '/finance' },
     { name: 'finance-receipts', path: '/finance/receipts' },
     { name: 'finance-tax', path: '/finance/tax' },

@@ -260,7 +260,7 @@ async function capture(args) {
       const viewport = scenario.viewport ?? { width: 1440, height: 900 }
       const context = await browser.newContext({
         viewport,
-        locale: 'zh-CN',
+        locale: scenario.language ?? 'zh-CN',
         timezoneId: 'Asia/Shanghai',
         deviceScaleFactor: 1,
       })
@@ -287,6 +287,17 @@ async function capture(args) {
           token,
         )
       }
+      if (scenario.language) {
+        await context.addInitScript(
+          (language) => {
+            localStorage.setItem(
+              'xinpei_app_settings',
+              JSON.stringify({ language, timeZone: 'Asia/Shanghai' }),
+            )
+          },
+          scenario.language,
+        )
+      }
       const page = await context.newPage()
       const errors = []
       const pageErrors = []
@@ -306,6 +317,14 @@ async function capture(args) {
         await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {})
         await page.evaluate(() => document.fonts.ready.catch(() => {}))
         await page.waitForTimeout(400)
+        if (scenario.expandNav) {
+          await page.evaluate(() => {
+            document.querySelectorAll('.react-sidebar details').forEach((element) => {
+              element.open = true
+            })
+          })
+          await page.waitForTimeout(250)
+        }
         // 页面被 ErrorBoundary 或首屏加载错误兜住时，截图仍会“成功”，但等于没有任何覆盖。
         // 这里在任何交互之前，出现错误横幅只可能来自首屏加载（如接口字段缺失），直接判失败。
         const errorBanner = page.locator('section.dashboard-feedback.error')
