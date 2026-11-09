@@ -3,7 +3,14 @@ import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import * as api from '@/api'
 import type { SampleRequest } from '@/api'
+import { sampleRequestPath } from '@/app/routes'
+import { openSampleRequestPrint } from '@/shared/print'
 import { SampleRequestsPage } from '@/app/pages/sample/SampleRequestsPage'
+
+vi.mock('@/shared/print', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/shared/print')>()
+  return { ...actual, openSampleRequestPrint: vi.fn() }
+})
 
 const request: SampleRequest = {
   id: 'sr-1',
@@ -83,9 +90,7 @@ describe('SampleRequestsPage', () => {
     await userEvent.click(screen.getByRole('button', { name: '查询' }))
 
     await waitFor(() => {
-      expect(listSpy).toHaveBeenLastCalledWith(
-        expect.objectContaining({ q: 'SR-9', offset: 0 }),
-      )
+      expect(listSpy).toHaveBeenLastCalledWith(expect.objectContaining({ q: 'SR-9', offset: 0 }))
     })
   })
 
@@ -111,9 +116,7 @@ describe('SampleRequestsPage', () => {
 
   it('新增打样单提交表头与明细并提示成功', async () => {
     const created = { ...request, id: 'sr-2', code: 'SR-002' }
-    const listSpy = vi
-      .spyOn(api, 'listSampleRequests')
-      .mockResolvedValue(listResult([request]))
+    const listSpy = vi.spyOn(api, 'listSampleRequests').mockResolvedValue(listResult([request]))
     const createSpy = vi.spyOn(api, 'createSampleRequest').mockResolvedValue(created)
 
     render(<SampleRequestsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
@@ -152,9 +155,7 @@ describe('SampleRequestsPage', () => {
       remark: null,
     } as never)
 
-    render(
-      <SampleRequestsPage currentUser={currentUser} detailId="sr-1" onNavigate={onNavigate} />,
-    )
+    render(<SampleRequestsPage currentUser={currentUser} detailId="sr-1" onNavigate={onNavigate} />)
 
     const amountInput = await screen.findByLabelText('打样费用金额')
     await userEvent.clear(amountInput)
@@ -196,9 +197,7 @@ describe('SampleRequestsPage', () => {
       payment_request_no: 'PR-001',
     } as never)
 
-    render(
-      <SampleRequestsPage currentUser={currentUser} detailId="sr-1" onNavigate={onNavigate} />,
-    )
+    render(<SampleRequestsPage currentUser={currentUser} detailId="sr-1" onNavigate={onNavigate} />)
 
     await userEvent.click(await screen.findByLabelText('付费审批人'))
     await userEvent.click(await screen.findByText('李四 / 财务部'))
@@ -218,9 +217,7 @@ describe('SampleRequestsPage', () => {
       code: 'SP-009',
     } as never)
 
-    render(
-      <SampleRequestsPage currentUser={currentUser} detailId="sr-1" onNavigate={onNavigate} />,
-    )
+    render(<SampleRequestsPage currentUser={currentUser} detailId="sr-1" onNavigate={onNavigate} />)
 
     await userEvent.click(await screen.findByRole('button', { name: '载入为样品' }))
     const quantityInput = screen.getByLabelText('收样数量')
@@ -249,14 +246,33 @@ describe('SampleRequestsPage', () => {
       handler_name: null,
     })
 
-    render(
-      <SampleRequestsPage currentUser={currentUser} detailId="sr-1" onNavigate={onNavigate} />,
-    )
+    render(<SampleRequestsPage currentUser={currentUser} detailId="sr-1" onNavigate={onNavigate} />)
 
     await userEvent.click(await screen.findByRole('button', { name: '更新打样进度' }))
 
     await waitFor(() => expect(progressSpy).toHaveBeenCalledTimes(1))
     expect(progressSpy.mock.calls[0][0]).toBe('sr-1')
     expect(await screen.findByText(/已更新打样进度/)).toBeTruthy()
+  })
+
+  it('详情页打印内部打样单调用打印入口', async () => {
+    vi.spyOn(api, 'listSampleRequests').mockResolvedValue(listResult([request]))
+    const printSpy = vi.mocked(openSampleRequestPrint).mockResolvedValue()
+
+    render(<SampleRequestsPage currentUser={currentUser} detailId="sr-1" onNavigate={onNavigate} />)
+
+    await userEvent.click(await screen.findByRole('button', { name: '打印内部打样单' }))
+
+    expect(printSpy).toHaveBeenCalledWith('sr-1')
+  })
+
+  it('详情页返回列表时导航到打样单列表', async () => {
+    vi.spyOn(api, 'listSampleRequests').mockResolvedValue(listResult([request]))
+
+    render(<SampleRequestsPage currentUser={currentUser} detailId="sr-1" onNavigate={onNavigate} />)
+
+    await userEvent.click(await screen.findByRole('button', { name: '返回列表' }))
+
+    expect(onNavigate).toHaveBeenCalledWith(sampleRequestPath)
   })
 })
