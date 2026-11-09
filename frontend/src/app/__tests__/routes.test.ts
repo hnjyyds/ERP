@@ -1,3 +1,6 @@
+import { existsSync, readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+
 import { describe, expect, it } from 'vitest'
 
 import {
@@ -112,5 +115,36 @@ describe('route registry', () => {
     expect(navChildrenForGroup('finance').map((child) => child.path)).toContain(
       financeReportsPath,
     )
+  })
+})
+
+describe('navigation contract', () => {
+  const seedFile = [
+    resolve(process.cwd(), '../backend/app/modules/system/auth/seed_navigation.py'),
+    resolve(process.cwd(), 'backend/app/modules/system/auth/seed_navigation.py'),
+  ].find((path) => existsSync(path))
+  if (!seedFile) {
+    throw new Error('找不到后端 seed_navigation.py，无法校验菜单路径契约')
+  }
+  const seedSource = readFileSync(seedFile, 'utf8')
+  const menuSection = seedSource.slice(seedSource.indexOf('def system_menus'))
+  const seededMenuPaths = [...menuSection.matchAll(/\bpath="([^"]+)"/g)].map(
+    (match) => match[1],
+  )
+
+  it('registers every backend menu path in the frontend route registry', () => {
+    const registeredPaths = new Set(routeRegistry.map((route) => route.path))
+    const missing = seededMenuPaths.filter((path) => !registeredPaths.has(path))
+    expect(
+      missing,
+      `后端菜单路径未在前端 routeDefinitions 注册：${missing.join('、')}`,
+    ).toEqual([])
+  })
+
+  it('keeps backend menu paths unique', () => {
+    const duplicated = seededMenuPaths.filter(
+      (path, index) => seededMenuPaths.indexOf(path) !== index,
+    )
+    expect(duplicated, `后端菜单路径重复：${duplicated.join('、')}`).toEqual([])
   })
 })

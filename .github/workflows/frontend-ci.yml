@@ -4,10 +4,12 @@ on:
   push:
     paths:
       - 'frontend/**'
+      - 'backend/app/modules/system/auth/seed_navigation.py'
       - '.github/workflows/frontend-ci.yml'
   pull_request:
     paths:
       - 'frontend/**'
+      - 'backend/app/modules/system/auth/seed_navigation.py'
       - '.github/workflows/frontend-ci.yml'
 
 jobs:
