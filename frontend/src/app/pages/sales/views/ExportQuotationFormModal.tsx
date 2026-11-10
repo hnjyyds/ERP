@@ -12,6 +12,7 @@ type Props = {
   workflow: ReturnType<typeof useExportQuotationWorkflow>
   customers: Customer[]
   loadingCustomers: boolean
+  onCustomerSearch: (query: string) => void
   selectedQuotation: ExportQuotation | null
 }
 
@@ -19,6 +20,7 @@ export function ExportQuotationFormModal({
   workflow,
   customers,
   loadingCustomers,
+  onCustomerSearch,
   selectedQuotation,
 }: Props) {
   const { form } = workflow
@@ -64,14 +66,27 @@ export function ExportQuotationFormModal({
                   ? t('sales.quotation.form.customerSelectPlaceholder')
                   : t('sales.quotation.form.customerMissing')
               }
-              optionFilterProp="label"
+              optionLabelProp="label"
+              filterOption={false}
               notFoundContent={
                 loadingCustomers
                   ? t('sales.quotation.list.loadingCustomers')
                   : t('sales.quotation.list.noCustomers')
               }
+              onSearch={onCustomerSearch}
               onChange={workflow.applyCustomerToQuotationForm}
             >
+              {form.customer_id &&
+              !customers.some((customer) => customer.id === form.customer_id) ? (
+                <Select.Option
+                  key={form.customer_id}
+                  label={form.customer_name || form.customer_id}
+                  value={form.customer_id}
+                  disabled
+                >
+                  {form.customer_name || form.customer_id}
+                </Select.Option>
+              ) : null}
               {renderCustomerOptions(customers)}
             </Select>
           </label>

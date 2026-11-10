@@ -59,6 +59,7 @@ export function ExportQuotationsPage({ currentUser, detailId, onNavigate }: Prop
           workflow={workflow}
           customers={list.customers}
           loadingCustomers={list.loadingCustomers}
+          onCustomerSearch={list.loadQuotationCustomerOptions}
           selectedQuotation={list.selectedQuotation}
         />
 
