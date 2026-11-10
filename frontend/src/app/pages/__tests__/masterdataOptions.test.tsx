@@ -30,7 +30,11 @@ describe('主数据下拉改服务端搜索', () => {
         status: 'active',
         limit: 20,
       })
-      expect(apiMocks.listProducts).toHaveBeenCalledWith({ q: undefined, limit: 20 })
+      expect(apiMocks.listProducts).toHaveBeenCalledWith({
+        q: undefined,
+        status: 'active',
+        limit: 20,
+      })
     })
   })
 
@@ -47,7 +51,11 @@ describe('主数据下拉改服务端搜索', () => {
       status: 'active',
       limit: 20,
     })
-    expect(apiMocks.listProducts).toHaveBeenLastCalledWith({ q: 'eco', limit: 20 })
+    expect(apiMocks.listProducts).toHaveBeenLastCalledWith({
+      q: 'eco',
+      status: 'active',
+      limit: 20,
+    })
   })
 
   it('采购合同首次加载只请求启用工厂与前 20 条商品', async () => {
@@ -59,7 +67,11 @@ describe('主数据下拉改服务端搜索', () => {
         status: 'active',
         limit: 20,
       })
-      expect(apiMocks.listProducts).toHaveBeenCalledWith({ q: undefined, limit: 20 })
+      expect(apiMocks.listProducts).toHaveBeenCalledWith({
+        q: undefined,
+        status: 'active',
+        limit: 20,
+      })
     })
   })
 })

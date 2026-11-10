@@ -60,6 +60,7 @@ export function useExportContractOptions() {
     try {
       const result = await listProducts({
         q: query.trim() || undefined,
+        status: 'active',
         limit: OPTION_LIMIT,
       })
       if (requestId === productRequestRef.current) setProducts(result.items)

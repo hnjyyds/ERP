@@ -1,4 +1,5 @@
 import json
+from datetime import UTC, datetime
 
 import pytest
 from httpx import AsyncClient
@@ -6,6 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.modules.masterdata.customers.models import Customer
 from app.modules.masterdata.products.models import Product
+from app.modules.sales.quotations.models import ExportQuotation
+from app.modules.system.auth.models import User
 
 pytestmark = pytest.mark.usefixtures("seeded_system", "reference_master_data")
 
@@ -26,13 +29,14 @@ def _quotation_payload(
     *,
     customer_id: str = "customer-a",
     product_id: str = "product-a",
+    sales_user_id: str = "u-001",
     description: str = "主数据校验",
 ) -> dict[str, object]:
     return {
         "quote_date": "2026-07-01",
         "customer_id": customer_id,
         "customer_name": "客户 A",
-        "sales_user_id": "u-001",
+        "sales_user_id": sales_user_id,
         "sales_user_name": "演示业务主管",
         "currency": "USD",
         "trade_term": "FOB Ningbo",
@@ -130,6 +134,37 @@ async def _add_inactive_product(
         await session.commit()
 
 
+async def _add_inactive_user(
+    session_factory: async_sessionmaker[AsyncSession],
+    user_id: str,
+) -> None:
+    async with session_factory() as session:
+        session.add(
+            User(
+                id=user_id,
+                username=f"inactive-{user_id}",
+                display_name="停用业务员",
+                password_hash="x",
+                password_salt="x",
+                is_active=False,
+                created_at=datetime.now(UTC),
+            )
+        )
+        await session.commit()
+
+
+async def _point_quotation_to_user(
+    session_factory: async_sessionmaker[AsyncSession],
+    quotation_id: str,
+    user_id: str,
+) -> None:
+    async with session_factory() as session:
+        quotation = await session.get(ExportQuotation, quotation_id)
+        assert quotation is not None
+        quotation.sales_user_id = user_id
+        await session.commit()
+
+
 def _assert_error(response, status_code: int, code: str) -> None:
     assert response.status_code == status_code, response.json()
     assert code in json.dumps(response.json(), ensure_ascii=False)
@@ -186,6 +221,33 @@ async def test_edit_keeps_inactive_existing_reference(
     )
     assert update_response.status_code == 200
     assert update_response.json()["data"]["customer_id"] == "legacy-customer"
+
+
+@pytest.mark.asyncio
+async def test_edit_keeps_inactive_salesperson_reference(
+    api_client: AsyncClient,
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    await _add_inactive_user(session_factory, "legacy-sales")
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+
+    create_response = await api_client.post(
+        "/api/v1/sales/quotations",
+        headers=headers,
+        json=_quotation_payload(),
+    )
+    assert create_response.status_code == 201, create_response.json()
+    quotation_id = create_response.json()["data"]["id"]
+    await _point_quotation_to_user(session_factory, quotation_id, "legacy-sales")
+
+    update_response = await api_client.put(
+        f"/api/v1/sales/quotations/{quotation_id}",
+        headers=headers,
+        json=_quotation_payload(sales_user_id="legacy-sales", description="仅改描述"),
+    )
+    assert update_response.status_code == 200, update_response.json()
+    assert update_response.json()["data"]["sales_user_id"] == "legacy-sales"
 
 
 @pytest.mark.asyncio

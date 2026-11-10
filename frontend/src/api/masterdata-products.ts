@@ -116,10 +116,11 @@ export interface ProductTransactionList {
 }
 
 export function listProducts(
-  filters: { q?: string; limit?: number; offset?: number } = {},
+  filters: { q?: string; status?: string; limit?: number; offset?: number } = {},
 ): Promise<ProductList> {
   const params = new URLSearchParams()
   if (filters.q) params.set('q', filters.q)
+  if (filters.status) params.set('status', filters.status)
   if (filters.limit !== undefined) params.set('limit', String(filters.limit))
   if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''

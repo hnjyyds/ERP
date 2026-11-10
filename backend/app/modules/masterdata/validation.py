@@ -16,7 +16,7 @@ from app.modules.masterdata.document_parties.models import DocumentParty
 from app.modules.masterdata.partners.models import Partner
 from app.modules.masterdata.products.models import Product
 from app.modules.masterdata.suppliers.models import Supplier
-from app.modules.system.auth.repositories import AuthRepository
+from app.modules.system.auth.models import User
 
 CUSTOMER_NOT_FOUND = "客户不存在"
 CUSTOMER_INACTIVE = "客户已停用"
@@ -28,7 +28,8 @@ PARTNER_NOT_FOUND = "合作伙伴不存在"
 PARTNER_INACTIVE = "合作伙伴已停用"
 DOCUMENT_PARTY_NOT_FOUND = "单证主体不存在"
 DOCUMENT_PARTY_INACTIVE = "单证主体已停用"
-USER_NOT_FOUND = "所选员工不存在或已停用"
+USER_NOT_FOUND = "所选员工不存在"
+USER_INACTIVE = "所选员工已停用"
 PARTNER_TYPE_MISMATCH = "合作伙伴类型不一致"
 PARTNER_NAME_MISMATCH = "合作伙伴名称不一致"
 
@@ -48,7 +49,6 @@ class MasterDataValidator:
 
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
-        self._auth_repository = AuthRepository(session)
 
     async def product(self, product_id: str | None, *, allow_inactive: bool = False) -> None:
         await self._require(
@@ -102,13 +102,17 @@ class MasterDataValidator:
         )
 
     async def user(self, user_id: str | None, *, allow_inactive: bool = False) -> None:
-        """校验员工存在且启用；``get_user_identity_by_id`` 已过滤停用账号。"""
-        del allow_inactive
+        """校验员工存在；停用账号在编辑旧单时允许保留。"""
         if not user_id:
             return
-        user = await self._auth_repository.get_user_identity_by_id(user_id)
+        row = await self._session.execute(
+            select(User.id, User.is_active).where(User.id == user_id)
+        )
+        user = row.first()
         if user is None:
             raise MasterDataReferenceError(USER_NOT_FOUND)
+        if not user.is_active and not allow_inactive:
+            raise MasterDataInactiveError(USER_INACTIVE)
 
     async def _require(
         self,

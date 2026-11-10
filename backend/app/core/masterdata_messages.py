@@ -11,7 +11,8 @@ MASTER_DATA_SOURCE_MESSAGES: dict[str, str] = {
     "合作伙伴已停用": "Partner is disabled",
     "单证主体不存在": "Document party not found",
     "单证主体已停用": "Document party is disabled",
-    "所选员工不存在或已停用": "The selected employee does not exist or is disabled",
+    "所选员工不存在": "The selected employee does not exist",
+    "所选员工已停用": "The selected employee is disabled",
     "合作伙伴类型不一致": "The partner type does not match",
     "合作伙伴名称不一致": "The partner name does not match",
 }
