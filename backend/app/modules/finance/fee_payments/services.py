@@ -24,6 +24,7 @@ from app.modules.finance.fee_payments.schemas import (
     PartnerFeeInvoiceResponse,
 )
 from app.modules.masterdata.partners.repositories import PartnerRepository, PartnerRow
+from app.modules.masterdata.validation import MasterDataValidator
 from app.modules.sales.shipments.repositories import ShipmentPlanRepository, ShipmentPlanRow
 from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.assignees import AssigneeValidator
@@ -56,6 +57,7 @@ class FeePaymentService:
         self._assignee_validator = AssigneeValidator(
             auth_repository or AuthRepository(repository.session)
         )
+        self._masterdata = MasterDataValidator(repository.session)
 
     async def create_partner_fee_invoice(
         self,
@@ -126,6 +128,10 @@ class FeePaymentService:
     ) -> FeePaymentRequestResponse:
         self._require_finance(current_user)
         invoice = await self._get_partner_fee_invoice(payload.partner_fee_invoice_id)
+        await self._masterdata.partner(
+            getattr(invoice, "partner_id", None),
+            allow_inactive=True,
+        )
         self._validate_fee_request_amount(invoice, payload.requested_amount, payload.currency)
         reviewer = await self._assignee_validator.require(
             user_id=payload.reviewer_id,
@@ -284,16 +290,12 @@ class FeePaymentService:
     ) -> PartnerRow | None:
         if payload.partner_id is None:
             return None
-        partner = await self._partner_repository.get_partner(payload.partner_id)
-        if partner is None:
-            raise FeePaymentNotFoundError
-        if partner.cn_name != payload.partner_name:
-            raise ValueError("合作伙伴费用发票关联的合作伙伴名称不一致")
-        if payload.partner_type is not None and partner.partner_type != payload.partner_type:
-            raise ValueError("合作伙伴费用发票关联的合作伙伴类型不一致")
-        if partner.status != "active":
-            raise ValueError("只能登记启用合作伙伴的费用发票")
-        return partner
+        await self._masterdata.partner(
+            payload.partner_id,
+            expected_type=payload.partner_type,
+            expected_name=payload.partner_name,
+        )
+        return await self._partner_repository.get_partner(payload.partner_id)
 
     async def _resolve_shipment(
         self,

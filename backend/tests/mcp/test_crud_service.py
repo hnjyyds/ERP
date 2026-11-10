@@ -82,19 +82,6 @@ async def test_mcp_service_supports_product_customer_and_export_order_crud(
         product_id=product.id,
     )
     assert loaded_product.id == product.id
-    with pytest.raises(ConfirmationRequiredError):
-        await service.delete_product(
-            user_id=user_id,
-            product_id=product.id,
-            confirm=False,
-        )
-    deleted_product = await service.delete_product(
-        user_id=user_id,
-        product_id=product.id,
-        confirm=True,
-    )
-    assert deleted_product.status == "inactive"
-
     customer = await service.create_customer(
         user_id=user_id,
         payload=CustomerCreate(
@@ -127,33 +114,6 @@ async def test_mcp_service_supports_product_customer_and_export_order_crud(
     assert (
         await service.get_customer(user_id=user_id, customer_id=customer.id)
     ).id == customer.id
-    deleted_customer = await service.delete_customer(
-        user_id=user_id,
-        customer_id=customer.id,
-        confirm=True,
-    )
-    assert deleted_customer.status == "inactive"
-    inactive_page = await service.list_customers(
-        user_id=user_id,
-        q="MCP-C-001",
-        country=None,
-        credit_grade=None,
-        status="inactive",
-        limit=10,
-        offset=0,
-    )
-    assert inactive_page.total == 1
-    active_page = await service.list_customers(
-        user_id=user_id,
-        q="MCP-C-001",
-        country=None,
-        credit_grade=None,
-        status="active",
-        limit=10,
-        offset=0,
-    )
-    assert active_page.total == 0
-
     order_payload = ExportContractCreate(
         code="MCP-EC-001",
         contract_date=date(2026, 7, 22),
@@ -206,3 +166,45 @@ async def test_mcp_service_supports_product_customer_and_export_order_crud(
     )
     with pytest.raises(ExportContractNotFoundError):
         await service.get_export_order(user_id=user_id, order_id=order.id)
+
+    with pytest.raises(ConfirmationRequiredError):
+        await service.delete_product(
+            user_id=user_id,
+            product_id=product.id,
+            confirm=False,
+        )
+    deleted_product = await service.delete_product(
+        user_id=user_id,
+        product_id=product.id,
+        confirm=True,
+    )
+    assert deleted_product.status == "inactive"
+
+    deleted_customer = await service.delete_customer(
+        user_id=user_id,
+        customer_id=customer.id,
+        confirm=True,
+    )
+    assert deleted_customer.status == "inactive"
+    inactive_page = await service.list_customers(
+        user_id=user_id,
+        q="MCP-C-001",
+        country=None,
+        credit_grade=None,
+        status="inactive",
+        limit=10,
+        offset=0,
+    )
+    assert inactive_page.total == 1
+    active_page = await service.list_customers(
+        user_id=user_id,
+        q="MCP-C-001",
+        country=None,
+        credit_grade=None,
+        status="active",
+        limit=10,
+        offset=0,
+    )
+    assert active_page.total == 0
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")

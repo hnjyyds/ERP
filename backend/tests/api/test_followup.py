@@ -1,3 +1,4 @@
+import pytest
 from httpx import AsyncClient
 
 
@@ -129,3 +130,5 @@ async def test_followup_api_rejects_finance_role(
     )
 
     assert response.status_code == 403
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")

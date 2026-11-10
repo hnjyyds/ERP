@@ -551,3 +551,5 @@ async def test_purchase_contract_service_requires_permission(
                 current_user=_user_with_permissions(["purchase:contract:view"]),
                 payload=_stock_purchase_payload("PC-SVC-FORBIDDEN"),
             )
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")

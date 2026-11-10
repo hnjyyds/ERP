@@ -37,6 +37,8 @@ type PurchaseContractFormModalProps = {
   onClose: () => void
   onSubmitManual: (event: FormEvent<HTMLFormElement>) => void
   onSubmitGenerate: (event: FormEvent<HTMLFormElement>) => void
+  onSupplierSearch: (query: string) => void
+  onProductSearch: (query: string) => void
   applySupplierToPurchaseContractForm: (supplierId: string | undefined) => void
   applyQcUserToPurchaseContractForm: (userId: string | undefined) => void
   applyQcUserToPurchaseContractGenerateForm: (userId: string | undefined) => void
@@ -61,6 +63,8 @@ export function PurchaseContractFormModal({
   onClose,
   onSubmitManual,
   onSubmitGenerate,
+  onSupplierSearch,
+  onProductSearch,
   applySupplierToPurchaseContractForm,
   applyQcUserToPurchaseContractForm,
   applyQcUserToPurchaseContractGenerateForm,
@@ -125,14 +129,21 @@ export function PurchaseContractFormModal({
                             ? t('purchase.contract.form.supplierSelectPlaceholder')
                             : t('purchase.contract.form.supplierMissing')
                         }
-                        optionFilterProp="label"
+                        filterOption={false}
                         notFoundContent={
                           loadingSuppliers
                             ? t('purchase.contract.form.loadingSuppliers')
                             : t('purchase.contract.form.noSuppliers')
                         }
+                        onSearch={onSupplierSearch}
                         onChange={applySupplierToPurchaseContractForm}
                       >
+                        {form.supplier_id &&
+                        !suppliers.some((supplier) => supplier.id === form.supplier_id) ? (
+                          <Select.Option key={form.supplier_id} value={form.supplier_id}>
+                            {form.supplier_name || form.supplier_id}
+                          </Select.Option>
+                        ) : null}
                         {renderSupplierOptions(suppliers)}
                       </Select>
                     </label>
@@ -257,14 +268,21 @@ export function PurchaseContractFormModal({
                             ? t('purchase.contract.form.productSelectPlaceholder')
                             : t('purchase.contract.form.productMissing')
                         }
-                        optionFilterProp="label"
+                        filterOption={false}
                         notFoundContent={
                           loadingProducts
                             ? t('purchase.contract.form.loadingProducts')
                             : t('purchase.contract.form.noProducts')
                         }
+                        onSearch={onProductSearch}
                         onChange={applyProductToPurchaseContractForm}
                       >
+                        {form.product_id &&
+                        !products.some((product) => product.id === form.product_id) ? (
+                          <Select.Option key={form.product_id} value={form.product_id}>
+                            {form.product_name || form.product_code || form.product_id}
+                          </Select.Option>
+                        ) : null}
                         {renderProductOptions(products)}
                       </Select>
                     </label>

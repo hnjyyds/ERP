@@ -4,6 +4,7 @@ from decimal import Decimal
 from io import StringIO
 
 from app.db.uow import UnitOfWork
+from app.modules.masterdata.validation import MasterDataValidator
 from app.modules.sales.contracts.cancellation import (
     cancel_export_contract,
     reissue_export_contract,
@@ -41,6 +42,7 @@ from app.modules.sales.contracts.schemas import (
     ExportContractStatisticsResponse,
     ExportContractSubmit,
 )
+from app.modules.sales.masterdata_refs import validate_sales_document_references
 from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
@@ -69,6 +71,7 @@ class ExportContractService:
         self._assignee_validator = AssigneeValidator(
             auth_repository or AuthRepository(repository.session)
         )
+        self._masterdata = MasterDataValidator(repository.session)
 
     async def create_contract(
         self,
@@ -77,6 +80,7 @@ class ExportContractService:
         payload: ExportContractCreate,
     ) -> ExportContractResponse:
         self._require(current_user, "sales:contract:edit")
+        await validate_sales_document_references(self._masterdata, payload)
 
         async def create_contract_row(code: str) -> ExportContractRow:
             async with UnitOfWork(self._repository.session):
@@ -119,6 +123,15 @@ class ExportContractService:
         )
         if contract.approval_status != "draft":
             raise ValueError("只有草稿合同可以编辑")
+        existing_lines = await self._repository.list_lines(contract.id)
+        await validate_sales_document_references(
+            self._masterdata,
+            payload,
+            existing=contract,
+            existing_product_ids={
+                line.product_id for line in existing_lines if line.product_id
+            },
+        )
         async with UnitOfWork(self._repository.session):
             updated = await self._repository.update_contract(
                 contract_id=contract.id,

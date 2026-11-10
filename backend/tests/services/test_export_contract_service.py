@@ -182,6 +182,7 @@ async def test_export_contract_service_rejects_approval_before_submit(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         service = _make_service(session)
         current_user = _user_with_permissions(
             [
@@ -300,6 +301,7 @@ async def test_export_contract_service_rejects_deleting_quotation_generated_draf
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         service = _make_service(session)
         current_user = _user_with_permissions(
             ["sales:contract:edit", "sales:contract:view"],
@@ -332,6 +334,7 @@ async def test_export_contract_service_rejects_deleting_receipt_allocated_draft(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         service = _make_service(session)
         current_user = _user_with_permissions(
             ["sales:contract:edit", "sales:contract:view"],
@@ -387,6 +390,7 @@ async def test_export_contract_service_rejects_deleting_draft_referenced_by_purc
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         service = _make_service(session)
         current_user = _user_with_permissions(
             ["sales:contract:edit", "sales:contract:view"],
@@ -441,6 +445,7 @@ async def test_export_contract_service_filters_private_records_without_view_all(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         service = _make_service(session)
         owner = _user_with_permissions(["sales:contract:edit"], user_id="u-owner")
         await service.create_contract(
@@ -487,6 +492,7 @@ async def test_export_contract_service_department_scope_sees_department_peers(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         await _seed_department_user(session, user_id="u-owner", department_id="d-sales")
         await _seed_department_user(session, user_id="u-peer", department_id="d-sales")
         await _seed_department_user(session, user_id="u-outsider", department_id="d-other")
@@ -521,3 +527,5 @@ async def test_export_contract_service_department_scope_sees_department_peers(
 
     assert peer_result.total == 1
     assert outsider_result.total == 0
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")

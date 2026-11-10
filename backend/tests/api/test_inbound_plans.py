@@ -1,3 +1,4 @@
+import pytest
 from httpx import AsyncClient
 
 
@@ -141,3 +142,5 @@ async def test_inbound_plan_api_rejects_invalid_type_unauthorized_and_finance_ro
         json={"purchase_contract_id": "missing", "inbound_type": "bad_type"},
     )
     assert invalid_response.status_code == 422
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")

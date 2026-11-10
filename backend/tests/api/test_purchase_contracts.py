@@ -1,3 +1,4 @@
+import pytest
 from httpx import AsyncClient
 
 
@@ -667,3 +668,5 @@ async def test_purchase_contract_cancel_reverses_progress_and_cleans_plans(
         params={"q": contract_code},
     )
     assert plans_after_cancel.json()["data"]["total"] == 0
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")

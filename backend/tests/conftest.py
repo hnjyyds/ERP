@@ -2,6 +2,7 @@ from collections.abc import AsyncIterator
 
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
+from reference_data import seed_reference_master_data
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.api.deps import get_session
@@ -46,6 +47,14 @@ async def seeded_session(
 ) -> AsyncIterator[None]:
     async with session_factory() as session:
         await seed_dashboard_demo_data(session, user_id="u-001")
+    yield None
+
+
+@pytest_asyncio.fixture
+async def reference_master_data(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> AsyncIterator[None]:
+    await seed_reference_master_data(session_factory)
     yield None
 
 

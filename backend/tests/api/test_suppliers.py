@@ -227,6 +227,7 @@ async def test_supplier_contact_update_and_delete(
 async def test_supplier_transactions_collect_supplier_quotation_and_purchase_contract(
     api_client: AsyncClient,
     seeded_system: None,
+    reference_master_data: None,
 ) -> None:
     token = await _login_token(api_client)
     headers = {"Authorization": f"Bearer {token}"}

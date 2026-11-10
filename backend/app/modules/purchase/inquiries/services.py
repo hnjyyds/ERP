@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from app.db.uow import UnitOfWork
+from app.modules.masterdata.validation import MasterDataValidator
 from app.modules.purchase.inquiries.repositories import (
     PurchaseInquiryLineRow,
     PurchaseInquiryLineWrite,
@@ -27,6 +28,7 @@ from app.modules.purchase.inquiries.schemas import (
     SupplierSampleEvidenceListResponse,
     SupplierSampleEvidenceResponse,
 )
+from app.modules.purchase.masterdata_refs import validate_purchase_document_references
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.numbering.generator import create_with_generated_code
@@ -49,6 +51,7 @@ class PurchaseInquiryService:
     ) -> None:
         self._repository = repository
         self._data_scope_resolver = data_scope_resolver
+        self._masterdata = MasterDataValidator(repository.session)
 
     async def create_inquiry(
         self,
@@ -57,6 +60,7 @@ class PurchaseInquiryService:
         payload: PurchaseInquiryCreate,
     ) -> PurchaseInquiryResponse:
         self._require(current_user, "purchase:inquiry:edit")
+        await validate_purchase_document_references(self._masterdata, payload)
 
         async def create_inquiry_row(code: str) -> PurchaseInquiryRow:
             async with UnitOfWork(self._repository.session):
@@ -101,6 +105,12 @@ class PurchaseInquiryService:
             raise ValueError("只有草稿采购询价可以编辑")
         if await self._repository.list_supplier_quotations(inquiry.id):
             raise ValueError("已有供应商报价的采购询价不可编辑")
+        existing_lines = await self._repository.list_lines(inquiry.id)
+        await validate_purchase_document_references(
+            self._masterdata,
+            payload,
+            existing_product_ids={line.product_id for line in existing_lines if line.product_id},
+        )
         async with UnitOfWork(self._repository.session):
             updated = await self._repository.update_inquiry(
                 inquiry_id=inquiry.id,
@@ -179,6 +189,7 @@ class PurchaseInquiryService:
         lines = await self._repository.list_lines(inquiry.id)
         if not any(line.id == payload.inquiry_line_id for line in lines):
             raise ValueError("供应商报价明细不属于该询价单")
+        await validate_purchase_document_references(self._masterdata, payload)
         async with UnitOfWork(self._repository.session):
             await self._repository.add_supplier_quotation(
                 inquiry_id=inquiry.id,

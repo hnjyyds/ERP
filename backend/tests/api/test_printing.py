@@ -1,6 +1,7 @@
 import base64
 from pathlib import Path
 
+import pytest
 import xlrd
 from httpx import AsyncClient
 
@@ -367,3 +368,5 @@ def _small_bmp_bytes() -> bytes:
     padding = b"\x00" * (row_size - width * 3)
     pixels = blue + white + padding + red + green + padding
     return header + dib + pixels
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")

@@ -23,6 +23,7 @@ from app.modules.finance.receipts.schemas import (
     ReceivableItemResponse,
     ReceivableListResponse,
 )
+from app.modules.masterdata.validation import MasterDataValidator
 from app.modules.sales.contracts.repositories import ExportContractRepository, ExportContractRow
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.numbering.generator import create_with_generated_code
@@ -44,6 +45,7 @@ class ReceiptService:
     ) -> None:
         self._repository = repository
         self._contract_repository = contract_repository
+        self._masterdata = MasterDataValidator(repository.session)
 
     async def create_receipt(
         self,
@@ -53,6 +55,7 @@ class ReceiptService:
     ) -> BankReceiptResponse:
         self._require_finance(current_user)
         self._validate_receipt_type(payload.receipt_type)
+        await self._masterdata.customer(payload.customer_id)
 
         async def create(receipt_no: str) -> BankReceiptRow:
             async with UnitOfWork(self._repository.session):
@@ -118,6 +121,7 @@ class ReceiptService:
         receipt = await self._get_receipt(receipt_id)
         if receipt.status != "unclaimed":
             raise ValueError("只有待认领水单可以认领")
+        await self._masterdata.user(payload.sales_user_id)
         async with UnitOfWork(self._repository.session):
             await self._repository.add_claim(
                 receipt_id=receipt.id,

@@ -1,3 +1,4 @@
+import pytest
 from httpx import AsyncClient
 
 
@@ -253,3 +254,5 @@ async def test_finance_receipt_allocation_rejects_excess_amount_and_permissions(
 
     unauthorized_response = await api_client.get("/api/v1/finance/receipts")
     assert unauthorized_response.status_code == 401
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")

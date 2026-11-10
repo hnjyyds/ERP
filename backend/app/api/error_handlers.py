@@ -202,6 +202,8 @@ def domain_exception_definition(
         code = AppStatusCode.PERMISSION_DENIED
     elif class_name == "OrganizationReferenceNotFoundError":
         code = AppStatusCode.VALIDATION_ERROR
+    elif class_name == "MasterDataInactiveError":
+        code = AppStatusCode.CONFLICT
     elif "NotFound" in class_name:
         code = AppStatusCode.NOT_FOUND
     elif any(marker in class_name for marker in ("Taken", "InUse", "SelfDeactivate", "SelfDemote")):

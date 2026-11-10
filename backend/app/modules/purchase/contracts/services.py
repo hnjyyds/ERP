@@ -1,10 +1,10 @@
-from dataclasses import dataclass
 from datetime import timedelta
 from decimal import Decimal
 
 from app.db.uow import UnitOfWork
 from app.modules.followup.services import FollowupService
 from app.modules.masterdata.products.repositories import ProductAccessoryRow, ProductRepository
+from app.modules.masterdata.validation import MasterDataValidator
 from app.modules.purchase.contracts.cancellation import (
     cancel_purchase_contract,
     reissue_purchase_contract,
@@ -13,6 +13,7 @@ from app.modules.purchase.contracts.errors import (
     PermissionDeniedError,
     PurchaseContractNotFoundError,
 )
+from app.modules.purchase.contracts.generation_types import GeneratedLine, SourceContractLine
 from app.modules.purchase.contracts.repositories import (
     PurchaseContractRepository,
 )
@@ -32,10 +33,10 @@ from app.modules.purchase.contracts.schemas import (
     PurchaseContractResponse,
     PurchaseContractSubmit,
 )
+from app.modules.purchase.masterdata_refs import validate_purchase_document_references
 from app.modules.sales.contracts.repositories import (
     ExportContractLineRow,
     ExportContractRepository,
-    ExportContractRow,
 )
 from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.assignees import AssigneeValidator
@@ -45,29 +46,6 @@ from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.dashboard.notification_writer import notify
 from app.modules.system.numbering.generator import create_with_generated_code
-
-
-@dataclass(frozen=True)
-class _GeneratedLine:
-    product_id: str | None
-    product_code: str | None
-    product_name: str
-    specification: str | None
-    model: str | None
-    quantity: Decimal
-    unit: str
-    unit_price: Decimal
-    source_export_contract_id: str | None
-    source_export_contract_no: str | None
-    source_export_contract_line_id: str | None
-    remark: str | None
-
-
-@dataclass(frozen=True)
-class _SourceContractLine:
-    contract: ExportContractRow
-    line: ExportContractLineRow
-    resolved_product_id: str
 
 
 class PurchaseContractService:
@@ -89,6 +67,7 @@ class PurchaseContractService:
         self._auth_repository = auth_repository
         self._assignee_validator = AssigneeValidator(auth_repository)
         self._response_builder = PurchaseContractResponseBuilder(purchase_repository)
+        self._masterdata = MasterDataValidator(purchase_repository.session)
 
     async def create_contract(
         self,
@@ -97,6 +76,7 @@ class PurchaseContractService:
         payload: PurchaseContractCreate,
     ) -> PurchaseContractResponse:
         self._require(current_user, "purchase:contract:edit")
+        await validate_purchase_document_references(self._masterdata, payload)
         qc_user_id, qc_user_name = await self._resolve_qc_assignee(payload.qc_user_id)
 
         async def create_contract_row(code: str) -> PurchaseContractRow:
@@ -147,6 +127,13 @@ class PurchaseContractService:
         )
         if contract.approval_status not in {"draft", "rejected"}:
             raise ValueError("只有草稿或已驳回采购合同可以编辑")
+        existing_lines = await self._repository.list_lines(contract.id)
+        await validate_purchase_document_references(
+            self._masterdata,
+            payload,
+            existing_supplier_id=contract.supplier_id,
+            existing_product_ids={line.product_id for line in existing_lines if line.product_id},
+        )
         qc_user_id, qc_user_name = await self._resolve_qc_assignee(payload.qc_user_id)
         async with UnitOfWork(self._repository.session):
             updated = await self._repository.update_contract(
@@ -186,6 +173,9 @@ class PurchaseContractService:
     ) -> PurchaseContractResponse:
         self._require(current_user, "purchase:contract:edit")
         source_lines = await self._load_source_contract_lines(payload)
+        await self._masterdata.supplier(payload.supplier_id)
+        for source in source_lines:
+            await self._masterdata.product(source.resolved_product_id, allow_inactive=True)
         generated_lines = await self._generate_accessory_lines(
             source_lines=source_lines,
             unit_price=payload.unit_price,
@@ -434,7 +424,7 @@ class PurchaseContractService:
     async def _replace_generated_lines(
         self,
         contract_id: str,
-        lines: list[_GeneratedLine],
+        lines: list[GeneratedLine],
     ) -> PurchaseContractRow | None:
         await self._repository.delete_lines(contract_id)
         for line in lines:
@@ -536,8 +526,8 @@ class PurchaseContractService:
     async def _load_source_contract_lines(
         self,
         payload: PurchaseContractGenerateFromExportContracts,
-    ) -> list[_SourceContractLine]:
-        selected: list[_SourceContractLine] = []
+    ) -> list[SourceContractLine]:
+        selected: list[SourceContractLine] = []
         for source in payload.sources:
             contract = await self._export_contract_repository.get_contract(
                 source.export_contract_id
@@ -549,7 +539,7 @@ class PurchaseContractService:
             lines = await self._export_contract_repository.list_lines(contract.id)
             for line in lines:
                 selected.append(
-                    _SourceContractLine(
+                    SourceContractLine(
                         contract=contract,
                         line=line,
                         resolved_product_id=await self._resolve_source_product_id(line),
@@ -562,11 +552,11 @@ class PurchaseContractService:
     async def _generate_accessory_lines(
         self,
         *,
-        source_lines: list[_SourceContractLine],
+        source_lines: list[SourceContractLine],
         unit_price: Decimal,
-    ) -> list[_GeneratedLine]:
+    ) -> list[GeneratedLine]:
         aggregate: dict[tuple[str, str], Decimal] = {}
-        first_source: dict[tuple[str, str], _SourceContractLine] = {}
+        first_source: dict[tuple[str, str], SourceContractLine] = {}
         first_accessory: dict[tuple[str, str], ProductAccessoryRow] = {}
         for source in source_lines:
             accessories = await self._product_repository.list_accessories(
@@ -582,12 +572,12 @@ class PurchaseContractService:
                 )
                 first_source.setdefault(key, source)
                 first_accessory.setdefault(key, accessory)
-        generated: list[_GeneratedLine] = []
+        generated: list[GeneratedLine] = []
         for key, quantity in aggregate.items():
             source = first_source[key]
             accessory = first_accessory[key]
             generated.append(
-                _GeneratedLine(
+                GeneratedLine(
                     product_id=None,
                     product_code=source.line.product_code,
                     product_name=accessory.accessory_name,

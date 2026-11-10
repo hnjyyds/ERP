@@ -1,3 +1,4 @@
+import pytest
 from httpx import AsyncClient
 
 
@@ -320,3 +321,5 @@ async def test_shipment_endpoints_enforce_menu_permission(
     )
 
     assert response.status_code == 403
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")

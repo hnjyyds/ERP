@@ -113,3 +113,5 @@ async def test_document_party_service_rejects_invalid_party_type(
                     strict=False,
                 ),
             )
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")

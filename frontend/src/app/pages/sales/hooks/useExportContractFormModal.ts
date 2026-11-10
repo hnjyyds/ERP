@@ -57,15 +57,15 @@ export function useExportContractFormModal({
     [form.lines],
   )
 
-  const filteredProducts = useMemo(() => {
-    const normalizedSearch = productSearch.trim().toLocaleLowerCase()
-    if (!normalizedSearch) return options.products
-    return options.products.filter((product) =>
-      [product.code, product.cn_name, product.en_name, product.specification, product.model]
-        .filter(Boolean)
-        .some((value) => String(value).toLocaleLowerCase().includes(normalizedSearch)),
-    )
-  }, [productSearch, options.products])
+  useEffect(() => {
+    if (!productDrawerOpen) return
+    const timer = window.setTimeout(() => {
+      void options.loadProducts(productSearch)
+    }, 250)
+    return () => window.clearTimeout(timer)
+  }, [productDrawerOpen, productSearch, options.loadProducts])
+
+  const filteredProducts = options.products
 
   function applySalesUserToContractForm(userId?: string) {
     const user = userId ? options.assignableUsers.find((item) => item.id === userId) : null
@@ -78,10 +78,19 @@ export function useExportContractFormModal({
 
   function applyCustomerToContractForm(customerId?: string) {
     const customer = options.customers.find((item) => item.id === customerId)
+    if (!customer) {
+      setForm((current) =>
+        current.customer_id === (customerId ?? '')
+          ? current
+          : { ...current, customer_id: customerId ?? '', customer_name: '' },
+      )
+      return
+    }
+    options.pinCustomer(customer)
     setForm((current) => ({
       ...current,
-      customer_id: customer?.id ?? '',
-      customer_name: customer ? customerDisplayName(customer) : '',
+      customer_id: customer.id,
+      customer_name: customerDisplayName(customer),
     }))
   }
 
@@ -103,12 +112,12 @@ export function useExportContractFormModal({
   }
 
   function addPendingProducts() {
-    const additions = options.products
-      .filter(
-        (product) =>
-          pendingProductIds.includes(product.id) && !selectedProductIds.has(product.id),
-      )
-      .map(productToContractLine)
+    const picked = options.products.filter(
+      (product) =>
+        pendingProductIds.includes(product.id) && !selectedProductIds.has(product.id),
+    )
+    picked.forEach(options.pinProduct)
+    const additions = picked.map(productToContractLine)
     setForm((current) => ({ ...current, lines: [...current.lines, ...additions] }))
     closeProductDrawer()
   }

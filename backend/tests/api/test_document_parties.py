@@ -38,6 +38,7 @@ def _party_payload(code: str = "DP-CNEE-001") -> dict[str, object]:
 async def test_document_party_create_detail_search_update_and_lookup(
     api_client: AsyncClient,
     seeded_system: None,
+    reference_master_data: None,
 ) -> None:
     token = await _login_token(api_client)
 
@@ -132,6 +133,7 @@ async def test_document_party_create_detail_search_update_and_lookup(
 async def test_document_party_list_supports_pagination_and_summary(
     api_client: AsyncClient,
     seeded_system: None,
+    reference_master_data: None,
 ) -> None:
     token = await _login_token(api_client)
     headers = {"Authorization": f"Bearer {token}"}
@@ -183,6 +185,7 @@ async def test_document_party_list_supports_pagination_and_summary(
 async def test_document_party_rejects_duplicate_code(
     api_client: AsyncClient,
     seeded_system: None,
+    reference_master_data: None,
 ) -> None:
     token = await _login_token(api_client)
     headers = {"Authorization": f"Bearer {token}"}

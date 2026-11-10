@@ -92,6 +92,8 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
           suppliers={options.suppliers}
           assignableUsers={options.assignableUsers}
           products={options.products}
+          onSupplierSearch={options.loadSuppliers}
+          onProductSearch={options.loadProducts}
           loadingSuppliers={options.loadingSuppliers}
           loadingAssignableUsers={options.loadingAssignableUsers}
           loadingProducts={options.loadingProducts}

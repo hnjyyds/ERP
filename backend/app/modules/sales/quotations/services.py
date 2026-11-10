@@ -1,11 +1,13 @@
 from decimal import Decimal
 
 from app.db.uow import UnitOfWork
+from app.modules.masterdata.validation import MasterDataValidator
 from app.modules.purchase.inquiries.repositories import (
     PurchaseInquiryReferenceRow,
     PurchaseInquiryRepository,
 )
 from app.modules.sales.contracts.repositories import ExportContractRepository, ExportContractRow
+from app.modules.sales.masterdata_refs import validate_sales_document_references
 from app.modules.sales.quotations.exporters import (
     format_quantity,
     render_csv_export,
@@ -77,6 +79,7 @@ class ExportQuotationService:
         self._assignee_validator = AssigneeValidator(
             auth_repository or AuthRepository(repository.session)
         )
+        self._masterdata = MasterDataValidator(repository.session)
 
     async def create_quotation(
         self,
@@ -85,6 +88,7 @@ class ExportQuotationService:
         payload: ExportQuotationCreate,
     ) -> ExportQuotationResponse:
         self._require(current_user, "sales:quotation:edit")
+        await validate_sales_document_references(self._masterdata, payload)
 
         async def create_quotation_row(code: str) -> ExportQuotationRow:
             async with UnitOfWork(self._repository.session):
@@ -131,6 +135,13 @@ class ExportQuotationService:
         )
         if quotation.approval_status not in {"draft", "rejected"}:
             raise ValueError("只有草稿或已驳回的报价可以编辑")
+        existing_lines = await self._repository.list_lines(quotation.id)
+        await validate_sales_document_references(
+            self._masterdata,
+            payload,
+            existing=quotation,
+            existing_product_ids={line.product_id for line in existing_lines if line.product_id},
+        )
         async with UnitOfWork(self._repository.session):
             updated = await self._repository.update_quotation(
                 quotation_id=quotation.id,

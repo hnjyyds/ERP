@@ -1,3 +1,4 @@
+import pytest
 from httpx import AsyncClient
 
 
@@ -227,6 +228,7 @@ async def test_customer_contact_update_and_delete(
 async def test_customer_transactions_close_sales_chain_from_quotation_to_shipment(
     api_client: AsyncClient,
     seeded_system: None,
+    reference_master_data: None,
 ) -> None:
     token = await _login_token(api_client)
     reviewer_token = await _login_token(api_client, "admin", "admin123")
@@ -414,3 +416,38 @@ async def test_customer_endpoints_enforce_menu_permission(
     )
 
     assert response.status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_customer_search_reaches_records_beyond_first_page(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    for index in range(55):
+        response = await api_client.post(
+            "/api/v1/masterdata/customers",
+            headers=headers,
+            json=_customer_payload(code=f"MD-BULK-{index:03d}"),
+        )
+        assert response.status_code == 201
+
+    search_response = await api_client.get(
+        "/api/v1/masterdata/customers",
+        headers=headers,
+        params={"q": "MD-BULK", "limit": 20, "offset": 50},
+    )
+    assert search_response.status_code == 200
+    data = search_response.json()["data"]
+    assert data["total"] == 55
+    assert len(data["items"]) == 5
+    assert "MD-BULK-000" in [item["code"] for item in data["items"]]
+
+    last_page = await api_client.get(
+        "/api/v1/masterdata/customers",
+        headers=headers,
+        params={"q": "MD-BULK-054", "limit": 20, "offset": 0},
+    )
+    assert last_page.status_code == 200
+    assert last_page.json()["data"]["total"] == 1

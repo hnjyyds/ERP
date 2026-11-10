@@ -99,6 +99,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
             model={list}
             customers={options.customers}
             loadingCustomers={options.loadingCustomers}
+            onCustomerSearch={options.loadCustomers}
             onCreate={formModal.openCreateContractModal}
             onOpenDetail={list.stopAndOpenContractDetail}
           />
@@ -117,6 +118,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
           submitting={formModal.submitting}
           onClose={formModal.closeCreateContractModal}
           onSubmit={formModal.submitContract}
+          onCustomerSearch={options.loadCustomers}
           applyCustomerToContractForm={formModal.applyCustomerToContractForm}
           applySalesUserToContractForm={formModal.applySalesUserToContractForm}
           removeContractLine={formModal.removeContractLine}

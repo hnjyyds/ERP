@@ -7,7 +7,6 @@ import { t } from '@/app/appI18n'
 import { formatMoney } from '@/app/pages/appHelpers'
 import {
   assignableUserOptionLabel,
-  customerOptionLabel,
   renderAssignableUserOptions,
   renderCustomerOptions,
   type ExportContractFormState,
@@ -27,6 +26,7 @@ type ExportContractFormModalProps = {
   submitting: boolean
   onClose: () => void
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
+  onCustomerSearch: (query: string) => void
   applyCustomerToContractForm: (customerId: string | undefined) => void
   applySalesUserToContractForm: (userId: string | undefined) => void
   removeContractLine: (lineKey: string) => void
@@ -51,6 +51,7 @@ export function ExportContractFormModal({
   submitting,
   onClose,
   onSubmit,
+  onCustomerSearch,
   applyCustomerToContractForm,
   applySalesUserToContractForm,
   removeContractLine,
@@ -132,15 +133,22 @@ export function ExportContractFormModal({
                   value={form.customer_id || undefined}
                   placeholder={customers.length > 0 ? t('sales.contract.form.customerSelectPlaceholder') : t('sales.contract.form.customerMissing')}
                   optionLabelProp="label"
-                  filterOption={(input, option) => {
-                    const customer = customers.find((item) => item.id === option?.value)
-                    return customer
-                      ? customerOptionLabel(customer).toLocaleLowerCase().includes(input.toLocaleLowerCase())
-                      : false
-                  }}
+                  filterOption={false}
                   notFoundContent={loadingCustomers ? t('sales.contract.list.loadingCustomers') : t('sales.contract.list.noCustomers')}
+                  onSearch={onCustomerSearch}
                   onChange={applyCustomerToContractForm}
                 >
+                  {form.customer_id &&
+                  !customers.some((customer) => customer.id === form.customer_id) ? (
+                    <Select.Option
+                      key={form.customer_id}
+                      value={form.customer_id}
+                      label={form.customer_name || form.customer_id}
+                      disabled
+                    >
+                      {form.customer_name || form.customer_id}
+                    </Select.Option>
+                  ) : null}
                   {renderCustomerOptions(customers)}
                 </Select>
               </label>

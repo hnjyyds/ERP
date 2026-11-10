@@ -6,6 +6,8 @@
 
 import re
 
+from app.core.masterdata_messages import MASTER_DATA_SOURCE_MESSAGES
+
 # 静态文案：与 app/modules、app/api 中直接抛出的中文消息一一对应。
 SOURCE_MESSAGES: dict[str, str] = {
     # 通用
@@ -643,6 +645,7 @@ SOURCE_MESSAGES: dict[str, str] = {
     "提醒不存在": "Reminder not found",
     "快捷入口不存在": "Shortcut not found",
 }
+SOURCE_MESSAGES.update(MASTER_DATA_SOURCE_MESSAGES)
 
 # 角色名称英文，用于动态模板中的占位符。
 ROLE_NAMES: dict[str, str] = {

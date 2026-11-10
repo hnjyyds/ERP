@@ -1,3 +1,4 @@
+import pytest
 from httpx import AsyncClient
 
 
@@ -276,3 +277,5 @@ async def test_finance_tax_refund_rejects_excess_amount_and_permissions(
         },
     )
     assert excess_response.status_code == 422
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")

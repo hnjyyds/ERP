@@ -1,3 +1,4 @@
+import pytest
 from httpx import AsyncClient
 
 
@@ -354,3 +355,5 @@ async def test_finance_settlement_rejects_permissions_and_invalid_inputs(
         },
     )
     assert currency_response.status_code == 422
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")

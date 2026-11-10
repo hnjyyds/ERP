@@ -11,6 +11,7 @@ from app.modules.masterdata.document_parties.schemas import (
     DocumentPartyResponse,
     DocumentPartyUpdate,
 )
+from app.modules.masterdata.validation import MasterDataValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.schemas import CurrentUserResponse
 
@@ -32,6 +33,7 @@ class DocumentPartyService:
     ) -> None:
         self._repository = repository
         self._data_scope_resolver = data_scope_resolver
+        self._masterdata = MasterDataValidator(repository.session)
 
     async def create_party(
         self,
@@ -43,6 +45,7 @@ class DocumentPartyService:
         self._validate_party_type(payload.party_type)
         if await self._repository.get_party_by_code(payload.code) is not None:
             raise ValueError("单证资料编码已存在")
+        await self._masterdata.customer(payload.customer_id)
         async with UnitOfWork(self._repository.session):
             party = await self._repository.create_party(
                 code=payload.code,
@@ -75,7 +78,14 @@ class DocumentPartyService:
     ) -> DocumentPartyResponse:
         self._require(current_user, "masterdata:document_party:edit")
         self._validate_party_type(payload.party_type)
-        await self._get_accessible_party(current_user=current_user, party_id=party_id)
+        existing = await self._get_accessible_party(
+            current_user=current_user,
+            party_id=party_id,
+        )
+        await self._masterdata.customer(
+            payload.customer_id,
+            allow_inactive=payload.customer_id == existing.customer_id,
+        )
         async with UnitOfWork(self._repository.session):
             party = await self._repository.update_party(
                 party_id=party_id,

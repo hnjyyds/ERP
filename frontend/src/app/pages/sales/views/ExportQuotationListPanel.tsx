@@ -61,14 +61,23 @@ export function ExportQuotationListPanel({ model, onOpenForm }: Props) {
               loading={model.loadingCustomers}
               value={model.customerFilter || undefined}
               placeholder={t('sales.quotation.list.customerFilterPlaceholder')}
-              optionFilterProp="label"
+              filterOption={false}
               notFoundContent={
                 model.loadingCustomers
                   ? t('sales.quotation.list.loadingCustomers')
                   : t('sales.quotation.list.noCustomers')
               }
+              onSearch={(value) => {
+                void model.loadQuotationCustomerOptions(value)
+              }}
               onChange={(value) => model.setCustomerFilter(value ?? '')}
             >
+              {model.customerFilter &&
+              !model.customers.some((customer) => customer.id === model.customerFilter) ? (
+                <Select.Option key={model.customerFilter} value={model.customerFilter}>
+                  {model.customerFilter}
+                </Select.Option>
+              ) : null}
               {renderCustomerOptions(model.customers)}
             </Select>
           </label>

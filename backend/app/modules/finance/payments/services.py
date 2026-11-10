@@ -23,6 +23,7 @@ from app.modules.finance.payments.schemas import (
     SupplierInvoiceListResponse,
     SupplierInvoiceResponse,
 )
+from app.modules.masterdata.validation import MasterDataValidator
 from app.modules.purchase.invoice_notices.repositories import (
     PurchaseInvoiceNoticeRepository,
     PurchaseInvoiceNoticeRow,
@@ -56,6 +57,7 @@ class PaymentService:
         self._assignee_validator = AssigneeValidator(
             auth_repository or AuthRepository(repository.session)
         )
+        self._masterdata = MasterDataValidator(repository.session)
 
     async def create_supplier_invoice(
         self,
@@ -64,6 +66,7 @@ class PaymentService:
         payload: SupplierInvoiceCreate,
     ) -> SupplierInvoiceResponse:
         self._require_finance(current_user)
+        await self._masterdata.supplier(payload.supplier_id)
         source_notice = await self._resolve_purchase_invoice_notice(payload)
         purchase_invoice_notice_code = payload.purchase_invoice_notice_code
         if source_notice is not None:
@@ -119,6 +122,9 @@ class PaymentService:
         self._require_finance(current_user)
         self._validate_payment_type(payload.payment_type)
         invoice = await self._get_supplier_invoice(payload.supplier_invoice_id)
+        await self._masterdata.supplier(
+            getattr(invoice, "supplier_id", None), allow_inactive=True
+        )
         self._validate_payment_request_amount(invoice, payload.requested_amount, payload.currency)
         reviewer = await self._assignee_validator.require(
             user_id=payload.reviewer_id,

@@ -1,3 +1,4 @@
+import pytest
 from httpx import AsyncClient
 
 
@@ -205,3 +206,5 @@ async def test_outbound_plan_api_rejects_unauthorized_finance_and_invalid_payloa
         },
     )
     assert invalid_response.status_code == 422
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")

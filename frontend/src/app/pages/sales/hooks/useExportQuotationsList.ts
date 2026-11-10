@@ -146,10 +146,14 @@ export function useExportQuotationsList({ detailId, onNavigate }: Params) {
     }
   }
 
-  async function loadQuotationCustomerOptions() {
+  async function loadQuotationCustomerOptions(query = '') {
     setLoadingCustomers(true)
     try {
-      const result = await listCustomers()
+      const result = await listCustomers({
+        q: query.trim() || undefined,
+        status: 'active',
+        limit: 20,
+      })
       setCustomers(result.items)
     } catch (caught) {
       showError(caught, t('sales.quotation.list.customerLoadFailed'))
@@ -263,6 +267,7 @@ export function useExportQuotationsList({ detailId, onNavigate }: Params) {
     setCustomerFilter,
     customers,
     loadingCustomers,
+    loadQuotationCustomerOptions,
     history,
     purchaseReferences,
     sampleDeliveries,

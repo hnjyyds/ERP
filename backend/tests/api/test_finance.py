@@ -1,3 +1,4 @@
+import pytest
 from httpx import AsyncClient
 
 
@@ -287,3 +288,5 @@ async def test_finance_overview_requires_login_and_finance_permission(
         headers={"Authorization": f"Bearer {business_token}"},
     )
     assert forbidden_response.status_code == 403
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")

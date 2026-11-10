@@ -1,3 +1,4 @@
+import pytest
 from httpx import AsyncClient
 
 
@@ -310,3 +311,5 @@ async def test_finance_misc_fee_rejects_invalid_allocation_and_permissions(
 
     unauthorized_response = await api_client.get("/api/v1/finance/misc-fee-allocations/summary")
     assert unauthorized_response.status_code == 401
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")

@@ -294,3 +294,5 @@ async def test_purchase_inquiry_service_requires_permission(
                 current_user=_user_with_permissions(["purchase:inquiry:view"]),
                 payload=_inquiry_payload("PI-SVC-FORBIDDEN"),
             )
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")

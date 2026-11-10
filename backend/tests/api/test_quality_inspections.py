@@ -989,3 +989,5 @@ async def test_quality_task_reschedule_and_cancel_require_reasons_and_write_audi
     assert cancelled["status"] == "cancelled"
     assert cancelled["cancel_reason"] == "采购合同已终止"
     assert cancelled["events"][-1]["event_type"] == "cancelled"
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")

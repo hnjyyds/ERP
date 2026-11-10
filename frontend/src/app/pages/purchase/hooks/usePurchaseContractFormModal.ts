@@ -81,6 +81,7 @@ export function usePurchaseContractFormModal({ contract, options, setMessage, on
     }
     const product = options.products.find((item) => item.id === productId)
     if (!product) return
+    options.pinProduct(product)
     setForm((current) => ({
       ...current,
       product_id: product.id,
@@ -105,6 +106,7 @@ export function usePurchaseContractFormModal({ contract, options, setMessage, on
     }
     const supplier = options.suppliers.find((item) => item.id === supplierId)
     if (!supplier) return
+    options.pinSupplier(supplier)
     setForm((current) => ({
       ...current,
       supplier_id: supplier.id,

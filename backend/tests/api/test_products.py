@@ -289,6 +289,7 @@ async def test_product_import_rejects_invalid_file(
 async def test_product_customers_returns_related_contracts(
     api_client: AsyncClient,
     seeded_system: None,
+    reference_master_data: None,
 ) -> None:
     token = await _login_token(api_client)
     headers = {"Authorization": f"Bearer {token}"}
@@ -343,6 +344,7 @@ async def test_product_customers_returns_related_contracts(
 async def test_product_transactions_collect_sales_purchase_and_shipment(
     api_client: AsyncClient,
     seeded_system: None,
+    reference_master_data: None,
 ) -> None:
     token = await _login_token(api_client)
     reviewer_token = await _login_token(api_client, "admin", "admin123")
@@ -545,6 +547,7 @@ async def test_product_transactions_collect_sales_purchase_and_shipment(
 async def test_product_transactions_include_inventory_ledger_after_inbound_approval(
     api_client: AsyncClient,
     seeded_system: None,
+    reference_master_data: None,
 ) -> None:
     token = await _login_token(api_client)
     reviewer_token = await _login_token(api_client, "admin", "admin123")

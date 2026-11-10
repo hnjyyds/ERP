@@ -9,7 +9,6 @@ import { formatDate, formatMoney } from '@/app/pages/appHelpers'
 import { t } from '@/app/appI18n'
 
 import {
-  customerOptionLabel,
   exportContractStatusLabel,
   renderCustomerOptions,
   signatureStatusLabel,
@@ -20,6 +19,7 @@ type Props = {
   model: ExportContractsListModel
   customers: Customer[]
   loadingCustomers: boolean
+  onCustomerSearch: (query: string) => void
   onCreate: () => void
   onOpenDetail: (event: MouseEvent<HTMLElement>, contract: ExportContract) => void
 }
@@ -28,6 +28,7 @@ export function ExportContractListPanel({
   model,
   customers,
   loadingCustomers,
+  onCustomerSearch,
   onCreate,
   onOpenDetail,
 }: Props) {
@@ -77,14 +78,7 @@ export function ExportContractListPanel({
             value={model.customerFilter || undefined}
             placeholder={t('sales.contract.list.customerFilterPlaceholder')}
             optionLabelProp="label"
-            filterOption={(input, option) => {
-              const customer = customers.find((item) => item.id === option?.value)
-              return customer
-                ? customerOptionLabel(customer)
-                    .toLocaleLowerCase()
-                    .includes(input.toLocaleLowerCase())
-                : false
-            }}
+            filterOption={false}
             notFoundContent={
               loadingCustomers
                 ? t('sales.contract.list.loadingCustomers')
@@ -92,8 +86,15 @@ export function ExportContractListPanel({
             }
             placement="bottomRight"
             popupMatchSelectWidth={360}
+            onSearch={onCustomerSearch}
             onChange={(value) => model.setCustomerFilter(value ?? '')}
           >
+            {model.customerFilter &&
+            !customers.some((customer) => customer.id === model.customerFilter) ? (
+              <Select.Option key={model.customerFilter} value={model.customerFilter}>
+                {model.customerFilter}
+              </Select.Option>
+            ) : null}
             {renderCustomerOptions(customers)}
           </Select>
         </label>

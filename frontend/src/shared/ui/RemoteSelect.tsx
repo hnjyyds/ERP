@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { t } from '@/app/appI18n'
 
-type RemoteSelectOption = {
+export type RemoteSelectOption = {
   label: string
   value: string
   description?: string
@@ -17,6 +17,8 @@ type RemoteSelectProps = {
   disabled?: boolean
   fetchOptions: (query: string) => Promise<RemoteSelectOption[]>
   id?: string
+  /** 编辑旧单时回填已选值，避免停用数据搜不到时只显示 ID。 */
+  initialOption?: RemoteSelectOption
   onChange?: (value: string) => void
   placeholder?: string
   required?: boolean
@@ -32,6 +34,7 @@ export function RemoteSelect({
   disabled,
   fetchOptions,
   id,
+  initialOption,
   onChange,
   placeholder = t('common.remoteSelect.placeholder'),
   required,
@@ -64,11 +67,17 @@ export function RemoteSelect({
     }
   }, [loadOptions])
 
-  const selectedOption = value ? (options.find((option) => option.value === value) ?? null) : null
-  const resolvedOptions =
-    selectedOption && !options.some((option) => option.value === selectedOption.value)
-      ? [selectedOption, ...options]
+  const baseOptions =
+    initialOption && !options.some((option) => option.value === initialOption.value)
+      ? [initialOption, ...options]
       : options
+  const selectedOption = value
+    ? (baseOptions.find((option) => option.value === value) ?? null)
+    : null
+  const resolvedOptions =
+    selectedOption && !baseOptions.some((option) => option.value === selectedOption.value)
+      ? [selectedOption, ...baseOptions]
+      : baseOptions
 
   return (
     <Select

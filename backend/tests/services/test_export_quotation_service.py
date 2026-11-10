@@ -170,6 +170,7 @@ async def test_export_quotation_service_rejects_confirm_before_approval(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         service = _make_service(session)
         current_user = _user_with_permissions(
             ["sales:quotation:edit", "sales:quotation:view"],
@@ -195,6 +196,7 @@ async def test_export_quotation_service_filters_private_records_without_view_all
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
+        await seed_system_demo_data(session)
         service = _make_service(session)
         owner = _user_with_permissions(["sales:quotation:edit"], user_id="u-owner")
         await service.create_quotation(
@@ -437,3 +439,5 @@ async def test_export_quotation_service_blocks_reject_and_withdraw_after_contrac
                 quotation_id=quotation.id,
                 payload=ExportQuotationWithdraw(),
             )
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")
