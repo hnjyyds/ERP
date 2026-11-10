@@ -131,7 +131,7 @@ export function SampleDeliveryDetailPanel({
             </div>
             <div>
               <dt>{t('sample.delivery.field.quote')}</dt>
-              <dd>{selectedDelivery.quote_no ?? t('sample.delivery.panel.notLinked')}</dd>
+              <dd>{selectedDelivery.quotation_no ?? t('sample.delivery.panel.notLinked')}</dd>
             </div>
             <div>
               <dt>{t('sample.delivery.field.feeTotal')}</dt>
@@ -486,7 +486,7 @@ export function SampleDeliveryDetailPanel({
             columns={[
               {
                 title: t('sample.delivery.table.quote'),
-                dataIndex: 'quote_no',
+                dataIndex: 'quotation_no',
                 render: nullableText,
               },
               { title: t('sample.delivery.table.deliveryCode'), dataIndex: 'code' },

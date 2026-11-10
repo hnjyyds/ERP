@@ -50,15 +50,15 @@
 
 ## B. 前端
 
-- [ ] B1 服务端搜索 hooks：报价 / 打样单 / 样品登记
-- [ ] B2 打样页：三处 Select 改造、报价列与搜索、表单报价联动、详情展示报价与来源
-- [ ] B3 样品登记页：先抽 `views/SampleRecordFormModal.tsx`，再三处 Select 改造 + 来源展示
-- [ ] B4 寄样页：报价 Select、明细选样品登记并自动填充/展示留样、移除手填标识
-- [ ] B5 报价详情：打样区块 +「从该报价发起打样」+ 寄样按 ID
-- [ ] B6 `api/sample.ts`、`api/export.ts` 类型与函数同步
-- [ ] B7 中英文案补齐
-- [ ] B8 前端测试修正与新增，`--maxWorkers=2` 全绿；tsc + ESLint
-- [ ] B9 提交 B 并上报
+- [x] B1 服务端搜索 hooks：报价 / 打样单 / 样品登记
+- [x] B2 打样页：三处 Select 改造、报价列与搜索、表单报价联动、详情展示报价与来源
+- [x] B3 样品登记页：先抽 `views/SampleRecordFormModal.tsx`，再三处 Select 改造 + 来源展示
+- [x] B4 寄样页：报价 Select、明细选样品登记并自动填充/展示留样、移除手填标识
+- [x] B5 报价详情：打样区块 +「从该报价发起打样」+ 寄样按 ID
+- [x] B6 `api/sample.ts`、`api/export.ts` 类型与函数同步
+- [x] B7 中英文案补齐
+- [x] B8 前端测试修正与新增，`--maxWorkers=2` 全绿；tsc + ESLint
+- [x] B9 提交 B 并上报
 
 ## C. 收尾
 

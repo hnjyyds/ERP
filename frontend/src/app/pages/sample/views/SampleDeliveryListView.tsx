@@ -171,7 +171,7 @@ export function SampleDeliveryListView({
             render: (_, record) =>
               `${record.express_company} / ${record.tracking_no ?? t('sample.delivery.panel.notFilled')}`,
           },
-          { title: t('sample.delivery.table.quote'), dataIndex: 'quote_no', render: nullableText },
+          { title: t('sample.delivery.table.quote'), dataIndex: 'quotation_no', render: nullableText },
           {
             title: t('sample.delivery.table.fee'),
             dataIndex: 'fee_total',

@@ -14,6 +14,7 @@ import type {
 } from '@/api'
 
 import { exportQuotationStatusLabel, freightMethodLabel, sampleDeliveryStatusLabel } from '../exportQuotationHelpers'
+import { QuotationSampleRequestsSection } from './QuotationSampleRequestsSection'
 import type { useExportQuotationWorkflow } from '../hooks/useExportQuotationWorkflow'
 
 type Props = {
@@ -331,6 +332,8 @@ export function ExportQuotationDetailPanel({
               ) : null}
             </tbody>
           </table>
+
+          <QuotationSampleRequestsSection quotation={quotation} />
 
           <div className="accessory-heading">
             <strong>{t('sales.quotation.detail.sampleTitle')}</strong>

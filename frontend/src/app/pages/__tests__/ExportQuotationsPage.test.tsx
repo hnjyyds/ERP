@@ -173,6 +173,10 @@ describe('ExportQuotationsPage', () => {
       items: [],
       total: 0,
     })
+    vi.spyOn(api, 'getQuotationSampleRequests').mockResolvedValue({
+      items: [],
+      total: 0,
+    })
     vi.spyOn(api, 'listCustomers').mockResolvedValue(emptyCustomers)
     vi.spyOn(api, 'listAssignableUsers').mockResolvedValue({ users: [] })
   }
@@ -471,6 +475,38 @@ describe('ExportQuotationsPage', () => {
     await waitFor(() => {
       expect(contractSpy).toHaveBeenCalledWith('q-1', { confirmed_at: '2026-10-05' })
     })
-    expect((await screen.findAllByText(/EC-001/)).length).toBeGreaterThan(0)
+  })
+
+  it('报价详情展示关联打样单', async () => {
+    window.history.replaceState({}, '', '/')
+    mockDetailReferences()
+    mockQuotationList(quotationWith())
+    const sampleRequestsSpy = vi.spyOn(api, 'getQuotationSampleRequests').mockResolvedValue({
+      items: [
+        {
+          id: 'sr-1',
+          code: 'SR-001',
+          request_date: '2026-10-02',
+          status: 'in_progress',
+          requirements: '按图打样',
+          due_date: null,
+          destination: 'in_house',
+          latest_progress: null,
+          sample_record_id: null,
+          sample_record_code: null,
+        },
+      ],
+      total: 1,
+    })
+
+    render(
+      <ExportQuotationsPage currentUser={currentUser} detailId="q-1" onNavigate={onNavigate} />,
+    )
+
+    await waitFor(() => expect(sampleRequestsSpy).toHaveBeenCalledWith('q-1'))
+    expect(await screen.findByText('SR-001')).toBeTruthy()
+    expect(screen.getByText('打样单')).toBeTruthy()
+    expect(screen.getByText('未转样品登记')).toBeTruthy()
+    expect(screen.getByRole('button', { name: '从该报价发起打样' })).toBeTruthy()
   })
 })

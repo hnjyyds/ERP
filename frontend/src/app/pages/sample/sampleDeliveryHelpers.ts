@@ -50,8 +50,8 @@ export type SampleDeliveryFormState = {
   recipient_address: string
   express_company: string
   tracking_no: string
-  quote_id: string
-  quote_no: string
+  quotation_id: string
+  quotation_no: string
   remark: string
   sample_record_id: string
   sample_code: string
@@ -118,8 +118,8 @@ export function initialSampleDeliveryForm(): SampleDeliveryFormState {
     recipient_address: '',
     express_company: 'DHL',
     tracking_no: '',
-    quote_id: '',
-    quote_no: '',
+    quotation_id: '',
+    quotation_no: '',
     remark: '',
     sample_record_id: '',
     sample_code: '',
@@ -179,8 +179,8 @@ export function sampleDeliveryToForm(delivery: SampleDelivery): SampleDeliveryFo
     recipient_address: delivery.recipient_address,
     express_company: delivery.express_company,
     tracking_no: delivery.tracking_no ?? '',
-    quote_id: delivery.quote_id ?? '',
-    quote_no: delivery.quote_no ?? '',
+    quotation_id: delivery.quotation_id ?? '',
+    quotation_no: delivery.quotation_no ?? '',
     remark: delivery.remark ?? '',
     sample_record_id: line?.sample_record_id ?? '',
     sample_code: line?.sample_code ?? '',
@@ -213,19 +213,13 @@ export function sampleDeliveryPayload(form: SampleDeliveryFormState): SampleDeli
     recipient_address: form.recipient_address.trim(),
     express_company: form.express_company.trim(),
     tracking_no: emptyToNull(form.tracking_no),
-    quote_id: emptyToNull(form.quote_id),
-    quote_no: emptyToNull(form.quote_no),
+    quotation_id: emptyToNull(form.quotation_id),
+    quotation_no: emptyToNull(form.quotation_no),
     remark: emptyToNull(form.remark),
     lines: [
       {
         sample_record_id: form.sample_record_id.trim(),
-        sample_code: emptyToNull(form.sample_code),
-        sample_type: form.sample_type,
-        product_id: emptyToNull(form.product_id),
-        product_code: emptyToNull(form.product_code),
-        product_name: form.product_name.trim(),
         quantity: form.quantity,
-        unit: form.unit.trim(),
         remark: emptyToNull(form.line_remark),
       },
     ],

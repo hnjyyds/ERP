@@ -15,7 +15,7 @@ import {
 } from '@/api'
 import { sampleRequestPath, moduleDetailPath } from '@/app/routes'
 import { t } from '@/app/appI18n'
-import { FormSelect, ListPageShell, Metric } from '@/shared/ui'
+import { FormSelect, ListPageShell, Metric, RemoteSelect } from '@/shared/ui'
 import { showError } from '@/shared/errors'
 import { useFormModal } from '@/shared/useFormModal'
 import { useTablePagination } from '@/shared/useTablePagination'
@@ -39,6 +39,7 @@ import {
   type SampleFeeFormState,
 } from '@/app/pages/sample/sampleRequestHelpers'
 import { SampleRequestDetailPanel } from '@/app/pages/sample/views/SampleRequestDetailPanel'
+import { useSampleFormOptions } from '@/app/pages/sample/hooks/useSampleFormOptions'
 
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
 
@@ -71,6 +72,8 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
     initialSampleRecordForm(),
   )
   const [summary, setSummary] = useState({ in_progress_count: 0 })
+  const { fetchCustomers, fetchProducts, fetchSuppliers, fetchQuotations, getCustomer, getProduct, getSupplier, getQuotation } =
+    useSampleFormOptions()
   const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination()
 
   const selectedRequest = useMemo(() => {
@@ -140,6 +143,70 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
 
   function openCreateRequest() {
     openRequestModal()
+  }
+
+  function applyQuotationToForm(quotationId: string) {
+    if (!quotationId) {
+      setForm({ ...form, quotation_id: '', quotation_no: '' })
+      return
+    }
+    const quotation = getQuotation(quotationId)
+    if (!quotation) {
+      setForm({ ...form, quotation_id: quotationId })
+      return
+    }
+    const firstLine = quotation.lines[0]
+    setForm({
+      ...form,
+      quotation_id: quotation.id,
+      quotation_no: quotation.code,
+      customer_id: quotation.customer_id ?? '',
+      customer_name: quotation.customer_name,
+      product_id: firstLine?.product_id ?? '',
+      product_code: firstLine?.product_code ?? '',
+      product_name: firstLine?.product_name ?? '',
+    })
+  }
+
+  function applyCustomerToForm(customerId: string) {
+    if (!customerId) {
+      setForm({ ...form, customer_id: '', customer_name: '' })
+      return
+    }
+    const customer = getCustomer(customerId)
+    setForm({
+      ...form,
+      customer_id: customerId,
+      customer_name: customer?.cn_name || customer?.en_name || customer?.code || form.customer_name,
+    })
+  }
+
+  function applyProductToForm(productId: string) {
+    if (!productId) {
+      setForm({ ...form, product_id: '', product_code: '', product_name: '' })
+      return
+    }
+    const product = getProduct(productId)
+    setForm({
+      ...form,
+      product_id: productId,
+      product_code: product?.code ?? '',
+      product_name: product?.cn_name || product?.en_name || form.product_name,
+    })
+  }
+
+  function applySupplierToForm(supplierId: string) {
+    if (!supplierId) {
+      setForm({ ...form, supplier_id: '', supplier_name: '' })
+      return
+    }
+    const supplier = getSupplier(supplierId)
+    setForm({
+      ...form,
+      supplier_id: supplierId,
+      supplier_name:
+        supplier?.cn_name || supplier?.en_name || supplier?.code || form.supplier_name,
+    })
   }
 
   async function submitRequest(event: FormEvent<HTMLFormElement>) {
@@ -382,6 +449,11 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                     </button>
                   ),
                 },
+                {
+                  title: t('sample.request.table.quotation'),
+                  dataIndex: 'quotation_no',
+                  render: nullableText,
+                },
                 { title: t('sample.request.table.customer'), dataIndex: 'customer_name' },
                 {
                   title: t('sample.request.table.product'),
@@ -473,6 +545,22 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
               </FormSelect>
             </label>
             <label>
+              {t('sample.request.field.quotation')}
+              <RemoteSelect
+                allowClear
+                ariaLabel={t('sample.request.field.quotation')}
+                fetchOptions={fetchQuotations}
+                placeholder={t('common.remoteSelect.placeholder')}
+                value={form.quotation_id}
+                initialOption={
+                  form.quotation_id && form.quotation_no
+                    ? { value: form.quotation_id, label: form.quotation_no }
+                    : undefined
+                }
+                onChange={applyQuotationToForm}
+              />
+            </label>
+            <label>
               {t('sample.request.field.requestDate')}
               <Input
                 type="date"
@@ -489,38 +577,54 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
               />
             </label>
             <label>
-              {t('sample.request.field.customerId')}
-              <Input
+              {t('sample.request.field.customer')}
+              <RemoteSelect
+                allowClear
+                ariaLabel={t('sample.request.field.customer')}
+                fetchOptions={fetchCustomers}
+                placeholder={t('common.remoteSelect.placeholder')}
                 value={form.customer_id}
-                onChange={(event) => setForm({ ...form, customer_id: event.target.value })}
+                initialOption={
+                  form.customer_id && form.customer_name
+                    ? { value: form.customer_id, label: form.customer_name }
+                    : undefined
+                }
+                onChange={applyCustomerToForm}
               />
             </label>
             <label>
-              {t('sample.request.field.customerName')}
-              <Input
-                value={form.customer_name}
-                onChange={(event) => setForm({ ...form, customer_name: event.target.value })}
+              {t('sample.request.field.product')}
+              <RemoteSelect
+                allowClear
+                ariaLabel={t('sample.request.field.product')}
+                fetchOptions={fetchProducts}
+                placeholder={t('common.remoteSelect.placeholder')}
+                value={form.product_id}
+                initialOption={
+                  form.product_id
+                    ? {
+                        value: form.product_id,
+                        label: [form.product_code, form.product_name].filter(Boolean).join(' / '),
+                      }
+                    : undefined
+                }
+                onChange={applyProductToForm}
               />
             </label>
             <label>
-              {t('sample.request.field.productCode')}
-              <Input
-                value={form.product_code}
-                onChange={(event) => setForm({ ...form, product_code: event.target.value })}
-              />
-            </label>
-            <label>
-              {t('sample.request.field.productName')}
-              <Input
-                value={form.product_name}
-                onChange={(event) => setForm({ ...form, product_name: event.target.value })}
-              />
-            </label>
-            <label>
-              {t('sample.request.field.supplierName')}
-              <Input
-                value={form.supplier_name}
-                onChange={(event) => setForm({ ...form, supplier_name: event.target.value })}
+              {t('sample.request.field.supplier')}
+              <RemoteSelect
+                allowClear
+                ariaLabel={t('sample.request.field.supplier')}
+                fetchOptions={fetchSuppliers}
+                placeholder={t('common.remoteSelect.placeholder')}
+                value={form.supplier_id}
+                initialOption={
+                  form.supplier_id && form.supplier_name
+                    ? { value: form.supplier_id, label: form.supplier_name }
+                    : undefined
+                }
+                onChange={applySupplierToForm}
               />
             </label>
             <label htmlFor="sample-request-destination">

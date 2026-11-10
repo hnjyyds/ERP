@@ -1,4 +1,4 @@
-import { Alert, Button, Input, Modal, Table } from 'antd'
+import { Alert, Button, Input, Table } from 'antd'
 import { ArrowLeft, Images, LayoutDashboard, Plus, Search } from 'lucide-react'
 import type { FormEvent, MouseEvent } from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -10,14 +10,11 @@ import {
   importSampleRecords,
   exportSampleRecords,
   type SampleRecord,
-  type SampleRecordCreatePayload,
   type SampleRecordImage,
   type SampleRecordImagePayload,
   type SampleRecordListSummary,
   type SampleRecordStockEvent,
   type SampleRecordStockEventPayload,
-  SampleRequest,
-  SampleRequestToRecordPayload,
 } from '@/api'
 import { sampleRecordPath, moduleDetailPath } from '@/app/routes'
 import { t } from '@/app/appI18n'
@@ -39,36 +36,12 @@ import {
   type RoutedDetailPageProps,
   emptyToNull,
 } from '@/app/pages/appHelpers'
-
-type SampleRecordFormState = {
-  code: string
-  sample_type: string
-  status: string
-  quantity: string
-  received_at: string
-  submitted_at: string
-  product_id: string
-  product_code: string
-  product_name: string
-  customer_id: string
-  customer_name: string
-  supplier_id: string
-  supplier_name: string
-  customer_sku: string
-  supplier_sku: string
-  purchase_contract_id: string
-  purchase_contract_no: string
-  unit: string
-  source_type: string
-  source_id: string
-  source_code: string
-  source_note: string
-  description: string
-  image_file_id: string
-  image_filename: string
-  image_url: string
-  image_caption: string
-}
+import {
+  initialSampleRecordForm,
+  sampleRecordPayload,
+  type SampleRecordFormState,
+} from './sampleRecordFormHelpers'
+import { SampleRecordFormModal } from './views/SampleRecordFormModal'
 
 type SampleRecordImageFormState = {
   file_id: string
@@ -85,67 +58,6 @@ type SampleRecordStockFormState = {
   delivery_no: string
   recipient: string
   note: string
-}
-
-function initialSampleRecordForm(): SampleRecordFormState {
-  return {
-    code: '',
-    sample_type: 'confirm_sample',
-    status: 'registered',
-    quantity: '1',
-    received_at: todayInputValue(),
-    submitted_at: todayInputValue(),
-    product_id: '',
-    product_code: '',
-    product_name: '',
-    customer_id: '',
-    customer_name: '',
-    supplier_id: '',
-    supplier_name: '',
-    customer_sku: '',
-    supplier_sku: '',
-    purchase_contract_id: '',
-    purchase_contract_no: '',
-    unit: 'pcs',
-    source_type: 'sample_request',
-    source_id: '',
-    source_code: '',
-    source_note: '',
-    description: '',
-    image_file_id: '',
-    image_filename: '',
-    image_url: '',
-    image_caption: '',
-  }
-}
-
-function _sampleRecordFormFromRequest(
-  request: SampleRequest,
-  current: SampleRecordFormState,
-): SampleRecordFormState {
-  const line = request.lines[0]
-  return {
-    ...current,
-    code: `SM-${request.code}`,
-    sample_type: 'confirm_sample',
-    status: 'registered',
-    quantity: line?.quantity ?? current.quantity,
-    received_at: todayInputValue(),
-    submitted_at: todayInputValue(),
-    product_id: line?.product_id ?? request.product_id ?? current.product_id,
-    product_code: line?.product_code ?? request.product_code ?? current.product_code,
-    product_name: line?.product_name ?? request.product_name ?? current.product_name,
-    customer_id: request.customer_id ?? current.customer_id,
-    customer_name: request.customer_name,
-    supplier_id: request.supplier_id ?? current.supplier_id,
-    supplier_name: request.supplier_name ?? current.supplier_name,
-    unit: line?.unit ?? current.unit,
-    source_type: 'sample_request',
-    source_id: request.id,
-    source_code: request.code,
-    source_note: request.requirements,
-    description: line?.requirement ?? request.requirements,
-  }
 }
 
 function initialSampleRecordImageForm(): SampleRecordImageFormState {
@@ -166,73 +78,6 @@ function initialSampleRecordStockForm(): SampleRecordStockFormState {
     delivery_no: '',
     recipient: '',
     note: '',
-  }
-}
-
-function _sampleRequestToRecordPayload(form: SampleRecordFormState): SampleRequestToRecordPayload {
-  const images: SampleRecordImagePayload[] = []
-  if (form.image_file_id.trim() && form.image_filename.trim() && form.image_url.trim()) {
-    images.push({
-      file_id: form.image_file_id.trim(),
-      filename: form.image_filename.trim(),
-      url: form.image_url.trim(),
-      caption: emptyToNull(form.image_caption),
-      is_primary: true,
-    })
-  }
-
-  return {
-    sample_type: form.sample_type,
-    status: form.status,
-    received_at: form.received_at,
-    submitted_at: emptyToNull(form.submitted_at),
-    quantity: form.quantity,
-    unit: form.unit.trim(),
-    customer_sku: emptyToNull(form.customer_sku),
-    supplier_sku: emptyToNull(form.supplier_sku),
-    purchase_contract_id: emptyToNull(form.purchase_contract_id),
-    purchase_contract_no: emptyToNull(form.purchase_contract_no),
-    description: emptyToNull(form.description),
-    images,
-  }
-}
-
-function sampleRecordPayload(form: SampleRecordFormState): SampleRecordCreatePayload {
-  const images: SampleRecordImagePayload[] = []
-  if (form.image_file_id.trim() && form.image_filename.trim() && form.image_url.trim()) {
-    images.push({
-      file_id: form.image_file_id.trim(),
-      filename: form.image_filename.trim(),
-      url: form.image_url.trim(),
-      caption: emptyToNull(form.image_caption),
-      is_primary: true,
-    })
-  }
-
-  return {
-    sample_type: form.sample_type,
-    status: form.status,
-    product_id: emptyToNull(form.product_id),
-    product_code: emptyToNull(form.product_code),
-    product_name: form.product_name.trim(),
-    customer_id: emptyToNull(form.customer_id),
-    customer_name: emptyToNull(form.customer_name),
-    supplier_id: emptyToNull(form.supplier_id),
-    supplier_name: emptyToNull(form.supplier_name),
-    customer_sku: emptyToNull(form.customer_sku),
-    supplier_sku: emptyToNull(form.supplier_sku),
-    purchase_contract_id: emptyToNull(form.purchase_contract_id),
-    purchase_contract_no: emptyToNull(form.purchase_contract_no),
-    source_type: emptyToNull(form.source_type),
-    source_id: emptyToNull(form.source_id),
-    source_code: emptyToNull(form.source_code),
-    source_note: emptyToNull(form.source_note),
-    received_at: form.received_at,
-    submitted_at: emptyToNull(form.submitted_at),
-    quantity: form.quantity,
-    unit: form.unit.trim(),
-    description: emptyToNull(form.description),
-    images,
   }
 }
 
@@ -293,6 +138,11 @@ function sampleRecordTypeLabel(value: string): string {
 
 function sampleRecordStatusLabel(value: string): string {
   const option = sampleRecordStatusOptions.find((item) => item.value === value)
+  return option ? t(option.labelKey) : value
+}
+
+function sampleSourceTypeLabel(value: string): string {
+  const option = sampleSourceTypeOptions.find((item) => item.value === value)
   return option ? t(option.labelKey) : value
 }
 
@@ -653,6 +503,16 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                   ),
                 },
                 { title: t('sample.record.table.type'), dataIndex: 'sample_type', render: sampleRecordTypeLabel },
+                {
+                  title: t('sample.record.table.sourceType'),
+                  dataIndex: 'source_type',
+                  render: sampleSourceTypeLabel,
+                },
+                {
+                  title: t('sample.record.table.sourceCode'),
+                  dataIndex: 'source_code',
+                  render: nullableText,
+                },
                 { title: t('sample.record.table.product'), dataIndex: 'product_name' },
                 { title: t('sample.record.table.customerSku'), dataIndex: 'customer_sku', render: nullableText },
                 { title: t('sample.record.table.supplierSku'), dataIndex: 'supplier_sku', render: nullableText },
@@ -697,219 +557,15 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
           </ListPageShell>
         ) : null}
 
-        <Modal
-          centered
-          footer={null}
+        <SampleRecordFormModal
           open={recordModalOpen}
-          title={t('sample.record.modal.createTitle')}
-          width={1040}
-          onCancel={() => setRecordModalOpen(false)}
-        >
-          <form className="record-form entity-modal-form sample-modal-form" onSubmit={submitRecord}>
-            <label>
-              {t('sample.record.field.code')}
-              <Input
-                readOnly
-                value={form.code}
-                placeholder={t('sample.record.form.codeAutoGenerated')}
-              />
-            </label>
-            <label htmlFor="sample-record-type">
-              {t('sample.record.field.sampleType')}
-              <FormSelect
-                id="sample-record-type"
-                value={form.sample_type}
-                onChange={(event) => setForm({ ...form, sample_type: event.target.value })}
-              >
-                {sampleRecordTypeOptions.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {t(item.labelKey)}
-                  </option>
-                ))}
-              </FormSelect>
-            </label>
-            <label htmlFor="sample-record-status">
-              {t('sample.record.field.status')}
-              <FormSelect
-                id="sample-record-status"
-                value={form.status}
-                onChange={(event) => setForm({ ...form, status: event.target.value })}
-              >
-                {sampleRecordStatusOptions.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {t(item.labelKey)}
-                  </option>
-                ))}
-              </FormSelect>
-            </label>
-            <label>
-              {t('sample.record.field.receivedQuantity')}
-              <Input
-                type="number"
-                min="0.01"
-                step="0.01"
-                value={form.quantity}
-                onChange={(event) => setForm({ ...form, quantity: event.target.value })}
-              />
-            </label>
-            <label>
-              {t('sample.record.field.receivedAt')}
-              <Input
-                type="date"
-                value={form.received_at}
-                onChange={(event) => setForm({ ...form, received_at: event.target.value })}
-              />
-            </label>
-            <label>
-              {t('sample.record.field.submittedAt')}
-              <Input
-                type="date"
-                value={form.submitted_at}
-                onChange={(event) => setForm({ ...form, submitted_at: event.target.value })}
-              />
-            </label>
-            <label>
-              {t('sample.record.field.productCode')}
-              <Input
-                value={form.product_code}
-                onChange={(event) => setForm({ ...form, product_code: event.target.value })}
-              />
-            </label>
-            <label>
-              {t('sample.record.field.productName')}
-              <Input
-                value={form.product_name}
-                onChange={(event) => setForm({ ...form, product_name: event.target.value })}
-              />
-            </label>
-            <label>
-              {t('sample.record.field.customerSku')}
-              <Input
-                value={form.customer_sku}
-                onChange={(event) => setForm({ ...form, customer_sku: event.target.value })}
-              />
-            </label>
-            <label>
-              {t('sample.record.field.supplierSku')}
-              <Input
-                value={form.supplier_sku}
-                onChange={(event) => setForm({ ...form, supplier_sku: event.target.value })}
-              />
-            </label>
-            <label>
-              {t('sample.record.field.customerName')}
-              <Input
-                value={form.customer_name}
-                onChange={(event) => setForm({ ...form, customer_name: event.target.value })}
-              />
-            </label>
-            <label>
-              {t('sample.record.field.supplierName')}
-              <Input
-                value={form.supplier_name}
-                onChange={(event) => setForm({ ...form, supplier_name: event.target.value })}
-              />
-            </label>
-            <label>
-              {t('sample.record.field.purchaseContractNo')}
-              <Input
-                value={form.purchase_contract_no}
-                onChange={(event) =>
-                  setForm({
-                    ...form,
-                    purchase_contract_no: event.target.value,
-                    purchase_contract_id: event.target.value,
-                  })
-                }
-              />
-            </label>
-            <label>
-              {t('sample.record.field.unit')}
-              <Input
-                value={form.unit}
-                onChange={(event) => setForm({ ...form, unit: event.target.value })}
-              />
-            </label>
-            <label htmlFor="sample-record-source-type">
-              {t('sample.record.field.sourceType')}
-              <FormSelect
-                id="sample-record-source-type"
-                value={form.source_type}
-                onChange={(event) => setForm({ ...form, source_type: event.target.value })}
-              >
-                {sampleSourceTypeOptions.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {t(item.labelKey)}
-                  </option>
-                ))}
-              </FormSelect>
-            </label>
-            <label>
-              {t('sample.record.field.sourceCode')}
-              <Input
-                value={form.source_code}
-                onChange={(event) => setForm({ ...form, source_code: event.target.value })}
-              />
-            </label>
-            <label>
-              {t('sample.record.field.description')}
-              <Input.TextArea
-                rows={3}
-                value={form.description}
-                onChange={(event) => setForm({ ...form, description: event.target.value })}
-              />
-            </label>
-            <div className="form-divider">{t('sample.record.modal.imageSection')}</div>
-            <label>
-              {t('sample.record.field.imageFileId')}
-              <Input
-                value={form.image_file_id}
-                onChange={(event) => setForm({ ...form, image_file_id: event.target.value })}
-              />
-            </label>
-            <label>
-              {t('sample.record.field.imageFilename')}
-              <Input
-                value={form.image_filename}
-                onChange={(event) => setForm({ ...form, image_filename: event.target.value })}
-              />
-            </label>
-            <label>
-              {t('sample.record.field.imageUrl')}
-              <Input
-                value={form.image_url}
-                onChange={(event) => setForm({ ...form, image_url: event.target.value })}
-              />
-            </label>
-            <label>
-              {t('sample.record.field.imageCaption')}
-              <Input
-                value={form.image_caption}
-                onChange={(event) => setForm({ ...form, image_caption: event.target.value })}
-              />
-            </label>
-            <div className="modal-actions">
-              <button
-                className="secondary-inline"
-                type="button"
-                onClick={() => setRecordModalOpen(false)}
-              >
-                {t('sample.record.action.cancel')}
-              </button>
-              <button
-                className="secondary-inline"
-                disabled={submitting}
-                type="button"
-                onClick={() => void submitRecordImport()}
-              >
-                {t('sample.record.action.importFromForm')}
-              </button>
-              <button className="inline-submit" disabled={submitting} type="submit">
-                {t('sample.record.action.create')}
-              </button>
-            </div>
-          </form>
-        </Modal>
+          form={form}
+          submitting={submitting}
+          onFormChange={setForm}
+          onClose={() => setRecordModalOpen(false)}
+          onSubmit={submitRecord}
+          onImport={() => void submitRecordImport()}
+        />
 
         {detailId ? (
           <section className="workspace-panel detail-panel product-detail-panel">
@@ -956,6 +612,18 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                   <div>
                     <dt>{t('sample.record.field.purchaseContract')}</dt>
                     <dd>{selectedRecord.purchase_contract_no ?? '-'}</dd>
+                  </div>
+                  <div>
+                    <dt>{t('sample.record.field.sourceType')}</dt>
+                    <dd>
+                      {selectedRecord.source_type
+                        ? sampleSourceTypeLabel(selectedRecord.source_type)
+                        : '-'}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>{t('sample.record.field.sourceCode')}</dt>
+                    <dd>{selectedRecord.source_code ?? '-'}</dd>
                   </div>
                   <div>
                     <dt>{t('sample.record.field.receivedSubmitted')}</dt>

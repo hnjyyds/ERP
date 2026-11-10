@@ -94,6 +94,12 @@ export function SampleRequestDetailPanel({
               <dt>{t('sample.request.field.code')}</dt>
               <dd>{selectedRequest.code}</dd>
             </div>
+            {selectedRequest.quotation_no ? (
+              <div>
+                <dt>{t('sample.request.field.quotation')}</dt>
+                <dd>{selectedRequest.quotation_no}</dd>
+              </div>
+            ) : null}
             <div>
               <dt>{t('sample.request.field.customerProduct')}</dt>
               <dd>

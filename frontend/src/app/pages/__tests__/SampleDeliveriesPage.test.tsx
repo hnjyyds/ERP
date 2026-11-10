@@ -35,8 +35,8 @@ const delivery = {
   recipient_address: '宁波',
   express_company: 'DHL',
   tracking_no: null,
-  quote_no: null,
-  quote_id: null,
+  quotation_no: null,
+  quotation_id: null,
   fee_total: '0',
   fees: [],
   reviewer_id: null,
@@ -77,6 +77,12 @@ describe('SampleDeliveriesPage', () => {
     vi.spyOn(api, 'getSampleDeliveryStatistics').mockResolvedValue(
       emptyDeliveryStatistics as never,
     )
+    vi.spyOn(api, 'listSampleRecords').mockResolvedValue({ items: [], total: 0 } as never)
+    vi.spyOn(api, 'listExportQuotations').mockResolvedValue({
+      items: [],
+      total: 0,
+      summary: { submitted_count: 0, approved_count: 0, total_amount: '0', currency: null },
+    } as never)
   })
 
   it('renders without crashing', () => {
@@ -177,6 +183,21 @@ describe('SampleDeliveriesPage', () => {
   it('新增寄样单提交表头与明细并提示成功', async () => {
     const created = { ...delivery, id: 'sd-2', code: 'SD-002' }
     vi.spyOn(api, 'listSampleDeliveries').mockResolvedValue({ items: [delivery], total: 1 })
+    vi.spyOn(api, 'listSampleRecords').mockResolvedValue({
+      items: [
+        {
+          id: 'rec-1',
+          code: 'S-001',
+          sample_type: 'confirm_sample',
+          product_id: 'p-1',
+          product_code: 'P-1',
+          product_name: '样品杯',
+          unit: 'pcs',
+          customer_id: 'c-1',
+        },
+      ],
+      total: 1,
+    } as never)
     const createSpy = vi.spyOn(api, 'createSampleDelivery').mockResolvedValue(created)
 
     render(<SampleDeliveriesPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
@@ -185,15 +206,68 @@ describe('SampleDeliveriesPage', () => {
     await userEvent.click(screen.getByRole('button', { name: '新增寄样单' }))
     const dialog = await screen.findByRole('dialog')
     await userEvent.type(within(dialog).getByLabelText('客户名称'), '客户B')
-    await userEvent.type(within(dialog).getByLabelText('产品名称'), '新品杯')
+    await userEvent.click(within(dialog).getByLabelText('样品登记'))
+    await userEvent.click(await screen.findByText('S-001 / 样品杯'))
     await userEvent.click(within(dialog).getByRole('button', { name: '新增寄样单' }))
 
     await waitFor(() => expect(createSpy).toHaveBeenCalledTimes(1))
     expect(createSpy.mock.calls[0][0]).toMatchObject({
       customer_name: '客户B',
-      lines: [expect.objectContaining({ product_name: '新品杯' })],
+      lines: [expect.objectContaining({ sample_record_id: 'rec-1', quantity: '1' })],
     })
     expect(await screen.findByText('已新增寄样单 SD-002')).toBeTruthy()
+  })
+
+  it('选择报价与样品登记后只提交登记标识与数量', async () => {
+    vi.spyOn(api, 'listSampleDeliveries').mockResolvedValue({ items: [delivery], total: 1 })
+    vi.spyOn(api, 'listExportQuotations').mockResolvedValue({
+      items: [{ id: 'q-1', code: 'Q-001', customer_name: '客户A' }],
+      total: 1,
+      summary: { submitted_count: 1, approved_count: 0, total_amount: '0', currency: 'USD' },
+    } as never)
+    vi.spyOn(api, 'listSampleRecords').mockResolvedValue({
+      items: [
+        {
+          id: 'rec-1',
+          code: 'S-001',
+          sample_type: 'confirm_sample',
+          product_id: 'p-1',
+          product_code: 'P-1',
+          product_name: '样品杯',
+          unit: 'pcs',
+          customer_id: 'c-1',
+          stock_summary: { retained_quantity: '8' },
+        },
+      ],
+      total: 1,
+    } as never)
+    const createSpy = vi.spyOn(api, 'createSampleDelivery').mockResolvedValue({
+      ...delivery,
+      id: 'sd-3',
+      code: 'SD-003',
+    })
+
+    render(<SampleDeliveriesPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+    await userEvent.click(screen.getByRole('button', { name: '新增寄样单' }))
+    const dialog = await screen.findByRole('dialog')
+    await userEvent.click(within(dialog).getByLabelText('关联报价'))
+    await userEvent.click(await screen.findByText('Q-001 / 客户A'))
+    await userEvent.click(within(dialog).getByLabelText('样品登记'))
+    await userEvent.click(await screen.findByText('S-001 / 样品杯'))
+    expect(within(dialog).getByText(/留样数量/)).toBeTruthy()
+    await userEvent.click(within(dialog).getByRole('button', { name: '新增寄样单' }))
+
+    await waitFor(() => expect(createSpy).toHaveBeenCalledTimes(1))
+    const payload = createSpy.mock.calls[0][0] as unknown as {
+      quotation_id?: string | null
+      quotation_no?: string | null
+      lines: Array<Record<string, unknown>>
+    }
+    expect(payload.quotation_id).toBe('q-1')
+    expect(payload.quotation_no).toBe('Q-001')
+    expect(payload.lines).toEqual([
+      { sample_record_id: 'rec-1', quantity: '1', remark: null },
+    ])
   })
 
   it('非指定审批人不可审核并提示等待指定人', async () => {

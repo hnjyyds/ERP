@@ -104,6 +104,8 @@ export type SampleRequestFormState = {
   status: string
   request_date: string
   due_date: string
+  quotation_id: string
+  quotation_no: string
   customer_id: string
   customer_name: string
   product_id: string
@@ -179,6 +181,8 @@ export function initialSampleRequestForm(): SampleRequestFormState {
     status: 'draft',
     request_date: todayInputValue(),
     due_date: todayInputValue(),
+    quotation_id: '',
+    quotation_no: '',
     customer_id: '',
     customer_name: '',
     product_id: '',
@@ -236,6 +240,8 @@ export function sampleRequestPayload(form: SampleRequestFormState): SampleReques
 
   return {
     request_date: form.request_date,
+    quotation_id: emptyToNull(form.quotation_id),
+    quotation_no: emptyToNull(form.quotation_no),
     customer_id: emptyToNull(form.customer_id),
     customer_name: form.customer_name.trim(),
     product_id: emptyToNull(form.product_id),

@@ -1,13 +1,15 @@
 import { Input, Modal } from 'antd'
 import type { FormEvent } from 'react'
+import { useState } from 'react'
 import { t } from '@/app/appI18n'
-import { FormSelect } from '@/shared/ui'
+import { FormSelect, RemoteSelect } from '@/shared/ui'
 import {
   sampleDeliveryFeeTypeOptions,
   sampleDeliveryPayerTypeOptions,
-  sampleRecordTypeOptions,
 } from '@/shared/formOptions'
+import { sampleRecordTypeLabel } from '../sampleDeliveryHelpers'
 import type { SampleDeliveryFormState } from '../sampleDeliveryHelpers'
+import { useSampleFormOptions } from '../hooks/useSampleFormOptions'
 
 type Props = {
   open: boolean
@@ -30,6 +32,56 @@ export function SampleDeliveryFormModal({
   onCreate,
   onSaveDraft,
 }: Props) {
+  const { fetchQuotations, fetchSampleRecords, getQuotation, getSampleRecord } =
+    useSampleFormOptions(form.customer_id)
+  const [selectedRecord, setSelectedRecord] = useState<
+    ReturnType<typeof getSampleRecord>
+  >(null)
+
+  function handleQuotationChange(value: string) {
+    if (!value) {
+      onFormChange({ ...form, quotation_id: '', quotation_no: '' })
+      return
+    }
+    const quotation = getQuotation(value)
+    onFormChange({
+      ...form,
+      quotation_id: value,
+      quotation_no: quotation?.code ?? (form.quotation_id === value ? form.quotation_no : ''),
+    })
+  }
+
+  function handleSampleRecordChange(value: string) {
+    if (!value) {
+      setSelectedRecord(null)
+      onFormChange({
+        ...form,
+        sample_record_id: '',
+        sample_code: '',
+        product_id: '',
+        product_code: '',
+        product_name: '',
+      })
+      return
+    }
+    const record = getSampleRecord(value)
+    setSelectedRecord(record)
+    if (!record) {
+      onFormChange({ ...form, sample_record_id: value })
+      return
+    }
+    onFormChange({
+      ...form,
+      sample_record_id: record.id,
+      sample_code: record.code,
+      sample_type: record.sample_type,
+      product_id: record.product_id ?? '',
+      product_code: record.product_code ?? '',
+      product_name: record.product_name,
+      unit: record.unit,
+    })
+  }
+
   return (
     <Modal
       centered
@@ -143,69 +195,62 @@ export function SampleDeliveryFormModal({
             />
           </label>
         </div>
-        <div className="form-pair two">
-          <label>
-            {t('sample.delivery.field.quoteNo')}
-            <Input
-              value={form.quote_no}
-              onChange={(event) => onFormChange({ ...form, quote_no: event.target.value })}
-            />
-          </label>
-          <label>
-            {t('sample.delivery.field.quoteId')}
-            <Input
-              value={form.quote_id}
-              onChange={(event) => onFormChange({ ...form, quote_id: event.target.value })}
-            />
-          </label>
-        </div>
-        <div className="form-divider">{t('sample.delivery.modal.lineSection')}</div>
-        <div className="form-pair two">
-          <label>
-            {t('sample.delivery.field.sampleId')}
-            <Input
-              value={form.sample_record_id}
-              onChange={(event) => onFormChange({ ...form, sample_record_id: event.target.value })}
-            />
-          </label>
-          <label>
-            {t('sample.delivery.field.sampleCode')}
-            <Input
-              value={form.sample_code}
-              onChange={(event) => onFormChange({ ...form, sample_code: event.target.value })}
-            />
-          </label>
-        </div>
-        <div className="form-pair two">
-          <label htmlFor="sample-delivery-sample-type">
-            {t('sample.delivery.field.sampleType')}
-            <FormSelect
-              id="sample-delivery-sample-type"
-              value={form.sample_type}
-              onChange={(event) => onFormChange({ ...form, sample_type: event.target.value })}
-            >
-              {sampleRecordTypeOptions.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {t(item.labelKey)}
-                </option>
-              ))}
-            </FormSelect>
-          </label>
-          <label>
-            {t('sample.delivery.field.productCode')}
-            <Input
-              value={form.product_code}
-              onChange={(event) => onFormChange({ ...form, product_code: event.target.value })}
-            />
-          </label>
-        </div>
         <label>
-          {t('sample.delivery.field.productName')}
-          <Input
-            value={form.product_name}
-            onChange={(event) => onFormChange({ ...form, product_name: event.target.value })}
+          {t('sample.delivery.field.quotation')}
+          <RemoteSelect
+            allowClear
+            ariaLabel={t('sample.delivery.field.quotation')}
+            fetchOptions={fetchQuotations}
+            placeholder={t('common.remoteSelect.placeholder')}
+            value={form.quotation_id}
+            initialOption={
+              form.quotation_id && form.quotation_no
+                ? { value: form.quotation_id, label: form.quotation_no }
+                : undefined
+            }
+            onChange={handleQuotationChange}
           />
         </label>
+        <div className="form-divider">{t('sample.delivery.modal.lineSection')}</div>
+        <label>
+          {t('sample.delivery.field.sampleRecord')}
+          <RemoteSelect
+            allowClear
+            ariaLabel={t('sample.delivery.field.sampleRecord')}
+            fetchOptions={fetchSampleRecords}
+            placeholder={t('common.remoteSelect.placeholder')}
+            value={form.sample_record_id}
+            initialOption={
+              form.sample_record_id
+                ? {
+                    value: form.sample_record_id,
+                    label: [form.sample_code, form.product_name].filter(Boolean).join(' / '),
+                  }
+                : undefined
+            }
+            onChange={handleSampleRecordChange}
+          />
+        </label>
+        <div className="form-pair two">
+          <label>
+            {t('sample.delivery.field.sampleCode')}
+            <Input readOnly value={form.sample_code} />
+          </label>
+          <label>
+            {t('sample.delivery.field.sampleType')}
+            <Input readOnly value={sampleRecordTypeLabel(form.sample_type)} />
+          </label>
+        </div>
+        <div className="form-pair two">
+          <label>
+            {t('sample.delivery.field.productCode')}
+            <Input readOnly value={form.product_code} />
+          </label>
+          <label>
+            {t('sample.delivery.field.productName')}
+            <Input readOnly value={form.product_name} />
+          </label>
+        </div>
         <div className="form-pair two">
           <label>
             {t('sample.delivery.field.quantity')}
@@ -219,12 +264,16 @@ export function SampleDeliveryFormModal({
           </label>
           <label>
             {t('sample.delivery.field.unit')}
-            <Input
-              value={form.unit}
-              onChange={(event) => onFormChange({ ...form, unit: event.target.value })}
-            />
+            <Input readOnly value={form.unit} />
           </label>
         </div>
+        {selectedRecord?.stock_summary?.retained_quantity ? (
+          <div className="form-hint">
+            {t('sample.record.field.retainedQuantity')}
+            {': '}
+            {selectedRecord.stock_summary.retained_quantity} {selectedRecord.unit}
+          </div>
+        ) : null}
         <label>
           {t('sample.delivery.field.lineRemark')}
           <Input

@@ -63,6 +63,9 @@ describe('SampleRecordsPage', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     window.history.replaceState({}, '', '/sample/records')
+    vi.spyOn(api, 'listCustomers').mockResolvedValue({ items: [], total: 0 } as never)
+    vi.spyOn(api, 'listProducts').mockResolvedValue({ items: [], total: 0 } as never)
+    vi.spyOn(api, 'listSuppliers').mockResolvedValue({ items: [], total: 0 } as never)
   })
 
   it('renders without crashing', () => {
@@ -173,6 +176,10 @@ describe('SampleRecordsPage', () => {
   it('新增样品提交表单并提示成功', async () => {
     const created = { ...record, id: 'rec-2', code: 'SP-002' }
     vi.spyOn(api, 'listSampleRecords').mockResolvedValue({ items: [record], total: 1 })
+    vi.spyOn(api, 'listProducts').mockResolvedValue({
+      items: [{ id: 'p-2', code: 'P-2', cn_name: '新品杯', en_name: null }],
+      total: 1,
+    } as never)
     const createSpy = vi.spyOn(api, 'createSampleRecord').mockResolvedValue(created)
 
     render(<SampleRecordsPage detailId={null} onNavigate={onNavigate} />)
@@ -180,16 +187,24 @@ describe('SampleRecordsPage', () => {
 
     await userEvent.click(screen.getByRole('button', { name: '新增样品' }))
     const dialog = await screen.findByRole('dialog')
-    await userEvent.type(within(dialog).getByLabelText('产品名称'), '新品杯')
+    await userEvent.click(within(dialog).getByLabelText('产品'))
+    await userEvent.click(await screen.findByText('P-2 / 新品杯'))
     await userEvent.click(within(dialog).getByRole('button', { name: '新增样品' }))
 
     await waitFor(() => expect(createSpy).toHaveBeenCalledTimes(1))
-    expect(createSpy.mock.calls[0][0]).toMatchObject({ product_name: '新品杯' })
+    expect(createSpy.mock.calls[0][0]).toMatchObject({
+      product_id: 'p-2',
+      product_name: '新品杯',
+    })
     expect(await screen.findByText('已新增样品 SP-002')).toBeTruthy()
   })
 
   it('按当前表单导入样品并提示新增数量', async () => {
     vi.spyOn(api, 'listSampleRecords').mockResolvedValue({ items: [record], total: 1 })
+    vi.spyOn(api, 'listProducts').mockResolvedValue({
+      items: [{ id: 'p-3', code: 'P-3', cn_name: '样品A', en_name: null }],
+      total: 1,
+    } as never)
     const importSpy = vi.spyOn(api, 'importSampleRecords').mockResolvedValue({
       created_count: 1,
       records: [{ ...record, id: 'rec-9', code: 'SP-009' }],
@@ -200,7 +215,8 @@ describe('SampleRecordsPage', () => {
 
     await userEvent.click(screen.getByRole('button', { name: '新增样品' }))
     const dialog = await screen.findByRole('dialog')
-    await userEvent.type(within(dialog).getByLabelText('产品名称'), '样品A')
+    await userEvent.click(within(dialog).getByLabelText('产品'))
+    await userEvent.click(await screen.findByText('P-3 / 样品A'))
     await userEvent.click(within(dialog).getByRole('button', { name: '按当前表单导入' }))
 
     await waitFor(() => {
@@ -286,5 +302,24 @@ describe('SampleRecordsPage', () => {
     expect(stockSpy.mock.calls[0][0]).toBe('rec-1')
     expect(stockSpy.mock.calls[0][1]).toMatchObject({ quantity: '3' })
     expect(await screen.findByText(/已登记样品数量/)).toBeTruthy()
+  })
+
+  it('列表与详情展示样品来源类型与来源单号', async () => {
+    const sourced = {
+      ...record,
+      source_type: 'sample_request',
+      source_code: 'SR-001',
+    } as unknown as SampleRecord
+    vi.spyOn(api, 'listSampleRecords').mockResolvedValue({ items: [sourced], total: 1 })
+
+    const listView = render(<SampleRecordsPage detailId={null} onNavigate={onNavigate} />)
+    expect(await screen.findByText('SR-001')).toBeTruthy()
+    expect(screen.getAllByText('打样单').length).toBeGreaterThan(0)
+    listView.unmount()
+
+    render(<SampleRecordsPage detailId="rec-1" onNavigate={onNavigate} />)
+    expect(await screen.findByText('样品来源')).toBeTruthy()
+    expect(await screen.findByText('来源单号')).toBeTruthy()
+    expect(screen.getAllByText('SR-001').length).toBeGreaterThan(0)
   })
 })

@@ -41,6 +41,8 @@ export interface SampleFee {
 export interface SampleRequest {
   id: string
   code: string
+  quotation_id: string | null
+  quotation_no: string | null
   request_date: string
   customer_id: string | null
   customer_name: string
@@ -83,6 +85,8 @@ export interface SampleRequestLinePayload {
 
 export interface SampleRequestCreatePayload {
   request_date: string
+  quotation_id?: string | null
+  quotation_no?: string | null
   customer_id?: string | null
   customer_name: string
   product_id?: string | null
@@ -314,8 +318,8 @@ export interface SampleDelivery {
   recipient_address: string
   express_company: string
   tracking_no: string | null
-  quote_id: string | null
-  quote_no: string | null
+  quotation_id: string | null
+  quotation_no: string | null
   remark: string | null
   status: string
   submitted_at: string | null
@@ -345,12 +349,12 @@ export interface SampleDeliveryList {
 export interface SampleDeliveryLinePayload {
   sample_record_id: string
   sample_code?: string | null
-  sample_type: string
+  sample_type?: string
   product_id?: string | null
   product_code?: string | null
-  product_name: string
+  product_name?: string
   quantity: string
-  unit: string
+  unit?: string
   remark?: string | null
 }
 
@@ -375,8 +379,8 @@ export interface SampleDeliveryCreatePayload {
   recipient_address: string
   express_company: string
   tracking_no?: string | null
-  quote_id?: string | null
-  quote_no?: string | null
+  quotation_id?: string | null
+  quotation_no?: string | null
   remark?: string | null
   lines: SampleDeliveryLinePayload[]
   fees: SampleDeliveryFeePayload[]
@@ -444,6 +448,7 @@ export function listSampleRequests(filters: {
   q?: string
   status?: string
   customer_id?: string
+  quotation_id?: string
   date_from?: string
   date_to?: string
   limit?: number
@@ -453,6 +458,7 @@ export function listSampleRequests(filters: {
   if (filters.q) params.set('q', filters.q)
   if (filters.status) params.set('status', filters.status)
   if (filters.customer_id) params.set('customer_id', filters.customer_id)
+  if (filters.quotation_id) params.set('quotation_id', filters.quotation_id)
   if (filters.date_from) params.set('date_from', filters.date_from)
   if (filters.date_to) params.set('date_to', filters.date_to)
   if (filters.limit !== undefined) params.set('limit', String(filters.limit))
@@ -465,6 +471,50 @@ export function createSampleRequest(
   payload: SampleRequestCreatePayload,
 ): Promise<SampleRequest> {
   return request<SampleRequest>('/sample/requests', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export interface QuotationSampleRequestProgress {
+  stage: string
+  status: string
+  occurred_at: string
+  note: string | null
+  handler_name: string | null
+}
+
+export interface QuotationSampleRequest {
+  id: string
+  code: string
+  request_date: string
+  status: string
+  requirements: string
+  due_date: string | null
+  destination: string
+  latest_progress: QuotationSampleRequestProgress | null
+  sample_record_id: string | null
+  sample_record_code: string | null
+}
+
+export interface QuotationSampleRequestList {
+  items: QuotationSampleRequest[]
+  total: number
+}
+
+export function getQuotationSampleRequests(
+  quotationId: string,
+): Promise<QuotationSampleRequestList> {
+  return request<QuotationSampleRequestList>(
+    `/sales/quotations/${quotationId}/sample-requests`,
+  )
+}
+
+export function createSampleRequestFromQuotation(
+  quotationId: string,
+  payload: SampleRequestCreatePayload,
+): Promise<SampleRequest> {
+  return request<SampleRequest>(`/sales/quotations/${quotationId}/sample-requests`, {
     method: 'POST',
     body: JSON.stringify(payload),
   })

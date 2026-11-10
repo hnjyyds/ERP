@@ -15,6 +15,8 @@ vi.mock('@/shared/print', async (importOriginal) => {
 const request: SampleRequest = {
   id: 'sr-1',
   code: 'SR-001',
+  quotation_id: 'q-1',
+  quotation_no: 'Q-001',
   request_date: '2026-08-01',
   customer_id: 'c-1',
   customer_name: '客户A',
@@ -56,6 +58,14 @@ describe('SampleRequestsPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.spyOn(api, 'listCustomers').mockResolvedValue({ items: [], total: 0 } as never)
+    vi.spyOn(api, 'listProducts').mockResolvedValue({ items: [], total: 0 } as never)
+    vi.spyOn(api, 'listSuppliers').mockResolvedValue({ items: [], total: 0 } as never)
+    vi.spyOn(api, 'listExportQuotations').mockResolvedValue({
+      items: [],
+      total: 0,
+      summary: { submitted_count: 0, approved_count: 0, total_amount: '0', currency: null },
+    } as never)
   })
 
   it('renders without crashing', () => {
@@ -118,26 +128,104 @@ describe('SampleRequestsPage', () => {
     const created = { ...request, id: 'sr-2', code: 'SR-002' }
     const listSpy = vi.spyOn(api, 'listSampleRequests').mockResolvedValue(listResult([request]))
     const createSpy = vi.spyOn(api, 'createSampleRequest').mockResolvedValue(created)
+    vi.spyOn(api, 'listCustomers').mockResolvedValue({
+      items: [{ id: 'c-2', code: 'C-2', cn_name: '客户B', en_name: null }],
+      total: 1,
+    } as never)
+    vi.spyOn(api, 'listProducts').mockResolvedValue({
+      items: [{ id: 'p-2', code: 'P-2', cn_name: '新品杯', en_name: null }],
+      total: 1,
+    } as never)
 
     render(<SampleRequestsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
     await waitFor(() => expect(listSpy).toHaveBeenCalled())
 
     await userEvent.click(screen.getByRole('button', { name: '新增打样单' }))
     const dialog = await screen.findByRole('dialog')
-    await userEvent.type(within(dialog).getByLabelText('打样客户名称'), '客户B')
-    await userEvent.type(within(dialog).getByLabelText('打样产品名称'), '新品杯')
+    await userEvent.click(within(dialog).getByLabelText('打样客户'))
+    await userEvent.click(await screen.findByText('客户B'))
+    await userEvent.click(within(dialog).getByLabelText('打样产品'))
+    await userEvent.click(await screen.findByText('P-2 / 新品杯'))
     await userEvent.type(within(dialog).getByLabelText('明细产品名称'), '新品杯')
     await userEvent.click(within(dialog).getByRole('button', { name: '新增打样单' }))
 
     await waitFor(() => expect(createSpy).toHaveBeenCalledTimes(1))
     expect(createSpy.mock.calls[0][0]).toMatchObject({
+      customer_id: 'c-2',
       customer_name: '客户B',
+      product_id: 'p-2',
       product_name: '新品杯',
       lines: [expect.objectContaining({ product_name: '新品杯' })],
     })
     expect(await screen.findByText('已新增打样单 SR-002')).toBeTruthy()
     await waitFor(() => {
       expect(listSpy).toHaveBeenLastCalledWith(expect.objectContaining({ offset: 0 }))
+    })
+  })
+
+  it('选择关联报价后带出客户与第一行产品', async () => {
+    vi.spyOn(api, 'listSampleRequests').mockResolvedValue(listResult([request]))
+    const createSpy = vi
+      .spyOn(api, 'createSampleRequest')
+      .mockResolvedValue({ ...request, id: 'sr-3', code: 'SR-003' })
+    vi.spyOn(api, 'listExportQuotations').mockResolvedValue({
+      items: [
+        {
+          id: 'q-9',
+          code: 'Q-009',
+          customer_id: 'c-9',
+          customer_name: '客户九',
+          lines: [
+            {
+              id: 'line-1',
+              quotation_id: 'q-9',
+              product_id: 'p-9',
+              product_code: 'P-9',
+              product_name: '带出产品',
+              specification: null,
+              model: null,
+              quantity: '10',
+              unit: 'pcs',
+              unit_price: '2',
+              amount: '20',
+              freight_method: 'sea',
+              freight_amount: '0',
+              purchase_reference_supplier_name: null,
+              purchase_reference_price: null,
+              remark: null,
+            },
+          ],
+        },
+      ],
+      total: 1,
+      summary: { submitted_count: 1, approved_count: 0, total_amount: '20', currency: 'USD' },
+    } as never)
+
+    render(<SampleRequestsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+    await userEvent.click(screen.getByRole('button', { name: '新增打样单' }))
+    const dialog = await screen.findByRole('dialog')
+    await userEvent.click(within(dialog).getByLabelText('关联报价'))
+    await userEvent.click(await screen.findByText('Q-009 / 客户九'))
+
+    const customerSelect = within(dialog).getByLabelText('打样客户').closest('.ant-select')
+    const productSelect = within(dialog).getByLabelText('打样产品').closest('.ant-select')
+    await waitFor(() => {
+      expect(customerSelect?.textContent).toContain('客户九')
+      expect(productSelect?.textContent).toContain('P-9 / 带出产品')
+    })
+
+    await userEvent.type(within(dialog).getByLabelText('明细产品名称'), '带出产品')
+    await userEvent.click(within(dialog).getByRole('button', { name: '新增打样单' }))
+
+    await waitFor(() => expect(createSpy).toHaveBeenCalledTimes(1))
+    expect(createSpy.mock.calls[0][0]).toMatchObject({
+      quotation_id: 'q-9',
+      quotation_no: 'Q-009',
+      customer_id: 'c-9',
+      customer_name: '客户九',
+      product_id: 'p-9',
+      product_code: 'P-9',
+      product_name: '带出产品',
     })
   })
 
