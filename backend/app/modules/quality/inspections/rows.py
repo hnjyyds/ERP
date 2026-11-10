@@ -29,6 +29,19 @@ class QualityInspectionRow:
 
 
 @dataclass(frozen=True)
+class QualityInspectionReminderRow:
+    id: str
+    code: str
+    purchase_contract_no: str
+    supplier_name: str
+    status: str
+    scheduled_at: datetime
+    inspector_id: str | None
+    qc_user_id: str | None
+    owner_user_id: str
+
+
+@dataclass(frozen=True)
 class QualityInspectionLineRow:
     id: str
     inspection_id: str

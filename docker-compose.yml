@@ -33,6 +33,38 @@ services:
       start_period: 20s
     logging: *default-logging
 
+  redis:
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/redis:7.4-alpine
+    platform: linux/amd64
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    logging: *default-logging
+
+  worker:
+    platform: linux/amd64
+    build:
+      context: ./backend
+    command: ["arq", "app.worker.WorkerSettings"]
+    environment:
+      DATABASE_URL: sqlite+aiosqlite:////app/.data/xinpei.db
+      REDIS_URL: redis://redis:6379/0
+      # cron 使用 worker 本地时区，默认按北京时间 09:00 / 09:10 运行。
+      TZ: ${TZ:-Asia/Shanghai}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      LOG_FORMAT: ${LOG_FORMAT:-json}
+    volumes:
+      - ./backend/.data:/app/.data
+    depends_on:
+      redis:
+        condition: service_healthy
+    logging: *default-logging
+
   frontend:
     platform: linux/amd64
     build:

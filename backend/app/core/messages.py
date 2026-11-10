@@ -91,6 +91,16 @@ MESSAGE_CATALOG: dict[str, dict[str, str]] = {
         "notification.approval.rejected": "{actor} 驳回了{entity} {no}",
         "notification.approval.rejected_with_reason": "{actor} 驳回了{entity} {no}，原因：{reason}",
         "notification.approval.withdrawn": "{actor} 撤回了{entity} {no}，无需继续审批",
+        # 定时提醒
+        "notification.qc.title": "QC 查验提醒",
+        "notification.qc.due_soon": (
+            "QC 任务 {no} 将于 {due} 到期（还剩 {days} 天），请及时安排查验"
+        ),
+        "notification.qc.overdue": "QC 任务 {no} 已逾期 {days} 天（排期 {due}），请尽快处理",
+        "notification.followup.title": "采购跟单提醒",
+        "notification.followup.overdue": (
+            "采购合同 {no} 的跟单节点「{node}」已逾期 {days} 天，请尽快更新进度"
+        ),
         # 校验错误明细
         "validation.required": "为必填项",
         "validation.empty": "不能为空",
@@ -198,6 +208,18 @@ MESSAGE_CATALOG: dict[str, dict[str, str]] = {
         "notification.approval.rejected_with_reason": "{actor} rejected {entity} {no}: {reason}",
         "notification.approval.withdrawn": (
             "{actor} withdrew {entity} {no}; no further approval is needed"
+        ),
+        "notification.qc.title": "QC inspection reminder",
+        "notification.qc.due_soon": (
+            "QC task {no} is due on {due} ({days} day(s) left); please arrange the inspection"
+        ),
+        "notification.qc.overdue": (
+            "QC task {no} is {days} day(s) overdue (scheduled {due}); please handle it soon"
+        ),
+        "notification.followup.title": "Purchase follow-up reminder",
+        "notification.followup.overdue": (
+            "Follow-up node \"{node}\" of purchase contract {no} is {days} day(s) overdue; "
+            "please update its progress"
         ),
         "validation.required": "is required",
         "validation.empty": "must not be empty",

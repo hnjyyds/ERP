@@ -71,6 +71,30 @@
 - 文件存储：MinIO 或兼容 S3 的对象存储
 - 部署：Docker Compose 起步，后续可演进到 Kubernetes
 
+## 定时任务（ARQ + Redis）
+
+第二批站内通知中的「QC 查验临期/逾期」「采购跟单节点逾期」由 ARQ worker 每天定时扫描。
+Web 进程不连接 Redis：启动、迁移、种子数据和全部 API 在 Redis 不可用时照常工作，只有 worker
+需要可用的 Redis。
+
+本地启动（默认 `REDIS_URL=redis://localhost:6379/0`，可在 `backend/.env` 或环境变量中覆盖）：
+
+```bash
+# 1. 启动 Redis（任选其一）
+docker run -d --name xinpei-redis -p 6379:6379 redis:7-alpine
+# 或：brew services start redis
+
+# 2. 启动 worker（在 backend 目录）
+cd backend
+uv sync
+uv run arq app.worker.WorkerSettings
+```
+
+- 扫描任务：09:00 QC 查验提醒，09:10 采购跟单节点逾期提醒；cron 使用 worker 主机的本地时区。
+- 也可手动触发一次：`uv run arq app.worker.WorkerSettings --burst`。
+- worker 连不上 Redis 时会在启动阶段直接报错并提示 `REDIS_URL` 配置。
+- 自动化测试不依赖真实 Redis：服务函数用 SQLite 内存库直接验证，worker 配置仅做冒烟校验。
+
 ## AI / MCP 数据接入
 
 容器部署后，后端通过 Streamable HTTP 暴露 FastMCP 服务：

@@ -28,6 +28,8 @@ class Settings(BaseSettings):
     upload_dir: str = "./.data/uploads"
     upload_url_prefix: str = "/uploads"
     upload_max_bytes: int = 5 * 1024 * 1024
+    # 仅 ARQ worker 使用；Web 进程不在启动或 import 期连接 Redis。
+    redis_url: str = "redis://localhost:6379/0"
 
 
 @lru_cache

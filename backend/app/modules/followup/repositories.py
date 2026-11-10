@@ -83,6 +83,20 @@ class PurchaseFollowOverdueNodeRow:
     source_record_id: str | None
 
 
+@dataclass(frozen=True)
+class PurchaseFollowReminderNodeRow:
+    id: str
+    follow_plan_id: str
+    purchase_contract_id: str
+    purchase_contract_no: str
+    supplier_name: str
+    node_code: str
+    node_name: str
+    planned_date: date
+    overdue_days: int
+    owner_user_id: str
+
+
 class FollowupRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
@@ -474,6 +488,41 @@ class FollowupRepository:
         )
         rows = (await self.session.execute(statement)).all()
         return [self._map_overdue_node(node, plan, as_of) for node, plan in rows]
+
+    async def list_reminder_nodes(
+        self,
+        *,
+        today: date,
+    ) -> list[PurchaseFollowReminderNodeRow]:
+        """返回计划日期已过且未完成的跟单节点，供每日提醒扫描使用。"""
+        statement = (
+            select(PurchaseFollowNode, PurchaseFollowPlan)
+            .join(PurchaseFollowPlan, PurchaseFollowNode.follow_plan_id == PurchaseFollowPlan.id)
+            .where(PurchaseFollowNode.actual_date.is_(None))
+            .where(PurchaseFollowNode.planned_date < today)
+            .where(PurchaseFollowNode.status != "completed")
+            .order_by(
+                PurchaseFollowNode.planned_date.asc(),
+                PurchaseFollowPlan.purchase_contract_no.asc(),
+                PurchaseFollowNode.sequence_no.asc(),
+            )
+        )
+        rows = (await self.session.execute(statement)).all()
+        return [
+            PurchaseFollowReminderNodeRow(
+                id=node.id,
+                follow_plan_id=node.follow_plan_id,
+                purchase_contract_id=plan.purchase_contract_id,
+                purchase_contract_no=plan.purchase_contract_no,
+                supplier_name=plan.supplier_name,
+                node_code=node.node_code,
+                node_name=node.node_name,
+                planned_date=node.planned_date,
+                overdue_days=(today - node.planned_date).days,
+                owner_user_id=plan.owner_user_id,
+            )
+            for node, plan in rows
+        ]
 
     async def _template_scalars(
         self,

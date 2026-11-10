@@ -1,5 +1,6 @@
 from datetime import UTC, date, datetime, time
 from decimal import Decimal
+from typing import cast
 
 from sqlalchemy import Select, false, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -24,6 +25,7 @@ from app.modules.quality.inspections.rows import (
     QualityAttachmentRow,
     QualityInspectionEventRow,
     QualityInspectionLineRow,
+    QualityInspectionReminderRow,
     QualityInspectionRow,
     QualityIssueRow,
 )
@@ -572,6 +574,34 @@ class QualityInspectionRepository:
             .order_by(QualityInspection.created_at.desc())
         )
         return map_quality_inspection(inspection) if inspection is not None else None
+
+    async def list_scheduled_reminders(
+        self,
+        *,
+        window_end: datetime,
+    ) -> list[QualityInspectionReminderRow]:
+        """返回排期在窗口截止前的未完成任务，供每日提醒扫描使用。"""
+        rows = await self.session.scalars(
+            select(QualityInspection)
+            .where(QualityInspection.status.in_(("pending", "in_progress")))
+            .where(QualityInspection.scheduled_at.is_not(None))
+            .where(QualityInspection.scheduled_at < window_end)
+            .order_by(QualityInspection.scheduled_at.asc(), QualityInspection.code.asc())
+        )
+        return [
+            QualityInspectionReminderRow(
+                id=row.id,
+                code=row.code,
+                purchase_contract_no=row.purchase_contract_no,
+                supplier_name=row.supplier_name,
+                status=row.status,
+                scheduled_at=cast(datetime, row.scheduled_at),
+                inspector_id=row.inspector_id,
+                qc_user_id=row.qc_user_id,
+                owner_user_id=row.owner_user_id,
+            )
+            for row in rows
+        ]
 
     async def has_passed_inspection(self, purchase_contract_id: str) -> bool:
         count = await self.session.scalar(

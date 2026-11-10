@@ -93,6 +93,52 @@ async def notify(
     )
 
 
+async def notify_reminder(
+    session: AsyncSession,
+    *,
+    owner_user_id: str | None,
+    source_type: str,
+    source_id: str,
+    event: str,
+    title_key: str,
+    message_key: str,
+    params: dict[str, object],
+    severity: str,
+    target_path: str,
+) -> bool:
+    """写入定时提醒；同一单据、事件、接收人重复执行时返回 False。"""
+    if not owner_user_id:
+        return False
+    exists = await session.scalar(
+        select(Notification.id)
+        .where(
+            Notification.source_type == source_type,
+            Notification.source_id == source_id,
+            Notification.event == event,
+            Notification.owner_user_id == owner_user_id,
+        )
+        .limit(1)
+    )
+    if exists is not None:
+        return False
+    session.add(
+        Notification(
+            owner_user_id=owner_user_id,
+            title=translate(title_key),
+            message=translate(message_key, None, **params),
+            severity=severity,
+            source_type=source_type,
+            source_id=source_id,
+            event=event,
+            target_path=target_path,
+            is_read=False,
+            created_at=datetime.now(UTC),
+        )
+    )
+    await session.flush()
+    return True
+
+
 async def notify_approval(
     session: AsyncSession,
     *,
