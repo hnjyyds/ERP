@@ -62,9 +62,9 @@
 ## T8 提交与上报
 
 - [x] `python -m pytest tests/architecture/test_backend_file_boundaries.py` 通过。
-- [x] 单次提交 `feat(masterdata): 统一服务端主数据校验并改造下拉为服务端搜索`。
+- [x] 按小步提交：`feat(masterdata)` + 报价表单下拉修复 + 停用员工/商品过滤修复。
 - [x] 上报：改动清单、错误语义、测试结果、遗留项。
 
 ## T9 后续（不在本次提交）
 
-- [ ] 写 `docs/17-功能页面导览.md` 第二章：报价 → 样品 → 出口合同。
+- [x] 写 `docs/17-功能页面导览.md` 第二章：报价 → 样品 → 出口合同。
