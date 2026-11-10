@@ -4,8 +4,9 @@
 ``code`` 与响应结构保持稳定，语言只影响 ``message`` 和 ``details[].message``。
 """
 
+from app.core.dynamic_messages import DYNAMIC_PATTERNS
 from app.core.language import DEFAULT_LANGUAGE, get_current_language
-from app.core.source_messages import DYNAMIC_PATTERNS, ROLE_NAMES, SOURCE_MESSAGES
+from app.core.source_messages import ROLE_NAMES, SOURCE_MESSAGES
 
 MESSAGE_CATALOG: dict[str, dict[str, str]] = {
     "zh-CN": {
@@ -46,6 +47,8 @@ MESSAGE_CATALOG: dict[str, dict[str, str]] = {
         "exception.OrganizationPermissionDeniedError": "缺少组织管理权限",
         "exception.OrganizationUserNotFoundError": "用户不存在",
         "exception.SampleRecordAlreadyCreatedError": "该寄样申请已生成样品登记，不能重复生成",
+        "exception.SampleFeeAlreadyRequestedError": "该打样费用已发起付款申请，不能重复发起",
+        "exception.QuotationContractAlreadyGeneratedError": "该报价已生成出口合同，不能重复生成",
         "exception.SampleStockError": "样品库存不足",
         "exception.DocumentNumberConflictError": "单号生成失败，请重试",
         # 模块实体名称
@@ -161,6 +164,12 @@ MESSAGE_CATALOG: dict[str, dict[str, str]] = {
         "exception.OrganizationUserNotFoundError": "User not found",
         "exception.SampleRecordAlreadyCreatedError": (
             "A sample record has already been created from this request"
+        ),
+        "exception.SampleFeeAlreadyRequestedError": (
+            "A payment request has already been created for this sample fee"
+        ),
+        "exception.QuotationContractAlreadyGeneratedError": (
+            "An export contract has already been generated from this quotation"
         ),
         "exception.SampleStockError": "Insufficient sample stock",
         "exception.DocumentNumberConflictError": (

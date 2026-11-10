@@ -1,12 +1,10 @@
-import csv
 from datetime import date
 from decimal import Decimal
-from io import StringIO
 
-from app.core.messages import localize_labels
 from app.db.uow import UnitOfWork
+from app.modules.masterdata.validation import MasterDataValidator
+from app.modules.sales.quotations.repositories import ExportQuotationRepository
 from app.modules.sample.deliveries.repositories import (
-    SampleDeliveryFeeStatisticRow,
     SampleDeliveryLineRow,
     SampleDeliveryRepository,
     SampleDeliveryRow,
@@ -16,22 +14,16 @@ from app.modules.sample.deliveries.schemas import (
     VALID_SAMPLE_DELIVERY_STATUSES,
     SampleDeliveryApprove,
     SampleDeliveryCreate,
-    SampleDeliveryCustomerStatisticResponse,
-    SampleDeliveryExportResponse,
-    SampleDeliveryExpressStatisticResponse,
-    SampleDeliveryFeeStatisticResponse,
-    SampleDeliveryFeeStatisticsResponse,
     SampleDeliveryListResponse,
     SampleDeliveryListSummary,
     SampleDeliveryReject,
     SampleDeliveryResponse,
-    SampleDeliveryStatisticsResponse,
-    SampleDeliveryStatusStatisticResponse,
     SampleDeliverySubmit,
     SampleDeliveryTrackingUpdate,
     SampleDeliveryWithdraw,
 )
-from app.modules.sample.records.repositories import SampleRecordRepository
+from app.modules.sample.deliveries.statistics import SampleDeliveryStatisticsMixin
+from app.modules.sample.records.repositories import SampleRecordRepository, SampleRecordRow
 from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
@@ -50,7 +42,7 @@ class SampleDeliveryNotFoundError(Exception):
     pass
 
 
-class SampleDeliveryService:
+class SampleDeliveryService(SampleDeliveryStatisticsMixin):
     def __init__(
         self,
         repository: SampleDeliveryRepository,
@@ -65,6 +57,7 @@ class SampleDeliveryService:
         self._assignee_validator = AssigneeValidator(
             auth_repository or AuthRepository(repository.session)
         )
+        self._masterdata = MasterDataValidator(repository.session)
 
     async def create_delivery(
         self,
@@ -73,6 +66,8 @@ class SampleDeliveryService:
         payload: SampleDeliveryCreate,
     ) -> SampleDeliveryResponse:
         self._require(current_user, "sample:delivery:edit")
+        await self._validate_parties(payload)
+        quotation_id, quotation_no = await self._resolve_quotation(current_user, payload)
 
         async def create_delivery_row(code: str) -> SampleDeliveryRow:
             async with UnitOfWork(self._repository.session):
@@ -90,8 +85,8 @@ class SampleDeliveryService:
                     recipient_address=payload.recipient_address,
                     express_company=payload.express_company,
                     tracking_no=payload.tracking_no,
-                    quote_id=payload.quote_id,
-                    quote_no=payload.quote_no,
+                    quotation_id=quotation_id,
+                    quotation_no=quotation_no,
                     remark=payload.remark,
                     status="draft",
                     owner_user_id=current_user.id,
@@ -116,6 +111,8 @@ class SampleDeliveryService:
         )
         if delivery.status not in {"draft", "rejected"}:
             raise ValueError("只有草稿或已驳回的寄样单可以编辑")
+        await self._validate_parties(payload, allow_inactive=True)
+        quotation_id, quotation_no = await self._resolve_quotation(current_user, payload)
         async with UnitOfWork(self._repository.session):
             updated = await self._repository.update_delivery(
                 delivery_id=delivery.id,
@@ -131,8 +128,8 @@ class SampleDeliveryService:
                 recipient_address=payload.recipient_address,
                 express_company=payload.express_company,
                 tracking_no=payload.tracking_no,
-                quote_id=payload.quote_id,
-                quote_no=payload.quote_no,
+                quotation_id=quotation_id,
+                quotation_no=quotation_no,
                 remark=payload.remark,
                 reset_to_draft=delivery.status == "rejected",
             )
@@ -394,40 +391,6 @@ class SampleDeliveryService:
                 raise SampleDeliveryNotFoundError
         return await self._delivery_response(updated)
 
-    async def get_fee_statistics(
-        self,
-        *,
-        current_user: CurrentUserResponse,
-        customer_id: str | None,
-        date_from: date | None,
-        date_to: date | None,
-        express_company: str | None,
-    ) -> SampleDeliveryFeeStatisticsResponse:
-        self._require(current_user, "sample:delivery:fee:view")
-        if date_from and date_to and date_from > date_to:
-            raise ValueError("寄样费用统计日期范围无效")
-        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
-            current_user=current_user,
-        )
-        rows = await self._repository.get_fee_statistics(
-            customer_id=customer_id,
-            date_from=date_from,
-            date_to=date_to,
-            express_company=express_company,
-            owner_user_ids=owner_user_ids,
-        )
-        total = Decimal("0")
-        for row in rows:
-            total += Decimal(row.total_amount)
-        currency = rows[0].currency if rows else "USD"
-        if any(row.currency != currency for row in rows):
-            currency = "MIXED"
-        return SampleDeliveryFeeStatisticsResponse(
-            items=[self._fee_statistic_response(row) for row in rows],
-            total_amount=self._money(total),
-            currency=currency,
-        )
-
     async def get_sample_history(
         self,
         *,
@@ -458,166 +421,23 @@ class SampleDeliveryService:
             total=total,
         )
 
-    async def get_statistics(
-        self,
-        *,
-        current_user: CurrentUserResponse,
-        date_from: date | None,
-        date_to: date | None,
-        customer_id: str | None,
-        express_company: str | None,
-    ) -> SampleDeliveryStatisticsResponse:
-        self._require(current_user, "sample:delivery:fee:view")
-        if date_from and date_to and date_from > date_to:
-            raise ValueError("寄样统计日期范围无效")
-        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
-            current_user=current_user,
-        )
-        by_status = await self._repository.get_status_statistics(
-            date_from=date_from,
-            date_to=date_to,
-            customer_id=customer_id,
-            express_company=express_company,
-            owner_user_ids=owner_user_ids,
-        )
-        by_customer = await self._repository.get_customer_statistics(
-            date_from=date_from,
-            date_to=date_to,
-            customer_id=customer_id,
-            express_company=express_company,
-            owner_user_ids=owner_user_ids,
-        )
-        by_express = await self._repository.get_express_statistics(
-            date_from=date_from,
-            date_to=date_to,
-            customer_id=customer_id,
-            express_company=express_company,
-            owner_user_ids=owner_user_ids,
-        )
-        total_deliveries = sum(row.delivery_count for row in by_status)
-        total_quantity = sum((row.total_quantity for row in by_status), Decimal("0"))
-        return SampleDeliveryStatisticsResponse(
-            total_deliveries=total_deliveries,
-            total_quantity=self._quantity(total_quantity),
-            by_status=[
-                SampleDeliveryStatusStatisticResponse(
-                    status=row.status,
-                    delivery_count=row.delivery_count,
-                    total_quantity=self._quantity(row.total_quantity),
-                )
-                for row in by_status
-            ],
-            by_customer=[
-                SampleDeliveryCustomerStatisticResponse(
-                    customer_id=row.customer_id,
-                    customer_name=row.customer_name,
-                    delivery_count=row.delivery_count,
-                    total_quantity=self._quantity(row.total_quantity),
-                )
-                for row in by_customer
-            ],
-            by_express=[
-                SampleDeliveryExpressStatisticResponse(
-                    express_company=row.express_company,
-                    delivery_count=row.delivery_count,
-                    total_quantity=self._quantity(row.total_quantity),
-                )
-                for row in by_express
-            ],
-        )
-
-    async def export_deliveries(
-        self,
-        *,
-        current_user: CurrentUserResponse,
-        date_from: date | None,
-        date_to: date | None,
-        customer_id: str | None,
-        express_company: str | None,
-    ) -> SampleDeliveryExportResponse:
-        self._require(current_user, "sample:delivery:fee:view")
-        if date_from and date_to and date_from > date_to:
-            raise ValueError("寄样导出日期范围无效")
-        owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
-            current_user=current_user,
-        )
-        deliveries, total = await self._repository.list_deliveries(
-            q=None,
-            status=None,
-            customer_id=customer_id,
-            express_company=express_company,
-            date_from=date_from,
-            date_to=date_to,
-            owner_user_ids=owner_user_ids,
-            limit=500,
-            offset=0,
-        )
-        output = StringIO()
-        writer = csv.writer(output)
-        writer.writerow(
-            localize_labels(
-                [
-                    "寄样单号",
-                    "寄样日期",
-                    "状态",
-                    "客户",
-                    "收件方",
-                    "快递公司",
-                    "快递单号",
-                    "报价单",
-                    "样品编号",
-                    "产品",
-                    "数量",
-                    "单位",
-                    "费用合计",
-                    "备注",
-                ]
-            )
-        )
-        for delivery in deliveries:
-            response = await self._delivery_response(delivery)
-            first_line = response.lines[0] if response.lines else None
-            writer.writerow(
-                [
-                    response.code,
-                    response.delivery_date.isoformat(),
-                    response.status,
-                    response.customer_name,
-                    response.recipient_company or response.recipient_name,
-                    response.express_company,
-                    response.tracking_no or "",
-                    response.quote_no or "",
-                    first_line.sample_code if first_line else "",
-                    first_line.product_name if first_line else "",
-                    first_line.quantity if first_line else "",
-                    first_line.unit if first_line else "",
-                    response.fee_total,
-                    response.remark or "",
-                ]
-            )
-        return SampleDeliveryExportResponse(
-            filename=f"sample-deliveries-{current_user.id}.csv",
-            content_type="text/csv",
-            content=output.getvalue(),
-            total=total,
-        )
-
     async def _add_delivery_children(
         self,
         delivery_id: str,
         payload: SampleDeliveryCreate,
     ) -> None:
         for line in payload.lines:
+            record = await self._resolve_line_sample(line.sample_record_id, payload.customer_id)
             await self._repository.add_line(
                 delivery_id=delivery_id,
-                sample_record_id=line.sample_record_id,
-                sample_code=line.sample_code,
-                sample_type=line.sample_type,
-                product_id=line.product_id,
-                product_code=line.product_code,
-                product_name=line.product_name,
+                sample_record_id=record.id,
+                sample_code=record.code,
+                sample_type=record.sample_type,
+                product_id=record.product_id,
+                product_code=record.product_code,
+                product_name=record.product_name,
                 quantity=line.quantity,
-                unit=line.unit,
+                unit=record.unit,
                 remark=line.remark,
             )
         for fee in payload.fees:
@@ -629,6 +449,48 @@ class SampleDeliveryService:
                 payer_type=fee.payer_type,
                 remark=fee.remark,
             )
+
+    async def _validate_parties(
+        self,
+        payload: SampleDeliveryCreate,
+        *,
+        allow_inactive: bool = False,
+    ) -> None:
+        await self._masterdata.customer(payload.customer_id, allow_inactive=allow_inactive)
+        await self._masterdata.supplier(payload.supplier_id, allow_inactive=allow_inactive)
+
+    async def _resolve_quotation(
+        self,
+        current_user: CurrentUserResponse,
+        payload: SampleDeliveryCreate,
+    ) -> tuple[str | None, str | None]:
+        if not payload.quotation_id:
+            return None, payload.quotation_no
+        quotation = await ExportQuotationRepository(self._repository.session).get_quotation(
+            payload.quotation_id
+        )
+        if quotation is None:
+            raise ValueError("关联报价不存在")
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+        )
+        if allowed_user_ids is not None and quotation.owner_user_id not in allowed_user_ids:
+            raise ValueError("关联报价不存在")
+        if payload.customer_id and quotation.customer_id != payload.customer_id:
+            raise ValueError("寄样客户与关联报价客户不一致")
+        return quotation.id, quotation.code
+
+    async def _resolve_line_sample(
+        self,
+        sample_record_id: str,
+        customer_id: str | None,
+    ) -> SampleRecordRow:
+        record = await self._sample_record_repository.get_record(sample_record_id)
+        if record is None:
+            raise ValueError("寄样明细引用的样品登记不存在")
+        if customer_id and record.customer_id and record.customer_id != customer_id:
+            raise ValueError("寄样明细的样品登记与寄样客户不一致")
+        return record
 
     async def _ensure_stock_available(self, lines: list[SampleDeliveryLineRow]) -> None:
         required: dict[str, Decimal] = {}
@@ -679,22 +541,3 @@ class SampleDeliveryService:
 
     async def _delivery_response(self, delivery: SampleDeliveryRow) -> SampleDeliveryResponse:
         return await build_delivery_response(delivery, self._repository)
-
-    def _fee_statistic_response(
-        self,
-        row: SampleDeliveryFeeStatisticRow,
-    ) -> SampleDeliveryFeeStatisticResponse:
-        return SampleDeliveryFeeStatisticResponse(
-            customer_id=row.customer_id,
-            customer_name=row.customer_name,
-            express_company=row.express_company,
-            currency=row.currency,
-            total_amount=row.total_amount,
-            delivery_count=row.delivery_count,
-        )
-
-    def _money(self, value: Decimal) -> str:
-        return f"{value:.2f}"
-
-    def _quantity(self, value: Decimal) -> str:
-        return f"{value:.4f}".rstrip("0").rstrip(".")

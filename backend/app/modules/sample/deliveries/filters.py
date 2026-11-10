@@ -37,7 +37,7 @@ def build_delivery_conditions(
                 SampleDelivery.recipient_name.ilike(pattern),
                 SampleDelivery.express_company.ilike(pattern),
                 SampleDelivery.tracking_no.ilike(pattern),
-                SampleDelivery.quote_no.ilike(pattern),
+                SampleDelivery.quotation_no.ilike(pattern),
                 line_exists,
             )
         )

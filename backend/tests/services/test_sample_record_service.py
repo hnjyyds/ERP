@@ -14,6 +14,8 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 
+pytestmark = pytest.mark.usefixtures("reference_master_data", "seeded_system")
+
 
 def _make_service(session: AsyncSession) -> SampleRecordService:
     return SampleRecordService(

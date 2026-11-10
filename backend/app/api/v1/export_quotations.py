@@ -5,6 +5,9 @@ from fastapi import APIRouter, Depends, Query, status
 from app.api.auth_dependencies import CurrentUserDep
 from app.api.permission_dependencies import require_permissions
 from app.modules.sales.quotations.providers import get_export_quotation_service
+from app.modules.sales.quotations.sample_link_schemas import (
+    QuotationSampleRequestListResponse,
+)
 from app.modules.sales.quotations.schemas import (
     ExportQuotationApprove,
     ExportQuotationConfirmContract,
@@ -25,6 +28,9 @@ from app.modules.sales.quotations.services import (
     PermissionDeniedError as QuotationPermissionDeniedError,
 )
 from app.modules.sample.deliveries.schemas import SampleDeliveryListResponse
+from app.modules.sample.requests.providers import get_sample_request_service
+from app.modules.sample.requests.schemas import SampleRequestCreate, SampleRequestResponse
+from app.modules.sample.requests.services import SampleRequestService
 from app.modules.system.auth.permissions import SALES_QUOTATION_EXPORT_PERMISSION
 from app.schemas.responses import ApiResponse
 
@@ -216,6 +222,41 @@ async def get_export_quotation_sample_deliveries(
         quotation_id=quotation_id,
     )
     return ApiResponse(data=deliveries)
+
+
+@router.get(
+    "/{quotation_id}/sample-requests",
+    response_model=ApiResponse[QuotationSampleRequestListResponse],
+)
+async def get_export_quotation_sample_requests(
+    quotation_id: str,
+    user: CurrentUserDep,
+    service: Annotated[ExportQuotationService, Depends(get_export_quotation_service)],
+) -> ApiResponse[QuotationSampleRequestListResponse]:
+    requests = await service.get_sample_requests(
+        current_user=user,
+        quotation_id=quotation_id,
+    )
+    return ApiResponse(data=requests)
+
+
+@router.post(
+    "/{quotation_id}/sample-requests",
+    status_code=status.HTTP_201_CREATED,
+    response_model=ApiResponse[SampleRequestResponse],
+)
+async def create_sample_request_from_quotation(
+    quotation_id: str,
+    payload: SampleRequestCreate,
+    user: CurrentUserDep,
+    service: Annotated[SampleRequestService, Depends(get_sample_request_service)],
+) -> ApiResponse[SampleRequestResponse]:
+    sample_request = await service.create_request_from_quotation(
+        current_user=user,
+        quotation_id=quotation_id,
+        payload=payload,
+    )
+    return ApiResponse(data=sample_request)
 
 
 @router.get(

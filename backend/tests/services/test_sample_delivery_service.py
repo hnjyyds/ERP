@@ -23,6 +23,8 @@ from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.auth.seed import seed_system_demo_data
 
+pytestmark = pytest.mark.usefixtures("reference_master_data", "seeded_system")
+
 
 def _make_record_service(session: AsyncSession) -> SampleRecordService:
     return SampleRecordService(
@@ -98,8 +100,7 @@ def _delivery_payload(sample_record_id: str) -> SampleDeliveryCreate:
         recipient_address="客户地址",
         express_company="DHL",
         tracking_no="DHL-SVC-001",
-        quote_id="quote-a",
-        quote_no="QT-A",
+        quotation_no="QT-A",
         remark="报价前寄样",
         lines=[
             SampleDeliveryLineCreate(
@@ -778,3 +779,68 @@ async def test_sample_delivery_service_blocks_reject_and_withdraw_after_downstre
 
     assert current.status == "submitted"
     assert current.rejection_reason is None
+
+
+async def test_sample_delivery_requires_existing_sample_record(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        service = _make_service(session)
+        current_user = _user_with_permissions(["sample:delivery:edit"], user_id="u-001")
+
+        with pytest.raises(ValueError):
+            await service.create_delivery(
+                current_user=current_user,
+                payload=_delivery_payload("missing-record"),
+            )
+
+
+async def test_sample_delivery_rejects_cross_customer_sample_record(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        record_service = _make_record_service(session)
+        service = _make_service(session)
+        current_user = _user_with_permissions(
+            ["sample:delivery:edit", "sample:record:edit"], user_id="u-001"
+        )
+        sample_record_id = await _create_sample_record(record_service, current_user)
+        payload = _delivery_payload(sample_record_id).model_copy(
+            update={"customer_id": "customer-b", "customer_name": "客户 B"}
+        )
+
+        with pytest.raises(ValueError):
+            await service.create_delivery(current_user=current_user, payload=payload)
+
+
+async def test_sample_delivery_derives_line_fields_from_sample_record(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        record_service = _make_record_service(session)
+        service = _make_service(session)
+        current_user = _user_with_permissions(
+            ["sample:delivery:edit", "sample:delivery:view", "sample:record:edit"],
+            user_id="u-001",
+        )
+        sample_record_id = await _create_sample_record(record_service, current_user)
+        payload = _delivery_payload(sample_record_id).model_copy(
+            update={
+                "lines": [
+                    SampleDeliveryLineCreate(
+                        sample_record_id=sample_record_id,
+                        sample_code="手工错误编号",
+                        product_name="手工错误产品",
+                        quantity="2",
+                    )
+                ]
+            }
+        )
+        created = await service.create_delivery(current_user=current_user, payload=payload)
+
+    line = created.lines[0]
+    assert line.sample_code.startswith("SM-")
+    assert line.sample_code != "手工错误编号"
+    assert line.product_name == "Eco Bag"
+    assert line.sample_type == "confirm_sample"
+    assert line.unit == "pcs"

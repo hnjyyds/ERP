@@ -32,6 +32,7 @@ async def list_sample_requests(
     q: Annotated[str | None, Query(max_length=120)] = None,
     status_filter: Annotated[str | None, Query(alias="status", max_length=40)] = None,
     customer_id: Annotated[str | None, Query(max_length=36)] = None,
+    quotation_id: Annotated[str | None, Query(max_length=36)] = None,
     date_from: date | None = None,
     date_to: date | None = None,
 ) -> ApiResponse[SampleRequestListResponse]:
@@ -40,6 +41,7 @@ async def list_sample_requests(
         q=q,
         status=status_filter,
         customer_id=customer_id,
+        quotation_id=quotation_id,
         date_from=date_from,
         date_to=date_to,
     )

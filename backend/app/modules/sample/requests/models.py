@@ -27,6 +27,8 @@ class SampleRequest(Base):
     supplier_name: Mapped[str | None] = mapped_column(String(240), index=True, nullable=True)
     sales_user_id: Mapped[str | None] = mapped_column(String(36), index=True, nullable=True)
     sales_user_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    quotation_id: Mapped[str | None] = mapped_column(String(36), index=True, nullable=True)
+    quotation_no: Mapped[str | None] = mapped_column(String(80), index=True, nullable=True)
     destination: Mapped[str] = mapped_column(String(40), index=True, nullable=False)
     requirements: Mapped[str] = mapped_column(Text, nullable=False)
     due_date: Mapped[date | None] = mapped_column(Date, index=True, nullable=True)

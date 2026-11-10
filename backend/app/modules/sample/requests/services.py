@@ -1,8 +1,12 @@
 from datetime import UTC, date, datetime
 from decimal import Decimal
 
+from sqlalchemy.exc import IntegrityError
+
 from app.db.uow import UnitOfWork
 from app.modules.finance.fee_payments.repositories import FeePaymentRepository
+from app.modules.masterdata.validation import MasterDataValidator
+from app.modules.sales.quotations.repositories import ExportQuotationRepository, ExportQuotationRow
 from app.modules.sample.records.repositories import SampleRecordRepository, SampleRecordRow
 from app.modules.sample.records.schemas import (
     VALID_SAMPLE_RECORD_STATUSES,
@@ -57,6 +61,10 @@ class SampleRecordAlreadyCreatedError(Exception):
     pass
 
 
+class SampleFeeAlreadyRequestedError(Exception):
+    pass
+
+
 class SampleRequestService:
     def __init__(
         self,
@@ -74,6 +82,7 @@ class SampleRequestService:
         self._assignee_validator = AssigneeValidator(
             auth_repository or AuthRepository(repository.session)
         )
+        self._masterdata = MasterDataValidator(repository.session)
 
     async def create_request(
         self,
@@ -86,6 +95,8 @@ class SampleRequestService:
         if payload.status in {"completed", "cancelled"}:
             raise ValueError("新建打样申请只能是草稿、已发送或进行中")
         self._validate_destination(payload.destination)
+        await self._validate_masterdata(payload)
+        quotation_id, quotation_no = await self._resolve_quotation(current_user, payload)
 
         async def create_request_row(code: str) -> SampleRequestRow:
             async with UnitOfWork(self._repository.session):
@@ -101,6 +112,8 @@ class SampleRequestService:
                     supplier_name=payload.supplier_name,
                     sales_user_id=payload.sales_user_id,
                     sales_user_name=payload.sales_user_name,
+                    quotation_id=quotation_id,
+                    quotation_no=quotation_no,
                     destination=payload.destination,
                     requirements=payload.requirements,
                     due_date=payload.due_date,
@@ -126,6 +139,35 @@ class SampleRequestService:
         )
         return await self._request_response(sample_request)
 
+    async def create_request_from_quotation(
+        self,
+        *,
+        current_user: CurrentUserResponse,
+        quotation_id: str,
+        payload: SampleRequestCreate,
+    ) -> SampleRequestResponse:
+        quotation = await self._get_accessible_quotation(current_user, quotation_id)
+        lines = await ExportQuotationRepository(self._repository.session).list_lines(quotation.id)
+        first_line = lines[0] if lines else None
+        overrides: dict[str, object] = {
+            "quotation_id": quotation.id,
+            "quotation_no": quotation.code,
+            "customer_id": quotation.customer_id,
+            "customer_name": quotation.customer_name,
+        }
+        if first_line is not None:
+            overrides.update(
+                {
+                    "product_id": first_line.product_id,
+                    "product_code": first_line.product_code,
+                    "product_name": first_line.product_name,
+                }
+            )
+        return await self.create_request(
+            current_user=current_user,
+            payload=payload.model_copy(update=overrides),
+        )
+
     async def get_request(
         self,
         *,
@@ -145,6 +187,7 @@ class SampleRequestService:
         q: str | None,
         status: str | None,
         customer_id: str | None,
+        quotation_id: str | None = None,
         date_from: date | None = None,
         date_to: date | None = None,
     ) -> SampleRequestListResponse:
@@ -160,6 +203,7 @@ class SampleRequestService:
             q=q,
             status=status,
             customer_id=customer_id,
+            quotation_id=quotation_id,
             date_from=date_from,
             date_to=date_to,
             owner_user_ids=owner_user_ids,
@@ -168,6 +212,7 @@ class SampleRequestService:
             q=q,
             status=status,
             customer_id=customer_id,
+            quotation_id=quotation_id,
             date_from=date_from,
             date_to=date_to,
             owner_user_ids=owner_user_ids,
@@ -251,6 +296,9 @@ class SampleRequestService:
         invoice_no = self._fee_invoice_no()
         payment_request_no = self._payment_request_no()
         async with UnitOfWork(self._repository.session):
+            claimed = await self._repository.claim_fee_payment(fee_id)
+            if not claimed:
+                raise SampleFeeAlreadyRequestedError
             invoice = await self._fee_payment_repository.create_partner_fee_invoice(
                 invoice_no=invoice_no,
                 invoice_date=date.today(),
@@ -333,7 +381,7 @@ class SampleRequestService:
                     source_type="sample_request",
                     source_id=sample_request.id,
                     source_code=sample_request.code,
-                    source_note=sample_request.requirements,
+                    source_note=self._source_note(sample_request),
                     received_at=payload.received_at,
                     submitted_at=payload.submitted_at,
                     quantity=payload.quantity,
@@ -374,8 +422,53 @@ class SampleRequestService:
                     )
                 return record
 
-        record = await create_with_generated_code("sample.record", create_record_row)
+        try:
+            record = await create_with_generated_code("sample.record", create_record_row)
+        except IntegrityError as error:
+            raise SampleRecordAlreadyCreatedError from error
         return await self._record_response(record)
+
+    async def _validate_masterdata(self, payload: SampleRequestCreate) -> None:
+        await self._masterdata.customer(payload.customer_id)
+        await self._masterdata.supplier(payload.supplier_id)
+        await self._masterdata.user(payload.sales_user_id)
+        await self._masterdata.product(payload.product_id)
+        for line in payload.lines:
+            await self._masterdata.product(line.product_id)
+
+    async def _resolve_quotation(
+        self,
+        current_user: CurrentUserResponse,
+        payload: SampleRequestCreate,
+    ) -> tuple[str | None, str | None]:
+        if not payload.quotation_id:
+            return None, payload.quotation_no
+        quotation = await self._get_accessible_quotation(current_user, payload.quotation_id)
+        if payload.customer_id and quotation.customer_id != payload.customer_id:
+            raise ValueError("打样客户与关联报价客户不一致")
+        return quotation.id, quotation.code
+
+    async def _get_accessible_quotation(
+        self,
+        current_user: CurrentUserResponse,
+        quotation_id: str,
+    ) -> ExportQuotationRow:
+        quotation = await ExportQuotationRepository(self._repository.session).get_quotation(
+            quotation_id
+        )
+        if quotation is None:
+            raise ValueError("关联报价不存在")
+        allowed_user_ids = await self._data_scope_resolver.resolve_user_ids(
+            current_user=current_user,
+        )
+        if allowed_user_ids is not None and quotation.owner_user_id not in allowed_user_ids:
+            raise ValueError("关联报价不存在")
+        return quotation
+
+    def _source_note(self, sample_request: SampleRequestRow) -> str | None:
+        if sample_request.quotation_no:
+            return f"{sample_request.requirements}\n来源报价：{sample_request.quotation_no}"
+        return sample_request.requirements
 
     async def _get_accessible_request(
         self,
@@ -469,6 +562,8 @@ class SampleRequestService:
             supplier_name=sample_request.supplier_name,
             sales_user_id=sample_request.sales_user_id,
             sales_user_name=sample_request.sales_user_name,
+            quotation_id=sample_request.quotation_id,
+            quotation_no=sample_request.quotation_no,
             destination=sample_request.destination,
             requirements=sample_request.requirements,
             due_date=sample_request.due_date,

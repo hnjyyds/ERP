@@ -21,8 +21,8 @@ class SampleDeliveryRow:
     recipient_address: str
     express_company: str
     tracking_no: str | None
-    quote_id: str | None
-    quote_no: str | None
+    quotation_id: str | None
+    quotation_no: str | None
     remark: str | None
     status: str
     submitted_at: date | None

@@ -74,6 +74,8 @@ _EXCEPTION_DEFAULT_KEYS = {
     "OrganizationPermissionDeniedError": "exception.OrganizationPermissionDeniedError",
     "OrganizationUserNotFoundError": "exception.OrganizationUserNotFoundError",
     "SampleRecordAlreadyCreatedError": "exception.SampleRecordAlreadyCreatedError",
+    "SampleFeeAlreadyRequestedError": "exception.SampleFeeAlreadyRequestedError",
+    "QuotationContractAlreadyGeneratedError": "exception.QuotationContractAlreadyGeneratedError",
     "SampleStockError": "exception.SampleStockError",
     "DocumentNumberConflictError": "exception.DocumentNumberConflictError",
 }
@@ -203,6 +205,12 @@ def domain_exception_definition(
     elif class_name == "OrganizationReferenceNotFoundError":
         code = AppStatusCode.VALIDATION_ERROR
     elif class_name == "MasterDataInactiveError":
+        code = AppStatusCode.CONFLICT
+    elif class_name in {
+        "SampleRecordAlreadyCreatedError",
+        "SampleFeeAlreadyRequestedError",
+        "QuotationContractAlreadyGeneratedError",
+    }:
         code = AppStatusCode.CONFLICT
     elif "NotFound" in class_name:
         code = AppStatusCode.NOT_FOUND

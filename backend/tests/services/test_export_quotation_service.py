@@ -1,8 +1,10 @@
 from datetime import date
 
 import pytest
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from app.modules.masterdata.customers.models import CustomerCreditProfile
 from app.modules.sales.contracts.models import ExportContract
 from app.modules.sales.contracts.repositories import ExportContractRepository
 from app.modules.sales.quotations.repositories import ExportQuotationRepository
@@ -18,6 +20,7 @@ from app.modules.sales.quotations.schemas import (
 from app.modules.sales.quotations.services import (
     ExportQuotationService,
     PermissionDeniedError,
+    QuotationContractAlreadyGeneratedError,
 )
 from app.modules.sample.deliveries.repositories import SampleDeliveryRepository
 from app.modules.system.auth.data_scope import DataScopeResolver
@@ -117,7 +120,12 @@ async def test_export_quotation_service_approval_contract_export_and_history(
             payload=ExportQuotationSubmit(reviewer_id="u-admin"),
         )
         reviewer = _user_with_permissions(
-            ["system:super_admin", "sales:quotation:approve", "sales:quotation:view"],
+            [
+                "system:super_admin",
+                "sales:quotation:approve",
+                "sales:quotation:edit",
+                "sales:quotation:view",
+            ],
             user_id="u-boss",
             data_scope="all",
         )
@@ -233,7 +241,12 @@ async def test_export_quotation_service_reject_edit_and_resubmit(
             payload=ExportQuotationSubmit(reviewer_id="u-admin"),
         )
         reviewer = _user_with_permissions(
-            ["system:super_admin", "sales:quotation:approve", "sales:quotation:view"],
+            [
+                "system:super_admin",
+                "sales:quotation:approve",
+                "sales:quotation:edit",
+                "sales:quotation:view",
+            ],
             user_id="u-boss",
             data_scope="all",
         )
@@ -420,7 +433,12 @@ async def test_export_quotation_service_blocks_reject_and_withdraw_after_contrac
         )
         await session.flush()
         reviewer = _user_with_permissions(
-            ["system:super_admin", "sales:quotation:approve", "sales:quotation:view"],
+            [
+                "system:super_admin",
+                "sales:quotation:approve",
+                "sales:quotation:edit",
+                "sales:quotation:view",
+            ],
             user_id="u-boss",
             data_scope="all",
         )
@@ -441,3 +459,126 @@ async def test_export_quotation_service_blocks_reject_and_withdraw_after_contrac
             )
 
 pytestmark = pytest.mark.usefixtures("reference_master_data")
+
+
+async def test_confirm_contract_is_one_shot(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        service = _make_service_with_contracts(session)
+        quotation = await service.create_quotation(
+            current_user=_user_with_permissions(
+                ["sales:quotation:edit", "sales:quotation:view"], user_id="u-001"
+            ),
+            payload=_quotation_payload("QT-SVC-ONCE"),
+        )
+        await service.submit_quotation(
+            current_user=_user_with_permissions(
+                ["sales:quotation:edit", "sales:quotation:view"], user_id="u-001"
+            ),
+            quotation_id=quotation.id,
+            payload=ExportQuotationSubmit(reviewer_id="u-admin"),
+        )
+        reviewer = _user_with_permissions(
+            [
+                "system:super_admin",
+                "sales:quotation:approve",
+                "sales:quotation:edit",
+                "sales:quotation:view",
+            ],
+            user_id="u-boss",
+            data_scope="all",
+        )
+        await service.approve_quotation(
+            current_user=reviewer,
+            quotation_id=quotation.id,
+            payload=ExportQuotationApprove(
+                reviewer_name="演示业务主管",
+                approved_at=date(2026, 7, 2),
+            ),
+        )
+        contract = await service.confirm_contract(
+            current_user=reviewer,
+            quotation_id=quotation.id,
+            payload=ExportQuotationConfirmContract(confirmed_at=date(2026, 7, 3)),
+        )
+
+        with pytest.raises(QuotationContractAlreadyGeneratedError):
+            await service.confirm_contract(
+                current_user=reviewer,
+                quotation_id=quotation.id,
+                payload=ExportQuotationConfirmContract(confirmed_at=date(2026, 7, 4)),
+            )
+        contract_count = await session.scalar(
+            select(func.count()).select_from(ExportContract)
+        )
+
+    payment_terms = await session.scalar(
+        select(ExportContract.payment_terms).where(
+            ExportContract.code == contract.contract_no
+        )
+    )
+    assert payment_terms == ""
+    assert contract_count == 1
+
+
+async def test_confirm_contract_carries_customer_payment_terms(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        session.add(
+            CustomerCreditProfile(
+                customer_id="customer-a",
+                credit_grade="A",
+                credit_limit="50000",
+                currency="USD",
+                payment_terms="T/T 30 days",
+            )
+        )
+        await session.flush()
+        service = _make_service_with_contracts(session)
+        quotation = await service.create_quotation(
+            current_user=_user_with_permissions(
+                ["sales:quotation:edit", "sales:quotation:view"], user_id="u-001"
+            ),
+            payload=_quotation_payload("QT-SVC-TERMS"),
+        )
+        await service.submit_quotation(
+            current_user=_user_with_permissions(
+                ["sales:quotation:edit", "sales:quotation:view"], user_id="u-001"
+            ),
+            quotation_id=quotation.id,
+            payload=ExportQuotationSubmit(reviewer_id="u-admin"),
+        )
+        reviewer = _user_with_permissions(
+            [
+                "system:super_admin",
+                "sales:quotation:approve",
+                "sales:quotation:edit",
+                "sales:quotation:view",
+            ],
+            user_id="u-boss",
+            data_scope="all",
+        )
+        await service.approve_quotation(
+            current_user=reviewer,
+            quotation_id=quotation.id,
+            payload=ExportQuotationApprove(
+                reviewer_name="演示业务主管",
+                approved_at=date(2026, 7, 2),
+            ),
+        )
+        contract = await service.confirm_contract(
+            current_user=reviewer,
+            quotation_id=quotation.id,
+            payload=ExportQuotationConfirmContract(confirmed_at=date(2026, 7, 3)),
+        )
+
+    payment_terms = await session.scalar(
+        select(ExportContract.payment_terms).where(
+            ExportContract.code == contract.contract_no
+        )
+    )
+    assert payment_terms == "T/T 30 days"

@@ -37,6 +37,8 @@ class SampleRequestCreate(BaseModel):
     supplier_name: str | None = Field(default=None, max_length=240)
     sales_user_id: str | None = Field(default=None, max_length=36)
     sales_user_name: str | None = Field(default=None, max_length=160)
+    quotation_id: str | None = Field(default=None, max_length=36)
+    quotation_no: str | None = Field(default=None, max_length=80)
     destination: str = Field(default="in_house", min_length=1, max_length=40)
     requirements: str = Field(min_length=1, max_length=4000)
     due_date: date | None = None
@@ -123,6 +125,8 @@ class SampleRequestResponse(BaseModel):
     supplier_name: str | None
     sales_user_id: str | None
     sales_user_name: str | None
+    quotation_id: str | None
+    quotation_no: str | None
     destination: str
     requirements: str
     due_date: date | None

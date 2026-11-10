@@ -3,7 +3,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from uuid import uuid4
 
-from sqlalchemy import Select, delete, distinct, func, or_, select
+from sqlalchemy import Select, delete, distinct, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.pagination import resolve_limit, resolve_offset
@@ -420,16 +420,27 @@ class ExportQuotationRepository:
         contract_no: str,
         contract_id: str | None = None,
     ) -> ExportQuotationRow | None:
+        result = await self.session.execute(
+            update(ExportQuotation)
+            .where(ExportQuotation.id == quotation_id)
+            .where(ExportQuotation.approval_status == "approved")
+            .where(ExportQuotation.generated_contract_id.is_(None))
+            .values(
+                approval_status="contract_generated",
+                confirmed_at=confirmed_at,
+                generated_contract_id=contract_id or str(uuid4()),
+                generated_contract_no=contract_no,
+            )
+        )
+        if result.rowcount != 1:
+            return None
         quotation = await self.session.scalar(
-            select(ExportQuotation).where(ExportQuotation.id == quotation_id)
+            select(ExportQuotation)
+            .where(ExportQuotation.id == quotation_id)
+            .execution_options(populate_existing=True)
         )
         if quotation is None:
             return None
-        quotation.approval_status = "contract_generated"
-        quotation.confirmed_at = confirmed_at
-        quotation.generated_contract_id = contract_id or str(uuid4())
-        quotation.generated_contract_no = contract_no
-        await self.session.flush()
         return self._map_quotation(quotation)
 
     async def list_history(

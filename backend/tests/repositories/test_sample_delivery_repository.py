@@ -27,8 +27,8 @@ async def test_sample_delivery_repository_filters_statistics_and_histories(
             recipient_address="客户地址",
             express_company="DHL",
             tracking_no="DHL-REPO-001",
-            quote_id="quote-a",
-            quote_no="QT-A",
+            quotation_id="quote-a",
+            quotation_no="QT-A",
             remark="报价前寄样",
             status="draft",
             owner_user_id="u-001",
@@ -95,7 +95,7 @@ async def test_sample_delivery_repository_filters_statistics_and_histories(
     assert sample_history_total == 1
     assert sample_history[0].code == "SD-REPO-001"
     assert quote_history_total == 1
-    assert quote_history[0].quote_no == "QT-A"
+    assert quote_history[0].quotation_no == "QT-A"
 
 
 async def test_sample_delivery_repository_updates_header_and_replaces_children(
@@ -117,8 +117,8 @@ async def test_sample_delivery_repository_updates_header_and_replaces_children(
             recipient_address="客户地址",
             express_company="DHL",
             tracking_no="DHL-REPO-EDIT-001",
-            quote_id="quote-a",
-            quote_no="QT-A",
+            quotation_id="quote-a",
+            quotation_no="QT-A",
             remark="报价前寄样",
             status="draft",
             owner_user_id="u-001",
@@ -158,8 +158,8 @@ async def test_sample_delivery_repository_updates_header_and_replaces_children(
             recipient_address="客户地址 8 楼",
             express_company="FedEx",
             tracking_no="FDX-REPO-EDIT-001",
-            quote_id="quote-a",
-            quote_no="QT-A",
+            quotation_id="quote-a",
+            quotation_no="QT-A",
             remark="草稿编辑",
         )
         await repository.delete_lines(delivery.id)

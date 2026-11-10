@@ -8,6 +8,7 @@ from app.modules.purchase.inquiries.repositories import (
 )
 from app.modules.sales.contracts.repositories import ExportContractRepository, ExportContractRow
 from app.modules.sales.masterdata_refs import validate_sales_document_references
+from app.modules.sales.quotations.contract_defaults import resolve_payment_terms
 from app.modules.sales.quotations.exporters import (
     format_quantity,
     render_csv_export,
@@ -19,7 +20,7 @@ from app.modules.sales.quotations.repositories import (
     ExportQuotationRepository,
     ExportQuotationRow,
 )
-from app.modules.sales.quotations.sample_responses import build_sample_delivery_response
+from app.modules.sales.quotations.sample_links import QuotationSampleLinksMixin
 from app.modules.sales.quotations.schemas import (
     VALID_QUOTATION_EXPORT_FORMATS,
     VALID_QUOTATION_STATUSES,
@@ -38,7 +39,6 @@ from app.modules.sales.quotations.schemas import (
     ExportQuotationWithdraw,
 )
 from app.modules.sample.deliveries.repositories import SampleDeliveryRepository
-from app.modules.sample.deliveries.schemas import SampleDeliveryListResponse
 from app.modules.system.audit_logs.recorder import record_audit
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
@@ -60,7 +60,11 @@ class ExportQuotationNotFoundError(Exception):
     pass
 
 
-class ExportQuotationService:
+class QuotationContractAlreadyGeneratedError(Exception):
+    pass
+
+
+class ExportQuotationService(QuotationSampleLinksMixin):
     def __init__(
         self,
         repository: ExportQuotationRepository,
@@ -379,9 +383,13 @@ class ExportQuotationService:
             current_user=current_user,
             quotation_id=quotation_id,
         )
-        if quotation.approval_status != "approved":
+        if quotation.approval_status not in {"approved", "contract_generated"}:
             raise ValueError("只有已审批报价可以生成出口合同")
+        await self._ensure_contract_not_generated(quotation)
+        if quotation.approval_status != "approved":
+            raise QuotationContractAlreadyGeneratedError
         lines = await self._repository.list_lines(quotation.id)
+        payment_terms = await resolve_payment_terms(self._repository.session, quotation.customer_id)
 
         async def confirm(code: str) -> ExportQuotationRow:
             async with UnitOfWork(self._repository.session):
@@ -393,6 +401,7 @@ class ExportQuotationService:
                         lines=lines,
                         payload=payload,
                         code=code,
+                        payment_terms=payment_terms,
                     )
                     contract_id = contract.id
                 confirmed = await self._repository.confirm_contract(
@@ -402,11 +411,25 @@ class ExportQuotationService:
                     contract_id=contract_id,
                 )
                 if confirmed is None:
-                    raise ExportQuotationNotFoundError
+                    await self._raise_confirm_conflict(quotation.id)
                 return confirmed
 
         confirmed = await create_with_generated_code("sales.contract", confirm)
         return self._contract_response(confirmed)
+
+    async def _ensure_contract_not_generated(self, quotation: ExportQuotationRow) -> None:
+        if quotation.generated_contract_id or quotation.generated_contract_no:
+            raise QuotationContractAlreadyGeneratedError
+        if self._export_contract_repository is not None and (
+            await self._export_contract_repository.contract_exists_for_quotation(quotation.id)
+        ):
+            raise QuotationContractAlreadyGeneratedError
+
+    async def _raise_confirm_conflict(self, quotation_id: str) -> None:
+        latest = await self._repository.get_quotation(quotation_id)
+        if latest is None:
+            raise ExportQuotationNotFoundError
+        raise QuotationContractAlreadyGeneratedError
 
     async def _create_contract_from_quotation(
         self,
@@ -416,6 +439,7 @@ class ExportQuotationService:
         lines: list[ExportQuotationLineRow],
         payload: ExportQuotationConfirmContract,
         code: str,
+        payment_terms: str,
     ) -> ExportContractRow:
         if self._export_contract_repository is None:
             raise ExportQuotationNotFoundError
@@ -429,7 +453,7 @@ class ExportQuotationService:
             currency=quotation.currency,
             trade_term=quotation.trade_term,
             planned_ship_date=quotation.valid_until or payload.confirmed_at,
-            payment_terms="",
+            payment_terms=payment_terms,
             source_quotation_id=quotation.id,
             source_quotation_no=quotation.code,
             remarks=quotation.description,
@@ -495,30 +519,6 @@ class ExportQuotationService:
                 *[self._purchase_reference_response(row) for row in rows],
             ],
             total=len(inquiry_rows) + len(rows),
-        )
-
-    async def get_sample_deliveries(
-        self,
-        *,
-        current_user: CurrentUserResponse,
-        quotation_id: str,
-    ) -> SampleDeliveryListResponse:
-        quotation = await self._get_accessible_quotation(
-            current_user=current_user,
-            quotation_id=quotation_id,
-        )
-        lines = await self._repository.list_lines(quotation.id)
-        first_product_id = lines[0].product_id if lines else None
-        deliveries, total = await self._sample_delivery_repository.list_quote_history(
-            customer_id=quotation.customer_id,
-            product_id=first_product_id,
-        )
-        return SampleDeliveryListResponse(
-            items=[
-                await build_sample_delivery_response(delivery, self._sample_delivery_repository)
-                for delivery in deliveries
-            ],
-            total=total,
         )
 
     async def export_quotation(

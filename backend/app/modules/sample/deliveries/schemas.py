@@ -14,12 +14,12 @@ class SampleDeliveryLineCreate(BaseModel):
 
     sample_record_id: str = Field(min_length=1, max_length=36)
     sample_code: str | None = Field(default=None, max_length=80)
-    sample_type: str = Field(min_length=1, max_length=40)
+    sample_type: str | None = Field(default=None, max_length=40)
     product_id: str | None = Field(default=None, max_length=36)
     product_code: str | None = Field(default=None, max_length=80)
-    product_name: str = Field(min_length=1, max_length=240)
+    product_name: str | None = Field(default=None, max_length=240)
     quantity: Decimal = Field(gt=0)
-    unit: str = Field(min_length=1, max_length=40)
+    unit: str | None = Field(default=None, max_length=40)
     remark: str | None = Field(default=None, max_length=2000)
 
 
@@ -49,8 +49,8 @@ class SampleDeliveryCreate(BaseModel):
     recipient_address: str = Field(min_length=1, max_length=2000)
     express_company: str = Field(min_length=1, max_length=120)
     tracking_no: str | None = Field(default=None, max_length=120)
-    quote_id: str | None = Field(default=None, max_length=36)
-    quote_no: str | None = Field(default=None, max_length=80)
+    quotation_id: str | None = Field(default=None, max_length=36)
+    quotation_no: str | None = Field(default=None, max_length=80)
     remark: str | None = Field(default=None, max_length=4000)
     lines: list[SampleDeliveryLineCreate] = Field(min_length=1)
     fees: list[SampleDeliveryFeeCreate] = Field(default_factory=list)
@@ -131,8 +131,8 @@ class SampleDeliveryResponse(BaseModel):
     recipient_address: str
     express_company: str
     tracking_no: str | None
-    quote_id: str | None
-    quote_no: str | None
+    quotation_id: str | None = None
+    quotation_no: str | None = None
     remark: str | None
     status: str
     submitted_at: date | None

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Select, func, or_, select
+from sqlalchemy import Select, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.pagination import resolve_limit, resolve_offset
@@ -28,6 +28,8 @@ class SampleRequestRow:
     supplier_name: str | None
     sales_user_id: str | None
     sales_user_name: str | None
+    quotation_id: str | None
+    quotation_no: str | None
     destination: str
     requirements: str
     due_date: date | None
@@ -97,6 +99,8 @@ class SampleRequestRepository:
         supplier_name: str | None,
         sales_user_id: str | None,
         sales_user_name: str | None,
+        quotation_id: str | None,
+        quotation_no: str | None,
         destination: str,
         requirements: str,
         due_date: date | None,
@@ -115,6 +119,8 @@ class SampleRequestRepository:
             supplier_name=supplier_name,
             sales_user_id=sales_user_id,
             sales_user_name=sales_user_name,
+            quotation_id=quotation_id,
+            quotation_no=quotation_no,
             destination=destination,
             requirements=requirements,
             due_date=due_date,
@@ -200,6 +206,16 @@ class SampleRequestRepository:
         await self.session.flush()
         return self._map_fee(fee)
 
+    async def claim_fee_payment(self, fee_id: str) -> bool:
+        """把费用从未申请原子地推进到申请中，重复触发返回 False。"""
+        result = await self.session.execute(
+            update(SampleFee)
+            .where(SampleFee.id == fee_id)
+            .where(SampleFee.payment_status == "not_requested")
+            .values(payment_status="requesting")
+        )
+        return result.rowcount == 1
+
     async def request_fee_payment(
         self,
         *,
@@ -266,12 +282,21 @@ class SampleRequestRepository:
             return None
         return self._map_fee(fee)
 
+    async def list_by_quotation_id(self, quotation_id: str) -> list[SampleRequestRow]:
+        rows = await self.session.scalars(
+            select(SampleRequest)
+            .where(SampleRequest.quotation_id == quotation_id)
+            .order_by(SampleRequest.request_date.desc(), SampleRequest.code.asc())
+        )
+        return [self._map_request(row) for row in rows]
+
     async def list_requests(
         self,
         *,
         q: str | None = None,
         status: str | None = None,
         customer_id: str | None = None,
+        quotation_id: str | None = None,
         date_from: date | None = None,
         date_to: date | None = None,
         owner_user_ids: list[str] | None = None,
@@ -282,6 +307,7 @@ class SampleRequestRepository:
             q=q,
             status=status,
             customer_id=customer_id,
+            quotation_id=quotation_id,
             date_from=date_from,
             date_to=date_to,
             owner_user_ids=owner_user_ids,
@@ -307,6 +333,7 @@ class SampleRequestRepository:
         q: str | None = None,
         status: str | None = None,
         customer_id: str | None = None,
+        quotation_id: str | None = None,
         date_from: date | None = None,
         date_to: date | None = None,
         owner_user_ids: list[str] | None = None,
@@ -316,6 +343,7 @@ class SampleRequestRepository:
             q=q,
             status=status,
             customer_id=customer_id,
+            quotation_id=quotation_id,
             date_from=date_from,
             date_to=date_to,
             owner_user_ids=owner_user_ids,
@@ -334,6 +362,7 @@ class SampleRequestRepository:
         q: str | None,
         status: str | None,
         customer_id: str | None,
+        quotation_id: str | None,
         date_from: date | None,
         date_to: date | None,
         owner_user_ids: list[str] | None,
@@ -361,6 +390,7 @@ class SampleRequestRepository:
                     SampleRequest.product_name.ilike(pattern),
                     SampleRequest.supplier_name.ilike(pattern),
                     SampleRequest.requirements.ilike(pattern),
+                    SampleRequest.quotation_no.ilike(pattern),
                     line_exists,
                 )
             )
@@ -368,6 +398,8 @@ class SampleRequestRepository:
             conditions.append(SampleRequest.status == status)
         if customer_id:
             conditions.append(SampleRequest.customer_id == customer_id)
+        if quotation_id:
+            conditions.append(SampleRequest.quotation_id == quotation_id)
         if date_from:
             conditions.append(SampleRequest.request_date >= date_from)
         if date_to:
@@ -394,6 +426,8 @@ class SampleRequestRepository:
             supplier_name=sample_request.supplier_name,
             sales_user_id=sample_request.sales_user_id,
             sales_user_name=sample_request.sales_user_name,
+            quotation_id=sample_request.quotation_id,
+            quotation_no=sample_request.quotation_no,
             destination=sample_request.destination,
             requirements=sample_request.requirements,
             due_date=sample_request.due_date,

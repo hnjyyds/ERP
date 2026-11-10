@@ -51,6 +51,7 @@ async def _create_sample_delivery_for_quote(
     token: str,
     *,
     quote_no: str,
+    quotation: dict,
 ) -> None:
     sample_response = await api_client.post(
         "/api/v1/sample/records",
@@ -93,8 +94,8 @@ async def _create_sample_delivery_for_quote(
             "recipient_address": "Hamburg Trade Center",
             "express_company": "DHL",
             "tracking_no": f"DHL-{quote_no}",
-            "quote_id": "quote-e2e",
-            "quote_no": quote_no,
+            "quotation_id": quotation["id"],
+            "quotation_no": quote_no,
             "remark": "报价前寄确认样",
             "lines": [
                 {
@@ -153,7 +154,9 @@ async def test_export_quotation_flow_history_references_samples_export_and_contr
     quotation = create_response.json()["data"]
     quote_no = quotation["code"]
     assert quote_no.startswith("QT-")
-    await _create_sample_delivery_for_quote(api_client, token, quote_no=quote_no)
+    await _create_sample_delivery_for_quote(
+        api_client, token, quote_no=quote_no, quotation=quotation
+    )
     assert quotation["approval_status"] == "draft"
     assert quotation["lines"][0]["amount"] == "1250.00"
     assert quotation["lines"][0]["freight_amount"] == "120.00"
@@ -212,7 +215,7 @@ async def test_export_quotation_flow_history_references_samples_export_and_contr
         headers={"Authorization": f"Bearer {token}"},
     )
     assert sample_response.status_code == 200
-    assert sample_response.json()["data"]["items"][0]["quote_no"] == quote_no
+    assert sample_response.json()["data"]["items"][0]["quotation_no"] == quote_no
 
     export_response = await api_client.get(
         f"/api/v1/sales/quotations/{quotation_id}/export",

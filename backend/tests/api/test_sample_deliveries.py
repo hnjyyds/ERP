@@ -1,4 +1,7 @@
+import pytest
 from httpx import AsyncClient
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")
 
 
 async def _login_token(
@@ -62,8 +65,7 @@ def _delivery_payload(
         "recipient_address": "Hamburg Trade Center",
         "express_company": "DHL",
         "tracking_no": "DHL-2026-001",
-        "quote_id": "quote-2026-001",
-        "quote_no": "QT-2026-001",
+        "quotation_no": "QT-2026-001",
         "remark": "报价前寄确认样",
         "lines": [
             {
@@ -197,7 +199,7 @@ async def test_sample_delivery_review_stock_fee_statistics_and_histories(
         params={"customer_id": "customer-euro-home", "product_id": "product-bag"},
     )
     assert quote_history_response.status_code == 200
-    assert quote_history_response.json()["data"]["items"][0]["quote_no"] == "QT-2026-001"
+    assert quote_history_response.json()["data"]["items"][0]["quotation_no"] == "QT-2026-001"
 
     statistics_response = await api_client.get(
         "/api/v1/sample/deliveries/statistics",

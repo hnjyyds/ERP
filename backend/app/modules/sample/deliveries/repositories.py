@@ -12,6 +12,11 @@ from app.modules.sample.deliveries.models import (
     SampleDeliveryFee,
     SampleDeliveryLine,
 )
+from app.modules.sample.deliveries.quotation_queries import (
+    REPORTABLE_SAMPLE_DELIVERY_STATUSES,
+    fetch_by_quotation_id,
+    fetch_quote_history,
+)
 from app.modules.sample.deliveries.rows import (
     SampleDeliveryCustomerStatisticRow,
     SampleDeliveryExpressStatisticRow,
@@ -30,7 +35,6 @@ from app.modules.sample.deliveries.rows import (
     SampleDeliveryRow as SampleDeliveryRow,
 )
 
-REPORTABLE_SAMPLE_DELIVERY_STATUSES = ("approved", "shipped")
 SelectRow = TypeVar("SelectRow", bound=tuple[object, ...])
 
 
@@ -54,8 +58,8 @@ class SampleDeliveryRepository:
         recipient_address: str,
         express_company: str,
         tracking_no: str | None,
-        quote_id: str | None,
-        quote_no: str | None,
+        quotation_id: str | None,
+        quotation_no: str | None,
         remark: str | None,
         status: str,
         owner_user_id: str,
@@ -74,8 +78,8 @@ class SampleDeliveryRepository:
             recipient_address=recipient_address,
             express_company=express_company,
             tracking_no=tracking_no,
-            quote_id=quote_id,
-            quote_no=quote_no,
+            quotation_id=quotation_id,
+            quotation_no=quotation_no,
             remark=remark,
             status=status,
             owner_user_id=owner_user_id,
@@ -100,8 +104,8 @@ class SampleDeliveryRepository:
         recipient_address: str,
         express_company: str,
         tracking_no: str | None,
-        quote_id: str | None,
-        quote_no: str | None,
+        quotation_id: str | None,
+        quotation_no: str | None,
         remark: str | None,
         reset_to_draft: bool = False,
     ) -> SampleDeliveryRow | None:
@@ -122,8 +126,8 @@ class SampleDeliveryRepository:
         delivery.recipient_address = recipient_address
         delivery.express_company = express_company
         delivery.tracking_no = tracking_no
-        delivery.quote_id = quote_id
-        delivery.quote_no = quote_no
+        delivery.quotation_id = quotation_id
+        delivery.quotation_no = quotation_no
         delivery.remark = remark
         if reset_to_draft:
             delivery.status = "draft"
@@ -586,30 +590,19 @@ class SampleDeliveryRepository:
         customer_id: str | None,
         product_id: str | None,
     ) -> tuple[list[SampleDeliveryRow], int]:
-        statement = (
-            select(SampleDelivery)
-            .join(SampleDeliveryLine, SampleDeliveryLine.delivery_id == SampleDelivery.id)
-            .where(SampleDelivery.status.in_(REPORTABLE_SAMPLE_DELIVERY_STATUSES))
+        rows, total = await fetch_quote_history(
+            self.session,
+            customer_id=customer_id,
+            product_id=product_id,
         )
-        count_statement = (
-            select(func.count(distinct(SampleDelivery.id)))
-            .select_from(SampleDelivery)
-            .join(SampleDeliveryLine, SampleDeliveryLine.delivery_id == SampleDelivery.id)
-            .where(SampleDelivery.status.in_(REPORTABLE_SAMPLE_DELIVERY_STATUSES))
-        )
-        if customer_id:
-            statement = statement.where(SampleDelivery.customer_id == customer_id)
-            count_statement = count_statement.where(SampleDelivery.customer_id == customer_id)
-        if product_id:
-            statement = statement.where(SampleDeliveryLine.product_id == product_id)
-            count_statement = count_statement.where(SampleDeliveryLine.product_id == product_id)
-        statement = statement.order_by(
-            SampleDelivery.delivery_date.desc(),
-            SampleDelivery.code.asc(),
-        )
-        rows = await self._scalars(statement)
-        total = await self.session.scalar(count_statement)
-        return [self._map_delivery(row) for row in rows], int(total or 0)
+        return [self._map_delivery(row) for row in rows], total
+
+    async def list_by_quotation_id(
+        self,
+        quotation_id: str,
+    ) -> tuple[list[SampleDeliveryRow], int]:
+        rows, total = await fetch_by_quotation_id(self.session, quotation_id)
+        return [self._map_delivery(row) for row in rows], total
 
     def _apply_report_filters(
         self,
@@ -653,8 +646,8 @@ class SampleDeliveryRepository:
             recipient_address=delivery.recipient_address,
             express_company=delivery.express_company,
             tracking_no=delivery.tracking_no,
-            quote_id=delivery.quote_id,
-            quote_no=delivery.quote_no,
+            quotation_id=delivery.quotation_id,
+            quotation_no=delivery.quotation_no,
             remark=delivery.remark,
             status=delivery.status,
             submitted_at=delivery.submitted_at,

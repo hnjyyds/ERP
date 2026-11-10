@@ -1,4 +1,7 @@
+import pytest
 from httpx import AsyncClient
+
+pytestmark = pytest.mark.usefixtures("reference_master_data")
 
 
 async def _login_token(
@@ -250,7 +253,7 @@ async def test_sample_request_filters_by_date_range_and_converts_completed_reque
         headers=headers,
         json=_sample_record_payload_from_request(code="SM-FROM-SR-DUP"),
     )
-    assert duplicate_response.status_code == 422
+    assert duplicate_response.status_code == 409
 
 
 async def test_sample_request_rejects_unknown_status(

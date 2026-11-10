@@ -3,6 +3,7 @@ from decimal import Decimal
 from io import StringIO
 
 from app.db.uow import UnitOfWork
+from app.modules.masterdata.validation import MasterDataValidator
 from app.modules.sample.records.repositories import (
     SampleFollowupEventRow,
     SampleImageRow,
@@ -55,6 +56,7 @@ class SampleRecordService:
     ) -> None:
         self._repository = repository
         self._data_scope_resolver = data_scope_resolver
+        self._masterdata = MasterDataValidator(repository.session)
 
     async def create_record(
         self,
@@ -65,6 +67,10 @@ class SampleRecordService:
         self._require(current_user, "sample:record:edit")
         self._validate_sample_type(payload.sample_type)
         self._validate_status(payload.status)
+        self._validate_source_pair(payload)
+        await self._masterdata.customer(payload.customer_id)
+        await self._masterdata.product(payload.product_id)
+        await self._masterdata.supplier(payload.supplier_id)
 
         async def create_record_row(code: str) -> SampleRecordRow:
             async with UnitOfWork(self._repository.session):
@@ -406,6 +412,10 @@ class SampleRecordService:
     def _validate_status(self, status: str) -> None:
         if status not in VALID_SAMPLE_RECORD_STATUSES:
             raise ValueError("样品状态无效")
+
+    def _validate_source_pair(self, payload: SampleRecordCreate) -> None:
+        if bool(payload.source_type) != bool(payload.source_id):
+            raise ValueError("来源类型与来源 ID 必须同时填写")
 
     def _validate_stock_event(self, event_type: str) -> None:
         if event_type not in VALID_SAMPLE_STOCK_EVENT_TYPES:
