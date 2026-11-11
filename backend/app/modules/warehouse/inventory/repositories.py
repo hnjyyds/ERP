@@ -2,11 +2,15 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Select, func, or_, select
+from sqlalchemy import Select, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.pagination import resolve_limit, resolve_offset
-from app.modules.warehouse.inventory.models import InventoryBalance, InventoryLedger
+from app.modules.warehouse.inventory.models import (
+    InventoryBalance,
+    InventoryLedger,
+    PendingInspection,
+)
 
 
 @dataclass(frozen=True)
@@ -57,6 +61,30 @@ class ProductLedgerEntryRow:
     unit: str
     warehouse_name: str
     location_name: str
+
+
+@dataclass(frozen=True)
+class PendingInspectionRow:
+    id: str
+    inbound_order_id: str
+    inbound_order_code: str
+    inbound_order_line_id: str
+    purchase_contract_id: str
+    purchase_contract_line_id: str | None
+    warehouse_id: str
+    warehouse_name: str
+    location_id: str
+    location_name: str
+    product_id: str | None
+    product_code: str | None
+    product_name: str
+    quantity: str
+    unit: str
+    status: str
+    inspection_id: str | None
+    inspection_code: str | None
+    resolved_at: datetime | None
+    created_at: datetime
 
 
 class InventoryRepository:
@@ -198,6 +226,81 @@ class InventoryRepository:
         self.session.add(ledger)
         await self.session.flush()
         return self._map_ledger(ledger)
+
+    async def add_pending_inspection(
+        self,
+        *,
+        inbound_order_id: str,
+        inbound_order_code: str,
+        inbound_order_line_id: str,
+        purchase_contract_id: str,
+        purchase_contract_line_id: str | None,
+        warehouse_id: str,
+        warehouse_name: str,
+        location_id: str,
+        location_name: str,
+        product_id: str | None,
+        product_code: str | None,
+        product_name: str,
+        quantity: Decimal | str,
+        unit: str,
+    ) -> PendingInspectionRow:
+        pending = PendingInspection(
+            inbound_order_id=inbound_order_id,
+            inbound_order_code=inbound_order_code,
+            inbound_order_line_id=inbound_order_line_id,
+            purchase_contract_id=purchase_contract_id,
+            purchase_contract_line_id=purchase_contract_line_id,
+            warehouse_id=warehouse_id,
+            warehouse_name=warehouse_name,
+            location_id=location_id,
+            location_name=location_name,
+            product_id=product_id,
+            product_code=product_code,
+            product_name=product_name,
+            quantity=Decimal(str(quantity)),
+            unit=unit,
+            status="pending",
+        )
+        self.session.add(pending)
+        await self.session.flush()
+        return self._map_pending(pending)
+
+    async def list_open_pending_inspections(
+        self,
+        purchase_contract_id: str,
+    ) -> list[PendingInspectionRow]:
+        rows = await self.session.scalars(
+            select(PendingInspection)
+            .where(PendingInspection.purchase_contract_id == purchase_contract_id)
+            .where(PendingInspection.status == "pending")
+            .order_by(PendingInspection.created_at.asc(), PendingInspection.id.asc())
+        )
+        return [self._map_pending(row) for row in rows]
+
+    async def mark_pending_inspection_resolved(
+        self,
+        *,
+        pending_id: str,
+        status: str,
+        inspection_id: str,
+        inspection_code: str,
+        resolved_at: datetime,
+    ) -> bool:
+        """状态条件更新，重复判定同一笔待检量时只生效一次。"""
+        result = await self.session.execute(
+            update(PendingInspection)
+            .where(PendingInspection.id == pending_id)
+            .where(PendingInspection.status == "pending")
+            .values(
+                status=status,
+                inspection_id=inspection_id,
+                inspection_code=inspection_code,
+                resolved_at=resolved_at,
+            )
+        )
+        await self.session.flush()
+        return bool(result.rowcount)
 
     async def list_balances(
         self,
@@ -419,6 +522,30 @@ class InventoryRepository:
             pending_inspection_quantity=self._quantity(balance.pending_inspection_quantity),
             unit=balance.unit,
             created_at=balance.created_at,
+        )
+
+    def _map_pending(self, pending: PendingInspection) -> PendingInspectionRow:
+        return PendingInspectionRow(
+            id=pending.id,
+            inbound_order_id=pending.inbound_order_id,
+            inbound_order_code=pending.inbound_order_code,
+            inbound_order_line_id=pending.inbound_order_line_id,
+            purchase_contract_id=pending.purchase_contract_id,
+            purchase_contract_line_id=pending.purchase_contract_line_id,
+            warehouse_id=pending.warehouse_id,
+            warehouse_name=pending.warehouse_name,
+            location_id=pending.location_id,
+            location_name=pending.location_name,
+            product_id=pending.product_id,
+            product_code=pending.product_code,
+            product_name=pending.product_name,
+            quantity=self._quantity(pending.quantity),
+            unit=pending.unit,
+            status=pending.status,
+            inspection_id=pending.inspection_id,
+            inspection_code=pending.inspection_code,
+            resolved_at=pending.resolved_at,
+            created_at=pending.created_at,
         )
 
     def _map_ledger(self, ledger: InventoryLedger) -> InventoryLedgerRow:

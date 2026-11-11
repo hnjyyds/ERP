@@ -517,6 +517,23 @@ class InboundOrderService:
             occurred_at=order.approved_at or order.inbound_at,
             remark=line.remark,
         )
+        if order.inbound_mode == "pending_inspection":
+            await self._inventory_service.register_pending_inspection(
+                inbound_order_id=order.id,
+                inbound_order_code=order.code,
+                inbound_order_line_id=line.id,
+                purchase_contract_id=order.purchase_contract_id,
+                purchase_contract_line_id=line.purchase_contract_line_id,
+                warehouse_id=order.warehouse_id,
+                warehouse_name=order.warehouse_name,
+                location_id=order.location_id,
+                location_name=order.location_name,
+                product_id=line.product_id,
+                product_code=line.product_code,
+                product_name=line.product_name,
+                quantity=line.quantity,
+                unit=line.unit,
+            )
 
     async def _write_back_purchase_receipt(self, line: InboundOrderLineRow) -> None:
         await self._inbound_plan_repository.increase_line_received_quantity(

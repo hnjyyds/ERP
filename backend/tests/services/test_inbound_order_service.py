@@ -240,12 +240,19 @@ async def test_inbound_order_service_pending_inspection_does_not_increase_availa
             current_user=_warehouse_user(),
             source_id=approved.id,
         )
+        pending_records = await InventoryRepository(session).list_open_pending_inspections(
+            order.purchase_contract_id
+        )
 
     assert approved.status == "approved"
     assert approved.inbound_mode == "pending_inspection"
     assert balances.items[0].available_quantity == "0"
     assert balances.items[0].pending_inspection_quantity == "1000"
     assert ledgers.items[0].stock_status == "pending_inspection"
+    # 待检量按入库单行挂账，QC 判定时可按行处理。
+    assert len(pending_records) == 1
+    assert pending_records[0].inbound_order_id == approved.id
+    assert pending_records[0].quantity == "1000"
 
 
 async def test_inbound_order_service_formal_inbound_requires_passed_qc(

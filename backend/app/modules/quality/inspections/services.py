@@ -24,11 +24,16 @@ from app.modules.quality.inspections.schemas import (
     QualityReinspectionCreate,
     QualityScheduleUpdate,
 )
+from app.modules.quality.inspections.stock_sync import (
+    sync_pending_inventory,
+    write_back_followup_if_passed,
+)
 from app.modules.system.auth.assignees import AssigneeValidator
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.numbering.generator import create_with_generated_code
+from app.modules.warehouse.inventory.services import InventoryService
 
 
 class PermissionDeniedError(Exception):
@@ -51,12 +56,14 @@ class QualityInspectionService:
         purchase_contract_repository: PurchaseContractRepository,
         followup_service: FollowupService,
         data_scope_resolver: DataScopeResolver,
+        inventory_service: InventoryService,
         auth_repository: AuthRepository | None = None,
     ) -> None:
         self._repository = quality_repository
         self._purchase_contract_repository = purchase_contract_repository
         self._followup_service = followup_service
         self._data_scope_resolver = data_scope_resolver
+        self._inventory_service = inventory_service
         self._response_builder = QualityInspectionResponseBuilder(quality_repository)
         self._assignee_validator = AssigneeValidator(
             auth_repository or AuthRepository(quality_repository.session)
@@ -126,6 +133,7 @@ class QualityInspectionService:
                     actor_user_id=current_user.id,
                     actor_user_name=current_user.display_name,
                 )
+                await self._sync_pending_inventory(inspection)
                 return inspection
 
         inspection = await create_with_generated_code(
@@ -208,6 +216,7 @@ class QualityInspectionService:
                 actor_user_id=current_user.id,
                 actor_user_name=current_user.display_name,
             )
+            await self._sync_pending_inventory(updated)
         await self._write_back_followup_if_passed(updated)
         return await self._response_builder.build(updated)
 
@@ -600,17 +609,11 @@ class QualityInspectionService:
         if not issue_line_ids.issubset(expected_line_ids):
             raise ValueError("QC 异常关联了不属于该采购合同的明细")
 
+    async def _sync_pending_inventory(self, inspection: QualityInspectionRow) -> None:
+        await sync_pending_inventory(self._inventory_service, inspection)
+
     async def _write_back_followup_if_passed(self, inspection: QualityInspectionRow) -> None:
-        if inspection.status != "completed" or inspection.result != "passed":
-            return
-        await self._followup_service.complete_node_from_source(
-            purchase_contract_id=inspection.purchase_contract_id,
-            node_code="quality_inspection",
-            source_record_type="quality_inspection",
-            source_record_id=inspection.id,
-            actual_date=inspection.inspected_at,
-            source_summary=f"{inspection.code} QC 查验通过",
-        )
+        await write_back_followup_if_passed(self._followup_service, inspection)
 
     async def _get_accessible_contract(
         self,

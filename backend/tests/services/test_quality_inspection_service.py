@@ -23,6 +23,8 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.auth.seed import seed_system_demo_data
+from app.modules.warehouse.inventory.repositories import InventoryRepository
+from app.modules.warehouse.inventory.services import InventoryService
 
 
 def _make_service(session: AsyncSession) -> QualityInspectionService:
@@ -37,6 +39,7 @@ def _make_service(session: AsyncSession) -> QualityInspectionService:
             data_scope_resolver=DataScopeResolver(AuthRepository(session)),
         ),
         data_scope_resolver=DataScopeResolver(AuthRepository(session)),
+        inventory_service=InventoryService(InventoryRepository(session)),
     )
 
 
@@ -164,6 +167,146 @@ async def _create_approved_contract(
     )
     assert approved is not None
     return approved.id, line.id
+
+
+async def test_quality_inspection_pass_converts_pending_stock_by_inbound_line(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        purchase_repository = PurchaseContractRepository(session)
+        contract_id, line_id = await _create_approved_contract(purchase_repository)
+        await _seed_pending_stock(session, contract_id=contract_id, line_id=line_id)
+        service = _make_service(session)
+
+        inspection = await service.create_inspection(
+            current_user=_quality_user(),
+            payload=QualityInspectionCreate(
+                code="QC-SVC-PASS-PENDING",
+                purchase_contract_id=contract_id,
+                inspected_at=date(2026, 8, 19),
+                result="passed",
+                inspector_id="u-qc",
+                inspector_name="QC 张工",
+                issue_summary=None,
+                attachment_group_id=None,
+                lines=[
+                    QualityInspectionLineCreate(
+                        purchase_contract_line_id=line_id,
+                        product_name="Eco Shopping Bag",
+                        inspected_quantity="1000",
+                        failed_quantity="0",
+                        unit="pcs",
+                        result="passed",
+                    )
+                ],
+                issues=[],
+            ),
+        )
+        balances, _ = await InventoryRepository(session).list_balances(q="BAG-40")
+        pending_rows = await InventoryRepository(session).list_open_pending_inspections(contract_id)
+
+    assert inspection.result == "passed"
+    assert len(balances) == 1
+    assert balances[0].available_quantity == "1000"
+    assert balances[0].pending_inspection_quantity == "0"
+    assert pending_rows == []
+
+
+async def test_quality_inspection_failed_deducts_pending_and_writes_return_outflow(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        purchase_repository = PurchaseContractRepository(session)
+        contract_id, line_id = await _create_approved_contract(purchase_repository)
+        await _seed_pending_stock(session, contract_id=contract_id, line_id=line_id)
+        service = _make_service(session)
+
+        inspection = await service.create_inspection(
+            current_user=_quality_user(),
+            payload=QualityInspectionCreate(
+                code="QC-SVC-FAIL-PENDING",
+                purchase_contract_id=contract_id,
+                inspected_at=date(2026, 8, 19),
+                result="failed",
+                inspector_id="u-qc",
+                inspector_name="QC 张工",
+                issue_summary="外箱破损",
+                attachment_group_id=None,
+                lines=[
+                    QualityInspectionLineCreate(
+                        purchase_contract_line_id=line_id,
+                        product_name="Eco Shopping Bag",
+                        inspected_quantity="1000",
+                        failed_quantity="1000",
+                        unit="pcs",
+                        result="failed",
+                    )
+                ],
+                issues=[
+                    QualityInspectionIssueCreate(
+                        issue_type="包装破损",
+                        severity="major",
+                        description="整批外箱破损",
+                        corrective_action="人工发起退货",
+                        attachment_group_id=None,
+                    )
+                ],
+            ),
+        )
+        balances, _ = await InventoryRepository(session).list_balances(q="BAG-40")
+        ledgers, _ = await InventoryRepository(session).list_ledgers(source_id=inspection.id)
+        pending_rows = await InventoryRepository(session).list_open_pending_inspections(contract_id)
+
+    assert inspection.result == "failed"
+    assert balances[0].available_quantity == "0"
+    assert balances[0].pending_inspection_quantity == "0"
+    assert len(ledgers) == 1
+    assert ledgers[0].direction == "out"
+    assert ledgers[0].stock_status == "rejected"
+    assert ledgers[0].quantity == "1000"
+    assert ledgers[0].source_type == "quality_inspection"
+    assert pending_rows == []
+
+
+async def _seed_pending_stock(
+    session: AsyncSession,
+    *,
+    contract_id: str,
+    line_id: str,
+    quantity: str = "1000",
+) -> None:
+    repository = InventoryRepository(session)
+    await repository.increase_balance(
+        warehouse_id="wh-ningbo",
+        warehouse_name="宁波总仓",
+        location_id="loc-a-01",
+        location_name="A-01",
+        product_id="product-bag",
+        product_code="BAG-40",
+        product_name="Eco Shopping Bag",
+        available_delta="0",
+        pending_delta=quantity,
+        unit="pcs",
+    )
+    await repository.add_pending_inspection(
+        inbound_order_id="io-qc-1",
+        inbound_order_code="IO-QC-1",
+        inbound_order_line_id=f"iol-{contract_id}",
+        purchase_contract_id=contract_id,
+        purchase_contract_line_id=line_id,
+        warehouse_id="wh-ningbo",
+        warehouse_name="宁波总仓",
+        location_id="loc-a-01",
+        location_name="A-01",
+        product_id="product-bag",
+        product_code="BAG-40",
+        product_name="Eco Shopping Bag",
+        quantity=quantity,
+        unit="pcs",
+    )
+    await session.commit()
 
 
 async def test_quality_inspection_service_records_failed_result_and_blocks_formal_inbound(

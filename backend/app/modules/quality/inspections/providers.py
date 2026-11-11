@@ -12,6 +12,8 @@ from app.modules.quality.inspections.services import QualityInspectionService
 from app.modules.sample.records.repositories import SampleRecordRepository
 from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
+from app.modules.warehouse.inventory.repositories import InventoryRepository
+from app.modules.warehouse.inventory.services import InventoryService
 
 
 def get_quality_inspection_service(
@@ -29,5 +31,6 @@ def get_quality_inspection_service(
             data_scope_resolver=DataScopeResolver(auth_repository),
         ),
         data_scope_resolver=DataScopeResolver(auth_repository),
+        inventory_service=InventoryService(InventoryRepository(session)),
         auth_repository=auth_repository,
     )
