@@ -12,6 +12,7 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.auth.seed import seed_system_demo_data
+from app.modules.warehouse.errors import DocumentStatusConflictError
 from app.modules.warehouse.inventory.repositories import InventoryRepository
 from app.modules.warehouse.inventory.services import InventoryService
 from app.modules.warehouse.outbound_orders.repositories import OutboundOrderRepository
@@ -308,6 +309,52 @@ async def test_outbound_order_service_formal_outbound_deducts_stock_and_followup
     assert outbound_node is not None
     assert outbound_node.status == "completed"
     assert outbound_node.actual_date == date(2026, 9, 30)
+
+
+async def test_outbound_order_service_approval_is_status_conditional(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        await seed_system_demo_data(session)
+        plan_id, _ = await _prepare_scheduled_outbound_plan(session)
+        service = _service(session)
+        order = await service.generate_from_plan(
+            current_user=_warehouse_user(),
+            payload=_payload(plan_id),
+        )
+        submitted = await service.submit_order(
+            current_user=_warehouse_user(),
+            order_id=order.id,
+            payload=OutboundOrderSubmit(reviewer_id="u-admin"),
+        )
+        repository = OutboundOrderRepository(session)
+        first = await repository.approve_order(
+            submitted.id,
+            date(2026, 9, 30),
+            reviewer_id="u-boss",
+            reviewer_name="演示管理员",
+        )
+        second = await repository.approve_order(
+            submitted.id,
+            date(2026, 9, 30),
+            reviewer_id="u-boss",
+            reviewer_name="演示管理员",
+        )
+        assert first is not None
+        assert first.status == "approved"
+        # 并发审批时只有第一个状态条件更新能成功。
+        assert second is None
+
+        with pytest.raises(DocumentStatusConflictError):
+            await service.approve_order(
+                current_user=_outbound_reviewer(),
+                order_id=submitted.id,
+                payload=OutboundOrderApprove(
+                    reviewer_name="业务主管",
+                    approved_at=date(2026, 9, 30),
+                    allow_negative=False,
+                ),
+            )
 
 
 async def test_outbound_order_service_cancel_draft_keeps_code_and_hides_from_default_list(

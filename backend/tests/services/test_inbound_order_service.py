@@ -12,6 +12,7 @@ from app.modules.system.auth.data_scope import DataScopeResolver
 from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.auth.seed import seed_system_demo_data
+from app.modules.warehouse.errors import DocumentStatusConflictError
 from app.modules.warehouse.inbound_orders.repositories import InboundOrderRepository
 from app.modules.warehouse.inbound_orders.schemas import (
     InboundOrderApprove,
@@ -253,6 +254,47 @@ async def test_inbound_order_service_pending_inspection_does_not_increase_availa
     assert len(pending_records) == 1
     assert pending_records[0].inbound_order_id == approved.id
     assert pending_records[0].quantity == "1000"
+
+
+async def test_inbound_order_service_approval_is_status_conditional(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        _, _, plan_id = await _prepare_plan(session)
+        service = _make_service(session)
+        order = await service.generate_from_plan(
+            current_user=_warehouse_user(),
+            payload=_payload(plan_id, inbound_mode="pending_inspection"),
+        )
+        submitted = await service.submit_order(
+            current_user=_warehouse_user(),
+            order_id=order.id,
+            payload=InboundOrderSubmit(reviewer_id="u-001"),
+        )
+        repository = InboundOrderRepository(session)
+        first = await repository.approve_order(
+            submitted.id,
+            "u-001",
+            "演示业务主管",
+            date(2026, 8, 30),
+        )
+        second = await repository.approve_order(
+            submitted.id,
+            "u-001",
+            "演示业务主管",
+            date(2026, 8, 30),
+        )
+        assert first is not None
+        assert first.status == "approved"
+        # 并发审批时只有第一个状态条件更新能成功。
+        assert second is None
+
+        with pytest.raises(DocumentStatusConflictError):
+            await service.approve_order(
+                current_user=_business_approver(),
+                order_id=submitted.id,
+                payload=InboundOrderApprove(approved_at=date(2026, 8, 30)),
+            )
 
 
 async def test_inbound_order_service_formal_inbound_requires_passed_qc(

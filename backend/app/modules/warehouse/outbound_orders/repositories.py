@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Select, func, or_, select
+from sqlalchemy import Select, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.pagination import resolve_limit, resolve_offset
@@ -310,17 +310,22 @@ class OutboundOrderRepository:
         reviewer_id: str | None = None,
         reviewer_name: str | None = None,
     ) -> OutboundOrderRow | None:
-        order = await self.session.get(OutboundOrder, order_id)
-        if order is None:
-            return None
-        order.status = "approved"
+        """状态条件更新：并发审批时只有一个请求能完成出库。"""
+        values: dict[str, object] = {"status": "approved", "approved_at": approved_at}
         if reviewer_id is not None:
-            order.reviewer_id = reviewer_id
+            values["reviewer_id"] = reviewer_id
         if reviewer_name is not None:
-            order.reviewer_name = reviewer_name
-        order.approved_at = approved_at
+            values["reviewer_name"] = reviewer_name
+        result = await self.session.execute(
+            update(OutboundOrder)
+            .where(OutboundOrder.id == order_id)
+            .where(OutboundOrder.status == "submitted")
+            .values(**values)
+        )
+        if not result.rowcount:
+            return None
         await self.session.flush()
-        return self._map_order(order)
+        return await self.get_order(order_id)
 
     async def cancel_order(
         self,

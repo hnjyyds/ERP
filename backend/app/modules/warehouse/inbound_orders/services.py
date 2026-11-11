@@ -13,6 +13,7 @@ from app.modules.system.auth.repositories import AuthRepository
 from app.modules.system.auth.schemas import CurrentUserResponse
 from app.modules.system.dashboard.notification_writer import notify
 from app.modules.system.numbering.generator import create_with_generated_code
+from app.modules.warehouse.errors import DocumentStatusConflictError
 from app.modules.warehouse.inbound_orders.repositories import (
     InboundOrderLineRow,
     InboundOrderRepository,
@@ -190,7 +191,7 @@ class InboundOrderService:
         self._require(current_user, "warehouse:inbound_order:approve")
         order = await self._get_accessible_order(current_user=current_user, order_id=order_id)
         if order.status != "submitted":
-            raise ValueError("只有已提交入库单可以审批")
+            raise DocumentStatusConflictError
         if not can_approve_assigned_record(
             current_user_id=current_user.id,
             reviewer_id=order.reviewer_id,
@@ -211,7 +212,7 @@ class InboundOrderService:
                 payload.approved_at,
             )
             if approved is None:
-                raise InboundOrderNotFoundError
+                raise DocumentStatusConflictError
             for line in lines:
                 await self._post_inventory(order=approved, line=line)
                 if approved.inbound_mode == "formal":

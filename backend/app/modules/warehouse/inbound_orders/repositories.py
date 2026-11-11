@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Select, func, or_, select
+from sqlalchemy import Select, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.pagination import resolve_limit, resolve_offset
@@ -287,15 +287,22 @@ class InboundOrderRepository:
         reviewer_name: str,
         approved_at: date,
     ) -> InboundOrderRow | None:
-        order = await self.session.get(InboundOrder, order_id)
-        if order is None:
+        """状态条件更新：并发审批时只有一个请求能完成入库。"""
+        result = await self.session.execute(
+            update(InboundOrder)
+            .where(InboundOrder.id == order_id)
+            .where(InboundOrder.status == "submitted")
+            .values(
+                status="approved",
+                reviewer_id=reviewer_id,
+                reviewer_name=reviewer_name,
+                approved_at=approved_at,
+            )
+        )
+        if not result.rowcount:
             return None
-        order.status = "approved"
-        order.reviewer_id = reviewer_id
-        order.reviewer_name = reviewer_name
-        order.approved_at = approved_at
         await self.session.flush()
-        return self._map_order(order)
+        return await self.get_order(order_id)
 
     async def cancel_order(
         self,
