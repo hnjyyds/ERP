@@ -1,5 +1,7 @@
 from datetime import date
 
+from sqlalchemy.exc import IntegrityError
+
 from app.db.uow import UnitOfWork
 from app.modules.purchase.contracts.repositories import (
     PurchaseContractRepository,
@@ -36,6 +38,11 @@ class InboundPlanPurchaseContractNotFoundError(Exception):
     pass
 
 
+class InboundPlanAlreadyGeneratedError(Exception):
+    def __init__(self, plan_code: str) -> None:
+        super().__init__(f"入库计划已生成，单号：{plan_code}")
+
+
 class InboundPlanService:
     def __init__(
         self,
@@ -61,12 +68,21 @@ class InboundPlanService:
         )
         if contract.approval_status != "approved":
             raise ValueError("采购合同审批通过后才能生成入库计划")
-        async with UnitOfWork(self._repository.session):
-            plan = await self.ensure_plan_for_contract(
-                contract=contract,
-                inbound_type=payload.inbound_type,
-                planned_date=payload.planned_date,
-            )
+        existing = await self._repository.get_plan_by_contract(contract.id)
+        if existing is not None:
+            raise InboundPlanAlreadyGeneratedError(existing.code)
+        try:
+            async with UnitOfWork(self._repository.session):
+                plan = await self._create_plan_for_contract(
+                    contract=contract,
+                    inbound_type=payload.inbound_type,
+                    planned_date=payload.planned_date,
+                )
+        except IntegrityError:
+            existing = await self._repository.get_plan_by_contract(contract.id)
+            if existing is not None:
+                raise InboundPlanAlreadyGeneratedError(existing.code) from None
+            raise
         return await self._plan_response(plan)
 
     async def ensure_plan_for_contract(
@@ -79,6 +95,19 @@ class InboundPlanService:
         existing = await self._repository.get_plan_by_contract(contract.id)
         if existing is not None:
             return existing
+        return await self._create_plan_for_contract(
+            contract=contract,
+            inbound_type=inbound_type,
+            planned_date=planned_date,
+        )
+
+    async def _create_plan_for_contract(
+        self,
+        *,
+        contract: PurchaseContractRow,
+        inbound_type: str,
+        planned_date: date | None,
+    ) -> InboundPlanRow:
         self._validate_inbound_type(inbound_type)
         lines = await self._purchase_contract_repository.list_lines(contract.id)
         if not lines:

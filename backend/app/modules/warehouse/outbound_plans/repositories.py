@@ -123,13 +123,11 @@ class OutboundPlanRepository:
         *,
         source_type: str,
         source_id: str,
-        outbound_type: str,
     ) -> OutboundPlanRow | None:
         plan = await self.session.scalar(
             select(OutboundPlan)
             .where(OutboundPlan.source_type == source_type)
             .where(OutboundPlan.source_id == source_id)
-            .where(OutboundPlan.outbound_type == outbound_type)
         )
         if plan is None:
             return None

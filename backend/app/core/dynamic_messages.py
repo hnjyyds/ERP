@@ -20,6 +20,14 @@ DYNAMIC_PATTERNS: list[tuple[re.Pattern[str], str]] = [
         re.compile(r"^该采购合同已重开为 (?P<code>.+)，不能重复重开$"),
         "This purchase contract has already been reissued as {code}",
     ),
+    (
+        re.compile(r"^入库计划已生成，单号：(?P<code>.+)$"),
+        "An inbound plan has already been generated: {code}",
+    ),
+    (
+        re.compile(r"^出库计划已生成，单号：(?P<code>.+)$"),
+        "An outbound plan has already been generated: {code}",
+    ),
     (re.compile(r"^缺少必填字段：(?P<fields>.+)$"), "Missing required fields: {fields}"),
     (
         re.compile(r"^(?P<field>\S+) 必须在 0 到 1（或 0%-100%）之间$"),

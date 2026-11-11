@@ -13,6 +13,7 @@ from app.modules.warehouse.inbound_plans.schemas import (
     InboundPlanSchedule,
 )
 from app.modules.warehouse.inbound_plans.services import (
+    InboundPlanAlreadyGeneratedError,
     InboundPlanService,
     PermissionDeniedError,
 )
@@ -143,6 +144,33 @@ async def test_inbound_plan_service_generates_from_approved_contract_and_schedul
     assert scheduled.status == "scheduled"
     assert scheduled.warehouse_name == "宁波总仓"
     assert listed.total == 1
+
+
+async def test_inbound_plan_service_rejects_duplicate_generation(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        purchase_repository = PurchaseContractRepository(session)
+        contract_id = await _create_contract(purchase_repository, approval_status="approved")
+        service = _make_service(session, purchase_contract_repository=purchase_repository)
+        payload = InboundPlanGenerateFromPurchaseContract(
+            purchase_contract_id=contract_id,
+            inbound_type="purchase_inbound",
+            planned_date=None,
+        )
+
+        first = await service.generate_from_purchase_contract(
+            current_user=_warehouse_user(),
+            payload=payload,
+        )
+        with pytest.raises(InboundPlanAlreadyGeneratedError) as exc_info:
+            await service.generate_from_purchase_contract(
+                current_user=_warehouse_user(),
+                payload=payload,
+            )
+
+    assert first.code == "IP-PC-INP-approved"
+    assert first.code in str(exc_info.value)
 
 
 async def test_inbound_plan_service_rejects_unapproved_contract(

@@ -210,6 +210,8 @@ def domain_exception_definition(
         "SampleRecordAlreadyCreatedError",
         "SampleFeeAlreadyRequestedError",
         "QuotationContractAlreadyGeneratedError",
+        "InboundPlanAlreadyGeneratedError",
+        "OutboundPlanAlreadyGeneratedError",
     }:
         code = AppStatusCode.CONFLICT
     elif "NotFound" in class_name:

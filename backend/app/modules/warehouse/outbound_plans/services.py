@@ -1,3 +1,5 @@
+from sqlalchemy.exc import IntegrityError
+
 from app.db.uow import UnitOfWork
 from app.modules.sales.shipments.repositories import (
     ShipmentLineRow,
@@ -36,6 +38,11 @@ class OutboundPlanShipmentNotFoundError(Exception):
     pass
 
 
+class OutboundPlanAlreadyGeneratedError(Exception):
+    def __init__(self, plan_code: str) -> None:
+        super().__init__(f"出库计划已生成，单号：{plan_code}")
+
+
 class OutboundPlanService:
     def __init__(
         self,
@@ -65,28 +72,36 @@ class OutboundPlanService:
         existing = await self._repository.get_plan_by_source(
             source_type="shipment_plan",
             source_id=shipment.id,
-            outbound_type=payload.outbound_type,
         )
         if existing is not None:
-            return await self._plan_response(existing)
+            raise OutboundPlanAlreadyGeneratedError(existing.code)
         shipment_lines = await self._shipment_repository.list_lines(shipment.id)
         if not shipment_lines:
             raise ValueError("出货明细没有商品，无法生成出库计划")
-        async with UnitOfWork(self._repository.session):
-            plan = await self._repository.create_plan(
-                code=f"OP-{shipment.code}",
+        try:
+            async with UnitOfWork(self._repository.session):
+                plan = await self._repository.create_plan(
+                    code=f"OP-{shipment.code}",
+                    source_type="shipment_plan",
+                    source_id=shipment.id,
+                    source_code=shipment.code,
+                    outbound_type=payload.outbound_type,
+                    planned_date=payload.planned_date or shipment.planned_ship_date,
+                    status="planned",
+                    customer_id=shipment.customer_id,
+                    customer_name=shipment.customer_name,
+                    owner_user_id=shipment.owner_user_id,
+                )
+                for line in shipment_lines:
+                    await self._add_line_from_shipment(plan=plan, line=line)
+        except IntegrityError:
+            existing = await self._repository.get_plan_by_source(
                 source_type="shipment_plan",
                 source_id=shipment.id,
-                source_code=shipment.code,
-                outbound_type=payload.outbound_type,
-                planned_date=payload.planned_date or shipment.planned_ship_date,
-                status="planned",
-                customer_id=shipment.customer_id,
-                customer_name=shipment.customer_name,
-                owner_user_id=shipment.owner_user_id,
             )
-            for line in shipment_lines:
-                await self._add_line_from_shipment(plan=plan, line=line)
+            if existing is not None:
+                raise OutboundPlanAlreadyGeneratedError(existing.code) from None
+            raise
         return await self._plan_response(plan)
 
     async def list_plans(

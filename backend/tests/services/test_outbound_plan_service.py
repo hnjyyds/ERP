@@ -13,6 +13,7 @@ from app.modules.warehouse.outbound_plans.schemas import (
     OutboundPlanSchedule,
 )
 from app.modules.warehouse.outbound_plans.services import (
+    OutboundPlanAlreadyGeneratedError,
     OutboundPlanService,
     PermissionDeniedError,
 )
@@ -145,6 +146,28 @@ async def test_outbound_plan_service_generates_from_approved_shipment_and_schedu
     assert scheduled.location_name == "成品区 A-01"
     assert listed.total == 1
     assert listed.items[0].source_code == "SP-OP-approved"
+
+
+async def test_outbound_plan_service_rejects_duplicate_generation(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with session_factory() as session:
+        shipment_id = await _prepare_shipment(session)
+        service = _make_service(session)
+        payload = _payload(shipment_id)
+
+        first = await service.generate_from_shipment(
+            current_user=_warehouse_user(),
+            payload=payload,
+        )
+        with pytest.raises(OutboundPlanAlreadyGeneratedError) as exc_info:
+            await service.generate_from_shipment(
+                current_user=_warehouse_user(),
+                payload=payload,
+            )
+
+    assert first.code == "OP-SP-OP-approved"
+    assert first.code in str(exc_info.value)
 
 
 async def test_outbound_plan_service_rejects_unapproved_shipment(
