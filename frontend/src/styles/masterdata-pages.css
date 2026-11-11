@@ -16,7 +16,7 @@
    与 summary-strip margin 叠加导致的不一致）。 */
 .masterdata-page {
   display: grid;
-  gap: 14px;
+  gap: var(--ui-space-4);
   align-content: start;
   min-width: 0;
 }
@@ -34,12 +34,12 @@
 /* 列表在上、明细在下的单列上下分层 */
 .masterdata-page .business-grid {
   grid-template-columns: 1fr;
-  gap: 14px;
+  gap: var(--ui-space-4);
 }
 
 /* 面板内边距与自适应高度（空状态不强撑，整页尽量收进一屏） */
+/* 内边距由契约层 body .workspace-panel 统一提供，这里不再重复声明横向 padding。 */
 .masterdata-page .workspace-panel {
-  padding: 16px 18px;
   min-height: 0;
 }
 

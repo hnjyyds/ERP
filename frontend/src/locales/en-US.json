@@ -79,6 +79,7 @@
     "viewAll": "View all",
     "notSet": "Not set",
     "none": "None",
+    "noData": "No data",
     "approvalAssignee": {
       "defaultLabel": "Approver",
       "selectPlaceholder": "Select {label}",
@@ -295,6 +296,7 @@
     "manageShortcuts": "Manage shortcuts",
     "shortcutEmpty": "No shortcuts yet",
     "shortcutRecommended": "Start from a frequently used page; click to open",
+    "shortcutRecommendedLabel": "Recommended",
     "shortcutName": "Name",
     "shortcutTarget": "Target page",
     "shortcutTargetPlaceholder": "Select a target page",

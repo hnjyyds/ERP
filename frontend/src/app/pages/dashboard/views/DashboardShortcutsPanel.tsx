@@ -146,6 +146,9 @@ export function DashboardShortcutsPanel({
             <strong>{t('dashboard.shortcutEmpty')}</strong>
             <span>{t('dashboard.shortcutRecommended')}</span>
           </div>
+          <span className="dashboard-shortcut-suggested-label">
+            {t('dashboard.shortcutRecommendedLabel')}
+          </span>
           <div className="dashboard-shortcut-grid">
             {recommended.map((option) => {
               const Icon = shortcutIcon('layout-dashboard')

@@ -844,3 +844,50 @@ h2 {
   background: var(--erp-surface-soft);
   padding: 14px;
 }
+
+/* 统一空状态（shared/ui/EmptyState）：居中、无虚线框、无底色、不叠加横向 padding。 */
+.ui-empty-state {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-6) 0;
+  text-align: center;
+}
+
+.ui-empty-state.is-page {
+  min-height: 220px;
+}
+
+.ui-empty-state.is-compact {
+  min-height: 96px;
+}
+
+.ui-empty-state-icon {
+  display: inline-grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  color: var(--ui-text-tertiary);
+}
+
+.ui-empty-state-title {
+  margin: 0;
+  color: var(--ui-text-secondary);
+  font-size: var(--ui-font-body);
+  font-weight: var(--ui-weight-medium);
+  line-height: 20px;
+}
+
+.ui-empty-state-description {
+  margin: 0;
+  color: var(--ui-text-tertiary);
+  font-size: var(--ui-font-label);
+  line-height: 18px;
+}
+
+.ui-empty-state-action {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--ui-space-1);
+}

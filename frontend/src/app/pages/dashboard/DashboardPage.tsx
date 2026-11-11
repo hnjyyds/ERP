@@ -388,17 +388,6 @@ export function DashboardPage({
         onNavigate={onNavigate}
       />
 
-      <div className="dashboard-toolbar" aria-label={t('dashboard.aria')}>
-        <button type="button" onClick={openScheduleModal}>
-          <CalendarClock size={15} />
-          <span>{t('dashboard.addSchedule')}</span>
-        </button>
-        <button type="button" onClick={openAnnouncementModal}>
-          <FileText size={15} />
-          <span>{t('dashboard.publishAnnouncement')}</span>
-        </button>
-      </div>
-
       <div className="dashboard-board">
         <DashboardTodoPreviewPanel
           canNavigatePath={canNavigatePath}

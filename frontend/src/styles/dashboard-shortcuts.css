@@ -66,6 +66,12 @@
   font-size: 0.875rem;
 }
 
+.dashboard-shortcut-empty .dashboard-shortcut-suggested-label {
+  color: var(--ui-text-tertiary);
+  font-size: var(--ui-font-label);
+  font-weight: var(--ui-weight-semibold);
+}
+
 .dashboard-shortcut-manager {
   display: flex;
   flex-direction: column;

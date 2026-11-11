@@ -42,6 +42,9 @@
   --ui-space-5: 20px;
   --ui-space-6: 24px;
   --ui-space-8: 32px;
+  /* 页面左右唯一内边距；卡片内容内边距。横向间距只引用这两个变量，不再逐层叠加。 */
+  --ui-page-gutter: var(--ui-space-6);
+  --ui-card-inset: var(--ui-space-4);
   --ui-control-height: 36px;
   --ui-control-height-sm: 28px;
   --ui-touch-height: 44px;

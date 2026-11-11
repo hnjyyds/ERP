@@ -25,16 +25,17 @@ body .react-sidebar {
 body .react-workspace {
   background: var(--ui-bg-page);
   background-image: none;
-  padding: var(--ui-space-5) var(--ui-space-6) var(--ui-space-8);
+  /* 页面级左右内边距只在这里加一次，页面内各层不得再写横向 padding/margin。 */
+  padding: var(--ui-space-5) var(--ui-page-gutter) var(--ui-space-8);
 }
 
 body .react-topbar {
   align-items: center;
-  margin: calc(-1 * var(--ui-space-5)) calc(-1 * var(--ui-space-6)) var(--ui-space-4);
+  margin: calc(-1 * var(--ui-space-5)) calc(-1 * var(--ui-page-gutter)) var(--ui-space-4);
   border-bottom: 1px solid var(--ui-border);
   background: rgba(244, 246, 248, 0.96);
   backdrop-filter: blur(8px);
-  padding: var(--ui-space-3) var(--ui-space-6);
+  padding: var(--ui-space-3) var(--ui-page-gutter);
 }
 
 body .react-topbar .eyebrow {
@@ -219,9 +220,14 @@ body .panel-title svg {
 
 body .toolbar-heading {
   min-height: 0;
-  margin-bottom: var(--ui-space-4);
+  margin-bottom: var(--ui-space-3);
   border-bottom: 0;
   padding: 0;
+}
+
+/* 标题区下间距已由 margin-bottom 统一给出，表格不再叠加 12px。 */
+body .workspace-panel.list-panel .toolbar-heading + .ant-table-wrapper {
+  margin-top: 0;
 }
 
 body section[class*="-page"] .inline-filters {
@@ -974,7 +980,7 @@ body .react-shell-home .dashboard-workbench {
   --dash-weight-body: var(--ui-weight-regular);
   --dash-weight-meta: var(--ui-weight-medium);
   grid-template-rows: auto auto minmax(0, 1fr);
-  gap: var(--ui-space-3);
+  gap: var(--ui-space-4);
   height: auto;
   overflow: visible;
   color: var(--ui-text-primary);
@@ -987,8 +993,8 @@ body .react-shell-home .metric-strip {
 }
 
 body .react-shell-home .metric-cell {
-  min-height: 58px;
-  padding: 8px var(--ui-space-3);
+  min-height: 72px;
+  padding: var(--ui-space-3) var(--ui-card-inset);
 }
 
 body .react-shell-home .metric-strip .metric-icon {
@@ -1037,9 +1043,9 @@ body .react-shell-home .dashboard-toolbar button:focus-visible {
 
 body .react-shell-home .dashboard-board {
   grid-template-columns: minmax(0, 1.86fr) minmax(300px, 1fr);
-  grid-template-rows: auto auto auto;
-  gap: 0 var(--ui-space-6);
-  align-items: start;
+  grid-template-rows: auto auto;
+  gap: var(--ui-space-4);
+  align-items: stretch;
   height: auto;
   overflow: visible;
 }
@@ -1048,31 +1054,25 @@ body .react-shell-home .dashboard-board::before {
   display: none;
 }
 
+/* 工作台统一为独立卡片（模型 A）：外观由卡片自己承担，页面不再逐卡覆盖内边距。 */
 body .react-shell-home .dashboard-panel {
   overflow: visible;
-  border: 0;
-  border-top: 1px solid var(--ui-border-subtle);
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-body .react-shell-home .dashboard-panel-primary,
-body .react-shell-home .dashboard-panel-schedule,
-body .react-shell-home .dashboard-panel-reminders,
-body .react-shell-home .dashboard-announcements-panel {
   min-height: 0;
-  padding: var(--ui-space-4) 0;
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-panel);
+  background: var(--ui-bg-surface);
+  box-shadow: none;
+  padding: var(--ui-card-inset);
 }
 
 body .react-shell-home .dashboard-panel-primary { grid-column: 1; grid-row: 1; }
 body .react-shell-home .dashboard-panel-reminders { grid-column: 2; grid-row: 1; }
-body .react-shell-home .dashboard-panel-schedule { grid-column: 1; grid-row: 2 / span 2; }
+body .react-shell-home .dashboard-panel-schedule { grid-column: 1; grid-row: 2; }
 body .react-shell-home .dashboard-announcements-panel { grid-column: 2; grid-row: 2; }
 
 body .react-shell-home .dashboard-panel-heading {
   align-items: center;
-  min-height: 32px;
+  min-height: 48px;
   margin-bottom: var(--ui-space-3);
 }
 
@@ -1129,9 +1129,9 @@ body .react-shell-home .panel-link-button:focus-visible {
 
 body .react-shell-home .dashboard-task-list {
   overflow: visible;
-  border: 1px solid var(--ui-border-subtle);
-  border-radius: var(--ui-radius-panel);
-  background: var(--ui-bg-surface);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   padding: 0;
 }
 
@@ -1293,14 +1293,14 @@ body .react-shell-home .dashboard-timeline-time strong {
 @media (max-width: 1180px) {
   body .react-shell-home .dashboard-board {
     grid-template-columns: minmax(0, 1.55fr) minmax(270px, 1fr);
-    gap: 0 var(--ui-space-4);
+    gap: var(--ui-space-4);
   }
 }
 
 @media (max-width: 980px) {
   body .react-shell-home .dashboard-board {
     grid-template-columns: 1fr;
-    gap: 0;
+    gap: var(--ui-space-4);
   }
 
   body .react-shell-home .dashboard-panel-primary,
@@ -1309,7 +1309,6 @@ body .react-shell-home .dashboard-timeline-time strong {
   body .react-shell-home .dashboard-announcements-panel {
     grid-column: 1;
     grid-row: auto;
-    padding-block: var(--ui-space-4);
   }
 
   body .react-shell-home .dashboard-panel-primary { order: 1; }

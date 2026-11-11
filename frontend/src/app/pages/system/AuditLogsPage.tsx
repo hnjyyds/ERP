@@ -1,6 +1,7 @@
 import { Button, DatePicker, Input, Select, Space, Table, Tag } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import type { Dayjs } from 'dayjs'
+import { ScrollText } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { exportAuditLogs, listAuditLogs, type AuditLogItem, type AuditLogQuery } from '@/api'
@@ -8,6 +9,7 @@ import { t } from '@/app/appI18n'
 import { formatDateTime } from '@/app/pages/appHelpers'
 import { showError, showSuccess } from '@/shared/errors'
 import { downloadCsv } from '@/shared/print'
+import { ListPageShell } from '@/shared/ui'
 import { useTablePagination } from '@/shared/useTablePagination'
 
 type AuditFilters = {
@@ -177,58 +179,72 @@ export function AuditLogsPage() {
   )
 
   return (
-    <section style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <p style={{ margin: 0, color: 'var(--app-muted)' }}>{t('auditLogs.description')}</p>
+    <ListPageShell icon={<ScrollText size={18} />} title={t('auditLogs.title')}>
+      <p style={{ margin: '0 0 var(--ui-space-3)', color: 'var(--ui-text-secondary)' }}>
+        {t('auditLogs.description')}
+      </p>
 
-      <Space wrap size={12}>
-        <Input
-          allowClear
-          placeholder={t('auditLogs.filter.actorPlaceholder')}
-          style={{ width: 180 }}
-          value={filters.actor}
-          onChange={(event) => setFilters({ ...filters, actor: event.target.value })}
-        />
-        <Select
-          allowClear
-          placeholder={t('auditLogs.filter.resourcePlaceholder')}
-          style={{ width: 160 }}
-          value={filters.resourceType}
-          options={RESOURCE_OPTIONS.map(({ value, labelKey }) => ({
-            value,
-            label: t(labelKey),
-          }))}
-          onChange={(value?: string) => setFilters({ ...filters, resourceType: value })}
-        />
-        <Select
-          allowClear
-          placeholder={t('auditLogs.filter.actionPlaceholder')}
-          style={{ width: 140 }}
-          value={filters.action}
-          options={ACTION_OPTIONS.map(({ value, labelKey }) => ({
-            value,
-            label: t(labelKey),
-          }))}
-          onChange={(value?: string) => setFilters({ ...filters, action: value })}
-        />
-        <Input
-          allowClear
-          placeholder={t('auditLogs.filter.keywordPlaceholder')}
-          style={{ width: 200 }}
-          value={filters.keyword}
-          onChange={(event) => setFilters({ ...filters, keyword: event.target.value })}
-        />
-        <DatePicker.RangePicker
-          value={filters.range}
-          onChange={(range) => setFilters({ ...filters, range })}
-        />
-        <Button type="primary" loading={loading} onClick={search}>
-          {t('auditLogs.filter.search')}
-        </Button>
-        <Button onClick={reset}>{t('auditLogs.filter.reset')}</Button>
-        <Button disabled={exporting} onClick={() => void exportCsv()}>
-          {t('auditLogs.filter.export')}
-        </Button>
-      </Space>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          gap: 'var(--ui-space-3)',
+          marginBottom: 'var(--ui-space-3)',
+        }}
+      >
+        <Space wrap size={12}>
+          <Input
+            allowClear
+            placeholder={t('auditLogs.filter.actorPlaceholder')}
+            style={{ width: 180 }}
+            value={filters.actor}
+            onChange={(event) => setFilters({ ...filters, actor: event.target.value })}
+          />
+          <Select
+            allowClear
+            placeholder={t('auditLogs.filter.resourcePlaceholder')}
+            style={{ width: 160 }}
+            value={filters.resourceType}
+            options={RESOURCE_OPTIONS.map(({ value, labelKey }) => ({
+              value,
+              label: t(labelKey),
+            }))}
+            onChange={(value?: string) => setFilters({ ...filters, resourceType: value })}
+          />
+          <Select
+            allowClear
+            placeholder={t('auditLogs.filter.actionPlaceholder')}
+            style={{ width: 140 }}
+            value={filters.action}
+            options={ACTION_OPTIONS.map(({ value, labelKey }) => ({
+              value,
+              label: t(labelKey),
+            }))}
+            onChange={(value?: string) => setFilters({ ...filters, action: value })}
+          />
+          <Input
+            allowClear
+            placeholder={t('auditLogs.filter.keywordPlaceholder')}
+            style={{ width: 200 }}
+            value={filters.keyword}
+            onChange={(event) => setFilters({ ...filters, keyword: event.target.value })}
+          />
+          <DatePicker.RangePicker
+            value={filters.range}
+            onChange={(range) => setFilters({ ...filters, range })}
+          />
+        </Space>
+        <Space size={8} style={{ marginLeft: 'auto' }}>
+          <Button type="primary" loading={loading} onClick={search}>
+            {t('auditLogs.filter.search')}
+          </Button>
+          <Button onClick={reset}>{t('auditLogs.filter.reset')}</Button>
+          <Button disabled={exporting} onClick={() => void exportCsv()}>
+            {t('auditLogs.filter.export')}
+          </Button>
+        </Space>
+      </div>
 
       <Table<AuditLogItem>
         columns={columns}
@@ -236,7 +252,6 @@ export function AuditLogsPage() {
         loading={loading}
         rowKey="id"
         size="middle"
-        locale={{ emptyText: t('auditLogs.message.empty') }}
         scroll={{ x: 900 }}
         pagination={{
           ...pagination,
@@ -245,6 +260,6 @@ export function AuditLogsPage() {
           },
         }}
       />
-    </section>
+    </ListPageShell>
   )
 }

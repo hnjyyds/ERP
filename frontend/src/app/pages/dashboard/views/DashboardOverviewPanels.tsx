@@ -1,11 +1,21 @@
-import { ArrowRight, Bell, CalendarClock, ClipboardCheck, FileText, Plus } from 'lucide-react'
+import { Bell, CalendarClock, ClipboardCheck, FileText, Plus } from 'lucide-react'
 import { Tag } from 'antd'
 import type { Announcement, NotificationItem, ScheduleEvent, TodoTask } from '@/api'
-import { dashboardAnnouncementsPath, dashboardNotificationsPath, dashboardSchedulesPath, dashboardTodosPath } from '@/app/routes'
-import { PanelTitle } from '@/shared/ui'
+import {
+  dashboardAnnouncementsPath,
+  dashboardNotificationsPath,
+  dashboardSchedulesPath,
+  dashboardTodosPath,
+} from '@/app/routes'
+import { EmptyState, PanelTitle } from '@/shared/ui'
 import { t } from '@/app/appI18n'
 import { formatDateTime, severityTag } from '@/app/pages/appHelpers'
-import { todoDueState, todoDueStateLabel, todoSourceLabel, todoTargetPath } from '../dashboardHelpers'
+import {
+  todoDueState,
+  todoDueStateLabel,
+  todoSourceLabel,
+  todoTargetPath,
+} from '../dashboardHelpers'
 import { DashboardScheduleTimeline } from './DashboardScheduleTimeline'
 
 export function DashboardTodoPreviewPanel({
@@ -103,7 +113,11 @@ export function DashboardTodoPreviewPanel({
                   </div>
                 </div>
                 {canNavigatePath(targetPath) ? (
-                  <button className="table-action" type="button" onClick={() => onNavigate(targetPath)}>
+                  <button
+                    className="table-action"
+                    type="button"
+                    onClick={() => onNavigate(targetPath)}
+                  >
                     {t('dashboard.goHandle')}
                   </button>
                 ) : null}
@@ -111,13 +125,20 @@ export function DashboardTodoPreviewPanel({
             )
           })
         ) : (
-          <div className="dashboard-empty">
-            <span>{t('dashboard.noTodos')}</span>
-            <button className="panel-action-button panel-link-button" type="button" onClick={onOpenTodoModal}>
-              <Plus size={15} />
-              {t('dashboard.addTodo')}
-            </button>
-          </div>
+          <EmptyState
+            action={
+              <button
+                className="panel-action-button panel-link-button"
+                type="button"
+                onClick={onOpenTodoModal}
+              >
+                <Plus size={15} />
+                {t('dashboard.addTodo')}
+              </button>
+            }
+            icon={<ClipboardCheck size={28} />}
+            title={t('dashboard.noTodos')}
+          />
         )}
       </div>
     </section>
@@ -141,13 +162,23 @@ export function DashboardSchedulePreviewPanel({
     <section className="workspace-panel dashboard-panel dashboard-panel-schedule">
       <div className="dashboard-panel-heading">
         <PanelTitle icon={<CalendarClock size={18} />} title={t('dashboard.mySchedule')} />
-        <button
-          className="panel-action-button panel-link-button"
-          type="button"
-          onClick={() => onNavigate(dashboardSchedulesPath)}
-        >
-          {t('common.viewAll')}
-        </button>
+        <div className="dashboard-panel-actions">
+          <button
+            className="panel-action-button panel-link-button"
+            type="button"
+            onClick={onOpenScheduleModal}
+          >
+            <Plus size={15} />
+            {t('dashboard.addSchedule')}
+          </button>
+          <button
+            className="panel-action-button panel-link-button"
+            type="button"
+            onClick={() => onNavigate(dashboardSchedulesPath)}
+          >
+            {t('common.viewAll')}
+          </button>
+        </div>
       </div>
       {previewSchedules.length ? (
         <DashboardScheduleTimeline
@@ -156,13 +187,7 @@ export function DashboardSchedulePreviewPanel({
           onSelect={onSelect}
         />
       ) : (
-        <div className="dashboard-empty">
-          <span>{t('dashboard.noSchedules')}</span>
-          <button className="panel-action-button panel-link-button" type="button" onClick={onOpenScheduleModal}>
-            <Plus size={15} />
-            {t('dashboard.addSchedule')}
-          </button>
-        </div>
+        <EmptyState icon={<CalendarClock size={28} />} title={t('dashboard.noSchedules')} />
       )}
     </section>
   )
@@ -217,17 +242,7 @@ export function DashboardNotificationsPreviewPanel({
             </div>
           ))
         ) : (
-          <div className="dashboard-empty">
-            <span>{t('dashboard.noNotifications')}</span>
-            <button
-              className="panel-action-button panel-link-button"
-              type="button"
-              onClick={() => onNavigate(dashboardNotificationsPath)}
-            >
-              {t('common.viewAll')}
-              <ArrowRight size={15} />
-            </button>
-          </div>
+          <EmptyState icon={<Bell size={28} />} title={t('dashboard.noNotifications')} />
         )}
       </div>
     </section>
@@ -250,6 +265,16 @@ export function DashboardAnnouncementsPreviewPanel({
       <div className="dashboard-panel-heading">
         <PanelTitle icon={<FileText size={18} />} title={t('dashboard.companyAnnouncements')} />
         <div className="dashboard-panel-actions">
+          {canPublishAnnouncement ? (
+            <button
+              className="panel-action-button panel-link-button"
+              type="button"
+              onClick={onPublish}
+            >
+              <Plus size={15} />
+              {t('dashboard.publishAnnouncement')}
+            </button>
+          ) : null}
           <button
             className="panel-action-button panel-link-button"
             type="button"
@@ -270,17 +295,7 @@ export function DashboardAnnouncementsPreviewPanel({
             </article>
           ))
         ) : (
-          <div className="dashboard-empty">
-            <span>{t('dashboard.noAnnouncements')}</span>
-            <button
-              className="panel-action-button panel-link-button"
-              type="button"
-              onClick={canPublishAnnouncement ? onPublish : () => onNavigate(dashboardAnnouncementsPath)}
-            >
-              {canPublishAnnouncement ? <Plus size={15} /> : <ArrowRight size={15} />}
-              {t(canPublishAnnouncement ? 'dashboard.publishAnnouncement' : 'common.viewAll')}
-            </button>
-          </div>
+          <EmptyState icon={<FileText size={28} />} title={t('dashboard.noAnnouncements')} />
         )}
       </div>
     </section>

@@ -79,6 +79,7 @@
     "viewAll": "查看全部",
     "notSet": "未设置",
     "none": "无",
+    "noData": "暂无数据",
     "approvalAssignee": {
       "defaultLabel": "审批人",
       "selectPlaceholder": "选择{label}",
@@ -295,6 +296,7 @@
     "manageShortcuts": "管理快捷入口",
     "shortcutEmpty": "还没有快捷入口",
     "shortcutRecommended": "先从常用页面开始，点击即可跳转",
+    "shortcutRecommendedLabel": "推荐入口",
     "shortcutName": "名称",
     "shortcutTarget": "目标页面",
     "shortcutTargetPlaceholder": "选择目标页面",

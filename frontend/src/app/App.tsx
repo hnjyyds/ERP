@@ -1,5 +1,6 @@
 import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react'
-import { ConfigProvider, Skeleton } from 'antd'
+import { ConfigProvider, Empty, Skeleton } from 'antd'
+import { Inbox } from 'lucide-react'
 import enUS from 'antd/locale/en_US'
 import zhCN from 'antd/locale/zh_CN'
 
@@ -17,11 +18,19 @@ import {
 } from '@/api'
 import { canAccessPath, dashboardPath, loginPath } from './routes'
 import { showError, showSuccess } from '@/shared/errors'
-import type { UserAvatarPickerValue } from '@/shared/ui'
+import { EmptyState, type UserAvatarPickerValue } from '@/shared/ui'
 import { fallbackI18nConfig, normalizeSettings, t } from './appI18n'
 import { setRuntimeSettings, type AppSettings } from './pages/appHelpers'
 import { AppShell } from './components/shell/AppShell'
 import { getSidebarMenuGroups } from './components/sidebar/sidebarNavigation'
+
+/* 表格/列表的空态统一走 EmptyState；下拉框等小区域保留 AntD 简化空态。 */
+function renderEmptyState(componentName?: string) {
+  if (componentName === 'Table' || componentName === 'List') {
+    return <EmptyState icon={<Inbox size={28} />} size="page" title={t('common.noData')} />
+  }
+  return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('common.noData')} />
+}
 
 // ─── Lazy Login ──────────────────────────────────────────────────────────────
 
@@ -272,7 +281,7 @@ export default function App() {
 
   // 3. logged in → shell
   return (
-    <ConfigProvider locale={antdLocale}>
+    <ConfigProvider locale={antdLocale} renderEmpty={renderEmptyState}>
       <AppShell
         activePath={activePath}
         session={session}

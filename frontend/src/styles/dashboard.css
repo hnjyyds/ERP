@@ -11,18 +11,17 @@
   padding: 16px 18px;
 }
 
+/* 统计条：与卡片同宽的四等分网格，不再用固定宽度 + clamp 间距，也不再叠加 4px 内边距。 */
 .react-shell-home .metric-strip {
-  align-items: center;
-  justify-content: flex-start;
-  gap: clamp(24px, 4vw, 68px);
-  border: 0;
-  border-top: 1px solid rgba(235, 238, 242, 0.7);
-  border-bottom: 1px solid rgba(235, 238, 242, 0.7);
-  border-radius: 0;
-  background:
-    linear-gradient(90deg, rgba(250, 246, 236, 0.68), rgba(255, 254, 251, 0.24) 68%, transparent),
-    transparent;
-  padding: 15px 4px 16px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-panel);
+  background: var(--ui-border);
+  padding: 0;
 }
 
 .metric-cell {
@@ -71,9 +70,11 @@
 }
 
 .react-shell-home .metric-strip .metric-cell {
-  min-width: 118px;
-  min-height: 58px;
-  padding: 0;
+  min-width: 0;
+  min-height: 72px;
+  border: 0;
+  background: var(--ui-bg-surface);
+  padding: var(--ui-space-3) var(--ui-card-inset);
 }
 
 .metric-cell.clickable {
@@ -152,43 +153,8 @@
   box-shadow: none;
 }
 
-.react-shell-home .dashboard-panel {
-  min-height: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-  overflow: hidden;
-}
-
-.dashboard-panel-primary {
-  min-height: 236px;
-}
-
-.dashboard-panel-reminders,
 .dashboard-action-panel {
   align-self: start;
-}
-
-.dashboard-panel-schedule {
-  min-height: 390px;
-}
-
-.react-shell-home .dashboard-panel-primary,
-.react-shell-home .dashboard-panel-reminders,
-.react-shell-home .dashboard-panel-schedule,
-.react-shell-home .dashboard-announcements-panel {
-  min-height: 0;
-}
-
-.react-shell-home .dashboard-panel-primary,
-.react-shell-home .dashboard-panel-schedule {
-  padding: 18px 10px 18px 0;
-}
-
-.react-shell-home .dashboard-panel-reminders,
-.react-shell-home .dashboard-announcements-panel {
-  padding: 18px 18px 18px 24px;
 }
 
 .dashboard-panel-schedule .ant-table-container {
@@ -730,7 +696,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 7px;
+  gap: var(--ui-space-2);
   justify-content: flex-end;
 }
 
