@@ -107,6 +107,10 @@ async def test_login_returns_token_user_and_permission_menus(
         "warehouse:outbound_order:edit",
         "warehouse:outbound_order:view",
         "warehouse:outbound_order:view_all",
+        "warehouse:stocktake:approve",
+        "warehouse:stocktake:edit",
+        "warehouse:stocktake:view",
+        "warehouse:stocktake:view_all",
     }
     assert [item["label"] for item in data["menus"]] == [
         "工作台",
@@ -132,6 +136,7 @@ async def test_login_returns_token_user_and_permission_menus(
         "入库计划",
         "出库计划",
         "货物出库",
+        "库存盘点",
     ]
 
 

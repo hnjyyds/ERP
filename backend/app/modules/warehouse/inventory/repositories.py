@@ -185,6 +185,28 @@ class InventoryRepository:
         await self.session.flush()
         return self._map_balance(balance)
 
+    async def get_available_quantity(
+        self,
+        *,
+        warehouse_id: str,
+        location_id: str,
+        product_id: str | None,
+        product_code: str | None,
+        product_name: str,
+        unit: str,
+    ) -> Decimal:
+        balance = await self._get_balance(
+            warehouse_id=warehouse_id,
+            location_id=location_id,
+            product_id=product_id,
+            product_code=product_code,
+            product_name=product_name,
+            unit=unit,
+        )
+        if balance is None:
+            return Decimal("0")
+        return Decimal(balance.available_quantity)
+
     async def add_ledger(
         self,
         *,

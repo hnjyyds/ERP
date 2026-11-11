@@ -560,6 +560,26 @@ def demo_role_permissions() -> list[RolePermission]:
             permission_id="perm-warehouse-outbound-order-allow-negative",
         ),
         RolePermission(
+            id="rp-warehouse-stocktake-view",
+            role_id="role-sales-manager",
+            permission_id="perm-warehouse-stocktake-view",
+        ),
+        RolePermission(
+            id="rp-warehouse-stocktake-edit",
+            role_id="role-sales-manager",
+            permission_id="perm-warehouse-stocktake-edit",
+        ),
+        RolePermission(
+            id="rp-warehouse-stocktake-approve",
+            role_id="role-sales-manager",
+            permission_id="perm-warehouse-stocktake-approve",
+        ),
+        RolePermission(
+            id="rp-warehouse-stocktake-view-all",
+            role_id="role-sales-manager",
+            permission_id="perm-warehouse-stocktake-view-all",
+        ),
+        RolePermission(
             id="rp-sales-reporting-view",
             role_id="role-sales-manager",
             permission_id="perm-reporting-view",
@@ -632,6 +652,10 @@ def demo_role_permissions() -> list[RolePermission]:
                 "perm-warehouse-outbound-order-edit",
                 "perm-warehouse-outbound-order-approve",
                 "perm-warehouse-outbound-order-view-all",
+                "perm-warehouse-stocktake-view",
+                "perm-warehouse-stocktake-edit",
+                "perm-warehouse-stocktake-approve",
+                "perm-warehouse-stocktake-view-all",
             ],
         )
     )

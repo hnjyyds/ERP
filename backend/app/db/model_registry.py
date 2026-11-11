@@ -40,3 +40,4 @@ from app.modules.warehouse.inbound_plans import models as inbound_plan_models  #
 from app.modules.warehouse.inventory import models as inventory_models  # noqa: F401
 from app.modules.warehouse.outbound_orders import models as outbound_order_models  # noqa: F401
 from app.modules.warehouse.outbound_plans import models as outbound_plan_models  # noqa: F401
+from app.modules.warehouse.stocktakes import models as stocktake_models  # noqa: F401

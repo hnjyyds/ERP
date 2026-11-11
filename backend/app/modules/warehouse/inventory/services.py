@@ -78,6 +78,25 @@ class InventoryService:
             limit=limit,
         )
 
+    async def get_available_quantity(
+        self,
+        *,
+        warehouse_id: str,
+        location_id: str,
+        product_id: str | None,
+        product_code: str | None,
+        product_name: str,
+        unit: str,
+    ) -> Decimal:
+        return await self._repository.get_available_quantity(
+            warehouse_id=warehouse_id,
+            location_id=location_id,
+            product_id=product_id,
+            product_code=product_code,
+            product_name=product_name,
+            unit=unit,
+        )
+
     async def increase_balance(
         self,
         *,

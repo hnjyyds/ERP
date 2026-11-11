@@ -212,6 +212,7 @@ def domain_exception_definition(
         "QuotationContractAlreadyGeneratedError",
         "InboundPlanAlreadyGeneratedError",
         "OutboundPlanAlreadyGeneratedError",
+        "DocumentStatusConflictError",
     }:
         code = AppStatusCode.CONFLICT
     elif "NotFound" in class_name:

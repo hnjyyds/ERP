@@ -20,6 +20,7 @@ _PROCESS_PERMISSION_CODES = {
     "warehouse:inbound_order:approve",
     "warehouse:outbound_order:approve",
     "warehouse:outbound_order:allow_negative",
+    "warehouse:stocktake:approve",
 }
 
 
@@ -446,6 +447,26 @@ def _base_permissions() -> list[Permission]:
             id="perm-warehouse-outbound-order-allow-negative",
             code="warehouse:outbound_order:allow_negative",
             name="授权负库存出库",
+        ),
+        Permission(
+            id="perm-warehouse-stocktake-view",
+            code="warehouse:stocktake:view",
+            name="查看库存盘点",
+        ),
+        Permission(
+            id="perm-warehouse-stocktake-edit",
+            code="warehouse:stocktake:edit",
+            name="维护库存盘点",
+        ),
+        Permission(
+            id="perm-warehouse-stocktake-approve",
+            code="warehouse:stocktake:approve",
+            name="审批库存盘点",
+        ),
+        Permission(
+            id="perm-warehouse-stocktake-view-all",
+            code="warehouse:stocktake:view_all",
+            name="查看全部库存盘点",
         ),
         Permission(id="perm-finance-view", code="finance:view", name="查看财务管理"),
         Permission(

@@ -29,6 +29,7 @@ from app.api.v1 import (
     sample_records,
     sample_requests,
     shipments,
+    stocktakes,
     suppliers,
     system,
 )
@@ -64,3 +65,4 @@ api_router.include_router(inbound_plans.router)
 api_router.include_router(inbound_orders.router)
 api_router.include_router(outbound_plans.router)
 api_router.include_router(outbound_orders.router)
+api_router.include_router(stocktakes.router)

@@ -48,6 +48,7 @@ async def test_auth_service_verifies_password_and_token_round_trip(
         "入库计划",
         "出库计划",
         "货物出库",
+        "库存盘点",
     ]
 
 
@@ -80,7 +81,7 @@ async def test_seed_system_demo_data_provisions_employee_role_accounts(
             "warehouse123",
             "仓库专员",
             "仓储部",
-            {"工作台", "入库计划", "入仓", "货物出库"},
+            {"工作台", "入库计划", "入仓", "货物出库", "库存盘点"},
         ),
         (
             "qc",

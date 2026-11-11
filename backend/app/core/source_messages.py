@@ -339,6 +339,15 @@ SOURCE_MESSAGES: dict[str, str] = {
     ),
     "该出库计划没有待出库数量": "This outbound plan has no pending outbound quantity",
     "该计划明细没有待出库数量": "This plan line has no pending outbound quantity",
+    # 仓库盘点
+    "单据状态已变化，请刷新后重试": "The document status has changed; please refresh and retry",
+    "只有草稿盘点单可以提交": "Only draft stocktake orders can be submitted",
+    "盘点明细存在重复商品": "The stocktake contains duplicate products",
+    "盘点单没有明细": "The stocktake order has no line items",
+    "可用库存不足，无法完成盘点调整": (
+        "Insufficient available stock to complete the stocktake adjustment"
+    ),
+    "所选员工没有盘点审批权限": "The selected employee does not have stocktake approval permission",
     # 财务：报销
     "付款方式无效": "Invalid payment method",
     "报销分类无效": "Invalid reimbursement category",

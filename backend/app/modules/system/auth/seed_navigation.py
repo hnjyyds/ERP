@@ -271,6 +271,16 @@ def system_menus() -> list[MenuItem]:
             is_active=True,
         ),
         MenuItem(
+            id="menu-warehouse-stocktakes",
+            label="库存盘点",
+            label_en="Stocktake",
+            path="/warehouse/stocktakes",
+            icon="clipboard",
+            required_permission="warehouse:stocktake:view",
+            sort_order=93,
+            is_active=True,
+        ),
+        MenuItem(
             id="menu-finance",
             label="财务摘要",
             label_en="Finance Summary",

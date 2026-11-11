@@ -33,6 +33,7 @@ _DEMO_MENUS_EN = [
     "Inbound Plans",
     "Outbound Plans",
     "Outbound",
+    "Stocktake",
 ]
 
 
