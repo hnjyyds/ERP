@@ -376,7 +376,7 @@
   padding: 0 var(--ui-space-3) 0 0 !important;
   border: 1px solid #d1cabc;
   border-radius: 6px;
-  background: #FFFFFF;
+  background: var(--ui-bg-surface);
   overflow: hidden;
   transition: border-color 0.18s ease-out, box-shadow 0.18s ease-out,
     background-color 0.18s ease-out;
@@ -384,14 +384,12 @@
 
 .login-form .ant-input-affix-wrapper .ant-input {
   height: 50px !important;
-  background: transparent;
+  /* 输入框背景只由外层容器决定，避免内层白块与自动填充色块。 */
+  background: transparent !important;
+  color: var(--ui-text-primary) !important;
+  caret-color: var(--ui-primary);
   font-size: 1rem !important;
   font-weight: 700;
-}
-
-.login-form .ant-input-affix-wrapper-focused {
-  border-color: #8C8F9C;
-  box-shadow: 0 0 0 3px rgba(140, 143, 156, 0.14);
 }
 
 .login-form .ant-input-affix-wrapper .ant-input-prefix {
@@ -462,8 +460,9 @@
 
 @media (hover: hover) and (pointer: fine) {
   .login-form .ant-input-affix-wrapper:hover {
-    border-color: color-mix(in srgb, var(--erp-primary) 40%, white);
-    background: color-mix(in srgb, var(--erp-primary) 3%, white);
+    border-color: color-mix(in srgb, var(--ui-primary) 45%, var(--ui-border)) !important;
+    /* 悬停只强调边框，背景保持表面色，避免自动填充态出现白色内块断层。 */
+    background: var(--ui-bg-surface);
   }
 
   .login-submit:hover,

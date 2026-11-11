@@ -330,6 +330,11 @@
   border-radius: 7px !important;
 }
 
+.dashboard-todo-filters .ant-input-affix-wrapper-focused,
+.dashboard-todo-filters .ant-select-focused .ant-select-selector {
+  border-color: var(--ui-primary) !important;
+}
+
 .dashboard-todo-filters .ant-select-selection-item {
   line-height: 38px !important;
 }

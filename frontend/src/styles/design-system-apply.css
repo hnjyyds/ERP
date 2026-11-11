@@ -535,6 +535,8 @@ body .ant-input-number-input-wrap > input.ant-input-number-input,
 body .ant-picker-input > input {
   min-height: 0 !important;
   padding-inline: 0 !important;
+  /* 输入框背景只由外层容器决定，避免内层白块/色块与外框不齐。 */
+  background: transparent !important;
 }
 
 /* 内层 input 已无内边距，图标与文字的间距由前缀承担；
@@ -557,6 +559,45 @@ body .inline-filters select:focus {
   border-color: var(--ui-primary) !important;
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--ui-primary) 14%, transparent) !important;
   outline: 0;
+}
+
+/* 浏览器自动填充：用表面色内阴影盖住浏览器默认的蓝/黄底，
+   文字与光标统一取设计 token，填充态与普通态保持同色。 */
+body input:-webkit-autofill,
+body input:-webkit-autofill:hover,
+body input:-webkit-autofill:focus,
+body textarea:-webkit-autofill,
+body textarea:-webkit-autofill:hover,
+body textarea:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--ui-bg-surface) inset !important;
+  -webkit-text-fill-color: var(--ui-text-primary) !important;
+  caret-color: var(--ui-text-primary) !important;
+}
+
+/* 禁用态显式取设计 token，不依赖浏览器或组件库的默认表现。 */
+body .ant-input:disabled,
+body .ant-input-disabled,
+body .ant-input-affix-wrapper-disabled,
+body .ant-input-number-disabled,
+body .ant-picker-disabled,
+body .ant-select-disabled .ant-select-selector,
+body .inline-filters select:disabled,
+body .record-form input:disabled,
+body .record-form select:disabled {
+  border-color: var(--ui-border-subtle) !important;
+  background: var(--ui-bg-muted) !important;
+  color: var(--ui-text-muted) !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+}
+
+body .ant-input-affix-wrapper-disabled > input.ant-input,
+body .ant-input-number-disabled .ant-input-number-input,
+body .ant-picker-disabled .ant-picker-input > input {
+  background: transparent !important;
+  color: var(--ui-text-muted) !important;
+  -webkit-text-fill-color: var(--ui-text-muted) !important;
+  cursor: not-allowed;
 }
 
 body .ant-btn {
