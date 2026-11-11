@@ -2,7 +2,7 @@ from datetime import UTC, date, datetime
 from decimal import Decimal
 from uuid import uuid4
 
-from sqlalchemy import Date, DateTime, ForeignKey, Numeric, String, Text, UniqueConstraint
+from sqlalchemy import Date, DateTime, ForeignKey, Index, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -15,7 +15,12 @@ def _new_id() -> str:
 class OutboundPlan(Base):
     __tablename__ = "warehouse_outbound_plans"
     __table_args__ = (
-        UniqueConstraint("source_type", "source_id", name="ux_warehouse_outbound_plans_source"),
+        Index(
+            "ux_warehouse_outbound_plans_source",
+            "source_type",
+            "source_id",
+            unique=True,
+        ),
     )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_new_id)
