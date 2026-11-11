@@ -511,6 +511,18 @@ body .record-form select {
   box-shadow: none !important;
 }
 
+/* Ant Design v6 把 Select 的边框画在 `.ant-select` 根节点（没有
+   `.ant-select-selector`），输入区底色与边框来源在这里显式对齐。 */
+body .ant-select {
+  border-color: var(--ui-border) !important;
+  border-radius: var(--ui-radius-control) !important;
+  background: var(--ui-bg-surface) !important;
+}
+
+body .ant-select .ant-select-content {
+  background: transparent !important;
+}
+
 /* Keep the editable content on one shared inset and text line. Ant inputs,
    pickers and selects use different internal DOM, so height alone does not
    produce a stable text baseline. */
@@ -546,32 +558,85 @@ body .ant-input-affix-wrapper > .ant-input-prefix {
 }
 
 body .ant-input:hover,
-body .ant-input-affix-wrapper:hover,
-body .ant-select:hover .ant-select-selector,
-body .inline-filters select:hover {
+body .ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover,
+body .ant-input-number:not(.ant-input-number-disabled):hover,
+body .ant-picker:not(.ant-picker-disabled):hover,
+body .ant-select:not(.ant-select-disabled):hover,
+body .inline-filters select:not(:disabled):hover,
+body .record-form input:not(:disabled):hover,
+body .record-form select:not(:disabled):hover,
+body .record-form textarea:not(:disabled):hover,
+body textarea.ant-input:hover {
   border-color: color-mix(in srgb, var(--ui-primary) 45%, var(--ui-border)) !important;
+  /* 悬停只用边框表达，输入区背景保持表面色。 */
+  background: var(--ui-bg-surface) !important;
 }
 
 body .ant-input:focus,
 body .ant-input-affix-wrapper-focused,
-body .ant-select-focused .ant-select-selector,
-body .inline-filters select:focus {
+body .ant-input-number-focused,
+body .ant-picker-focused,
+body .ant-select-focused,
+body .inline-filters select:focus,
+body .record-form input:focus,
+body .record-form select:focus,
+body .record-form textarea:focus,
+body .search-form input:focus,
+body textarea.ant-input:focus {
   border-color: var(--ui-primary) !important;
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--ui-primary) 14%, transparent) !important;
+  /* 聚焦只用边框和光圈表达，不铺主色淡底。 */
+  background: var(--ui-bg-surface) !important;
   outline: 0;
 }
 
 /* 浏览器自动填充：用表面色内阴影盖住浏览器默认的蓝/黄底，
-   文字与光标统一取设计 token，填充态与普通态保持同色。 */
+   文字与光标统一取设计 token，填充态与普通态保持同色。
+   选择器显式提高权重，避免被组件库的 input:focus { box-shadow: none } 覆盖。 */
 body input:-webkit-autofill,
 body input:-webkit-autofill:hover,
 body input:-webkit-autofill:focus,
+body .ant-input:-webkit-autofill,
+body .ant-input:-webkit-autofill:hover,
+body .ant-input:-webkit-autofill:focus,
+body .ant-input-affix-wrapper > input.ant-input:-webkit-autofill,
+body .ant-input-affix-wrapper > input.ant-input:-webkit-autofill:hover,
+body .ant-input-affix-wrapper > input.ant-input:-webkit-autofill:focus,
+body .ant-input-number-input:-webkit-autofill,
+body .ant-picker-input > input:-webkit-autofill,
 body textarea:-webkit-autofill,
 body textarea:-webkit-autofill:hover,
-body textarea:-webkit-autofill:focus {
+body textarea:-webkit-autofill:focus,
+body textarea.ant-input:-webkit-autofill,
+body textarea.ant-input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 1000px var(--ui-bg-surface) inset !important;
   -webkit-text-fill-color: var(--ui-text-primary) !important;
   caret-color: var(--ui-text-primary) !important;
+}
+
+/* Chrome 在聚焦/悬停时先展示自动填充预览，使用内部伪类涂淡蓝底；
+   单独成规则，避免不支持的浏览器丢弃整组自动填充覆盖。 */
+body input:-internal-autofill-previewed,
+body .ant-input:-internal-autofill-previewed,
+body .ant-input-affix-wrapper > input.ant-input:-internal-autofill-previewed,
+body textarea:-internal-autofill-previewed,
+body textarea.ant-input:-internal-autofill-previewed {
+  -webkit-box-shadow: 0 0 0 1000px var(--ui-bg-surface) inset !important;
+  -webkit-text-fill-color: var(--ui-text-primary) !important;
+  caret-color: var(--ui-text-primary) !important;
+}
+
+/* 校验错误只用危险色边框和提示文字，不铺底色。 */
+body .ant-form-item-has-error .ant-input,
+body .ant-form-item-has-error .ant-input-affix-wrapper,
+body .ant-form-item-has-error .ant-input-number,
+body .ant-form-item-has-error .ant-picker,
+body .ant-form-item-has-error .ant-select,
+body .ant-form-item-has-error textarea.ant-input,
+body .ant-input[aria-invalid='true'],
+body .ant-input-affix-wrapper:has(> input[aria-invalid='true']) {
+  border-color: var(--ui-danger) !important;
+  background: var(--ui-bg-surface) !important;
 }
 
 /* 禁用态显式取设计 token，不依赖浏览器或组件库的默认表现。 */
@@ -580,7 +645,7 @@ body .ant-input-disabled,
 body .ant-input-affix-wrapper-disabled,
 body .ant-input-number-disabled,
 body .ant-picker-disabled,
-body .ant-select-disabled .ant-select-selector,
+body .ant-select-disabled,
 body .inline-filters select:disabled,
 body .record-form input:disabled,
 body .record-form select:disabled {

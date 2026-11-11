@@ -110,20 +110,20 @@
   text-transform: none;
 }
 
-/* 输入框 / 下拉：精致描边 + 主色聚焦光圈 + 微交互动效 */
+/* 输入框 / 下拉：精致描边 + 主色聚焦光圈 + 微交互动效
+   背景统一取表面色，悬停与聚焦只改边框和光圈，不做底色渐变。 */
 .entity-modal-form .ant-input,
 .entity-modal-form .ant-input-affix-wrapper,
-.entity-modal-form .ant-select-selector,
+.entity-modal-form .ant-select,
 .entity-modal-form .ant-input-number,
 .entity-modal-form textarea {
   border-radius: 10px !important;
   border-color: rgba(224, 227, 232, 0.7) !important;
-  background: linear-gradient(180deg, #FFFFFF, #FAFBFC) !important;
+  background: var(--ui-bg-surface) !important;
   box-shadow: 0 1px 3px rgba(10, 14, 23, 0.04) !important;
   transition:
     border-color 0.22s ease,
     box-shadow 0.22s ease,
-    background 0.22s ease,
     transform 0.15s ease !important;
   min-height: 36px;
 }
@@ -131,18 +131,20 @@
 
 .entity-modal-form .ant-input:hover,
 .entity-modal-form .ant-input-affix-wrapper:hover,
-.entity-modal-form .ant-select:hover .ant-select-selector,
+.entity-modal-form .ant-select:hover,
 .entity-modal-form textarea:hover {
   border-color: color-mix(in srgb, var(--erp-primary) 50%, #aaa) !important;
   box-shadow: 0 2px 6px rgba(10, 14, 23, 0.06) !important;
+  background: var(--ui-bg-surface) !important;
 }
 
 .entity-modal-form .ant-input:focus,
 .entity-modal-form .ant-input-affix-wrapper-focused,
-.entity-modal-form .ant-select-focused .ant-select-selector,
+.entity-modal-form .ant-select-focused,
 .entity-modal-form textarea:focus {
   border-color: var(--erp-primary) !important;
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--erp-primary) 14%, transparent), 0 2px 8px rgba(10, 14, 23, 0.06) !important;
+  background: var(--ui-bg-surface) !important;
   transform: translateY(-1px);
 }
 

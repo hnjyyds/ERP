@@ -324,14 +324,14 @@
 }
 
 .dashboard-todo-filters .ant-input-affix-wrapper,
-.dashboard-todo-filters .ant-select-selector {
+.dashboard-todo-filters .ant-select {
   min-height: 40px !important;
   border-color: var(--erp-border) !important;
   border-radius: 7px !important;
 }
 
 .dashboard-todo-filters .ant-input-affix-wrapper-focused,
-.dashboard-todo-filters .ant-select-focused .ant-select-selector {
+.dashboard-todo-filters .ant-select-focused {
   border-color: var(--ui-primary) !important;
 }
 
