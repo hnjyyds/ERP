@@ -1411,6 +1411,81 @@
         "waitingApproval": "Waiting for {name} to approve",
         "inventoryLoadFailed": "Failed to load stock snapshot"
       }
+    },
+    "stocktake": {
+      "title": "Stocktake",
+      "subtitle": "Count by warehouse and location. Book quantity is snapshotted on creation and approved differences adjust stock.",
+      "empty": "No stocktake orders",
+      "list": {
+        "searchPlaceholder": "Stocktake / warehouse / location",
+        "statusFilter": "Status",
+        "allStatuses": "All statuses",
+        "search": "Search",
+        "create": "New stocktake",
+        "loadFailed": "Failed to load stocktakes"
+      },
+      "status": {
+        "draft": "Draft",
+        "submitted": "Pending approval",
+        "approved": "Approved"
+      },
+      "field": {
+        "code": "Stocktake no.",
+        "warehouse": "Warehouse",
+        "location": "Location",
+        "countDate": "Count date",
+        "status": "Status",
+        "operator": "Counter",
+        "reviewer": "Approver",
+        "remark": "Remark",
+        "product": "Product",
+        "productCode": "Product code",
+        "unit": "Unit",
+        "bookQuantity": "Book qty",
+        "actualQuantity": "Counted qty",
+        "difference": "Difference",
+        "lineCount": "Lines"
+      },
+      "action": {
+        "view": "View",
+        "submit": "Submit",
+        "approve": "Approve",
+        "addLine": "Add line",
+        "removeLine": "Remove",
+        "cancel": "Cancel",
+        "confirmCreate": "Create",
+        "confirmSubmit": "Submit",
+        "confirmApprove": "Approve"
+      },
+      "create": {
+        "title": "New stocktake",
+        "warehouseId": "Warehouse ID",
+        "warehouseName": "Warehouse name",
+        "locationId": "Location ID",
+        "locationName": "Location name",
+        "operator": "Counter",
+        "countDate": "Count date",
+        "remark": "Remark",
+        "linesSection": "Stocktake lines",
+        "emptyLines": "Add at least one stocktake line",
+        "productRequired": "Enter the product name",
+        "actualRequired": "Enter the counted quantity",
+        "success": "Stocktake created",
+        "failed": "Failed to create stocktake"
+      },
+      "submit": {
+        "title": "Submit stocktake",
+        "reviewer": "Approver",
+        "reviewerRequired": "Select an approver",
+        "success": "Stocktake submitted",
+        "failed": "Failed to submit stocktake"
+      },
+      "approve": {
+        "title": "Approve stocktake",
+        "tip": "Approving adjusts stock by the differences and writes stocktake adjustment ledger entries.",
+        "success": "Stocktake approved",
+        "failed": "Failed to approve stocktake"
+      }
     }
   },
   "purchase": {

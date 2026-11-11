@@ -147,6 +147,11 @@ const OutboundOrdersPage = React.lazy(() =>
     default: m.OutboundOrdersPage,
   })),
 )
+const StocktakesPage = React.lazy(() =>
+  import('@/app/pages/warehouse/StocktakesPage').then((m) => ({
+    default: m.StocktakesPage,
+  })),
+)
 const ReportingPage = React.lazy(() =>
   import('@/app/pages/reporting/ReportingPage').then((m) => ({ default: m.ReportingPage })),
 )
@@ -356,6 +361,7 @@ const pageRenderers: Partial<Record<RouteKey, PageRenderer>> = {
       onNavigate={context.onNavigate}
     />
   ),
+  warehouseStocktake: (context) => <StocktakesPage currentUser={context.session.user} />,
   reporting: (context) => <ReportingPage onNavigate={context.onNavigate} />,
   finance: financeRenderer,
   financeOverview: financeRenderer,

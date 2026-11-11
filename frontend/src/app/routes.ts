@@ -109,6 +109,10 @@ const routeDefinitions = {
     navGroup: 'warehouse',
     detailRoot: true,
   },
+  warehouseStocktake: {
+    path: '/warehouse/stocktakes',
+    navGroup: 'warehouse',
+  },
   finance: {
     path: '/finance',
     titleKey: 'nav.page.finance',
@@ -262,6 +266,7 @@ export const warehouseInboundPlanPath = routeDefinitions.warehouseInboundPlan.pa
 export const warehouseInboundOrderPath = routeDefinitions.warehouseInboundOrder.path
 export const warehouseOutboundPlanPath = routeDefinitions.warehouseOutboundPlan.path
 export const warehouseOutboundOrderPath = routeDefinitions.warehouseOutboundOrder.path
+export const warehouseStocktakePath = routeDefinitions.warehouseStocktake.path
 export const financePath = routeDefinitions.finance.path
 export const financeOverviewPath = routeDefinitions.financeOverview.path
 export const financeReceiptsPath = routeDefinitions.financeReceipts.path

@@ -1411,6 +1411,81 @@
         "waitingApproval": "等待 {name} 审批",
         "inventoryLoadFailed": "库存快照加载失败"
       }
+    },
+    "stocktake": {
+      "title": "库存盘点",
+      "subtitle": "按仓库与库位盘点，账面数为创建时快照，审批后按差异调整库存。",
+      "empty": "暂无盘点单",
+      "list": {
+        "searchPlaceholder": "盘点单 / 仓库 / 库位",
+        "statusFilter": "单据状态",
+        "allStatuses": "全部状态",
+        "search": "查询",
+        "create": "新建盘点单",
+        "loadFailed": "盘点单加载失败"
+      },
+      "status": {
+        "draft": "草稿",
+        "submitted": "待审批",
+        "approved": "已审批"
+      },
+      "field": {
+        "code": "盘点单号",
+        "warehouse": "仓库",
+        "location": "库位",
+        "countDate": "盘点日期",
+        "status": "状态",
+        "operator": "盘点人",
+        "reviewer": "审批人",
+        "remark": "备注",
+        "product": "商品",
+        "productCode": "商品编码",
+        "unit": "单位",
+        "bookQuantity": "账面数",
+        "actualQuantity": "实盘数",
+        "difference": "差异",
+        "lineCount": "明细数"
+      },
+      "action": {
+        "view": "查看",
+        "submit": "提交",
+        "approve": "审批",
+        "addLine": "添加明细",
+        "removeLine": "删除",
+        "cancel": "取消",
+        "confirmCreate": "创建",
+        "confirmSubmit": "提交",
+        "confirmApprove": "确认审批"
+      },
+      "create": {
+        "title": "新建盘点单",
+        "warehouseId": "仓库标识",
+        "warehouseName": "仓库名称",
+        "locationId": "库位标识",
+        "locationName": "库位名称",
+        "operator": "盘点人",
+        "countDate": "盘点日期",
+        "remark": "备注",
+        "linesSection": "盘点明细",
+        "emptyLines": "请至少添加一条盘点明细",
+        "productRequired": "请填写商品名称",
+        "actualRequired": "请填写实盘数",
+        "success": "盘点单已创建",
+        "failed": "盘点单创建失败"
+      },
+      "submit": {
+        "title": "提交盘点单",
+        "reviewer": "审批人",
+        "reviewerRequired": "请选择审批人",
+        "success": "盘点单已提交",
+        "failed": "盘点单提交失败"
+      },
+      "approve": {
+        "title": "审批盘点单",
+        "tip": "审批后将按差异调整库存，并写入盘点调整流水。",
+        "success": "盘点单已审批",
+        "failed": "盘点单审批失败"
+      }
     }
   },
   "purchase": {

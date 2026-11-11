@@ -598,3 +598,109 @@ export function listInventoryLedgers(filters: {
   const suffix = params.size > 0 ? `?${params.toString()}` : ''
   return request<InventoryLedgerList>(`/warehouse/inbound-orders/inventory-ledgers${suffix}`)
 }
+
+export interface StocktakeLine {
+  id: string
+  order_id: string
+  product_id: string | null
+  product_code: string | null
+  product_name: string
+  unit: string
+  book_quantity: string
+  actual_quantity: string
+  difference_quantity: string
+  remark: string | null
+}
+
+export interface StocktakeOrder {
+  id: string
+  code: string
+  warehouse_id: string
+  warehouse_name: string
+  location_id: string
+  location_name: string
+  count_date: string
+  status: string
+  operator_name: string
+  owner_user_id: string
+  reviewer_id: string | null
+  reviewer_name: string | null
+  remark: string | null
+  submitted_at: string | null
+  approved_at: string | null
+  created_at: string
+  lines: StocktakeLine[]
+}
+
+export interface StocktakeOrderList {
+  items: StocktakeOrder[]
+  total: number
+}
+
+export interface StocktakeLinePayload {
+  product_id?: string | null
+  product_code?: string | null
+  product_name: string
+  unit: string
+  actual_quantity: string
+  remark?: string | null
+}
+
+export interface StocktakeCreatePayload {
+  warehouse_id: string
+  warehouse_name: string
+  location_id: string
+  location_name: string
+  count_date: string
+  operator_name: string
+  remark?: string | null
+  lines: StocktakeLinePayload[]
+}
+
+export function listStocktakes(filters: {
+  q?: string
+  status?: string
+  warehouse_id?: string
+  limit?: number
+  offset?: number
+} = {}): Promise<StocktakeOrderList> {
+  const params = new URLSearchParams()
+  if (filters.q) params.set('q', filters.q)
+  if (filters.status) params.set('status', filters.status)
+  if (filters.warehouse_id) params.set('warehouse_id', filters.warehouse_id)
+  if (filters.limit !== undefined) params.set('limit', String(filters.limit))
+  if (filters.offset !== undefined) params.set('offset', String(filters.offset))
+  const suffix = params.size > 0 ? `?${params.toString()}` : ''
+  return request<StocktakeOrderList>(`/warehouse/stocktakes${suffix}`)
+}
+
+export function createStocktake(payload: StocktakeCreatePayload): Promise<StocktakeOrder> {
+  return request<StocktakeOrder>('/warehouse/stocktakes', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function getStocktake(orderId: string): Promise<StocktakeOrder> {
+  return request<StocktakeOrder>(`/warehouse/stocktakes/${orderId}`)
+}
+
+export function submitStocktake(
+  orderId: string,
+  payload: ApprovalSubmitPayload,
+): Promise<StocktakeOrder> {
+  return request<StocktakeOrder>(`/warehouse/stocktakes/${orderId}/submit`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function approveStocktake(
+  orderId: string,
+  payload: { approved_at: string },
+): Promise<StocktakeOrder> {
+  return request<StocktakeOrder>(`/warehouse/stocktakes/${orderId}/approve`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
