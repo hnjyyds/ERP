@@ -17,6 +17,11 @@ class Settings(BaseSettings):
     database_url: str = "sqlite+aiosqlite:///./.data/xinpei.db"
     seed_demo_data: bool = False
     demo_user_id: str = "u-001"
+    # 部署时必须可登录的超级管理员；密码仅首次创建或显式重置时写入。
+    admin_username: str = "admin"
+    admin_password: str = "Xinpei@2026"
+    admin_display_name: str = "系统管理员"
+    admin_password_reset: bool = False
     auth_secret_key: str = "dev-only-change-me"
     mcp_credential_ttl_seconds: int = 30 * 24 * 60 * 60
     # 日志策略在配置层声明，业务模块不得自行读取环境变量。

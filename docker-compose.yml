@@ -1,91 +1,92 @@
-name: xinpei-trade
+name: xinpei
 
-# Container layer: cap local json-file logs so diagnostics cannot exhaust the host disk.
 x-logging: &default-logging
   driver: json-file
   options:
-    max-size: "${LOG_MAX_SIZE:-10m}"
-    max-file: "${LOG_MAX_FILES:-5}"
+    max-size: "10m"
+    max-file: "3"
 
 services:
-  backend-a:
-    platform: linux/amd64
+  backend:
     build:
       context: ./backend
-    environment:
-      AUTH_SECRET_KEY: ${AUTH_SECRET_KEY:?AUTH_SECRET_KEY must be set}
-      DATABASE_URL: sqlite+aiosqlite:////app/.data/xinpei.db
-      SEED_DEMO_DATA: ${SEED_DEMO_DATA:-false}
-      # Application observability is configured at deployment time, not in business code.
-      LOG_LEVEL: ${LOG_LEVEL:-INFO}
-      LOG_FORMAT: ${LOG_FORMAT:-json}
-      LOG_SLOW_REQUEST_MS: ${LOG_SLOW_REQUEST_MS:-1000}
-      LOG_HEALTH_REQUESTS: ${LOG_HEALTH_REQUESTS:-false}
-    volumes:
-      - ./backend/.data:/app/.data
-    expose:
-      - "8000"
-    healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/api/v1/health"]
-      interval: 10s
-      timeout: 3s
-      retries: 10
-      start_period: 20s
-    logging: *default-logging
-
-  redis:
-    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/redis:7.4-alpine
-    platform: linux/amd64
-    command: ["redis-server", "--save", "", "--appendonly", "no"]
-    expose:
-      - "6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
-    logging: *default-logging
-
-  worker:
-    platform: linux/amd64
-    build:
-      context: ./backend
-    command: ["arq", "app.worker.WorkerSettings"]
+    image: xinpei-backend:latest
+    env_file:
+      - .env
     environment:
       DATABASE_URL: sqlite+aiosqlite:////app/.data/xinpei.db
       REDIS_URL: redis://redis:6379/0
-      # cron 使用 worker 本地时区，默认按北京时间 09:00 / 09:10 运行。
-      TZ: ${TZ:-Asia/Shanghai}
-      LOG_LEVEL: ${LOG_LEVEL:-INFO}
-      LOG_FORMAT: ${LOG_FORMAT:-json}
+      TZ: Asia/Shanghai
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Xinpei@2026}
+      ADMIN_DISPLAY_NAME: ${ADMIN_DISPLAY_NAME:-系统管理员}
+      ADMIN_PASSWORD_RESET: ${ADMIN_PASSWORD_RESET:-false}
     volumes:
-      - ./backend/.data:/app/.data
+      - xinpei_data:/app/.data
+    expose:
+      - "8000"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen("http://127.0.0.1:8000/api/v1/health", timeout=3)
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
     depends_on:
       redis:
         condition: service_healthy
+    restart: unless-stopped
+    logging: *default-logging
+
+  redis:
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    restart: unless-stopped
+    logging: *default-logging
+
+  worker:
+    build:
+      context: ./backend
+    image: xinpei-backend:latest
+    command: ["arq", "app.worker.WorkerSettings"]
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: sqlite+aiosqlite:////app/.data/xinpei.db
+      REDIS_URL: redis://redis:6379/0
+      TZ: Asia/Shanghai
+    volumes:
+      - xinpei_data:/app/.data
+    depends_on:
+      backend:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
     logging: *default-logging
 
   frontend:
-    platform: linux/amd64
     build:
       context: ./frontend
-    expose:
-      - "80"
-    depends_on:
-      - backend-a
-    logging: *default-logging
-
-  nginx:
-    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/nginx:1.29-alpine
-    platform: linux/amd64
-    entrypoint: ["nginx", "-g", "daemon off;"]
+    image: xinpei-frontend:latest
     ports:
       - "${NGINX_PORT:-8080}:80"
-    volumes:
-      - ./deploy/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      backend-a:
+      backend:
         condition: service_healthy
-      frontend:
-        condition: service_started
+    restart: unless-stopped
     logging: *default-logging
+
+volumes:
+  xinpei_data:
+  redis_data:

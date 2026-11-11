@@ -21,7 +21,11 @@ from app.db.migrate import run_migrations
 from app.db.session import SessionLocal
 from app.mcp.availability import McpAvailabilityMiddleware
 from app.mcp.server import create_authenticated_mcp_app, mcp_http_app
-from app.modules.system.auth.seed import seed_system_demo_data
+from app.modules.system.auth.seed import (
+    seed_admin_account,
+    seed_system_base_data,
+    seed_system_demo_data,
+)
 from app.modules.system.company.seed import seed_company_default
 from app.modules.system.dashboard.seed import seed_dashboard_demo_data
 
@@ -58,15 +62,23 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         extra={"event": "database_schema_ready"},
     )
 
-    if settings.seed_demo_data:
-        async with SessionLocal() as session:
+    async with SessionLocal() as session:
+        await seed_system_base_data(session)
+        await seed_admin_account(
+            session,
+            username=settings.admin_username,
+            password=settings.admin_password,
+            display_name=settings.admin_display_name,
+            reset_password=settings.admin_password_reset,
+        )
+        if settings.seed_demo_data:
             await seed_system_demo_data(session)
             await seed_dashboard_demo_data(session, user_id=settings.demo_user_id)
             await seed_company_default(session)
-        _lifecycle_logger.info(
-            "demo data ready",
-            extra={"event": "demo_data_ready"},
-        )
+    _lifecycle_logger.info(
+        "system data ready",
+        extra={"event": "system_data_ready"},
+    )
 
     try:
         async with mcp_http_app.router.lifespan_context(mcp_http_app):

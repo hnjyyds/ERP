@@ -110,6 +110,36 @@ uv run arq app.worker.WorkerSettings
 当前提供商品、客户、出口订单各 5 个工具：分页查询、详情查询、新增、修改、删除，共 15 个。
 出口订单在 MCP 中对应系统里的出口合同。
 
+## Docker Compose 部署
+
+一条命令起完整环境（后端 + 前端 + Redis + ARQ worker）：
+
+```bash
+cp .env.example .env
+# 生成随机密钥并填入 AUTH_SECRET_KEY
+openssl rand -hex 32
+
+docker compose up -d --build
+```
+
+- 访问地址：<http://localhost:8080>
+- 默认超级管理员：`admin` / `Xinpei@2026`（可用 `.env` 的 `ADMIN_USERNAME`、`ADMIN_PASSWORD` 修改）
+- 后端不对外暴露，仅通过前端 nginx 的 `/api/`、`/uploads/`、`/mcp` 反代访问；健康端点为 `/api/v1/health`
+- 前端容器内 nginx 托管 `vite build` 产物，`try_files` 已配置 SPA 路由回退
+- 时区统一为 `Asia/Shanghai`，定时提醒与日期显示按上海时间
+- 默认 `SEED_DEMO_DATA=false`，只创建系统菜单、权限、角色与管理员；设为 `true` 会额外写入演示账号和示例单据
+
+管理员账号初始化是幂等的：首次启动创建，之后重复启动不会覆盖已有密码。忘记密码时把 `.env` 的
+`ADMIN_PASSWORD_RESET` 设为 `true`，执行 `docker compose up -d --force-recreate backend`，
+再改回 `false`。
+
+数据持久化：
+
+- SQLite 数据库与上传文件都在命名卷 `xinpei_data`，容器内路径 `/app/.data`（库文件 `/app/.data/xinpei.db`）
+- Redis 数据在 `redis_data`
+- 查看卷位置：`docker volume inspect xinpei_xinpei_data`（compose 项目名固定为 `xinpei`）
+- 重置数据库：`docker compose down -v`（会同时删除 Redis 数据），再 `docker compose up -d`
+
 ## 首期目标
 
 首期目标是建设一套面向外贸企业的业务管理系统，覆盖基础资料、样品、销售、采购、采购跟单、QC、单证、财务、仓库、审批、提醒、报表分析等核心流程。

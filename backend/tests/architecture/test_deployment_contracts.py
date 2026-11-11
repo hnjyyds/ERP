@@ -4,7 +4,7 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
 
 
 def test_edge_proxy_accepts_base64_encoded_five_megabyte_uploads() -> None:
-    nginx_config = (REPOSITORY_ROOT / "deploy/nginx/nginx.conf").read_text(
+    nginx_config = (REPOSITORY_ROOT / "frontend/nginx.conf").read_text(
         encoding="utf-8"
     )
 

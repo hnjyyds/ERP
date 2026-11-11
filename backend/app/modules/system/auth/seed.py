@@ -1,3 +1,6 @@
+import secrets
+from datetime import UTC, datetime
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -10,6 +13,7 @@ from app.modules.system.auth.models import (
     User,
     UserRole,
 )
+from app.modules.system.auth.passwords import hash_password
 from app.modules.system.auth.seed_navigation import (
     system_departments,
     system_menus,
@@ -24,7 +28,8 @@ from app.modules.system.auth.seed_users import (
 )
 
 
-async def seed_system_demo_data(session: AsyncSession) -> None:
+async def seed_system_base_data(session: AsyncSession) -> None:
+    """写入系统内置权限、角色、部门与菜单；重复启动保持幂等。"""
     permissions = system_permissions()
     roles = system_roles()
     departments = system_departments()
@@ -68,6 +73,12 @@ async def seed_system_demo_data(session: AsyncSession) -> None:
         existing_menu.sort_order = menu.sort_order
         existing_menu.is_active = menu.is_active
     await session.flush()
+    await session.commit()
+
+
+async def seed_system_demo_data(session: AsyncSession) -> None:
+    """在系统基础数据之上补充演示角色、账号与授权；重复启动保持幂等。"""
+    await seed_system_base_data(session)
 
     demo_role_list = demo_roles()
     existing_demo_role_ids = set((await session.scalars(select(Role.id))).all())
@@ -90,6 +101,7 @@ async def seed_system_demo_data(session: AsyncSession) -> None:
         await session.delete(item)
     await session.flush()
     existing_user_ids = set((await session.scalars(select(User.id))).all())
+    existing_usernames = set((await session.scalars(select(User.username))).all())
     existing_user_role_ids = set((await session.scalars(select(UserRole.id))).all())
     existing_role_permission_ids = set((await session.scalars(select(RolePermission.id))).all())
     existing_role_permission_pairs = {
@@ -98,8 +110,20 @@ async def seed_system_demo_data(session: AsyncSession) -> None:
             await session.execute(select(RolePermission.role_id, RolePermission.permission_id))
         ).all()
     }
-    session.add_all([item for item in users if item.id not in existing_user_ids])
-    session.add_all([item for item in user_roles if item.id not in existing_user_role_ids])
+    new_users = [
+        item
+        for item in users
+        if item.id not in existing_user_ids and item.username not in existing_usernames
+    ]
+    session.add_all(new_users)
+    available_user_ids = existing_user_ids | {item.id for item in new_users}
+    session.add_all(
+        [
+            item
+            for item in user_roles
+            if item.id not in existing_user_role_ids and item.user_id in available_user_ids
+        ]
+    )
     session.add_all(
         [
             item
@@ -109,3 +133,53 @@ async def seed_system_demo_data(session: AsyncSession) -> None:
         ]
     )
     await session.commit()
+
+
+async def seed_admin_account(
+    session: AsyncSession,
+    *,
+    username: str,
+    password: str,
+    display_name: str,
+    reset_password: bool,
+) -> User:
+    """确保超级管理员可登录；已有账号默认保留原密码，仅显式重置时覆盖。"""
+    user = await session.scalar(select(User).where(User.username == username))
+    if user is None:
+        salt = secrets.token_hex(16)
+        user = User(
+            id=f"u-{secrets.token_hex(8)}",
+            username=username,
+            display_name=display_name,
+            department_id="dept-admin",
+            avatar_type="preset",
+            avatar_value="ink-halo",
+            password_hash=hash_password(password, salt),
+            password_salt=salt,
+            is_active=True,
+            created_at=datetime.now(UTC),
+        )
+        session.add(user)
+    elif reset_password:
+        salt = secrets.token_hex(16)
+        user.password_hash = hash_password(password, salt)
+        user.password_salt = salt
+    user.is_active = True
+    await session.flush()
+
+    role_link = await session.scalar(
+        select(UserRole).where(
+            UserRole.user_id == user.id,
+            UserRole.role_id == "role-admin",
+        )
+    )
+    if role_link is None:
+        session.add(
+            UserRole(
+                id=f"ur-{user.id}-admin",
+                user_id=user.id,
+                role_id="role-admin",
+            )
+        )
+    await session.commit()
+    return user
