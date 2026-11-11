@@ -371,7 +371,9 @@
   max-width: none !important;
   min-height: 52px !important;
   height: 52px !important;
-  padding: 0 12px 0 0;
+  /* 设计契约层会把 affix wrapper 的左右内边距统一成组件间距；
+     登录页需要为右侧清除按钮保留设计间距，因此显式覆盖。 */
+  padding: 0 var(--ui-space-3) 0 0 !important;
   border: 1px solid #d1cabc;
   border-radius: 6px;
   background: #FFFFFF;
@@ -382,7 +384,6 @@
 
 .login-form .ant-input-affix-wrapper .ant-input {
   height: 50px !important;
-  padding-left: 12px;
   background: transparent;
   font-size: 1rem !important;
   font-weight: 700;
@@ -393,15 +394,17 @@
   box-shadow: 0 0 0 3px rgba(140, 143, 156, 0.14);
 }
 
-.login-form .ant-input-prefix {
+.login-form .ant-input-affix-wrapper .ant-input-prefix {
   display: inline-flex;
   align-self: stretch;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  min-width: 48px;
+  /* 18px 图标 + 左右各 12px，使图标到分隔线、文字到分隔线的间距一致；
+     内层 input 的 padding-inline 已被设计契约层归零，间距由前缀承担。 */
+  width: calc(18px + var(--ui-space-3) * 2);
+  min-width: calc(18px + var(--ui-space-3) * 2);
   height: 50px;
-  margin-right: 0;
+  margin-inline-end: var(--ui-space-3) !important;
   border-right: 1px solid color-mix(in srgb, var(--erp-primary) 22%, white);
   color: var(--erp-primary-strong);
 }

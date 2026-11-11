@@ -537,6 +537,12 @@ body .ant-picker-input > input {
   padding-inline: 0 !important;
 }
 
+/* 内层 input 已无内边距，图标与文字的间距由前缀承担；
+   否则搜索框等带图标前缀的输入框会贴住文字。 */
+body .ant-input-affix-wrapper > .ant-input-prefix {
+  margin-inline-end: var(--ui-space-2) !important;
+}
+
 body .ant-input:hover,
 body .ant-input-affix-wrapper:hover,
 body .ant-select:hover .ant-select-selector,
