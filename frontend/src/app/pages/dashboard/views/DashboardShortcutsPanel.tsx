@@ -8,7 +8,6 @@ import { showError } from '@/shared/errors'
 import { t } from '@/app/appI18n'
 import {
   recommendedShortcutTargets,
-  shortcutIcon,
   shortcutIconKeys,
   shortcutIconLabel,
   shortcutTargetOptions,
@@ -121,7 +120,6 @@ export function DashboardShortcutsPanel({
       {shortcuts.length ? (
         <div className="dashboard-shortcut-grid">
           {shortcuts.map((shortcut) => {
-            const Icon = shortcutIcon(shortcut.icon)
             const allowed = canOpen(shortcut.target_path)
             return (
               <button
@@ -132,40 +130,34 @@ export function DashboardShortcutsPanel({
                 type="button"
                 onClick={() => openShortcut(shortcut.target_path)}
               >
-                <span className="dashboard-shortcut-icon">
-                  <Icon size={18} />
-                </span>
                 <span>{shortcut.label}</span>
               </button>
             )
           })}
+        </div>
+      ) : recommended.length ? (
+        <div className="dashboard-shortcut-empty">
+          <span className="dashboard-shortcut-suggested-label">
+            {t('dashboard.shortcutRecommendedLabel')}
+          </span>
+          <div className="dashboard-shortcut-grid">
+            {recommended.map((option) => (
+              <button
+                className="dashboard-shortcut"
+                key={option.value}
+                type="button"
+                onClick={() => openShortcut(option.value)}
+              >
+                <span>{option.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
       ) : (
         <div className="dashboard-shortcut-empty">
           <div>
             <strong>{t('dashboard.shortcutEmpty')}</strong>
             <span>{t('dashboard.shortcutRecommended')}</span>
-          </div>
-          <span className="dashboard-shortcut-suggested-label">
-            {t('dashboard.shortcutRecommendedLabel')}
-          </span>
-          <div className="dashboard-shortcut-grid">
-            {recommended.map((option) => {
-              const Icon = shortcutIcon('layout-dashboard')
-              return (
-                <button
-                  className="dashboard-shortcut"
-                  key={option.value}
-                  type="button"
-                  onClick={() => openShortcut(option.value)}
-                >
-                  <span className="dashboard-shortcut-icon">
-                    <Icon size={18} />
-                  </span>
-                  <span>{option.label}</span>
-                </button>
-              )
-            })}
           </div>
         </div>
       )}

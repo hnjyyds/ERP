@@ -112,10 +112,18 @@ describe('DashboardShortcutsPanel', () => {
     const user = userEvent.setup()
     const { props } = renderPanel({ shortcuts: [] })
 
-    expect(screen.getByText('dashboard.shortcutEmpty')).toBeInTheDocument()
+    expect(screen.queryByText('dashboard.shortcutEmpty')).not.toBeInTheDocument()
+    expect(screen.getByText('dashboard.shortcutRecommendedLabel')).toBeInTheDocument()
     expect(props.onCreate).not.toHaveBeenCalled()
     await user.click(screen.getByRole('button', { name: '出口合同' }))
     expect(props.onNavigate).toHaveBeenCalledWith('/sales/contracts')
+  })
+
+  it('shows the empty copy only when there is nothing to recommend', () => {
+    renderPanel({ shortcuts: [], menus: [] })
+
+    expect(screen.getByText('dashboard.shortcutEmpty')).toBeInTheDocument()
+    expect(screen.queryByText('dashboard.shortcutRecommendedLabel')).not.toBeInTheDocument()
   })
 
   it('creates a shortcut from the management modal using catalog targets', async () => {
