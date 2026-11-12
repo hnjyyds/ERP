@@ -164,10 +164,15 @@ body,
 
 .summary-cell,
 .metric-cell {
-  min-height: 64px;
+  min-height: 52px;
   border-right: 1px solid var(--erp-border-soft);
-  padding: 10px 14px;
+  padding: 8px 14px;
   animation: none;
+}
+
+.metric-cell.is-zero .metric-value {
+  color: var(--erp-faint);
+  font-weight: 600;
 }
 
 .summary-cell:last-child,
@@ -178,8 +183,8 @@ body,
 .summary-cell strong,
 .metric-cell strong,
 .metric-strip .metric-value {
-  margin-top: 2px;
-  font-size: 1.25rem;
+  margin-top: 1px;
+  font-size: 1.125rem;
   line-height: 1.2;
 }
 
@@ -300,6 +305,80 @@ body,
 .entity-modal-form .entity-modal-grid > *,
 .entity-modal-form .modal-actions {
   animation: none;
+}
+
+.inline-empty-action {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--erp-muted);
+  font-size: 0.8125rem;
+}
+
+.inline-create-link.ant-btn {
+  align-self: flex-start;
+  width: max-content;
+  max-width: 100%;
+  height: auto;
+  min-height: 0;
+  margin-top: 2px;
+  padding: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.quality-inspection-page .qc-filter-toolbar {
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px 12px;
+}
+
+.quality-inspection-page .qc-filter-toolbar .filter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.purchase-contract-modal .ant-modal-body {
+  padding-top: 4px;
+}
+
+.purchase-contract-modal .workflow-modal-content.entity-modal-form {
+  max-height: none;
+  overflow: visible;
+  padding: 0;
+}
+
+.purchase-contract-modal .contract-modal-form.entity-modal-form {
+  max-height: min(66vh, 680px);
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.purchase-contract-modal .contract-modal-form {
+  gap: 9px;
+}
+
+.purchase-contract-modal .contract-modal-form .form-row {
+  gap: 9px 16px;
+}
+
+.purchase-contract-modal .contract-line-toolbar {
+  margin-top: 2px;
+}
+
+.purchase-contract-modal .ant-modal-footer {
+  margin-top: 8px;
+  border-top: 1px solid var(--erp-border-soft);
+  padding-top: 10px;
+}
+
+.field-hint {
+  color: var(--erp-muted);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.4;
 }
 
 .entity-modal-form .modal-actions {

@@ -7,6 +7,7 @@ import { t } from '@/app/appI18n'
 import type { CurrentUser, InboundOrder, InboundPlan } from '@/api'
 
 import {
+  applyLocationName,
   assignableUserOptionLabel,
   inboundPlanOptionSearchText,
   inboundPlanStatusLabel,
@@ -136,15 +137,6 @@ export function InboundOrderWorkflowModal({
             </label>
           </div>
           <div className="form-pair two">
-            <label htmlFor="inbound-order-warehouse-id">
-              {t('warehouse.inboundOrder.field.warehouseId')}
-              <Input
-                id="inbound-order-warehouse-id"
-                readOnly
-                required
-                value={form.warehouse_id}
-              />
-            </label>
             <label htmlFor="inbound-order-warehouse-name">
               {t('warehouse.inboundOrder.field.warehouse')}
               <FormSelect
@@ -160,24 +152,14 @@ export function InboundOrderWorkflowModal({
                 ))}
               </FormSelect>
             </label>
-          </div>
-          <div className="form-pair two">
-            <label htmlFor="inbound-order-location-id">
-              {t('warehouse.inboundOrder.field.locationId')}
-              <Input
-                id="inbound-order-location-id"
-                required
-                value={form.location_id}
-                onChange={(event) => setForm({ ...form, location_id: event.target.value })}
-              />
-            </label>
             <label htmlFor="inbound-order-location-name">
               {t('warehouse.inboundOrder.field.location')}
               <Input
                 id="inbound-order-location-name"
                 required
+                placeholder={t('warehouse.inboundOrder.form.locationPlaceholder')}
                 value={form.location_name}
-                onChange={(event) => setForm({ ...form, location_name: event.target.value })}
+                onChange={(event) => setForm(applyLocationName(form, event.target.value))}
               />
             </label>
           </div>

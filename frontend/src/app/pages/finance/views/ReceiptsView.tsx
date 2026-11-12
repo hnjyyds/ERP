@@ -1,7 +1,9 @@
 import { Button, Input, Modal, Table } from 'antd'
 import { ArrowLeft, Plus, Search, CheckCircle2, Save, ShieldCheck } from 'lucide-react'
-import { type BankReceipt, type ReceivableItem } from '@/api'
-import { FormSelect, PanelTitle } from '@/shared/ui'
+import { useCallback, useRef } from 'react'
+
+import { listCustomers, type BankReceipt, type ReceivableItem } from '@/api'
+import { FormSelect, PanelTitle, RemoteSelect } from '@/shared/ui'
 import {
   receiptStatusOptions,
   receiptTypeOptions,
@@ -73,6 +75,30 @@ export function ReceiptsView({ model, shell }: Props) {
     totalUnallocatedAmount,
   } = model
   const { detailId, goModule, goDetail, moduleAlerts, moduleHeader } = shell
+  const customerNamesRef = useRef(new Map<string, string>())
+
+  const fetchCustomerOptions = useCallback(async (query: string) => {
+    const result = await listCustomers({ q: query || undefined, limit: 20 })
+    return result.items.map((customer) => {
+      const name = customer.cn_name || customer.en_name || customer.code
+      customerNamesRef.current.set(customer.id, name)
+      return {
+        value: customer.id,
+        label: name,
+        description: [customer.code, customer.country].filter(Boolean).join(' · '),
+      }
+    })
+  }, [])
+
+  function handleReceiptCustomerChange(customerId: string) {
+    const customerName = customerId ? customerNamesRef.current.get(customerId) ?? '' : ''
+    setReceiptForm({
+      ...receiptForm,
+      customer_id: customerId,
+      customer_name: customerName,
+      payer_name: customerId && !receiptForm.payer_name ? customerName : receiptForm.payer_name,
+    })
+  }
 
   return (
     <section className={detailId ? 'finance-page finance-detail-page' : 'finance-page'}>
@@ -256,21 +282,21 @@ export function ReceiptsView({ model, shell }: Props) {
               </label>
               <div className="form-pair two">
                 <label>
-                  {t('finance.receipt.field.customerId')}
-                  <Input
+                  {t('finance.receipt.field.customer')}
+                  <RemoteSelect
+                    ariaLabel={t('finance.receipt.field.customer')}
+                    fetchOptions={fetchCustomerOptions}
+                    placeholder={t('finance.receipt.form.customerPlaceholder')}
                     value={receiptForm.customer_id}
-                    onChange={(event) =>
-                      setReceiptForm({ ...receiptForm, customer_id: event.target.value })
-                    }
+                    onChange={handleReceiptCustomerChange}
                   />
                 </label>
                 <label>
                   {t('finance.receipt.field.customerName')}
                   <Input
+                    readOnly
+                    placeholder={t('finance.receipt.form.customerNameAuto')}
                     value={receiptForm.customer_name}
-                    onChange={(event) =>
-                      setReceiptForm({ ...receiptForm, customer_name: event.target.value })
-                    }
                   />
                 </label>
               </div>

@@ -1,9 +1,11 @@
 import { Button, Input, Table, Tag } from 'antd'
-import { Plus, RefreshCw, RotateCcw, Search } from 'lucide-react'
+import { Funnel, Plus, RefreshCw, RotateCcw, Search } from 'lucide-react'
+import { useState } from 'react'
 import type { MouseEvent } from 'react'
 
 import type { QualityInspection, QualityInspectionStatus } from '@/api'
 import { FormSelect, ListPageShell, RemoteSelect } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { t } from '@/app/appI18n'
 
 import {
@@ -27,6 +29,13 @@ type Props = {
 }
 
 export function QualityInspectionListPanel({ model, onCreate, onOpenDetail }: Props) {
+  const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false)
+  const activeAdvancedFilterCount = [
+    model.supplierFilter,
+    model.contractFilter,
+    model.assigneeFilter === 'all' ? '' : model.assigneeFilter,
+  ].filter(Boolean).length
+
   const prioritizedInspections = model.inspections
     .map((inspection, index) => ({ inspection, index }))
     .sort(
@@ -42,7 +51,7 @@ export function QualityInspectionListPanel({ model, onCreate, onOpenDetail }: Pr
       title={t('quality.inspection.panel.listTitle')}
     >
       <form
-        className="inline-filters single-line-filter-toolbar"
+        className="inline-filters qc-filter-toolbar"
         onSubmit={(event) => {
           event.preventDefault()
           model.submitFilters()
@@ -84,6 +93,8 @@ export function QualityInspectionListPanel({ model, onCreate, onOpenDetail }: Pr
             ))}
           </FormSelect>
         </label>
+        {advancedFiltersOpen ? (
+          <>
         <label className="entity-search-filter">
           {t('quality.inspection.filter.supplier')}
           <RemoteSelect
@@ -119,7 +130,18 @@ export function QualityInspectionListPanel({ model, onCreate, onOpenDetail }: Pr
             <option value="mine">{t('quality.inspection.filter.mine')}</option>
           </FormSelect>
         </label>
+          </>
+        ) : null}
         <div className="filter-actions">
+          <Button
+            aria-expanded={advancedFiltersOpen}
+            htmlType="button"
+            icon={<Funnel size={16} />}
+            onClick={() => setAdvancedFiltersOpen((current) => !current)}
+          >
+            {t('quality.inspection.filter.moreFilters')}
+            {activeAdvancedFilterCount > 0 ? ` (${activeAdvancedFilterCount})` : ''}
+          </Button>
           <Button htmlType="submit" icon={<Search size={16} />}>
             {t('quality.inspection.action.query')}
           </Button>
@@ -145,6 +167,23 @@ export function QualityInspectionListPanel({ model, onCreate, onOpenDetail }: Pr
       </form>
 
       <Table<QualityInspection>
+        locale={{
+          emptyText: (
+            <ListEmptyState
+              createLabel={t('quality.inspection.action.create')}
+              emptyDescription={t('quality.inspection.panel.listEmptyDescription')}
+              emptyTitle={t('quality.inspection.panel.listEmptyTitle')}
+              filtered={
+                Boolean(model.search.trim()) ||
+                Boolean(model.statusFilter) ||
+                Boolean(model.resultFilter) ||
+                activeAdvancedFilterCount > 0
+              }
+              onCreate={onCreate}
+              onClearFilters={model.resetFilters}
+            />
+          ),
+        }}
         columns={[
           {
             title: t('quality.inspection.table.code'),

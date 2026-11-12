@@ -169,6 +169,27 @@ export function usePurchaseContractsList({ detailId, onNavigate }: Options) {
     void loadContracts(undefined, undefined, 1)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setSupplierFilter('')
+    setSourceFilter('')
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      q: null,
+      status: null,
+      supplier: null,
+      source: null,
+      page: null,
+    })
+    void loadContracts(undefined, undefined, 1, pageSize, {
+      q: '',
+      status: '',
+      supplier: '',
+      source: '',
+    })
+  }
+
   function changeContractsPage(nextPage: number, nextPageSize: number) {
     const next = changePage(nextPage, nextPageSize)
     appliedUrlSearchRef.current = urlQuery.update({
@@ -212,6 +233,7 @@ export function usePurchaseContractsList({ detailId, onNavigate }: Options) {
     loadContractReminders,
     applySavedContract,
     submitFilters,
+    clearFilters,
     changeContractsPage,
     stopAndOpenContractDetail,
   }

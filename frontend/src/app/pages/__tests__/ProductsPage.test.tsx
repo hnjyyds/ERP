@@ -90,7 +90,7 @@ describe('ProductsPage', () => {
 
   it('renders product list panel', () => {
     render(<ProductsPage detailId={null} onNavigate={onNavigate} />)
-    expect(screen.getByText('商品列表')).toBeTruthy()
+    expect(screen.getByText('商品资料')).toBeTruthy()
   })
 
   it('使用带可访问名称的图标工具按钮，并保留新增商品文字', () => {
@@ -180,7 +180,7 @@ describe('ProductsPage', () => {
 
     render(<Harness />)
 
-    expect(await screen.findByRole('heading', { level: 2, name: '商品列表' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 2, name: '商品资料' })).toBeInTheDocument()
     expect(screen.getByRole('columnheader', { name: '编号' })).toBeInTheDocument()
     expect(screen.getByRole('columnheader', { name: '中文名称' })).toBeInTheDocument()
 
@@ -189,10 +189,10 @@ describe('ProductsPage', () => {
     })
     act(() => switchLanguage())
 
-    expect(screen.getByRole('heading', { level: 2, name: 'Product list' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: 'Products' })).toBeInTheDocument()
     expect(screen.getByRole('columnheader', { name: 'Code' })).toBeInTheDocument()
     expect(screen.getByRole('columnheader', { name: 'Chinese name' })).toBeInTheDocument()
-    expect(screen.queryByText('商品列表')).not.toBeInTheDocument()
+    expect(screen.queryByText('商品资料')).not.toBeInTheDocument()
     expect(screen.queryByRole('columnheader', { name: '编号' })).not.toBeInTheDocument()
   })
 
@@ -246,7 +246,7 @@ describe('ProductsPage', () => {
 
     await user.click(screen.getByRole('button', { name: '导出全部商品' }))
     expect(downloadCsv).toHaveBeenCalledTimes(1)
-    expect(vi.mocked(downloadCsv).mock.calls[0][0]).toBe('产品资料.csv')
+    expect(vi.mocked(downloadCsv).mock.calls[0][0]).toBe('商品资料.csv')
     expect(vi.mocked(downloadCsv).mock.calls[0][1]).toContain('P-001')
     expect(vi.mocked(downloadCsv).mock.calls[0][1]).toContain('P-002')
 
@@ -290,7 +290,7 @@ describe('ProductsPage', () => {
     expect(await screen.findByText('客户乙')).toBeInTheDocument()
     expect(await screen.findByText('出货明细')).toBeInTheDocument()
     expect(await screen.findByText('测试摘要')).toBeInTheDocument()
-    expect(screen.queryByText('商品列表')).not.toBeInTheDocument()
+    expect(screen.queryByText('商品资料')).not.toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: '编辑商品' }))
     const dialog = await screen.findByRole('dialog')

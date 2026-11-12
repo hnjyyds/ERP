@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components -- this module exports a hook that returns a memoized control */
 import { Button, Dropdown, Menu, Tooltip, type MenuProps } from 'antd'
-import { SlidersHorizontal } from 'lucide-react'
+import { Columns3 } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
 
 import { t } from '@/app/appI18n'
@@ -125,7 +125,7 @@ function ColumnViewControl({ options, isVisible, onToggle, onReset }: ControlPro
         <Button
           aria-label={t('common.columnView.settings')}
           className="toolbar-icon-button"
-          icon={<SlidersHorizontal size={16} />}
+          icon={<Columns3 size={16} />}
         />
       </Dropdown>
     </Tooltip>

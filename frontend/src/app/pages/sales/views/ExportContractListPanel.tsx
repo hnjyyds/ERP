@@ -4,6 +4,7 @@ import type { MouseEvent } from 'react'
 
 import type { Customer, ExportContract } from '@/api'
 import { FormSelect, ListPageShell } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { exportContractStatusOptions } from '@/shared/formOptions'
 import { formatDate, formatMoney } from '@/app/pages/appHelpers'
 import { t } from '@/app/appI18n'
@@ -107,6 +108,21 @@ export function ExportContractListPanel({
       </form>
 
       <Table<ExportContract>
+        locale={{
+          emptyText: (
+            <ListEmptyState
+              createLabel={t('sales.contract.list.create')}
+              emptyTitle={t('sales.contract.list.emptyTitle')}
+              filtered={
+                Boolean(model.search.trim()) ||
+                Boolean(model.statusFilter) ||
+                Boolean(model.customerFilter)
+              }
+              onCreate={onCreate}
+              onClearFilters={model.clearFilters}
+            />
+          ),
+        }}
         columns={[
           {
             title: t('sales.contract.field.code'),

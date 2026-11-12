@@ -321,7 +321,6 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
           label={t('masterdata.product.metric.withImage')}
           value={model.summary.with_image_count}
         />
-        <Metric label={t('masterdata.product.metric.exported')} value={exportResult ? 1 : 0} />
       </div>
 
       {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}

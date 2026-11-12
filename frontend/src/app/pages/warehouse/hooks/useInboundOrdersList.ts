@@ -131,10 +131,21 @@ export function useInboundOrdersList({
     preferredOrderId?: string,
     preferredOrder?: InboundOrder,
     inventoryQuery?: string,
-    queryOverride?: { q?: string; status?: string; page?: number; pageSize?: number },
+    queryOverride?: {
+      q?: string
+      status?: string
+      page?: number
+      pageSize?: number
+      inboundMode?: string
+      supplier?: string
+      contract?: string
+    },
   ) {
     const resolvedQuery = queryOverride?.q ?? search
     const resolvedStatus = queryOverride?.status ?? statusFilter
+    const resolvedMode = queryOverride?.inboundMode ?? modeFilter
+    const resolvedSupplier = queryOverride?.supplier ?? supplierFilter
+    const resolvedContract = queryOverride?.contract ?? contractFilter
     const resolvedPage = queryOverride?.page ?? page
     const resolvedPageSize = queryOverride?.pageSize ?? pageSize
     const summaryInventoryQuery = inventorySearch.trim() || resolvedQuery.trim() || undefined
@@ -144,9 +155,9 @@ export function useInboundOrdersList({
         listInboundOrders({
           q: preferredOrder?.code ?? (resolvedQuery.trim() || undefined),
           status: resolvedStatus || undefined,
-          inbound_mode: modeFilter || undefined,
-          supplier_id: supplierFilter.trim() || undefined,
-          purchase_contract_id: contractFilter.trim() || undefined,
+          inbound_mode: resolvedMode || undefined,
+          supplier_id: resolvedSupplier.trim() || undefined,
+          purchase_contract_id: resolvedContract.trim() || undefined,
           limit: resolvedPageSize,
           offset: (resolvedPage - 1) * resolvedPageSize,
         }),
@@ -221,6 +232,24 @@ export function useInboundOrdersList({
     })
   }
 
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setModeFilter('')
+    setSupplierFilter('')
+    setContractFilter('')
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({ q: null, status: null, page: null })
+    void loadInboundOrders(undefined, undefined, undefined, {
+      q: '',
+      status: '',
+      page: 1,
+      inboundMode: '',
+      supplier: '',
+      contract: '',
+    })
+  }
+
   function changeListPage(nextPage: number, nextPageSize: number) {
     const next = changePage(nextPage, nextPageSize)
     appliedUrlSearchRef.current = urlQuery.update({
@@ -284,6 +313,7 @@ export function useInboundOrdersList({
     openInboundOrderDetail,
     stopAndOpenInboundOrderDetail,
     submitFilters,
+    clearFilters,
     changeListPage,
     loadInboundOrders,
     applyGeneratedOrder,

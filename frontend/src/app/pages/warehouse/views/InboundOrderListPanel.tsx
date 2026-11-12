@@ -3,6 +3,7 @@ import { Plus, Search } from 'lucide-react'
 
 import { inboundOrderModeOptions, inboundOrderStatusOptions } from '@/shared/formOptions'
 import { FormSelect, ListPageShell, RemoteSelect } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { formatDate } from '@/app/pages/appHelpers'
 import { t } from '@/app/appI18n'
 import type { InboundOrder } from '@/api'
@@ -106,6 +107,24 @@ export function InboundOrderListPanel({ model, onOpenModal }: Props) {
       }
     >
       <Table<InboundOrder>
+        locale={{
+          emptyText: (
+            <ListEmptyState
+              createLabel={t('warehouse.inboundOrder.list.generateOrApprove')}
+              emptyDescription={t('warehouse.inboundOrder.list.emptyDescription')}
+              emptyTitle={t('warehouse.inboundOrder.list.emptyTitle')}
+              filtered={
+                Boolean(model.search.trim()) ||
+                Boolean(model.statusFilter) ||
+                Boolean(model.modeFilter) ||
+                Boolean(model.supplierFilter) ||
+                Boolean(model.contractFilter)
+              }
+              onCreate={onOpenModal}
+              onClearFilters={model.clearFilters}
+            />
+          ),
+        }}
         columns={[
           {
             title: t('warehouse.inboundOrder.field.code'),

@@ -114,10 +114,10 @@ async def test_login_returns_token_user_and_permission_menus(
     }
     assert [item["label"] for item in data["menus"]] == [
         "工作台",
-        "产品资料",
-        "工厂资料",
+        "商品资料",
+        "供应商资料",
         "客户资料",
-        "订单中心",
+        "出口合同",
         "采购合同",
         "QC 中心",
         "我的 QC 任务",

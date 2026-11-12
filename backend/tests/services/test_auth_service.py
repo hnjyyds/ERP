@@ -26,10 +26,10 @@ async def test_auth_service_verifies_password_and_token_round_trip(
     assert demo_assignee.avatar_value == "amber-orbit"
     assert [item.label for item in current.menus] == [
         "工作台",
-        "产品资料",
-        "工厂资料",
+        "商品资料",
+        "供应商资料",
         "客户资料",
-        "订单中心",
+        "出口合同",
         "采购合同",
         "QC 中心",
         "我的 QC 任务",
@@ -67,7 +67,7 @@ async def test_seed_system_demo_data_provisions_employee_role_accounts(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     expected_accounts = [
-        ("demo", "demo123", "业务主管", "业务部", {"工作台", "出口报价", "订单中心"}),
+        ("demo", "demo123", "业务主管", "业务部", {"工作台", "出口报价", "出口合同"}),
         (
             "purchase",
             "purchase123",

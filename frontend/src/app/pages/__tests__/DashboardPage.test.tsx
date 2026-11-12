@@ -302,10 +302,10 @@ describe('DashboardPage', () => {
   it('offers a direct next step from each workbench empty state', () => {
     render(<DashboardPage {...defaultProps} />)
 
-    const emptyTodo = screen.getByText('dashboard.noTodos').closest('.dashboard-empty')
-    const emptySchedule = screen.getByText('dashboard.noSchedules').closest('.dashboard-empty')
-    const emptyMessages = screen.getByText('dashboard.noNotifications').closest('.dashboard-empty')
-    const emptyAnnouncements = screen.getByText('dashboard.noAnnouncements').closest('.dashboard-empty')
+    const emptyTodo = screen.getByText('dashboard.noTodos').closest('.dashboard-panel')
+    const emptySchedule = screen.getByText('dashboard.noSchedules').closest('.dashboard-panel')
+    const emptyMessages = screen.getByText('dashboard.noNotifications').closest('.dashboard-panel')
+    const emptyAnnouncements = screen.getByText('dashboard.noAnnouncements').closest('.dashboard-panel')
 
     expect(within(emptyTodo as HTMLElement).getByText('dashboard.addTodo')).toBeInTheDocument()
     expect(within(emptySchedule as HTMLElement).getByText('dashboard.addSchedule')).toBeInTheDocument()

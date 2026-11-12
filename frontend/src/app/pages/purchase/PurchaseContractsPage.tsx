@@ -92,19 +92,32 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
           suppliers={options.suppliers}
           assignableUsers={options.assignableUsers}
           products={options.products}
+          exportContracts={options.exportContracts}
           onSupplierSearch={options.loadSuppliers}
-          onProductSearch={options.loadProducts}
           loadingSuppliers={options.loadingSuppliers}
           loadingAssignableUsers={options.loadingAssignableUsers}
           loadingProducts={options.loadingProducts}
+          loadingExportContracts={options.loadingExportContracts}
           submitting={formModal.submitting}
+          productDrawerOpen={formModal.productDrawerOpen}
+          productSearch={formModal.productSearch}
+          pendingProductIds={formModal.pendingProductIds}
+          selectedProductIds={formModal.selectedProductIds}
           onClose={formModal.close}
           onSubmitManual={formModal.submitContractForm}
           onSubmitGenerate={formModal.generateContractFromSources}
-          applySupplierToPurchaseContractForm={formModal.applySupplier}
-          applyQcUserToPurchaseContractForm={formModal.applyQcUser}
-          applyQcUserToPurchaseContractGenerateForm={formModal.applyQcUserToGenerateForm}
-          applyProductToPurchaseContractForm={formModal.applyProduct}
+          applySupplier={formModal.applySupplier}
+          applyBuyer={formModal.applyBuyer}
+          applyBuyerToGenerateForm={formModal.applyBuyerToGenerateForm}
+          applyQcUser={formModal.applyQcUser}
+          applyQcUserToGenerateForm={formModal.applyQcUserToGenerateForm}
+          onOpenProductDrawer={formModal.openProductDrawer}
+          onCloseProductDrawer={formModal.closeProductDrawer}
+          onProductSearchChange={formModal.setProductSearch}
+          onTogglePendingProduct={formModal.togglePendingProduct}
+          onAddPendingProducts={formModal.addPendingProducts}
+          updateContractLine={formModal.updateContractLine}
+          removeContractLine={formModal.removeContractLine}
         />
 
         {detailId ? (

@@ -94,6 +94,42 @@ export function mergePurchaseLineRemark(current: string, addition: string): stri
   return `${current}; ${addition}`
 }
 
+export function productToPurchaseLine(product: Product): PurchaseContractLineFormState {
+  return {
+    key: product.id,
+    product_id: product.id,
+    product_code: product.code,
+    product_name: product.cn_name || product.en_name || product.code,
+    specification: product.specification ?? '',
+    model: product.model ?? '',
+    quantity: '1',
+    unit: product.unit,
+    unit_price: '0',
+    source_export_contract_id: '',
+    source_export_contract_no: '',
+    source_export_contract_line_id: '',
+    remark: product.package_info
+      ? t('purchase.contract.message.packageRemark', { info: product.package_info })
+      : '',
+  }
+}
+
+export type PurchaseContractLineFormState = {
+  key: string
+  product_id: string
+  product_code: string
+  product_name: string
+  specification: string
+  model: string
+  quantity: string
+  unit: string
+  unit_price: string
+  source_export_contract_id: string
+  source_export_contract_no: string
+  source_export_contract_line_id: string
+  remark: string
+}
+
 export type PurchaseContractFormState = {
   code: string
   contract_date: string
@@ -108,18 +144,7 @@ export type PurchaseContractFormState = {
   payment_terms: string
   source_type: PurchaseContractCreatePayload['source_type']
   remarks: string
-  product_id: string
-  product_code: string
-  product_name: string
-  specification: string
-  model: string
-  quantity: string
-  unit: string
-  unit_price: string
-  source_export_contract_id: string
-  source_export_contract_no: string
-  source_export_contract_line_id: string
-  line_remark: string
+  lines: PurchaseContractLineFormState[]
 }
 
 export type PurchaseContractGenerateFormState = {
@@ -161,18 +186,7 @@ export function initialPurchaseContractForm(): PurchaseContractFormState {
     payment_terms: '',
     source_type: 'manual',
     remarks: '',
-    product_id: '',
-    product_code: '',
-    product_name: '',
-    specification: '',
-    model: '',
-    quantity: '1',
-    unit: 'pcs',
-    unit_price: '0',
-    source_export_contract_id: '',
-    source_export_contract_no: '',
-    source_export_contract_line_id: '',
-    line_remark: '',
+    lines: [],
   }
 }
 
@@ -182,16 +196,16 @@ export function initialPurchaseContractGenerateForm(): PurchaseContractGenerateF
     contract_date: todayInputValue(),
     source_contract_id_a: '',
     source_contract_id_b: '',
-    supplier_id: 'supplier-accessory-a',
+    supplier_id: '',
     supplier_name: '',
-    buyer_user_id: 'u-001',
+    buyer_user_id: '',
     buyer_user_name: '',
     qc_user_id: '',
     qc_user_name: '',
     currency: 'USD',
     delivery_date: todayInputValue(),
-    unit_price: '0.12',
-    payment_terms: '30% advance, 70% before delivery',
+    unit_price: '0',
+    payment_terms: '',
     remarks: '',
   }
 }
@@ -205,7 +219,6 @@ export function initialPurchaseContractApproveForm(): PurchaseContractApproveFor
 }
 
 export function purchaseContractToForm(contract: PurchaseContract): PurchaseContractFormState {
-  const line = contract.lines[0]
   return {
     code: contract.code,
     contract_date: contract.contract_date,
@@ -220,18 +233,21 @@ export function purchaseContractToForm(contract: PurchaseContract): PurchaseCont
     payment_terms: contract.payment_terms,
     source_type: contract.source_type as PurchaseContractCreatePayload['source_type'],
     remarks: contract.remarks ?? '',
-    product_id: line?.product_id ?? '',
-    product_code: line?.product_code ?? '',
-    product_name: line?.product_name ?? '',
-    specification: line?.specification ?? '',
-    model: line?.model ?? '',
-    quantity: line?.quantity ?? '1',
-    unit: line?.unit ?? 'pcs',
-    unit_price: line?.unit_price ?? '0',
-    source_export_contract_id: line?.source_export_contract_id ?? '',
-    source_export_contract_no: line?.source_export_contract_no ?? '',
-    source_export_contract_line_id: line?.source_export_contract_line_id ?? '',
-    line_remark: line?.remark ?? '',
+    lines: contract.lines.map((line) => ({
+      key: line.id,
+      product_id: line.product_id ?? '',
+      product_code: line.product_code ?? '',
+      product_name: line.product_name,
+      specification: line.specification ?? '',
+      model: line.model ?? '',
+      quantity: line.quantity,
+      unit: line.unit,
+      unit_price: line.unit_price,
+      source_export_contract_id: line.source_export_contract_id ?? '',
+      source_export_contract_no: line.source_export_contract_no ?? '',
+      source_export_contract_line_id: line.source_export_contract_line_id ?? '',
+      remark: line.remark ?? '',
+    })),
   }
 }
 
@@ -249,22 +265,20 @@ export function purchaseContractPayload(form: PurchaseContractFormState): Purcha
     payment_terms: form.payment_terms.trim(),
     source_type: form.source_type,
     remarks: emptyToNull(form.remarks),
-    lines: [
-      {
-        product_id: emptyToNull(form.product_id),
-        product_code: emptyToNull(form.product_code),
-        product_name: form.product_name.trim(),
-        specification: emptyToNull(form.specification),
-        model: emptyToNull(form.model),
-        quantity: form.quantity,
-        unit: form.unit.trim(),
-        unit_price: form.unit_price,
-        source_export_contract_id: emptyToNull(form.source_export_contract_id),
-        source_export_contract_no: emptyToNull(form.source_export_contract_no),
-        source_export_contract_line_id: emptyToNull(form.source_export_contract_line_id),
-        remark: emptyToNull(form.line_remark),
-      },
-    ],
+    lines: form.lines.map((line) => ({
+      product_id: emptyToNull(line.product_id),
+      product_code: emptyToNull(line.product_code),
+      product_name: line.product_name.trim(),
+      specification: emptyToNull(line.specification),
+      model: emptyToNull(line.model),
+      quantity: line.quantity,
+      unit: line.unit.trim(),
+      unit_price: line.unit_price,
+      source_export_contract_id: emptyToNull(line.source_export_contract_id),
+      source_export_contract_no: emptyToNull(line.source_export_contract_no),
+      source_export_contract_line_id: emptyToNull(line.source_export_contract_line_id),
+      remark: emptyToNull(line.remark),
+    })),
   }
 }
 

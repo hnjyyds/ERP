@@ -7,6 +7,7 @@ import type { MouseEvent } from 'react'
 import type { Product } from '@/api'
 import { t } from '@/app/appI18n'
 import { ListPageShell } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import type { ProductsListModel } from '../hooks/useProductsPage'
 
 type Props = {
@@ -74,10 +75,11 @@ export function ProductsListView({ model, onCreate, onOpenImport, onExport, onOp
             <Tooltip title={t('masterdata.product.importAction')}>
               <Button
                 aria-label={t('masterdata.product.importAction')}
-                className="toolbar-icon-button"
                 icon={<UploadIcon size={16} />}
                 onClick={onOpenImport}
-              />
+              >
+                {t('masterdata.product.importShort')}
+              </Button>
             </Tooltip>
             <Tooltip
               title={
@@ -92,10 +94,11 @@ export function ProductsListView({ model, onCreate, onOpenImport, onExport, onOp
                     ? t('masterdata.product.exportSelected', { count: selectedRowKeys.length })
                     : t('masterdata.product.exportAll')
                 }
-                className="toolbar-icon-button"
                 icon={<Download size={16} />}
                 onClick={onExport}
-              />
+              >
+                {t('masterdata.product.exportShort')}
+              </Button>
             </Tooltip>
             {columnViewControl}
           </div>
@@ -103,6 +106,17 @@ export function ProductsListView({ model, onCreate, onOpenImport, onExport, onOp
       }
     >
       <Table<Product>
+        locale={{
+          emptyText: (
+            <ListEmptyState
+              createLabel={t('masterdata.product.create')}
+              emptyTitle={t('masterdata.product.emptyTitle')}
+              filtered={Boolean(search.trim())}
+              onCreate={onCreate}
+              onClearFilters={() => submitSearch('')}
+            />
+          ),
+        }}
         rowSelection={{
           selectedRowKeys,
           onChange: (keys) => setSelectedRowKeys(keys),

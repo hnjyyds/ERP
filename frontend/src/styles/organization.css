@@ -1,20 +1,29 @@
 /* organization — 组织架构页、公司 / 部门区块与 MCP 面板
    由 styles.css 按区块拆出，顺序由 styles.css 的 @import 保证。 */
 .organization-page {
-  --org-type-caption: 0.75rem;
-  --org-type-meta: 0.8125rem;
-  --org-type-body: 0.875rem;
-  --org-type-strong: 0.9375rem;
-  --org-type-section: 1.0625rem;
-  --org-type-title: 1.375rem;
+  --org-type-caption: 0.8125rem;
+  --org-type-meta: 0.875rem;
+  --org-type-body: 0.9375rem;
+  --org-type-strong: 1rem;
+  --org-type-section: 1.125rem;
+  --org-type-title: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   max-width: 1480px;
-  height: calc(100vh - 132px);
-  min-height: 0;
-  overflow: hidden;
+  min-height: calc(100vh - 132px);
   color: var(--erp-text);
+}
+
+.organization-tabs .ant-tabs-nav {
+  margin: 0;
+}
+
+.organization-tab-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 4px;
 }
 
 .organization-page > .organization-summary,
@@ -609,12 +618,12 @@
 .organization-department-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
-  gap: 7px;
+  gap: 8px;
   align-items: center;
   border: 1px solid rgba(140, 143, 156, 0.16);
   border-radius: 8px;
   background: rgba(255, 254, 251, 0.72);
-  padding: 8px;
+  padding: 10px;
 }
 
 .organization-department-main {
@@ -641,12 +650,11 @@
 }
 
 .organization-department-main small {
-  overflow: hidden;
   color: #756e61;
   font-size: var(--org-type-meta);
   font-weight: 660;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.45;
+  white-space: normal;
 }
 
 .organization-department-empty {

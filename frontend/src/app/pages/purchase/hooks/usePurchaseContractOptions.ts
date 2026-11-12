@@ -2,9 +2,11 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import {
   listAssignableUsers,
+  listExportContracts,
   listProducts,
   listSuppliers,
   type AssignableUser,
+  type ExportContract,
   type Product,
   type Supplier,
 } from '@/api'
@@ -27,9 +29,11 @@ export function usePurchaseContractOptions() {
   const [pinnedProducts, setPinnedProducts] = useState<Product[]>([])
   const [pinnedSuppliers, setPinnedSuppliers] = useState<Supplier[]>([])
   const [assignableUsers, setAssignableUsers] = useState<AssignableUser[]>([])
+  const [exportContracts, setExportContracts] = useState<ExportContract[]>([])
   const [loadingProducts, setLoadingProducts] = useState(false)
   const [loadingSuppliers, setLoadingSuppliers] = useState(false)
   const [loadingAssignableUsers, setLoadingAssignableUsers] = useState(false)
+  const [loadingExportContracts, setLoadingExportContracts] = useState(false)
   const productRequestRef = useRef(0)
   const supplierRequestRef = useRef(0)
 
@@ -93,6 +97,18 @@ export function usePurchaseContractOptions() {
     }
   }, [])
 
+  const loadExportContracts = useCallback(async () => {
+    setLoadingExportContracts(true)
+    try {
+      const result = await listExportContracts({ approval_status: 'approved', limit: 50 })
+      setExportContracts(result.items)
+    } catch (caught) {
+      showError(caught, t('purchase.contract.list.exportContractLoadFailed'))
+    } finally {
+      setLoadingExportContracts(false)
+    }
+  }, [])
+
   useEffect(() => {
     void loadProducts('')
     void loadSuppliers('')
@@ -103,11 +119,14 @@ export function usePurchaseContractOptions() {
     products: mergeById(pinnedProducts, products),
     suppliers: mergeById(pinnedSuppliers, suppliers),
     assignableUsers,
+    exportContracts,
     loadingProducts,
     loadingSuppliers,
     loadingAssignableUsers,
+    loadingExportContracts,
     loadProducts,
     loadSuppliers,
+    loadExportContracts,
     pinProduct,
     pinSupplier,
   }

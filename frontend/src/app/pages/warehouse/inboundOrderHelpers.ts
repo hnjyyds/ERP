@@ -77,9 +77,26 @@ export function initialInboundOrderForm(): InboundOrderFormState {
     inbound_at: todayInputValue(),
     warehouse_id: 'wh-company',
     warehouse_name: '公司仓库',
-    location_id: 'loc-a-01',
+    location_id: '',
     location_name: '',
     operator_name: '',
+  }
+}
+
+export function locationIdFromName(locationName: string): string {
+  const trimmed = locationName.trim()
+  return trimmed ? `loc-${trimmed}`.slice(0, 36) : ''
+}
+
+/** 库位名称变化时同步生成内部标识，用户不需要填写库位 ID。 */
+export function applyLocationName(
+  form: InboundOrderFormState,
+  locationName: string,
+): InboundOrderFormState {
+  return {
+    ...form,
+    location_name: locationName,
+    location_id: locationIdFromName(locationName),
   }
 }
 
@@ -106,7 +123,7 @@ export function inboundOrderFormForPlan(
     inbound_at: plan.planned_date,
     warehouse_id: warehouse.value,
     warehouse_name: warehouse.label,
-    location_id: plan.location_id ?? 'loc-a-01',
+    location_id: plan.location_id ?? locationIdFromName(plan.location_name ?? ''),
     location_name: plan.location_name ?? '',
     operator_name: plan.operator_name ?? '',
   }
@@ -135,6 +152,7 @@ export function inboundOrderPayload(form: InboundOrderFormState): InboundOrderGe
     warehouse_name: form.warehouse_name.trim(),
     location_id: form.location_id.trim(),
     location_name: form.location_name.trim(),
+    // 库位 ID 由名称派生，表单不向用户暴露。
     operator_name: form.operator_name.trim(),
     lines: [],
   }

@@ -14,7 +14,7 @@ _DEMO_MENUS_EN = [
     "Products",
     "Suppliers",
     "Customers",
-    "Order Center",
+    "Export Contracts",
     "Purchase Contracts",
     "QC Center",
     "My QC Tasks",

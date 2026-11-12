@@ -1,7 +1,8 @@
-import { Button, Checkbox, Drawer, Input } from 'antd'
-import { Search } from 'lucide-react'
+import { Button, Checkbox, Drawer, Empty, Input } from 'antd'
+import { PackagePlus, Search } from 'lucide-react'
 
 import { t } from '@/app/appI18n'
+import { productPath } from '@/app/routes'
 
 import type { ExportContractFormModalModel } from '../hooks/useExportContractFormModal'
 
@@ -82,9 +83,18 @@ export function ExportContractProductDrawer({ model }: Props) {
             )
           })
         ) : (
-          <div className="product-picker-empty">
-            {t('sales.contract.form.noMatchingProducts')}
-          </div>
+          <Empty
+            description={t('sales.contract.form.noMatchingProducts')}
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+          >
+            <Button
+              icon={<PackagePlus size={16} />}
+              type="primary"
+              onClick={() => window.open(productPath, '_blank', 'noopener,noreferrer')}
+            >
+              {t('common.empty.createProduct')}
+            </Button>
+          </Empty>
         )}
       </div>
     </Drawer>

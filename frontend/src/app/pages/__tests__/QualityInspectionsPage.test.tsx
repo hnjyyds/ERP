@@ -117,11 +117,14 @@ describe('QualityInspectionsPage', () => {
     expect(screen.getByText('QC 任务列表')).toBeTruthy()
   })
 
-  it('renders filter inputs', () => {
+  it('renders filter inputs', async () => {
+    const user = userEvent.setup()
     render(
       <QualityInspectionsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
     )
     expect(screen.getByPlaceholderText('QC 单号 / 合同 / 供应商')).toBeTruthy()
+    expect(screen.queryByRole('combobox', { name: '供应商筛选' })).toBeNull()
+    await user.click(screen.getByRole('button', { name: /更多筛选/ }))
     const supplierSelect = screen.getByRole('combobox', { name: '供应商筛选' })
     const contractSelect = screen.getByRole('combobox', { name: '采购合同筛选' })
     expect(supplierSelect.closest('label')).toHaveClass('entity-search-filter')

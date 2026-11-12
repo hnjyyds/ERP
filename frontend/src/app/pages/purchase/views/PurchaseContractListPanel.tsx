@@ -4,6 +4,7 @@ import type { MouseEvent } from 'react'
 
 import type { PurchaseContract } from '@/api'
 import { FormSelect, ListPageShell } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import {
   purchaseContractSourceTypeOptions,
   purchaseContractStatusOptions,
@@ -95,6 +96,22 @@ export function PurchaseContractListPanel({ model, onCreate, onGenerate, onOpenD
       }
     >
       <Table<PurchaseContract>
+        locale={{
+          emptyText: (
+            <ListEmptyState
+              createLabel={t('purchase.contract.list.create')}
+              emptyTitle={t('purchase.contract.list.emptyTitle')}
+              filtered={
+                Boolean(model.search.trim()) ||
+                Boolean(model.statusFilter) ||
+                Boolean(model.supplierFilter) ||
+                Boolean(model.sourceFilter)
+              }
+              onCreate={onCreate}
+              onClearFilters={model.clearFilters}
+            />
+          ),
+        }}
         columns={[
           {
             title: t('purchase.contract.field.contract'),

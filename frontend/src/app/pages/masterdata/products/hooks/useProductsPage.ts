@@ -54,7 +54,7 @@ export type ProductsListModel = {
     pageSizeOverride?: number,
     queryOverride?: string,
   ) => Promise<void>
-  submitSearch: () => void
+  submitSearch: (query?: string) => void
   goToPage: (nextPage: number, nextPageSize: number) => void
   resetToFirstPage: (preferredId?: string) => Promise<void>
 }
@@ -185,9 +185,10 @@ export function useProductsPage({ detailId, onNavigate }: ProductsPageArgs): Pro
     setSelectedProductIdState(id)
   }
 
-  function submitSearch() {
+  function submitSearch(query: string = search) {
+    setSearch(query)
     setPage(1)
-    appliedUrlSearchRef.current = urlQuery.update({ q: search, page: null })
+    appliedUrlSearchRef.current = urlQuery.update({ q: query, page: null })
     void loadProducts(undefined, 1)
   }
 

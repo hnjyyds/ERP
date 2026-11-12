@@ -11,7 +11,8 @@ type MetricProps = {
 }
 
 export function Metric({ icon, label, value, intent = 'normal', onClick }: MetricProps) {
-  const className = `metric-cell ${intent}${onClick ? ' clickable' : ''}`
+  const isZero = value === 0 || value === '0'
+  const className = `metric-cell ${intent}${onClick ? ' clickable' : ''}${isZero ? ' is-zero' : ''}`
   const content = (
     <>
       {icon ? <span className="metric-icon">{icon}</span> : null}

@@ -45,7 +45,7 @@ const listEntity = vi.fn(async () => ({
 const defaultProps: TradingPartnerPageProps = {
   className: 'partner-page',
   entityLabel: '往来伙伴',
-  pageTitle: '往来伙伴列表',
+  pageTitle: '往来伙伴资料',
   searchPlaceholder: '搜索往来伙伴',
   createPrefix: 'PARTNER',
   kind: 'partner',
@@ -82,7 +82,7 @@ describe('TradingPartnerPage', () => {
 
   it('renders trading partner list panel', () => {
     render(<TradingPartnerPage {...defaultProps} />)
-    expect(screen.getByText('往来伙伴列表')).toBeTruthy()
+    expect(screen.getByText('往来伙伴资料')).toBeTruthy()
   })
 
   it('默认使用紧凑工具栏并按需展开高级筛选', async () => {

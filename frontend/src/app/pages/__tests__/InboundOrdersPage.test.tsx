@@ -246,7 +246,7 @@ describe('InboundOrdersPage', () => {
     expect(vi.mocked(generateInboundOrderFromPlan).mock.calls[0][0]).not.toHaveProperty('code')
   })
 
-  it('shows selected dropdown values and keeps warehouse id in sync', async () => {
+  it('shows selected dropdown values and hides internal warehouse and location ids', async () => {
     const user = userEvent.setup()
     render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
 
@@ -265,7 +265,11 @@ describe('InboundOrdersPage', () => {
     await user.click(warehouseSelect)
     await user.click(await screen.findByText('工厂'))
     expect(warehouseSelect.closest('.ant-select')?.textContent).toContain('工厂')
-    expect(modal.getByRole('textbox', { name: '仓库 ID' })).toHaveValue('wh-factory')
+    expect(modal.queryByRole('textbox', { name: '仓库 ID' })).toBeNull()
+    expect(modal.queryByRole('textbox', { name: '库位 ID' })).toBeNull()
+    await user.clear(modal.getByRole('textbox', { name: '库位' }))
+    await user.type(modal.getByRole('textbox', { name: '库位' }), 'B-02')
+    expect(modal.getByRole('textbox', { name: '库位' })).toHaveValue('B-02')
   })
 
   it('selects an active employee and submits the linked reviewer id', async () => {

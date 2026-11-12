@@ -367,25 +367,23 @@ describe('PurchaseContractsPage', () => {
     expect(within(dialog).queryByText('请填写作废原因')).not.toBeInTheDocument()
   })
 
-  it('新增采购合同提交失败后保留弹窗和已填内容', async () => {
+  it('新增采购合同缺少供应商时阻止提交并保留已填内容', async () => {
     const user = userEvent.setup()
     mockContractApis(makeContract())
-    const createSpy = vi
-      .spyOn(api, 'createPurchaseContract')
-      .mockRejectedValue(new Error('network down'))
+    const createSpy = vi.spyOn(api, 'createPurchaseContract')
 
     render(
       <PurchaseContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
     )
     await user.click(await screen.findByRole('button', { name: '新增采购合同' }))
     const dialog = await screen.findByRole('dialog')
-    await user.type(within(dialog).getByLabelText('工厂名称'), '测试工厂')
+    await user.type(within(dialog).getByLabelText('供应商名称'), '测试工厂')
     await user.click(within(dialog).getByRole('button', { name: '新增采购合同' }))
 
     await waitFor(() => {
-      expect(createSpy).toHaveBeenCalledTimes(1)
+      expect(createSpy).not.toHaveBeenCalled()
     })
-    expect(within(dialog).getByLabelText('工厂名称')).toHaveValue('测试工厂')
+    expect(within(dialog).getByLabelText('供应商名称')).toHaveValue('测试工厂')
   })
 
   it('草稿状态下编辑和作废可用，未选审批人不能提交且审批按钮禁用', async () => {

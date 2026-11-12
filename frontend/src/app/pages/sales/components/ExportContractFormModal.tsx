@@ -1,10 +1,11 @@
 import { Button, Input, Modal, Select, Table } from 'antd'
-import { Plus } from 'lucide-react'
+import { Plus, UserPlus } from 'lucide-react'
 import type { FormEvent } from 'react'
 
 import type { AssignableUser, Customer } from '@/api'
 import { t } from '@/app/appI18n'
 import { formatMoney } from '@/app/pages/appHelpers'
+import { customerPath } from '@/app/routes'
 import {
   assignableUserOptionLabel,
   renderAssignableUserOptions,
@@ -134,7 +135,25 @@ export function ExportContractFormModal({
                   placeholder={customers.length > 0 ? t('sales.contract.form.customerSelectPlaceholder') : t('sales.contract.form.customerMissing')}
                   optionLabelProp="label"
                   filterOption={false}
-                  notFoundContent={loadingCustomers ? t('sales.contract.list.loadingCustomers') : t('sales.contract.list.noCustomers')}
+                  notFoundContent={
+                    loadingCustomers ? (
+                      t('sales.contract.list.loadingCustomers')
+                    ) : (
+                      <div className="inline-empty-action">
+                        <span>{t('sales.contract.list.noCustomers')}</span>
+                        <Button
+                          icon={<UserPlus size={14} />}
+                          size="small"
+                          type="link"
+                          onClick={() =>
+                            window.open(customerPath, '_blank', 'noopener,noreferrer')
+                          }
+                        >
+                          {t('common.empty.createCustomer')}
+                        </Button>
+                      </div>
+                    )
+                  }
                   onSearch={onCustomerSearch}
                   onChange={applyCustomerToContractForm}
                 >
@@ -151,6 +170,17 @@ export function ExportContractFormModal({
                   ) : null}
                   {renderCustomerOptions(customers)}
                 </Select>
+                {!loadingCustomers && customers.length === 0 ? (
+                  <Button
+                    className="inline-create-link"
+                    icon={<UserPlus size={14} />}
+                    size="small"
+                    type="link"
+                    onClick={() => window.open(customerPath, '_blank', 'noopener,noreferrer')}
+                  >
+                    {t('common.empty.createCustomer')}
+                  </Button>
+                ) : null}
               </label>
               <label>
                 {t('sales.contract.field.customerName')}

@@ -18,7 +18,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { showError, showWarningDialog } from '@/shared/errors'
 import { useFormModal } from '@/shared/useFormModal'
-import { ListPageShell, Metric, PanelTitle, useColumnView, type ColumnOption } from '@/shared/ui'
+import {
+  ListPageShell,
+  Metric,
+  PanelTitle,
+  useColumnView,
+  type ColumnOption,
+} from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { useTablePagination } from '@/shared/useTablePagination'
 import { t } from '@/app/appI18n'
@@ -414,6 +421,24 @@ export function TradingPartnerPage({
     void loadRows(1, pageSize, { q: search.trim() || undefined })
   }
 
+  function clearAllFilters() {
+    setSearch('')
+    setCountry('')
+    setCreditGrade('')
+    setPartnerType('')
+    setStatusFilter('')
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      q: null,
+      country: null,
+      credit_grade: null,
+      partner_type: null,
+      status: null,
+      page: null,
+    })
+    void loadRows(1, pageSize, {})
+  }
+
   function closeEntityForm() {
     setEditingEntityId(null)
     closeEntityModal()
@@ -729,6 +754,22 @@ export function TradingPartnerPage({
             <Table<PartnerEntity>
             columns={columns}
             dataSource={rows}
+            locale={{
+              emptyText: (
+                <ListEmptyState
+                  createLabel={t('masterdata.tradingPartner.createTitle', { entity: entityLabel })}
+                  emptyDescription={t('masterdata.tradingPartner.listEmptyDescription', {
+                    entity: entityLabel,
+                  })}
+                  emptyTitle={t('masterdata.tradingPartner.listEmptyTitle', {
+                    entity: entityLabel,
+                  })}
+                  filtered={Boolean(search.trim()) || activeAdvancedFilterCount > 0}
+                  onCreate={openCreate}
+                  onClearFilters={clearAllFilters}
+                />
+              ),
+            }}
             loading={loading}
             pagination={{
               ...pagination,

@@ -1,6 +1,7 @@
-import { Skeleton } from 'antd'
+import { Skeleton, Tabs } from 'antd'
 
 import type { CurrentUser } from '@/api'
+import { t } from '@/app/appI18n'
 
 import { OrganizationCompanySection } from './components/OrganizationCompanySection'
 import { useOrganizationManagement } from './hooks/useOrganizationManagement'
@@ -42,12 +43,33 @@ export function OrganizationUsersPage({ currentUser }: OrganizationUsersPageProp
         onEdit={model.openCompanyModal}
       />
 
-      <div className="organization-structure">
-        <OrganizationDepartmentsPanel model={model} />
-        <OrganizationRolesPanel model={model} />
-      </div>
-
-      <OrganizationUsersPanel model={model} />
+      <Tabs
+        className="organization-tabs"
+        defaultActiveKey="users"
+        items={[
+          {
+            key: 'users',
+            label: t('organization.tabs.users'),
+            children: (
+              <div className="organization-tab-body">
+                <OrganizationUsersPanel model={model} />
+              </div>
+            ),
+          },
+          {
+            key: 'structure',
+            label: t('organization.tabs.structure'),
+            children: (
+              <div className="organization-tab-body">
+                <div className="organization-structure">
+                  <OrganizationDepartmentsPanel model={model} />
+                  <OrganizationRolesPanel model={model} />
+                </div>
+              </div>
+            ),
+          },
+        ]}
+      />
 
       <OrganizationCompanyModal model={model} />
       <OrganizationPermissionModal model={model} />

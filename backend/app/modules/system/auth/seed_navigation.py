@@ -62,7 +62,7 @@ def system_menus() -> list[MenuItem]:
         ),
         MenuItem(
             id="menu-products",
-            label="产品资料",
+            label="商品资料",
             label_en="Products",
             path="/masterdata/products",
             icon="package",
@@ -82,7 +82,7 @@ def system_menus() -> list[MenuItem]:
         ),
         MenuItem(
             id="menu-suppliers",
-            label="工厂资料",
+            label="供应商资料",
             label_en="Suppliers",
             path="/masterdata/suppliers",
             icon="factory",
@@ -152,8 +152,8 @@ def system_menus() -> list[MenuItem]:
         ),
         MenuItem(
             id="menu-sales-contracts",
-            label="订单中心",
-            label_en="Order Center",
+            label="出口合同",
+            label_en="Export Contracts",
             path="/sales/contracts",
             icon="file-text",
             required_permission="sales:contract:view",

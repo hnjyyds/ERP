@@ -1,6 +1,6 @@
 // 商品资料：新增/编辑商品弹窗
 
-import { Input, Modal, Select } from 'antd'
+import { Input, InputNumber, Modal, Select } from 'antd'
 import { ImagePlus } from 'lucide-react'
 import type { ChangeEvent, FormEvent } from 'react'
 
@@ -19,6 +19,15 @@ type Props = {
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
   onCancel: () => void
   onImageFileChange: (event: ChangeEvent<HTMLInputElement>) => void
+}
+
+function rateToPercent(value: string): number | null {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? Number((parsed * 100).toFixed(2)) : null
+}
+
+function percentToRate(value: number | null): string {
+  return value === null ? '' : String(Number((value / 100).toFixed(4)))
 }
 
 export function ProductFormModal({
@@ -85,25 +94,29 @@ export function ProductFormModal({
           </label>
           <label>
             {t('masterdata.product.field.taxRate')}
-            <Input
-              type="number"
-              max="1"
-              min="0"
-              step="0.01"
-              value={form.tax_rate}
-              onChange={(event) => setForm({ ...form, tax_rate: event.target.value })}
+            <InputNumber
+              addonAfter="%"
+              max={100}
+              min={0}
+              precision={2}
+              step={0.01}
+              value={rateToPercent(form.tax_rate)}
+              onChange={(value) => setForm({ ...form, tax_rate: percentToRate(value) })}
             />
+            <span className="field-hint">{t('masterdata.product.rateHint')}</span>
           </label>
           <label>
             {t('masterdata.product.field.rebateRate')}
-            <Input
-              type="number"
-              max="1"
-              min="0"
-              step="0.01"
-              value={form.rebate_rate}
-              onChange={(event) => setForm({ ...form, rebate_rate: event.target.value })}
+            <InputNumber
+              addonAfter="%"
+              max={100}
+              min={0}
+              precision={2}
+              step={0.01}
+              value={rateToPercent(form.rebate_rate)}
+              onChange={(value) => setForm({ ...form, rebate_rate: percentToRate(value) })}
             />
+            <span className="field-hint">{t('masterdata.product.rateHint')}</span>
           </label>
           <div className="entity-modal-span product-image-field">
             <span className="product-image-field-label">

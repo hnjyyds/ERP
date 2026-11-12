@@ -36,13 +36,13 @@
       "financePortData": "Port Data",
       "financeReports": "Financial Reports",
       "reporting": "Executive board and business analysis",
-      "exportContracts": "Order workflow",
-      "purchaseContracts": "Purchase contracts and factory fulfillment",
+      "exportContracts": "Export contracts",
+      "purchaseContracts": "Purchase contracts",
       "qualityInspections": "QC task center",
       "myQualityTasks": "My QC tasks",
       "followup": "Follow-up task center",
-      "suppliers": "Factories and inspection addresses",
-      "products": "Products, prices, and quality requirements",
+      "suppliers": "Suppliers",
+      "products": "Products",
       "customers": "Customers and order requirements",
       "warehouseInboundOrders": "Inbound and inventory confirmation",
       "mcpSettings": "MCP and AI data access",
@@ -80,6 +80,17 @@
     "notSet": "Not set",
     "none": "None",
     "noData": "No data",
+    "empty": {
+      "noMatchTitle": "No matching results",
+      "noMatchDescription": "Adjust the keyword or filters and try again",
+      "clearFilters": "Clear filters",
+      "startCreate": "Go to {action}",
+      "createProduct": "Add product",
+      "createSupplier": "Add supplier",
+      "createCustomer": "Add customer",
+      "noDataTitle": "No data yet",
+      "noDataDescription": "Records will appear here after the first entry"
+    },
     "approvalAssignee": {
       "defaultLabel": "Approver",
       "selectPlaceholder": "Select {label}",
@@ -506,6 +517,8 @@
         "noCustomers": "No customers",
         "query": "Search",
         "create": "New contract",
+        "emptyTitle": "No export contracts yet",
+        "emptyDescription": "Click \"New contract\" to create the first export contract; approvals and shipments will be summarized here",
         "loadFailed": "Failed to load export contracts",
         "customerLoadFailed": "Failed to load customers",
         "productLoadFailed": "Failed to load products",
@@ -1069,6 +1082,8 @@
         "contractFilterPlaceholder": "Enter contract no. or supplier",
         "query": "Search",
         "generateOrApprove": "Generate / approve inbound order",
+        "emptyTitle": "No inbound orders yet",
+        "emptyDescription": "Generate from an inbound plan or approve an existing inbound order, then records will appear here",
         "loadFailed": "Failed to load inbound orders",
         "supplierOptionDescription": "Linked to approved contract {code}",
         "contractOptionDescription": "{supplier} · Ordered {orderDate} · Delivery {deliveryDate}"
@@ -1138,6 +1153,7 @@
         "noAvailablePurchaseOrders": "No available purchase orders",
         "currentOrderLink": "Linked record of this inbound order",
         "planOptionDescription": "{supplier} · Inbound plan {code} · {status}",
+        "locationPlaceholder": "Enter the actual location name, e.g. A-01",
         "submitSection": "Submit and approve",
         "reviewerPlaceholder": "Select an employee",
         "reviewerLoading": "Loading employees",
@@ -1662,10 +1678,13 @@
         "query": "Search",
         "create": "New purchase contract",
         "generate": "Generate from export contract",
+        "emptyTitle": "No purchase contracts yet",
+        "emptyDescription": "Click \"New purchase contract\" to create one manually, or generate from an approved export contract",
         "loadFailed": "Failed to load purchase contracts",
         "reminderLoadFailed": "Failed to load purchase reminders",
         "productLoadFailed": "Failed to load products",
         "supplierLoadFailed": "Failed to load suppliers",
+        "exportContractLoadFailed": "Failed to load export contracts",
         "userLoadFailed": "Failed to load users"
       },
       "detail": {
@@ -1727,6 +1746,29 @@
         "loadingUsers": "Loading users",
         "noUsers": "No users available",
         "linesTitle": "Contract line items",
+        "linesHint_one": "{count} product added. Adjust specification, quantity, unit, and purchase price per line.",
+        "linesHint_other": "{count} products added. Adjust specification, quantity, unit, and purchase price per line.",
+        "linesEmpty": "No products yet. Click \"Add products\" to select in bulk",
+        "addProducts": "Add products",
+        "buyerSelectPlaceholder": "Select buyer",
+        "exportContractPlaceholder": "Search by export contract no.",
+        "noExportContracts": "No approved export contracts",
+        "productDrawerTitle": "Select purchase products",
+        "searchProductAria": "Search products",
+        "productSearchPlaceholder": "Search product code, name, specification, or model",
+        "selectedCount_one": "{count} selected",
+        "selectedCount_other": "{count} selected",
+        "addSelected_one": "Add {count}",
+        "addSelected_other": "Add {count}",
+        "noSpecification": "No specification",
+        "added": "Added",
+        "specificationModel": "Specification / model",
+        "specificationAria": "{name} specification",
+        "modelAria": "{name} model",
+        "quantityAria": "{name} quantity",
+        "unitAria": "{name} unit",
+        "unitPriceAria": "{name} purchase price",
+        "lineRemarkAria": "{name} line remark",
         "productSelectPlaceholder": "Select from product records",
         "productMissing": "Add the product first",
         "loadingProducts": "Loading products",
@@ -1775,8 +1817,9 @@
         "sourceExportContractId": "Source export contract ID",
         "sourceContractNo": "Source contract no.",
         "sourceLineId": "Source line ID",
-        "exportContractIdA": "Export contract ID A",
-        "exportContractIdB": "Export contract ID B",
+        "exportContractA": "Export contract A",
+        "exportContractB": "Export contract B",
+        "actions": "Actions",
         "accessoryUnitPrice": "Accessory unit price",
         "generateRemarks": "Generation remarks",
         "entry": "Entry",
@@ -1814,7 +1857,8 @@
         "confirmRejectContent": "After rejection, the requester can revise the contract based on the rejection reason and resubmit it.",
         "confirmReject": "Confirm rejection",
         "cancel": "Cancel contract",
-        "reissue": "Reissue contract"
+        "reissue": "Reissue contract",
+        "remove": "Remove"
       },
       "cancel": {
         "title": "Cancel purchase contract",
@@ -1833,7 +1877,11 @@
         "reissueSuccess": "Reissued as {code}"
       },
       "validation": {
-        "exportContractRequired": "Enter at least one export contract ID",
+        "exportContractRequired": "Select at least one export contract",
+        "supplierRequired": "Select a supplier",
+        "paymentTermsRequired": "Enter payment terms",
+        "lineRequired": "Add at least one product line",
+        "lineIncomplete": "Quantity, unit, or price is incomplete for {name}",
         "reviewerRequired": "Select an approver",
         "rejectionReasonRequired": "Enter a rejection reason",
         "rejectionReasonPlaceholder": "Describe the contract content that needs to be revised"
@@ -2120,15 +2168,20 @@
   "masterdata": {
     "product": {
       "overviewAria": "Product overview",
-      "listTitle": "Product list",
+      "listTitle": "Products",
       "detailTitle": "Product detail",
       "searchLabel": "Search",
       "searchPlaceholder": "Code / Chinese name / English name / HS code",
       "searchAction": "Search products",
+      "rateHint": "Enter as a percentage, e.g. 13 means 13%",
+      "emptyTitle": "No products yet",
+      "emptyDescription": "Click \"New product\" to create the first product, then search, import, and export here",
       "create": "New product",
       "edit": "Edit product",
       "save": "Save product",
       "importAction": "Import products",
+      "importShort": "Import",
+      "exportShort": "Export",
       "exportAll": "Export all products",
       "exportSelected_one": "Export {count} selected product",
       "exportSelected_other": "Export {count} selected products",
@@ -2290,7 +2343,7 @@
     },
     "tradingPartner": {
       "overviewAria": "{entity} overview",
-      "listTitle": "{entity} list",
+      "listTitle": "{entity} records",
       "listLoadFailed": "{entity} records failed to load",
       "searchLabel": "Search",
       "searchTooltip": "Search {entity}",
@@ -2344,6 +2397,8 @@
       "transactionTime": "Time",
       "emptyTitle": "No {entity} data",
       "emptyDescription": "Return to the list and select a {entity} to view details",
+      "listEmptyTitle": "No {entity} records yet",
+      "listEmptyDescription": "Click \"Add {entity}\" to create the first record, then search and maintain it here",
       "editTitle": "Edit {entity}",
       "createTitle": "New {entity}",
       "saveButton": "Save {entity}",
@@ -2565,6 +2620,7 @@
         "receiptNo": "Bank Receipt No.",
         "receivedDate": "Receipt Date",
         "payerName": "Payer",
+        "customer": "Customer",
         "customerId": "Customer ID",
         "customerName": "Customer Name",
         "receiptAmount": "Receipt Amount",
@@ -2586,6 +2642,10 @@
         "invoiceNo": "Invoice No.",
         "allocationAmount": "Allocation Amount",
         "allocationRemark": "Allocation Remarks"
+      },
+      "form": {
+        "customerPlaceholder": "Search customer code or name",
+        "customerNameAuto": "Filled in after selecting a customer"
       },
       "filter": {
         "receiptSearch": "Receipt Search",
@@ -3978,7 +4038,8 @@
         "contractPlaceholder": "Enter contract No. or supplier",
         "assignee": "Assignee Scope",
         "allAssignees": "All",
-        "mine": "Only Mine"
+        "mine": "Only Mine",
+        "moreFilters": "More filters"
       },
       "action": {
         "query": "Search",
@@ -4041,6 +4102,8 @@
       },
       "panel": {
         "listTitle": "QC Task List",
+        "listEmptyTitle": "No QC tasks yet",
+        "listEmptyDescription": "QC tasks are created automatically after a purchase contract is approved, or click \"New QC task\" to create one manually",
         "detailTitle": "QC Task Details",
         "linesTitle": "Product Inspection Lines",
         "issuesTitle": "Issues",
@@ -4262,6 +4325,10 @@
     },
     "filter": {
       "search": "Search users, departments, or roles"
+    },
+    "tabs": {
+      "users": "Users",
+      "structure": "Departments & roles"
     },
     "action": {
       "copy": "Copy"

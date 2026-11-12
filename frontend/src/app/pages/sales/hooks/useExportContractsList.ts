@@ -139,6 +139,20 @@ export function useExportContractsList({ detailId, onNavigate }: Options) {
     void loadContracts(undefined, 1)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setCustomerFilter('')
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      q: null,
+      status: null,
+      customer: null,
+      page: null,
+    })
+    void loadContracts(undefined, 1, pageSize, { q: '', status: '', customer: '' })
+  }
+
   function changeContractsPage(nextPage: number, nextPageSize: number) {
     const next = changePage(nextPage, nextPageSize)
     appliedUrlSearchRef.current = urlQuery.update({
@@ -177,6 +191,7 @@ export function useExportContractsList({ detailId, onNavigate }: Options) {
     setCustomerFilter,
     applySavedContract,
     submitFilters,
+    clearFilters,
     changeContractsPage,
     stopAndOpenContractDetail,
   }
