@@ -1356,3 +1356,94 @@ body .react-shell-home .dashboard-timeline-time strong {
     --timeline-column-gap: var(--ui-space-2);
   }
 }
+
+/* ===== 表单尺寸契约（2026-11-12 对齐治理） =====
+   宽度由字段容器决定；单行、多行、复合控件各自定规格。
+   全局 300px 上限只作为未接入字段容器的旧页面兜底。 */
+
+body .record-form label > .ant-input,
+body .record-form label > .ant-input-affix-wrapper,
+body .record-form label > .ant-input-number,
+body .record-form label > .ant-input-number-group-wrapper,
+body .record-form label > .ant-select,
+body .record-form label > .ant-picker,
+body .record-form label > select,
+body .record-form label > textarea,
+body .entity-modal-form label > .ant-input,
+body .entity-modal-form label > .ant-input-affix-wrapper,
+body .entity-modal-form label > .ant-input-number,
+body .entity-modal-form label > .ant-input-number-group-wrapper,
+body .entity-modal-form label > .ant-select,
+body .entity-modal-form label > .ant-picker,
+body .entity-modal-form label > select,
+body .entity-modal-form label > textarea,
+body .form-grid label > .ant-input,
+body .form-grid label > .ant-input-number,
+body .form-grid label > .ant-select,
+body .inline-filters label > .ant-input,
+body .inline-filters label > .ant-input-affix-wrapper,
+body .inline-filters label > .ant-input-number,
+body .inline-filters label > .ant-input-number-group-wrapper,
+body .inline-filters label > .ant-select,
+body .inline-filters label > .ant-picker,
+body .inline-filters label > select {
+  width: 100%;
+  max-width: none;
+}
+
+/* 字段标签是 Grid 容器：行轨不参与拉伸，避免同排字段因说明文字行数不同
+   而被纵向错开（税率/退税率复合控件曾整体上移 8px）。 */
+body .record-form label,
+body .entity-modal-form label {
+  align-content: start;
+}
+
+/* 多行输入：独立高度规格，保持可读行数并允许纵向调整。 */
+body textarea.ant-input,
+body .record-form textarea,
+body .entity-modal-form textarea,
+body .sample-modal-form textarea,
+body .contract-modal-form textarea {
+  height: auto !important;
+  min-height: 88px;
+  padding-block: 8px !important;
+  line-height: 1.55 !important;
+  resize: vertical;
+}
+
+/* 带后缀的复合数字控件：按整体 36px 对齐，不能只修内部 input。 */
+body .ant-input-number-group-wrapper {
+  display: inline-flex;
+  align-items: stretch;
+  width: 100%;
+  max-width: none;
+}
+
+body .ant-input-number-group-wrapper > .ant-input-number {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: none;
+  height: var(--ui-control-height) !important;
+  min-height: var(--ui-control-height);
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+body .ant-input-number-group-wrapper .ant-input-number-group-addon {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--ui-control-height);
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+  padding-inline: var(--ui-space-2);
+  background: var(--ui-bg-muted);
+}
+
+/* 列表筛选内的操作按钮按内容定宽并靠右，不参与字段列均分。 */
+body .inline-filters > .ant-btn {
+  justify-self: end;
+  align-self: end;
+  width: auto;
+  min-width: 0;
+  min-height: var(--ui-control-height);
+}

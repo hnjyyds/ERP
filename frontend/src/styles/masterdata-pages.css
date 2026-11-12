@@ -229,13 +229,13 @@
 
 .masterdata-page .inline-filters .ant-btn {
   flex: 0 0 auto;
-  min-height: 38px;
+  min-height: var(--ui-control-height);
   padding-inline: 16px;
 }
 
 .masterdata-page .inline-filters .ant-input,
 .masterdata-page .inline-filters .ant-select-selector {
-  min-height: 38px;
+  min-height: var(--ui-control-height);
 }
 
 .entity-modal-form {

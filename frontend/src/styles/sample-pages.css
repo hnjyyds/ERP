@@ -77,13 +77,14 @@
 
 
 
+/* 桌面筛选按工具栏排布：关键词优先，状态与日期按明确列宽排列，
+   不再让每个字段独占整行把列表推到首屏之外。 */
 .sample-request-page .list-panel .inline-filters,
 .sample-record-page .list-panel .inline-filters,
 .sample-delivery-page .list-panel .inline-filters {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: flex-start;
+  display: grid;
+  grid-template-columns: minmax(200px, 1.8fr) repeat(auto-fit, minmax(148px, 1fr));
+  align-items: end;
   gap: 12px;
   padding-top: 2px;
 }
@@ -118,7 +119,9 @@
 .sample-record-page .inline-filters .ant-btn,
 .sample-delivery-page .inline-filters .ant-btn {
   flex: 0 0 auto;
-  min-height: 38px;
+  justify-self: end;
+  width: auto;
+  min-height: var(--ui-control-height);
   padding-inline: 16px;
 }
 

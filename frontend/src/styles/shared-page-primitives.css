@@ -96,7 +96,7 @@
 .inline-filters .ant-select-selector,
 .record-form .ant-select-selector,
 .dashboard-form .ant-select-selector {
-  min-height: 34px;
+  min-height: var(--ui-control-height);
   border-color: #bfcabf !important;
   background: var(--erp-surface) !important;
 }
@@ -110,7 +110,7 @@
 
 .inline-filters select,
 .record-form select {
-  min-height: 34px;
+  min-height: var(--ui-control-height);
   border: 1px solid #bfcabf;
   border-radius: 6px;
   background: var(--erp-surface);
@@ -198,7 +198,7 @@
 
 .workflow-modal-content .record-form > .ant-btn {
   justify-self: start;
-  min-height: 38px;
+  min-height: var(--ui-control-height);
   margin-top: 4px;
   padding-inline: 18px;
 }

@@ -165,7 +165,7 @@
 .outbound-plan-page .inline-filters .ant-btn,
 .outbound-order-page .inline-filters .ant-btn {
   flex: 0 0 auto;
-  min-height: 38px;
+  min-height: var(--ui-control-height);
   padding-inline: 16px;
 }
 
