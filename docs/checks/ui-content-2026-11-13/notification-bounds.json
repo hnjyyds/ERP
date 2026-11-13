@@ -1,0 +1,35 @@
+{
+  "viewport": {
+    "w": 390,
+    "h": 844
+  },
+  "nodes": [
+    {
+      "class": "ant-popover ant-popover-css-var css-xsuzon css-var-root css-xsuzon css-var-root ant-popover-placement-bottomRight",
+      "x": -12,
+      "y": 134,
+      "w": 344,
+      "h": 408,
+      "right": 332,
+      "text": "通知\n全部已读\n审批通知\n演示业务主管 已审批通过出口报价 "
+    },
+    {
+      "class": "topbar-notification-panel",
+      "x": 0,
+      "y": 146,
+      "w": 320,
+      "h": 384,
+      "right": 320,
+      "text": "通知\n全部已读\n审批通知\n演示业务主管 已审批通过出口报价 "
+    },
+    {
+      "class": "topbar-notification-head",
+      "x": 0,
+      "y": 146,
+      "w": 320,
+      "h": 44,
+      "right": 320,
+      "text": "通知\n全部已读"
+    }
+  ]
+}

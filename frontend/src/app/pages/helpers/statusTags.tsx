@@ -21,13 +21,20 @@ export function statusTag(value: string) {
 
 export function severityTag(value: string) {
   const color =
-    value === 'high' || value === 'urgent' ? 'red' : value === 'warning' ? 'gold' : 'blue'
+    value === 'high' || value === 'urgent'
+      ? 'red'
+      : value === 'warning'
+        ? 'gold'
+        : value === 'success'
+          ? 'green'
+          : 'blue'
   const labelKeys: Record<string, TranslationKey> = {
     high: 'common.severity.high',
     urgent: 'common.severity.urgent',
     warning: 'common.severity.warning',
     info: 'common.severity.info',
+    success: 'common.severity.success',
   }
-  const key = labelKeys[value]
-  return <Tag color={color}>{key ? translate(getRuntimeSettings().language, key) : value}</Tag>
+  const key = labelKeys[value] ?? 'common.severity.unknown'
+  return <Tag color={color}>{translate(getRuntimeSettings().language, key)}</Tag>
 }

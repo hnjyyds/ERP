@@ -1,0 +1,7 @@
+{
+  "placeholder": "编号 / 中文 / 英文 / 海关编码",
+  "color": "rgb(191, 194, 204)",
+  "opacity": "1",
+  "background": "rgb(255, 255, 255)",
+  "disabled": false
+}

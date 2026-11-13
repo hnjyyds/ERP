@@ -276,6 +276,12 @@
   display: contents;
 }
 
+@media (max-width: 760px) {
+  .sample-modal-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 
 
 .ant-modal:has(.sample-modal-form) .ant-modal-body {

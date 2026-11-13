@@ -883,8 +883,16 @@ body .ant-select-dropdown {
   }
 
   body .product-page .product-filter-actions {
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     justify-content: flex-start;
+    width: 100%;
+    min-width: 0;
+  }
+
+  body .product-page .product-filter-actions > .ant-btn {
+    width: auto;
+    min-width: 0;
+    flex: 0 0 auto;
   }
 
   body section.masterdata-page.product-page .product-filter-actions > .ant-btn-primary {
@@ -924,6 +932,22 @@ body .ant-select-dropdown {
     width: 100%;
     min-height: var(--ui-touch-height);
     justify-content: center;
+  }
+
+  /* 手机端图标按钮宽度也要到触摸规格，不能只改高度。 */
+  body .toolbar-icon-button.ant-btn {
+    width: var(--ui-touch-height);
+    min-width: var(--ui-touch-height);
+    height: var(--ui-touch-height);
+  }
+
+  /* 展开后的导航项同样按触摸目标高度，避免最后一项只有 36px。 */
+  body .nav-link,
+  body .nav-dashboard,
+  body .nav-group-items .nav-link,
+  body .nav-group-summary,
+  body .settings-summary {
+    min-height: var(--ui-touch-height);
   }
 
   body .summary-strip,

@@ -552,6 +552,12 @@ h2 {
   align-items: start;
 }
 
+@media (max-width: 760px) {
+  .contract-modal-form .form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .contract-modal-form .form-row > label {
   display: flex;
   flex-direction: column;

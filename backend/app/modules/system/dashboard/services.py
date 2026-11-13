@@ -1,4 +1,5 @@
-from datetime import UTC, datetime, time
+from datetime import UTC, datetime, time, timedelta
+from zoneinfo import ZoneInfo
 
 from app.db.uow import UnitOfWork
 from app.modules.system.auth.permissions import SUPER_ADMIN_PERMISSION
@@ -69,6 +70,26 @@ def _to_utc_naive(value: datetime) -> datetime:
     return value.astimezone(UTC).replace(tzinfo=None) if value.tzinfo else value
 
 
+_DASHBOARD_TIME_ZONE = ZoneInfo("Asia/Shanghai")
+
+
+def _today_utc_range() -> tuple[datetime, datetime]:
+    """返回当前本地自然日的 [起, 止) UTC 时刻。"""
+    local_now = datetime.now(_DASHBOARD_TIME_ZONE)
+    start = local_now.replace(hour=0, minute=0, second=0, microsecond=0)
+    return start.astimezone(UTC), (start + timedelta(days=1)).astimezone(UTC)
+
+
+def _overlaps_range(
+    starts_at: datetime,
+    ends_at: datetime,
+    start: datetime,
+    end: datetime,
+) -> bool:
+    """跨日事件按区间重叠判断：昨天开始、今天结束的事件也属于今天。"""
+    return _as_utc(starts_at) < end and _as_utc(max(ends_at, starts_at)) >= start
+
+
 def _is_overdue(due_at: datetime | None, *, status: str | None = None) -> bool:
     if due_at is None:
         return False
@@ -134,6 +155,7 @@ class DashboardService:
             )
         )
 
+        today_start, today_end = _today_utc_range()
         return DashboardResponse(
             announcements=[self._announcement_response(row) for row in announcements],
             todos=todo_responses,
@@ -144,7 +166,11 @@ class DashboardService:
                 announcement_count=len(announcements),
                 todo_count=len(todo_responses),
                 unread_notification_count=len([item for item in notifications if not item.is_read]),
-                today_schedule_count=len(schedule_events),
+                today_schedule_count=sum(
+                    1
+                    for row in schedule_events
+                    if _overlaps_range(row.starts_at, row.ends_at, today_start, today_end)
+                ),
                 shortcut_count=len(shortcuts),
             ),
         )

@@ -1,0 +1,42 @@
+{
+  "date": "2026-11-13",
+  "read_only": true,
+  "scope": "current administrator and retained records; visual and reachability checks only",
+  "counts": {
+    "pages": 126,
+    "create": 66,
+    "details": 48,
+    "edit": 10
+  },
+  "measured_scenarios": 250,
+  "errors": 0,
+  "blocked_requests": 0,
+  "viewport_mismatches": 0,
+  "page_views": [
+    [
+      1440,
+      900
+    ],
+    [
+      1280,
+      720
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "form_views": [
+    [
+      1280,
+      720
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "historical_defect": "dashboard scroll now reachable; previous visible-height781/content1021 lock was real, not intended design",
+  "test_submissions_executed": false,
+  "excluded_action": "Port data import is an inline submit, not an open-modal action; excluded from protected modal cases after required empty fields blocked the initial mistaken attempt."
+}

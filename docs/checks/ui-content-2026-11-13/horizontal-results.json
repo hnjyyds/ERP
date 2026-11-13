@@ -1,0 +1,479 @@
+[
+  {
+    "name": "product",
+    "path": "/masterdata/products",
+    "rows": [
+      {
+        "before": {
+          "index": 0,
+          "x": 31,
+          "y": 505.484375,
+          "w": 328,
+          "h": 187.0625,
+          "sw": 760,
+          "cw": 328,
+          "left": 0,
+          "overflow": "auto"
+        },
+        "after": {
+          "left": 432,
+          "max": 432,
+          "lastHeaders": [
+            {
+              "text": "配件",
+              "right": 249
+            },
+            {
+              "text": "入口",
+              "right": 359
+            }
+          ]
+        }
+      }
+    ],
+    "body": {
+      "w": 1014,
+      "x": 0
+    },
+    "blockedRequests": []
+  },
+  {
+    "name": "purchase",
+    "path": "/purchase/contracts",
+    "rows": [
+      {
+        "before": {
+          "index": 0,
+          "x": 33,
+          "y": 553.5859375,
+          "w": 324,
+          "h": 203.625,
+          "sw": 460,
+          "cw": 324,
+          "left": 0,
+          "overflow": "auto"
+        },
+        "after": {
+          "left": 136.5,
+          "max": 136,
+          "lastHeaders": [
+            {
+              "text": "金额",
+              "right": 273.734375
+            },
+            {
+              "text": "入口",
+              "right": 356.75
+            }
+          ]
+        }
+      }
+    ],
+    "body": {
+      "w": 390,
+      "x": 0
+    },
+    "blockedRequests": []
+  },
+  {
+    "name": "shipment",
+    "path": "/sales/shipments",
+    "rows": [
+      {
+        "before": {
+          "index": 0,
+          "x": 31,
+          "y": 628.5859375,
+          "w": 328,
+          "h": 128.234375,
+          "sw": 447,
+          "cw": 328,
+          "left": 0,
+          "overflow": "auto"
+        },
+        "after": {
+          "left": 119,
+          "max": 119,
+          "lastHeaders": [
+            {
+              "text": "应收",
+              "right": 275.96875
+            },
+            {
+              "text": "入口",
+              "right": 358.984375
+            }
+          ]
+        }
+      }
+    ],
+    "body": {
+      "w": 390,
+      "x": 0
+    },
+    "blockedRequests": []
+  },
+  {
+    "name": "stocktake",
+    "path": "/warehouse/stocktakes",
+    "rows": [
+      {
+        "before": {
+          "index": 0,
+          "x": 31,
+          "y": 390.0625,
+          "w": 328,
+          "h": 129.8515625,
+          "sw": 1027,
+          "cw": 328,
+          "left": 0,
+          "overflow": "auto"
+        },
+        "after": {
+          "left": 699.5,
+          "max": 699,
+          "lastHeaders": [
+            {
+              "text": "审批人",
+              "right": 261.3828125
+            },
+            {
+              "text": "",
+              "right": 358.890625
+            }
+          ]
+        }
+      }
+    ],
+    "body": {
+      "w": 390,
+      "x": 0
+    },
+    "blockedRequests": []
+  },
+  {
+    "name": "receipts",
+    "path": "/finance/receipts",
+    "rows": [
+      {
+        "before": {
+          "index": 0,
+          "x": 31,
+          "y": 655.890625,
+          "w": 328,
+          "h": 147.078125,
+          "sw": 502,
+          "cw": 328,
+          "left": 0,
+          "overflow": "auto"
+        },
+        "after": {
+          "left": 173.5,
+          "max": 174,
+          "lastHeaders": [
+            {
+              "text": "金额",
+              "right": 315.90625
+            },
+            {
+              "text": "未分摊",
+              "right": 359.0078125
+            }
+          ]
+        }
+      },
+      {
+        "before": {
+          "index": 1,
+          "x": 31,
+          "y": 572.3671875,
+          "w": 328,
+          "h": 184.7734375,
+          "sw": 425,
+          "cw": 328,
+          "left": 0,
+          "overflow": "auto"
+        },
+        "after": {
+          "left": 97.5,
+          "max": 97,
+          "lastHeaders": [
+            {
+              "text": "应收余额",
+              "right": 279.84375
+            },
+            {
+              "text": "状态",
+              "right": 358.859375
+            }
+          ]
+        }
+      }
+    ],
+    "body": {
+      "w": 390,
+      "x": 0
+    },
+    "blockedRequests": []
+  },
+  {
+    "name": "payments",
+    "path": "/finance/payments",
+    "rows": [
+      {
+        "before": {
+          "index": 0,
+          "x": 31,
+          "y": 657.6953125,
+          "w": 328,
+          "h": 128.234375,
+          "sw": 436,
+          "cw": 328,
+          "left": 0,
+          "overflow": "auto"
+        },
+        "after": {
+          "left": 108,
+          "max": 108,
+          "lastHeaders": [
+            {
+              "text": "发票金额",
+              "right": 314.6875
+            },
+            {
+              "text": "未付",
+              "right": 358.859375
+            }
+          ]
+        }
+      },
+      {
+        "before": {
+          "index": 1,
+          "x": 31,
+          "y": 628.9296875,
+          "w": 328,
+          "h": 128.234375,
+          "sw": 455,
+          "cw": 328,
+          "left": 0,
+          "overflow": "auto"
+        },
+        "after": {
+          "left": 127.5,
+          "max": 127,
+          "lastHeaders": [
+            {
+              "text": "应付余额",
+              "right": 292.171875
+            },
+            {
+              "text": "状态",
+              "right": 358.9296875
+            }
+          ]
+        }
+      }
+    ],
+    "body": {
+      "w": 390,
+      "x": 0
+    },
+    "blockedRequests": []
+  },
+  {
+    "name": "fees",
+    "path": "/finance/fees",
+    "rows": [
+      {
+        "before": {
+          "index": 0,
+          "x": 31,
+          "y": 267.6953125,
+          "w": 328,
+          "h": 165.9375,
+          "sw": 457,
+          "cw": 328,
+          "left": 0,
+          "overflow": "auto"
+        },
+        "after": {
+          "left": 129,
+          "max": 129,
+          "lastHeaders": [
+            {
+              "text": "发票金额",
+              "right": 315.921875
+            },
+            {
+              "text": "未付",
+              "right": 359.0234375
+            }
+          ]
+        }
+      },
+      {
+        "before": {
+          "index": 1,
+          "x": 31,
+          "y": 591.1328125,
+          "w": 328,
+          "h": 165.9375,
+          "sw": 470,
+          "cw": 328,
+          "left": 0,
+          "overflow": "auto"
+        },
+        "after": {
+          "left": 142,
+          "max": 142,
+          "lastHeaders": [
+            {
+              "text": "应付余额",
+              "right": 292.1875
+            },
+            {
+              "text": "状态",
+              "right": 358.9453125
+            }
+          ]
+        }
+      }
+    ],
+    "body": {
+      "w": 390,
+      "x": 0
+    },
+    "blockedRequests": []
+  },
+  {
+    "name": "reporting",
+    "path": "/reporting",
+    "rows": [
+      {
+        "before": {
+          "index": 2,
+          "x": 31,
+          "y": 283.640625,
+          "w": 328,
+          "h": 128.2421875,
+          "sw": 694,
+          "cw": 328,
+          "left": 0,
+          "overflow": "auto"
+        },
+        "after": {
+          "left": 366.5,
+          "max": 366,
+          "lastHeaders": [
+            {
+              "text": "利润",
+              "right": -115.71875
+            },
+            {
+              "text": "下钻",
+              "right": 358.9609375
+            }
+          ]
+        }
+      },
+      {
+        "before": {
+          "index": 6,
+          "x": 31,
+          "y": 463.7734375,
+          "w": 328,
+          "h": 94.6875,
+          "sw": 763,
+          "cw": 328,
+          "left": 0,
+          "overflow": "auto"
+        },
+        "after": {
+          "left": 435.5,
+          "max": 435,
+          "lastHeaders": [
+            {
+              "text": "利润",
+              "right": -23.1171875
+            },
+            {
+              "text": "下钻",
+              "right": 358.8984375
+            }
+          ]
+        }
+      },
+      {
+        "before": {
+          "index": 7,
+          "x": 31,
+          "y": 573.4609375,
+          "w": 328,
+          "h": 239.4609375,
+          "sw": 686,
+          "cw": 328,
+          "left": 0,
+          "overflow": "auto"
+        },
+        "after": {
+          "left": 358.5,
+          "max": 358,
+          "lastHeaders": [
+            {
+              "text": "金额",
+              "right": -27.328125
+            },
+            {
+              "text": "下钻",
+              "right": 358.8671875
+            }
+          ]
+        }
+      }
+    ],
+    "body": {
+      "w": 390,
+      "x": 0
+    },
+    "blockedRequests": []
+  },
+  {
+    "name": "audit",
+    "path": "/system/audit-logs",
+    "rows": [
+      {
+        "before": {
+          "index": 0,
+          "x": 31,
+          "y": 524.640625,
+          "w": 328,
+          "h": 1943.359375,
+          "sw": 900,
+          "cw": 328,
+          "left": 0,
+          "overflow": "auto"
+        },
+        "after": {
+          "left": 572,
+          "max": 572,
+          "lastHeaders": [
+            {
+              "text": "单号",
+              "right": 189
+            },
+            {
+              "text": "摘要",
+              "right": 359
+            }
+          ]
+        }
+      }
+    ],
+    "body": {
+      "w": 390,
+      "x": 0
+    },
+    "blockedRequests": []
+  }
+]

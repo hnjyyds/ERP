@@ -1,0 +1,958 @@
+[
+  {
+    "kind": "middle-action",
+    "width": 1280,
+    "height": 720,
+    "pos": {
+      "buttonY": 783.4765625,
+      "scroller": {
+        "x": 172,
+        "y": 115.625,
+        "w": 936,
+        "h": 547.1953125,
+        "bottom": 662.8203125
+      }
+    },
+    "result": {
+      "x": 172.5318603515625,
+      "y": 457.3976135253906,
+      "w": 117.50039672851562,
+      "h": 35.980987548828125,
+      "hit": true
+    }
+  },
+  {
+    "kind": "middle-action",
+    "width": 390,
+    "height": 844,
+    "pos": {
+      "buttonY": 1404.359375,
+      "scroller": {
+        "x": 60,
+        "y": 130.5078125,
+        "w": 270,
+        "h": 641.4375,
+        "bottom": 771.9453125
+      }
+    },
+    "result": {
+      "x": 60,
+      "y": 434.359375,
+      "w": 117.5625,
+      "h": 44,
+      "hit": true
+    }
+  },
+  {
+    "kind": "keyboard-modal",
+    "focus": [
+      {
+        "tag": "INPUT",
+        "label": "产品编号",
+        "inside": true,
+        "x": 172,
+        "y": 137.625,
+        "w": 298.6640625,
+        "h": 36
+      },
+      {
+        "tag": "INPUT",
+        "label": "商品单位",
+        "inside": true,
+        "x": 490.6640625,
+        "y": 137.625,
+        "w": 298.6640625,
+        "h": 36
+      },
+      {
+        "tag": "INPUT",
+        "label": "中文名称",
+        "inside": true,
+        "x": 809.328125,
+        "y": 137.625,
+        "w": 298.6640625,
+        "h": 36
+      },
+      {
+        "tag": "INPUT",
+        "label": "英文名称",
+        "inside": true,
+        "x": 172,
+        "y": 213.625,
+        "w": 298.6640625,
+        "h": 36
+      },
+      {
+        "tag": "INPUT",
+        "label": "规格",
+        "inside": true,
+        "x": 490.6640625,
+        "y": 213.625,
+        "w": 298.6640625,
+        "h": 36
+      },
+      {
+        "tag": "INPUT",
+        "label": "型号",
+        "inside": true,
+        "x": 809.328125,
+        "y": 213.625,
+        "w": 298.6640625,
+        "h": 36
+      },
+      {
+        "tag": "INPUT",
+        "label": "海关编码",
+        "inside": true,
+        "x": 797.6000366210938,
+        "y": 277.92498779296875,
+        "w": 59.7327880859375,
+        "h": 7.20001220703125
+      },
+      {
+        "tag": "INPUT",
+        "label": "状态\n启用\n启用",
+        "inside": true,
+        "x": 863.5328369140625,
+        "y": 278.92498779296875,
+        "w": 51.7327880859375,
+        "h": 5.20001220703125
+      },
+      {
+        "tag": "INPUT",
+        "label": "税率\n%\n按百分比填写，例如 13 表示 13%",
+        "inside": true,
+        "x": 927.4656372070312,
+        "y": 278.125,
+        "w": 13.20001220703125,
+        "h": 7.20001220703125
+      },
+      {
+        "tag": "INPUT",
+        "label": "退税率\n%\n按百分比填写，例如 13 表示 13%",
+        "inside": true,
+        "x": 800,
+        "y": 296.85467529296875,
+        "w": 13.20001220703125,
+        "h": 7.20001220703125
+      },
+      {
+        "tag": "TEXTAREA",
+        "label": "包装资料",
+        "inside": true,
+        "x": 797.6000366210938,
+        "y": 342.0390625,
+        "w": 187.19842529296875,
+        "h": 19.71875
+      },
+      {
+        "tag": "INPUT",
+        "label": "配件名称",
+        "inside": true,
+        "x": 797.6000366210938,
+        "y": 311.5899658203125,
+        "w": 59.7327880859375,
+        "h": 7.199981689453125
+      },
+      {
+        "tag": "INPUT",
+        "label": "单耗",
+        "inside": true,
+        "x": 624.3701171875,
+        "y": 404.47882080078125,
+        "w": 212.477783203125,
+        "h": 25.61138916015625
+      },
+      {
+        "tag": "INPUT",
+        "label": "配件单位",
+        "inside": true,
+        "x": 851.0764770507812,
+        "y": 404.47882080078125,
+        "w": 212.47772216796875,
+        "h": 25.61138916015625
+      },
+      {
+        "tag": "INPUT",
+        "label": "默认供应商",
+        "inside": true,
+        "x": 329.9957275390625,
+        "y": 480.6079406738281,
+        "w": 238.32177734375,
+        "h": 28.7265625
+      },
+      {
+        "tag": "INPUT",
+        "label": "采购拆分\n按供应商分单\n按供应商分单",
+        "inside": true,
+        "x": 593.0542602539062,
+        "y": 484.5977478027344,
+        "w": 206.4034423828125,
+        "h": 20.7469482421875
+      },
+      {
+        "tag": "BUTTON",
+        "label": "取消",
+        "inside": true,
+        "x": 924.2978515625,
+        "y": 571.6748046875,
+        "w": 60.21771240234375,
+        "h": 30.72222900390625
+      },
+      {
+        "tag": "BUTTON",
+        "label": "新增商品",
+        "inside": true,
+        "x": 994.7562866210938,
+        "y": 571.6748046875,
+        "w": 90.66656494140625,
+        "h": 30.72222900390625
+      },
+      {
+        "tag": "BODY",
+        "label": "D-DUTCH\n新裴贸易\n业务管理系统\n工作台\n基础资料\n商品资料\n供",
+        "inside": false,
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Close",
+        "inside": true,
+        "x": 1096.801025390625,
+        "y": 54.634239196777344,
+        "w": 25.3065185546875,
+        "h": 25.30651092529297
+      },
+      {
+        "tag": "INPUT",
+        "label": "产品编号",
+        "inside": true,
+        "x": 236.98570251464844,
+        "y": 149.04112243652344,
+        "w": 273.844482421875,
+        "h": 33.008331298828125
+      },
+      {
+        "tag": "INPUT",
+        "label": "商品单位",
+        "inside": true,
+        "x": 529.168212890625,
+        "y": 149.04112243652344,
+        "w": 273.844482421875,
+        "h": 33.008331298828125
+      },
+      {
+        "tag": "INPUT",
+        "label": "中文名称",
+        "inside": true,
+        "x": 818.2904663085938,
+        "y": 146.13526916503906,
+        "w": 280.16204833984375,
+        "h": 33.76983642578125
+      },
+      {
+        "tag": "INPUT",
+        "label": "英文名称",
+        "inside": true,
+        "x": 220.4442901611328,
+        "y": 217.42713928222656,
+        "w": 280.16204833984375,
+        "h": 33.76982116699219
+      },
+      {
+        "tag": "INPUT",
+        "label": "规格",
+        "inside": true,
+        "x": 511.9549255371094,
+        "y": 216.4452667236328,
+        "w": 284.9400329589844,
+        "h": 34.34574890136719
+      }
+    ],
+    "after": {
+      "visibleDialogs": 1,
+      "activeText": ""
+    }
+  },
+  {
+    "kind": "notification",
+    "before": {
+      "url": "http://localhost:8080/",
+      "title": "工作台",
+      "viewport": {
+        "w": 390,
+        "h": 844
+      },
+      "window": {
+        "x": 0,
+        "y": 0
+      },
+      "doc": {
+        "w": 390,
+        "h": 2083
+      },
+      "scrolls": [
+        {
+          "selector": "html",
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844,
+          "bottom": 844,
+          "right": 390,
+          "clientH": 844,
+          "scrollH": 2083,
+          "clientW": 390,
+          "scrollW": 390,
+          "top": 0,
+          "left": 0,
+          "overflowY": "visible",
+          "overflowX": "visible"
+        },
+        {
+          "selector": "section.react-workspace",
+          "x": 0,
+          "y": 69,
+          "w": 390,
+          "h": 2015,
+          "bottom": 2083,
+          "right": 390,
+          "clientH": 2015,
+          "scrollH": 2015,
+          "clientW": 390,
+          "scrollW": 390,
+          "top": 0,
+          "left": 0,
+          "overflowY": "visible",
+          "overflowX": "visible"
+        },
+        {
+          "selector": "section.dashboard-grid.dashboard-workbench",
+          "x": 14,
+          "y": 146,
+          "w": 362,
+          "h": 1924,
+          "bottom": 2069,
+          "right": 376,
+          "clientH": 1924,
+          "scrollH": 1924,
+          "clientW": 362,
+          "scrollW": 362,
+          "top": 0,
+          "left": 0,
+          "overflowY": "visible",
+          "overflowX": "visible"
+        },
+        {
+          "selector": "div.dashboard-board",
+          "x": 14,
+          "y": 576,
+          "w": 362,
+          "h": 1493,
+          "bottom": 2069,
+          "right": 376,
+          "clientH": 1493,
+          "scrollH": 1493,
+          "clientW": 362,
+          "scrollW": 362,
+          "top": 0,
+          "left": 0,
+          "overflowY": "visible",
+          "overflowX": "visible"
+        },
+        {
+          "selector": "div.dashboard-task-list",
+          "x": 31,
+          "y": 687,
+          "w": 328,
+          "h": 568,
+          "bottom": 1255,
+          "right": 359,
+          "clientH": 568,
+          "scrollH": 568,
+          "clientW": 328,
+          "scrollW": 328,
+          "top": 0,
+          "left": 0,
+          "overflowY": "visible",
+          "overflowX": "visible"
+        },
+        {
+          "selector": "div.dashboard-timeline",
+          "x": 31,
+          "y": 1399,
+          "w": 328,
+          "h": 174,
+          "bottom": 1573,
+          "right": 359,
+          "clientH": 174,
+          "scrollH": 174,
+          "clientW": 328,
+          "scrollW": 328,
+          "top": 0,
+          "left": 0,
+          "overflowY": "visible",
+          "overflowX": "visible"
+        }
+      ],
+      "clipped": [],
+      "controls": [
+        {
+          "selector": "button.topbar-settings-button.topbar-bell-button.ant-popover-open",
+          "text": "通知",
+          "x": 288,
+          "y": 79,
+          "w": 44,
+          "h": 44,
+          "bottom": 123,
+          "right": 332,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.topbar-settings-button",
+          "text": "系统设置",
+          "x": 332,
+          "y": 79,
+          "w": 44,
+          "h": 44,
+          "bottom": 123,
+          "right": 376,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.metric-cell.warning.clickable",
+          "text": "待办 4",
+          "x": 15,
+          "y": 147,
+          "w": 180,
+          "h": 72,
+          "bottom": 219,
+          "right": 195,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.metric-cell.normal.clickable",
+          "text": "今日日程 2",
+          "x": 196,
+          "y": 147,
+          "w": 180,
+          "h": 72,
+          "bottom": 219,
+          "right": 375,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.metric-cell.danger.clickable",
+          "text": "未读消息 11",
+          "x": 15,
+          "y": 220,
+          "w": 180,
+          "h": 72,
+          "bottom": 292,
+          "right": 195,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.metric-cell.normal.clickable",
+          "text": "公告 1",
+          "x": 196,
+          "y": 220,
+          "w": 180,
+          "h": 72,
+          "bottom": 292,
+          "right": 375,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.panel-action-button.panel-link-button",
+          "text": "管理快捷入口",
+          "x": 31,
+          "y": 364,
+          "w": 111,
+          "h": 44,
+          "bottom": 408,
+          "right": 142,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.dashboard-shortcut",
+          "text": "商品资料",
+          "x": 31,
+          "y": 445,
+          "w": 80,
+          "h": 44,
+          "bottom": 489,
+          "right": 111,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.dashboard-shortcut",
+          "text": "供应商资料",
+          "x": 121,
+          "y": 445,
+          "w": 92,
+          "h": 44,
+          "bottom": 489,
+          "right": 214,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.dashboard-shortcut",
+          "text": "客户资料",
+          "x": 224,
+          "y": 445,
+          "w": 80,
+          "h": 44,
+          "bottom": 489,
+          "right": 304,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.dashboard-shortcut",
+          "text": "出口合同",
+          "x": 31,
+          "y": 499,
+          "w": 80,
+          "h": 44,
+          "bottom": 543,
+          "right": 111,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.panel-icon-button",
+          "text": "新增待办",
+          "x": 184,
+          "y": 631,
+          "w": 44,
+          "h": 44,
+          "bottom": 675,
+          "right": 228,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.panel-action-button.panel-link-button",
+          "text": "查看全部",
+          "x": 236,
+          "y": 631,
+          "w": 65,
+          "h": 44,
+          "bottom": 675,
+          "right": 301,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.table-action",
+          "text": "去处理",
+          "x": 87,
+          "y": 828,
+          "w": 63,
+          "h": 44,
+          "bottom": 872,
+          "right": 150,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.table-action",
+          "text": "去处理",
+          "x": 87,
+          "y": 1025,
+          "w": 63,
+          "h": 44,
+          "bottom": 1069,
+          "right": 150,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.table-action",
+          "text": "去处理",
+          "x": 87,
+          "y": 1200,
+          "w": 63,
+          "h": 44,
+          "bottom": 1244,
+          "right": 150,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.panel-action-button.panel-link-button",
+          "text": "新增日程",
+          "x": 31,
+          "y": 1343,
+          "w": 86,
+          "h": 44,
+          "bottom": 1387,
+          "right": 117,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.panel-action-button.panel-link-button",
+          "text": "查看全部",
+          "x": 125,
+          "y": 1343,
+          "w": 65,
+          "h": 44,
+          "bottom": 1387,
+          "right": 190,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.dashboard-timeline-item",
+          "text": "QA261112 测试日程",
+          "x": 33,
+          "y": 1399,
+          "w": 326,
+          "h": 86,
+          "bottom": 1485,
+          "right": 359,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.dashboard-timeline-item",
+          "text": "测试日程",
+          "x": 33,
+          "y": 1487,
+          "w": 326,
+          "h": 86,
+          "bottom": 1573,
+          "right": 359,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.panel-action-button.panel-link-button",
+          "text": "查看全部",
+          "x": 31,
+          "y": 1661,
+          "w": 65,
+          "h": 44,
+          "bottom": 1705,
+          "right": 96,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.panel-action-button.panel-link-button",
+          "text": "发布公告",
+          "x": 31,
+          "y": 1923,
+          "w": 86,
+          "h": 44,
+          "bottom": 1967,
+          "right": 117,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.panel-action-button.panel-link-button",
+          "text": "查看全部",
+          "x": 125,
+          "y": 1923,
+          "w": 65,
+          "h": 44,
+          "bottom": 1967,
+          "right": 190,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        }
+      ],
+      "alerts": []
+    }
+  },
+  {
+    "kind": "settings",
+    "before": {
+      "url": "http://localhost:8080/",
+      "title": "工作台",
+      "viewport": {
+        "w": 390,
+        "h": 844
+      },
+      "window": {
+        "x": 0,
+        "y": 0
+      },
+      "doc": {
+        "w": 390,
+        "h": 2083
+      },
+      "scrolls": [
+        {
+          "selector": "html",
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844,
+          "bottom": 844,
+          "right": 390,
+          "clientH": 844,
+          "scrollH": 2083,
+          "clientW": 390,
+          "scrollW": 390,
+          "top": 0,
+          "left": 0,
+          "overflowY": "visible",
+          "overflowX": "visible"
+        },
+        {
+          "selector": "section.react-workspace",
+          "x": 0,
+          "y": 69,
+          "w": 390,
+          "h": 2015,
+          "bottom": 2083,
+          "right": 390,
+          "clientH": 2015,
+          "scrollH": 2015,
+          "clientW": 390,
+          "scrollW": 390,
+          "top": 0,
+          "left": 0,
+          "overflowY": "visible",
+          "overflowX": "visible"
+        },
+        {
+          "selector": "section.dashboard-grid.dashboard-workbench",
+          "x": 14,
+          "y": 146,
+          "w": 362,
+          "h": 1924,
+          "bottom": 2069,
+          "right": 376,
+          "clientH": 1924,
+          "scrollH": 1924,
+          "clientW": 362,
+          "scrollW": 362,
+          "top": 0,
+          "left": 0,
+          "overflowY": "visible",
+          "overflowX": "visible"
+        },
+        {
+          "selector": "div.dashboard-board",
+          "x": 14,
+          "y": 576,
+          "w": 362,
+          "h": 1493,
+          "bottom": 2069,
+          "right": 376,
+          "clientH": 1493,
+          "scrollH": 1493,
+          "clientW": 362,
+          "scrollW": 362,
+          "top": 0,
+          "left": 0,
+          "overflowY": "visible",
+          "overflowX": "visible"
+        },
+        {
+          "selector": "div.dashboard-task-list",
+          "x": 31,
+          "y": 687,
+          "w": 328,
+          "h": 568,
+          "bottom": 1255,
+          "right": 359,
+          "clientH": 568,
+          "scrollH": 568,
+          "clientW": 328,
+          "scrollW": 328,
+          "top": 0,
+          "left": 0,
+          "overflowY": "visible",
+          "overflowX": "visible"
+        },
+        {
+          "selector": "div.dashboard-timeline",
+          "x": 31,
+          "y": 1399,
+          "w": 328,
+          "h": 174,
+          "bottom": 1573,
+          "right": 359,
+          "clientH": 174,
+          "scrollH": 174,
+          "clientW": 328,
+          "scrollW": 328,
+          "top": 0,
+          "left": 0,
+          "overflowY": "visible",
+          "overflowX": "visible"
+        },
+        {
+          "selector": "div.ant-modal-wrap.ant-modal-centered",
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844,
+          "bottom": 844,
+          "right": 390,
+          "clientH": 844,
+          "scrollH": 844,
+          "clientW": 390,
+          "scrollW": 390,
+          "top": 0,
+          "left": 0,
+          "overflowY": "auto",
+          "overflowX": "auto"
+        },
+        {
+          "selector": "div.ant-modal-body",
+          "x": 32,
+          "y": 158,
+          "w": 326,
+          "h": 560,
+          "bottom": 718,
+          "right": 358,
+          "clientH": 560,
+          "scrollH": 560,
+          "clientW": 326,
+          "scrollW": 326,
+          "top": 0,
+          "left": 0,
+          "overflowY": "visible",
+          "overflowX": "visible"
+        }
+      ],
+      "clipped": [],
+      "controls": [
+        {
+          "selector": "button.ant-modal-close",
+          "text": "Close",
+          "x": 338,
+          "y": 118,
+          "w": 32,
+          "h": 44,
+          "bottom": 162,
+          "right": 370,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.user-avatar-picker-current",
+          "text": "头像 短发眼镜",
+          "x": 51,
+          "y": 286,
+          "w": 288,
+          "h": 80,
+          "bottom": 366,
+          "right": 339,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.secondary-inline",
+          "text": "保存头像",
+          "x": 267,
+          "y": 395,
+          "w": 91,
+          "h": 44,
+          "bottom": 439,
+          "right": 358,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.active",
+          "text": "中文 UTC+8 / Asia Shanghai",
+          "x": 32,
+          "y": 483,
+          "w": 159,
+          "h": 58,
+          "bottom": 541,
+          "right": 191,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button",
+          "text": "English UTC",
+          "x": 199,
+          "y": 483,
+          "w": 159,
+          "h": 58,
+          "bottom": 541,
+          "right": 358,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.danger-inline",
+          "text": "退出登录",
+          "x": 32,
+          "y": 674,
+          "w": 109,
+          "h": 44,
+          "bottom": 718,
+          "right": 141,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        },
+        {
+          "selector": "button.secondary-inline",
+          "text": "关闭",
+          "x": 295,
+          "y": 674,
+          "w": 63,
+          "h": 44,
+          "bottom": 718,
+          "right": 358,
+          "disabled": false,
+          "type": "button",
+          "primary": false
+        }
+      ],
+      "alerts": []
+    }
+  }
+]

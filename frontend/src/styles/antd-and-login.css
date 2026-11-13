@@ -135,7 +135,14 @@ textarea.ant-input {
 .ant-input-number::placeholder,
 .ant-select-selection-placeholder {
   font-size: 13px;
-  color: #BFC2CC !important;
+  color: #6B7280;
+}
+
+.ant-input:disabled::placeholder,
+.ant-input[disabled]::placeholder,
+.ant-select-disabled .ant-select-selection-placeholder,
+.ant-input-number-disabled .ant-input-number-input::placeholder {
+  color: #A6ADBB;
 }
 
 .login-shell {

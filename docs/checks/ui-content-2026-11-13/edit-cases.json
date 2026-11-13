@@ -1,0 +1,27 @@
+[
+  {
+    "name": "product",
+    "path": "/masterdata/products/cc65c401-22e4-4a77-8b77-eab59be3e228",
+    "action": "编辑商品"
+  },
+  {
+    "name": "suppliers",
+    "path": "/masterdata/suppliers/c6d43566-694f-41d0-85f0-6631c6478d52",
+    "action": "编辑资料"
+  },
+  {
+    "name": "customers",
+    "path": "/masterdata/customers/9d46eb62-a60a-49c1-92e2-bf4f4240884d",
+    "action": "编辑资料"
+  },
+  {
+    "name": "partner",
+    "path": "/masterdata/partners/e1aa38fd-bd00-4da9-80dc-494bd9749e02",
+    "action": "编辑资料"
+  },
+  {
+    "name": "document-party",
+    "path": "/masterdata/document-parties/17c307a3-aa85-4e9b-b896-f44bca130965",
+    "action": "编辑资料"
+  }
+]

@@ -408,3 +408,22 @@ body {
   min-width: 0;
 }
 
+/* 手机通知浮层：按触发器右缘对齐会让 344px 浮层左侧越界，
+   小屏改为贴视口安全边距并限宽。 */
+@media (max-width: 640px) {
+  .ant-popover:has(.topbar-notification-panel) {
+    right: auto !important;
+    left: 12px !important;
+    max-width: calc(100vw - 24px);
+  }
+
+  .ant-popover:has(.topbar-notification-panel) .ant-popover-arrow {
+    display: none;
+  }
+
+  .topbar-notification-panel {
+    width: min(320px, calc(100vw - 48px));
+  }
+}
+
+

@@ -1,5 +1,6 @@
 from datetime import date, datetime
 from decimal import Decimal
+from zoneinfo import ZoneInfo
 
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
@@ -57,7 +58,8 @@ async def test_dashboard_returns_pdf_required_sections(
         "announcement_count": 1,
         "todo_count": 2,
         "unread_notification_count": 1,
-        "today_schedule_count": 1,
+        # 种子日程固定为 2026-06-13，属于历史日程，不再计入“今日日程”。
+        "today_schedule_count": 0,
         "shortcut_count": 2,
     }
     assert dashboard["todos"][0]["source_type"] == "approval"
@@ -887,11 +889,12 @@ async def test_schedule_delete_is_limited_to_owner_and_refreshes_dashboard(
 ) -> None:
     token = await _login_token(api_client)
     admin_token = await _login_token(api_client, username="admin", password="admin123")
+    today = datetime.now(ZoneInfo("Asia/Shanghai")).date()
     payload = {
         "title": "待删除日程",
         "description": "验证删除后不再出现在工作台",
-        "starts_at": "2026-06-15T14:00:00+08:00",
-        "ends_at": "2026-06-15T15:00:00+08:00",
+        "starts_at": f"{today.isoformat()}T14:00:00+08:00",
+        "ends_at": f"{today.isoformat()}T15:00:00+08:00",
     }
 
     create_response = await api_client.post(
@@ -900,6 +903,12 @@ async def test_schedule_delete_is_limited_to_owner_and_refreshes_dashboard(
         json=payload,
     )
     schedule = create_response.json()["data"]
+
+    before_delete = await api_client.get(
+        "/api/v1/dashboard",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert before_delete.json()["data"]["summary"]["today_schedule_count"] == 1
 
     forbidden_response = await api_client.delete(
         f"/api/v1/schedules/{schedule['id']}",
@@ -921,7 +930,7 @@ async def test_schedule_delete_is_limited_to_owner_and_refreshes_dashboard(
     dashboard = refreshed.json()["data"]
     schedule_ids = {item["id"] for item in dashboard["schedule_events"]}
     assert schedule["id"] not in schedule_ids
-    assert dashboard["summary"]["today_schedule_count"] == 1
+    assert dashboard["summary"]["today_schedule_count"] == 0
 
 
 async def test_schedule_update_changes_fields_and_allows_clearing_note(

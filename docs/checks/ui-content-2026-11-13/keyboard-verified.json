@@ -1,0 +1,159 @@
+{
+  "focus": [
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "产品编号"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "商品单位"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "中文名称"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "英文名称"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "规格"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "型号"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "海关编码"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "状态\n启用\n启用"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "税率\n%\n按百分比填写，例如 13 表示 13%"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "退税率\n%\n按百分比填写，例如 13 表示 13%"
+    },
+    {
+      "stable": true,
+      "tag": "TEXTAREA",
+      "insideModal": true,
+      "label": "包装资料"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "配件名称"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "单耗"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "配件单位"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "默认供应商"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "采购拆分\n按供应商分单\n按供应商分单"
+    },
+    {
+      "stable": true,
+      "tag": "BUTTON",
+      "insideModal": true,
+      "label": "取消"
+    },
+    {
+      "stable": true,
+      "tag": "BUTTON",
+      "insideModal": true,
+      "label": "新增商品"
+    },
+    {
+      "stable": false,
+      "tag": "BODY",
+      "insideModal": false,
+      "label": "D-DUTCH\n新裴贸易\n业务管理系统\n工作台\n基础资料\n商品资料\n供"
+    },
+    {
+      "stable": true,
+      "tag": "BUTTON",
+      "insideModal": true,
+      "label": "Close"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "产品编号"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "商品单位"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "中文名称"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "英文名称"
+    },
+    {
+      "stable": true,
+      "tag": "INPUT",
+      "insideModal": true,
+      "label": "规格"
+    }
+  ],
+  "after": {
+    "productEscapeClosed": true,
+    "activeText": "新增商品",
+    "blocked": []
+  }
+}

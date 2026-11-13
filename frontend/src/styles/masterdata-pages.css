@@ -182,13 +182,6 @@
   overflow: hidden;
 }
 
-@media (max-width: 760px) {
-  .entity-modal-grid,
-  .entity-modal-grid.two {
-    grid-template-columns: 1fr;
-  }
-}
-
 .partner-inline-filters {
   width: 100%;
   max-width: 100%;
@@ -252,6 +245,15 @@
 
 .entity-modal-grid.two {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* 小屏必须排在多列定义之后：同优先级规则后写者生效，
+   否则三列会把单列回退覆盖。 */
+@media (max-width: 760px) {
+  .entity-modal-grid,
+  .entity-modal-grid.two {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .entity-modal-span {

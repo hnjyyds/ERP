@@ -282,7 +282,21 @@
 
 .compact-table th,
 .compact-table td {
-  overflow-wrap: anywhere;
+  /* break-word 只在整词放不下时断开；anywhere 会把 250.00 从末位拆行。 */
+  overflow-wrap: break-word;
+}
+
+/* 手机端 5-6 列固定表格每列仅约 54-65px，默认 12px 内边距会把
+   “250.00” 挤到必须断字；收窄内边距并降一级字号让金额整段换行。 */
+@media (max-width: 640px) {
+  .compact-table {
+    font-size: 12px;
+  }
+
+  .compact-table th,
+  .compact-table td {
+    padding-inline: 6px;
+  }
 }
 
 .followup-node-table th:last-child,

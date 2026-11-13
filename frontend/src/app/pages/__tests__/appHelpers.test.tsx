@@ -50,6 +50,17 @@ describe('severityTag', () => {
     render(severityTag('warning'))
     expect(screen.getByText('提醒')).toBeInTheDocument()
   })
+
+  it('把审批通过的成功状态翻译为中文', () => {
+    render(severityTag('success'))
+    expect(screen.getByText('已通过')).toBeInTheDocument()
+  })
+
+  it('未知状态显示兜底文案而不是原始状态码', () => {
+    render(severityTag('mystery'))
+    expect(screen.getByText('其他')).toBeInTheDocument()
+    expect(screen.queryByText('mystery')).not.toBeInTheDocument()
+  })
 })
 
 describe('runtime settings', () => {

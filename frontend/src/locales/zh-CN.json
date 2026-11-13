@@ -127,7 +127,9 @@
       "high": "高优先级",
       "urgent": "紧急",
       "warning": "提醒",
-      "info": "通知"
+      "info": "通知",
+      "success": "已通过",
+      "unknown": "其他"
     },
     "avatar": {
       "ariaLabel": "{name} 的头像",

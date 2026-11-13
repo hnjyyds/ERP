@@ -127,7 +127,9 @@
       "high": "High Priority",
       "urgent": "Urgent",
       "warning": "Warning",
-      "info": "Notice"
+      "info": "Notice",
+      "success": "Approved",
+      "unknown": "Other"
     },
     "avatar": {
       "ariaLabel": "{name}'s avatar",

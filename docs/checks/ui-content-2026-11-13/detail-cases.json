@@ -1,0 +1,98 @@
+[
+  {
+    "name": "product",
+    "path": "/masterdata/products/cc65c401-22e4-4a77-8b77-eab59be3e228"
+  },
+  {
+    "name": "suppliers",
+    "path": "/masterdata/suppliers/c6d43566-694f-41d0-85f0-6631c6478d52"
+  },
+  {
+    "name": "customers",
+    "path": "/masterdata/customers/9d46eb62-a60a-49c1-92e2-bf4f4240884d"
+  },
+  {
+    "name": "partner",
+    "path": "/masterdata/partners/e1aa38fd-bd00-4da9-80dc-494bd9749e02"
+  },
+  {
+    "name": "document-party",
+    "path": "/masterdata/document-parties/17c307a3-aa85-4e9b-b896-f44bca130965"
+  },
+  {
+    "name": "export",
+    "path": "/sales/contracts/34817a9e-a058-4438-ba51-3e8b311bda58"
+  },
+  {
+    "name": "purchase",
+    "path": "/purchase/contracts/56cd6434-f367-4553-8caf-092a96ab097d"
+  },
+  {
+    "name": "quotation",
+    "path": "/sales/quotations/ccdbe6c2-efee-40ca-be09-fc4ee1092365"
+  },
+  {
+    "name": "shipment",
+    "path": "/sales/shipments/d6fc976b-09f5-41e4-a3b3-7aba1f636621"
+  },
+  {
+    "name": "qc",
+    "path": "/quality/inspections/f2276b75-242c-4f11-a075-42924404b134"
+  },
+  {
+    "name": "sample-record",
+    "path": "/sample/records/46e58577-8651-45a6-b60d-984d2ab9be83"
+  },
+  {
+    "name": "sample-request",
+    "path": "/sample/requests/9c10a3ed-91e4-4823-9087-690dd887451d"
+  },
+  {
+    "name": "sample-delivery",
+    "path": "/sample/deliveries/06a298c2-6b07-4263-9ddc-1e67db6f6067"
+  },
+  {
+    "name": "inbound",
+    "path": "/warehouse/inbound-orders/5bf1413c-53e6-466a-805d-199a515a81aa"
+  },
+  {
+    "name": "inbound-plan",
+    "path": "/warehouse/inbound-plans/0f1e8d8b-f7cc-4745-bf89-4062e8153de5"
+  },
+  {
+    "name": "outbound-plan",
+    "path": "/warehouse/outbound-plans/ed854737-58ac-45de-8c22-39d2b51e8f57"
+  },
+  {
+    "name": "outbound",
+    "path": "/warehouse/outbound-orders/d720a3af-84c3-40ee-b51c-e896fb43e75c"
+  },
+  {
+    "name": "receipt",
+    "path": "/finance/receipts/50b2abe7-16ec-489d-830f-c09d7e8572d6"
+  },
+  {
+    "name": "supplier-invoice",
+    "path": "/finance/payments/015bcc0d-58cf-47cb-a10d-a0747860fd18"
+  },
+  {
+    "name": "fee-invoice",
+    "path": "/finance/fees/75ef17ef-1a7d-42a9-b16d-3bc0ef341993"
+  },
+  {
+    "name": "verification",
+    "path": "/finance/tax/a62d4ddc-3045-4d8f-9678-1d204e74d3ac"
+  },
+  {
+    "name": "misc-item",
+    "path": "/finance/misc/9016bf9c-45e0-4e65-8602-e5d432717092"
+  },
+  {
+    "name": "settlement",
+    "path": "/finance/settlement/16224733-261c-4ae4-aad2-dfc01b8a2441"
+  },
+  {
+    "name": "reimbursement",
+    "path": "/finance/reimbursements/da3c19a0-0f43-4f42-838d-5d39868269c9"
+  }
+]
