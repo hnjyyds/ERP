@@ -1,0 +1,65 @@
+{
+  "placeholders": [
+    {
+      "text": "从供应商资料选择",
+      "cls": "ant-select-placeholder",
+      "color": "rgba(0, 0, 0, 0.25)",
+      "opacity": "1",
+      "disabled": false,
+      "html": "<div class=\"ant-select-placeholder\" style=\"visibility: visible;\">从供应商资料选择</div>"
+    },
+    {
+      "text": "选择采购员",
+      "cls": "ant-select-placeholder",
+      "color": "rgba(0, 0, 0, 0.25)",
+      "opacity": "1",
+      "disabled": false,
+      "html": "<div class=\"ant-select-placeholder\" style=\"visibility: visible;\">选择采购员</div>"
+    },
+    {
+      "text": "从系统用户选择",
+      "cls": "ant-select-placeholder",
+      "color": "rgba(0, 0, 0, 0.25)",
+      "opacity": "1",
+      "disabled": false,
+      "html": "<div class=\"ant-select-placeholder\" style=\"visibility: visible;\">从系统用户选择</div>"
+    },
+    {
+      "text": "暂未添加商品，请点击“添加商品”批量选择",
+      "cls": "ant-table-placeholder",
+      "color": "rgba(0, 0, 0, 0.25)",
+      "opacity": "1",
+      "disabled": false,
+      "html": "<tr class=\"ant-table-placeholder\"><td class=\"ant-table-cell\" colspan=\"8\"><div class=\"ant-table-expanded-row-fixed\" style=\"width: 264px; position: sticky; left: 0px; overflow: hidden;\">暂未添加商品，请点击“添加商品”批量选择</div></td></tr>"
+    }
+  ],
+  "checkboxes": [
+    {
+      "text": "主要联系人",
+      "input": {
+        "x": 60,
+        "y": 605.15625,
+        "w": 16,
+        "h": 16
+      },
+      "label": {
+        "x": 60,
+        "y": 605.15625,
+        "w": 270,
+        "h": 64
+      },
+      "display": "grid",
+      "grid": "270px",
+      "children": [
+        {
+          "text": "",
+          "cls": "ant-checkbox-wrapper ant-checkbox-wrapper-checked css-var-root ant-checkbox-css-var css-xsuzon",
+          "x": 60,
+          "y": 605.15625,
+          "w": 270,
+          "h": 38
+        }
+      ]
+    }
+  ]
+}

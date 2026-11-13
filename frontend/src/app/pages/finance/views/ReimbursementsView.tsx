@@ -102,16 +102,18 @@ export function ReimbursementsView({ model, shell }: Props) {
                   <option value="other">{t('finance.reimbursement.category.other')}</option>
                 </FormSelect>
               </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                {t('finance.reimbursement.action.search')}
-              </Button>
-              <Button
-                type="primary"
-                icon={<Plus size={16} />}
-                onClick={() => setReimbursementModalOpen(true)}
-              >
-                {t('finance.reimbursement.action.create')}
-              </Button>
+              <div className="filter-actions">
+                <Button htmlType="submit" icon={<Search size={16} />}>
+                  {t('finance.reimbursement.action.search')}
+                </Button>
+                <Button
+                  type="primary"
+                  icon={<Plus size={16} />}
+                  onClick={() => setReimbursementModalOpen(true)}
+                >
+                  {t('finance.reimbursement.action.create')}
+                </Button>
+              </div>
             </form>
           </div>
           <Table<Reimbursement>

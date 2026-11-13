@@ -1,0 +1,37 @@
+[
+  {
+    "name": "yesterday",
+    "starts": "2026-11-12T12:00",
+    "ends": "2026-11-12T13:00",
+    "expected": false,
+    "actual": false
+  },
+  {
+    "name": "cross-midnight",
+    "starts": "2026-11-12T23:00",
+    "ends": "2026-11-13T01:00",
+    "expected": true,
+    "actual": true
+  },
+  {
+    "name": "today",
+    "starts": "2026-11-13T12:00",
+    "ends": "2026-11-13T13:00",
+    "expected": true,
+    "actual": true
+  },
+  {
+    "name": "tomorrow",
+    "starts": "2026-11-14T12:00",
+    "ends": "2026-11-14T13:00",
+    "expected": false,
+    "actual": false
+  },
+  {
+    "name": "ends-at-midnight",
+    "starts": "2026-11-12T23:00",
+    "ends": "2026-11-13T00:00",
+    "expected": false,
+    "actual": true
+  }
+]

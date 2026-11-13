@@ -504,17 +504,19 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                     onChange={(event) => setContractFilter(event.target.value)}
                   />
                 </label>
-                <Button htmlType="submit" icon={<Search size={16} />}>
-                  {t('warehouse.inboundPlan.list.query')}
-                </Button>
-                <Button
-                  htmlType="button"
-                  type="primary"
-                  icon={<Plus size={16} />}
-                  onClick={openInboundPlanModal}
-                >
-                  {t('warehouse.inboundPlan.list.generateSchedule')}
-                </Button>
+                <div className="filter-actions">
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    {t('warehouse.inboundPlan.list.query')}
+                  </Button>
+                  <Button
+                    htmlType="button"
+                    type="primary"
+                    icon={<Plus size={16} />}
+                    onClick={openInboundPlanModal}
+                  >
+                    {t('warehouse.inboundPlan.list.generateSchedule')}
+                  </Button>
+                </div>
               </form>}
             >
 

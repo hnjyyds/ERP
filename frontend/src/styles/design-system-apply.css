@@ -261,6 +261,32 @@ body section[class*="-page"] .inline-filters > label:not(:first-child) {
   justify-self: stretch;
 }
 
+/* 桌面端带操作组的筛选条改为弹性排布：操作组位于字段右侧同一行，
+   整组放不下时才换行并保持右对齐；小屏仍走上面的栅格规则。 */
+@media (min-width: 769px) {
+  body section[class*="-page"] .inline-filters:has(> .filter-actions) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--ui-space-3);
+  }
+
+  body section[class*="-page"] .inline-filters:has(> .filter-actions) > label {
+    width: auto;
+    flex: 1 1 150px;
+    min-width: 0;
+  }
+
+  body section[class*="-page"] .inline-filters:has(> .filter-actions) > label:first-child {
+    flex: 1.8 1 220px;
+  }
+
+  body section[class*="-page"] .inline-filters:has(> .filter-actions) > .filter-actions {
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+}
+
 body section[class*="-page"] .inline-filters label .ant-input,
 body section[class*="-page"] .inline-filters label .ant-input-affix-wrapper,
 body section[class*="-page"] .inline-filters label .ant-select,
@@ -356,6 +382,7 @@ body .record-form .boolean-segmented .ant-segmented-item-label {
 
 body .filter-actions {
   display: flex;
+  flex-wrap: wrap;
   grid-column: 1 / -1;
   justify-content: flex-end;
   gap: var(--ui-space-2);

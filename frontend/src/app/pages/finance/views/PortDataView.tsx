@@ -80,17 +80,19 @@ export function PortDataView({ model, shell }: Props) {
                   <option value="import">{t('finance.portData.tradeType.import')}</option>
                 </FormSelect>
               </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                {t('finance.portData.action.search')}
-              </Button>
-              <Button
-                htmlType="button"
-                icon={<RefreshCw size={16} />}
-                loading={matchingCustomsReceipts}
-                onClick={() => void autoMatchPortCustomsReceipts()}
-              >
-                {t('finance.portData.action.autoMatch')}
-              </Button>
+              <div className="filter-actions">
+                <Button htmlType="submit" icon={<Search size={16} />}>
+                  {t('finance.portData.action.search')}
+                </Button>
+                <Button
+                  htmlType="button"
+                  icon={<RefreshCw size={16} />}
+                  loading={matchingCustomsReceipts}
+                  onClick={() => void autoMatchPortCustomsReceipts()}
+                >
+                  {t('finance.portData.action.autoMatch')}
+                </Button>
+              </div>
             </form>
           </div>
           <Table<CustomsDeclarationRecord>

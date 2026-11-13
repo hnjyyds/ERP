@@ -89,6 +89,22 @@
   padding-top: 2px;
 }
 
+/* 小屏下 200px+148px 的轨道会超过卡片宽度并被裁切，
+   改为搜索独占一行、其余字段两列均分。 */
+@media (max-width: 760px) {
+  .sample-request-page .list-panel .inline-filters,
+  .sample-record-page .list-panel .inline-filters,
+  .sample-delivery-page .list-panel .inline-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sample-request-page .list-panel .inline-filters .inline-filter-search,
+  .sample-record-page .list-panel .inline-filters .inline-filter-search,
+  .sample-delivery-page .list-panel .inline-filters .inline-filter-search {
+    grid-column: 1 / -1;
+  }
+}
+
 
 
 .sample-request-page .inline-filters label,

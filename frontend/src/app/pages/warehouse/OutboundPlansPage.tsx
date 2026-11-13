@@ -591,17 +591,19 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                     onChange={(event) => setSourceIdFilter(event.target.value)}
                   />
                 </label>
-                <Button htmlType="submit" icon={<Search size={16} />}>
-                  {t('warehouse.outboundPlan.list.query')}
-                </Button>
-                <Button
-                  htmlType="button"
-                  type="primary"
-                  icon={<Plus size={16} />}
-                  onClick={openOutboundPlanModal}
-                >
-                  {t('warehouse.outboundPlan.list.generateSchedule')}
-                </Button>
+                <div className="filter-actions">
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    {t('warehouse.outboundPlan.list.query')}
+                  </Button>
+                  <Button
+                    htmlType="button"
+                    type="primary"
+                    icon={<Plus size={16} />}
+                    onClick={openOutboundPlanModal}
+                  >
+                    {t('warehouse.outboundPlan.list.generateSchedule')}
+                  </Button>
+                </div>
               </form>}
             >
 

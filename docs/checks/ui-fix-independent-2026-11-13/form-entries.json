@@ -1,0 +1,65 @@
+[
+  {
+    "route": "/masterdata/products",
+    "buttons": [
+      "新增商品"
+    ]
+  },
+  {
+    "route": "/masterdata/suppliers",
+    "buttons": [
+      "新增供应商"
+    ]
+  },
+  {
+    "route": "/masterdata/customers",
+    "buttons": [
+      "新增客户"
+    ]
+  },
+  {
+    "route": "/masterdata/partners",
+    "buttons": [
+      "新增合作伙伴"
+    ]
+  },
+  {
+    "route": "/masterdata/document-parties",
+    "buttons": [
+      "新增单证资料"
+    ]
+  },
+  {
+    "route": "/sales/contracts",
+    "buttons": [
+      "新增合同",
+      "去新增合同"
+    ]
+  },
+  {
+    "route": "/purchase/contracts",
+    "buttons": [
+      "新增采购合同",
+      "从出口合同生成",
+      "去新增采购合同"
+    ]
+  },
+  {
+    "route": "/sample/records",
+    "buttons": [
+      "新增样品"
+    ]
+  },
+  {
+    "route": "/sample/requests",
+    "buttons": [
+      "新增打样单"
+    ]
+  },
+  {
+    "route": "/sample/deliveries",
+    "buttons": [
+      "新增寄样单"
+    ]
+  }
+]

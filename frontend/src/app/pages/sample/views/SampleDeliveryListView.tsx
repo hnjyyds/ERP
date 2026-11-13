@@ -132,15 +132,17 @@ export function SampleDeliveryListView({
               onChange={(event) => onDateToChange(event.target.value)}
             />
           </label>
-          <Button htmlType="submit" icon={<Search size={16} />}>
-            {t('sample.delivery.action.query')}
-          </Button>
-          <Button loading={submitting} onClick={onExport}>
-            {t('sample.delivery.action.export')}
-          </Button>
-          <Button htmlType="button" type="primary" icon={<Plus size={16} />} onClick={onCreate}>
-            {t('sample.delivery.action.create')}
-          </Button>
+          <div className="filter-actions">
+            <Button htmlType="submit" icon={<Search size={16} />}>
+              {t('sample.delivery.action.query')}
+            </Button>
+            <Button loading={submitting} onClick={onExport}>
+              {t('sample.delivery.action.export')}
+            </Button>
+            <Button htmlType="button" type="primary" icon={<Plus size={16} />} onClick={onCreate}>
+              {t('sample.delivery.action.create')}
+            </Button>
+          </div>
         </form>
       }
     >

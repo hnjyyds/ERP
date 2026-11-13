@@ -86,8 +86,11 @@ def _overlaps_range(
     start: datetime,
     end: datetime,
 ) -> bool:
-    """跨日事件按区间重叠判断：昨天开始、今天结束的事件也属于今天。"""
-    return _as_utc(starts_at) < end and _as_utc(max(ends_at, starts_at)) >= start
+    """跨日事件按区间重叠判断：昨天开始、今天结束的事件也属于今天。
+
+    自然日是 [起, 止)，结束时间恰好等于当日起点的事件不算重叠。
+    """
+    return _as_utc(starts_at) < end and _as_utc(max(ends_at, starts_at)) > start
 
 
 def _is_overdue(due_at: datetime | None, *, status: str | None = None) -> bool:

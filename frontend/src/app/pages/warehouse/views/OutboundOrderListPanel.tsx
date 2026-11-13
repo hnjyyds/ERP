@@ -107,12 +107,14 @@ export function OutboundOrderListPanel({ model, onOpenModal }: Props) {
               onChange={(event) => model.setSourceIdFilter(event.target.value)}
             />
           </label>
-          <Button htmlType="submit" icon={<Search size={16} />}>
-            {t('warehouse.outboundOrder.list.query')}
-          </Button>
-          <Button htmlType="button" type="primary" icon={<Plus size={16} />} onClick={onOpenModal}>
-            {t('warehouse.outboundOrder.list.generateOrApprove')}
-          </Button>
+          <div className="filter-actions">
+            <Button htmlType="submit" icon={<Search size={16} />}>
+              {t('warehouse.outboundOrder.list.query')}
+            </Button>
+            <Button htmlType="button" type="primary" icon={<Plus size={16} />} onClick={onOpenModal}>
+              {t('warehouse.outboundOrder.list.generateOrApprove')}
+            </Button>
+          </div>
         </form>
       }
     >

@@ -420,17 +420,19 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                     onChange={(event) => setDateToFilter(event.target.value)}
                   />
                 </label>
-                <Button htmlType="submit" icon={<Search size={16} />}>
-                  {t('sample.request.action.query')}
-                </Button>
-                <Button
-                  htmlType="button"
-                  type="primary"
-                  icon={<Plus size={16} />}
-                  onClick={openCreateRequest}
-                >
-                  {t('sample.request.action.create')}
-                </Button>
+                <div className="filter-actions">
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    {t('sample.request.action.query')}
+                  </Button>
+                  <Button
+                    htmlType="button"
+                    type="primary"
+                    icon={<Plus size={16} />}
+                    onClick={openCreateRequest}
+                  >
+                    {t('sample.request.action.create')}
+                  </Button>
+                </div>
               </form>
             }
           >

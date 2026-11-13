@@ -1,0 +1,108 @@
+[
+  {
+    "text": "Close",
+    "x": 334,
+    "y": 46.0625,
+    "w": 28,
+    "h": 44,
+    "centerHit": true,
+    "clippingParents": [
+      {
+        "cls": "ant-modal-wrap ant-modal-centered",
+        "x": 0,
+        "w": 390,
+        "overflowX": "auto"
+      },
+      {
+        "cls": "",
+        "x": 0,
+        "w": 390,
+        "overflowX": "auto"
+      }
+    ]
+  },
+  {
+    "text": "取消",
+    "x": -18,
+    "y": 721.8046875,
+    "w": 108,
+    "h": 46,
+    "centerHit": false,
+    "clippingParents": [
+      {
+        "cls": "record-form entity-modal-form sample-modal-form",
+        "x": 60,
+        "w": 270,
+        "overflowX": "auto"
+      },
+      {
+        "cls": "ant-modal-wrap ant-modal-centered",
+        "x": 0,
+        "w": 390,
+        "overflowX": "auto"
+      },
+      {
+        "cls": "",
+        "x": 0,
+        "w": 390,
+        "overflowX": "auto"
+      }
+    ]
+  },
+  {
+    "text": "按当前表单导入",
+    "x": 102,
+    "y": 721.8046875,
+    "w": 108,
+    "h": 46,
+    "centerHit": true,
+    "clippingParents": [
+      {
+        "cls": "record-form entity-modal-form sample-modal-form",
+        "x": 60,
+        "w": 270,
+        "overflowX": "auto"
+      },
+      {
+        "cls": "ant-modal-wrap ant-modal-centered",
+        "x": 0,
+        "w": 390,
+        "overflowX": "auto"
+      },
+      {
+        "cls": "",
+        "x": 0,
+        "w": 390,
+        "overflowX": "auto"
+      }
+    ]
+  },
+  {
+    "text": "新增样品",
+    "x": 222,
+    "y": 721.8046875,
+    "w": 108,
+    "h": 46,
+    "centerHit": true,
+    "clippingParents": [
+      {
+        "cls": "record-form entity-modal-form sample-modal-form",
+        "x": 60,
+        "w": 270,
+        "overflowX": "auto"
+      },
+      {
+        "cls": "ant-modal-wrap ant-modal-centered",
+        "x": 0,
+        "w": 390,
+        "overflowX": "auto"
+      },
+      {
+        "cls": "",
+        "x": 0,
+        "w": 390,
+        "overflowX": "auto"
+      }
+    ]
+  }
+]

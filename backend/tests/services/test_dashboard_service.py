@@ -50,11 +50,13 @@ async def test_today_schedule_count_uses_local_day(
 
     async with session_factory() as session:
         repository = DashboardRepository(session)
-        # 昨天 12:00、昨天 23:00 跨到今天 01:00、今天 12:00、明天 12:00
+        # 昨天 12:00、昨天 22:00→今日 00:00（恰在零点结束）、
+        # 昨天 23:00→今日 01:00（跨日）、今天 12:00、明天 12:00
         yesterday = today - timedelta(days=1)
         tomorrow = today + timedelta(days=1)
         for title, starts_at, ends_at in (
             ("昨天日程", utc_naive(yesterday, 12), utc_naive(yesterday, 13)),
+            ("零点结束", utc_naive(yesterday, 22), utc_naive(today, 0)),
             ("跨日日程", utc_naive(yesterday, 23), utc_naive(today, 1)),
             ("今日日程", utc_naive(today, 12), utc_naive(today, 13)),
             ("明天日程", utc_naive(tomorrow, 12), utc_naive(tomorrow, 13)),
@@ -83,8 +85,10 @@ async def test_today_schedule_count_uses_local_day(
     # “我的日程”仍返回全部事件，只有“今日日程”计数按本地自然日过滤。
     assert [event.title for event in dashboard.schedule_events] == [
         "昨天日程",
+        "零点结束",
         "跨日日程",
         "今日日程",
         "明天日程",
     ]
+    # 昨日 22:00→今日 00:00 只与今日起点相接，不计入今天。
     assert dashboard.summary.today_schedule_count == 2

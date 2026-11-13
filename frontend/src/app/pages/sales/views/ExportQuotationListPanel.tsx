@@ -81,12 +81,14 @@ export function ExportQuotationListPanel({ model, onOpenForm }: Props) {
               {renderCustomerOptions(model.customers)}
             </Select>
           </label>
-          <Button htmlType="submit" icon={<Search size={16} />}>
-            {t('sales.quotation.list.query')}
-          </Button>
-          <Button icon={<Plus size={16} />} type="primary" onClick={onOpenForm}>
-            {t('sales.quotation.list.create')}
-          </Button>
+          <div className="filter-actions">
+            <Button htmlType="submit" icon={<Search size={16} />}>
+              {t('sales.quotation.list.query')}
+            </Button>
+            <Button icon={<Plus size={16} />} type="primary" onClick={onOpenForm}>
+              {t('sales.quotation.list.create')}
+            </Button>
+          </div>
         </form>
       }
     >

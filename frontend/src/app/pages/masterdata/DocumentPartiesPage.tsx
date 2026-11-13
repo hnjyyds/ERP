@@ -328,12 +328,14 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
                 {t('masterdata.field.status')}
                 <Select options={statusFilterOptions} value={statusFilter} onChange={setStatusFilter} />
               </label>
-              <Button htmlType="submit" icon={<Search size={16} />}>
-                {t('masterdata.documentParty.query')}
-              </Button>
-              <Button type="primary" icon={<Plus size={16} />} onClick={openCreate}>
-                {t('masterdata.documentParty.create')}
-              </Button>
+              <div className="filter-actions">
+                <Button htmlType="submit" icon={<Search size={16} />}>
+                  {t('masterdata.documentParty.query')}
+                </Button>
+                <Button type="primary" icon={<Plus size={16} />} onClick={openCreate}>
+                  {t('masterdata.documentParty.create')}
+                </Button>
+              </div>
             </form>}
 
           >

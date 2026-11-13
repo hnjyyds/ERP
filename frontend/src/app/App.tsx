@@ -201,6 +201,17 @@ export default function App() {
     }
   }
 
+  // 菜单名称由后端按 Accept-Language 本地化，切语言后必须重新拉取，
+  // 否则侧栏与页面标题会一直停留在旧语言。
+  async function reloadSessionMenus() {
+    try {
+      const res = await getCurrentSession()
+      setSession((current) => (current ? { ...current, user: res.user, menus: res.menus } : current))
+    } catch {
+      /* 保留现有菜单，认证失败由全局 401 处理 */
+    }
+  }
+
   async function saveSettingsAvatar() {
     if (!settingsAvatarDraft || savingSettingsAvatar) return
     setSavingSettingsAvatar(true)
@@ -315,6 +326,7 @@ export default function App() {
             const next = normalizeSettings({ ...appSettings, language: lang }, i18nConfig)
             setRuntimeSettings(next)
             setAppSettings(next)
+            void reloadSessionMenus()
           },
           onChangeAvatarDraft: setSettingsAvatarDraft,
           onSaveAvatar: () => {
