@@ -326,6 +326,22 @@
   min-width: 108px;
 }
 
+/* 手机端底部按钮整行排布：桌面最小宽度 108px 的三个按钮会超出弹窗正文，
+   导致“取消”被挤到左侧并裁切。放在最小宽度规则之后以保证覆盖。 */
+@media (max-width: 760px) {
+  .sample-modal-form > .modal-actions {
+    flex-wrap: wrap;
+    justify-content: stretch;
+  }
+
+  .sample-modal-form > .modal-actions .secondary-inline,
+  .sample-modal-form > .modal-actions .inline-submit {
+    width: 100%;
+    min-width: 0;
+    justify-content: center;
+  }
+}
+
 .sample-request-grid,
 .sample-record-grid {
   grid-template-columns: minmax(0, 1fr);

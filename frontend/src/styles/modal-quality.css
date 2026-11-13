@@ -484,3 +484,12 @@
   border-top: 1px solid var(--erp-border-soft);
   padding-top: 12px;
 }
+
+/* 手机端关闭按钮宽高都要达到 44px，桌面 28px 的宽度不能沿用到触摸屏。 */
+@media (max-width: 640px) {
+  .ant-modal .ant-modal-close,
+  .ant-modal:has(.entity-modal-form) .ant-modal-close {
+    width: 44px;
+    height: 44px;
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "source": "running xinpei-backend-1, pure function only, no DB operations",
+  "image": "sha256:6ae04c6a33610e6636e56c566bb775b85f520e53abbbc9bda76d2d756fe66f81",
+  "cases": [
+    {
+      "name": "yesterday",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "ends_at_midnight",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "name": "cross_midnight",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "today",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "name": "starts_tomorrow",
+      "expected": false,
+      "actual": false
+    }
+  ],
+  "pytest": "tests/services/test_dashboard_service.py: 2 passed in 0.36s, in-memory SQLite"
+}

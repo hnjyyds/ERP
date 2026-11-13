@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "issues_closed": [
+    "UIR-04-B",
+    "UIR-09",
+    "UIR-10",
+    "UIR-11",
+    "UIR-12"
+  ],
+  "core_scenarios": 9,
+  "additional_close_scenarios": 8,
+  "business_submissions": false,
+  "backend_tests_passed": 2,
+  "container_pure_function_cases_passed": 5,
+  "scope": "Targeted verification of five fixes, not full-system certification"
+}

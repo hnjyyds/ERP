@@ -133,14 +133,24 @@ textarea.ant-input {
 
 .ant-input::placeholder,
 .ant-input-number::placeholder,
-.ant-select-selection-placeholder {
+.ant-select-selection-placeholder,
+.ant-select-placeholder {
   font-size: 13px;
+  color: #6B7280;
+}
+
+/* Ant Design v6 的下拉占位符走运行时 CSS-in-JS，默认 rgba(0,0,0,.25)；
+   需要带 .ant-select 前缀才能覆盖到实际元素。 */
+body .ant-select .ant-select-placeholder,
+body .ant-select .ant-select-selection-placeholder {
   color: #6B7280;
 }
 
 .ant-input:disabled::placeholder,
 .ant-input[disabled]::placeholder,
 .ant-select-disabled .ant-select-selection-placeholder,
+.ant-select-disabled .ant-select-placeholder,
+body .ant-select-disabled .ant-select-placeholder,
 .ant-input-number-disabled .ant-input-number-input::placeholder {
   color: #A6ADBB;
 }

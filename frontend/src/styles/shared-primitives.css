@@ -525,6 +525,9 @@ h2 {
 }
 
 .record-form .checkbox-label {
+  /* 记录表单的 label 默认被设为栅格，复选框与文字会各占一行；
+     这里恢复为单行水平排列，避免勾选框与文案上下错位。 */
+  display: flex;
   gap: 8px;
   flex-direction: row !important;
 
@@ -536,6 +539,16 @@ h2 {
   min-width: 16px;
   min-height: 16px;
   accent-color: #4F6EF7;
+}
+
+/* 记录表单的 label 规则也会命中复选框内部的 Ant label，
+   把它撑成两行栅格导致勾选框贴顶；这里统一恢复单行内联对齐。 */
+.record-form .ant-checkbox-wrapper {
+  display: inline-flex;
+  height: 16px;
+  min-height: 0;
+  align-items: center;
+  gap: 8px;
 }
 
 /* ===== Flex 三列表单布局 ===== */

@@ -1,0 +1,138 @@
+[
+  {
+    "route": "/masterdata/products",
+    "button": "新增商品",
+    "close": {
+      "x": 318,
+      "y": 46.0625,
+      "w": 44,
+      "h": 44,
+      "hit": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    "closed": true,
+    "blocked": []
+  },
+  {
+    "route": "/masterdata/customers",
+    "button": "新增客户",
+    "close": {
+      "x": 318,
+      "y": 46.0625,
+      "w": 44,
+      "h": 44,
+      "hit": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    "closed": true,
+    "blocked": []
+  },
+  {
+    "route": "/masterdata/partners",
+    "button": "新增合作伙伴",
+    "close": {
+      "x": 318,
+      "y": 46.0625,
+      "w": 44,
+      "h": 44,
+      "hit": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    "closed": true,
+    "blocked": []
+  },
+  {
+    "route": "/masterdata/document-parties",
+    "button": "新增单证资料",
+    "close": {
+      "x": 318,
+      "y": 46.0625,
+      "w": 44,
+      "h": 44,
+      "hit": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    "closed": true,
+    "blocked": []
+  },
+  {
+    "route": "/sales/contracts",
+    "button": "新增合同",
+    "close": {
+      "x": 318,
+      "y": 46.0625,
+      "w": 44,
+      "h": 44,
+      "hit": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    "closed": true,
+    "blocked": []
+  },
+  {
+    "route": "/purchase/contracts",
+    "button": "从出口合同生成",
+    "close": {
+      "x": 318,
+      "y": 47.7578125,
+      "w": 44,
+      "h": 44,
+      "hit": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    "closed": true,
+    "blocked": []
+  },
+  {
+    "route": "/sample/requests",
+    "button": "新增打样单",
+    "close": {
+      "x": 318,
+      "y": 46.0625,
+      "w": 44,
+      "h": 44,
+      "hit": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    "closed": true,
+    "blocked": []
+  },
+  {
+    "route": "/sample/deliveries",
+    "button": "新增寄样单",
+    "close": {
+      "x": 318,
+      "y": 46.0625,
+      "w": 44,
+      "h": 44,
+      "hit": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    "closed": true,
+    "blocked": []
+  }
+]
