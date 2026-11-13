@@ -1,6 +1,11 @@
 import base64
+from decimal import Decimal
 
+import pytest
 from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+
+from app.modules.masterdata.products.models import Product
 
 
 async def _login_token(
@@ -713,3 +718,151 @@ async def test_product_endpoints_enforce_menu_permission(
     )
 
     assert response.status_code == 403
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("code", "   "),
+        ("cn_name", "  "),
+        ("en_name", "\t"),
+        ("customs_code", " "),
+        ("package_info", "   "),
+        ("unit", "  "),
+    ],
+)
+async def test_product_create_rejects_blank_required_text(
+    api_client: AsyncClient,
+    seeded_system: None,
+    field: str,
+    value: str,
+) -> None:
+    token = await _login_token(api_client)
+    payload = _product_payload(code="P-BLANK-001")
+    payload[field] = value
+
+    response = await api_client.post(
+        "/api/v1/masterdata/products",
+        headers={"Authorization": f"Bearer {token}"},
+        json=payload,
+    )
+
+    assert response.status_code == 422
+
+    list_response = await api_client.get(
+        "/api/v1/masterdata/products",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert list_response.json()["data"]["total"] == 0
+
+
+async def test_product_accessory_rejects_blank_name(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    payload = _product_payload(code="P-BLANK-002")
+    payload["accessories"][0]["accessory_name"] = "   "
+
+    response = await api_client.post(
+        "/api/v1/masterdata/products",
+        headers={"Authorization": f"Bearer {token}"},
+        json=payload,
+    )
+
+    assert response.status_code == 422
+
+
+async def test_product_code_is_normalized_before_uniqueness_check(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+
+    created = await api_client.post(
+        "/api/v1/masterdata/products",
+        headers=headers,
+        json=_product_payload(code="  P-TRIM-001  "),
+    )
+    assert created.status_code == 201
+    assert created.json()["data"]["code"] == "P-TRIM-001"
+
+    duplicate = await api_client.post(
+        "/api/v1/masterdata/products",
+        headers=headers,
+        json=_product_payload(code="P-TRIM-001"),
+    )
+    assert duplicate.status_code == 422
+    assert "商品编码已存在" in duplicate.text
+
+
+async def test_product_export_keeps_formula_like_text(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    payload = _product_payload(code="P-FORMULA-001")
+    payload["cn_name"] = "=1+1"
+    payload["en_name"] = "+SUM(A1)"
+
+    created = await api_client.post(
+        "/api/v1/masterdata/products",
+        headers=headers,
+        json=payload,
+    )
+    assert created.status_code == 201
+
+    export_response = await api_client.get(
+        "/api/v1/masterdata/products/export",
+        headers=headers,
+    )
+    assert export_response.status_code == 200
+    content = export_response.json()["data"]["content"]
+    assert "'=1+1" in content
+    assert "'+SUM(A1)" in content
+    assert "0.1300" in content
+
+
+async def test_product_export_returns_all_rows_beyond_default_page(
+    api_client: AsyncClient,
+    seeded_system: None,
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    token = await _login_token(api_client)
+    async with session_factory() as session:
+        session.add_all(
+            [
+                Product(
+                    code=f"P-EXP-{index:03d}",
+                    cn_name=f"导出商品{index}",
+                    en_name=f"Export Product {index}",
+                    customs_code="4202920000",
+                    tax_rate=Decimal("0.13"),
+                    rebate_rate=Decimal("0.09"),
+                    package_info="100 pcs/carton",
+                    unit="pcs",
+                    status="active",
+                )
+                for index in range(60)
+            ]
+        )
+        await session.commit()
+
+    default_export = await api_client.get(
+        "/api/v1/masterdata/products/export",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert default_export.status_code == 200
+    rows = default_export.json()["data"]["content"].strip().splitlines()
+    assert len(rows) == 61
+
+    limited_export = await api_client.get(
+        "/api/v1/masterdata/products/export",
+        headers={"Authorization": f"Bearer {token}"},
+        params={"limit": 5, "offset": 10},
+    )
+    assert limited_export.status_code == 200
+    limited_rows = limited_export.json()["data"]["content"].strip().splitlines()
+    assert len(limited_rows) == 61

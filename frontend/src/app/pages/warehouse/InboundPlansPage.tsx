@@ -22,6 +22,7 @@ import {
 } from '@/api'
 import { warehouseInboundPlanPath, moduleDetailPath } from '@/app/routes'
 import { FormSelect, ListPageShell, Metric, PanelTitle, RemoteSelect } from '@/shared/ui'
+import { fetchSupplierSelectOptions } from '@/shared/entityOptions'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { useTablePagination } from '@/shared/useTablePagination'
 import { useFormModal } from '@/shared/useFormModal'
@@ -485,12 +486,14 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                     ))}
                   </FormSelect>
                 </label>
-                <label>
+                <label className="entity-search-filter">
                   {t('warehouse.inboundPlan.list.supplierFilter')}
-                  <Input
-                    value={supplierFilter}
+                  <RemoteSelect
+                    ariaLabel={t('warehouse.inboundPlan.list.supplierFilterAria')}
+                    fetchOptions={fetchSupplierSelectOptions}
                     placeholder={t('warehouse.inboundPlan.list.supplierFilterPlaceholder')}
-                    onChange={(event) => setSupplierFilter(event.target.value)}
+                    value={supplierFilter || null}
+                    onChange={setSupplierFilter}
                   />
                 </label>
                 <label>

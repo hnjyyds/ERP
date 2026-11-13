@@ -137,6 +137,7 @@ export function ExportContractsPage({ currentUser, detailId, onNavigate }: Props
             signing={signing}
             exportActions={exportActions}
             cancelActions={cancelActions}
+            loading={list.detailLoading}
             onBack={() => onNavigate(exportContractPath)}
             onLoadForEdit={() => {
               if (list.selectedContract) formModal.loadContractIntoForm(list.selectedContract)

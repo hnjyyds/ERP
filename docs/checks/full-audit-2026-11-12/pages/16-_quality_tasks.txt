@@ -1,0 +1,270 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易全功能审计20261112"(8): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        container "D-DUTCH"
+          text "D-DUTCH"
+        container
+          text "新裴贸易"
+          text "业务管理系统"
+      container "主导航"
+        anchor [ref=2522, loc=href:/, url=http://localhost:8080/]
+          svg_root
+          text "工作台"
+        container "业务模块"
+          container
+            container [ref=2523]
+              svg_root
+              text "基础资料"
+              svg_root
+            container
+              anchor [ref=2524, loc=href:/masterdata/products, url=http://localhost:8080/masterdata/products]
+                svg_root
+                text "商品资料"
+              anchor [ref=2525, loc=href:/masterdata/suppliers, url=http://localhost:8080/masterdata/suppliers]
+                svg_root
+                text "供应商资料"
+              anchor [ref=2526, loc=href:/masterdata/customers, url=http://localhost:8080/masterdata/customers]
+                svg_root
+                text "客户资料"
+              anchor [ref=2527, loc=href:/masterdata/partners, url=http://localhost:8080/masterdata/partners]
+                svg_root
+                text "合作伙伴"
+              anchor [ref=2528, loc=href:/masterdata/document-parties, url=http://localhost:8080/masterdata/document-parties]
+                svg_root
+                text "单证资料"
+          container
+            container [ref=2529]
+              svg_root
+              text "订单流程"
+              svg_root
+            container
+              anchor [ref=2530, loc=href:/sales/contracts, url=http://localhost:8080/sales/contracts]
+                svg_root
+                text "出口合同"
+              anchor [ref=2531, loc=href:/purchase/contracts, url=http://localhost:8080/purchase/contracts]
+                svg_root
+                text "采购合同"
+              anchor [ref=2532, loc=href:/sales/quotations, url=http://localhost:8080/sales/quotations]
+                svg_root
+                text "出口报价"
+              anchor [ref=2533, loc=href:/sales/shipments, url=http://localhost:8080/sales/shipments]
+                svg_root
+                text "出货明细"
+          container
+            container [ref=2534]
+              svg_root
+              text "QC / 跟单"
+              svg_root
+            container
+              anchor [ref=2535, loc=href:/quality/inspections, url=http://localhost:8080/quality/inspections]
+                svg_root
+                text "QC 中心"
+              anchor [ref=2536, loc=href:/quality/tasks, url=http://localhost:8080/quality/tasks]
+                svg_root
+                text "我的 QC 任务"
+              anchor [ref=2537, loc=href:/purchase/followup, url=http://localhost:8080/purchase/followup]
+                svg_root
+                text "跟单中心"
+              anchor [ref=2538, loc=href:/sample/records, url=http://localhost:8080/sample/records]
+                svg_root
+                text "样品登记"
+              anchor [ref=2539, loc=href:/sample/requests, url=http://localhost:8080/sample/requests]
+                svg_root
+                text "打样管理"
+              anchor [ref=2540, loc=href:/sample/deliveries, url=http://localhost:8080/sample/deliveries]
+                svg_root
+                text "寄样管理"
+          container
+            container [ref=2541]
+              svg_root
+              text "仓库"
+              svg_root
+            container
+              anchor [ref=2542, loc=href:/warehouse/inbound-orders, url=http://localhost:8080/warehouse/inbound-orders]
+                svg_root
+                text "入仓"
+              anchor [ref=2543, loc=href:/warehouse/inbound-plans, url=http://localhost:8080/warehouse/inbound-plans]
+                svg_root
+                text "入库计划"
+              anchor [ref=2544, loc=href:/warehouse/outbound-plans, url=http://localhost:8080/warehouse/outbound-plans]
+                svg_root
+                text "出库计划"
+              anchor [ref=2545, loc=href:/warehouse/outbound-orders, url=http://localhost:8080/warehouse/outbound-orders]
+                svg_root
+                text "货物出库"
+              anchor [ref=2546, loc=href:/warehouse/stocktakes, url=http://localhost:8080/warehouse/stocktakes]
+                svg_root
+                text "库存盘点"
+          container
+            container [ref=2547]
+              svg_root
+              text "财务经营"
+              svg_root
+            container
+              container
+                svg_root
+                text "财务摘要"
+                svg_root
+              container
+                anchor [ref=2548, loc=href:/finance/overview, url=http://localhost:8080/finance/overview]
+                  text "经营总览"
+                anchor [ref=2549, loc=href:/finance/receipts, url=http://localhost:8080/finance/receipts]
+                  text "收款管理"
+                anchor [ref=2550, loc=href:/finance/payments, url=http://localhost:8080/finance/payments]
+                  text "付款管理"
+                anchor [ref=2551, loc=href:/finance/fees, url=http://localhost:8080/finance/fees]
+                  text "付费管理"
+                anchor [ref=2552, loc=href:/finance/tax, url=http://localhost:8080/finance/tax]
+                  text "核销退税"
+                anchor [ref=2553, loc=href:/finance/misc, url=http://localhost:8080/finance/misc]
+                  text "杂费管理"
+                anchor [ref=2554, loc=href:/finance/settlement, url=http://localhost:8080/finance/settlement]
+                  text "结算核算"
+                anchor [ref=2555, loc=href:/finance/reimbursements, url=http://localhost:8080/finance/reimbursements]
+                  text "报销管理"
+                anchor [ref=2556, loc=href:/finance/port-data, url=http://localhost:8080/finance/port-data]
+                  text "口岸数据"
+                anchor [ref=2557, loc=href:/finance/reports, url=http://localhost:8080/finance/reports]
+                  text "财务报表"
+              anchor [ref=2558, loc=href:/reporting, url=http://localhost:8080/reporting]
+                svg_root
+                text "老板看板"
+          container
+            container [ref=2559]
+              svg_root
+              text "系统设置"
+              svg_root
+            container
+              anchor [ref=2560, loc=href:/organization/users, url=http://localhost:8080/organization/users]
+                svg_root
+                text "组织管理"
+              anchor [ref=2561, loc=href:/system/mcp, url=http://localhost:8080/system/mcp]
+                svg_root
+                text "MCP 接入"
+              anchor [ref=2562, loc=href:/system/audit-logs, url=http://localhost:8080/system/audit-logs]
+                svg_root
+                text "审计日志"
+          container
+            container [ref=2563]
+              svg_root
+              text "采购单据"
+              svg_root
+            container
+              anchor [ref=2564, loc=href:/purchase/inquiries, url=http://localhost:8080/purchase/inquiries]
+                svg_root
+                text "采购询价"
+              anchor [ref=2565, loc=href:/purchase/invoice-notices, url=http://localhost:8080/purchase/invoice-notices]
+                svg_root
+                text "开票通知"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "我的 QC 任务"
+        container
+          button "通知" [ref=2566, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "8"
+          button "系统设置" [ref=2567, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "我的 QC 任务概览"
+          container
+            text "我的任务"
+            text "1"
+          container
+            text "待查验"
+            text "0"
+          container
+            text "查验中"
+            text "0"
+          container
+            text "已完成"
+            text "1"
+          container
+            text "已逾期"
+            text "0"
+        container
+          container
+            svg_root
+            heading
+              text "我的 QC 任务"
+          form
+            container
+              text "任务搜索"
+              textbox [ref=2568, loc=css:input[placeholder="QC 单号 / 合同 / 供应商"]]
+                text "QC 单号 / 合同 / 供应商"
+            container
+              text "任务状态"
+              container
+                container
+                  text "全部状态"
+                  comboboxgrouping [ref=2569]
+                image "down"
+                  svg_root
+            button [ref=2570]
+              svg_root
+              text "查询"
+          container
+            table
+              table_row
+                table_cell
+            container
+              container [ref=2571]
+                table
+                  table_row
+                    table_cell
+                      text "QC 任务单号"
+                    table_cell
+                      text "采购合同"
+                    table_cell
+                      text "供应商"
+                    table_cell
+                      text "排期时间"
+                    table_cell
+                      text "状态"
+                    table_cell
+                      text "结果"
+                    table_cell
+                      text "操作"
+                  table_row
+                    table_cell
+                      text "QC-8TXV57"
+                    table_cell
+                      text "PC-HR36RU"
+                    table_cell
+                      text "QA261112 测试供应商"
+                    table_cell
+                      text "2026/11/13 09:00"
+                    table_cell
+                      text "已完成"
+                    table_cell
+                      text "通过"
+                    table_cell
+              unordered_list
+                list_item
+                  text "共 1 条"
+                list_item
+                  button [ref=2572]
+                    image "left"
+                      svg_root
+                list_item [ref=2573]
+                  anchor [ref=2574]
+                    text "1"
+                list_item
+                  button [ref=2575]
+                    image "right"
+                      svg_root
+                list_item
+                  container
+                    text "50 条/页"
+                    comboboxgrouping "页码" [ref=2576, loc=css:input[aria-label="页码"]]
+                  image "down"
+                    svg_root
+            table
+              table_row
+                table_cell

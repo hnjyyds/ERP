@@ -255,4 +255,74 @@ async def test_finance_receipt_allocation_rejects_excess_amount_and_permissions(
     unauthorized_response = await api_client.get("/api/v1/finance/receipts")
     assert unauthorized_response.status_code == 401
 
+
+async def test_finance_receipt_allocation_exact_balance_and_overflow_guard(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    business_token = await _login_token(api_client)
+    contract = await _approved_contract(api_client, business_token, code="EC-AR-API-EXACT")
+    finance_token = await _login_token(api_client, "finance", "finance123")
+    receipt = await _create_receipt(
+        api_client,
+        finance_token,
+        receipt_no="BR-API-EXACT",
+        amount="500.00",
+    )
+    claim_response = await api_client.post(
+        f"/api/v1/finance/receipts/{receipt['id']}/claim",
+        headers={"Authorization": f"Bearer {business_token}"},
+        json={"claimed_at": "2026-08-02", "note": "确认客户预收款"},
+    )
+    assert claim_response.status_code == 200
+
+    allocation_response = await api_client.post(
+        f"/api/v1/finance/receipts/{receipt['id']}/allocations",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        json={
+            "allocation_type": "contract",
+            "contract_id": contract["id"],
+            "contract_no": contract["code"],
+            "invoice_no": None,
+            "allocated_at": "2026-08-03",
+            "amount": "500.00",
+            "currency": "USD",
+            "remark": "一次分满",
+        },
+    )
+    assert allocation_response.status_code == 201
+    allocated = allocation_response.json()["data"]
+    assert allocated["status"] == "allocated"
+    assert allocated["allocated_amount"] == "500.00"
+    assert allocated["unallocated_amount"] == "0.00"
+    assert len(allocated["allocations"]) == 1
+
+    overflow_response = await api_client.post(
+        f"/api/v1/finance/receipts/{receipt['id']}/allocations",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        json={
+            "allocation_type": "contract",
+            "contract_id": contract["id"],
+            "contract_no": contract["code"],
+            "invoice_no": None,
+            "allocated_at": "2026-08-04",
+            "amount": "0.01",
+            "currency": "USD",
+            "remark": "并发后余额不足",
+        },
+    )
+    assert overflow_response.status_code == 422
+    assert "不能超过未分摊金额" in overflow_response.text
+
+    detail_response = await api_client.get(
+        "/api/v1/finance/receipts",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        params={"q": "BR-API-EXACT"},
+    )
+    assert detail_response.status_code == 200
+    stored = detail_response.json()["data"]["items"][0]
+    assert stored["allocated_amount"] == "500.00"
+    assert len(stored["allocations"]) == 1
+
+
 pytestmark = pytest.mark.usefixtures("reference_master_data")

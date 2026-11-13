@@ -1,8 +1,9 @@
+import logging
 from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Select, case, func, or_, select
+from sqlalchemy import Select, case, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.elements import ColumnElement
 
@@ -12,6 +13,8 @@ from app.modules.finance.payments.models import (
     PaymentRequest,
     SupplierInvoice,
 )
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -275,22 +278,58 @@ class PaymentRepository:
         payment_account: str | None,
         remark: str | None,
     ) -> PaymentRequestRow | None:
-        payment_request = await self.session.get(PaymentRequest, request_id)
+        """条件更新审批状态；仅仍为 submitted 的申请会被更新。
+
+        返回 ``None`` 表示申请不存在或已被其他请求审批（并发冲突）。
+        """
+
+        amount = Decimal(str(approved_amount))
+        values: dict[str, object] = {
+            "approved_amount": amount,
+            "paid_amount": amount,
+            "status": "approved",
+            "reviewer_name": reviewer_name,
+            "approved_at": approved_at,
+            "payment_account": payment_account,
+        }
+        if reviewer_id is not None:
+            values["reviewer_id"] = reviewer_id
+        if remark is not None:
+            values["remark"] = remark
+        result = await self.session.execute(
+            update(PaymentRequest)
+            .where(PaymentRequest.id == request_id, PaymentRequest.status == "submitted")
+            .values(**values)
+        )
+        if (result.rowcount or 0) == 0:
+            return None
+        payment_request = await self.session.get(
+            PaymentRequest,
+            request_id,
+            populate_existing=True,
+        )
         if payment_request is None:
             return None
-        amount = Decimal(str(approved_amount))
-        payment_request.approved_amount = amount
-        payment_request.paid_amount = amount
-        payment_request.status = "approved"
-        if reviewer_id is not None:
-            payment_request.reviewer_id = reviewer_id
-        payment_request.reviewer_name = reviewer_name
-        payment_request.approved_at = approved_at
-        payment_request.payment_account = payment_account
-        if remark is not None:
-            payment_request.remark = remark
-        await self.session.flush()
         return self._map_request(payment_request)
+
+    async def try_reserve_payment(
+        self,
+        *,
+        invoice_id: str,
+        amount: Decimal | str,
+    ) -> bool:
+        """在同一事务内原子占用发票付款额度，避免并发审批突破发票金额。"""
+
+        value = Decimal(str(amount))
+        result = await self.session.execute(
+            update(SupplierInvoice)
+            .where(
+                SupplierInvoice.id == invoice_id,
+                SupplierInvoice.paid_amount + value <= SupplierInvoice.total_amount,
+            )
+            .values(paid_amount=SupplierInvoice.paid_amount + value)
+        )
+        return (result.rowcount or 0) == 1
 
     async def add_allocation(
         self,
@@ -318,7 +357,7 @@ class PaymentRepository:
         self,
         invoice_id: str,
     ) -> SupplierInvoiceRow | None:
-        invoice = await self.session.get(SupplierInvoice, invoice_id)
+        invoice = await self.session.get(SupplierInvoice, invoice_id, populate_existing=True)
         if invoice is None:
             return None
         paid_amount = await self.session.scalar(
@@ -327,7 +366,19 @@ class PaymentRepository:
             )
         )
         invoice.paid_amount = Decimal(str(paid_amount or 0))
-        if invoice.paid_amount >= invoice.total_amount:
+        if invoice.paid_amount > invoice.total_amount:
+            # 历史脏数据只记录，不在这里把超额付款归一成“已付清未付 0”。
+            logger.warning(
+                "supplier invoice payment exceeds total",
+                extra={
+                    "event": "supplier_invoice_payment_overflow",
+                    "invoice_id": invoice_id,
+                    "total_amount": str(invoice.total_amount),
+                    "paid_amount": str(invoice.paid_amount),
+                },
+            )
+            invoice.status = "paid"
+        elif invoice.paid_amount >= invoice.total_amount:
             invoice.status = "paid"
         elif invoice.paid_amount > 0:
             invoice.status = "partial"

@@ -1,0 +1,193 @@
+{
+  "url": "http://localhost:8080/finance/reimbursements",
+  "viewport": {
+    "w": 1512,
+    "h": 780
+  },
+  "scrollWidth": 1512,
+  "controls": [
+    {
+      "text": "通知",
+      "tag": "BUTTON",
+      "cls": "topbar-settings-button topbar-bell-button",
+      "x": 1412,
+      "y": 16,
+      "w": 38,
+      "h": 38,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "系统设置",
+      "tag": "BUTTON",
+      "cls": "topbar-settings-button",
+      "x": 1450,
+      "y": 16,
+      "w": 38,
+      "h": 38,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "搜索",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 281,
+      "y": 177,
+      "w": 381,
+      "h": 36,
+      "field": {
+        "x": 281,
+        "y": 155,
+        "w": 381,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "状态",
+      "tag": "DIV",
+      "cls": "ant-select ant-select-outlined css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow",
+      "x": 674,
+      "y": 177,
+      "w": 190,
+      "h": 36,
+      "field": {
+        "x": 674,
+        "y": 155,
+        "w": 190,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "分类",
+      "tag": "DIV",
+      "cls": "ant-select ant-select-outlined css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow",
+      "x": 876,
+      "y": 177,
+      "w": 190,
+      "h": 36,
+      "field": {
+        "x": 876,
+        "y": 155,
+        "w": 190,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "查询",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-default ant-btn-color-default ant-btn-variant-outlined",
+      "x": 1184,
+      "y": 177,
+      "w": 85,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "end"
+    },
+    {
+      "text": "新增报销",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-primary ant-btn-color-primary ant-btn-variant-solid",
+      "x": 1360,
+      "y": 177,
+      "w": 111,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "end"
+    },
+    {
+      "text": "",
+      "tag": "BUTTON",
+      "cls": "ant-pagination-item-link",
+      "x": 1299,
+      "y": 348,
+      "w": 24,
+      "h": 24,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "",
+      "tag": "BUTTON",
+      "cls": "ant-pagination-item-link",
+      "x": 1355,
+      "y": 348,
+      "w": 24,
+      "h": 24,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "50 条/页",
+      "tag": "DIV",
+      "cls": "ant-select ant-select-sm ant-select-outlined ant-pagination-options-size-changer css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow ant-select-show-search",
+      "x": 1381,
+      "y": 342,
+      "w": 90,
+      "h": 36,
+      "field": null,
+      "maxWidth": "300px",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "审批通过",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-primary ant-btn-color-primary ant-btn-variant-solid",
+      "x": 281,
+      "y": 701,
+      "w": 87,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "驳 回",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-default ant-btn-dangerous ant-btn-color-dangerous ant-btn-variant-outlined",
+      "x": 376,
+      "y": 701,
+      "w": 64,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "银行转账",
+      "tag": "DIV",
+      "cls": "ant-select ant-select-outlined css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow",
+      "x": 281,
+      "y": 747,
+      "w": 93,
+      "h": 36,
+      "field": null,
+      "maxWidth": "300px",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "确认付款",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-primary ant-btn-color-primary ant-btn-variant-solid",
+      "x": 382,
+      "y": 747,
+      "w": 87,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    }
+  ]
+}

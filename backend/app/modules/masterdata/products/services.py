@@ -5,6 +5,7 @@ from asyncio import to_thread
 from decimal import Decimal, InvalidOperation
 from io import StringIO
 
+from app.core.csv_export import safe_cell
 from app.db.uow import UnitOfWork
 from app.modules.masterdata.products.imports import ImportFileError, parse_import_file
 from app.modules.masterdata.products.repositories import (
@@ -287,7 +288,7 @@ class ProductService:
         current_user: CurrentUserResponse,
     ) -> ProductExportResponse:
         self._require(current_user, "masterdata:product:export")
-        products, _ = await self._repository.list_products(limit=10_000)
+        products, _ = await self._repository.list_products(limit=None)
         output = StringIO()
         writer = csv.writer(output)
         writer.writerow(
@@ -296,13 +297,13 @@ class ProductService:
         for product in products:
             writer.writerow(
                 [
-                    product.code,
-                    product.cn_name,
-                    product.en_name,
-                    product.customs_code,
+                    safe_cell(product.code),
+                    safe_cell(product.cn_name),
+                    safe_cell(product.en_name),
+                    safe_cell(product.customs_code),
                     product.tax_rate,
                     product.rebate_rate,
-                    product.unit,
+                    safe_cell(product.unit),
                 ]
             )
         return ProductExportResponse(

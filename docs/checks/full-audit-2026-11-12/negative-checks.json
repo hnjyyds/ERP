@@ -1,0 +1,438 @@
+[
+  {
+    "method": "patch",
+    "path": "/api/v1/auth/me/avatar",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "patch",
+    "path": "/api/v1/system/mcp",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/organization/departments",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/organization/users",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/organization/roles",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/schedules",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/announcements",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/todos",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/shortcuts",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/files/images",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/masterdata/products",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/masterdata/products/import",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/masterdata/customers",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/masterdata/suppliers",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/masterdata/partners",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/masterdata/document-parties",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/sample/requests",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/sample/records",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/sample/records/import",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/sample/deliveries",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/sales/quotations",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/sales/contracts",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/sales/shipments/from-contracts",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/finance/receipts",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/finance/supplier-invoices",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/finance/payment-requests",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/finance/partner-fee-invoices",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/finance/fee-payment-requests",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/finance/misc-fee-items",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/finance/misc-fee-allocations",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/finance/settlements",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/finance/verification-documents",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/finance/reimbursements",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/finance/port-import-batches",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/purchase/inquiries",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/purchase/contracts",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/purchase/contracts/generate-from-export-contracts",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/purchase/invoice-notices/from-customs-declaration",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/followup/templates",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/followup/plans/from-purchase-contract",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/followup/sample-events",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/followup/source-events",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/quality/inspections",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/warehouse/inbound-plans/from-purchase-contract",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/warehouse/inbound-orders/from-plan",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/warehouse/outbound-plans/from-shipment",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/warehouse/outbound-orders/from-plan",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "method": "post",
+    "path": "/api/v1/warehouse/stocktakes",
+    "case": "empty required payload",
+    "status": 422,
+    "expected": 422
+  },
+  {
+    "case": "duplicate",
+    "status": 422,
+    "expected": 409,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "商品编码已存在"
+    }
+  },
+  {
+    "case": "negative-tax",
+    "status": 422,
+    "expected": 422,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "请求参数校验失败",
+      "details": [
+        {
+          "field": "tax_rate",
+          "message": "不能小于 0",
+          "type": "greater_than_equal"
+        }
+      ]
+    }
+  },
+  {
+    "case": "over-tax",
+    "status": 422,
+    "expected": 422,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "请求参数校验失败",
+      "details": [
+        {
+          "field": "tax_rate",
+          "message": "格式不正确",
+          "type": "less_than_equal"
+        }
+      ]
+    }
+  },
+  {
+    "case": "blank-code",
+    "status": 201,
+    "expected": 422,
+    "response": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "id": "f43616b0-3b68-47f1-8ce6-6c65f477d8ec",
+        "code": "   ",
+        "cn_name": "QA261112 验收测试围巾",
+        "en_name": "QA261112 Audit Scarf",
+        "specification": null,
+        "model": null,
+        "customs_code": "6214300000",
+        "tax_rate": "0.1300",
+        "rebate_rate": "0.0900",
+        "package_info": "QA261112 临时测试资料\n包装多行说明：12 pcs/carton",
+        "unit": "pcs",
+        "image_url": null,
+        "status": "active",
+        "accessories": []
+      },
+      "error": null
+    }
+  },
+  {
+    "case": "oversized-name",
+    "status": 422,
+    "expected": 422,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "请求参数校验失败",
+      "details": [
+        {
+          "field": "cn_name",
+          "message": "不能超过 200 个字符",
+          "type": "string_too_long"
+        }
+      ]
+    }
+  },
+  {
+    "case": "extra-property",
+    "status": 422,
+    "expected": 422,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "请求参数校验失败",
+      "details": [
+        {
+          "field": "is_admin",
+          "message": "格式不正确",
+          "type": "extra_forbidden"
+        }
+      ]
+    }
+  }
+]

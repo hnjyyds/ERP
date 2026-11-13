@@ -117,6 +117,20 @@ describe('QualityInspectionsPage', () => {
     expect(screen.getByText('QC 任务列表')).toBeTruthy()
   })
 
+  it('空列表提示手动创建，且可从空状态直接打开新增弹窗', async () => {
+    const user = userEvent.setup()
+    render(
+      <QualityInspectionsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    expect(
+      await screen.findByText('审批采购合同后请在此创建 QC 任务，或点击“新增 QC 单”手动创建'),
+    ).toBeTruthy()
+
+    await user.click(screen.getByRole('button', { name: '去新增 QC 单' }))
+    expect(await screen.findByText('建立 QC 任务')).toBeTruthy()
+  })
+
   it('renders filter inputs', async () => {
     const user = userEvent.setup()
     render(
@@ -212,7 +226,8 @@ describe('QualityInspectionsPage', () => {
     })
 
     const submitButton = screen.getByRole('button', { name: '创建 QC 任务' })
-    const form = submitButton.closest('form')
+    expect(submitButton.closest('.ant-modal-footer')).toBeTruthy()
+    const form = document.querySelector<HTMLFormElement>('#quality-task-form')
     expect(form).toBeTruthy()
     fireEvent.submit(form!)
 
@@ -240,7 +255,8 @@ describe('QualityInspectionsPage', () => {
 
     await user.click(screen.getByText('新增 QC 单'))
     const submitButton = screen.getByRole('button', { name: '创建 QC 任务' })
-    const form = submitButton.closest('form')
+    expect(submitButton.closest('.ant-modal-footer')).toBeTruthy()
+    const form = document.querySelector<HTMLFormElement>('#quality-task-form')
     expect(form).toBeTruthy()
     fireEvent.submit(form!)
 
@@ -569,7 +585,7 @@ describe('QualityInspectionsPage', () => {
     await user.click(await screen.findByText('PC-QC-001 / 华东包装制品厂'))
     await user.type(modal.querySelector<HTMLTextAreaElement>('#quality-task-note')!, '失败也要保留')
 
-    fireEvent.submit(within(modal).getByRole('button', { name: '创建 QC 任务' }).closest('form')!)
+    fireEvent.submit(modal.querySelector<HTMLFormElement>('#quality-task-form')!)
 
     await waitFor(() => expect(createQualityInspection).toHaveBeenCalled())
     expect(screen.getByText('建立 QC 任务')).toBeTruthy()

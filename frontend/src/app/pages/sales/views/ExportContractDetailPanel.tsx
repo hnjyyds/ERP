@@ -33,6 +33,7 @@ type Props = {
   signing: ExportContractSigningModel
   exportActions: ExportContractExportModel
   cancelActions: ExportContractCancelModel
+  loading?: boolean
   onLoadForEdit: () => void
   onBack: () => void
 }
@@ -46,6 +47,7 @@ export function ExportContractDetailPanel({
   signing,
   exportActions,
   cancelActions,
+  loading = false,
   onLoadForEdit,
   onBack,
 }: Props) {
@@ -430,7 +432,7 @@ export function ExportContractDetailPanel({
 
           <ExportContractDetailTables contract={contract} history={history} />
         </>
-      ) : (
+      ) : loading ? null : (
         <div className="module-state panel-empty-state">
           <FileStack size={28} />
           <strong>{t('sales.contract.detail.emptyTitle')}</strong>

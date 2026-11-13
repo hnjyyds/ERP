@@ -318,6 +318,50 @@ describe('PurchaseContractsPage', () => {
     expect(params.get('page')).toBeNull()
   })
 
+  it('供应商筛选提交 UUID 而不是编号文本', async () => {
+    const user = userEvent.setup()
+    vi.spyOn(api, 'listPurchaseContracts').mockResolvedValue({
+      items: [],
+      total: 0,
+      summary: { submitted_count: 0, approved_count: 0, total_amount: '0.00', currency: 'USD' },
+    })
+    vi.spyOn(api, 'listPurchaseContractReminders').mockResolvedValue({ items: [], total: 0 })
+    vi.spyOn(api, 'listSuppliers').mockResolvedValue({
+      items: [
+        {
+          id: 'supplier-uuid-1',
+          code: 'QA261112-S01',
+          cn_name: '华东包装制品厂',
+          en_name: 'East Packing',
+          country: '中国',
+          address: null,
+          website: null,
+          status: 'active',
+          owner_user_id: 'u-001',
+          contacts: [],
+          primary_contact: null,
+          credit_profile: null,
+        },
+      ],
+      total: 1,
+      summary: { active_count: 1, contact_count: 0, credit_profile_count: 0 },
+    })
+
+    render(
+      <PurchaseContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    await user.click(screen.getByRole('combobox', { name: '供应商标识' }))
+    await user.click(await screen.findByText('华东包装制品厂'))
+    await user.click(screen.getByRole('button', { name: '查询' }))
+
+    await waitFor(() => {
+      expect(api.listPurchaseContracts).toHaveBeenLastCalledWith(
+        expect.objectContaining({ supplier_id: 'supplier-uuid-1' }),
+      )
+    })
+  })
+
   it('刷新或直达时从 URL 恢复筛选并按该条件请求', async () => {
     window.history.replaceState(
       {},
@@ -343,7 +387,7 @@ describe('PurchaseContractsPage', () => {
       )
     })
     expect(screen.getByLabelText('合同搜索')).toHaveValue('PC-1')
-    expect(screen.getByLabelText('供应商标识')).toHaveValue('supplier-pack-a')
+    expect(screen.getByRole('combobox', { name: '供应商标识' })).toBeTruthy()
   })
 
   it('重新打开作废弹窗时清空上次填写的原因和错误', async () => {

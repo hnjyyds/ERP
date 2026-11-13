@@ -1,0 +1,101 @@
+{
+  "success": true,
+  "code": "SUCCESS",
+  "message": "请求成功",
+  "data": {
+    "items": [
+      {
+        "id": "015bcc0d-58cf-47cb-a10d-a0747860fd18",
+        "invoice_no": "QA261112-INV01",
+        "invoice_date": "2026-11-12",
+        "supplier_id": "c6d43566-694f-41d0-85f0-6631c6478d52",
+        "supplier_name": "QA261112 测试供应商",
+        "purchase_invoice_notice_id": null,
+        "purchase_invoice_notice_code": null,
+        "purchase_contract_id": "56cd6434-f367-4553-8caf-092a96ab097d",
+        "purchase_contract_no": "PC-HR36RU",
+        "total_amount": "100.00",
+        "paid_amount": "120.00",
+        "unpaid_amount": "0.00",
+        "currency": "RMB",
+        "due_date": null,
+        "status": "paid",
+        "remark": "QA261112 并发付款测试",
+        "created_by_user_id": "u-baeac30b5127ebdb",
+        "created_by_user_name": "系统管理员",
+        "payment_requests": [
+          {
+            "id": "30f75bb5-d709-496f-8f76-4d1be7652914",
+            "request_no": "PR-GZN8H6",
+            "supplier_invoice_id": "015bcc0d-58cf-47cb-a10d-a0747860fd18",
+            "supplier_invoice_no": "QA261112-INV01",
+            "supplier_id": "c6d43566-694f-41d0-85f0-6631c6478d52",
+            "supplier_name": "QA261112 测试供应商",
+            "purchase_contract_id": "56cd6434-f367-4553-8caf-092a96ab097d",
+            "purchase_contract_no": "PC-HR36RU",
+            "payment_type": "goods_payment",
+            "request_date": "2026-11-12",
+            "requested_amount": "60.00",
+            "approved_amount": "60.00",
+            "paid_amount": "60.00",
+            "currency": "RMB",
+            "status": "approved",
+            "requester_user_id": "u-baeac30b5127ebdb",
+            "requester_user_name": "系统管理员",
+            "reviewer_id": "u-finance-manager",
+            "reviewer_name": "演示财务主管",
+            "approved_at": "2026-11-12",
+            "payment_account": null,
+            "remark": "QA261112 并发60测试"
+          },
+          {
+            "id": "46c941cf-01bf-4a0f-8715-ca697f2dafab",
+            "request_no": "PR-ZAWWF6",
+            "supplier_invoice_id": "015bcc0d-58cf-47cb-a10d-a0747860fd18",
+            "supplier_invoice_no": "QA261112-INV01",
+            "supplier_id": "c6d43566-694f-41d0-85f0-6631c6478d52",
+            "supplier_name": "QA261112 测试供应商",
+            "purchase_contract_id": "56cd6434-f367-4553-8caf-092a96ab097d",
+            "purchase_contract_no": "PC-HR36RU",
+            "payment_type": "goods_payment",
+            "request_date": "2026-11-12",
+            "requested_amount": "60.00",
+            "approved_amount": "60.00",
+            "paid_amount": "60.00",
+            "currency": "RMB",
+            "status": "approved",
+            "requester_user_id": "u-baeac30b5127ebdb",
+            "requester_user_name": "系统管理员",
+            "reviewer_id": "u-finance-manager",
+            "reviewer_name": "演示财务主管",
+            "approved_at": "2026-11-12",
+            "payment_account": null,
+            "remark": "QA261112 并发60测试"
+          }
+        ],
+        "allocations": [
+          {
+            "id": "803fae8f-22ef-4d83-b9bd-18c997aa9c12",
+            "payment_request_id": "30f75bb5-d709-496f-8f76-4d1be7652914",
+            "supplier_invoice_id": "015bcc0d-58cf-47cb-a10d-a0747860fd18",
+            "allocated_at": "2026-11-12",
+            "amount": "60.00",
+            "currency": "RMB",
+            "remark": null
+          },
+          {
+            "id": "dfff1311-aa3c-4f39-90af-74ee4ea2520e",
+            "payment_request_id": "46c941cf-01bf-4a0f-8715-ca697f2dafab",
+            "supplier_invoice_id": "015bcc0d-58cf-47cb-a10d-a0747860fd18",
+            "allocated_at": "2026-11-12",
+            "amount": "60.00",
+            "currency": "RMB",
+            "remark": null
+          }
+        ]
+      }
+    ],
+    "total": 1
+  },
+  "error": null
+}

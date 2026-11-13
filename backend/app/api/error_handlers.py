@@ -223,6 +223,8 @@ def domain_exception_definition(
         code = AppStatusCode.SERVICE_UNAVAILABLE
     elif class_name == "DocumentNumberConflictError":
         code = AppStatusCode.CONFLICT
+    elif class_name.endswith("ConflictError"):
+        code = AppStatusCode.CONFLICT
     elif class_name in {
         "FileTooLargeError",
         "UnsupportedFileError",

@@ -3,6 +3,7 @@ from datetime import UTC, datetime
 from decimal import Decimal
 from io import StringIO
 
+from app.core.csv_export import safe_cell
 from app.modules.sales.quotations.repositories import ExportQuotationLineRow, ExportQuotationRow
 
 
@@ -36,10 +37,10 @@ def render_csv_export(
 ) -> str:
     output = StringIO()
     writer = csv.writer(output)
-    writer.writerow(["quotation_no", quotation.code])
-    writer.writerow(["customer", quotation.customer_name])
-    writer.writerow(["currency", quotation.currency])
-    writer.writerow(["trade_term", quotation.trade_term])
+    writer.writerow(["quotation_no", safe_cell(quotation.code)])
+    writer.writerow(["customer", safe_cell(quotation.customer_name)])
+    writer.writerow(["currency", safe_cell(quotation.currency)])
+    writer.writerow(["trade_term", safe_cell(quotation.trade_term)])
     writer.writerow([])
     writer.writerow(
         [
@@ -58,15 +59,15 @@ def render_csv_export(
     for line in lines:
         writer.writerow(
             [
-                line.product_code or "",
-                line.product_name,
-                line.specification or "",
-                line.model or "",
+                safe_cell(line.product_code or ""),
+                safe_cell(line.product_name),
+                safe_cell(line.specification or ""),
+                safe_cell(line.model or ""),
                 format_quantity(line.quantity),
-                line.unit,
+                safe_cell(line.unit),
                 format_quantity(line.unit_price),
                 line.amount,
-                line.freight_method,
+                safe_cell(line.freight_method),
                 line.freight_amount,
             ]
         )

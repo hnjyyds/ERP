@@ -1,0 +1,186 @@
+{
+  "url": "http://localhost:8080/sales/shipments",
+  "viewport": {
+    "w": 1512,
+    "h": 780
+  },
+  "scrollWidth": 1512,
+  "controls": [
+    {
+      "text": "通知",
+      "tag": "BUTTON",
+      "cls": "topbar-settings-button topbar-bell-button",
+      "x": 1412,
+      "y": 16,
+      "w": 38,
+      "h": 38,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "系统设置",
+      "tag": "BUTTON",
+      "cls": "topbar-settings-button",
+      "x": 1450,
+      "y": 16,
+      "w": 38,
+      "h": 38,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "出货搜索",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 281,
+      "y": 267,
+      "w": 381,
+      "h": 36,
+      "field": {
+        "x": 281,
+        "y": 245,
+        "w": 381,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "审批状态",
+      "tag": "DIV",
+      "cls": "ant-select ant-select-outlined css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow",
+      "x": 674,
+      "y": 267,
+      "w": 190,
+      "h": 36,
+      "field": {
+        "x": 674,
+        "y": 245,
+        "w": 190,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "客户编号",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 876,
+      "y": 267,
+      "w": 190,
+      "h": 36,
+      "field": {
+        "x": 876,
+        "y": 245,
+        "w": 190,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "出口合同编号",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 1078,
+      "y": 267,
+      "w": 190,
+      "h": 36,
+      "field": {
+        "x": 1078,
+        "y": 245,
+        "w": 190,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "查询",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-default ant-btn-color-default ant-btn-variant-outlined",
+      "x": 1386,
+      "y": 267,
+      "w": 85,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "end"
+    },
+    {
+      "text": "生成出货明细",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-primary ant-btn-color-primary ant-btn-variant-solid",
+      "x": 524,
+      "y": 315,
+      "w": 138,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "end"
+    },
+    {
+      "text": "SP-DAEPEG",
+      "tag": "BUTTON",
+      "cls": "row-button",
+      "x": 289,
+      "y": 428,
+      "w": 76,
+      "h": 19,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "查看详情",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-default ant-btn-color-default ant-btn-variant-outlined ant-btn-sm",
+      "x": 1369,
+      "y": 428,
+      "w": 67,
+      "h": 28,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "",
+      "tag": "BUTTON",
+      "cls": "ant-pagination-item-link",
+      "x": 1299,
+      "y": 487,
+      "w": 24,
+      "h": 24,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "",
+      "tag": "BUTTON",
+      "cls": "ant-pagination-item-link",
+      "x": 1355,
+      "y": 487,
+      "w": 24,
+      "h": 24,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "50 条/页",
+      "tag": "DIV",
+      "cls": "ant-select ant-select-sm ant-select-outlined ant-pagination-options-size-changer css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow ant-select-show-search",
+      "x": 1381,
+      "y": 481,
+      "w": 90,
+      "h": 36,
+      "field": null,
+      "maxWidth": "300px",
+      "alignSelf": "auto"
+    }
+  ]
+}

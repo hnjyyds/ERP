@@ -979,6 +979,7 @@
         "typeFilter": "入库类型",
         "allTypes": "全部类型",
         "supplierFilter": "供应商标识",
+        "supplierFilterAria": "供应商筛选",
         "supplierFilterPlaceholder": "输入供应商编号或名称",
         "contractFilter": "采购合同 ID",
         "contractFilterPlaceholder": "输入采购合同号",
@@ -2548,7 +2549,10 @@
         "invoiceStatus": "付款状态",
         "allStatuses": "全部状态",
         "payableSearch": "应付搜索",
-        "payableStatus": "应付状态"
+        "payableStatus": "应付状态",
+        "supplierPlaceholder": "输入供应商编号或名称",
+        "invoiceSupplierAria": "发票供应商筛选",
+        "payableSupplierAria": "应付供应商筛选"
       },
       "action": {
         "search": "查询",
@@ -4103,7 +4107,7 @@
       "panel": {
         "listTitle": "QC 任务列表",
         "listEmptyTitle": "还没有 QC 任务",
-        "listEmptyDescription": "采购合同审批后会自动生成 QC 任务，也可以点击“新增 QC 单”手动创建",
+        "listEmptyDescription": "审批采购合同后请在此创建 QC 任务，或点击“新增 QC 单”手动创建",
         "detailTitle": "QC 任务详情",
         "linesTitle": "商品查验明细",
         "issuesTitle": "异常问题",

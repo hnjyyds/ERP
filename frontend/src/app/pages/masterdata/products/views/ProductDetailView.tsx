@@ -12,12 +12,14 @@ import type {
 import { t } from '@/app/appI18n'
 import { PanelTitle } from '@/shared/ui'
 import { accessoryRuleLabel, productTransactionSourceLabel } from '../productHelpers'
+import { formatRatePercent } from '../formatters'
 
 type Props = {
   product: Product | null
   customers: ProductCustomer[]
   transactions: ProductTransaction[]
   exportResult: ProductExport | null
+  loading?: boolean
   onBack: () => void
   onEdit: () => void
   onDeactivate: () => void
@@ -31,6 +33,7 @@ export function ProductDetailView({
   customers,
   transactions,
   exportResult,
+  loading = false,
   onBack,
   onEdit,
   onDeactivate,
@@ -95,7 +98,8 @@ export function ProductDetailView({
               <div>
                 <dt>{t('masterdata.product.field.taxRebateRate')}</dt>
                 <dd>
-                  {product.tax_rate} / {product.rebate_rate}
+                  {formatRatePercent(product.tax_rate) ?? t('masterdata.product.notFilled')} /{' '}
+                  {formatRatePercent(product.rebate_rate) ?? t('masterdata.product.notFilled')}
                 </dd>
               </div>
               <div>
@@ -253,7 +257,7 @@ export function ProductDetailView({
             </section>
           ) : null}
         </>
-      ) : (
+      ) : loading ? null : (
         <div className="module-state panel-empty-state">
           <LayoutDashboard size={28} />
           <strong>{t('masterdata.product.empty.title')}</strong>

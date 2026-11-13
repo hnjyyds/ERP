@@ -4,6 +4,7 @@ import type { Dispatch, Key, SetStateAction } from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import {
+  getProduct,
   listProductCustomers,
   listProducts,
   listProductTransactions,
@@ -13,7 +14,8 @@ import {
   type ProductTransaction,
 } from '@/api'
 import { t } from '@/app/appI18n'
-import { showError } from '@/shared/errors'
+import { ApiError, showError } from '@/shared/errors'
+import { useLatestRequest } from '@/shared/hooks/useLatestRequest'
 import { useColumnView } from '@/shared/ui'
 import { useTablePagination } from '@/shared/useTablePagination'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
@@ -31,6 +33,7 @@ export type ProductsListModel = {
   selectedProduct: Product | null
   selectedProductId: string | null
   setSelectedProductId: (id: string | null) => void
+  detailLoading: boolean
   search: string
   setSearch: (value: string) => void
   summary: ProductListSummary
@@ -64,6 +67,9 @@ export function useProductsPage({ detailId, onNavigate }: ProductsPageArgs): Pro
   const appliedUrlSearchRef = useRef(urlQuery.search)
   const [products, setProducts] = useState<Product[]>([])
   const [selectedProductId, setSelectedProductIdState] = useState<string | null>(null)
+  const [detailProduct, setDetailProduct] = useState<Product | null>(null)
+  const [detailLoading, setDetailLoading] = useState(false)
+  const latestRequest = useLatestRequest()
   const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
   const [summary, setSummary] = useState<ProductListSummary>({
     with_image_count: 0,
@@ -85,10 +91,10 @@ export function useProductsPage({ detailId, onNavigate }: ProductsPageArgs): Pro
 
   const selectedProduct = useMemo(() => {
     if (detailId) {
-      return products.find((item) => item.id === detailId) ?? null
+      return products.find((item) => item.id === detailId) ?? detailProduct ?? null
     }
     return products.find((item) => item.id === selectedProductId) ?? products[0] ?? null
-  }, [detailId, products, selectedProductId])
+  }, [detailId, detailProduct, products, selectedProductId])
 
   useEffect(() => {
     void loadProducts()
@@ -134,9 +140,37 @@ export function useProductsPage({ detailId, onNavigate }: ProductsPageArgs): Pro
     }
   }, [selectedProduct?.id])
 
+  // 详情按 ID 独立请求：列表只作为首屏优化，不再用“当前页是否包含”判断记录是否存在。
   useEffect(() => {
-    if (detailId && products.length > 0 && !products.some((item) => item.id === detailId)) {
-      onNavigate(productPath)
+    if (!detailId) {
+      setDetailProduct(null)
+      setDetailLoading(false)
+      return
+    }
+    if (products.some((item) => item.id === detailId)) {
+      setDetailProduct(null)
+      setDetailLoading(false)
+      return
+    }
+    let cancelled = false
+    setDetailLoading(true)
+    void (async () => {
+      try {
+        const product = await getProduct(detailId)
+        if (!cancelled) setDetailProduct(product)
+      } catch (caught) {
+        if (cancelled) return
+        if (caught instanceof ApiError && caught.status === 404) {
+          onNavigate(productPath)
+        } else {
+          showError(caught, t('masterdata.product.loadFailed'))
+        }
+      } finally {
+        if (!cancelled) setDetailLoading(false)
+      }
+    })()
+    return () => {
+      cancelled = true
     }
   }, [detailId, onNavigate, products])
 
@@ -150,12 +184,14 @@ export function useProductsPage({ detailId, onNavigate }: ProductsPageArgs): Pro
     const resolvedPageSize = pageSizeOverride ?? pageSize
     const resolvedQuery = queryOverride ?? search
     setLoading(true)
+    const requestId = latestRequest.begin()
     try {
       const result = await listProducts({
         q: resolvedQuery.trim() || undefined,
         limit: resolvedPageSize,
         offset: (resolvedPage - 1) * resolvedPageSize,
       })
+      if (!latestRequest.isLatest(requestId)) return
       setTotal(result.total)
       setSummary(result.summary)
       if (result.items.length === 0 && resolvedPage > 1) {
@@ -175,9 +211,10 @@ export function useProductsPage({ detailId, onNavigate }: ProductsPageArgs): Pro
         null
       setSelectedProductIdState(nextSelectedId)
     } catch (caught) {
+      if (!latestRequest.isLatest(requestId)) return
       showError(caught, t('masterdata.product.loadFailed'))
     } finally {
-      setLoading(false)
+      if (latestRequest.isLatest(requestId)) setLoading(false)
     }
   }
 
@@ -212,6 +249,7 @@ export function useProductsPage({ detailId, onNavigate }: ProductsPageArgs): Pro
     selectedProduct,
     selectedProductId,
     setSelectedProductId,
+    detailLoading,
     search,
     setSearch,
     summary,

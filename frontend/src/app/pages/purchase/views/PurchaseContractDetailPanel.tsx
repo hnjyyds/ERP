@@ -21,6 +21,7 @@ type Props = {
   reminders: PurchaseContractReminder[]
   approval: PurchaseContractApprovalModel
   cancelActions: PurchaseContractCancelModel
+  loading?: boolean
   onEdit: () => void
   onBack: () => void
 }
@@ -32,6 +33,7 @@ export function PurchaseContractDetailPanel({
   reminders,
   approval,
   cancelActions,
+  loading = false,
   onEdit,
   onBack,
 }: Props) {
@@ -299,7 +301,7 @@ export function PurchaseContractDetailPanel({
 
           <PurchaseContractDetailTables contract={contract} reminders={reminders} />
         </>
-      ) : (
+      ) : loading ? null : (
         <div className="module-state panel-empty-state">
           <FileStack size={28} />
           <strong>{t('purchase.contract.detail.emptyTitle')}</strong>

@@ -1,0 +1,28 @@
+{
+  "receipts": [
+    {
+      "id": "50b2abe7-16ec-489d-830f-c09d7e8572d6",
+      "receipt_no": "BR-MWYV53",
+      "amount": 100,
+      "sum_allocated": 120,
+      "allocations": 2
+    }
+  ],
+  "invoices": [
+    {
+      "id": "015bcc0d-58cf-47cb-a10d-a0747860fd18",
+      "invoice_no": "QA261112-INV01",
+      "total_amount": 100,
+      "sum_paid": 120,
+      "allocations": 2
+    }
+  ],
+  "blank_product": [
+    {
+      "id": "f43616b0-3b68-47f1-8ce6-6c65f477d8ec",
+      "code": "   ",
+      "code_length": 3,
+      "cn_name": "QA261112 验收测试围巾"
+    }
+  ]
+}

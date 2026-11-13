@@ -67,12 +67,14 @@ export function ShipmentListPanel({ model, onGenerate }: Props) {
               onChange={(event) => model.setContractFilter(event.target.value)}
             />
           </label>
-          <Button htmlType="submit" icon={<Search size={16} />}>
-            {t('sales.shipment.list.query')}
-          </Button>
-          <Button icon={<Plus size={16} />} type="primary" onClick={onGenerate}>
-            {t('sales.shipment.action.generate')}
-          </Button>
+          <div className="filter-actions">
+            <Button htmlType="submit" icon={<Search size={16} />}>
+              {t('sales.shipment.list.query')}
+            </Button>
+            <Button htmlType="button" icon={<Plus size={16} />} type="primary" onClick={onGenerate}>
+              {t('sales.shipment.action.generate')}
+            </Button>
+          </div>
         </form>
       }
     >

@@ -1,0 +1,52 @@
+{
+  "qc": {
+    "/organization/users": 403,
+    "/masterdata/products": 200,
+    "/sales/contracts": 403,
+    "/purchase/contracts": 200,
+    "/finance/receipts": 403,
+    "/quality/inspections": 200,
+    "/warehouse/inbound-orders": 403,
+    "/system/mcp": 403
+  },
+  "warehouse": {
+    "/organization/users": 403,
+    "/masterdata/products": 200,
+    "/sales/contracts": 403,
+    "/purchase/contracts": 403,
+    "/finance/receipts": 403,
+    "/quality/inspections": 403,
+    "/warehouse/inbound-orders": 200,
+    "/system/mcp": 403
+  },
+  "finance": {
+    "/organization/users": 403,
+    "/masterdata/products": 403,
+    "/sales/contracts": 403,
+    "/purchase/contracts": 403,
+    "/finance/receipts": 200,
+    "/quality/inspections": 403,
+    "/warehouse/inbound-orders": 403,
+    "/system/mcp": 403
+  },
+  "purchase": {
+    "/organization/users": 403,
+    "/masterdata/products": 200,
+    "/sales/contracts": 403,
+    "/purchase/contracts": 200,
+    "/finance/receipts": 403,
+    "/quality/inspections": 403,
+    "/warehouse/inbound-orders": 403,
+    "/system/mcp": 403
+  },
+  "demo": {
+    "/organization/users": 403,
+    "/masterdata/products": 200,
+    "/sales/contracts": 200,
+    "/purchase/contracts": 200,
+    "/finance/receipts": 403,
+    "/quality/inspections": 200,
+    "/warehouse/inbound-orders": 200,
+    "/system/mcp": 403
+  }
+}

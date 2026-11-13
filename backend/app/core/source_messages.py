@@ -383,6 +383,12 @@ SOURCE_MESSAGES: dict[str, str] = {
         "The supplier tax invoice must be received before registering a payment invoice"
     ),
     "只有待审批付款申请可以审批": "Only pending payment requests can be approved",
+    "付款申请已被处理，请刷新后重试": (
+        "The payment request has already been processed; please refresh and try again"
+    ),
+    "供应商发票未付金额不足，请刷新后重试": (
+        "The supplier invoice has insufficient unpaid balance; please refresh and try again"
+    ),
     "审批付款金额不能超过供应商发票未付金额": (
         "The approved payment amount cannot exceed the unpaid supplier invoice amount"
     ),
@@ -437,6 +443,9 @@ SOURCE_MESSAGES: dict[str, str] = {
     "银行水单收款性质无效": "Invalid bank slip receipt nature",
     "银行水单状态无效": "Invalid bank slip status",
     "银行水单认领后才能分摊": "The bank slip must be claimed before allocation",
+    "水单未分摊余额不足，请刷新后重试": (
+        "The bank slip has insufficient unallocated balance; please refresh and try again"
+    ),
     "预收款分摊必须填写出口发票号": (
         "Advance payment allocation requires the export invoice number"
     ),

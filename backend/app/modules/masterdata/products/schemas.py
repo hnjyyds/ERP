@@ -1,7 +1,8 @@
 from decimal import Decimal
 
-from pydantic import ConfigDict, Field
+from pydantic import ConfigDict, Field, field_validator
 
+from app.core.validators import normalize_optional_text, normalize_required_text
 from app.schemas.base import BaseModel
 
 
@@ -41,6 +42,16 @@ class ProductAccessoryCreate(BaseModel):
         examples=["by_supplier"],
     )
 
+    @field_validator("accessory_name", "unit", "purchase_split_rule", mode="before")
+    @classmethod
+    def _normalize_required_text(cls, value: object) -> object:
+        return normalize_required_text(value)
+
+    @field_validator("default_supplier_name", mode="before")
+    @classmethod
+    def _normalize_optional_text(cls, value: object) -> object:
+        return normalize_optional_text(value)
+
 
 class ProductAccessoryUpdate(BaseModel):
     """更新商品配件所需的完整资料。"""
@@ -61,6 +72,16 @@ class ProductAccessoryUpdate(BaseModel):
         max_length=80,
         description="配件采购拆分规则。",
     )
+
+    @field_validator("accessory_name", "unit", "purchase_split_rule", mode="before")
+    @classmethod
+    def _normalize_required_text(cls, value: object) -> object:
+        return normalize_required_text(value)
+
+    @field_validator("default_supplier_name", mode="before")
+    @classmethod
+    def _normalize_optional_text(cls, value: object) -> object:
+        return normalize_optional_text(value)
 
 
 class ProductCreate(BaseModel):
@@ -146,6 +167,25 @@ class ProductCreate(BaseModel):
         description="随商品维护的配件清单；没有配件时传空数组。",
     )
 
+    @field_validator(
+        "code",
+        "cn_name",
+        "en_name",
+        "customs_code",
+        "package_info",
+        "unit",
+        "status",
+        mode="before",
+    )
+    @classmethod
+    def _normalize_required_text(cls, value: object) -> object:
+        return normalize_required_text(value)
+
+    @field_validator("specification", "model", "image_url", mode="before")
+    @classmethod
+    def _normalize_optional_text(cls, value: object) -> object:
+        return normalize_optional_text(value)
+
 
 class ProductUpdate(BaseModel):
     """更新 ERP 商品的完整输入资料。"""
@@ -193,6 +233,25 @@ class ProductUpdate(BaseModel):
         max_length=40,
         description="商品状态；通常为 active 或 inactive。",
     )
+
+    @field_validator(
+        "code",
+        "cn_name",
+        "en_name",
+        "customs_code",
+        "package_info",
+        "unit",
+        "status",
+        mode="before",
+    )
+    @classmethod
+    def _normalize_required_text(cls, value: object) -> object:
+        return normalize_required_text(value)
+
+    @field_validator("specification", "model", "image_url", mode="before")
+    @classmethod
+    def _normalize_optional_text(cls, value: object) -> object:
+        return normalize_optional_text(value)
 
 
 class ProductAccessoryResponse(BaseModel):

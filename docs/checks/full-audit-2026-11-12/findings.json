@@ -1,0 +1,62 @@
+[
+  {
+    "id": "AUD-001",
+    "priority": "P2",
+    "title": "纯空白商品编码可持久化"
+  },
+  {
+    "id": "AUD-002",
+    "priority": "P2",
+    "title": "QC自动建任务文案与实际不符"
+  },
+  {
+    "id": "AUD-003",
+    "priority": "P3",
+    "title": "商品详情税率小数展示"
+  },
+  {
+    "id": "AUD-004",
+    "priority": "P1",
+    "title": "收款并发超额分摊"
+  },
+  {
+    "id": "AUD-005",
+    "priority": "P1",
+    "title": "付款并发超额审批"
+  },
+  {
+    "id": "AUD-006",
+    "priority": "P2",
+    "title": "编号/名称筛选误作UUID"
+  },
+  {
+    "id": "AUD-007",
+    "priority": "P2",
+    "title": "合法详情被当前分页误判"
+  },
+  {
+    "id": "AUD-008",
+    "priority": "P2",
+    "title": "旧查询响应覆盖新结果"
+  },
+  {
+    "id": "AUD-009",
+    "priority": "P2",
+    "title": "CSV文本公式前缀未处理"
+  },
+  {
+    "id": "AUD-010",
+    "priority": "P2",
+    "title": "导出全部受分页截断"
+  },
+  {
+    "id": "AUD-011",
+    "priority": "P3",
+    "title": "出货按钮仅在本列靠右"
+  },
+  {
+    "id": "AUD-012",
+    "priority": "P3",
+    "title": "QC首屏创建按钮部分裁切"
+  }
+]

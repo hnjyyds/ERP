@@ -1,0 +1,232 @@
+{
+  "url": "http://localhost:8080/sample/deliveries",
+  "viewport": {
+    "w": 1512,
+    "h": 780
+  },
+  "scrollWidth": 1512,
+  "controls": [
+    {
+      "text": "通知",
+      "tag": "BUTTON",
+      "cls": "topbar-settings-button topbar-bell-button",
+      "x": 1412,
+      "y": 16,
+      "w": 38,
+      "h": 38,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "系统设置",
+      "tag": "BUTTON",
+      "cls": "topbar-settings-button",
+      "x": 1450,
+      "y": 16,
+      "w": 38,
+      "h": 38,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "寄样搜索",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 283,
+      "y": 257,
+      "w": 226,
+      "h": 36,
+      "field": {
+        "x": 283,
+        "y": 235,
+        "w": 226,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "审核状态",
+      "tag": "DIV",
+      "cls": "ant-select ant-select-outlined css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow",
+      "x": 521,
+      "y": 257,
+      "w": 148,
+      "h": 36,
+      "field": {
+        "x": 521,
+        "y": 235,
+        "w": 148,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "客户标识",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 681,
+      "y": 257,
+      "w": 148,
+      "h": 36,
+      "field": {
+        "x": 681,
+        "y": 235,
+        "w": 148,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "快递公司",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 841,
+      "y": 257,
+      "w": 148,
+      "h": 36,
+      "field": {
+        "x": 841,
+        "y": 235,
+        "w": 148,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "寄样起始日期",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 1001,
+      "y": 257,
+      "w": 148,
+      "h": 36,
+      "field": {
+        "x": 1001,
+        "y": 235,
+        "w": 148,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "寄样截止日期",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 1161,
+      "y": 257,
+      "w": 148,
+      "h": 36,
+      "field": {
+        "x": 1161,
+        "y": 235,
+        "w": 148,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "查询",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-default ant-btn-color-default ant-btn-variant-outlined",
+      "x": 1384,
+      "y": 257,
+      "w": 85,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "end"
+    },
+    {
+      "text": "导出寄样",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-default ant-btn-color-default ant-btn-variant-outlined",
+      "x": 422,
+      "y": 305,
+      "w": 87,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "end"
+    },
+    {
+      "text": "新增寄样单",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-primary ant-btn-color-primary ant-btn-variant-solid",
+      "x": 545,
+      "y": 305,
+      "w": 124,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "end"
+    },
+    {
+      "text": "SD-CXE849",
+      "tag": "BUTTON",
+      "cls": "row-button",
+      "x": 291,
+      "y": 418,
+      "w": 77,
+      "h": 19,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "查看详情",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-default ant-btn-color-default ant-btn-variant-outlined ant-btn-sm",
+      "x": 1367,
+      "y": 418,
+      "w": 67,
+      "h": 28,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "",
+      "tag": "BUTTON",
+      "cls": "ant-pagination-item-link",
+      "x": 1297,
+      "y": 477,
+      "w": 24,
+      "h": 24,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "",
+      "tag": "BUTTON",
+      "cls": "ant-pagination-item-link",
+      "x": 1353,
+      "y": 477,
+      "w": 24,
+      "h": 24,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "50 条/页",
+      "tag": "DIV",
+      "cls": "ant-select ant-select-sm ant-select-outlined ant-pagination-options-size-changer css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow ant-select-show-search",
+      "x": 1379,
+      "y": 471,
+      "w": 90,
+      "h": 36,
+      "field": null,
+      "maxWidth": "300px",
+      "alignSelf": "auto"
+    }
+  ]
+}

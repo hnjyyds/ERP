@@ -3,8 +3,9 @@ import { FileStack, Plus, Search } from 'lucide-react'
 import type { MouseEvent } from 'react'
 
 import type { PurchaseContract } from '@/api'
-import { FormSelect, ListPageShell } from '@/shared/ui'
+import { FormSelect, ListPageShell, RemoteSelect } from '@/shared/ui'
 import { ListEmptyState } from '@/shared/ui/ListEmptyState'
+import { fetchSupplierSelectOptions } from '@/shared/entityOptions'
 import {
   purchaseContractSourceTypeOptions,
   purchaseContractStatusOptions,
@@ -75,12 +76,14 @@ export function PurchaseContractListPanel({ model, onCreate, onGenerate, onOpenD
               ))}
             </FormSelect>
           </label>
-          <label>
+          <label className="entity-search-filter">
             {t('purchase.contract.list.supplierFilter')}
-            <Input
-              value={model.supplierFilter}
+            <RemoteSelect
+              ariaLabel={t('purchase.contract.list.supplierFilter')}
+              fetchOptions={fetchSupplierSelectOptions}
               placeholder={t('purchase.contract.list.supplierFilterPlaceholder')}
-              onChange={(event) => model.setSupplierFilter(event.target.value)}
+              value={model.supplierFilter || null}
+              onChange={model.setSupplierFilter}
             />
           </label>
           <Button htmlType="submit" icon={<Search size={16} />}>

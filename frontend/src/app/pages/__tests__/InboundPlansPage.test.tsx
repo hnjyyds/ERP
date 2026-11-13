@@ -11,6 +11,7 @@ vi.mock('@/api', () => ({
     summary: { planned_count: 0, scheduled_count: 0, total_quantity: '0', type_count: 0 },
   }),
   listPurchaseContracts: vi.fn().mockResolvedValue({ items: [], total: 0 }),
+  listSuppliers: vi.fn().mockResolvedValue({ items: [], total: 0 }),
   listAssignableUsers: vi.fn().mockResolvedValue({ users: [] }),
   scheduleInboundPlan: vi.fn(),
 }))
@@ -88,7 +89,7 @@ describe('InboundPlansPage', () => {
   it('renders filter inputs', () => {
     render(<InboundPlansPage detailId={null} onNavigate={onNavigate} />)
     expect(screen.getByPlaceholderText('计划号 / 采购合同 / 商品')).toBeTruthy()
-    expect(screen.getByPlaceholderText('输入供应商编号或名称')).toBeTruthy()
+    expect(screen.getByRole('combobox', { name: '供应商筛选' })).toBeTruthy()
     expect(screen.getByPlaceholderText('输入采购合同号')).toBeTruthy()
   })
 

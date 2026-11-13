@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { FinancePage } from '@/app/pages/finance/FinancePage'
 import * as api from '@/api'
 import type {
@@ -226,6 +227,55 @@ describe('FinancePage', () => {
     })
     expect(window.location.search).toContain('receipts_page=2')
     expect(screen.getAllByText('USD 1,200.00').length).toBe(summaryBefore)
+  })
+
+  it('收款客户筛选提交 UUID 而不是手输文本', async () => {
+    const user = userEvent.setup()
+    vi.spyOn(api, 'listBankReceipts').mockResolvedValue({
+      items: [],
+      total: 0,
+      total_amount: '0.00',
+      unallocated_amount: '0.00',
+      currency: 'USD',
+    })
+    vi.spyOn(api, 'listReceivables').mockResolvedValue({
+      items: [],
+      total: 0,
+      total_receivable_amount: '0.00',
+    })
+    vi.spyOn(api, 'listCustomers').mockResolvedValue({
+      items: [
+        {
+          id: 'customer-uuid-1',
+          code: 'QA261112-C01',
+          cn_name: '宁波家电',
+          en_name: 'Ningbo Appliance',
+          status: 'active',
+        },
+      ],
+      total: 1,
+      summary: { active_count: 1, contact_count: 0, credit_profile_count: 0 },
+    } as never)
+
+    render(
+      <FinancePage
+        currentUser={currentUser}
+        view={{ module: 'receipts', id: null }}
+        onNavigate={onNavigate}
+      />,
+    )
+
+    const customerFilter = await screen.findByRole('combobox', { name: '客户标识' })
+    await user.click(customerFilter)
+    await user.click(await screen.findByText('宁波家电'))
+    const filterForm = customerFilter.closest('form') as HTMLElement
+    await user.click(within(filterForm).getByRole('button', { name: '查询' }))
+
+    await waitFor(() => {
+      expect(api.listBankReceipts).toHaveBeenLastCalledWith(
+        expect.objectContaining({ customer_id: 'customer-uuid-1' }),
+      )
+    })
   })
 
   it('restores receipt filters and page from the URL on direct load', async () => {

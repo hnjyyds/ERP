@@ -19,6 +19,7 @@ from app.schemas.responses import ValidationIssue
 
 _PAGINATED_RESPONSE_MARKERS = ("ListResponse", "QueryResponse")
 _DEFAULT_LIMIT = 50
+_EXPORT_PATH_SUFFIX = "/export"
 
 
 def _parse_integer(
@@ -90,6 +91,11 @@ class PaginationMiddleware:
                 ),
             )
             await response(scope, receive, send)
+            return
+
+        # 导出路由需要按调用方显式分页读取全量数据，不注入默认 50 条上限。
+        if str(scope.get("path", "")).endswith(_EXPORT_PATH_SUFFIX):
+            await self.app(scope, receive, send)
             return
 
         token = start_pagination_context(

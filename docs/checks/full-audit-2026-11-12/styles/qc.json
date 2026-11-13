@@ -1,0 +1,136 @@
+{
+  "url": "http://localhost:8080/quality/inspections",
+  "viewport": {
+    "w": 1512,
+    "h": 780
+  },
+  "scrollWidth": 1512,
+  "controls": [
+    {
+      "text": "Close",
+      "tag": "BUTTON",
+      "cls": "ant-modal-close",
+      "x": 1138,
+      "y": 38,
+      "w": 28,
+      "h": 28,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "QC 任务单号",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 378,
+      "y": 400,
+      "w": 370,
+      "h": 36,
+      "field": {
+        "x": 378,
+        "y": 378,
+        "w": 370,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "采购合同*",
+      "tag": "DIV",
+      "cls": "ant-select ant-select-outlined css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow ant-select-show-search",
+      "x": 764,
+      "y": 400,
+      "w": 370,
+      "h": 36,
+      "field": {
+        "x": 764,
+        "y": 378,
+        "w": 370,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "排期时间*",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 378,
+      "y": 470,
+      "w": 370,
+      "h": 36,
+      "field": {
+        "x": 378,
+        "y": 448,
+        "w": 370,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "负责人*",
+      "tag": "DIV",
+      "cls": "ant-select ant-select-outlined css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow ant-select-show-search",
+      "x": 764,
+      "y": 470,
+      "w": 370,
+      "h": 36,
+      "field": {
+        "x": 764,
+        "y": 448,
+        "w": 370,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "任务说明",
+      "tag": "TEXTAREA",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 378,
+      "y": 540,
+      "w": 756,
+      "h": 78,
+      "field": {
+        "x": 378,
+        "y": 518,
+        "w": 756,
+        "h": 100
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "附件组",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 378,
+      "y": 652,
+      "w": 756,
+      "h": 36,
+      "field": {
+        "x": 378,
+        "y": 630,
+        "w": 756,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "创建 QC 任务",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-primary ant-btn-color-primary ant-btn-variant-solid",
+      "x": 378,
+      "y": 704,
+      "w": 117,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    }
+  ]
+}

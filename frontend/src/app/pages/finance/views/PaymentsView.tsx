@@ -5,7 +5,8 @@ import {
   type SupplierInvoice,
   type SupplierPaymentRequest,
 } from '@/api'
-import { FormSelect, PanelTitle } from '@/shared/ui'
+import { FormSelect, PanelTitle, RemoteSelect } from '@/shared/ui'
+import { fetchSupplierSelectOptions } from '@/shared/entityOptions'
 import { supplierInvoiceStatusOptions, paymentTypeOptions } from '@/shared/formOptions'
 import { formatFinanceAmount, nullableText } from '@/app/pages/appHelpers'
 import { t } from '@/app/appI18n'
@@ -131,11 +132,14 @@ export function PaymentsView({ model, shell }: Props) {
                     ))}
                   </FormSelect>
                 </label>
-                <label>
+                <label className="entity-search-filter">
                   {t('finance.payment.field.supplierId')}
-                  <Input
-                    value={invoiceSupplierFilter}
-                    onChange={(event) => setInvoiceSupplierFilter(event.target.value)}
+                  <RemoteSelect
+                    ariaLabel={t('finance.payment.filter.invoiceSupplierAria')}
+                    fetchOptions={fetchSupplierSelectOptions}
+                    placeholder={t('finance.payment.filter.supplierPlaceholder')}
+                    value={invoiceSupplierFilter || null}
+                    onChange={setInvoiceSupplierFilter}
                   />
                 </label>
                 <label>
@@ -707,11 +711,14 @@ export function PaymentsView({ model, shell }: Props) {
                     ))}
                   </FormSelect>
                 </label>
-                <label>
+                <label className="entity-search-filter">
                   {t('finance.payment.field.supplierId')}
-                  <Input
-                    value={payableSupplierFilter}
-                    onChange={(event) => setPayableSupplierFilter(event.target.value)}
+                  <RemoteSelect
+                    ariaLabel={t('finance.payment.filter.payableSupplierAria')}
+                    fetchOptions={fetchSupplierSelectOptions}
+                    placeholder={t('finance.payment.filter.supplierPlaceholder')}
+                    value={payableSupplierFilter || null}
+                    onChange={setPayableSupplierFilter}
                   />
                 </label>
                 <label>

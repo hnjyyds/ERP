@@ -595,6 +595,10 @@ export function createExportContract(
   })
 }
 
+export function getExportContract(contractId: string): Promise<ExportContract> {
+  return request<ExportContract>(`/sales/contracts/${contractId}`)
+}
+
 export function updateExportContract(
   contractId: string,
   payload: ExportContractCreatePayload,

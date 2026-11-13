@@ -19,7 +19,21 @@ export function QualityTaskModal({ model }: Props) {
   return (
     <Modal
       centered
-      footer={null}
+      className="quality-task-modal"
+      footer={[
+        <Button key="cancel" onClick={model.cancelTaskModal}>
+          {t('common.cancel')}
+        </Button>,
+        <Button
+          key="submit"
+          form="quality-task-form"
+          htmlType="submit"
+          loading={model.taskSubmitting}
+          type="primary"
+        >
+          {t('quality.inspection.modal.submitCreate')}
+        </Button>,
+      ]}
       open={model.taskModalOpen}
       title={t('quality.inspection.modal.createTitle')}
       width={860}
@@ -38,7 +52,12 @@ export function QualityTaskModal({ model }: Props) {
           description={t('quality.inspection.modal.noticeDescription')}
           type="info"
         />
-        <form className="record-form" noValidate onSubmit={model.createTask}>
+        <form
+          className="record-form"
+          id="quality-task-form"
+          noValidate
+          onSubmit={model.createTask}
+        >
           {model.validationEntries.length > 0 ? (
             <Alert
               className="quality-form-validation-summary"
@@ -191,10 +210,6 @@ export function QualityTaskModal({ model }: Props) {
               }
             />
           </label>
-
-          <Button htmlType="submit" loading={model.taskSubmitting} type="primary">
-            {t('quality.inspection.modal.submitCreate')}
-          </Button>
         </form>
       </div>
     </Modal>

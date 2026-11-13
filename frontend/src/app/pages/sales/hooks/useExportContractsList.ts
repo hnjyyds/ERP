@@ -2,11 +2,13 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { MouseEvent } from 'react'
 
 import {
+  getExportContract,
   listExportContracts,
   type ExportContract,
   type ExportContractListSummary,
 } from '@/api'
-import { showError } from '@/shared/errors'
+import { ApiError, showError } from '@/shared/errors'
+import { useLatestRequest } from '@/shared/hooks/useLatestRequest'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { useTablePagination } from '@/shared/useTablePagination'
 import { t } from '@/app/appI18n'
@@ -30,6 +32,9 @@ export function useExportContractsList({ detailId, onNavigate }: Options) {
   const [contracts, setContracts] = useState<ExportContract[]>([])
   const [summary, setSummary] = useState<ExportContractListSummary>(emptyExportContractSummary)
   const [selectedContractId, setSelectedContractId] = useState<string | null>(null)
+  const [detailContract, setDetailContract] = useState<ExportContract | null>(null)
+  const [detailLoading, setDetailLoading] = useState(false)
+  const latestRequest = useLatestRequest()
   const initialFilters = exportContractFiltersFromParams(urlQuery.params)
   const [search, setSearch] = useState(initialFilters.q)
   const [statusFilter, setStatusFilter] = useState(initialFilters.status)
@@ -41,9 +46,11 @@ export function useExportContractsList({ detailId, onNavigate }: Options) {
   )
 
   const selectedContract = useMemo(() => {
-    if (detailId) return contracts.find((item) => item.id === detailId) ?? null
+    if (detailId) {
+      return contracts.find((item) => item.id === detailId) ?? detailContract ?? null
+    }
     return contracts.find((item) => item.id === selectedContractId) ?? contracts[0] ?? null
-  }, [contracts, detailId, selectedContractId])
+  }, [contracts, detailContract, detailId, selectedContractId])
 
   useEffect(() => {
     void loadContracts()
@@ -61,9 +68,37 @@ export function useExportContractsList({ detailId, onNavigate }: Options) {
     void loadContracts(undefined, nextPage, pageSize, nextFilters)
   }, [urlQuery.search])
 
+  // 详情按 ID 独立请求：列表只作为首屏优化，不再用“当前页是否包含”判断记录是否存在。
   useEffect(() => {
-    if (detailId && contracts.length > 0 && !contracts.some((item) => item.id === detailId)) {
-      onNavigate(exportContractPath)
+    if (!detailId) {
+      setDetailContract(null)
+      setDetailLoading(false)
+      return
+    }
+    if (contracts.some((item) => item.id === detailId)) {
+      setDetailContract(null)
+      setDetailLoading(false)
+      return
+    }
+    let cancelled = false
+    setDetailLoading(true)
+    void (async () => {
+      try {
+        const contract = await getExportContract(detailId)
+        if (!cancelled) setDetailContract(contract)
+      } catch (caught) {
+        if (cancelled) return
+        if (caught instanceof ApiError && caught.status === 404) {
+          onNavigate(exportContractPath)
+        } else {
+          showError(caught, t('sales.contract.list.loadFailed'))
+        }
+      } finally {
+        if (!cancelled) setDetailLoading(false)
+      }
+    })()
+    return () => {
+      cancelled = true
     }
   }, [contracts, detailId, onNavigate])
 
@@ -79,6 +114,7 @@ export function useExportContractsList({ detailId, onNavigate }: Options) {
     const resolvedStatus = filtersOverride?.status ?? statusFilter
     const resolvedCustomer = filtersOverride?.customer ?? customerFilter
     setLoading(true)
+    const requestId = latestRequest.begin()
     try {
       const result = await listExportContracts({
         q: resolvedQ.trim() || undefined,
@@ -87,6 +123,7 @@ export function useExportContractsList({ detailId, onNavigate }: Options) {
         limit: resolvedPageSize,
         offset: (resolvedPage - 1) * resolvedPageSize,
       })
+      if (!latestRequest.isLatest(requestId)) return
       setTotal(result.total)
       setSummary(result.summary)
       if (result.items.length === 0 && resolvedPage > 1) {
@@ -106,9 +143,10 @@ export function useExportContractsList({ detailId, onNavigate }: Options) {
         null
       setSelectedContractId(nextSelectedId)
     } catch (caught) {
+      if (!latestRequest.isLatest(requestId)) return
       showError(caught, t('sales.contract.list.loadFailed'))
     } finally {
-      setLoading(false)
+      if (latestRequest.isLatest(requestId)) setLoading(false)
     }
   }
 
@@ -180,6 +218,7 @@ export function useExportContractsList({ detailId, onNavigate }: Options) {
     selectedContract,
     selectedContractId,
     setSelectedContractId,
+    detailLoading,
     loading,
     total,
     pagination,

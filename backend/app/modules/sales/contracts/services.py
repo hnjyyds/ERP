@@ -3,6 +3,7 @@ import json
 from decimal import Decimal
 from io import StringIO
 
+from app.core.csv_export import safe_cell
 from app.db.uow import UnitOfWork
 from app.modules.masterdata.validation import MasterDataValidator
 from app.modules.sales.contracts.cancellation import (
@@ -664,9 +665,9 @@ class ExportContractService:
     ) -> str:
         output = StringIO()
         writer = csv.writer(output)
-        writer.writerow(["contract_no", contract.code])
-        writer.writerow(["customer", contract.customer_name])
-        writer.writerow(["currency", contract.currency])
+        writer.writerow(["contract_no", safe_cell(contract.code)])
+        writer.writerow(["customer", safe_cell(contract.customer_name)])
+        writer.writerow(["currency", safe_cell(contract.currency)])
         writer.writerow([])
         writer.writerow(
             [
@@ -682,11 +683,11 @@ class ExportContractService:
         for line in lines:
             writer.writerow(
                 [
-                    line.product_code or "",
-                    line.product_name,
-                    line.barcode or "",
+                    safe_cell(line.product_code or ""),
+                    safe_cell(line.product_name),
+                    safe_cell(line.barcode or ""),
                     self._quantity(line.quantity),
-                    line.unit,
+                    safe_cell(line.unit),
                     self._quantity(line.unit_price),
                     line.amount,
                 ]

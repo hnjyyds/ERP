@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import * as api from '@/api'
 import type { ShipmentPlan } from '@/api'
@@ -94,6 +94,19 @@ describe('ShipmentsPage', () => {
   it('renders shipment list panel', () => {
     render(<ShipmentsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
     expect(screen.getByText('出货计划列表')).toBeTruthy()
+  })
+
+  it('把查询与生成按钮放在独立操作组内右对齐', () => {
+    const { container } = render(
+      <ShipmentsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    const actions = container.querySelector('.inline-filters > .filter-actions')
+    expect(actions).toBeTruthy()
+    expect(within(actions as HTMLElement).getByRole('button', { name: '查询' })).toBeTruthy()
+    expect(
+      within(actions as HTMLElement).getByRole('button', { name: '生成出货明细' }),
+    ).toBeTruthy()
   })
 
   it('uses business-readable selectors for shipment contracts', () => {

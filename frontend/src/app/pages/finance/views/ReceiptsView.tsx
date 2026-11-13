@@ -4,6 +4,7 @@ import { useCallback, useRef } from 'react'
 
 import { listCustomers, type BankReceipt, type ReceivableItem } from '@/api'
 import { FormSelect, PanelTitle, RemoteSelect } from '@/shared/ui'
+import { fetchCustomerSelectOptions } from '@/shared/entityOptions'
 import {
   receiptStatusOptions,
   receiptTypeOptions,
@@ -154,12 +155,14 @@ export function ReceiptsView({ model, shell }: Props) {
                     ))}
                   </FormSelect>
                 </label>
-                <label>
+                <label className="entity-search-filter">
                   {t('finance.receipt.field.customerId')}
-                  <Input
-                    value={receiptCustomerFilter}
+                  <RemoteSelect
+                    ariaLabel={t('finance.receipt.field.customerId')}
+                    fetchOptions={fetchCustomerSelectOptions}
                     placeholder={t('finance.receipt.filter.customerIdPlaceholder')}
-                    onChange={(event) => setReceiptCustomerFilter(event.target.value)}
+                    value={receiptCustomerFilter || null}
+                    onChange={setReceiptCustomerFilter}
                   />
                 </label>
                 <Button htmlType="submit" icon={<Search size={16} />}>

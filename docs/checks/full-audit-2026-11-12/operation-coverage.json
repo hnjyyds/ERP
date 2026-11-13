@@ -1,0 +1,2420 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/v1/health",
+    "requests": 2,
+    "statuses": {
+      "200": 2
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/auth/login",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auth/me",
+    "requests": 4,
+    "statuses": {
+      "200": 3,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/auth/me/avatar",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auth/users",
+    "requests": 3,
+    "statuses": {
+      "200": 2,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/system/i18n",
+    "requests": 2,
+    "statuses": {
+      "200": 2
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/system/menus",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/system/mcp",
+    "requests": 7,
+    "statuses": {
+      "200": 1,
+      "401": 1,
+      "403": 5
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/system/mcp",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/system/mcp/credentials",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/audit-logs",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/audit-logs/export",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/organization/options",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/organization/departments",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/organization/departments/{department_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/organization/departments/{department_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/organization/users",
+    "requests": 7,
+    "statuses": {
+      "200": 1,
+      "401": 1,
+      "403": 5
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/organization/users",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/organization/users/{user_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/organization/users/{user_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/organization/users/{user_id}/reset-password",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/organization/roles",
+    "requests": 2,
+    "statuses": {
+      "422": 2
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/organization/roles/{role_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/organization/roles/{role_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/organization/roles/{role_id}/permissions",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/organization/company",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/organization/company",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/dashboard",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/schedules",
+    "requests": 3,
+    "statuses": {
+      "422": 2,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/schedules/{schedule_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/schedules/{schedule_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/announcements",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/todos",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/todos/{todo_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/notifications",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/notifications/read-all",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/notifications/{notification_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/notifications/{notification_id}/read",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/shortcuts",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/shortcuts/{shortcut_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/files/images",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/masterdata/products",
+    "requests": 8,
+    "statuses": {
+      "200": 6,
+      "401": 1,
+      "403": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/masterdata/products",
+    "requests": 10,
+    "statuses": {
+      "422": 6,
+      "201": 1,
+      "403": 3
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/masterdata/products/export",
+    "requests": 3,
+    "statuses": {
+      "200": 2,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/masterdata/products/import",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/masterdata/products/{product_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/masterdata/products/{product_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/masterdata/products/{product_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/masterdata/products/{product_id}/customers",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/masterdata/products/{product_id}/transactions",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/masterdata/products/{product_id}/accessories",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/masterdata/products/{product_id}/accessories/{accessory_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/masterdata/products/{product_id}/accessories/{accessory_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/masterdata/customers",
+    "requests": 3,
+    "statuses": {
+      "200": 2,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/masterdata/customers",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/masterdata/customers/{customer_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/masterdata/customers/{customer_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/masterdata/customers/{customer_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/masterdata/customers/{customer_id}/contacts",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/masterdata/customers/{customer_id}/contacts/{contact_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/masterdata/customers/{customer_id}/contacts/{contact_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/masterdata/customers/{customer_id}/transactions",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/masterdata/suppliers",
+    "requests": 3,
+    "statuses": {
+      "200": 2,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/masterdata/suppliers",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/masterdata/suppliers/{supplier_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/masterdata/suppliers/{supplier_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/masterdata/suppliers/{supplier_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/masterdata/suppliers/{supplier_id}/contacts",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/masterdata/suppliers/{supplier_id}/contacts/{contact_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/masterdata/suppliers/{supplier_id}/contacts/{contact_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/masterdata/suppliers/{supplier_id}/transactions",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/masterdata/partners",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/masterdata/partners",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/masterdata/partners/{partner_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/masterdata/partners/{partner_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/masterdata/partners/{partner_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/masterdata/partners/{partner_id}/contacts",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/masterdata/partners/{partner_id}/contacts/{contact_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/masterdata/partners/{partner_id}/contacts/{contact_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/masterdata/partners/{partner_id}/fee-records",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/printing/export-contracts/{contract_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/printing/sample-requests/{request_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/printing/purchase-contracts/{contract_id}/template",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/masterdata/document-parties",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/masterdata/document-parties",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/masterdata/document-parties/lookup",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "401": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/masterdata/document-parties/{party_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/masterdata/document-parties/{party_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/masterdata/document-parties/{party_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sample/requests",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sample/requests",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sample/requests/{request_id}/sample-record",
+    "requests": 3,
+    "statuses": {
+      "422": 2,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sample/requests/{request_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sample/requests/{request_id}/progress",
+    "requests": 3,
+    "statuses": {
+      "201": 2,
+      "422": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sample/requests/{request_id}/fees",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sample/requests/{request_id}/fees/{fee_id}/payment-request",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sample/records",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sample/records",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sample/records/import",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sample/records/export",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sample/records/{record_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sample/records/{record_id}/images",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sample/records/{record_id}/stock-events",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sample/deliveries",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sample/deliveries",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sample/deliveries/{delivery_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/sample/deliveries/{delivery_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sample/deliveries/fee-statistics",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sample/deliveries/statistics",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sample/deliveries/export",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sample/deliveries/history/sample/{sample_record_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sample/deliveries/quote-history",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sample/deliveries/{delivery_id}/submit",
+    "requests": 1,
+    "statuses": {
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sample/deliveries/{delivery_id}/approve",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "422": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sample/deliveries/{delivery_id}/reject",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sample/deliveries/{delivery_id}/withdraw",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sample/deliveries/{delivery_id}/tracking",
+    "requests": 1,
+    "statuses": {
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sales/quotations",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/quotations",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sales/quotations/history",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sales/quotations/purchase-references",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sales/quotations/{quotation_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/sales/quotations/{quotation_id}",
+    "requests": 1,
+    "statuses": {
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/quotations/{quotation_id}/submit",
+    "requests": 3,
+    "statuses": {
+      "200": 2,
+      "422": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/quotations/{quotation_id}/approve",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/quotations/{quotation_id}/reject",
+    "requests": 1,
+    "statuses": {
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/quotations/{quotation_id}/withdraw",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/quotations/{quotation_id}/confirm-contract",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sales/quotations/{quotation_id}/sample-deliveries",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sales/quotations/{quotation_id}/sample-requests",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/quotations/{quotation_id}/sample-requests",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sales/quotations/{quotation_id}/export",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sales/contracts",
+    "requests": 7,
+    "statuses": {
+      "200": 2,
+      "401": 1,
+      "403": 4
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/contracts",
+    "requests": 3,
+    "statuses": {
+      "422": 2,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sales/contracts/{contract_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/sales/contracts/{contract_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/contracts/{contract_id}/submit",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/contracts/{contract_id}/approve",
+    "requests": 4,
+    "statuses": {
+      "422": 3,
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/contracts/{contract_id}/cancel",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/contracts/{contract_id}/reissue",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/contracts/{contract_id}/signature",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/contracts/{contract_id}/advance-payments",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sales/contracts/{contract_id}/export",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sales/shipments",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/shipments/from-contracts",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sales/shipments/reminders",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sales/shipments/{shipment_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/shipments/{shipment_id}/submit",
+    "requests": 1,
+    "statuses": {
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/shipments/{shipment_id}/withdraw",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/shipments/{shipment_id}/reject",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/shipments/{shipment_id}/resync-from-contracts",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sales/shipments/{shipment_id}/approve",
+    "requests": 1,
+    "statuses": {
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/overview",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/receipts",
+    "requests": 10,
+    "statuses": {
+      "200": 5,
+      "401": 1,
+      "403": 4
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/receipts",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/receipts/{receipt_id}/claim",
+    "requests": 1,
+    "statuses": {
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/receipts/{receipt_id}/allocations",
+    "requests": 3,
+    "statuses": {
+      "422": 1,
+      "201": 2
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/receivables",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/supplier-invoices",
+    "requests": 5,
+    "statuses": {
+      "200": 4,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/supplier-invoices",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/payment-requests",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/payment-requests",
+    "requests": 3,
+    "statuses": {
+      "422": 1,
+      "201": 2
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/payment-requests/{payment_request_id}/approve",
+    "requests": 2,
+    "statuses": {
+      "200": 2
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/payables",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/partner-fee-invoices",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/partner-fee-invoices",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/fee-payment-requests",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/fee-payment-requests",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/fee-payment-requests/{fee_payment_request_id}/approve",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/fee-payables",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/misc-fee-items",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/misc-fee-items",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/misc-fee-allocations",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/misc-fee-allocations",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/misc-fee-allocations/summary",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/settlements",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/settlements",
+    "requests": 3,
+    "statuses": {
+      "422": 2,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/settlements/{settlement_id}/manual-costs",
+    "requests": 1,
+    "statuses": {
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/profit-calculations",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/verification-documents",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/verification-documents",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/verification-documents/{verification_document_id}/customs-receipt",
+    "requests": 1,
+    "statuses": {
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/verification-documents/{verification_document_id}/verify",
+    "requests": 1,
+    "statuses": {
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/verification-documents/{verification_document_id}/tax-refunds",
+    "requests": 3,
+    "statuses": {
+      "422": 2,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/verification-usage",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/reimbursements",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/reimbursements",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/reimbursements/{reimbursement_id}/approve",
+    "requests": 1,
+    "statuses": {
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/reimbursements/{reimbursement_id}/pay",
+    "requests": 3,
+    "statuses": {
+      "422": 2,
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/port-import-batches",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/port-import-batches",
+    "requests": 3,
+    "statuses": {
+      "422": 2,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/customs-declaration-records",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/finance/customs-declaration-records/auto-match",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/reports/receipt-usage",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/reports/receipt-usage/export",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/reports/bank-receipt-summary",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/reports/bank-receipt-summary/export",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/reports/goods-payment",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/reports/goods-payment/export",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/reports/fee-payment",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/reports/fee-payment/export",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/reports/customs-receipt-collection",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/reports/customs-receipt-collection/export",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/reports/tax-refund-statistics",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/reports/tax-refund-statistics/export",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/reports/{report_key}/explain",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/finance/reports/{report_key}/drilldown",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/reporting/approvals",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/reporting/statistics",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/purchase/inquiries",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/purchase/inquiries",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/purchase/inquiries/{inquiry_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/purchase/inquiries/{inquiry_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/purchase/inquiries/references",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/purchase/inquiries/supplier-samples",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/purchase/inquiries/{inquiry_id}/quotations",
+    "requests": 1,
+    "statuses": {
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/purchase/inquiries/{inquiry_id}/send-template",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/purchase/contracts",
+    "requests": 10,
+    "statuses": {
+      "200": 7,
+      "401": 1,
+      "403": 2
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/purchase/contracts",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/purchase/contracts/generate-from-export-contracts",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/purchase/contracts/reminders",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/purchase/contracts/{contract_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/purchase/contracts/{contract_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/purchase/contracts/{contract_id}/submit",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/purchase/contracts/{contract_id}/cancel",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/purchase/contracts/{contract_id}/reissue",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/purchase/contracts/{contract_id}/approve",
+    "requests": 1,
+    "statuses": {
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/purchase/invoice-notices",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/purchase/invoice-notices/from-customs-declaration",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/purchase/invoice-notices/reminders",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/purchase/invoice-notices/{notice_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/purchase/invoice-notices/{notice_id}/send",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/purchase/invoice-notices/{notice_id}/receive-tax-invoice",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/followup/templates",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/followup/templates",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/followup/templates/{template_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/followup/plans",
+    "requests": 4,
+    "statuses": {
+      "200": 3,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/followup/plans/from-purchase-contract",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/followup/overdue-nodes",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "401": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/followup/sample-events",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/followup/source-events",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/followup/{plan_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/quality/inspections",
+    "requests": 10,
+    "statuses": {
+      "200": 6,
+      "401": 1,
+      "403": 3
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/quality/inspections",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/quality/inspections/inbound-eligibility",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "401": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/quality/inspections/{inspection_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/quality/inspections/{inspection_id}",
+    "requests": 2,
+    "statuses": {
+      "200": 2
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/quality/inspections/{inspection_id}/schedule",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/quality/inspections/{inspection_id}/cancel",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/quality/inspections/{inspection_id}/issues/{issue_id}/resolve",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/quality/inspections/{inspection_id}/reinspection",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/warehouse/inbound-plans",
+    "requests": 6,
+    "statuses": {
+      "200": 5,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/warehouse/inbound-plans/from-purchase-contract",
+    "requests": 1,
+    "statuses": {
+      "422": 1
+    },
+    "evidence": "脚本仅拒绝/校验"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/warehouse/inbound-plans/{plan_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/warehouse/inbound-plans/{plan_id}/schedule",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/warehouse/inbound-orders",
+    "requests": 8,
+    "statuses": {
+      "200": 4,
+      "401": 1,
+      "403": 3
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/warehouse/inbound-orders/from-plan",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/warehouse/inbound-orders/inventory-balances",
+    "requests": 4,
+    "statuses": {
+      "200": 3,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/warehouse/inbound-orders/inventory-ledgers",
+    "requests": 4,
+    "statuses": {
+      "200": 3,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/warehouse/inbound-orders/{order_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/warehouse/inbound-orders/{order_id}/submit",
+    "requests": 1,
+    "statuses": {
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/warehouse/inbound-orders/{order_id}/approve",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/warehouse/inbound-orders/{order_id}/cancel",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/warehouse/outbound-plans",
+    "requests": 3,
+    "statuses": {
+      "200": 2,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/warehouse/outbound-plans/from-shipment",
+    "requests": 3,
+    "statuses": {
+      "422": 2,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/warehouse/outbound-plans/{plan_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/warehouse/outbound-plans/{plan_id}/schedule",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/warehouse/outbound-orders",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/warehouse/outbound-orders/from-plan",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/warehouse/outbound-orders/{order_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/warehouse/outbound-orders/{order_id}/submit",
+    "requests": 1,
+    "statuses": {
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/warehouse/outbound-orders/{order_id}/approve",
+    "requests": 1,
+    "statuses": {
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/warehouse/outbound-orders/{order_id}/cancel",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/warehouse/stocktakes",
+    "requests": 2,
+    "statuses": {
+      "200": 1,
+      "401": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/warehouse/stocktakes",
+    "requests": 2,
+    "statuses": {
+      "422": 1,
+      "201": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/warehouse/stocktakes/{order_id}",
+    "requests": 0,
+    "statuses": {},
+    "evidence": "无脚本请求证据"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/warehouse/stocktakes/{order_id}/submit",
+    "requests": 1,
+    "statuses": {
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/warehouse/stocktakes/{order_id}/approve",
+    "requests": 1,
+    "statuses": {
+      "200": 1
+    },
+    "evidence": "脚本成功响应"
+  }
+]

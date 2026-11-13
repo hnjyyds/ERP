@@ -134,6 +134,10 @@ export function createProduct(payload: ProductCreatePayload): Promise<Product> {
   })
 }
 
+export function getProduct(productId: string): Promise<Product> {
+  return request<Product>(`/masterdata/products/${productId}`)
+}
+
 export function updateProduct(productId: string, payload: ProductUpdatePayload): Promise<Product> {
   return request<Product>(`/masterdata/products/${productId}`, {
     method: 'PUT',

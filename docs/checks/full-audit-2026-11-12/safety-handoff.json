@@ -1,0 +1,238 @@
+{
+  "mode": "read-only after user request; integrated writes stopped",
+  "prefix": "QA261112",
+  "requests": 386,
+  "status_counts": {
+    "200": 151,
+    "401": 86,
+    "422": 82,
+    "201": 37,
+    "403": 30
+  },
+  "created_records": [
+    {
+      "path": "/masterdata/products",
+      "id": "f43616b0-3b68-47f1-8ce6-6c65f477d8ec",
+      "number": "   ",
+      "request_id": "00f54799408ce241fed9016526bef518"
+    },
+    {
+      "path": "/sales/contracts",
+      "id": "34817a9e-a058-4438-ba51-3e8b311bda58",
+      "number": "EC-F8D7RX",
+      "request_id": "79b0056cd854a3fb26fce356aa6b55d9"
+    },
+    {
+      "path": "/warehouse/inbound-orders/from-plan",
+      "id": "5bf1413c-53e6-466a-805d-199a515a81aa",
+      "number": "XP-IN-MVU9CU",
+      "request_id": "7aa6a4af15b42047c6d9dca5ab5d883f"
+    },
+    {
+      "path": "/sales/shipments/from-contracts",
+      "id": "d6fc976b-09f5-41e4-a3b3-7aba1f636621",
+      "number": "SP-DAEPEG",
+      "request_id": "b1faaf4d480e9dd94f559a2cb35e0644"
+    },
+    {
+      "path": "/finance/receipts",
+      "id": "50b2abe7-16ec-489d-830f-c09d7e8572d6",
+      "number": "BR-MWYV53",
+      "request_id": "3926d61d0c959cb1f064ca86cca76903"
+    },
+    {
+      "path": "/finance/receipts/50b2abe7-16ec-489d-830f-c09d7e8572d6/allocations",
+      "id": "50b2abe7-16ec-489d-830f-c09d7e8572d6",
+      "number": "BR-MWYV53",
+      "request_id": "230a7a1fc2fe91c124287c54b3e4b7d9"
+    },
+    {
+      "path": "/finance/receipts/50b2abe7-16ec-489d-830f-c09d7e8572d6/allocations",
+      "id": "50b2abe7-16ec-489d-830f-c09d7e8572d6",
+      "number": "BR-MWYV53",
+      "request_id": "2c6bd876c02be52ff00cbd001d1f7180"
+    },
+    {
+      "path": "/warehouse/stocktakes",
+      "id": "baf4fb86-410e-4f0c-8d9c-7bd518f29553",
+      "number": "ST-Z5VPWB",
+      "request_id": "3fb4dafcff822c469c56501e68a214b8"
+    },
+    {
+      "path": "/warehouse/outbound-plans/from-shipment",
+      "id": "ed854737-58ac-45de-8c22-39d2b51e8f57",
+      "number": "OP-SP-DAEPEG",
+      "request_id": "49679b6bcb66a14845f82950f27d4abe"
+    },
+    {
+      "path": "/warehouse/outbound-orders/from-plan",
+      "id": "d720a3af-84c3-40ee-b51c-e896fb43e75c",
+      "number": "XP-OUT-33A95C",
+      "request_id": "9a00505bf06bd88314ff41a5c3319329"
+    },
+    {
+      "path": "/finance/supplier-invoices",
+      "id": "015bcc0d-58cf-47cb-a10d-a0747860fd18",
+      "number": "QA261112-INV01",
+      "request_id": "6545f94e164b366f53172ed053d9428d"
+    },
+    {
+      "path": "/finance/payment-requests",
+      "id": "30f75bb5-d709-496f-8f76-4d1be7652914",
+      "number": null,
+      "request_id": "bae35c3f3b2a1563e3a7e0877499cd3c"
+    },
+    {
+      "path": "/finance/payment-requests",
+      "id": "46c941cf-01bf-4a0f-8715-ca697f2dafab",
+      "number": null,
+      "request_id": "7db0a3da46a38027267d1f81f21a5117"
+    },
+    {
+      "path": "/sample/requests",
+      "id": "9c10a3ed-91e4-4823-9087-690dd887451d",
+      "number": "SR-W3C3DV",
+      "request_id": "961ac7c4966a06c4bf52d38f022155c2"
+    },
+    {
+      "path": "/sample/requests/9c10a3ed-91e4-4823-9087-690dd887451d/progress",
+      "id": "ed414bdf-4c1e-4c73-929a-3f90fadd0498",
+      "number": null,
+      "request_id": "f8c7cf8bfa6d7497e3d51cdb0e86214c"
+    },
+    {
+      "path": "/sample/records",
+      "id": "46e58577-8651-45a6-b60d-984d2ab9be83",
+      "number": "SM-ZB334N",
+      "request_id": "22d4969de4782436a253d4b569599e5f"
+    },
+    {
+      "path": "/sample/deliveries",
+      "id": "06a298c2-6b07-4263-9ddc-1e67db6f6067",
+      "number": "SD-CXE849",
+      "request_id": "547ddd22f3e1aa3b5fe3c9fcec68c82a"
+    },
+    {
+      "path": "/masterdata/partners",
+      "id": "e1aa38fd-bd00-4da9-80dc-494bd9749e02",
+      "number": "QA261112-F01",
+      "request_id": "34d88c23a4fb56679f56dbfba567ae03"
+    },
+    {
+      "path": "/masterdata/document-parties",
+      "id": "17c307a3-aa85-4e9b-b896-f44bca130965",
+      "number": "QA261112-D01",
+      "request_id": "9d99652cfbb140a8df4fd4dff37c0275"
+    },
+    {
+      "path": "/finance/partner-fee-invoices",
+      "id": "75ef17ef-1a7d-42a9-b16d-3bc0ef341993",
+      "number": "QA261112-FEE01",
+      "request_id": "380733b840bce79d7728ccb1cff4d4fb"
+    },
+    {
+      "path": "/finance/fee-payment-requests",
+      "id": "9e779acb-18a4-4bf4-a846-78d826e47e6c",
+      "number": null,
+      "request_id": "f1ca8d39991c15840ccfd044c65c45f0"
+    },
+    {
+      "path": "/finance/misc-fee-items",
+      "id": "9016bf9c-45e0-4e65-8602-e5d432717092",
+      "number": "QA261112-MISC01",
+      "request_id": "91cd542d6a04aadcfbc8ffd9fe78aac0"
+    },
+    {
+      "path": "/finance/misc-fee-allocations",
+      "id": "7e3c46c8-c331-4093-af85-d0a5c62d7982",
+      "number": null,
+      "request_id": "819f4cf2af1f3e4c2b330aabca695f54"
+    },
+    {
+      "path": "/finance/reimbursements",
+      "id": "da3c19a0-0f43-4f42-838d-5d39868269c9",
+      "number": "QA261112-RB01",
+      "request_id": "755588cd1d03ab40d545500ebac2a5fb"
+    },
+    {
+      "path": "/finance/verification-documents",
+      "id": "a62d4ddc-3045-4d8f-9678-1d204e74d3ac",
+      "number": null,
+      "request_id": "f903a30d710a1b94c9c5d7027e2741a9"
+    },
+    {
+      "path": "/finance/verification-documents/a62d4ddc-3045-4d8f-9678-1d204e74d3ac/tax-refunds",
+      "id": "a62d4ddc-3045-4d8f-9678-1d204e74d3ac",
+      "number": null,
+      "request_id": "487ee42bf2cfa2abaff1309717fee54a"
+    },
+    {
+      "path": "/finance/settlements",
+      "id": "16224733-261c-4ae4-aad2-dfc01b8a2441",
+      "number": null,
+      "request_id": "b36133d54961b2acf5a7afded4096334"
+    },
+    {
+      "path": "/finance/settlements/16224733-261c-4ae4-aad2-dfc01b8a2441/manual-costs",
+      "id": "16224733-261c-4ae4-aad2-dfc01b8a2441",
+      "number": null,
+      "request_id": "73cb16145ef2d3d4344dea5a357da125"
+    },
+    {
+      "path": "/sales/quotations",
+      "id": "ccdbe6c2-efee-40ca-be09-fc4ee1092365",
+      "number": "QT-A33KVZ",
+      "request_id": "124d01d44c97db02d78c34c73374847f"
+    },
+    {
+      "path": "/purchase/inquiries",
+      "id": "b4d57828-d264-489d-b196-989d07d911d0",
+      "number": "PI-KTPXTU",
+      "request_id": "a7d7dedb988f4a1c7f43bab69eb73fc5"
+    },
+    {
+      "path": "/purchase/inquiries/b4d57828-d264-489d-b196-989d07d911d0/quotations",
+      "id": "b4d57828-d264-489d-b196-989d07d911d0",
+      "number": "PI-KTPXTU",
+      "request_id": "51656fe7687954db4612dbdcba932f9e"
+    },
+    {
+      "path": "/todos",
+      "id": null,
+      "number": null,
+      "request_id": "02d5c48fa931151985e02a52dc9d0bde"
+    },
+    {
+      "path": "/schedules",
+      "id": "72496268-550d-4385-bb42-af8f7ea96477",
+      "number": null,
+      "request_id": "6c4c7122b8a458d24ba5a6728da634bd"
+    },
+    {
+      "path": "/finance/port-import-batches",
+      "id": "822fd03e-1768-4959-bef6-cfbbd36baf97",
+      "number": null,
+      "request_id": "192b620b8c62d3a4159f44596042d949"
+    },
+    {
+      "path": "/sample/requests/9c10a3ed-91e4-4823-9087-690dd887451d/progress",
+      "id": "432a6cd5-0ea5-407f-ab24-647d4a2bd5c1",
+      "number": null,
+      "request_id": "490d5d4ba77a0369c6aa77790638e531"
+    },
+    {
+      "path": "/sample/requests/9c10a3ed-91e4-4823-9087-690dd887451d/sample-record",
+      "id": "dbb51664-8f59-4075-af85-782117615fb7",
+      "number": "SM-D45XDB",
+      "request_id": "7d075c8fdf8647eb04128b05a5f8cf75"
+    },
+    {
+      "path": "/organization/departments",
+      "id": "dept-f1660be41de37605",
+      "number": null,
+      "request_id": "c04a225280caa79d21cb401b23b36918"
+    }
+  ],
+  "business_code_changes": false,
+  "data_rollback_performed": false
+}

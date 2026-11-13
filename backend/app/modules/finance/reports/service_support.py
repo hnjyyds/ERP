@@ -4,6 +4,7 @@ import csv
 from collections.abc import Sequence
 from io import StringIO
 
+from app.core.csv_export import safe_cell
 from app.core.messages import localize_labels, localize_message
 from app.modules.finance.reports.repositories import ReportsRepository
 from app.modules.finance.reports.row_data import (
@@ -240,7 +241,7 @@ class ReportsServiceSupport:
         output = StringIO()
         writer = csv.writer(output)
         writer.writerow(localize_labels(headers))
-        writer.writerows(rows)
+        writer.writerows([[safe_cell(cell) for cell in row] for row in rows])
         return output.getvalue()
 
     async def _drilldown_items(

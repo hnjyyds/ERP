@@ -428,6 +428,10 @@ export function createPurchaseContract(
   })
 }
 
+export function getPurchaseContract(contractId: string): Promise<PurchaseContract> {
+  return request<PurchaseContract>(`/purchase/contracts/${contractId}`)
+}
+
 export function updatePurchaseContract(
   contractId: string,
   payload: PurchaseContractCreatePayload,

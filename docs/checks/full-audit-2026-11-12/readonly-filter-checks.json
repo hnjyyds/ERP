@@ -1,0 +1,38 @@
+[
+  {
+    "path": "/purchase/contracts",
+    "foreign_key": "supplier_id",
+    "uuid_status": 200,
+    "uuid_total": 1,
+    "code_status": 200,
+    "code_total": 0,
+    "code": "QA261112-S01"
+  },
+  {
+    "path": "/warehouse/inbound-plans",
+    "foreign_key": "supplier_id",
+    "uuid_status": 200,
+    "uuid_total": 1,
+    "code_status": 200,
+    "code_total": 0,
+    "code": "QA261112-S01"
+  },
+  {
+    "path": "/finance/supplier-invoices",
+    "foreign_key": "supplier_id",
+    "uuid_status": 200,
+    "uuid_total": 1,
+    "code_status": 200,
+    "code_total": 0,
+    "code": "QA261112-S01"
+  },
+  {
+    "path": "/finance/receipts",
+    "foreign_key": "customer_id",
+    "uuid_status": 200,
+    "uuid_total": 1,
+    "code_status": 200,
+    "code_total": 0,
+    "code": "QA261112-C01"
+  }
+]

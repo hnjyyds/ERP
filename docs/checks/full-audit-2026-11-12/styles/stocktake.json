@@ -1,0 +1,237 @@
+{
+  "url": "http://localhost:8080/warehouse/stocktakes",
+  "viewport": {
+    "w": 1512,
+    "h": 780
+  },
+  "scrollWidth": 1512,
+  "controls": [
+    {
+      "text": "Close",
+      "tag": "BUTTON",
+      "cls": "ant-modal-close",
+      "x": 1152,
+      "y": 112,
+      "w": 32,
+      "h": 32,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "仓库标识",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 340,
+      "y": 176,
+      "w": 267,
+      "h": 36,
+      "field": {
+        "x": 340,
+        "y": 152,
+        "w": 267,
+        "h": 60
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "仓库名称",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 623,
+      "y": 176,
+      "w": 267,
+      "h": 36,
+      "field": {
+        "x": 623,
+        "y": 152,
+        "w": 267,
+        "h": 60
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "库位标识",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 905,
+      "y": 176,
+      "w": 267,
+      "h": 36,
+      "field": {
+        "x": 905,
+        "y": 152,
+        "w": 267,
+        "h": 60
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "库位名称",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 340,
+      "y": 248,
+      "w": 267,
+      "h": 36,
+      "field": {
+        "x": 340,
+        "y": 224,
+        "w": 267,
+        "h": 60
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "盘点日期",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 623,
+      "y": 248,
+      "w": 267,
+      "h": 36,
+      "field": {
+        "x": 623,
+        "y": 224,
+        "w": 267,
+        "h": 60
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "盘点人",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 905,
+      "y": 248,
+      "w": 267,
+      "h": 36,
+      "field": {
+        "x": 905,
+        "y": 224,
+        "w": 267,
+        "h": 60
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "备注",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 340,
+      "y": 320,
+      "w": 267,
+      "h": 36,
+      "field": {
+        "x": 340,
+        "y": 296,
+        "w": 267,
+        "h": 60
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "商品",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 340,
+      "y": 412,
+      "w": 281,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "商品编码",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 629,
+      "y": 412,
+      "w": 201,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "单位",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 839,
+      "y": 412,
+      "w": 121,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "",
+      "tag": "DIV",
+      "cls": "ant-input-number ant-input-number-mode-input css-var-root ant-input-number-css-var css-xsuzon ant-input-number-outlined",
+      "x": 967,
+      "y": 412,
+      "w": 161,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-text ant-btn-color-default ant-btn-variant-text ant-btn-icon-only",
+      "x": 1136,
+      "y": 412,
+      "w": 36,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "添加明细",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-dashed ant-btn-color-default ant-btn-variant-dashed",
+      "x": 340,
+      "y": 456,
+      "w": 110,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "取 消",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-default ant-btn-color-default ant-btn-variant-outlined",
+      "x": 1036,
+      "y": 504,
+      "w": 64,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "创 建",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-primary ant-btn-color-primary ant-btn-variant-solid",
+      "x": 1108,
+      "y": 504,
+      "w": 64,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    }
+  ]
+}

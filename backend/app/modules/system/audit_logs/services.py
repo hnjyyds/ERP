@@ -2,6 +2,7 @@ import csv
 from datetime import UTC, datetime
 from io import StringIO
 
+from app.core.csv_export import safe_cell
 from app.modules.system.audit_logs.filters import AuditLogFilters
 from app.modules.system.audit_logs.repositories import AuditLogRepository
 from app.modules.system.audit_logs.rows import AuditLogRow
@@ -52,13 +53,13 @@ class AuditLogService:
             writer.writerow(
                 [
                     row.created_at.isoformat(sep=" ", timespec="seconds"),
-                    row.actor_name,
-                    row.action,
-                    row.resource_type,
-                    row.resource_no or "",
-                    row.summary,
-                    row.resource_id or "",
-                    row.payload or "",
+                    safe_cell(row.actor_name),
+                    safe_cell(row.action),
+                    safe_cell(row.resource_type),
+                    safe_cell(row.resource_no or ""),
+                    safe_cell(row.summary),
+                    safe_cell(row.resource_id or ""),
+                    safe_cell(row.payload or ""),
                 ]
             )
         timestamp = datetime.now(UTC).strftime("%Y%m%d%H%M%S")

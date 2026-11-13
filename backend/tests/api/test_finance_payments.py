@@ -300,4 +300,76 @@ async def test_finance_payment_rejects_excess_amount_and_permissions(
     unauthorized_response = await api_client.get("/api/v1/finance/payment-requests")
     assert unauthorized_response.status_code == 401
 
+
+async def test_finance_payment_rejects_duplicate_approval(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    business_token = await _login_token(api_client)
+    finance_token = await _login_token(api_client, "finance", "finance123")
+    super_admin_token = await _login_token(api_client, "admin", "admin123")
+    notice = await _received_purchase_invoice_notice(
+        api_client,
+        business_token,
+        declaration_no="CD-PAY-API-DUP",
+        tax_invoice_no="VAT-PAY-API-DUP",
+    )
+    invoice = await _create_supplier_invoice(
+        api_client,
+        finance_token,
+        notice,
+        invoice_no="SI-PAY-API-DUP",
+    )
+    request_response = await api_client.post(
+        "/api/v1/finance/payment-requests",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        json={
+            "supplier_invoice_id": invoice["id"],
+            "payment_type": "goods_payment",
+            "request_date": "2026-09-10",
+            "requested_amount": "1000.00",
+            "currency": "CNY",
+            "reviewer_id": "u-finance-manager",
+            "remark": "重复审批校验",
+        },
+    )
+    assert request_response.status_code == 201
+    payment_request = request_response.json()["data"]
+
+    first_approval = await api_client.post(
+        f"/api/v1/finance/payment-requests/{payment_request['id']}/approve",
+        headers={"Authorization": f"Bearer {super_admin_token}"},
+        json={
+            "approved_amount": "1000.00",
+            "approved_at": "2026-09-11",
+            "payment_account": "BOC 8888",
+            "remark": "首次审批",
+        },
+    )
+    assert first_approval.status_code == 200
+
+    duplicate_approval = await api_client.post(
+        f"/api/v1/finance/payment-requests/{payment_request['id']}/approve",
+        headers={"Authorization": f"Bearer {super_admin_token}"},
+        json={
+            "approved_amount": "1000.00",
+            "approved_at": "2026-09-12",
+            "payment_account": "BOC 8888",
+            "remark": "重复审批",
+        },
+    )
+    assert duplicate_approval.status_code == 422
+    assert "只有待审批付款申请可以审批" in duplicate_approval.text
+
+    payables_response = await api_client.get(
+        "/api/v1/finance/payables",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        params={"q": "SI-PAY-API-DUP"},
+    )
+    assert payables_response.status_code == 200
+    payable = payables_response.json()["data"]["items"][0]
+    assert payable["paid_amount"] == "1000.00"
+    assert payable["status"] == "partial"
+
+
 pytestmark = pytest.mark.usefixtures("reference_master_data")

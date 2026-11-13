@@ -2,13 +2,15 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { MouseEvent } from 'react'
 
 import {
+  getPurchaseContract,
   listPurchaseContractReminders,
   listPurchaseContracts,
   type PurchaseContract,
   type PurchaseContractReminder,
   type PurchaseContractListSummary,
 } from '@/api'
-import { showError } from '@/shared/errors'
+import { ApiError, showError } from '@/shared/errors'
+import { useLatestRequest } from '@/shared/hooks/useLatestRequest'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { useTablePagination } from '@/shared/useTablePagination'
 import { t } from '@/app/appI18n'
@@ -35,6 +37,9 @@ export function usePurchaseContractsList({ detailId, onNavigate }: Options) {
   )
   const [reminders, setReminders] = useState<PurchaseContractReminder[]>([])
   const [selectedContractId, setSelectedContractId] = useState<string | null>(null)
+  const [detailContract, setDetailContract] = useState<PurchaseContract | null>(null)
+  const [detailLoading, setDetailLoading] = useState(false)
+  const latestRequest = useLatestRequest()
   const initialFilters = purchaseContractFiltersFromParams(urlQuery.params)
   const [search, setSearch] = useState(initialFilters.q)
   const [statusFilter, setStatusFilter] = useState(initialFilters.status)
@@ -47,9 +52,11 @@ export function usePurchaseContractsList({ detailId, onNavigate }: Options) {
   )
 
   const selectedContract = useMemo(() => {
-    if (detailId) return contracts.find((item) => item.id === detailId) ?? null
+    if (detailId) {
+      return contracts.find((item) => item.id === detailId) ?? detailContract ?? null
+    }
     return contracts.find((item) => item.id === selectedContractId) ?? contracts[0] ?? null
-  }, [contracts, detailId, selectedContractId])
+  }, [contracts, detailContract, detailId, selectedContractId])
 
   useEffect(() => {
     void loadContracts()
@@ -69,9 +76,37 @@ export function usePurchaseContractsList({ detailId, onNavigate }: Options) {
     void loadContracts(undefined, undefined, nextPage, pageSize, nextFilters)
   }, [urlQuery.search])
 
+  // 详情按 ID 独立请求：列表只作为首屏优化，不再用“当前页是否包含”判断记录是否存在。
   useEffect(() => {
-    if (detailId && contracts.length > 0 && !contracts.some((item) => item.id === detailId)) {
-      onNavigate(purchaseContractPath)
+    if (!detailId) {
+      setDetailContract(null)
+      setDetailLoading(false)
+      return
+    }
+    if (contracts.some((item) => item.id === detailId)) {
+      setDetailContract(null)
+      setDetailLoading(false)
+      return
+    }
+    let cancelled = false
+    setDetailLoading(true)
+    void (async () => {
+      try {
+        const contract = await getPurchaseContract(detailId)
+        if (!cancelled) setDetailContract(contract)
+      } catch (caught) {
+        if (cancelled) return
+        if (caught instanceof ApiError && caught.status === 404) {
+          onNavigate(purchaseContractPath)
+        } else {
+          showError(caught, t('purchase.contract.list.loadFailed'))
+        }
+      } finally {
+        if (!cancelled) setDetailLoading(false)
+      }
+    })()
+    return () => {
+      cancelled = true
     }
   }, [contracts, detailId, onNavigate])
 
@@ -89,6 +124,7 @@ export function usePurchaseContractsList({ detailId, onNavigate }: Options) {
     const resolvedSupplier = filtersOverride?.supplier ?? supplierFilter
     const resolvedSource = filtersOverride?.source ?? sourceFilter
     setLoading(true)
+    const requestId = latestRequest.begin()
     try {
       const result = await listPurchaseContracts({
         q: resolvedQ.trim() || undefined,
@@ -98,6 +134,7 @@ export function usePurchaseContractsList({ detailId, onNavigate }: Options) {
         limit: resolvedPageSize,
         offset: (resolvedPage - 1) * resolvedPageSize,
       })
+      if (!latestRequest.isLatest(requestId)) return
       setTotal(result.total)
       setSummary(result.summary)
       if (result.items.length === 0 && resolvedPage > 1) {
@@ -126,9 +163,10 @@ export function usePurchaseContractsList({ detailId, onNavigate }: Options) {
         null
       setSelectedContractId(nextSelectedId)
     } catch (caught) {
+      if (!latestRequest.isLatest(requestId)) return
       showError(caught, t('purchase.contract.list.loadFailed'))
     } finally {
-      setLoading(false)
+      if (latestRequest.isLatest(requestId)) setLoading(false)
     }
   }
 
@@ -218,6 +256,7 @@ export function usePurchaseContractsList({ detailId, onNavigate }: Options) {
     selectedContract,
     selectedContractId,
     setSelectedContractId,
+    detailLoading,
     loading,
     total,
     pagination,

@@ -37,6 +37,12 @@ class ReceiptNotFoundError(Exception):
     pass
 
 
+class ReceiptAllocationConflictError(Exception):
+    """并发分摊导致水单余额不足时抛出，映射为 409。"""
+
+    pass
+
+
 class ReceiptService:
     def __init__(
         self,
@@ -148,6 +154,12 @@ class ReceiptService:
         contract = await self._resolve_contract(payload)
         contract_no = contract.code if contract is not None else payload.contract_no
         async with UnitOfWork(self._repository.session):
+            reserved = await self._repository.try_reserve_allocation(
+                receipt_id=receipt.id,
+                amount=payload.amount,
+            )
+            if not reserved:
+                raise ReceiptAllocationConflictError("水单未分摊余额不足，请刷新后重试")
             await self._repository.add_allocation(
                 receipt_id=receipt.id,
                 allocation_type=payload.allocation_type,

@@ -1,0 +1,1827 @@
+{
+  "backend": [
+    {
+      "file": "backend/tests/core/test_status_codes.py",
+      "test_names": [
+        "test_status_code_registry_documents_required_codes",
+        "test_http_status_and_detail_resolve_to_stable_error_codes"
+      ]
+    },
+    {
+      "file": "backend/tests/core/test_source_messages.py",
+      "test_names": [
+        "test_static_domain_messages_have_english_translations",
+        "test_static_messages_render_english",
+        "test_dynamic_messages_render_english",
+        "test_unknown_and_english_messages_are_returned_unchanged",
+        "test_default_language_keeps_source_message",
+        "test_unsupported_language_keeps_source_message"
+      ]
+    },
+    {
+      "file": "backend/tests/core/test_language.py",
+      "test_names": [
+        "test_parse_accept_language_matches_primary_subtag",
+        "test_parse_accept_language_ignores_zero_quality_and_keeps_order",
+        "test_resolve_language_defaults_to_chinese",
+        "test_current_language_context_switch_and_reset",
+        "test_message_catalog_has_matching_language_keys"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_export_quotation_repository.py",
+      "test_names": [
+        "test_export_quotation_repository_filters_history_references_and_contract",
+        "test_export_quotation_repository_updates_header_and_replaces_lines"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_supplier_repository.py",
+      "test_names": [
+        "test_supplier_repository_filters_by_contact_country_credit_and_owner"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_outbound_plan_repository.py",
+      "test_names": [
+        "test_outbound_plan_repository_records_plan_lines_and_schedule"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_sample_record_repository.py",
+      "test_names": [
+        "test_sample_record_repository_filters_and_maps_rows"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_purchase_contract_repository.py",
+      "test_names": [
+        "test_purchase_contract_repository_records_lines_sources_and_reminders"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_followup_repository.py",
+      "test_names": [
+        "test_followup_repository_records_template_plan_nodes_and_overdue",
+        "test_followup_repository_marks_overdue_nodes"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_shipment_repository.py",
+      "test_names": [
+        "test_shipment_repository_lists_multi_contract_plan_finance_and_reminders"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_quality_inspection_repository.py",
+      "test_names": [
+        "test_quality_inspection_repository_records_lines_issues_and_latest_result"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_customer_repository.py",
+      "test_names": [
+        "test_customer_repository_filters_by_contact_country_credit_and_owner"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_purchase_inquiry_repository.py",
+      "test_names": [
+        "test_purchase_inquiry_repository_records_quotes_and_sample_evidence",
+        "test_purchase_inquiry_repository_updates_header_and_replaces_lines"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_inbound_order_repository.py",
+      "test_names": [
+        "test_inbound_order_repository_records_inventory_balance_and_ledger"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_dashboard_repository.py",
+      "test_names": [
+        "test_dashboard_repository_returns_typed_schedule_rows"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_auth_repository.py",
+      "test_names": [
+        "test_auth_repository_returns_typed_user_identity"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_inbound_plan_repository.py",
+      "test_names": [
+        "test_inbound_plan_repository_records_lines_and_schedules_location"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_document_party_repository.py",
+      "test_names": [
+        "test_document_party_repository_filters_by_customer_type_contact_and_owner"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_outbound_order_repository.py",
+      "test_names": [
+        "test_outbound_order_repository_records_order_deducts_stock_and_ledger",
+        "test_outbound_order_repository_rejects_insufficient_available_stock"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_sample_request_repository.py",
+      "test_names": [
+        "test_sample_request_repository_filters_by_customer_status_q_and_owner"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_partner_repository.py",
+      "test_names": [
+        "test_partner_repository_filters_by_type_contact_and_owner"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_sample_delivery_repository.py",
+      "test_names": [
+        "test_sample_delivery_repository_filters_statistics_and_histories",
+        "test_sample_delivery_repository_updates_header_and_replaces_children"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_product_repository.py",
+      "test_names": [
+        "test_product_repository_returns_typed_rows",
+        "test_product_repository_updates_and_hides_inactive_rows"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_export_contract_repository.py",
+      "test_names": [
+        "test_export_contract_repository_filters_signature_payment_and_statistics",
+        "test_export_contract_repository_updates_draft_and_replaces_lines"
+      ]
+    },
+    {
+      "file": "backend/tests/repositories/test_purchase_invoice_notice_repository.py",
+      "test_names": [
+        "test_purchase_invoice_notice_repository_records_lines_status_and_reminders"
+      ]
+    },
+    {
+      "file": "backend/tests/mcp/test_crud_service.py",
+      "test_names": [
+        "test_mcp_service_requires_valid_access_token",
+        "test_mcp_service_supports_product_customer_and_export_order_crud"
+      ]
+    },
+    {
+      "file": "backend/tests/mcp/test_server.py",
+      "test_names": [
+        "test_fastmcp_exposes_expected_crud_tools",
+        "test_fastmcp_tool_schemas_describe_every_exposed_field",
+        "test_fastapi_serves_fastmcp_over_streamable_http",
+        "test_fastmcp_rejects_missing_mcp_credential",
+        "test_rotating_mcp_credential_revokes_the_previous_token",
+        "test_concurrent_mcp_credential_rotation_uses_distinct_versions"
+      ]
+    },
+    {
+      "file": "backend/tests/mcp/test_tool_text_i18n.py",
+      "test_names": [
+        "test_all_tool_text_is_english",
+        "test_permission_error_is_english",
+        "test_not_found_error_is_english",
+        "test_confirmation_error_is_english",
+        "test_domain_value_error_is_translated"
+      ]
+    },
+    {
+      "file": "backend/tests/schemas/test_purchase_contract_schema.py",
+      "test_names": [
+        "test_purchase_contract_schema_accepts_stock_purchase_payload",
+        "test_purchase_contract_generation_schema_accepts_multiple_export_contracts",
+        "test_purchase_contract_schema_rejects_empty_lines"
+      ]
+    },
+    {
+      "file": "backend/tests/schemas/test_purchase_inquiry_schema.py",
+      "test_names": [
+        "test_purchase_inquiry_schema_accepts_lines_and_template_payload",
+        "test_purchase_inquiry_update_schema_uses_same_line_contract",
+        "test_supplier_quotation_schema_rejects_invalid_price_and_quantity",
+        "test_purchase_inquiry_schema_rejects_empty_lines"
+      ]
+    },
+    {
+      "file": "backend/tests/schemas/test_quality_inspection_schema.py",
+      "test_names": [
+        "test_quality_inspection_create_schema_accepts_lines_issues_and_attachment_group",
+        "test_quality_inspection_schema_accepts_a_scheduled_pending_task_without_result",
+        "test_quality_inspection_schema_requires_result_and_lines_when_completed",
+        "test_quality_inspection_schema_rejects_invalid_result_and_empty_lines",
+        "test_quality_inspection_schema_forbids_extra_fields",
+        "test_quality_inspection_schema_rejects_blank_required_text",
+        "test_quality_inspection_line_schema_rejects_blank_text_and_invalid_quantities",
+        "test_quality_issue_schema_only_allows_open_status_on_creation"
+      ]
+    },
+    {
+      "file": "backend/tests/schemas/test_export_contract_schema.py",
+      "test_names": [
+        "test_export_contract_schema_requires_positive_line_values",
+        "test_export_contract_line_barcode_preserves_long_numeric_text",
+        "test_export_contract_schema_rejects_empty_lines_and_over_progress",
+        "test_export_contract_advance_payment_requires_positive_amount"
+      ]
+    },
+    {
+      "file": "backend/tests/schemas/test_shipment_schema.py",
+      "test_names": [
+        "test_shipment_plan_generate_accepts_multi_contract_selection",
+        "test_shipment_plan_generate_rejects_empty_selection",
+        "test_shipment_plan_generate_rejects_invalid_amounts",
+        "test_shipment_submit_requires_reviewer_and_approve_requires_date"
+      ]
+    },
+    {
+      "file": "backend/tests/schemas/test_inbound_plan_schema.py",
+      "test_names": [
+        "test_inbound_plan_generation_schema_accepts_purchase_inbound_type",
+        "test_inbound_plan_generation_schema_rejects_invalid_inbound_type",
+        "test_inbound_plan_schedule_schema_requires_location_information"
+      ]
+    },
+    {
+      "file": "backend/tests/schemas/test_export_quotation_schema.py",
+      "test_names": [
+        "test_export_quotation_schema_requires_positive_quantity_and_price",
+        "test_export_quotation_schema_requires_at_least_one_line"
+      ]
+    },
+    {
+      "file": "backend/tests/schemas/test_outbound_order_schema.py",
+      "test_names": [
+        "test_outbound_order_generation_schema_accepts_formal_mode",
+        "test_outbound_order_generation_schema_accepts_exception_reason",
+        "test_outbound_order_generation_schema_rejects_invalid_mode_and_quantity"
+      ]
+    },
+    {
+      "file": "backend/tests/schemas/test_inbound_order_schema.py",
+      "test_names": [
+        "test_inbound_order_generation_schema_accepts_formal_mode",
+        "test_inbound_order_generation_schema_rejects_invalid_mode_and_quantity"
+      ]
+    },
+    {
+      "file": "backend/tests/schemas/test_purchase_invoice_notice_schema.py",
+      "test_names": [
+        "test_purchase_invoice_notice_generation_schema_groups_supplier_lines",
+        "test_purchase_invoice_notice_generation_schema_rejects_empty_lines",
+        "test_purchase_invoice_notice_action_schemas"
+      ]
+    },
+    {
+      "file": "backend/tests/schemas/test_followup_schema.py",
+      "test_names": [
+        "test_followup_template_schema_accepts_configured_nodes",
+        "test_followup_template_schema_requires_nodes",
+        "test_followup_plan_and_source_event_payloads",
+        "test_followup_source_event_rejects_manual_source"
+      ]
+    },
+    {
+      "file": "backend/tests/schemas/test_schedule_schema.py",
+      "test_names": [
+        "test_schedule_create_forbids_extra_fields",
+        "test_schedule_create_requires_end_after_start",
+        "test_dashboard_path_schemas_reject_empty_identifiers"
+      ]
+    },
+    {
+      "file": "backend/tests/schemas/test_outbound_plan_schema.py",
+      "test_names": [
+        "test_outbound_plan_generation_schema_accepts_finished_goods_source",
+        "test_outbound_plan_generation_schema_rejects_invalid_type"
+      ]
+    },
+    {
+      "file": "backend/tests/architecture/test_fastapi_layers.py",
+      "test_names": [
+        "test_api_routes_have_explicit_response_models",
+        "test_list_api_routes_document_pagination_contract",
+        "test_dashboard_mutation_routes_wrap_path_identifiers_in_schema_dependencies",
+        "test_api_layer_does_not_import_repository_or_models",
+        "test_services_do_not_import_api_layer",
+        "test_repositories_do_not_commit_transactions",
+        "test_route_modules_reuse_auth_dependencies_and_do_not_define_exception_helpers",
+        "test_route_functions_do_not_translate_service_exceptions"
+      ]
+    },
+    {
+      "file": "backend/tests/architecture/test_deployment_contracts.py",
+      "test_names": [
+        "test_edge_proxy_accepts_base64_encoded_five_megabyte_uploads",
+        "test_frontend_container_runs_the_full_build_gate"
+      ]
+    },
+    {
+      "file": "backend/tests/architecture/test_schema_descriptions.py",
+      "test_names": [
+        "test_all_schema_fields_have_descriptions"
+      ]
+    },
+    {
+      "file": "backend/tests/architecture/test_migrations.py",
+      "test_names": [
+        "test_upgrade_head_creates_schema_matching_models",
+        "test_legacy_database_is_reconciled_after_baseline_stamp",
+        "test_baseline_downgrade_removes_all_business_tables"
+      ]
+    },
+    {
+      "file": "backend/tests/architecture/test_finance_router_contract.py",
+      "test_names": [
+        "test_finance_router_keeps_existing_route_paths",
+        "test_finance_router_routes_have_response_models"
+      ]
+    },
+    {
+      "file": "backend/tests/architecture/test_backend_file_boundaries.py",
+      "test_names": [
+        "test_backend_app_python_files_stay_under_700_lines"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_export_contracts.py",
+      "test_names": [
+        "test_export_contract_flow_signature_payment_statistics_export_and_event",
+        "test_export_quotation_confirm_creates_real_export_contract",
+        "test_export_contract_cancel_and_reissue",
+        "test_export_contract_cancel_blocked_by_advance_payment",
+        "test_export_contract_endpoints_require_login",
+        "test_export_contract_endpoints_enforce_menu_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_finance_misc_fees.py",
+      "test_names": [
+        "test_finance_misc_fee_item_allocation_and_profit",
+        "test_finance_misc_fee_item_rejects_duplicate_code",
+        "test_finance_misc_fee_rejects_invalid_allocation_and_permissions"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_finance.py",
+      "test_names": [
+        "test_finance_overview_aggregates_cross_module_amounts_for_finance_user",
+        "test_finance_overview_requires_login_and_finance_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_company.py",
+      "test_names": [
+        "test_any_logged_in_user_can_read_company_info",
+        "test_super_admin_can_update_company_info",
+        "test_invalid_email_is_rejected",
+        "test_non_super_admin_cannot_update_company_info",
+        "test_anonymous_cannot_update_company_info"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_reporting_statistics.py",
+      "test_names": [
+        "test_reporting_statistics_aggregates_business_reports",
+        "test_reporting_statistics_permissions_and_invalid_dates"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_reporting_approvals.py",
+      "test_names": [
+        "test_reporting_approval_query_aggregates_pending_documents",
+        "test_reporting_approval_query_filters_approved_documents_and_permissions"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_pagination.py",
+      "test_names": [
+        "test_pagination_defaults_to_fifty_and_explicit_values_are_available",
+        "test_invalid_pagination_returns_uniform_validation_response"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_products.py",
+      "test_names": [
+        "test_product_create_detail_search_and_export",
+        "test_product_create_rejects_duplicate_code",
+        "test_product_accessory_can_be_added_after_create",
+        "test_product_can_be_updated_and_deactivated",
+        "test_product_accessory_can_be_updated_and_deleted",
+        "test_product_import_csv_creates_updates_and_reports_errors",
+        "test_product_import_rejects_invalid_file",
+        "test_product_customers_returns_related_contracts",
+        "test_product_transactions_collect_sales_purchase_and_shipment",
+        "test_product_transactions_include_inventory_ledger_after_inbound_approval",
+        "test_product_endpoints_require_login",
+        "test_product_endpoints_enforce_menu_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_finance_reimbursements.py",
+      "test_names": [
+        "test_finance_reimbursement_full_flow",
+        "test_finance_reimbursement_permissions_and_invalid_transitions"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_mcp_settings.py",
+      "test_names": [
+        "test_super_admin_can_read_and_update_mcp_settings",
+        "test_mcp_settings_reject_non_admin",
+        "test_mcp_write_endpoints_reject_non_admin",
+        "test_mcp_endpoints_reject_anonymous",
+        "test_mcp_availability_middleware_blocks_disabled_server"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_finance_fee_payments.py",
+      "test_names": [
+        "test_finance_fee_payment_flow_invoice_request_approve_and_payables",
+        "test_finance_fee_payment_rejects_excess_amount_and_permissions"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_outbound_plans.py",
+      "test_names": [
+        "test_outbound_plan_api_generates_from_shipment_and_schedules",
+        "test_outbound_plan_api_rejects_unauthorized_finance_and_invalid_payload"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_audit_logs.py",
+      "test_names": [
+        "test_audit_log_records_reimbursement_submission",
+        "test_audit_log_filters_and_export",
+        "test_audit_logs_are_super_admin_only"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_auth.py",
+      "test_names": [
+        "test_login_returns_token_user_and_permission_menus",
+        "test_login_rejects_invalid_password",
+        "test_current_user_and_menus_require_bearer_token",
+        "test_assignable_users_require_authentication",
+        "test_assignable_users_can_be_filtered_by_required_permission",
+        "test_current_user_can_update_own_avatar"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_dashboard.py",
+      "test_names": [
+        "test_dashboard_returns_pdf_required_sections",
+        "test_dashboard_includes_only_active_quality_tasks_assigned_to_current_user",
+        "test_super_admin_dashboard_includes_global_active_business_todos_only",
+        "test_dashboard_includes_active_followup_nodes_owned_by_current_user",
+        "test_dashboard_includes_submitted_inbound_order_for_designated_reviewer",
+        "test_dashboard_finance_approval_uses_invoice_detail_as_source_id",
+        "test_todo_create_supports_self_and_assigned_users",
+        "test_personal_todo_create_rejects_unexpected_fields",
+        "test_todo_create_accepts_due_at_and_returns_overdue_flag",
+        "test_todo_owner_can_complete_and_completed_todo_is_hidden",
+        "test_todo_complete_requires_owner_or_super_admin",
+        "test_todo_cancel_requires_creator_or_super_admin",
+        "test_todo_reassign_and_due_time_updates",
+        "test_todo_due_time_update_denied_for_unrelated_user",
+        "test_schedule_create_is_visible_on_dashboard",
+        "test_schedule_delete_is_limited_to_owner_and_refreshes_dashboard",
+        "test_schedule_update_changes_fields_and_allows_clearing_note",
+        "test_schedule_update_rejects_end_before_start",
+        "test_schedule_update_is_limited_to_owner",
+        "test_announcement_create_is_visible_on_dashboard",
+        "test_announcement_create_requires_admin_permission",
+        "test_announcement_create_requires_super_admin_even_with_announcement_permission",
+        "test_notification_can_be_marked_read",
+        "test_shortcut_create_and_delete_refresh_dashboard",
+        "test_schedule_create_rejects_unexpected_fields",
+        "test_dashboard_requires_login",
+        "test_dashboard_includes_purchase_contract_for_designated_reviewer"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_sample_requests.py",
+      "test_names": [
+        "test_sample_request_create_search_progress_fee_and_payment",
+        "test_sample_request_filters_by_date_range_and_converts_completed_request_to_record",
+        "test_sample_request_rejects_unknown_status",
+        "test_sample_request_endpoints_require_login",
+        "test_sample_request_endpoints_enforce_menu_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_system_i18n.py",
+      "test_names": [
+        "test_i18n_config_exposes_languages_timezones_and_labels"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_finance_port_data.py",
+      "test_names": [
+        "test_finance_port_data_import_and_query",
+        "test_finance_port_data_rejects_invalid_and_permissions",
+        "test_finance_port_data_matches_customs_receipts_to_verification_documents"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_finance_settlements.py",
+      "test_names": [
+        "test_finance_settlement_locks_profit_by_settlement_date_and_manual_cost",
+        "test_finance_settlement_rejects_permissions_and_invalid_inputs"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_purchase_invoice_notices.py",
+      "test_names": [
+        "test_purchase_invoice_notice_flow_generate_send_receive_and_permissions"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_sample_deliveries.py",
+      "test_names": [
+        "test_sample_delivery_review_stock_fee_statistics_and_histories",
+        "test_sample_delivery_can_update_draft_before_submit",
+        "test_sample_delivery_reject_and_withdraw_endpoints",
+        "test_sample_delivery_list_supports_pagination_and_summary",
+        "test_sample_delivery_endpoints_require_login",
+        "test_sample_delivery_endpoints_enforce_menu_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_finance_receipts.py",
+      "test_names": [
+        "test_finance_receipt_flow_claim_allocate_and_receivables",
+        "test_finance_receipt_allocation_rejects_excess_amount_and_permissions"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_finance_payments.py",
+      "test_names": [
+        "test_finance_payment_flow_invoice_request_approve_and_payables",
+        "test_finance_payment_rejects_excess_amount_and_permissions"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_partners.py",
+      "test_names": [
+        "test_partner_create_detail_search_update_and_fee_records",
+        "test_partner_rejects_duplicate_code",
+        "test_partner_primary_contact_can_be_replaced",
+        "test_partner_contact_update_delete_and_deactivate",
+        "test_partner_rejects_unknown_type",
+        "test_partner_list_paginates_and_keeps_summary_across_pages",
+        "test_partner_endpoints_require_login",
+        "test_partner_endpoints_enforce_menu_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_customers.py",
+      "test_names": [
+        "test_customer_create_detail_search_update_and_transactions",
+        "test_customer_primary_contact_can_be_replaced",
+        "test_customer_contact_update_and_delete",
+        "test_customer_transactions_close_sales_chain_from_quotation_to_shipment",
+        "test_customer_list_paginates_and_keeps_summary_across_pages",
+        "test_customer_endpoints_require_login",
+        "test_customer_endpoints_enforce_menu_permission",
+        "test_customer_search_reaches_records_beyond_first_page"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_masterdata_reference_validation.py",
+      "test_names": [
+        "test_quotation_rejects_missing_customer",
+        "test_quotation_rejects_inactive_product",
+        "test_edit_keeps_inactive_existing_reference",
+        "test_edit_keeps_inactive_salesperson_reference",
+        "test_edit_rejects_switching_to_inactive_customer",
+        "test_purchase_contract_rejects_missing_supplier",
+        "test_document_party_rejects_missing_customer",
+        "test_receipt_rejects_missing_customer"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_finance_reports.py",
+      "test_names": [
+        "test_finance_reports_require_login",
+        "test_finance_reports_require_finance_permission",
+        "test_finance_reports_return_empty_structure_for_finance_user",
+        "test_finance_reports_accept_filter_params_for_finance_user",
+        "test_finance_report_exports_require_login",
+        "test_finance_report_exports_require_finance_permission",
+        "test_finance_report_exports_require_export_permission",
+        "test_finance_report_exports_return_csv_for_finance_export_user",
+        "test_finance_report_exports_reject_format_parameter",
+        "test_finance_reports_explain_metric_and_return_drilldown_contract",
+        "test_finance_report_special_filters_are_exposed_by_api"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_sample_records.py",
+      "test_names": [
+        "test_sample_record_create_search_image_stock_and_delivery_link",
+        "test_sample_record_list_supports_pagination_and_summary",
+        "test_sample_record_import_export_and_followup_sync",
+        "test_sample_record_rejects_unknown_sample_type",
+        "test_sample_record_endpoints_require_login",
+        "test_sample_record_endpoints_enforce_menu_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_suppliers.py",
+      "test_names": [
+        "test_supplier_create_detail_search_update_and_transactions",
+        "test_supplier_primary_contact_can_be_replaced",
+        "test_supplier_contact_update_and_delete",
+        "test_supplier_transactions_collect_supplier_quotation_and_purchase_contract",
+        "test_supplier_list_paginates_and_keeps_summary_across_pages",
+        "test_supplier_endpoints_require_login",
+        "test_supplier_endpoints_enforce_menu_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_request_logging.py",
+      "test_names": [
+        "test_request_id_is_returned_and_written_to_structured_log",
+        "test_invalid_request_id_is_replaced_and_context_is_cleared_between_requests",
+        "test_client_error_is_logged_as_warning",
+        "test_business_error_log_contains_specific_reason",
+        "test_domain_exceptions_are_translated_at_the_global_http_boundary",
+        "test_unhandled_error_returns_traceable_response_and_logs_stack",
+        "test_authenticated_request_log_contains_current_user_id",
+        "test_json_formatter_redacts_sensitive_structured_fields"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_quality_inspections.py",
+      "test_names": [
+        "test_quality_inspection_api_creates_record_and_updates_followup",
+        "test_quality_inspection_api_creates_a_scheduled_pending_task_without_result",
+        "test_quality_inspection_list_paginates_and_keeps_summary_across_pages",
+        "test_quality_inspection_rejects_assignee_without_quality_permission",
+        "test_quality_inspection_api_inherits_contract_qc_assignee_and_filters",
+        "test_quality_inspection_api_rejects_unauthorized_and_finance_role",
+        "test_quality_inspection_api_rejects_unapproved_contract",
+        "test_quality_inspection_api_returns_field_level_validation_details",
+        "test_quality_inspection_rejects_inconsistent_completed_result",
+        "test_quality_inspection_persists_all_contract_lines_attachments_and_audit",
+        "test_quality_issue_resolution_and_reinspection_close_the_failed_flow",
+        "test_quality_task_reschedule_and_cancel_require_reasons_and_write_audit"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_domain_error_i18n.py",
+      "test_names": [
+        "test_auth_domain_error_is_english",
+        "test_masterdata_domain_error_is_english",
+        "test_purchase_domain_error_is_english",
+        "test_quality_domain_error_is_english",
+        "test_warehouse_domain_error_is_english",
+        "test_sales_domain_error_is_english",
+        "test_finance_domain_error_is_english",
+        "test_sample_domain_error_is_english",
+        "test_followup_domain_error_is_english",
+        "test_reporting_domain_error_is_english",
+        "test_dashboard_domain_error_is_english",
+        "test_default_language_keeps_chinese_domain_message"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_quotation_sample_links.py",
+      "test_names": [
+        "test_create_sample_request_from_quotation",
+        "test_sample_request_rejects_unknown_quotation",
+        "test_quotation_sample_deliveries_are_queried_by_id",
+        "test_sample_delivery_rejects_missing_sample_record"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_notifications.py",
+      "test_names": [
+        "test_notification_list_read_all_and_delete",
+        "test_notification_delete_is_limited_to_owner",
+        "test_reimbursement_submit_and_approve_emit_notifications",
+        "test_notify_approval_is_idempotent_and_skips_actor"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_organization.py",
+      "test_names": [
+        "test_super_admin_can_manage_users_and_role_permissions_without_password_leaks",
+        "test_non_super_admin_cannot_manage_organization_users_or_role_permissions",
+        "test_super_admin_can_crud_roles",
+        "test_non_super_admin_cannot_crud_roles",
+        "test_only_super_admin_menu_contains_organization_management",
+        "test_permission_options_carry_category",
+        "test_department_parent_cannot_form_cycle",
+        "test_organization_write_endpoints_reject_anonymous",
+        "test_organization_write_endpoints_reject_regular_user",
+        "test_cross_department_user_cannot_touch_other_department_user"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_outbound_orders.py",
+      "test_names": [
+        "test_outbound_order_api_formal_outbound_deducts_stock_and_records",
+        "test_outbound_order_api_rejects_unauthorized_finance_and_invalid_payload"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_files.py",
+      "test_names": [
+        "test_upload_image_returns_accessible_url",
+        "test_upload_image_accepts_data_url_prefix",
+        "test_upload_rejects_non_image",
+        "test_upload_requires_login"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_system.py",
+      "test_names": [
+        "test_system_menus_returns_200_with_valid_token",
+        "test_system_menus_rejects_unauthenticated",
+        "test_system_menus_rejects_invalid_token"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_printing.py",
+      "test_names": [
+        "test_print_export_contract_includes_primary_contact",
+        "test_print_sample_request_renders_internal_sample_sheet",
+        "test_generate_purchase_contract_template_uses_contract_company_and_product",
+        "test_print_export_contract_not_found",
+        "test_generate_purchase_contract_template_denies_missing_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_inbound_orders.py",
+      "test_names": [
+        "test_inbound_order_api_formal_inbound_posts_inventory_and_supplier_records",
+        "test_inbound_order_api_rejects_unauthorized_finance_and_invalid_payload"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_health.py",
+      "test_names": [
+        "test_health_endpoint_returns_stable_api_response"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_finance_tax_refunds.py",
+      "test_names": [
+        "test_finance_tax_refund_document_lifecycle_and_profit",
+        "test_finance_tax_refund_rejects_excess_amount_and_permissions"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_export_quotations.py",
+      "test_names": [
+        "test_export_quotation_flow_history_references_samples_export_and_contract",
+        "test_export_quotation_reject_and_withdraw_endpoints",
+        "test_export_quotation_endpoints_require_login",
+        "test_export_quotation_endpoints_enforce_menu_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_purchase_contracts.py",
+      "test_names": [
+        "test_purchase_contract_flow_generate_stock_approve_and_reminders",
+        "test_purchase_contract_endpoints_require_login",
+        "test_purchase_contract_requires_designated_reviewer",
+        "test_purchase_contract_can_be_rejected_edited_and_resubmitted",
+        "test_purchase_contract_rejection_requires_reason",
+        "test_purchase_contract_endpoints_enforce_menu_permission",
+        "test_purchase_generation_returns_specific_missing_product_message",
+        "test_purchase_contract_cancel_and_reissue",
+        "test_purchase_contract_cancel_reverses_progress_and_cleans_plans"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_followup.py",
+      "test_names": [
+        "test_followup_api_generates_plan_on_purchase_approval_and_syncs_sources",
+        "test_followup_api_rejects_finance_role"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_inbound_plans.py",
+      "test_names": [
+        "test_inbound_plan_api_auto_generates_on_purchase_approval_and_schedules_location",
+        "test_inbound_plan_api_rejects_invalid_type_unauthorized_and_finance_role"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_error_i18n.py",
+      "test_names": [
+        "test_error_message_follows_accept_language_and_keeps_stable_code",
+        "test_unsupported_language_falls_back_to_chinese",
+        "test_accept_language_quality_values_select_supported_language",
+        "test_english_validation_details_are_localized",
+        "test_english_validation_empty_string_uses_localized_template",
+        "test_known_auth_detail_is_localized_without_changing_code",
+        "test_success_response_declares_language_negotiation"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_report_export_i18n.py",
+      "test_names": [
+        "test_finance_report_export_headers_are_english",
+        "test_sample_delivery_export_headers_are_english",
+        "test_finance_report_explanation_is_english",
+        "test_default_language_keeps_chinese_export_headers"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_shipments.py",
+      "test_names": [
+        "test_shipment_flow_from_contracts_approval_reminder_and_contract_writeback",
+        "test_shipment_withdraw_returns_plan_to_draft_and_clears_reviewer",
+        "test_shipment_reject_then_resync_from_contracts_returns_draft",
+        "test_shipment_endpoints_require_login",
+        "test_shipment_endpoints_enforce_menu_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_menu_i18n.py",
+      "test_names": [
+        "test_login_returns_english_menu_labels",
+        "test_menus_endpoint_returns_english_labels",
+        "test_missing_english_label_falls_back_to_chinese",
+        "test_default_language_keeps_chinese_menu_labels"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_finance_overview.py",
+      "test_names": [
+        "test_finance_overview_returns_200_with_valid_token",
+        "test_finance_overview_rejects_unauthenticated",
+        "test_finance_overview_rejects_invalid_token"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_purchase_inquiries.py",
+      "test_names": [
+        "test_purchase_inquiry_flow_quotes_samples_template_and_sales_reference",
+        "test_purchase_inquiry_endpoints_require_login",
+        "test_purchase_inquiry_endpoints_enforce_menu_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/api/test_document_parties.py",
+      "test_names": [
+        "test_document_party_create_detail_search_update_and_lookup",
+        "test_document_party_list_supports_pagination_and_summary",
+        "test_document_party_rejects_duplicate_code",
+        "test_document_party_rejects_unknown_type",
+        "test_document_party_endpoints_require_login",
+        "test_document_party_endpoints_enforce_menu_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_backfill_sample_links.py",
+      "test_names": [
+        "test_backfill_dry_run_reports_matches_without_writing"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_purchase_contract_service.py",
+      "test_names": [
+        "test_purchase_contract_service_generates_from_export_contracts_and_approves",
+        "test_purchase_contract_service_claims_legacy_unassigned_approval",
+        "test_purchase_contract_service_allows_super_admin_to_override_assigned_reviewer",
+        "test_purchase_generation_resolves_legacy_export_product_by_code",
+        "test_purchase_generation_identifies_product_missing_accessories",
+        "test_manual_export_source_contract_builds_traceable_source_link",
+        "test_purchase_contract_service_supports_stock_purchase_and_private_filter",
+        "test_purchase_contract_service_requires_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_export_quotation_service.py",
+      "test_names": [
+        "test_export_quotation_service_approval_contract_export_and_history",
+        "test_export_quotation_service_rejects_confirm_before_approval",
+        "test_export_quotation_service_filters_private_records_without_view_all",
+        "test_export_quotation_service_reject_edit_and_resubmit",
+        "test_export_quotation_service_enforces_reject_reviewer_and_status",
+        "test_export_quotation_service_withdraw_rules",
+        "test_export_quotation_service_blocks_reject_and_withdraw_after_contract",
+        "test_confirm_contract_is_one_shot",
+        "test_confirm_contract_carries_customer_payment_terms"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_product_imports.py",
+      "test_names": [
+        "test_parse_csv_returns_header_mapped_rows",
+        "test_parse_csv_rejects_non_utf8_encoding",
+        "test_parse_xlsx_reads_inline_strings",
+        "test_unsupported_extension_raises",
+        "test_empty_file_raises"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_sample_record_service.py",
+      "test_names": [
+        "test_sample_record_service_calculates_stock_and_followup_event",
+        "test_sample_record_service_maps_bulk_sample_to_followup_node",
+        "test_sample_record_service_filters_private_record_without_view_all",
+        "test_sample_record_service_rejects_invalid_sample_type",
+        "test_sample_record_service_rejects_duplicate_delivered_event"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_quality_inspection_service.py",
+      "test_names": [
+        "test_quality_inspection_list_loads_aggregate_relations_in_fixed_queries",
+        "test_quality_inspection_pass_converts_pending_stock_by_inbound_line",
+        "test_quality_inspection_failed_deducts_pending_and_writes_return_outflow",
+        "test_quality_inspection_service_records_failed_result_and_blocks_formal_inbound",
+        "test_quality_inspection_service_passed_result_writes_back_followup_node",
+        "test_quality_inspection_service_requires_edit_permission",
+        "test_quality_inspection_service_scopes_qc_user_to_assigned_records",
+        "test_quality_inspection_service_preserves_owner_scope_and_my_assignee_filter"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_numbering.py",
+      "test_names": [
+        "test_generate_document_code_uses_prefix_and_confusable_free_alphabet",
+        "test_generate_document_code_rejects_unregistered_document_type",
+        "test_create_with_generated_code_retries_after_unique_conflict",
+        "test_create_with_generated_code_propagates_other_integrity_errors",
+        "test_create_with_generated_code_gives_up_after_max_attempts"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_data_scope.py",
+      "test_names": [
+        "test_widest_data_scope_picks_loosest",
+        "test_subtree_and_users_queries",
+        "test_resolver_all_and_view_all_return_none",
+        "test_resolver_self_scope_returns_only_self",
+        "test_resolver_department_scope",
+        "test_resolver_department_tree_scope",
+        "test_resolver_department_scope_without_department_falls_back_to_self"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_sample_request_service.py",
+      "test_names": [
+        "test_sample_request_service_progress_updates_request_status",
+        "test_sample_request_service_generates_payment_request_for_fee",
+        "test_sample_request_service_filters_private_request_without_view_all",
+        "test_sample_request_service_rejects_invalid_status",
+        "test_sample_request_service_rejects_terminal_status_on_create",
+        "test_sample_request_service_enforces_progress_transitions",
+        "test_sample_request_carries_quotation_reference",
+        "test_sample_request_rejects_mismatched_quotation_customer",
+        "test_sample_request_from_quotation_fills_customer_and_product",
+        "test_sample_fee_payment_request_is_idempotent",
+        "test_sample_request_conversion_is_one_shot"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_partner_service.py",
+      "test_names": [
+        "test_partner_service_creates_partner_with_primary_contact",
+        "test_partner_service_filters_private_partner_without_view_all",
+        "test_partner_service_rejects_invalid_partner_type",
+        "test_partner_service_updates_deletes_contacts_and_deactivates"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_customer_service.py",
+      "test_names": [
+        "test_customer_service_creates_customer_with_primary_contact_and_credit",
+        "test_customer_service_hides_credit_limit_without_field_permission",
+        "test_customer_service_filters_private_customer_without_view_all",
+        "test_customer_service_rejects_credit_update_without_credit_edit_permission",
+        "test_customer_service_updates_and_deletes_contacts"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_product_service.py",
+      "test_names": [
+        "test_product_service_creates_product_with_accessories",
+        "test_product_service_updates_and_deactivates_product",
+        "test_product_service_rejects_missing_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_shipment_service.py",
+      "test_names": [
+        "test_shipment_service_generates_combined_plan_and_updates_contract_shipped_quantity",
+        "test_shipment_service_rejects_unapproved_contract",
+        "test_shipment_service_rejects_over_unshipped_quantity",
+        "test_shipment_service_withdraws_submitted_plan_and_clears_reviewer",
+        "test_shipment_service_rejects_withdraw_when_not_submitted",
+        "test_shipment_service_withdraw_requires_owner_or_super_admin",
+        "test_shipment_service_rejects_withdraw_when_outbound_plan_exists",
+        "test_shipment_service_rejects_submitted_plan_and_records_reason",
+        "test_shipment_service_reject_requires_assigned_reviewer",
+        "test_shipment_service_reject_requires_submitted_status",
+        "test_shipment_service_reject_blocked_by_outbound_plan",
+        "test_shipment_service_resyncs_rejected_plan_from_current_contract",
+        "test_shipment_service_resync_caps_quantity_by_contract_unshipped_quantity",
+        "test_shipment_service_resync_rejects_deleted_contract_line",
+        "test_shipment_service_resync_requires_draft_or_rejected_status"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_inbound_order_service.py",
+      "test_names": [
+        "test_inbound_order_service_pending_inspection_does_not_increase_available_stock",
+        "test_inbound_order_service_approval_is_status_conditional",
+        "test_inbound_order_service_formal_inbound_requires_passed_qc",
+        "test_inbound_order_service_formal_inbound_posts_inventory_and_followup",
+        "test_inbound_order_service_cancel_draft_keeps_code_and_hides_from_default_list",
+        "test_inbound_order_service_rejects_cancel_after_approval_without_rollback",
+        "test_inbound_order_approval_requires_designated_logged_in_reviewer",
+        "test_inbound_order_service_requires_view_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_followup_service.py",
+      "test_names": [
+        "test_followup_service_generates_plan_syncs_sources_and_scans_overdue",
+        "test_followup_service_enforces_permissions",
+        "test_followup_plan_visibility_requires_view_all_for_other_owners"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_outbound_order_service.py",
+      "test_names": [
+        "test_outbound_order_service_formal_outbound_deducts_stock_and_followup",
+        "test_outbound_order_service_approval_is_status_conditional",
+        "test_outbound_order_service_cancel_draft_keeps_code_and_hides_from_default_list",
+        "test_outbound_order_service_rejects_cancel_after_approval_without_rollback",
+        "test_outbound_order_service_exception_outbound_records_reason",
+        "test_outbound_order_service_rejects_unauthorized_negative_stock",
+        "test_outbound_order_service_requires_view_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_sample_delivery_service.py",
+      "test_names": [
+        "test_sample_delivery_service_review_updates_sample_stock_and_statistics",
+        "test_sample_delivery_service_filters_private_delivery_without_view_all",
+        "test_sample_delivery_service_updates_draft_and_rejects_submitted_edit",
+        "test_sample_delivery_service_rejects_approve_when_stock_is_insufficient",
+        "test_sample_delivery_service_enforces_tracking_state_transitions",
+        "test_sample_record_service_rejects_manual_entry_for_delivery_code",
+        "test_sample_delivery_service_rejects_duplicate_stock_entry_on_approve",
+        "test_sample_delivery_service_reject_edit_and_resubmit",
+        "test_sample_delivery_service_enforces_reject_reviewer_and_status",
+        "test_sample_delivery_service_withdraw_rules",
+        "test_sample_delivery_service_blocks_reject_and_withdraw_after_downstream",
+        "test_sample_delivery_requires_existing_sample_record",
+        "test_sample_delivery_rejects_cross_customer_sample_record",
+        "test_sample_delivery_derives_line_fields_from_sample_record"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_stocktake_service.py",
+      "test_names": [
+        "test_stocktake_create_snapshots_book_quantity",
+        "test_stocktake_approve_applies_difference_and_writes_ledger",
+        "test_stocktake_approve_rejects_insufficient_available_stock",
+        "test_stocktake_requires_approval_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_document_party_service.py",
+      "test_names": [
+        "test_document_party_service_replaces_default_party",
+        "test_document_party_service_filters_private_party_without_view_all",
+        "test_document_party_service_rejects_invalid_party_type"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_auth_service.py",
+      "test_names": [
+        "test_auth_service_verifies_password_and_token_round_trip",
+        "test_auth_service_rejects_invalid_password",
+        "test_seed_system_demo_data_provisions_employee_role_accounts",
+        "test_seed_system_demo_data_deduplicates_role_permissions_by_role_and_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_masterdata_validation.py",
+      "test_names": [
+        "test_active_master_data_passes",
+        "test_missing_master_data_is_rejected",
+        "test_inactive_master_data_is_rejected",
+        "test_allow_inactive_keeps_existing_reference",
+        "test_empty_reference_is_skipped",
+        "test_partner_type_and_name_mismatch_is_rejected"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_notification_reminders.py",
+      "test_names": [
+        "test_qc_due_soon_and_overdue_create_daily_reminders",
+        "test_qc_reminder_falls_back_to_qc_owner_and_skips_same_day",
+        "test_followup_overdue_node_notifies_plan_owner_and_deduplicates",
+        "test_worker_settings_expose_two_daily_cron_jobs_without_connecting"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_inbound_plan_service.py",
+      "test_names": [
+        "test_inbound_plan_service_generates_from_approved_contract_and_schedules_location",
+        "test_inbound_plan_service_rejects_duplicate_generation",
+        "test_inbound_plan_service_rejects_unapproved_contract",
+        "test_inbound_plan_service_requires_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_outbound_plan_service.py",
+      "test_names": [
+        "test_outbound_plan_service_generates_from_approved_shipment_and_schedules",
+        "test_outbound_plan_service_rejects_duplicate_generation",
+        "test_outbound_plan_service_rejects_unapproved_shipment",
+        "test_outbound_plan_service_requires_view_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_purchase_invoice_notice_service.py",
+      "test_names": [
+        "test_purchase_invoice_notice_service_generates_sends_and_receives",
+        "test_purchase_invoice_notice_service_private_filter",
+        "test_purchase_invoice_notice_service_requires_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_export_contract_service.py",
+      "test_names": [
+        "test_export_contract_service_approval_signature_payment_export_and_event",
+        "test_export_contract_service_rejects_approval_before_submit",
+        "test_export_contract_service_allows_super_admin_to_override_assigned_reviewer",
+        "test_export_contract_service_only_deletes_draft_contracts",
+        "test_export_contract_service_rejects_deleting_quotation_generated_draft",
+        "test_export_contract_service_rejects_deleting_receipt_allocated_draft",
+        "test_export_contract_service_rejects_deleting_draft_referenced_by_purchase_line",
+        "test_export_contract_service_filters_private_records_without_view_all",
+        "test_export_contract_service_department_scope_sees_department_peers"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_printing_i18n.py",
+      "test_names": [
+        "test_contract_html_renders_english_labels",
+        "test_contract_html_keeps_chinese_by_default",
+        "test_sample_request_html_renders_english_labels",
+        "test_purchase_contract_template_filename_follows_language"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_dashboard_service.py",
+      "test_names": [
+        "test_dashboard_service_filters_by_current_user"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_purchase_inquiry_service.py",
+      "test_names": [
+        "test_purchase_inquiry_service_create_quote_template_and_reference",
+        "test_purchase_inquiry_service_updates_draft_and_blocks_after_quote",
+        "test_purchase_inquiry_service_filters_private_records_without_view_all",
+        "test_purchase_inquiry_service_requires_permission"
+      ]
+    },
+    {
+      "file": "backend/tests/services/test_supplier_service.py",
+      "test_names": [
+        "test_supplier_service_creates_supplier_with_primary_contact_and_credit",
+        "test_supplier_service_hides_credit_limit_without_field_permission",
+        "test_supplier_service_filters_private_supplier_without_view_all",
+        "test_supplier_service_rejects_credit_update_without_credit_edit_permission",
+        "test_supplier_service_updates_and_deletes_contacts"
+      ]
+    }
+  ],
+  "frontend": [
+    {
+      "file": "frontend/src/tests/smoke.test.ts",
+      "test_names": [
+        "vitest works"
+      ]
+    },
+    {
+      "file": "frontend/src/shared/useFormModal.test.tsx",
+      "test_names": [
+        "resets the form when opened or closed",
+        "resets the form after a successful submit",
+        "keeps the form data when submitting fails",
+        "ignores a second submit while the first is pending"
+      ]
+    },
+    {
+      "file": "frontend/src/shared/print.test.ts",
+      "test_names": [
+        "preserves binary workbook bytes exactly"
+      ]
+    },
+    {
+      "file": "frontend/src/api/__tests__/core.test.ts",
+      "test_names": [
+        "sends the current UI language as Accept-Language",
+        "follows language changes instead of caching the first value",
+        "maps known error codes to localized copy instead of raw backend text",
+        "passes through business and conflict messages, trimmed",
+        "falls back to backend text for unknown codes and to generic copy when empty",
+        "throws ApiError with mapped message, code and status for non-ok responses",
+        "keeps a friendly backend validation message when there are no field details",
+        "joins FastAPI detail array messages when reading an error response",
+        "clears the token and dispatches auth-expired when the server returns 401",
+        "sends Authorization only when a token is present",
+        "throws ApiError when HTTP 200 carries success:false",
+        "propagates network failures from fetch",
+        "keeps Chinese query parameters encoded in the request URL"
+      ]
+    },
+    {
+      "file": "frontend/src/api/__tests__/pagination.test.ts",
+      "test_names": [
+        "omits the query string when no filters are provided",
+        "serializes q, limit and offset in a stable order",
+        "keeps zero values instead of dropping them",
+        "drops empty-string filters but still sends pagination",
+        "omits the query string when no filters are provided",
+        "serializes every supported filter together with pagination",
+        "drops empty-string filters but keeps pagination"
+      ]
+    },
+    {
+      "file": "frontend/src/shared/__tests__/useUrlQuery.test.ts",
+      "test_names": [
+        "缺少 page 参数时回退到第一页",
+        "正整数页码原样返回",
+        "支持自定义参数名，避免同页多列表互相覆盖"
+      ]
+    },
+    {
+      "file": "frontend/src/shared/__tests__/useTablePagination.test.tsx",
+      "test_names": [
+        "切换页码时保留每页条数",
+        "切换每页条数时回到第一页",
+        "重置页码回到第一页"
+      ]
+    },
+    {
+      "file": "frontend/src/shared/ui/__tests__/RemoteSelect.test.tsx",
+      "test_names": [
+        "搜索无结果时仍显示 initialOption 回填的旧值"
+      ]
+    },
+    {
+      "file": "frontend/src/app/__tests__/routes.test.ts",
+      "test_names": [
+        "allows dashboard subpages only when the dashboard menu is assigned",
+        "normalizes record details to their assigned module",
+        "allows finance child routes only when the finance module is assigned",
+        "does not let the dashboard root absorb unrelated paths",
+        "blocks finance routes for roles without finance permission",
+        "blocks system routes for roles without system permission",
+        "keeps finance and system access working for finance and admin roles",
+        "only allows the modules granted to a partially-permitted role",
+        "keeps every registered path unique",
+        "resolves the longest entry for detail paths",
+        "derives sidebar paths and finance children from the registry",
+        "only renders exact paths for entries without detailRoot",
+        "renders detail paths for detail roots and finance modules",
+        "returns null for unregistered paths",
+        "registers every backend menu path in the frontend route registry",
+        "keeps backend menu paths unique",
+        "keeps child menu metadata on the backend",
+        "seeds all 37 business menus, including 10 finance modules",
+        "keeps menu titles, english labels, icons and permissions on the backend"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/CustomersPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders with detailId"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/PartnersPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders with detailId"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/ShipmentsPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders shipment list panel",
+        "uses business-readable selectors for shipment contracts",
+        "按服务端分页请求且在翻页时保持后端汇总指标不变",
+        "按 URL 恢复筛选条件与页码",
+        "翻到空页时回退上一页并清掉 URL 页码",
+        "详情页展示当前提醒与提醒列表",
+        "非指定审批人不可审批并提示等待指定人",
+        "指定审批人审批通过后刷新并提示",
+        "提交人可在已提交状态撤回并刷新",
+        "非提交人且非管理员不能撤回",
+        "草稿状态不展示撤回入口",
+        "指定审批人驳回并记录原因后刷新",
+        "驳回弹窗要求填写原因后才可确认",
+        "非指定审批人不可驳回",
+        "已驳回明细展示原因与重新同步入口，点击后回到草稿"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/PurchaseInquiriesPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders purchase inquiry list panel",
+        "按服务端分页请求且在翻页时保持后端汇总指标不变",
+        "按 URL 恢复筛选条件与页码",
+        "提交筛选会写回 URL 并从第一页重新查询",
+        "翻到空页时回退上一页并清掉 URL 页码",
+        "详情页按商品与报价供应商加载样品与参考价",
+        "新增询价提交明细后刷新列表并给出成功提示",
+        "登记报价失败时保留弹窗与已填内容"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/SuppliersPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders with detailId"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/OutboundPlansPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders summary strip with outbound plan metrics",
+        "renders filter inputs",
+        "requests the first page with the default page size",
+        "keeps summary metrics unchanged when switching pages",
+        "renders without detail view when no detailId"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/DashboardShortcuts.test.tsx",
+      "test_names": [
+        "only lists paths that exist in routeDefinitions",
+        "?",
+        "adds verified query presets and skips inaccessible menus",
+        "falls back to accessible list pages for recommendations",
+        "renders configured shortcuts and navigates on click",
+        "keeps a shortcut visible but disabled without navigation permission",
+        "offers frontend fallback recommendations without writing data",
+        "shows the empty copy only when there is nothing to recommend",
+        "creates a shortcut from the management modal using catalog targets",
+        "deletes a shortcut from the management modal"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/PurchaseContractsPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders purchase contract summary",
+        "lets the designated reviewer approve or reject a submitted contract",
+        "blocks cancelling a draft contract without a reason and never calls the API",
+        "keeps the cancel dialog and typed reason when the cancellation request fails",
+        "blocks reissuing a cancelled contract without a reason and never calls the API",
+        "按服务端分页请求且在翻页时保持后端汇总指标不变",
+        "提交筛选时写入 URL 并回到第 1 页请求",
+        "刷新或直达时从 URL 恢复筛选并按该条件请求",
+        "重新打开作废弹窗时清空上次填写的原因和错误",
+        "新增采购合同缺少供应商时阻止提交并保留已填内容",
+        "草稿状态下编辑和作废可用，未选审批人不能提交且审批按钮禁用"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/TradingPartnerPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders trading partner list panel",
+        "默认使用紧凑工具栏并按需展开高级筛选",
+        "显示已启用的高级筛选数量并可以重置",
+        "列表按服务端分页请求且在翻页后保持汇总指标不变",
+        "提交筛选时回到第一页并保留筛选条件"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/appHelpers.test.tsx",
+      "test_names": [
+        "allows a super admin to override an assigned reviewer",
+        "does not allow a regular approver to override an assigned reviewer",
+        "将消息级别显示为中文业务标签",
+        "让 t 跟随运行时语言设置",
+        "让日期格式化跟随运行时设置的时区"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/InboundPlansPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders summary strip with inbound plan metrics",
+        "renders search panel title",
+        "renders filter inputs",
+        "requests the first page with the default page size",
+        "keeps summary metrics unchanged when switching pages",
+        "opens modal when generate/schedule button is clicked",
+        "resets the schedule form after cancelling the modal",
+        "renders without detail view when no detailId"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/SampleRequestsPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders sample request list panel",
+        "首屏按服务端分页请求打样单",
+        "提交筛选按条件从第一页重新查询",
+        "翻到空页时回退上一页",
+        "新增打样单提交表头与明细并提示成功",
+        "选择关联报价后带出客户与第一行产品",
+        "登记打样费用提交金额与币种并提示成功",
+        "指定付费审批人后发起费用付款申请",
+        "载入打样单并转为样品登记",
+        "详情页更新打样进度后提示并保留当前单",
+        "详情页打印内部打样单调用打印入口",
+        "详情页返回列表时导航到打样单列表"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/DashboardPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "labels super-admin business tasks as global on dashboard and full list",
+        "keeps personal todo labels for regular users",
+        "filters the todo list by task title or business context",
+        "uses a scope switch instead of showing assigned and self-created tasks side by side",
+        "makes overdue tasks explicit in the list",
+        "prioritizes overdue and due-today work over later tasks on the workbench",
+        "shows skeleton when loading with no dashboard data",
+        "renders metric strip with correct labels",
+        "renders empty state messages when no data",
+        "offers a direct next step from each workbench empty state",
+        "orders workbench content by action priority and uses a document icon for announcements",
+        "renders toolbar buttons",
+        "navigates when clicking metric cards",
+        "navigates an assigned QC task to my quality tasks",
+        "navigates an assigned follow-up node to its plan",
+        "navigates an inbound approval task to the assigned order",
+        "navigates a payment approval task to its supplier invoice detail"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/DashboardScheduleEdit.test.tsx",
+      "test_names": [
+        "opens the create form pre-filled and submits a PATCH payload",
+        "blocks an end time earlier than the start time before calling the API"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/ReportingPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders summary strip",
+        "renders approval document query panel",
+        "opens pending documents for approval and approved documents for details",
+        "does not navigate when the document type is unsupported"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/appHelpers.test.ts",
+      "test_names": [
+        "derives action and schedule dates from the current local day"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/OutboundOrdersPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders summary strip with outbound order metrics",
+        "renders filter inputs",
+        "requests the first page with the default page size",
+        "keeps summary metrics unchanged when switching pages",
+        "opens modal when 生成/审批出库单 button is clicked",
+        "renders without detail view when no detailId",
+        "从 URL 恢复搜索、状态、模式、类型与页码，并按 offset 请求",
+        "提交筛选时写入 URL 并回到第一页",
+        "关闭后重新打开弹窗时表单回到当前订单的值",
+        "生成出库单失败时保留弹窗内已填写的库位与经办人",
+        "待审批单的审批人不是当前用户时按钮禁用，指定审批人时可提交审批"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/ProductsPage.test.tsx",
+      "test_names": [
+        "renders product list panel",
+        "使用带可访问名称的图标工具按钮，并保留新增商品文字",
+        "从 URL 恢复搜索与页码，并按 offset 请求",
+        "提交查询时写入 URL 并回到第一页",
+        "翻页时把页码写入 URL",
+        "浏览器后退时按 URL 恢复搜索与页码",
+        "已挂载的列表在切换语言后更新标题与表头",
+        "新增商品：校验必填、提交创建 payload 并回到第一页刷新",
+        "导出：未选行导出当前页全部，选中后只导出选中行",
+        "详情页渲染配件、关联客户与业务记录，并可编辑保存",
+        "当前页为空且页码大于 1 时回退上一页"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/ExportQuotationsPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders quotation list panel",
+        "opens the quotation form from the list toolbar",
+        "按服务端分页请求且在翻页时保持后端汇总指标不变",
+        "从 URL 恢复筛选与页码，并在浏览器前进后退时重新读取",
+        "提交筛选时写入 URL 并回到第一页",
+        "审批按钮按指定审批人启用，非指定人时禁用并提示等待",
+        "新增报价失败时保留弹窗和已填写的产品信息",
+        "撤回与驳回入口仅在已提交报价显示",
+        "驳回原因必填，填写后提交驳回请求",
+        "撤回提交后调用撤回接口",
+        "生成出口合同仅在已审批报价上可用，成功后展示合同号",
+        "报价详情展示关联打样单"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/InboundOrdersPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders summary strip with inbound order metrics",
+        "renders search panel title",
+        "renders business-facing filter controls",
+        "submits selected supplier and purchase contract ids to the existing query",
+        "opens modal when 生成/审批入库单 button is clicked",
+        "selects an inbound plan by purchase order number and submits the linked plan id",
+        "shows selected dropdown values and hides internal warehouse and location ids",
+        "selects an active employee and submits the linked reviewer id",
+        "renders without detail view when no detailId",
+        "从 URL 恢复搜索、状态与页码，并按 offset 请求",
+        "提交筛选时写入 URL 并回到第一页",
+        "浏览器后退时按 URL 恢复筛选与页码",
+        "翻到第 2 页时顶部指标数值不变",
+        "关闭后重新打开弹窗时表单回到当前订单的值",
+        "生成入库单失败时保留弹窗内已填写的库位与经办人",
+        "作废入库单必须先填原因，填写后才提交",
+        "待审批单的审批人不是当前用户时审批按钮禁用并提示等待",
+        "当前用户是指定审批人时可提交审批并带上审批日期",
+        "已挂载的列表在切换语言后更新标题、表头与日期",
+        "列表加载失败时提示错误并结束加载态",
+        "翻页写入 URL，回到第一页时移除 page 参数",
+        "生成提交中只锁定生成按钮，同屏的提交审批与审批按钮不受影响",
+        "生成失败时提示错误、保持弹窗并恢复生成按钮",
+        "提交审批的提交态与错误提示独立于生成表单"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/masterdataOptions.test.tsx",
+      "test_names": [
+        "出口合同首次加载只请求启用客户与前 20 条商品",
+        "输入关键字后按关键字重新请求，而不是本地截断",
+        "采购合同首次加载只请求启用工厂与前 20 条商品"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/SampleRecordsPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders sample record list panel",
+        "首屏加载样品台账",
+        "按 URL 页码请求服务端分页，并用后端汇总渲染指标",
+        "URL 筛选参数进入服务端请求",
+        "提交筛选按条件重新查询",
+        "新增样品提交表单并提示成功",
+        "按当前表单导入样品并提示新增数量",
+        "按搜索条件导出台账",
+        "详情页追加样品图片提交图片信息",
+        "详情页登记样品数量提交库存事件",
+        "列表与详情展示样品来源类型与来源单号"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/PurchaseInvoiceNoticesPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders invoice notice list panel",
+        "按服务端分页请求且在翻页时保持后端汇总指标不变",
+        "从 URL 恢复筛选与页码",
+        "提交筛选写入 URL 并回到第一页",
+        "从报关单证生成开票通知并提交行项目",
+        "详情页发送开票通知",
+        "详情页登记供应商税票"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/SampleDeliveriesPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders sample delivery list panel",
+        "首屏同时加载寄样单列表与费用、数量统计",
+        "按 URL 页码请求服务端分页，并用后端汇总渲染指标",
+        "URL 筛选参数进入服务端请求",
+        "筛选查询同时作用于列表与报表统计",
+        "新增寄样单提交表头与明细并提示成功",
+        "选择报价与样品登记后只提交登记标识与数量",
+        "非指定审批人不可审核并提示等待指定人",
+        "保存草稿编辑提交更新后的客户名称",
+        "指定审批人后提交寄样单审核",
+        "指定审批人审核通过寄样单",
+        "按客户筛选导出寄样记录",
+        "更新物流提交快递单号并提示",
+        "详情页按样品与客户、产品加载样品和报价历史",
+        "撤回与驳回入口仅在已提交寄样单显示",
+        "驳回原因必填，填写后提交驳回请求",
+        "撤回提交后调用撤回接口",
+        "已驳回寄样单展示原因且可编辑",
+        "详情页返回列表跳转寄样单列表路径"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/ExportContractsPage.test.tsx",
+      "test_names": [
+        "renders without crashing (list view)",
+        "renders summary strip",
+        "clicking search button triggers API call",
+        "shows customer details in options but keeps the selected value concise",
+        "supports searching and selecting a salesperson while keeping id and name synchronized",
+        "does not expose a source quotation number field when creating a contract",
+        "adds multiple products as separate editable contract lines",
+        "blocks cancelling a draft contract without a reason and never calls the API",
+        "keeps the cancel dialog and typed reason when the cancellation request fails",
+        "clears a previously typed cancel reason when the dialog is reopened",
+        "blocks reissuing a cancelled contract without a reason and never calls the API",
+        "按服务端分页请求且在翻页时保持后端汇总指标不变",
+        "提交筛选时写入 URL 并回到第 1 页请求",
+        "刷新或直达时从 URL 恢复筛选并按该条件请求",
+        "新增出口合同提交失败后保留弹窗和已添加的商品行",
+        "草稿状态下载入编辑和作废可用，未选审批人不能提交，审批按钮禁用",
+        "已提交但非指定审批人时审批按钮禁用并提示等待审批"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/QualityInspectionsPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders summary strip with QC metrics",
+        "renders search panel title",
+        "renders filter inputs",
+        "refreshes with current filters and resets to the full task list",
+        "opens a task-only modal without inspection result fields",
+        "creates a scheduled pending task for the selected employee without a result",
+        "lists the missing required fields and does not submit an incomplete inspection",
+        "renders without detail view when no detailId",
+        "closes an exception before creating a reinspection task",
+        "does not offer reinspection from a stale failed task",
+        "从 URL 恢复筛选条件与页码并据此请求列表",
+        "提交筛选时写入 URL，重置筛选时清除 URL",
+        "关闭后重新打开新增弹窗会重置已填写内容",
+        "创建失败时保留已填写内容并保持弹窗打开",
+        "存在未关闭异常时复检按钮不可用并提示先关闭异常",
+        "按服务端分页请求且翻页后汇总指标不变"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/DocumentPartiesPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders document parties list panel",
+        "按 URL 页码请求服务端分页，并用后端汇总渲染指标",
+        "状态筛选进入服务端请求"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/OrganizationUsersPage.test.tsx",
+      "test_names": [
+        "非超级管理员只提示缺少权限且不请求组织数据",
+        "超级管理员首屏加载组织选项与用户列表",
+        "创建用户成功后展示初始密码并重新加载列表",
+        "保存角色权限时提交勾选后的权限 id",
+        "保存公司信息时提交当前表单字段",
+        "renders without crashing",
+        "renders search input",
+        "resets the create form each time the modal opens",
+        "keeps the create form and typed values when creating a user fails"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/FollowupPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders followup list panel",
+        "按节点编码统一显示日期名称并兼容历史节点名称",
+        "可以在默认模板的是否选项间切换",
+        "定位工作台传入的节点并提供可执行的登记入口",
+        "按服务端分页请求且在翻页时保持后端汇总指标不变",
+        "从 URL 恢复筛选与页码，并在浏览器前进后退时重新读取",
+        "提交筛选时写入 URL 并回到第一页",
+        "生成跟单计划后按合同筛选刷新列表",
+        "节点登记失败时保留弹窗与已填写的记录编号和说明",
+        "模板保存失败时保留模板名与节点天数"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/LoginPage.test.tsx",
+      "test_names": [
+        "renders without crashing",
+        "renders the login form with username and password fields",
+        "shows external error when passed as prop",
+        "does not show the required hint before the user submits",
+        "shows validation error when submitting with empty fields"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/MyQualityTasksPage.test.tsx",
+      "test_names": [
+        "loads only tasks assigned to the current user and starts a pending task",
+        "prefills completion details from the linked purchase contract",
+        "submits every purchase contract line when completing a QC task",
+        "requires and submits a cancellation reason through the dedicated action",
+        "按 URL 恢复搜索、状态与页码",
+        "翻到空页时回退上一页并清掉 URL 页码",
+        "查验数量无效时阻止提交并提示校验数量",
+        "调整排期提交新的排期时间与原因",
+        "按服务端分页请求且翻页后汇总指标不变"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/McpSettingsPage.test.tsx",
+      "test_names": [
+        "hides connection details until MCP is enabled",
+        "shows a permission-oriented error instead of an endless skeleton when loading fails",
+        "generates a dedicated MCP credential before copying connection information"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/AuditLogsPage.test.tsx",
+      "test_names": [
+        "renders audit records with localized module and action",
+        "searches by document number keyword",
+        "exports current filter result as CSV"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/FinancePage.test.tsx",
+      "test_names": [
+        "renders without crashing (home view)",
+        "renders overview view",
+        "renders receipts view",
+        "renders payments view",
+        "keeps tax document filters and actions in the shared desktop toolbar",
+        "keeps report filters and actions in the shared desktop toolbar",
+        "keeps the supplier invoice selected by the payment detail route",
+        "pages receipts on the server without changing backend summary totals",
+        "restores receipt filters and page from the URL on direct load",
+        "writes receipt filters to the URL, resets to page 1 and keeps other list keys"
+      ]
+    },
+    {
+      "file": "frontend/src/app/pages/__tests__/DashboardTodoActions.test.tsx",
+      "test_names": [
+        "completes an owned manual todo after confirmation",
+        "shows derived todos as auto-closing without a complete action",
+        "lets the creator reassign but not complete a todo owned by someone else",
+        "treats backend is_overdue as the single source of overdue truth"
+      ]
+    },
+    {
+      "file": "frontend/src/app/components/sidebar/sidebarNavigation.test.ts",
+      "test_names": [
+        "restores every implemented page to the sidebar",
+        "keeps the original group order and merges purchase documents into their own group",
+        "keeps finance children intact",
+        "renders finance children in backend menu order",
+        "omits child routes that the backend did not grant"
+      ]
+    },
+    {
+      "file": "frontend/src/app/components/sidebar/AppSidebar.test.tsx",
+      "test_names": [
+        "keeps mobile navigation collapsed until the user opens it",
+        "closes the mobile navigation after selecting a destination"
+      ]
+    },
+    {
+      "file": "frontend/src/app/components/__tests__/NotificationBell.test.tsx",
+      "test_names": [
+        "opens the document and marks the notification read",
+        "falls back to the notification page when the target is not allowed",
+        "marks all notifications as read"
+      ]
+    }
+  ],
+  "note": "静态标题索引，不等同分支覆盖率；运行数量以581/384日志为准"
+}

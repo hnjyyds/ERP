@@ -1,0 +1,70 @@
+{
+  "success": true,
+  "code": "SUCCESS",
+  "message": "请求成功",
+  "data": {
+    "items": [
+      {
+        "id": "50b2abe7-16ec-489d-830f-c09d7e8572d6",
+        "receipt_no": "BR-MWYV53",
+        "received_at": "2026-11-12",
+        "payer_name": "QA261112 测试客户",
+        "customer_id": "9d46eb62-a60a-49c1-92e2-bf4f4240884d",
+        "customer_name": "QA261112 测试客户",
+        "amount": "100.00",
+        "allocated_amount": "120.00",
+        "unallocated_amount": "0.00",
+        "currency": "USD",
+        "bank_account": "QA261112-TEST-NOT-REAL",
+        "reference_no": "QA261112-REF01",
+        "receipt_type": "normal",
+        "status": "allocated",
+        "claim_message": "银行水单 BR-MWYV53 待业务员认领",
+        "remark": "QA261112 财务边界测试",
+        "created_by_user_id": "u-baeac30b5127ebdb",
+        "created_by_user_name": "系统管理员",
+        "claims": [
+          {
+            "id": "78832f20-b97f-463b-8f0e-9150d14615b3",
+            "receipt_id": "50b2abe7-16ec-489d-830f-c09d7e8572d6",
+            "claimed_by_user_id": "u-baeac30b5127ebdb",
+            "claimed_by_user_name": "系统管理员",
+            "claimed_at": "2026-11-12",
+            "note": null
+          }
+        ],
+        "allocations": [
+          {
+            "id": "ed630fe6-a5bb-4126-b7e1-b76ff9a6f069",
+            "receipt_id": "50b2abe7-16ec-489d-830f-c09d7e8572d6",
+            "allocation_type": "contract",
+            "contract_id": "34817a9e-a058-4438-ba51-3e8b311bda58",
+            "contract_no": "EC-F8D7RX",
+            "invoice_no": null,
+            "allocated_at": "2026-11-12",
+            "amount": "60.00",
+            "currency": "USD",
+            "remark": "QA261112 两次并发60边界测试"
+          },
+          {
+            "id": "48516ac6-a7f9-4a15-8978-1968be55e3ac",
+            "receipt_id": "50b2abe7-16ec-489d-830f-c09d7e8572d6",
+            "allocation_type": "contract",
+            "contract_id": "34817a9e-a058-4438-ba51-3e8b311bda58",
+            "contract_no": "EC-F8D7RX",
+            "invoice_no": null,
+            "allocated_at": "2026-11-12",
+            "amount": "60.00",
+            "currency": "USD",
+            "remark": "QA261112 两次并发60边界测试"
+          }
+        ]
+      }
+    ],
+    "total": 1,
+    "total_amount": "100.00",
+    "unallocated_amount": "-20.00",
+    "currency": "USD"
+  },
+  "error": null
+}

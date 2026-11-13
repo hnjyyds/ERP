@@ -127,6 +127,7 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
             reminders={list.reminders}
             approval={approval}
             cancelActions={cancelActions}
+            loading={list.detailLoading}
             onBack={() => onNavigate(purchaseContractPath)}
             onEdit={formModal.openEdit}
           />

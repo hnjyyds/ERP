@@ -8,6 +8,7 @@ from datetime import date
 from decimal import Decimal
 from io import StringIO
 
+from app.core.csv_export import safe_cell
 from app.core.messages import localize_labels
 from app.modules.sample.deliveries.repositories import (
     SampleDeliveryFeeStatisticRow,
@@ -192,20 +193,20 @@ class SampleDeliveryStatisticsMixin:
             first_line = response.lines[0] if response.lines else None
             writer.writerow(
                 [
-                    response.code,
+                    safe_cell(response.code),
                     response.delivery_date.isoformat(),
-                    response.status,
-                    response.customer_name,
-                    response.recipient_company or response.recipient_name,
-                    response.express_company,
-                    response.tracking_no or "",
-                    response.quotation_no or "",
-                    first_line.sample_code if first_line else "",
-                    first_line.product_name if first_line else "",
+                    safe_cell(response.status),
+                    safe_cell(response.customer_name),
+                    safe_cell(response.recipient_company or response.recipient_name),
+                    safe_cell(response.express_company),
+                    safe_cell(response.tracking_no or ""),
+                    safe_cell(response.quotation_no or ""),
+                    safe_cell(first_line.sample_code if first_line else ""),
+                    safe_cell(first_line.product_name if first_line else ""),
                     first_line.quantity if first_line else "",
-                    first_line.unit if first_line else "",
+                    safe_cell(first_line.unit if first_line else ""),
                     response.fee_total,
-                    response.remark or "",
+                    safe_cell(response.remark or ""),
                 ]
             )
         return SampleDeliveryExportResponse(

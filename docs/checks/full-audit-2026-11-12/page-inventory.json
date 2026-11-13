@@ -1,0 +1,2847 @@
+[
+  {
+    "path": "/",
+    "key": "01-_",
+    "status": "page_opened",
+    "title": "工作台",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "待办\n3",
+        "disabled": false
+      },
+      {
+        "text": "今日日程\n0",
+        "disabled": false
+      },
+      {
+        "text": "未读消息\n7",
+        "disabled": false
+      },
+      {
+        "text": "公告\n1",
+        "disabled": false
+      },
+      {
+        "text": "管理快捷入口",
+        "disabled": false
+      },
+      {
+        "text": "商品资料",
+        "disabled": false
+      },
+      {
+        "text": "供应商资料",
+        "disabled": false
+      },
+      {
+        "text": "客户资料",
+        "disabled": false
+      },
+      {
+        "text": "出口合同",
+        "disabled": false
+      },
+      {
+        "text": "新增待办",
+        "disabled": false
+      },
+      {
+        "text": "查看全部",
+        "disabled": false
+      },
+      {
+        "text": "去处理",
+        "disabled": false
+      },
+      {
+        "text": "去处理",
+        "disabled": false
+      },
+      {
+        "text": "去处理",
+        "disabled": false
+      },
+      {
+        "text": "新增日程",
+        "disabled": false
+      },
+      {
+        "text": "查看全部",
+        "disabled": false
+      },
+      {
+        "text": "查看全部",
+        "disabled": false
+      },
+      {
+        "text": "处理",
+        "disabled": false
+      },
+      {
+        "text": "发布公告",
+        "disabled": false
+      },
+      {
+        "text": "查看全部",
+        "disabled": false
+      }
+    ],
+    "inputs": [],
+    "tables": 0,
+    "text": "业务模块\n\n工作台\n7\n待办\n3\n今日日程\n0\n未读消息\n7\n公告\n1\n快捷入口\n管理快捷入口\n推荐入口\n商品资料\n供应商资料\n客户资料\n出口合同\n今日优先处理\n全局待办\n暂无紧急待办\n查看全部\n采购跟单 PC-HR36RU · 确认样提交日期\n未到期\n\nQA261112 测试供应商\n\n来源：跟单\n截止：2026-11-15 17:00\n去处理\n采购跟单 PC-HR36RU · 大货样提交日期\n未到期\n\nQA261112 测试供应商\n\n来源：跟单\n截止：2026-11-19 17:00\n去处理\n采购跟单 PC-HR36RU · 出库日期\n未到期\n\nQA261112 测试供应商\n\n来源：跟单\n截止：2026-12-07 17:00\n去处理\n我的日程\n新增日程\n查看全部\n\n暂无日程\n\n消息\n查看"
+  },
+  {
+    "path": "/workspace/todos",
+    "key": "02-_workspace_todos",
+    "status": "page_opened",
+    "title": "工作台",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "去处理",
+        "disabled": false
+      },
+      {
+        "text": "去处理",
+        "disabled": false
+      },
+      {
+        "text": "去处理",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "label": "搜索任务、客户或供应商",
+        "type": "text"
+      },
+      {
+        "label": "任务类型筛选",
+        "type": "search"
+      },
+      {
+        "label": "截止状态筛选",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n工作台\n7\n全局待办\n全局业务待办 3\n我创建的 0\n全部类型\n全部时效\n当前结果 3\n任务\t类型\t负责人\t截止时间\t操作\n\n任务\n\t\n类型\n\t\n负责人\n\t\n截止时间\n\t\n操作\n\n\n采购跟单 PC-HR36RU · 确认样提交日期\nQA261112 测试供应商\n\t跟单\t未分配\t\n2026-11-15\n未到期\n\t\n去处理\n随单据状态自动关闭\n\n\n采购跟单 PC-HR36RU · 大货样提交日期\nQA261112 测试供应商\n\t跟单\t未分配\t\n2026-11-19\n未到期\n\t\n去处理\n随单据状态自动关闭\n\n\n采购跟单 PC-HR36RU · 出库日期\nQA261112 测试供应商\n\t跟单\t未分配\t\n2026-12-07\n未到期\n\t\n去处理\n随单据状态自动关闭"
+  },
+  {
+    "path": "/workspace/schedules",
+    "key": "03-_workspace_schedules",
+    "status": "page_opened",
+    "title": "工作台",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      }
+    ],
+    "inputs": [],
+    "tables": 0,
+    "text": "业务模块\n\n工作台\n8\n我的日程\n0\n暂无日程"
+  },
+  {
+    "path": "/workspace/notifications",
+    "key": "04-_workspace_notifications",
+    "status": "page_opened",
+    "title": "工作台",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "全部已读",
+        "disabled": false
+      },
+      {
+        "text": "处理",
+        "disabled": false
+      },
+      {
+        "text": "查看单据",
+        "disabled": false
+      },
+      {
+        "text": "删除",
+        "disabled": false
+      },
+      {
+        "text": "处理",
+        "disabled": false
+      },
+      {
+        "text": "查看单据",
+        "disabled": false
+      },
+      {
+        "text": "删除",
+        "disabled": false
+      },
+      {
+        "text": "处理",
+        "disabled": false
+      },
+      {
+        "text": "查看单据",
+        "disabled": false
+      },
+      {
+        "text": "删除",
+        "disabled": false
+      },
+      {
+        "text": "处理",
+        "disabled": false
+      },
+      {
+        "text": "查看单据",
+        "disabled": false
+      },
+      {
+        "text": "删除",
+        "disabled": false
+      },
+      {
+        "text": "处理",
+        "disabled": false
+      },
+      {
+        "text": "查看单据",
+        "disabled": false
+      },
+      {
+        "text": "删除",
+        "disabled": false
+      },
+      {
+        "text": "处理",
+        "disabled": false
+      },
+      {
+        "text": "查看单据",
+        "disabled": false
+      },
+      {
+        "text": "删除",
+        "disabled": false
+      },
+      {
+        "text": "处理",
+        "disabled": false
+      },
+      {
+        "text": "查看单据",
+        "disabled": false
+      },
+      {
+        "text": "删除",
+        "disabled": false
+      },
+      {
+        "text": "处理",
+        "disabled": false
+      },
+      {
+        "text": "查看单据",
+        "disabled": false
+      },
+      {
+        "text": "删除",
+        "disabled": false
+      }
+    ],
+    "inputs": [],
+    "tables": 0,
+    "text": "业务模块\n\n工作台\n8\n消息\n8\n全部已读\n审批通知\n演示业务主管 已审批通过寄样单 SD-CXE849\nsuccess\n处理\n查看单据\n删除\n审批通知\n演示财务主管 已审批通过付款 PR-ZAWWF6\nsuccess\n处理\n查看单据\n删除\n审批通知\n演示财务主管 已审批通过付款 PR-GZN8H6\nsuccess\n处理\n查看单据\n删除\n审批通知\n演示业务主管 已审批通过出库单 XP-OUT-33A95C\nsuccess\n处理\n查看单据\n删除\n审批通知\n演示业务主管 已审批通过出运计划 SP-DAEPEG\nsuccess\n处理\n查看单据\n删除\n审批通知\n演示业务主管 已审批通过入库单 XP-IN-MVU9CU\nsuccess\n处理\n查看单据\n删除\n审批通知\n演示业务主管 已审批通过采购合同 "
+  },
+  {
+    "path": "/workspace/announcements",
+    "key": "05-_workspace_announcements",
+    "status": "page_opened",
+    "title": "工作台",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      }
+    ],
+    "inputs": [],
+    "tables": 0,
+    "text": "业务模块\n\n工作台\n8\n公司公告\n1\n2026-06-13\n外贸业务系统启动\n\n请关注采购跟单、QC 查验和仓库入出库提醒。"
+  },
+  {
+    "path": "/masterdata/products",
+    "key": "06-_masterdata_products",
+    "status": "page_opened",
+    "title": "商品资料",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询商品",
+        "disabled": false
+      },
+      {
+        "text": "新增商品",
+        "disabled": false
+      },
+      {
+        "text": "导入商品",
+        "disabled": false
+      },
+      {
+        "text": "导出全部商品",
+        "disabled": false
+      },
+      {
+        "text": "设置列视图",
+        "disabled": false
+      },
+      {
+        "text": "查看详情",
+        "disabled": false
+      },
+      {
+        "text": "QA261112-P01",
+        "disabled": false
+      },
+      {
+        "text": "查看详情",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "搜索",
+        "type": "text"
+      },
+      {
+        "label": "Select all",
+        "type": "checkbox"
+      },
+      {
+        "label": "",
+        "type": "checkbox"
+      },
+      {
+        "label": "",
+        "type": "checkbox"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n商品资料\n8\n商品\n2\n配件明细\n1\n有图片\n0\n商品资料\n搜索\n新增商品\n导入\n导出\n\t编号\t中文名称\t英文名称\t海关编码\t单位\t状态\t配件\t入口\n\n\t\tQA261112 验收测试围巾\tQA261112 Audit Scarf\t6214300000\tpcs\t启用\t0\t\n查看详情\n\n\n\tQA261112-P01\tQA261112 验收测试围巾\tQA261112 Audit Scarf\t6214300000\tpcs\t启用\t1\t\n查看详情\n共 2 条\n1\n50 条/页"
+  },
+  {
+    "path": "/masterdata/suppliers",
+    "key": "07-_masterdata_suppliers",
+    "status": "page_opened",
+    "title": "供应商资料",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询供应商",
+        "disabled": false
+      },
+      {
+        "text": "新增供应商",
+        "disabled": false
+      },
+      {
+        "text": "高级筛选",
+        "disabled": false
+      },
+      {
+        "text": "设置列视图",
+        "disabled": false
+      },
+      {
+        "text": "QA261112-S01",
+        "disabled": false
+      },
+      {
+        "text": "查看详情",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "搜索",
+        "type": "text"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n供应商资料\n8\n供应商\n1\n启用\n1\n联系人\n1\n有信用资料\n1\n供应商资料\n搜索\n新增供应商\n编号\t中文名称\t英文名称\t国家/地区\t联系人\t状态\t入口\nQA261112-S01\tQA261112 测试供应商\tQA261112 Supplier\tCN\tQA261112 联系人\t启用\t\n查看详情\n共 1 条\n1\n50 条/页"
+  },
+  {
+    "path": "/masterdata/customers",
+    "key": "08-_masterdata_customers",
+    "status": "page_opened",
+    "title": "客户资料和订单要求",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询客户",
+        "disabled": false
+      },
+      {
+        "text": "新增客户",
+        "disabled": false
+      },
+      {
+        "text": "高级筛选",
+        "disabled": false
+      },
+      {
+        "text": "设置列视图",
+        "disabled": false
+      },
+      {
+        "text": "QA261112-C01",
+        "disabled": false
+      },
+      {
+        "text": "查看详情",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "搜索",
+        "type": "text"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n客户资料和订单要求\n8\n客户\n1\n启用\n1\n联系人\n1\n有信用资料\n1\n客户资料\n搜索\n新增客户\n编号\t中文名称\t英文名称\t国家/地区\t联系人\t状态\t入口\nQA261112-C01\tQA261112 测试客户\tQA261112 Customer\tDE\tQA261112 联系人\t启用\t\n查看详情\n共 1 条\n1\n50 条/页"
+  },
+  {
+    "path": "/masterdata/partners",
+    "key": "09-_masterdata_partners",
+    "status": "page_opened",
+    "title": "合作伙伴",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询合作伙伴",
+        "disabled": false
+      },
+      {
+        "text": "新增合作伙伴",
+        "disabled": false
+      },
+      {
+        "text": "高级筛选",
+        "disabled": false
+      },
+      {
+        "text": "设置列视图",
+        "disabled": false
+      },
+      {
+        "text": "去新增合作伙伴",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "label": "搜索",
+        "type": "text"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n合作伙伴\n8\n合作伙伴\n0\n启用\n0\n联系人\n0\n类型数\n0\n合作伙伴资料\n搜索\n新增合作伙伴\n编号\t中文名称\t英文名称\t类型\t国家/地区\t联系人\t状态\t入口\n\n\n还没有合作伙伴资料\n\n点击“新增合作伙伴”建立第一条资料，之后可在这里搜索和维护\n\n去新增合作伙伴"
+  },
+  {
+    "path": "/masterdata/document-parties",
+    "key": "10-_masterdata_document-parties",
+    "status": "page_opened",
+    "title": "单证资料",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "新增单证资料",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "label": "搜索",
+        "type": "text"
+      },
+      {
+        "label": "类型全部类型",
+        "type": "search"
+      },
+      {
+        "label": "状态全部状态",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n单证资料\n8\n单证资料\n0\n默认资料\n0\n收货人\n0\n开证行\n0\n单证资料列表\n搜索\n类型\n全部类型\n状态\n全部状态\n查询\n新增单证资料\n编号\t名称\t类型\t关联客户\t国家/地区\t状态\t入口\n\n\n暂无数据"
+  },
+  {
+    "path": "/sales/contracts",
+    "key": "11-_sales_contracts",
+    "status": "page_opened",
+    "title": "出口合同",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "新增合同",
+        "disabled": false
+      },
+      {
+        "text": "EC-F8D7RX",
+        "disabled": false
+      },
+      {
+        "text": "查看详情",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "合同搜索",
+        "type": "text"
+      },
+      {
+        "label": "审批状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "客户筛选从客户资料筛选",
+        "type": "search"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n出口合同\n8\n合同数\n1\n待审批\n0\n已审批\n1\n合同金额\nUSD 512.50\n预收款\nUSD 0.00\n合同列表\n合同搜索\n审批状态\n全部状态\n客户筛选\n从客户资料筛选\n查询\n新增合同\n合同号\t状态\t客户\t计划出运日\t金额\t回签\t入口\nEC-F8D7RX\t已审批\tQA261112 测试客户\t2026-11-25\tUSD 512.50\t未回签\t\n查看详情\n共 1 条\n1\n50 条/页"
+  },
+  {
+    "path": "/purchase/contracts",
+    "key": "12-_purchase_contracts",
+    "status": "page_opened",
+    "title": "采购合同",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "新增采购合同",
+        "disabled": false
+      },
+      {
+        "text": "从出口合同生成",
+        "disabled": false
+      },
+      {
+        "text": "PC-HR36RU",
+        "disabled": false
+      },
+      {
+        "text": "查看详情",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "合同搜索",
+        "type": "text"
+      },
+      {
+        "label": "审批状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "来源类型全部来源",
+        "type": "search"
+      },
+      {
+        "label": "供应商标识",
+        "type": "text"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n采购合同\n8\n采购合同\n1\n待审批\n0\n已审批\n1\n合同金额\nRMB 250.00\n待办提醒\n2\n采购合同列表\n合同搜索\n审批状态\n全部状态\n来源类型\n全部来源\n供应商标识\n查询\n新增采购合同\n从出口合同生成\n采购合同\t状态\t来源\t供应商\tQC 负责人\t交货日\t金额\t入口\nPC-HR36RU\t已审批\t手工采购\tQA261112 测试供应商\t演示 QC 专员\t2026-11-12\tRMB 250.00\t\n查看详情\n共 1 条\n1\n50 条/页"
+  },
+  {
+    "path": "/sales/quotations",
+    "key": "13-_sales_quotations",
+    "status": "page_opened",
+    "title": "出口报价",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "新增出口报价",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "label": "报价搜索",
+        "type": "text"
+      },
+      {
+        "label": "审批状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "客户筛选从客户资料筛选",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n出口报价\n8\n报价单\n0\n待审批\n0\n已审批\n0\n报价金额\nUSD 0\n报价单列表\n报价搜索\n审批状态\n全部状态\n客户筛选\n从客户资料筛选\n查询\n新增出口报价\n报价单号\t状态\t客户\t贸易条款\t金额\t合同\t入口\n\n\n暂无数据"
+  },
+  {
+    "path": "/sales/shipments",
+    "key": "14-_sales_shipments",
+    "status": "page_opened",
+    "title": "出货明细",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "生成出货明细",
+        "disabled": false
+      },
+      {
+        "text": "SP-DAEPEG",
+        "disabled": false
+      },
+      {
+        "text": "查看详情",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "出货搜索",
+        "type": "text"
+      },
+      {
+        "label": "审批状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "客户编号",
+        "type": "text"
+      },
+      {
+        "label": "出口合同编号",
+        "type": "text"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n出货明细\n8\n出货单\n1\n待审批\n0\n已审批\n1\n应收金额\nUSD 205.00\n预计利润\nUSD 205.00\n出货计划列表\n出货搜索\n审批状态\n全部状态\n客户编号\n出口合同编号\n查询\n生成出货明细\n出货单号\t状态\t客户\t出货日期\t计划出运日\t应收\t入口\nSP-DAEPEG\t已审批\tQA261112 测试客户\t2026-11-12\t2026-11-25\tUSD 205.00\t\n查看详情\n共 1 条\n1\n50 条/页"
+  },
+  {
+    "path": "/quality/inspections",
+    "key": "15-_quality_inspections",
+    "status": "page_opened",
+    "title": "QC 任务中心",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "更多筛选",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "重置筛选",
+        "disabled": false
+      },
+      {
+        "text": "刷新列表",
+        "disabled": false
+      },
+      {
+        "text": "新增 QC 单",
+        "disabled": false
+      },
+      {
+        "text": "QC-8TXV57",
+        "disabled": false
+      },
+      {
+        "text": "查看详情",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "任务搜索",
+        "type": "text"
+      },
+      {
+        "label": "任务状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "查验结果全部结果",
+        "type": "search"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\nQC 任务中心\n8\n我的待处理\n0\n待查验\n0\n查验中\n0\n已逾期\n0\n异常待关闭\n0\nQC 任务列表\n任务搜索\n任务状态\n全部状态\n查验结果\n全部结果\n更多筛选\n查询\n新增 QC 单\nQC 任务单号\t任务状态\t查验结果\t采购合同\t供应商\t负责人\t排期时间\t下一步\t入口\nQC-8TXV57\t已完成\t通过\tPC-HR36RU\tQA261112 测试供应商\t系统管理员\t2026/11/13 09:00\t查看结果\t\n查看详情\n共 1 条\n1\n50 条/页"
+  },
+  {
+    "path": "/quality/tasks",
+    "key": "16-_quality_tasks",
+    "status": "page_opened",
+    "title": "我的 QC 任务",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "任务搜索",
+        "type": "text"
+      },
+      {
+        "label": "任务状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n我的 QC 任务\n8\n我的任务\n1\n待查验\n0\n查验中\n0\n已完成\n1\n已逾期\n0\n我的 QC 任务\n任务搜索\n任务状态\n全部状态\n \n查询\nQC 任务单号\t采购合同\t供应商\t排期时间\t状态\t结果\t操作\nQC-8TXV57\tPC-HR36RU\tQA261112 测试供应商\t2026/11/13 09:00\t已完成\t通过\t\n共 1 条\n1\n50 条/页"
+  },
+  {
+    "path": "/purchase/followup",
+    "key": "17-_purchase_followup",
+    "status": "page_opened",
+    "title": "跟单任务中心",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "配置/生成",
+        "disabled": false
+      },
+      {
+        "text": "PC-HR36RU",
+        "disabled": false
+      },
+      {
+        "text": "查看详情",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "计划搜索",
+        "type": "text"
+      },
+      {
+        "label": "整体状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "供应商标识",
+        "type": "text"
+      },
+      {
+        "label": "采购合同 ID",
+        "type": "text"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n跟单任务中心\n8\n跟单计划\n1\n已完成计划\n0\n逾期计划\n0\n完成节点\n3/6\n逾期节点\n0\n采购跟单计划\n计划搜索\n整体状态\n全部状态\n供应商标识\n采购合同 ID\n查询\n配置/生成\n采购合同\t状态\t供应商\t基准日\t节点\t入口\nPC-HR36RU\t进行中\tQA261112 测试供应商\t2026-11-12\t3/6\t\n查看详情\n共 1 条\n1\n50 条/页"
+  },
+  {
+    "path": "/sample/records",
+    "key": "18-_sample_records",
+    "status": "page_opened",
+    "title": "样品登记",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "导出台账",
+        "disabled": false
+      },
+      {
+        "text": "新增样品",
+        "disabled": false
+      },
+      {
+        "text": "SM-ZB334N",
+        "disabled": false
+      },
+      {
+        "text": "查看详情",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "样品搜索",
+        "type": "text"
+      },
+      {
+        "label": "样品分类筛选全部分类",
+        "type": "search"
+      },
+      {
+        "label": "样品客户筛选",
+        "type": "text"
+      },
+      {
+        "label": "采购合同筛选",
+        "type": "text"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n样品登记\n8\n样品\n1\n确认样\n0\n图片\n0\n留样\n2\n样品列表\n样品搜索\n样品分类筛选\n全部分类\n样品客户筛选\n采购合同筛选\n查询\n导出台账\n新增样品\n样品编号\t分类\t来源类型\t来源单号\t产品\t客户货号\t供应商货号\t数量\t入口\nSM-ZB334N\t来样\t\t-\tQA261112 验收测试围巾\t-\t-\t3\t\n查看详情\n共 1 条\n1\n50 条/页"
+  },
+  {
+    "path": "/sample/requests",
+    "key": "19-_sample_requests",
+    "status": "page_opened",
+    "title": "打样管理",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "新增打样单",
+        "disabled": false
+      },
+      {
+        "text": "SR-W3C3DV",
+        "disabled": false
+      },
+      {
+        "text": "查看详情",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "打样搜索",
+        "type": "text"
+      },
+      {
+        "label": "打样状态筛选全部状态",
+        "type": "search"
+      },
+      {
+        "label": "打样客户筛选",
+        "type": "text"
+      },
+      {
+        "label": "打样起始日期",
+        "type": "date"
+      },
+      {
+        "label": "打样截止日期",
+        "type": "date"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n打样管理\n8\n打样单\n1\n进行中\n1\n进度记录\n1\n费用记录\n0\n打样单列表\n打样搜索\n打样状态筛选\n全部状态\n打样客户筛选\n打样起始日期\n打样截止日期\n查询\n新增打样单\n打样单号\t报价号\t客户\t产品\t去向\t状态\t要求完成\t入口\nSR-W3C3DV\t-\tQA261112 测试客户\tQA261112 验收测试围巾\t内部打样\t进行中\t2026-11-20\t\n查看详情\n共 1 条\n1\n50 条/页"
+  },
+  {
+    "path": "/sample/deliveries",
+    "key": "20-_sample_deliveries",
+    "status": "page_opened",
+    "title": "寄样管理",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "导出寄样",
+        "disabled": false
+      },
+      {
+        "text": "新增寄样单",
+        "disabled": false
+      },
+      {
+        "text": "SD-CXE849",
+        "disabled": false
+      },
+      {
+        "text": "查看详情",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "寄样搜索",
+        "type": "text"
+      },
+      {
+        "label": "审核状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "客户标识",
+        "type": "text"
+      },
+      {
+        "label": "快递公司",
+        "type": "text"
+      },
+      {
+        "label": "寄样起始日期",
+        "type": "date"
+      },
+      {
+        "label": "寄样截止日期",
+        "type": "date"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n寄样管理\n8\n寄样单\n1\n待审核\n0\n已审核\n1\n寄样数量\n1\n费用\nUSD 0.00\n寄样单列表\n寄样搜索\n审核状态\n全部状态\n客户标识\n快递公司\n寄样起始日期\n寄样截止日期\n查询\n导出寄样\n新增寄样单\n寄样单号\t状态\t客户\t快递\t报价单\t费用\t入口\nSD-CXE849\t已审核\tQA261112 测试客户\tQA261112-MOCK / 未填\t-\tUSD 0.00\t\n查看详情\n共 1 条\n1\n50 条/页"
+  },
+  {
+    "path": "/warehouse/inbound-orders",
+    "key": "21-_warehouse_inbound-orders",
+    "status": "page_opened",
+    "title": "入仓和库存确认",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "生成/审批入库单",
+        "disabled": false
+      },
+      {
+        "text": "XP-IN-MVU9CU",
+        "disabled": false
+      },
+      {
+        "text": "查看详情",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "入库搜索",
+        "type": "text"
+      },
+      {
+        "label": "单据状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "入库模式全部模式",
+        "type": "search"
+      },
+      {
+        "label": "供应商筛选",
+        "type": "search"
+      },
+      {
+        "label": "采购合同筛选",
+        "type": "search"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n入仓和库存确认\n8\n入库单\n1\n草稿\n0\n待审批\n0\n已审批\n1\n可用库存\n59.00\n待检库存\n0.00\n入库单\n入库搜索\n单据状态\n全部状态\n入库模式\n全部模式\n供应商\n输入供应商编号或名称\n采购合同\n输入合同号或供应商\n查询\n生成/审批入库单\n入库单\t状态\t模式\t采购合同\t供应商\t入库日\t库位\t入口\nXP-IN-MVU9CU\t已审批\t正式入库\tPC-HR36RU\tQA261112 测试供应商\t2026-11-12\tQA261112 测试仓库 / QA261112-A01\t\n查看详情\n共 1 条\n1\n50 条/页"
+  },
+  {
+    "path": "/warehouse/inbound-plans",
+    "key": "22-_warehouse_inbound-plans",
+    "status": "page_opened",
+    "title": "入库计划",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "生成/排库位",
+        "disabled": false
+      },
+      {
+        "text": "IP-PC-HR36RU",
+        "disabled": false
+      },
+      {
+        "text": "查看详情",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "计划搜索",
+        "type": "text"
+      },
+      {
+        "label": "入库状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "入库类型全部类型",
+        "type": "search"
+      },
+      {
+        "label": "供应商标识",
+        "type": "text"
+      },
+      {
+        "label": "采购合同 ID",
+        "type": "text"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n入库计划\n8\n入库计划\n1\n待安排\n0\n已排库位\n0\n待入库数量\n100.00\n入库类型\n1\n待入库计划\n计划搜索\n入库状态\n全部状态\n入库类型\n全部类型\n供应商标识\n采购合同 ID\n查询\n生成/排库位\n计划号\t状态\t类型\t采购合同\t供应商\t计划入库日\t数量\t入口\nIP-PC-HR36RU\t已关闭\t采购入库\tPC-HR36RU\tQA261112 测试供应商\t2026-11-12\t100.00\t\n查看详情\n共 1 条\n1\n50 条/页"
+  },
+  {
+    "path": "/warehouse/outbound-plans",
+    "key": "23-_warehouse_outbound-plans",
+    "status": "page_opened",
+    "title": "出库计划",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "生成/排库位",
+        "disabled": false
+      },
+      {
+        "text": "OP-SP-DAEPEG",
+        "disabled": false
+      },
+      {
+        "text": "查看详情",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "计划搜索",
+        "type": "text"
+      },
+      {
+        "label": "出库状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "出库类型全部类型",
+        "type": "search"
+      },
+      {
+        "label": "来源类型全部来源",
+        "type": "search"
+      },
+      {
+        "label": "客户标识",
+        "type": "text"
+      },
+      {
+        "label": "来源单 ID",
+        "type": "text"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n出库计划\n8\n出库计划\n1\n待安排\n0\n已排库位\n0\n待出库数量\n20.00\n发货来源\n1\n出库计划\n计划搜索\n出库状态\n全部状态\n出库类型\n全部类型\n来源类型\n全部来源\n客户标识\n来源单 ID\n查询\n生成/排库位\n计划号\t状态\t类型\t来源单\t客户\t计划出库日\t数量\t入口\nOP-SP-DAEPEG\t已关闭\t成品出库\tSP-DAEPEG\tQA261112 测试客户\t2026-11-12\t20.00\t\n查看详情\n共 1 条\n1\n50 条/页"
+  },
+  {
+    "path": "/warehouse/outbound-orders",
+    "key": "24-_warehouse_outbound-orders",
+    "status": "page_opened",
+    "title": "货物出库",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "生成/审批出库单",
+        "disabled": false
+      },
+      {
+        "text": "XP-OUT-33A95C",
+        "disabled": false
+      },
+      {
+        "text": "查看详情",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "出库搜索",
+        "type": "text"
+      },
+      {
+        "label": "单据状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "出库模式全部模式",
+        "type": "search"
+      },
+      {
+        "label": "出库类型全部类型",
+        "type": "search"
+      },
+      {
+        "label": "客户标识",
+        "type": "text"
+      },
+      {
+        "label": "来源单 ID",
+        "type": "text"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n货物出库\n8\n出库单\n1\n草稿\n0\n待审批\n0\n已出库\n1\n出库数量\n20.00\n可用库存\n59.00\n出库单\n出库搜索\n单据状态\n全部状态\n出库模式\n全部模式\n出库类型\n全部类型\n客户标识\n来源单 ID\n查询\n生成/审批出库单\n出库单\t状态\t模式\t出库类型\t来源单\t客户\t出库日\t数量\t入口\nXP-OUT-33A95C\t已出库\t正式出库\t成品出库\tSP-DAEPEG\tQA261112 测试客户\t2026-11-12\t20.00\t\n查看详情\n共 1 条\n1\n50 条/页"
+  },
+  {
+    "path": "/warehouse/stocktakes",
+    "key": "25-_warehouse_stocktakes",
+    "status": "page_opened",
+    "title": "库存盘点",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "新建盘点单",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "查 询",
+        "disabled": false
+      },
+      {
+        "text": "查看",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "盘点单 / 仓库 / 库位",
+        "type": "text"
+      },
+      {
+        "label": "单据状态",
+        "type": "search"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n库存盘点\n8\n库存盘点\n新建盘点单\n\n按仓库与库位盘点，账面数为创建时快照，审批后按差异调整库存。\n\n全部状态\n查 询\n盘点单号\t仓库\t盘点日期\t明细数\t差异\t状态\t盘点人\t审批人\t\n\n盘点单号\n\t\n仓库\n\t\n盘点日期\n\t\n明细数\n\t\n差异\n\t\n状态\n\t\n盘点人\n\t\n审批人\n\t\n \n\nST-Z5VPWB\tQA261112 测试仓库 / QA261112-A01\t2026-11-12\t1\t-21\t已审批\tQA261112 测试经办\t演示业务主管\t\n查看\n共 1 条\n1\n50 条/页"
+  },
+  {
+    "path": "/finance",
+    "key": "26-_finance",
+    "status": "page_opened",
+    "title": "财务摘要和订单利润",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "经营总览\n出运利润 / 分币种 / 状态汇总\nUSD 205.00\n预计利润",
+        "disabled": false
+      },
+      {
+        "text": "收款管理\n银行水单认领、分摊与应收账款\nUSD 205.00\n应收金额",
+        "disabled": false
+      },
+      {
+        "text": "付款管理\n供应商发票、付款申请与应付账款\nUSD 0.00\n应付成本",
+        "disabled": false
+      },
+      {
+        "text": "付费管理\n合作伙伴费用发票、付费申请与审批\n0\n启用伙伴",
+        "disabled": false
+      },
+      {
+        "text": "核销退税\n核销单领用、回单核销与退税登记\n0\n核销单",
+        "disabled": false
+      },
+      {
+        "text": "杂费管理\n杂费项目配置与单票分摊查询\n0\n杂费项目",
+        "disabled": false
+      },
+      {
+        "text": "结算核算\n单票结算锁定、手工成本与利润核算\n0\n锁定结算",
+        "disabled": false
+      },
+      {
+        "text": "报销管理\n员工报销单登记、审批与付款\n0\n报销单",
+        "disabled": false
+      },
+      {
+        "text": "口岸数据导入\n进出口报关数据导入与查询\n0\n导入批次",
+        "disabled": false
+      },
+      {
+        "text": "财务报表\n水单、收付与退税统计报表\n6\n报表",
+        "disabled": false
+      }
+    ],
+    "inputs": [],
+    "tables": 0,
+    "text": "业务模块\n\n财务摘要和订单利润\n8\n出货单\n1\n应收金额\nUSD 205.00\n应付成本\nUSD 0.00\n预计利润\nUSD 205.00\n开票通知\n0\n样品费用\n0.00\n经营总览\n出运利润 / 分币种 / 状态汇总\nUSD 205.00\n预计利润\n收款管理\n银行水单认领、分摊与应收账款\nUSD 205.00\n应收金额\n付款管理\n供应商发票、付款申请与应付账款\nUSD 0.00\n应付成本\n付费管理\n合作伙伴费用发票、付费申请与审批\n0\n启用伙伴\n核销退税\n核销单领用、回单核销与退税登记\n0\n核销单\n杂费管理\n杂费项目配置与单票分摊查询\n0\n杂费项目\n结算核算\n单票结算锁定、手工成本与利润核算\n0\n锁定结算\n报销管理\n员工报销单登记、审批与付款\n0\n报销单\n口岸数据导入\n进出口报关数据导入与"
+  },
+  {
+    "path": "/finance/overview",
+    "key": "27-_finance_overview",
+    "status": "page_opened",
+    "title": "经营总览",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      }
+    ],
+    "inputs": [],
+    "tables": 5,
+    "text": "业务模块\n\n经营总览\n8\n出货单\n1\n应收金额\nUSD 205.00\n应付成本\nUSD 0.00\n预计利润\nUSD 205.00\n开票通知\n0\n样品费用\n0.00\n出运利润明细\n出货单\t客户\t状态\t出货日期\t计划出运\t应收\t应付\t利润\t利润率\nSP-DAEPEG\tQA261112 测试客户\t已审批\t2026-11-12\t2026-11-25\tUSD 205.00\tUSD 0.00\tUSD 205.00\t10000.0%\n分币种汇总\n币种\t出货\t应收\t利润\t利润率\nUSD\t1\tUSD 205.00\tUSD 205.00\t10000.0%\n开票和付款状态\n采购开票通知\n状态\t数量\t金额\n\n\n暂无数据\n\n样品费用付款\n状态\t数量\t金额\n\n\n暂无数据\n\n合作伙伴费用入口\n合作伙伴\n0\n启用伙伴\n0\n"
+  },
+  {
+    "path": "/finance/receipts",
+    "key": "28-_finance_receipts",
+    "status": "page_opened",
+    "title": "收款管理",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "水单录入",
+        "disabled": false
+      },
+      {
+        "text": "BR-MWYV53",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "水单搜索",
+        "type": "text"
+      },
+      {
+        "label": "水单状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "客户标识",
+        "type": "text"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      },
+      {
+        "label": "应收搜索",
+        "type": "text"
+      },
+      {
+        "label": "出口合同号",
+        "type": "text"
+      },
+      {
+        "label": "发票号",
+        "type": "text"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 2,
+    "text": "业务模块\n\n收款管理\n8\n银行水单列表\n水单搜索\n水单状态\n全部状态\n客户标识\n查询\n水单录入\n本次列表 1 条\nUSD 100.00\n未分摊 USD -20.00\n水单号\t状态\t性质\t收款日\t付款人\t客户\t金额\t未分摊\nBR-MWYV53\t已分摊\t普通收款\t2026-11-12\tQA261112 测试客户\tQA261112 测试客户\tUSD 100.00\tUSD 0.00\n共 1 条\n1\n50 条/页\n应收账款查询\n应收搜索\n出口合同号\n发票号\n查询\n本次列表 1 条\nUSD 392.50\n出口合同\t客户\t业务员\t合同金额\t已收款\t应收余额\t状态\nEC-F8D7RX\tQA261112 测试客户\t系统管理员\tUSD 512.50\tUSD 120.00\tUSD 392.50\t部分收款\n共 1 "
+  },
+  {
+    "path": "/finance/payments",
+    "key": "29-_finance_payments",
+    "status": "page_opened",
+    "title": "付款管理",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "发票登记",
+        "disabled": false
+      },
+      {
+        "text": "QA261112-INV01",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "发票搜索",
+        "type": "text"
+      },
+      {
+        "label": "付款状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "供应商标识",
+        "type": "text"
+      },
+      {
+        "label": "采购合同号",
+        "type": "text"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      },
+      {
+        "label": "应付搜索",
+        "type": "text"
+      },
+      {
+        "label": "应付状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "供应商标识",
+        "type": "text"
+      },
+      {
+        "label": "采购合同号",
+        "type": "text"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 2,
+    "text": "业务模块\n\n付款管理\n8\n供应商发票列表\n发票搜索\n付款状态\n全部状态\n供应商标识\n采购合同号\n查询\n发票登记\n供应商发票\t状态\t供应商\t采购合同\t发票金额\t未付\nQA261112-INV01\t已付清\tQA261112 测试供应商\tPC-HR36RU\tRMB 100.00\tRMB 0.00\n共 1 条\n1\n50 条/页\n应付账款查询\n应付搜索\n应付状态\n全部状态\n供应商标识\n采购合同号\n查询\n供应商发票\t供应商\t采购合同\t发票金额\t已付款\t应付余额\t状态\nQA261112-INV01\tQA261112 测试供应商\tPC-HR36RU\tRMB 100.00\tRMB 120.00\tRMB 0.00\t已付清\n共 1 条\n1\n50 条/页"
+  },
+  {
+    "path": "/finance/fees",
+    "key": "30-_finance_fees",
+    "status": "page_opened",
+    "title": "付费管理",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "发票登记",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "label": "费用发票搜索",
+        "type": "text"
+      },
+      {
+        "label": "发票状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "费用类型全部类型",
+        "type": "search"
+      },
+      {
+        "label": "合作伙伴标识",
+        "type": "text"
+      },
+      {
+        "label": "出运单号",
+        "type": "text"
+      },
+      {
+        "label": "应付费用搜索",
+        "type": "text"
+      },
+      {
+        "label": "应付状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "费用类型全部类型",
+        "type": "search"
+      },
+      {
+        "label": "合作伙伴标识",
+        "type": "text"
+      },
+      {
+        "label": "出运单号",
+        "type": "text"
+      }
+    ],
+    "tables": 2,
+    "text": "业务模块\n\n付费管理\n8\n合作伙伴费用发票\n费用发票搜索\n发票状态\n全部状态\n费用类型\n全部类型\n合作伙伴标识\n出运单号\n查询\n发票登记\n费用发票\t状态\t合作伙伴\t出运单\t费用类型\t发票金额\t未付\n\n\n暂无数据\n\n应付费用查询\n应付费用搜索\n应付状态\n全部状态\n费用类型\n全部类型\n合作伙伴标识\n出运单号\n查询\n费用发票\t合作伙伴\t出运单\t费用类型\t发票金额\t已付费\t应付余额\t状态\n\n\n暂无数据"
+  },
+  {
+    "path": "/finance/tax",
+    "key": "31-_finance_tax",
+    "status": "page_opened",
+    "title": "核销退税",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "领用核销单",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "label": "核销单搜索",
+        "type": "text"
+      },
+      {
+        "label": "进度状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "提醒状态全部提醒",
+        "type": "search"
+      },
+      {
+        "label": "业务员标识",
+        "type": "text"
+      },
+      {
+        "label": "出运单号",
+        "type": "text"
+      },
+      {
+        "label": "使用情况搜索",
+        "type": "text"
+      },
+      {
+        "label": "进度状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "提醒状态全部提醒",
+        "type": "search"
+      },
+      {
+        "label": "出运单号",
+        "type": "text"
+      }
+    ],
+    "tables": 2,
+    "text": "业务模块\n\n核销退税\n8\n核销单列表\n核销单搜索\n进度状态\n全部状态\n提醒状态\n全部提醒\n业务员标识\n出运单号\n查询\n领用核销单\n核销单\t状态\t提醒\t出运单\t有效期\t可退税\t已退税\n\n\n暂无数据\n\n核销单使用情况查询\n使用情况搜索\n进度状态\n全部状态\n提醒状态\n全部提醒\n出运单号\n查询\n核销单\t出运单\t业务员\t状态\t提醒\t可退税\t已退税\t回单号\t核销编号\n\n\n暂无数据"
+  },
+  {
+    "path": "/finance/misc",
+    "key": "32-_finance_misc",
+    "status": "page_opened",
+    "title": "杂费管理",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "新增杂费",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "label": "项目搜索",
+        "type": "text"
+      },
+      {
+        "label": "项目分类全部分类",
+        "type": "search"
+      },
+      {
+        "label": "启停状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "分摊搜索",
+        "type": "text"
+      },
+      {
+        "label": "分类全部分类",
+        "type": "search"
+      },
+      {
+        "label": "出运单号",
+        "type": "text"
+      },
+      {
+        "label": "业务员标识",
+        "type": "text"
+      }
+    ],
+    "tables": 2,
+    "text": "业务模块\n\n杂费管理\n8\n杂费项目配置\n项目搜索\n项目分类\n全部分类\n启停状态\n全部状态\n查询\n新增杂费\n项目编码\t项目名称\t分类\t默认分摊\t状态\n\n\n暂无数据\n\n杂费分摊查询\n分摊搜索\n分类\n全部分类\n出运单号\n业务员标识\n查询\n分摊记录 0 条\nUSD 0.00\n已进入单票利润成本\n分摊单号\t杂费项目\t分类\t出运单\t客户\t业务员\t分摊日\t金额\t方式\n\n\n暂无数据"
+  },
+  {
+    "path": "/finance/settlement",
+    "key": "33-_finance_settlement",
+    "status": "page_opened",
+    "title": "结算核算",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "新增结算",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "label": "结算搜索",
+        "type": "text"
+      },
+      {
+        "label": "出运单号",
+        "type": "text"
+      },
+      {
+        "label": "核算搜索",
+        "type": "text"
+      },
+      {
+        "label": "出运单号",
+        "type": "text"
+      }
+    ],
+    "tables": 2,
+    "text": "业务模块\n\n结算核算\n8\n财务结算列表\n结算搜索\n出运单号\n查询\n新增结算\n锁定结算 0 单\nUSD 0.00\n毛利 USD 0.00\n结算单\t出运单\t客户\t结算日\t收入\t成本\t退税\t杂费\t手工成本\t毛利\t毛利率\t状态\n\n\n暂无数据\n\n利润核算表\n核算搜索\n出运单号\n查询\n核算单票 0 单\nUSD 0.00\n按结算锁定口径展开成本明细\n\t结算单\t出运单\t客户\t收入\t总成本\t退税\t毛利\t毛利率\n\n\n暂无数据"
+  },
+  {
+    "path": "/finance/reimbursements",
+    "key": "34-_finance_reimbursements",
+    "status": "page_opened",
+    "title": "报销管理",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "新增报销",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "label": "搜索",
+        "type": "text"
+      },
+      {
+        "label": "状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "分类全部分类",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n报销管理\n8\n报销单列表\n搜索\n状态\n全部状态\n分类\n全部分类\n查询\n新增报销\n报销单号\t申请人\t部门\t分类\t金额\t状态\n\n\n暂无数据\n\n报销单 0 条\nCNY 0.00"
+  },
+  {
+    "path": "/finance/port-data",
+    "key": "35-_finance_port-data",
+    "status": "page_opened",
+    "title": "口岸数据",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "自动匹配回单",
+        "disabled": false
+      },
+      {
+        "text": "导入数据",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "label": "报关单号",
+        "type": "text"
+      },
+      {
+        "label": "报关回单号",
+        "type": "text"
+      },
+      {
+        "label": "进出口全部",
+        "type": "search"
+      },
+      {
+        "label": "批次号",
+        "type": "text"
+      },
+      {
+        "label": "数据来源",
+        "type": "text"
+      },
+      {
+        "label": "导入日期",
+        "type": "date"
+      },
+      {
+        "label": "报关单号",
+        "type": "text"
+      },
+      {
+        "label": "报关回单号",
+        "type": "text"
+      },
+      {
+        "label": "进出口类型出口",
+        "type": "search"
+      },
+      {
+        "label": "商品名称",
+        "type": "text"
+      },
+      {
+        "label": "报关金额",
+        "type": "text"
+      },
+      {
+        "label": "币种",
+        "type": "text"
+      }
+    ],
+    "tables": 2,
+    "text": "业务模块\n\n口岸数据\n8\n进出口报关数据查询\n报关单号\n报关回单号\n进出口\n全部\n查询\n自动匹配回单\n报关单号\t回单号\t进出口\t商品\t匹配\t核销单\t报关日期\t金额\n\n\n暂无数据\n\n报关数据 0 条\n导入批次记录\n批次号\t来源\t导入日期\t记录数\t状态\n\n\n暂无数据\n\n导入口岸数据\n批次号\n数据来源\n导入日期\n报关数据明细\n报关单号\n报关回单号\n进出口类型\n出口\n商品名称\n报关金额\n币种\n导入数据"
+  },
+  {
+    "path": "/finance/reports",
+    "key": "36-_finance_reports",
+    "status": "page_opened",
+    "title": "财务报表",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "导出 CSV",
+        "disabled": false
+      },
+      {
+        "text": "水单使用明细",
+        "disabled": false
+      },
+      {
+        "text": "银行水单汇总",
+        "disabled": false
+      },
+      {
+        "text": "货款支付情况",
+        "disabled": false
+      },
+      {
+        "text": "费用支付情况",
+        "disabled": false
+      },
+      {
+        "text": "报关回单催收",
+        "disabled": false
+      },
+      {
+        "text": "申报退税统计",
+        "disabled": false
+      },
+      {
+        "text": "来 源",
+        "disabled": false
+      },
+      {
+        "text": "来 源",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "label": "起始日期",
+        "type": "date"
+      },
+      {
+        "label": "结束日期",
+        "type": "date"
+      },
+      {
+        "label": "币种",
+        "type": "text"
+      },
+      {
+        "label": "水单号",
+        "type": "text"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n财务报表\n8\n财务统计报表\n起始日期\n结束日期\n币种\n水单号\n查询\n导出 CSV\n水单使用明细\n银行水单汇总\n货款支付情况\n费用支付情况\n报关回单催收\n申报退税统计\n水单号\t收款日期\t付款方\t分摊类型\t合同号\t发票号\t分摊金额\t下钻\nBR-MWYV53\t2026-11-12\tQA261112 测试客户\tcontract\tEC-F8D7RX\t-\tUSD 60.00\t\n来 源\n\nBR-MWYV53\t2026-11-12\tQA261112 测试客户\tcontract\tEC-F8D7RX\t-\tUSD 60.00\t\n来 源"
+  },
+  {
+    "path": "/reporting",
+    "key": "37-_reporting",
+    "status": "page_opened",
+    "title": "老板看板和经营分析",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "重 置",
+        "disabled": false
+      },
+      {
+        "text": "查询统计",
+        "disabled": false
+      },
+      {
+        "text": "重置统计",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "label": "单据类型全部类型",
+        "type": "search"
+      },
+      {
+        "label": "审批状态待审批",
+        "type": "search"
+      },
+      {
+        "label": "申请人标识",
+        "type": "text"
+      },
+      {
+        "label": "开始日期",
+        "type": "date"
+      },
+      {
+        "label": "结束日期",
+        "type": "date"
+      },
+      {
+        "label": "统计开始",
+        "type": "date"
+      },
+      {
+        "label": "统计结束",
+        "type": "date"
+      },
+      {
+        "label": "统计状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "客户标识",
+        "type": "text"
+      },
+      {
+        "label": "供应商标识",
+        "type": "text"
+      },
+      {
+        "label": "业务员标识",
+        "type": "text"
+      }
+    ],
+    "tables": 8,
+    "text": "业务模块\n\n老板看板和经营分析\n8\n审批单据\n0\n待审批\n0\n已审批\n0\n单据类型\n0\n审批单据查询\n单据类型\n全部类型\n审批状态\n待审批\n申请人标识\n开始日期\n结束日期\n查询\n重 置\n单据编号\t类型\t状态\t客户/供应商\t申请人\t业务日期\t提交日期\t审批日期\t金额\t操作\n\n\n暂无数据\n\n类型汇总\n单据类型\t待审批\t已审批\t合计\n\n\n暂无数据\n\n统计分析报表\n统计开始\n统计结束\n统计状态\n全部状态\n客户标识\n供应商标识\n业务员标识\n查询统计\n重置统计\n出口合同\n512.50\n采购合同\n250.00\n出货应收\n205.00\n出货利润\n205.00\n客户\t出货单\t应收\t利润\t下钻\nQA261112 测试客户\t1\tUSD 205.00\tUSD 205.00\t/sales/shipments?cust"
+  },
+  {
+    "path": "/organization/users",
+    "key": "38-_organization_users",
+    "status": "page_opened",
+    "title": "组织管理",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "新增用户",
+        "disabled": false
+      },
+      {
+        "text": "编辑公司信息",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "演示 QC 专员\nqc · 品质部\n启用",
+        "disabled": false
+      },
+      {
+        "text": "演示仓库专员\nwarehouse · 仓储部\n启用",
+        "disabled": false
+      },
+      {
+        "text": "演示财务主管\nfinance_manager · 财务部\n启用",
+        "disabled": false
+      },
+      {
+        "text": "演示财务\nfinance · 财务部\n启用",
+        "disabled": false
+      },
+      {
+        "text": "演示采购专员\npurchase · 采购部\n启用",
+        "disabled": false
+      },
+      {
+        "text": "演示业务主管\ndemo · 业务部\n启用",
+        "disabled": false
+      },
+      {
+        "text": "系统管理员\nadmin · 管理部\n启用",
+        "disabled": false
+      },
+      {
+        "text": "编辑资料",
+        "disabled": false
+      },
+      {
+        "text": "编辑用户权限",
+        "disabled": false
+      },
+      {
+        "text": "重置密码",
+        "disabled": false
+      },
+      {
+        "text": "删除用户",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "label": "搜索用户、部门或角色",
+        "type": "text"
+      }
+    ],
+    "tables": 0,
+    "text": "业务模块\n\n组织管理\n8\n用户\n7\n启用\n7\n停用\n0\n部门\n6\n角色\n6\n新增用户\n公司信息\n\n公司抬头、银行信息用于单证和对外文件。\n\n编辑公司信息\n当前抬头\n新裴贸易\n暂无英文名称或单证抬头\n电话\n-\n邮箱\n-\n开户行\n-\n银行账号\n-\n用户管理\n部门与角色\n演示 QC 专员\nqc · 品质部\n启用\n演示仓库专员\nwarehouse · 仓储部\n启用\n演示财务主管\nfinance_manager · 财务部\n启用\n演示财务\nfinance · 财务部\n启用\n演示采购专员\npurchase · 采购部\n启用\n演示业务主管\ndemo · 业务部\n启用\n系统管理员\nadmin · 管理部\n启用\n\nqc\n\n演示 QC 专员\n启用中\n部门\n品质部\n角色\nQC 专员\n密码\n******\n创建时间\n"
+  },
+  {
+    "path": "/system/mcp",
+    "key": "39-_system_mcp",
+    "status": "page_opened",
+    "title": "MCP 与 AI 数据接入",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "是否启用 MCP",
+        "disabled": false
+      }
+    ],
+    "inputs": [],
+    "tables": 0,
+    "text": "业务模块\n\nMCP 与 AI 数据接入\n8\nMCP 服务未启用\n已关闭\n\n允许受信任的 AI 客户端通过标准 MCP 协议查询和维护 ERP 数据。关闭后不会影响现有业务页面和 API。\n\n是否启用 MCP\n启用后即可查看 AI 连接信息\n\n连接地址、鉴权令牌、客户端配置和全部可用工具只在 MCP 开启时展示。"
+  },
+  {
+    "path": "/system/audit-logs",
+    "key": "40-_system_audit-logs",
+    "status": "page_opened",
+    "title": "写操作审计流水",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "查 询",
+        "disabled": false
+      },
+      {
+        "text": "重 置",
+        "disabled": false
+      },
+      {
+        "text": "导出 CSV",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": true
+      },
+      {
+        "text": "",
+        "disabled": true
+      }
+    ],
+    "inputs": [
+      {
+        "label": "操作人姓名或用户 ID",
+        "type": "text"
+      },
+      {
+        "label": "",
+        "type": "search"
+      },
+      {
+        "label": "",
+        "type": "search"
+      },
+      {
+        "label": "输入单号关键字",
+        "type": "text"
+      },
+      {
+        "label": "开始日期",
+        "type": "text"
+      },
+      {
+        "label": "结束日期",
+        "type": "text"
+      },
+      {
+        "label": "页码",
+        "type": "search"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n写操作审计流水\n8\n审计日志\n\n仅记录写操作，查询与导出仅超级管理员可用。\n\n全部模块\n全部动作\n查 询\n重 置\n导出 CSV\n时间\t操作人\t模块\t动作\t单号\t摘要\n\n时间\n\t\n操作人\n\t\n模块\n\t\n动作\n\t\n单号\n\t\n摘要\n\n2026-11-12 19:24\t\n演示业务主管\nu-001\n\t寄样\t通过\tSD-CXE849\t审批通过寄样单\n2026-11-12 19:24\t\n系统管理员\nu-baeac30b5127ebdb\n\t寄样\t提交\tSD-CXE849\t提交寄样单\n2026-11-12 19:21\t\n演示财务主管\nu-finance-manager\n\t付款\t通过\tPR-ZAWWF6\t审批通过付款申请\n2026-11-12 19:21\t\n演示财务主管\nu-finance-mana"
+  },
+  {
+    "path": "/purchase/inquiries",
+    "key": "41-_purchase_inquiries",
+    "status": "page_opened",
+    "title": "采购询价",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "新增采购询价",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "label": "询价搜索",
+        "type": "text"
+      },
+      {
+        "label": "询价状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "商品标识",
+        "type": "text"
+      },
+      {
+        "label": "供应商标识",
+        "type": "text"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n采购询价\n8\n询价单\n0\n已发模板\n0\n已报价\n0\n供应商报价\n0\n采购询价列表\n询价搜索\n询价状态\n全部状态\n商品标识\n供应商标识\n查询\n新增采购询价\n询价单号\t状态\t商品\t询价日\t报价数\t最低价\t入口\n\n\n暂无数据"
+  },
+  {
+    "path": "/purchase/invoice-notices",
+    "key": "42-_purchase_invoice-notices",
+    "status": "page_opened",
+    "title": "开票通知",
+    "viewport": {
+      "w": 1512,
+      "h": 780
+    },
+    "scrollWidth": 1512,
+    "alerts": [],
+    "buttons": [
+      {
+        "text": "通知",
+        "disabled": false
+      },
+      {
+        "text": "系统设置",
+        "disabled": false
+      },
+      {
+        "text": "查询",
+        "disabled": false
+      },
+      {
+        "text": "生成开票通知",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "label": "通知搜索",
+        "type": "text"
+      },
+      {
+        "label": "通知状态全部状态",
+        "type": "search"
+      },
+      {
+        "label": "供应商标识",
+        "type": "text"
+      },
+      {
+        "label": "报关单证 ID",
+        "type": "text"
+      }
+    ],
+    "tables": 1,
+    "text": "业务模块\n\n开票通知\n8\n开票通知\n0\n已发送\n0\n已收票\n0\n通知金额\nCNY 0.00\n待催收\n0\n开票通知列表\n通知搜索\n通知状态\n全部状态\n供应商标识\n报关单证 ID\n查询\n生成开票通知\n开票通知\t状态\t供应商\t报关单\t金额\t提醒\t入口\n\n\n暂无数据"
+  }
+]

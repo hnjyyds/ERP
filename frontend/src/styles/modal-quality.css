@@ -472,3 +472,15 @@
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--erp-danger) 12%, transparent) !important;
 }
 
+
+/* QC 新建弹窗：正文独立滚动，提交与取消固定在 footer，首屏即可见。 */
+.quality-task-modal .ant-modal-body {
+  max-height: min(60vh, 560px);
+  overflow-y: auto;
+}
+
+.quality-task-modal .ant-modal-footer {
+  margin-top: 0;
+  border-top: 1px solid var(--erp-border-soft);
+  padding-top: 12px;
+}

@@ -349,6 +349,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
           <ProductDetailView
             customers={model.relatedCustomers}
             exportResult={exportResult}
+            loading={model.detailLoading}
             product={model.selectedProduct}
             transactions={model.transactions}
             onAddAccessory={openCreateAccessory}

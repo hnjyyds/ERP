@@ -2,6 +2,7 @@ import csv
 from decimal import Decimal
 from io import StringIO
 
+from app.core.csv_export import safe_cell
 from app.db.uow import UnitOfWork
 from app.modules.masterdata.validation import MasterDataValidator
 from app.modules.sample.records.repositories import (
@@ -324,23 +325,23 @@ class SampleRecordService:
         for item in result.items:
             writer.writerow(
                 [
-                    item.code,
-                    self._sample_type_label(item.sample_type),
-                    item.status,
-                    item.product_code or "",
-                    item.product_name,
-                    item.customer_name or "",
-                    item.supplier_name or "",
-                    item.customer_sku or "",
-                    item.supplier_sku or "",
-                    item.purchase_contract_no or "",
+                    safe_cell(item.code),
+                    safe_cell(self._sample_type_label(item.sample_type)),
+                    safe_cell(item.status),
+                    safe_cell(item.product_code or ""),
+                    safe_cell(item.product_name),
+                    safe_cell(item.customer_name or ""),
+                    safe_cell(item.supplier_name or ""),
+                    safe_cell(item.customer_sku or ""),
+                    safe_cell(item.supplier_sku or ""),
+                    safe_cell(item.purchase_contract_no or ""),
                     item.stock_summary.received_quantity,
                     item.stock_summary.delivered_quantity,
                     item.stock_summary.retained_quantity,
-                    item.stock_summary.unit,
+                    safe_cell(item.stock_summary.unit),
                     item.received_at.isoformat(),
                     item.submitted_at.isoformat() if item.submitted_at else "",
-                    item.source_code or "",
+                    safe_cell(item.source_code or ""),
                 ]
             )
         return SampleRecordExportResponse(

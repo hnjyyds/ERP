@@ -1,0 +1,256 @@
+{
+  "url": "http://localhost:8080/finance/receipts",
+  "viewport": {
+    "w": 1512,
+    "h": 780
+  },
+  "scrollWidth": 1512,
+  "controls": [
+    {
+      "text": "通知",
+      "tag": "BUTTON",
+      "cls": "topbar-settings-button topbar-bell-button",
+      "x": 1412,
+      "y": 16,
+      "w": 38,
+      "h": 38,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "系统设置",
+      "tag": "BUTTON",
+      "cls": "topbar-settings-button",
+      "x": 1450,
+      "y": 16,
+      "w": 38,
+      "h": 38,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "水单搜索",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 281,
+      "y": 177,
+      "w": 381,
+      "h": 36,
+      "field": {
+        "x": 281,
+        "y": 155,
+        "w": 381,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "水单状态",
+      "tag": "DIV",
+      "cls": "ant-select ant-select-outlined css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow",
+      "x": 674,
+      "y": 177,
+      "w": 190,
+      "h": 36,
+      "field": {
+        "x": 674,
+        "y": 155,
+        "w": 190,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "客户标识",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 876,
+      "y": 177,
+      "w": 190,
+      "h": 36,
+      "field": {
+        "x": 876,
+        "y": 155,
+        "w": 190,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "查询",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-default ant-btn-color-default ant-btn-variant-outlined",
+      "x": 1184,
+      "y": 177,
+      "w": 85,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "end"
+    },
+    {
+      "text": "水单录入",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-primary ant-btn-color-primary ant-btn-variant-solid",
+      "x": 1360,
+      "y": 177,
+      "w": 111,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "end"
+    },
+    {
+      "text": "BR-MWYV53",
+      "tag": "BUTTON",
+      "cls": "row-button",
+      "x": 289,
+      "y": 342,
+      "w": 84,
+      "h": 19,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "",
+      "tag": "BUTTON",
+      "cls": "ant-pagination-item-link",
+      "x": 1299,
+      "y": 400,
+      "w": 24,
+      "h": 24,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "",
+      "tag": "BUTTON",
+      "cls": "ant-pagination-item-link",
+      "x": 1355,
+      "y": 400,
+      "w": 24,
+      "h": 24,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "50 条/页",
+      "tag": "DIV",
+      "cls": "ant-select ant-select-sm ant-select-outlined ant-pagination-options-size-changer css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow ant-select-show-search",
+      "x": 1381,
+      "y": 394,
+      "w": 90,
+      "h": 36,
+      "field": null,
+      "maxWidth": "300px",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "应收搜索",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 281,
+      "y": 568,
+      "w": 381,
+      "h": 36,
+      "field": {
+        "x": 281,
+        "y": 546,
+        "w": 381,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "出口合同号",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 674,
+      "y": 568,
+      "w": 190,
+      "h": 36,
+      "field": {
+        "x": 674,
+        "y": 546,
+        "w": 190,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "发票号",
+      "tag": "INPUT",
+      "cls": "ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var",
+      "x": 876,
+      "y": 568,
+      "w": 190,
+      "h": 36,
+      "field": {
+        "x": 876,
+        "y": 546,
+        "w": 190,
+        "h": 58
+      },
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "查询",
+      "tag": "BUTTON",
+      "cls": "ant-btn css-xsuzon css-var-root ant-btn-default ant-btn-color-default ant-btn-variant-outlined",
+      "x": 1184,
+      "y": 568,
+      "w": 85,
+      "h": 36,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "end"
+    },
+    {
+      "text": "",
+      "tag": "BUTTON",
+      "cls": "ant-pagination-item-link",
+      "x": 1299,
+      "y": 791,
+      "w": 24,
+      "h": 24,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "",
+      "tag": "BUTTON",
+      "cls": "ant-pagination-item-link",
+      "x": 1355,
+      "y": 791,
+      "w": 24,
+      "h": 24,
+      "field": null,
+      "maxWidth": "none",
+      "alignSelf": "auto"
+    },
+    {
+      "text": "50 条/页",
+      "tag": "DIV",
+      "cls": "ant-select ant-select-sm ant-select-outlined ant-pagination-options-size-changer css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow ant-select-show-search",
+      "x": 1381,
+      "y": 785,
+      "w": 90,
+      "h": 36,
+      "field": null,
+      "maxWidth": "300px",
+      "alignSelf": "auto"
+    }
+  ]
+}

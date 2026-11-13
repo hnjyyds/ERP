@@ -45,6 +45,12 @@ class PaymentNotFoundError(Exception):
     pass
 
 
+class PaymentApprovalConflictError(Exception):
+    """并发审批或发票余额不足时抛出，映射为 409。"""
+
+    pass
+
+
 class PaymentService:
     def __init__(
         self,
@@ -214,7 +220,13 @@ class PaymentService:
                 remark=payload.remark,
             )
             if approved is None:
-                raise PaymentNotFoundError
+                raise PaymentApprovalConflictError("付款申请已被处理，请刷新后重试")
+            reserved = await self._repository.try_reserve_payment(
+                invoice_id=invoice.id,
+                amount=payload.approved_amount,
+            )
+            if not reserved:
+                raise PaymentApprovalConflictError("供应商发票未付金额不足，请刷新后重试")
             await self._repository.add_allocation(
                 payment_request_id=approved.id,
                 supplier_invoice_id=invoice.id,

@@ -1,0 +1,3154 @@
+[
+  {
+    "at": "2026-11-12T19:09:14.178795",
+    "method": "GET",
+    "path": "/masterdata/products?q=QA261112",
+    "status": 200,
+    "request_id": "ad4abfe1d529e691e4539c0a8e73bd48",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:15.388573",
+    "method": "GET",
+    "path": "/auth/me",
+    "status": 200,
+    "request_id": "7ee53f5cf9ed70343356a87e2b1d68e3",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:15.405559",
+    "method": "GET",
+    "path": "/auth/users",
+    "status": 200,
+    "request_id": "8a8e3f035a72824b6eb71bb3bd81c746",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.788734",
+    "method": "GET",
+    "path": "/system/i18n",
+    "status": 200,
+    "request_id": "f81694d62b8e7359d37224d0b5f24b5c",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.795210",
+    "method": "GET",
+    "path": "/health",
+    "status": 200,
+    "request_id": "8983c6336510fc9fe2ac887c414d1bc2",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.796241",
+    "method": "GET",
+    "path": "/system/i18n",
+    "status": 200,
+    "request_id": "9b467807c0d949993d7fdd5c7e431446",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.799131",
+    "method": "GET",
+    "path": "/health",
+    "status": 200,
+    "request_id": "4b206239ebf77af0087965c579531f76",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.815015",
+    "method": "GET",
+    "path": "/auth/me",
+    "status": 200,
+    "request_id": "170dcf7cc710774e1ae248de0d3d1442",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.818640",
+    "method": "GET",
+    "path": "/system/menus",
+    "status": 200,
+    "request_id": "1b41b6f768cd71db2a19e22c4ea41cc2",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.824176",
+    "method": "GET",
+    "path": "/auth/me",
+    "status": 401,
+    "request_id": "c03f760c9314deec493ce24f47e767a3",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:44.825024",
+    "method": "GET",
+    "path": "/system/menus",
+    "status": 401,
+    "request_id": "1d431570b11d9a36159179497b7612c9",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:44.833010",
+    "method": "GET",
+    "path": "/system/mcp",
+    "status": 200,
+    "request_id": "86c9ea7339c74cf0cb049d2664e2c6ae",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.833655",
+    "method": "GET",
+    "path": "/auth/users",
+    "status": 200,
+    "request_id": "ede279df49e6f61fc4c8e3abdf70a65a",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.836788",
+    "method": "GET",
+    "path": "/auth/users",
+    "status": 401,
+    "request_id": "f2a70cb664055f87f58c2ef3086053c4",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:44.837308",
+    "method": "GET",
+    "path": "/system/mcp",
+    "status": 401,
+    "request_id": "72dfbc08417453680acb01d38143ead1",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:44.858860",
+    "method": "GET",
+    "path": "/audit-logs/export",
+    "status": 200,
+    "request_id": "578f45476f803c039ec209e4f8f1b1dd",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.861239",
+    "method": "GET",
+    "path": "/audit-logs/export",
+    "status": 401,
+    "request_id": "bc098b66c3b6088e4b028b71d0d32de8",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:44.869841",
+    "method": "GET",
+    "path": "/audit-logs",
+    "status": 200,
+    "request_id": "1abd06a9151a41535c2e71d65197defe",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.872803",
+    "method": "GET",
+    "path": "/audit-logs",
+    "status": 401,
+    "request_id": "facd436c3f8288aa6e3de916783055f4",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:44.883160",
+    "method": "GET",
+    "path": "/organization/company",
+    "status": 200,
+    "request_id": "b3a9b5f43f51046bf04f4db6376c4896",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.887073",
+    "method": "GET",
+    "path": "/organization/company",
+    "status": 401,
+    "request_id": "1bf3fab78741b3589e041bc19aa5ab30",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:44.899464",
+    "method": "GET",
+    "path": "/organization/options",
+    "status": 200,
+    "request_id": "ee41b43d8f4d3daed9d78b1ec98ad7ee",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.902967",
+    "method": "GET",
+    "path": "/organization/options",
+    "status": 401,
+    "request_id": "099d4e6ced43448523aa73dd4f19e48d",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:44.917618",
+    "method": "GET",
+    "path": "/notifications",
+    "status": 200,
+    "request_id": "567265f06298a481641764733743724d",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.920657",
+    "method": "GET",
+    "path": "/dashboard",
+    "status": 200,
+    "request_id": "242b2b37a2d3420e86435bbc168ed90a",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.921532",
+    "method": "GET",
+    "path": "/notifications",
+    "status": 401,
+    "request_id": "5e59af520c5bd7c076b22dd400504778",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:44.923975",
+    "method": "GET",
+    "path": "/dashboard",
+    "status": 401,
+    "request_id": "1a2535b044eb8c51b260eff3fa72a4ad",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:44.933246",
+    "method": "GET",
+    "path": "/organization/users",
+    "status": 200,
+    "request_id": "0c9ef914cbd8ea2c01919df05dcc8c43",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.934635",
+    "method": "GET",
+    "path": "/masterdata/products",
+    "status": 200,
+    "request_id": "9ccb2e63c515ec8da65001a2b2b93037",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.937857",
+    "method": "GET",
+    "path": "/organization/users",
+    "status": 401,
+    "request_id": "31d941f58b445ea0b28b79c339a5c0e8",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:44.938711",
+    "method": "GET",
+    "path": "/masterdata/products",
+    "status": 401,
+    "request_id": "9cdc524cf824ba4f8be8b5a6420b6902",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:44.951477",
+    "method": "GET",
+    "path": "/masterdata/products/export",
+    "status": 200,
+    "request_id": "b910bc5dea851b0df44000c90df6121f",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.954518",
+    "method": "GET",
+    "path": "/masterdata/products/export",
+    "status": 401,
+    "request_id": "1e2a7d2aeb61b8b93929a4ebad09f619",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:44.967673",
+    "method": "GET",
+    "path": "/masterdata/customers",
+    "status": 200,
+    "request_id": "bfffd502ba9df79b040e735c123d6d14",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.973211",
+    "method": "GET",
+    "path": "/masterdata/customers",
+    "status": 401,
+    "request_id": "40b0d7860dd4f6274fea6dfd15af89eb",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:44.981728",
+    "method": "GET",
+    "path": "/masterdata/partners",
+    "status": 200,
+    "request_id": "275514676c53de4ed347e0eab34bfaa6",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.984200",
+    "method": "GET",
+    "path": "/masterdata/suppliers",
+    "status": 200,
+    "request_id": "dc6f1866f35247b22cf61b2ddf552ff4",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.986422",
+    "method": "GET",
+    "path": "/masterdata/document-parties",
+    "status": 200,
+    "request_id": "38ef99b6db5a279c06bbdad224638d8a",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:44.988190",
+    "method": "GET",
+    "path": "/masterdata/partners",
+    "status": 401,
+    "request_id": "45ee912c059fb143826208b11f8a4376",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:44.988715",
+    "method": "GET",
+    "path": "/masterdata/suppliers",
+    "status": 401,
+    "request_id": "c103bcad8d3bb3ac8dd0c76d01285dae",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:44.996290",
+    "method": "GET",
+    "path": "/masterdata/document-parties",
+    "status": 401,
+    "request_id": "fe33d679cfdb2ca88b97c558608daa19",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.011956",
+    "method": "GET",
+    "path": "/masterdata/document-parties/lookup",
+    "status": 422,
+    "request_id": "54f4c298c3889838654cde3d4be4cb44",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:10:45.014772",
+    "method": "GET",
+    "path": "/masterdata/document-parties/lookup",
+    "status": 401,
+    "request_id": "defe69df109a0e995aea27d78ff0900b",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.039018",
+    "method": "GET",
+    "path": "/sample/requests",
+    "status": 200,
+    "request_id": "c5986086746daf0a130b6e8319c814c9",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.045450",
+    "method": "GET",
+    "path": "/sample/records",
+    "status": 200,
+    "request_id": "c5a30722d427d2d9ec1b06131b2e3f83",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.045521",
+    "method": "GET",
+    "path": "/sample/requests",
+    "status": 401,
+    "request_id": "0b9a90adfcce4e8f8f4720ea67266ff5",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.047311",
+    "method": "GET",
+    "path": "/sample/records/export",
+    "status": 200,
+    "request_id": "a6526858b3d673752dad3fb3ab40d0eb",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.048692",
+    "method": "GET",
+    "path": "/sample/records",
+    "status": 401,
+    "request_id": "604a16098e7505a69370ab59ff831090",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.052610",
+    "method": "GET",
+    "path": "/sample/records/export",
+    "status": 401,
+    "request_id": "167a50bd6fca0226e6f9538db486269c",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.064029",
+    "method": "GET",
+    "path": "/sample/deliveries",
+    "status": 200,
+    "request_id": "3efdb220fae44a6777d5708916496c1d",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.067857",
+    "method": "GET",
+    "path": "/sample/deliveries",
+    "status": 401,
+    "request_id": "939e12d95c053760da76c739ddee72eb",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.079730",
+    "method": "GET",
+    "path": "/sample/deliveries/fee-statistics",
+    "status": 200,
+    "request_id": "ac4d68f447a1043b4c25349449ae956e",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.083706",
+    "method": "GET",
+    "path": "/sample/deliveries/fee-statistics",
+    "status": 401,
+    "request_id": "7dbed4274c9558d4f8ad68e568769e32",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.084044",
+    "method": "GET",
+    "path": "/sample/deliveries/export",
+    "status": 200,
+    "request_id": "cfe9a67050e08d7f3c9b41267f7c124e",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.084946",
+    "method": "GET",
+    "path": "/sample/deliveries/statistics",
+    "status": 200,
+    "request_id": "4ef0fe025dbafa1009c89157b687862e",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.089848",
+    "method": "GET",
+    "path": "/sample/deliveries/export",
+    "status": 401,
+    "request_id": "f41987bc756336bde8ba39e89891efa0",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.091915",
+    "method": "GET",
+    "path": "/sample/deliveries/statistics",
+    "status": 401,
+    "request_id": "a5d2511fb426ce2d7b403b2f4003323c",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.103237",
+    "method": "GET",
+    "path": "/sample/deliveries/quote-history",
+    "status": 200,
+    "request_id": "5a14327ac9ecfca35e46272469105278",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.110022",
+    "method": "GET",
+    "path": "/sample/deliveries/quote-history",
+    "status": 401,
+    "request_id": "cef83f4fd2eda63faa41fc8af0355adc",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.373155",
+    "method": "GET",
+    "path": "/sales/quotations/history",
+    "status": 200,
+    "request_id": "3d4ec8267832983f05f34948579b4c01",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.375967",
+    "method": "GET",
+    "path": "/sales/quotations/purchase-references",
+    "status": 200,
+    "request_id": "8be4660c90672c5d7cb261102590f097",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.379781",
+    "method": "GET",
+    "path": "/sales/quotations/history",
+    "status": 401,
+    "request_id": "48ea2ded87815b1cd23b69c97d15517d",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.381414",
+    "method": "GET",
+    "path": "/sales/quotations/purchase-references",
+    "status": 401,
+    "request_id": "9f72b3b636314d2ccbf23a25b38650c4",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.384872",
+    "method": "GET",
+    "path": "/sales/quotations",
+    "status": 200,
+    "request_id": "4edadc7d14288379010e2129aaf4555f",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.392048",
+    "method": "GET",
+    "path": "/sales/quotations",
+    "status": 401,
+    "request_id": "a4c39a422c2f7487cb60df9dd32c18c6",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.418905",
+    "method": "GET",
+    "path": "/sales/shipments/reminders",
+    "status": 200,
+    "request_id": "bcabcd7c659678fc27e0f24b129f1b5f",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.418967",
+    "method": "GET",
+    "path": "/sales/contracts",
+    "status": 200,
+    "request_id": "09f536450052a2657ac40c33d04d380a",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.423130",
+    "method": "GET",
+    "path": "/sales/shipments/reminders",
+    "status": 401,
+    "request_id": "1638bb4df2731f625a66f65ba54040c0",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.427905",
+    "method": "GET",
+    "path": "/sales/contracts",
+    "status": 401,
+    "request_id": "0a25d5c1b62bdec9442aa73e9d8cac96",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.444420",
+    "method": "GET",
+    "path": "/sales/shipments",
+    "status": 200,
+    "request_id": "70ae65cdcd5c9fa1888009ee65fd7409",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.447239",
+    "method": "GET",
+    "path": "/sales/shipments",
+    "status": 401,
+    "request_id": "47f6e5b94c48788c523e4b7aca519352",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.460274",
+    "method": "GET",
+    "path": "/finance/overview",
+    "status": 200,
+    "request_id": "65369dec56a95b9578ba74431576817a",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.463788",
+    "method": "GET",
+    "path": "/finance/overview",
+    "status": 401,
+    "request_id": "549178e841a115054c6933c5d55b2807",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.476567",
+    "method": "GET",
+    "path": "/finance/receivables",
+    "status": 200,
+    "request_id": "a690624968ec46b9213b3cd1a4643445",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.476659",
+    "method": "GET",
+    "path": "/finance/receipts",
+    "status": 200,
+    "request_id": "24cb534e71634c8da98113a2f813fc39",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.480917",
+    "method": "GET",
+    "path": "/finance/receipts",
+    "status": 401,
+    "request_id": "8ead98ab71573526e47f466ef2f84861",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.481884",
+    "method": "GET",
+    "path": "/finance/receivables",
+    "status": 401,
+    "request_id": "4225e2d210ff44e247b968587811aa12",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.491560",
+    "method": "GET",
+    "path": "/finance/supplier-invoices",
+    "status": 200,
+    "request_id": "02799d7ff31b836e7cb9928715b71ea4",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.493781",
+    "method": "GET",
+    "path": "/finance/payment-requests",
+    "status": 200,
+    "request_id": "41710719cad9672f1d4b68c33c94e3d3",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.495345",
+    "method": "GET",
+    "path": "/finance/supplier-invoices",
+    "status": 401,
+    "request_id": "2e7e35109c84155e89b888ff479f75b0",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.496992",
+    "method": "GET",
+    "path": "/finance/payment-requests",
+    "status": 401,
+    "request_id": "17daa0bf899e814c2af0fcd9923d5b7e",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.512412",
+    "method": "GET",
+    "path": "/finance/payables",
+    "status": 200,
+    "request_id": "68bda98b4311e769bc4bff5cc28d7b3b",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.514015",
+    "method": "GET",
+    "path": "/finance/partner-fee-invoices",
+    "status": 200,
+    "request_id": "238d0fd9229e1114eb12d0bbcb62b8de",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.517571",
+    "method": "GET",
+    "path": "/finance/payables",
+    "status": 401,
+    "request_id": "cb5a8614bac65e98509c03adc0acc2ec",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.522840",
+    "method": "GET",
+    "path": "/finance/partner-fee-invoices",
+    "status": 401,
+    "request_id": "9a7d3dca60d8d15ccfe2248bca228239",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.529220",
+    "method": "GET",
+    "path": "/finance/fee-payment-requests",
+    "status": 200,
+    "request_id": "375740b51b3f45b30164c3a08e72fbd7",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.532436",
+    "method": "GET",
+    "path": "/finance/fee-payment-requests",
+    "status": 401,
+    "request_id": "01ef1851600aeed3fca4ace1acc58ea8",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.534009",
+    "method": "GET",
+    "path": "/finance/fee-payables",
+    "status": 200,
+    "request_id": "815c1adfce1ccf92acada57cb187483e",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.537503",
+    "method": "GET",
+    "path": "/finance/fee-payables",
+    "status": 401,
+    "request_id": "1e89f15eeb8cf2aab80db4b88b3a7026",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.550583",
+    "method": "GET",
+    "path": "/finance/misc-fee-items",
+    "status": 200,
+    "request_id": "2fdf20255791e5e80f0a6751e966f974",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.551523",
+    "method": "GET",
+    "path": "/finance/misc-fee-allocations",
+    "status": 200,
+    "request_id": "27235e144d52be51ead6506e2559a0da",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.554033",
+    "method": "GET",
+    "path": "/finance/misc-fee-items",
+    "status": 401,
+    "request_id": "52990b725ba00cb056f1de24f2037697",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.555390",
+    "method": "GET",
+    "path": "/finance/misc-fee-allocations",
+    "status": 401,
+    "request_id": "11b068e08c9594ab70767b203a41055a",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.573650",
+    "method": "GET",
+    "path": "/finance/misc-fee-allocations/summary",
+    "status": 200,
+    "request_id": "2e286104f420fe26d8eb2a9a40663591",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.574921",
+    "method": "GET",
+    "path": "/finance/settlements",
+    "status": 200,
+    "request_id": "6eb9b2f1a7f499e35fc5264599472e31",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.578891",
+    "method": "GET",
+    "path": "/finance/misc-fee-allocations/summary",
+    "status": 401,
+    "request_id": "dad43549a84325d53452861df67d1868",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.580365",
+    "method": "GET",
+    "path": "/finance/settlements",
+    "status": 401,
+    "request_id": "238906e89a8220806ca26532a6d63aeb",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.590462",
+    "method": "GET",
+    "path": "/finance/verification-documents",
+    "status": 200,
+    "request_id": "b1fd15db951a1fb3eb7baf5ca793edd4",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.592449",
+    "method": "GET",
+    "path": "/finance/profit-calculations",
+    "status": 200,
+    "request_id": "76f4262166db54a807b70a45dc6032e4",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.594895",
+    "method": "GET",
+    "path": "/finance/verification-documents",
+    "status": 401,
+    "request_id": "acb40e4b7464515507c7baf3a6775a58",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.595880",
+    "method": "GET",
+    "path": "/finance/profit-calculations",
+    "status": 401,
+    "request_id": "c1df12b9c1af58373028f59d6fd357cf",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.608820",
+    "method": "GET",
+    "path": "/finance/verification-usage",
+    "status": 200,
+    "request_id": "fd2a53eb92b339d7473e2b9edc4133e4",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.612382",
+    "method": "GET",
+    "path": "/finance/verification-usage",
+    "status": 401,
+    "request_id": "9f5bdffb57d560248d78dc5fa24823e3",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.613133",
+    "method": "GET",
+    "path": "/finance/reimbursements",
+    "status": 200,
+    "request_id": "4b4e7dfbac8abdecf696a0db4107d7df",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.617949",
+    "method": "GET",
+    "path": "/finance/reimbursements",
+    "status": 401,
+    "request_id": "e66c34036c9d43af88e70172fe940833",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.627696",
+    "method": "GET",
+    "path": "/finance/customs-declaration-records",
+    "status": 200,
+    "request_id": "a9c49d503234191548d7fe9393f50c2b",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.628989",
+    "method": "GET",
+    "path": "/finance/port-import-batches",
+    "status": 200,
+    "request_id": "58172a1941b6b9d520eb8fd0e4a39b13",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.631454",
+    "method": "GET",
+    "path": "/finance/customs-declaration-records",
+    "status": 401,
+    "request_id": "af2fd5cb1c9a9d64ce770a5e7dfc9c52",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.633419",
+    "method": "GET",
+    "path": "/finance/port-import-batches",
+    "status": 401,
+    "request_id": "bcc84450a67b05c4f4cc715af2223dfc",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.644063",
+    "method": "GET",
+    "path": "/finance/reports/receipt-usage",
+    "status": 200,
+    "request_id": "112426c3f654ec5f8c63e53cf8a8cc3e",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.644603",
+    "method": "GET",
+    "path": "/finance/reports/receipt-usage/export",
+    "status": 200,
+    "request_id": "9e77d5f775395f2c0a089499ee9ecef0",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.647018",
+    "method": "GET",
+    "path": "/finance/reports/receipt-usage",
+    "status": 401,
+    "request_id": "3a6b155a3f3d5d68391a6b1302bbaabb",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.647961",
+    "method": "GET",
+    "path": "/finance/reports/receipt-usage/export",
+    "status": 401,
+    "request_id": "0f61f8f464908e3c274e84df1471f55d",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.658212",
+    "method": "GET",
+    "path": "/finance/reports/bank-receipt-summary",
+    "status": 200,
+    "request_id": "d945232b5efa69f4f98e2ab4b6f0bb4a",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.661083",
+    "method": "GET",
+    "path": "/finance/reports/bank-receipt-summary",
+    "status": 401,
+    "request_id": "d0a2b06454f2690dbaa87d7b58f205d1",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.662068",
+    "method": "GET",
+    "path": "/finance/reports/bank-receipt-summary/export",
+    "status": 200,
+    "request_id": "b4a097c6a47456733496b71f213926ca",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.666711",
+    "method": "GET",
+    "path": "/finance/reports/bank-receipt-summary/export",
+    "status": 401,
+    "request_id": "620737b07501474332cea67eadd8c6af",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.673506",
+    "method": "GET",
+    "path": "/finance/reports/goods-payment",
+    "status": 200,
+    "request_id": "a0ac8e62fa51d6b9b2c5450d3d6b5a87",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.676189",
+    "method": "GET",
+    "path": "/finance/reports/goods-payment/export",
+    "status": 200,
+    "request_id": "6c9b3efb038a9b3d2f8d6f66e344c4e0",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.679326",
+    "method": "GET",
+    "path": "/finance/reports/goods-payment",
+    "status": 401,
+    "request_id": "2b610d54500c76125fe630e569b8b7ee",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.681234",
+    "method": "GET",
+    "path": "/finance/reports/goods-payment/export",
+    "status": 401,
+    "request_id": "abb1723fdbfc30814612d1fcaeea6d9e",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.690812",
+    "method": "GET",
+    "path": "/finance/reports/fee-payment",
+    "status": 200,
+    "request_id": "9efbb0de64252b4225b4c2ae69e54808",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.692406",
+    "method": "GET",
+    "path": "/finance/reports/fee-payment/export",
+    "status": 200,
+    "request_id": "2f41e6d5413e0204010d95fd1baa49d4",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.694955",
+    "method": "GET",
+    "path": "/finance/reports/fee-payment",
+    "status": 401,
+    "request_id": "0a261966771251d91dc050534f3d2b6e",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.696281",
+    "method": "GET",
+    "path": "/finance/reports/fee-payment/export",
+    "status": 401,
+    "request_id": "00e4b65e8b81dd619e951ed0aaeec8cf",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.708768",
+    "method": "GET",
+    "path": "/finance/reports/customs-receipt-collection/export",
+    "status": 200,
+    "request_id": "67ee5137b4b2ff3746bdcd9069cd6687",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.708847",
+    "method": "GET",
+    "path": "/finance/reports/customs-receipt-collection",
+    "status": 200,
+    "request_id": "0dc71d06fbb13e7c8d4a514efdb9e2e9",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.712139",
+    "method": "GET",
+    "path": "/finance/reports/customs-receipt-collection",
+    "status": 401,
+    "request_id": "4f35f74adb561ad2c62f9eac91151ef3",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.713444",
+    "method": "GET",
+    "path": "/finance/reports/customs-receipt-collection/export",
+    "status": 401,
+    "request_id": "3dd39eacac9cf65a652806c480e95291",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.721688",
+    "method": "GET",
+    "path": "/finance/reports/tax-refund-statistics/export",
+    "status": 200,
+    "request_id": "4713a1d3078832dfc554576f3be30055",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.722623",
+    "method": "GET",
+    "path": "/finance/reports/tax-refund-statistics",
+    "status": 200,
+    "request_id": "b532fb7dd7d08275e4450b1df2d4aa19",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.724917",
+    "method": "GET",
+    "path": "/finance/reports/tax-refund-statistics/export",
+    "status": 401,
+    "request_id": "697afeae0071faccd60850766c511769",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.725583",
+    "method": "GET",
+    "path": "/finance/reports/tax-refund-statistics",
+    "status": 401,
+    "request_id": "ab613b3b682d12bb6c7927117fd0c3ab",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.742783",
+    "method": "GET",
+    "path": "/reporting/approvals",
+    "status": 200,
+    "request_id": "247f09c2ce682aca60f103b1e91c0167",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.746939",
+    "method": "GET",
+    "path": "/reporting/approvals",
+    "status": 401,
+    "request_id": "6c2251d155f00595f7c9634b67dc8f9b",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.751317",
+    "method": "GET",
+    "path": "/purchase/inquiries/references",
+    "status": 200,
+    "request_id": "355f0a1eaf13c074119abe71c8771075",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.751385",
+    "method": "GET",
+    "path": "/reporting/statistics",
+    "status": 200,
+    "request_id": "f36bab44e5fb71e47f7199d08df85a77",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.754342",
+    "method": "GET",
+    "path": "/reporting/statistics",
+    "status": 401,
+    "request_id": "79b77256820a52c74817e62ac2d92ffc",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.755523",
+    "method": "GET",
+    "path": "/purchase/inquiries/references",
+    "status": 401,
+    "request_id": "3fee1007699622d787130cdf18197dc2",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.763220",
+    "method": "GET",
+    "path": "/purchase/inquiries",
+    "status": 200,
+    "request_id": "ffcb63050460918c6fac21d7898eb731",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.766523",
+    "method": "GET",
+    "path": "/purchase/inquiries",
+    "status": 401,
+    "request_id": "1a29bbc2505414ed0b3ab798e073fde3",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.769018",
+    "method": "GET",
+    "path": "/purchase/inquiries/supplier-samples",
+    "status": 200,
+    "request_id": "c009da1fdfc592416bb41ef13030851a",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.771793",
+    "method": "GET",
+    "path": "/purchase/inquiries/supplier-samples",
+    "status": 401,
+    "request_id": "c854a3f060e181319881a81989a72625",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.776713",
+    "method": "GET",
+    "path": "/purchase/contracts/reminders",
+    "status": 200,
+    "request_id": "8cd1c0f70b1adcc030532df617074592",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.779849",
+    "method": "GET",
+    "path": "/purchase/contracts/reminders",
+    "status": 401,
+    "request_id": "bb89f0de0775f9f6caf67c8b49d5f920",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.787396",
+    "method": "GET",
+    "path": "/purchase/contracts",
+    "status": 200,
+    "request_id": "3d972bd1abc9ab39f5e8be471801d285",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.790583",
+    "method": "GET",
+    "path": "/purchase/contracts",
+    "status": 401,
+    "request_id": "afcd56678f916186b48ccfcf1f785527",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.791780",
+    "method": "GET",
+    "path": "/purchase/invoice-notices/reminders",
+    "status": 200,
+    "request_id": "92ecf5aa908b4fa9a3f0070c5504973b",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.796748",
+    "method": "GET",
+    "path": "/purchase/invoice-notices/reminders",
+    "status": 401,
+    "request_id": "308d87542e8a673c9f54912841e3ecdb",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.802660",
+    "method": "GET",
+    "path": "/purchase/invoice-notices",
+    "status": 200,
+    "request_id": "49243470cae059301478caf0acc38221",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.805920",
+    "method": "GET",
+    "path": "/purchase/invoice-notices",
+    "status": 401,
+    "request_id": "7593f8eb1018ad2315a0013a5afce1e4",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.814755",
+    "method": "GET",
+    "path": "/followup/templates",
+    "status": 200,
+    "request_id": "68504f7d1c2d5de955d7d23fe1da3f95",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.818490",
+    "method": "GET",
+    "path": "/followup/templates",
+    "status": 401,
+    "request_id": "2681b0f35e591885803d1239abd51392",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.824968",
+    "method": "GET",
+    "path": "/followup/overdue-nodes",
+    "status": 422,
+    "request_id": "05b2c3ffc459235be4eed6722b59ab07",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:10:45.828538",
+    "method": "GET",
+    "path": "/followup/overdue-nodes",
+    "status": 401,
+    "request_id": "8a0ae3dfb95689da6b4bc23fed93d101",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.833976",
+    "method": "GET",
+    "path": "/followup/plans",
+    "status": 200,
+    "request_id": "ae89195876d00933c34a2687d4826f26",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.838595",
+    "method": "GET",
+    "path": "/followup/plans",
+    "status": 401,
+    "request_id": "03836050892fd4d28b0652e7f15bf9d5",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.853273",
+    "method": "GET",
+    "path": "/quality/inspections",
+    "status": 200,
+    "request_id": "771625bdf380c13751b53e672cab0145",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.854004",
+    "method": "GET",
+    "path": "/quality/inspections/inbound-eligibility",
+    "status": 422,
+    "request_id": "709a76ebcdb4e00b02c4816bd6173f86",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:10:45.856568",
+    "method": "GET",
+    "path": "/quality/inspections",
+    "status": 401,
+    "request_id": "a431adf45af7718dd12bbad75bbf3396",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.859652",
+    "method": "GET",
+    "path": "/quality/inspections/inbound-eligibility",
+    "status": 401,
+    "request_id": "d3a70290e9c87b2ff5c7fb1a938b5ee2",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.874478",
+    "method": "GET",
+    "path": "/warehouse/inbound-plans",
+    "status": 200,
+    "request_id": "10d56a8051dc884b9a77c10e5e0056cc",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.876462",
+    "method": "GET",
+    "path": "/warehouse/inbound-orders",
+    "status": 200,
+    "request_id": "4349403882179b28e64cbce5ac529c97",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.878572",
+    "method": "GET",
+    "path": "/warehouse/inbound-plans",
+    "status": 401,
+    "request_id": "0101cf3ce32df6c5b318ecad95a281d1",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.879898",
+    "method": "GET",
+    "path": "/warehouse/inbound-orders",
+    "status": 401,
+    "request_id": "f4172bd5164b82f4e2301a75cce1f92b",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.890027",
+    "method": "GET",
+    "path": "/warehouse/inbound-orders/inventory-ledgers",
+    "status": 200,
+    "request_id": "85077e5bbbc6a02235fcc538940b2226",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.893464",
+    "method": "GET",
+    "path": "/warehouse/inbound-orders/inventory-ledgers",
+    "status": 401,
+    "request_id": "8b401c2d719ef04bc31fc346bd7b192e",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.897434",
+    "method": "GET",
+    "path": "/warehouse/inbound-orders/inventory-balances",
+    "status": 200,
+    "request_id": "e7d1452b4c36d0dbc170997044bb8ac9",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.899698",
+    "method": "GET",
+    "path": "/warehouse/inbound-orders/inventory-balances",
+    "status": 401,
+    "request_id": "4e108072cc2b7205e0f742dcbe1c7afa",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.912312",
+    "method": "GET",
+    "path": "/warehouse/outbound-orders",
+    "status": 200,
+    "request_id": "fc0ed3b22b1f4e12fa380e0462e8991e",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.916180",
+    "method": "GET",
+    "path": "/warehouse/outbound-orders",
+    "status": 401,
+    "request_id": "bfc1f44ee4c2f38426f7f138f65b814a",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.916757",
+    "method": "GET",
+    "path": "/warehouse/outbound-plans",
+    "status": 200,
+    "request_id": "557cbb553148830ef057e568edb5bb65",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.918223",
+    "method": "GET",
+    "path": "/warehouse/stocktakes",
+    "status": 200,
+    "request_id": "dbcb3260515901d60a99ad8f77967a4c",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:10:45.920118",
+    "method": "GET",
+    "path": "/warehouse/outbound-plans",
+    "status": 401,
+    "request_id": "47fc4fe40702160326ffa4c658b8fc73",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:10:45.921308",
+    "method": "GET",
+    "path": "/warehouse/stocktakes",
+    "status": 401,
+    "request_id": "e30ddee8dc7c97382a2b5affe38288e3",
+    "error": "缺少登录凭证"
+  },
+  {
+    "at": "2026-11-12T19:11:16.413113",
+    "method": "GET",
+    "path": "/masterdata/suppliers?q=QA261112",
+    "status": 200,
+    "request_id": "d524cda3007337b42bc60bbe1c0d61c0",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:11:16.501918",
+    "method": "GET",
+    "path": "/masterdata/customers?q=QA261112",
+    "status": 200,
+    "request_id": "1551b85a95d62d3f19a329b1fbe5d8b6",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:11:16.561243",
+    "method": "GET",
+    "path": "/masterdata/products/export",
+    "status": 200,
+    "request_id": "ee2a22591ef3c4ad0a58074ca24bb27a",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:12:39.470931",
+    "method": "PATCH",
+    "path": "/auth/me/avatar",
+    "status": 422,
+    "request_id": "1811d26d004726824a2c1d3e682a6de0",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.480043",
+    "method": "PATCH",
+    "path": "/system/mcp",
+    "status": 422,
+    "request_id": "2bbc8dfeb6e8d1997689c5bf221f69cc",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.488071",
+    "method": "POST",
+    "path": "/organization/departments",
+    "status": 422,
+    "request_id": "aae1a26fc3a155416f1deefb9c2ada77",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.495658",
+    "method": "POST",
+    "path": "/organization/users",
+    "status": 422,
+    "request_id": "0cc0eae25a9f74b61c7c390079d73a20",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.504642",
+    "method": "POST",
+    "path": "/organization/roles",
+    "status": 422,
+    "request_id": "904b69ac5d4a0acbacbe71c003e0ea86",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.511724",
+    "method": "POST",
+    "path": "/schedules",
+    "status": 422,
+    "request_id": "2e778741547be0b275cef146b0c16767",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.517978",
+    "method": "POST",
+    "path": "/announcements",
+    "status": 422,
+    "request_id": "2b57001dd10ae7369d262191ef624624",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.523663",
+    "method": "POST",
+    "path": "/todos",
+    "status": 422,
+    "request_id": "77dc4f0e3e4f573628649a4f9c3ed22f",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.531152",
+    "method": "POST",
+    "path": "/shortcuts",
+    "status": 422,
+    "request_id": "85d34d021345a68432139d05c4e4a51d",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.539139",
+    "method": "POST",
+    "path": "/files/images",
+    "status": 422,
+    "request_id": "c99e214f05732427b42c730877283071",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.545170",
+    "method": "POST",
+    "path": "/masterdata/products",
+    "status": 422,
+    "request_id": "3316bef26cf4a4fb66625ea103d1fc20",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.551453",
+    "method": "POST",
+    "path": "/masterdata/products/import",
+    "status": 422,
+    "request_id": "5e7556df0b629dd309e9d2bdb3454e89",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.557594",
+    "method": "POST",
+    "path": "/masterdata/customers",
+    "status": 422,
+    "request_id": "492125491024f9b72b459bad38711a79",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.563946",
+    "method": "POST",
+    "path": "/masterdata/suppliers",
+    "status": 422,
+    "request_id": "0b6073d0a73a4589ccd400dc38dce85c",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.572982",
+    "method": "POST",
+    "path": "/masterdata/partners",
+    "status": 422,
+    "request_id": "02444eb9f62f178ebfccb724a0ad3e3e",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.581752",
+    "method": "POST",
+    "path": "/masterdata/document-parties",
+    "status": 422,
+    "request_id": "4d9e91bc49f5900741a01c617c44ebd1",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.589895",
+    "method": "POST",
+    "path": "/sample/requests",
+    "status": 422,
+    "request_id": "96293da61f7e0f5445013592042f4ae6",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.596771",
+    "method": "POST",
+    "path": "/sample/records",
+    "status": 422,
+    "request_id": "9996efd41f316cee295d20d029639b72",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.604065",
+    "method": "POST",
+    "path": "/sample/records/import",
+    "status": 422,
+    "request_id": "da43bd43b1fd080e1a726447f8e6206b",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.610503",
+    "method": "POST",
+    "path": "/sample/deliveries",
+    "status": 422,
+    "request_id": "dd35a575caf84c46fb37c4d81518c8d5",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.617536",
+    "method": "POST",
+    "path": "/sales/quotations",
+    "status": 422,
+    "request_id": "2fb2ba5cd26fb541efc9a6b7b4a7b1f2",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.626163",
+    "method": "POST",
+    "path": "/sales/contracts",
+    "status": 422,
+    "request_id": "3937657da85cb7ed4c471886f7449c54",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.634662",
+    "method": "POST",
+    "path": "/sales/shipments/from-contracts",
+    "status": 422,
+    "request_id": "b7f50af3c884736da6a41cb013ee9300",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.642546",
+    "method": "POST",
+    "path": "/finance/receipts",
+    "status": 422,
+    "request_id": "8af76e54654f1dc7319cc84c2c7566ca",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.649787",
+    "method": "POST",
+    "path": "/finance/supplier-invoices",
+    "status": 422,
+    "request_id": "5e9ef104c702093af3a0d68e07807b40",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.656608",
+    "method": "POST",
+    "path": "/finance/payment-requests",
+    "status": 422,
+    "request_id": "39fb431027817281973b19ba8c081d62",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.664079",
+    "method": "POST",
+    "path": "/finance/partner-fee-invoices",
+    "status": 422,
+    "request_id": "60e1dee6e36be4a381c96f43e38cb2fc",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.670653",
+    "method": "POST",
+    "path": "/finance/fee-payment-requests",
+    "status": 422,
+    "request_id": "172351dbace03bba7f4f28484c1489fa",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.678163",
+    "method": "POST",
+    "path": "/finance/misc-fee-items",
+    "status": 422,
+    "request_id": "75d4df6de951b37493a1e1e209089781",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.686714",
+    "method": "POST",
+    "path": "/finance/misc-fee-allocations",
+    "status": 422,
+    "request_id": "76540fee31846b437bb0da361d9656af",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.694248",
+    "method": "POST",
+    "path": "/finance/settlements",
+    "status": 422,
+    "request_id": "c1e265f926dee7161bed316a3563ce9a",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.701395",
+    "method": "POST",
+    "path": "/finance/verification-documents",
+    "status": 422,
+    "request_id": "d408093b36df4ca56c83ec70781c80d0",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.709806",
+    "method": "POST",
+    "path": "/finance/reimbursements",
+    "status": 422,
+    "request_id": "7eefd715e4c2ca43581f601ebc26057b",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.718632",
+    "method": "POST",
+    "path": "/finance/port-import-batches",
+    "status": 422,
+    "request_id": "10287341849ac8c5a939c502ae68a9ca",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.726571",
+    "method": "POST",
+    "path": "/purchase/inquiries",
+    "status": 422,
+    "request_id": "976c99e88506c7b3797a6138532b4f28",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.735581",
+    "method": "POST",
+    "path": "/purchase/contracts",
+    "status": 422,
+    "request_id": "fe6ab4c490f7dd9d2f807050775f64bd",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.742385",
+    "method": "POST",
+    "path": "/purchase/contracts/generate-from-export-contracts",
+    "status": 422,
+    "request_id": "6784e84e3080639aa5e2b89be2a09f36",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.748890",
+    "method": "POST",
+    "path": "/purchase/invoice-notices/from-customs-declaration",
+    "status": 422,
+    "request_id": "4d520d3a7af37e62eefe786356825583",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.758840",
+    "method": "POST",
+    "path": "/followup/templates",
+    "status": 422,
+    "request_id": "333da2e499e797c2182138fd66ff8b2f",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.766078",
+    "method": "POST",
+    "path": "/followup/plans/from-purchase-contract",
+    "status": 422,
+    "request_id": "77260bfb4fbaadbfbde67a4c50b39858",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.773595",
+    "method": "POST",
+    "path": "/followup/sample-events",
+    "status": 422,
+    "request_id": "bbcca82e7ef32976097106bb296f07db",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.783567",
+    "method": "POST",
+    "path": "/followup/source-events",
+    "status": 422,
+    "request_id": "b65f886a64b751e49e32c96889e8b1e6",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.790043",
+    "method": "POST",
+    "path": "/quality/inspections",
+    "status": 422,
+    "request_id": "e07d8ff027a3c7d4fa101f7747b8465d",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.798850",
+    "method": "POST",
+    "path": "/warehouse/inbound-plans/from-purchase-contract",
+    "status": 422,
+    "request_id": "8e3bb2c71543b700d911952747ef39bf",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.809353",
+    "method": "POST",
+    "path": "/warehouse/inbound-orders/from-plan",
+    "status": 422,
+    "request_id": "c4ae72b98c368dec580be03160f15880",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.819854",
+    "method": "POST",
+    "path": "/warehouse/outbound-plans/from-shipment",
+    "status": 422,
+    "request_id": "8e4eec2b27cc1443e75ef3ac6d6921cb",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.828401",
+    "method": "POST",
+    "path": "/warehouse/outbound-orders/from-plan",
+    "status": 422,
+    "request_id": "2ca4212e9f25745c65feb5e9426d3a7d",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.834978",
+    "method": "POST",
+    "path": "/warehouse/stocktakes",
+    "status": 422,
+    "request_id": "6cec2f45140ea284f305eb25ac10a9a6",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.846915",
+    "method": "POST",
+    "path": "/masterdata/products",
+    "status": 422,
+    "request_id": "2ea6b12361bbcf391435048d2bcd3459",
+    "error": "商品编码已存在"
+  },
+  {
+    "at": "2026-11-12T19:12:39.855666",
+    "method": "POST",
+    "path": "/masterdata/products",
+    "status": 422,
+    "request_id": "642d6dc1e237bb505f49c8965793d9dd",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.861226",
+    "method": "POST",
+    "path": "/masterdata/products",
+    "status": 422,
+    "request_id": "93b6577061429503dc8fcf35989537d5",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.876372",
+    "method": "POST",
+    "path": "/masterdata/products",
+    "status": 201,
+    "request_id": "00f54799408ce241fed9016526bef518",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:12:39.883741",
+    "method": "POST",
+    "path": "/masterdata/products",
+    "status": 422,
+    "request_id": "40c5f103e71248006966d742e61c5b59",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:39.889579",
+    "method": "POST",
+    "path": "/masterdata/products",
+    "status": 422,
+    "request_id": "cefdc0c9ec8dbb1abf4f0b8fb4f61e9a",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:12:57.955332",
+    "method": "GET",
+    "path": "/purchase/contracts?q=QA261112",
+    "status": 200,
+    "request_id": "37cfc51752e1c0253f1a33d419e073b1",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:13:34.460177",
+    "method": "GET",
+    "path": "/organization/users",
+    "status": 403,
+    "request_id": "29654d3eac199bdf47c14119c04667d4",
+    "error": "缺少组织管理权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.478993",
+    "method": "GET",
+    "path": "/masterdata/products",
+    "status": 200,
+    "request_id": "c42a98b9186b4fa487841bcad850ccb9",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:13:34.490909",
+    "method": "GET",
+    "path": "/sales/contracts",
+    "status": 403,
+    "request_id": "f2db90f53a3bb81747636b6a0f6fa4e4",
+    "error": "缺少出口合同权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.505389",
+    "method": "GET",
+    "path": "/purchase/contracts",
+    "status": 200,
+    "request_id": "8953f1a31a706b1d926cd771d7ab11e3",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:13:34.511651",
+    "method": "GET",
+    "path": "/finance/receipts",
+    "status": 403,
+    "request_id": "679a0087547b2e09d941aa37df724796",
+    "error": "缺少收款权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.527742",
+    "method": "GET",
+    "path": "/quality/inspections",
+    "status": 200,
+    "request_id": "6d86d864c756e4e1d5b1d9bb7eb6f53a",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:13:34.535834",
+    "method": "GET",
+    "path": "/warehouse/inbound-orders",
+    "status": 403,
+    "request_id": "beb7a1646237b8848165d6be1687f450",
+    "error": "缺少入库单权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.540642",
+    "method": "GET",
+    "path": "/system/mcp",
+    "status": 403,
+    "request_id": "ef23cebfbfc87b4e1c4a8d66a6c646f3",
+    "error": "缺少MCP 配置权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.603636",
+    "method": "GET",
+    "path": "/organization/users",
+    "status": 403,
+    "request_id": "346d64b142deee34054e63b91a944802",
+    "error": "缺少组织管理权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.611893",
+    "method": "GET",
+    "path": "/masterdata/products",
+    "status": 200,
+    "request_id": "f05855f64bdc713d5652320494ffbda0",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:13:34.617987",
+    "method": "GET",
+    "path": "/sales/contracts",
+    "status": 403,
+    "request_id": "c45a4283f68b01c15c463fe8fd1368fa",
+    "error": "缺少出口合同权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.623766",
+    "method": "GET",
+    "path": "/purchase/contracts",
+    "status": 403,
+    "request_id": "b9dedd475f23815cbf86e00c3790a101",
+    "error": "缺少采购合同权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.628947",
+    "method": "GET",
+    "path": "/finance/receipts",
+    "status": 403,
+    "request_id": "65f419b2dc461af63fb1b31a7ac1a430",
+    "error": "缺少收款权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.635040",
+    "method": "GET",
+    "path": "/quality/inspections",
+    "status": 403,
+    "request_id": "dbb970fc4d2d7b5075df1daf73393b8c",
+    "error": "缺少QC 任务权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.642381",
+    "method": "GET",
+    "path": "/warehouse/inbound-orders",
+    "status": 200,
+    "request_id": "b27d45ccb32ecbc8cccffc18fc9c3455",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:13:34.646586",
+    "method": "GET",
+    "path": "/system/mcp",
+    "status": 403,
+    "request_id": "64d421550e21ce9a98fea5f06367085c",
+    "error": "缺少MCP 配置权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.705568",
+    "method": "GET",
+    "path": "/organization/users",
+    "status": 403,
+    "request_id": "75adc9114b8e81559a0ca7cca394560a",
+    "error": "缺少组织管理权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.709990",
+    "method": "GET",
+    "path": "/masterdata/products",
+    "status": 403,
+    "request_id": "b3486c3d59ae578a3682345aa3f28a8b",
+    "error": "缺少商品权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.714779",
+    "method": "GET",
+    "path": "/sales/contracts",
+    "status": 403,
+    "request_id": "9f567815a66de09eddc71e7d60e4488b",
+    "error": "缺少出口合同权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.720479",
+    "method": "GET",
+    "path": "/purchase/contracts",
+    "status": 403,
+    "request_id": "549119bb38acfd128c6fec028ccd7a89",
+    "error": "缺少采购合同权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.727449",
+    "method": "GET",
+    "path": "/finance/receipts",
+    "status": 200,
+    "request_id": "8d192a63b53398c432f3317393688308",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:13:34.733264",
+    "method": "GET",
+    "path": "/quality/inspections",
+    "status": 403,
+    "request_id": "04557f5fefbc8c080eb8effb833ef4fc",
+    "error": "缺少QC 任务权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.739489",
+    "method": "GET",
+    "path": "/warehouse/inbound-orders",
+    "status": 403,
+    "request_id": "7f78b9e4ec22cf6395772c958ec92d4e",
+    "error": "缺少入库单权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.743872",
+    "method": "GET",
+    "path": "/system/mcp",
+    "status": 403,
+    "request_id": "60b0953d761539352607a6e0434453e5",
+    "error": "缺少MCP 配置权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.801108",
+    "method": "GET",
+    "path": "/organization/users",
+    "status": 403,
+    "request_id": "e21e277b9d72305888f957d7444c5c37",
+    "error": "缺少组织管理权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.808942",
+    "method": "GET",
+    "path": "/masterdata/products",
+    "status": 200,
+    "request_id": "a986bf1c5a80fd6463477e8d936a7f48",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:13:34.817059",
+    "method": "GET",
+    "path": "/sales/contracts",
+    "status": 403,
+    "request_id": "edaa31fb7d82ca9f0b94871687d6092e",
+    "error": "缺少出口合同权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.826856",
+    "method": "GET",
+    "path": "/purchase/contracts",
+    "status": 200,
+    "request_id": "eb9a0ab4f9a9a0bc5c1836aa6beb1860",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:13:34.832509",
+    "method": "GET",
+    "path": "/finance/receipts",
+    "status": 403,
+    "request_id": "b657c84d044770eea7e9655354d8eabf",
+    "error": "缺少收款权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.838508",
+    "method": "GET",
+    "path": "/quality/inspections",
+    "status": 403,
+    "request_id": "ce1242ce198a0261435f7c7a864387cd",
+    "error": "缺少QC 任务权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.844557",
+    "method": "GET",
+    "path": "/warehouse/inbound-orders",
+    "status": 403,
+    "request_id": "6a22f0706af0803bc0e3a00dfc53ad9b",
+    "error": "缺少入库单权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.850448",
+    "method": "GET",
+    "path": "/system/mcp",
+    "status": 403,
+    "request_id": "011155c906c857f5033b9796966573f6",
+    "error": "缺少MCP 配置权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.908631",
+    "method": "GET",
+    "path": "/organization/users",
+    "status": 403,
+    "request_id": "6a0cd9529e2e168aee232db172c67746",
+    "error": "缺少组织管理权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.917680",
+    "method": "GET",
+    "path": "/masterdata/products",
+    "status": 200,
+    "request_id": "9cc64879e7fc0f9047e7d377cf377b53",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:13:34.926965",
+    "method": "GET",
+    "path": "/sales/contracts",
+    "status": 200,
+    "request_id": "4d3175ad7c26c2fe86d7fe076d0673e4",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:13:34.936960",
+    "method": "GET",
+    "path": "/purchase/contracts",
+    "status": 200,
+    "request_id": "359e2b38debaeb94757f4486b24e5220",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:13:34.942701",
+    "method": "GET",
+    "path": "/finance/receipts",
+    "status": 403,
+    "request_id": "f9f355ebde07430767aeb43854b3f85d",
+    "error": "缺少收款权限"
+  },
+  {
+    "at": "2026-11-12T19:13:34.951881",
+    "method": "GET",
+    "path": "/quality/inspections",
+    "status": 200,
+    "request_id": "9b096c1a88bf1729a1137d80c5891aa0",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:13:34.959211",
+    "method": "GET",
+    "path": "/warehouse/inbound-orders",
+    "status": 200,
+    "request_id": "37e069f40b3e28b06d03b0fa61597b22",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:13:34.963895",
+    "method": "GET",
+    "path": "/system/mcp",
+    "status": 403,
+    "request_id": "c317cea9d33a2259f015c12a3e3742bf",
+    "error": "缺少MCP 配置权限"
+  },
+  {
+    "at": "2026-11-12T19:13:59.524056",
+    "method": "POST",
+    "path": "/sales/contracts",
+    "status": 422,
+    "request_id": "cff55527e84128d760071b02ee5e16ab",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:13:59.555705",
+    "method": "POST",
+    "path": "/sales/contracts",
+    "status": 201,
+    "request_id": "79b0056cd854a3fb26fce356aa6b55d9",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:14:19.484269",
+    "method": "POST",
+    "path": "/sales/contracts/34817a9e-a058-4438-ba51-3e8b311bda58/approve",
+    "status": 422,
+    "request_id": "0a0691bcff9365fe33613d521f974123",
+    "error": "只有已提交合同可以审批"
+  },
+  {
+    "at": "2026-11-12T19:14:19.503708",
+    "method": "POST",
+    "path": "/sales/contracts/34817a9e-a058-4438-ba51-3e8b311bda58/submit",
+    "status": 422,
+    "request_id": "593dcdcb4f9be91cafd5dd3b5002365f",
+    "error": "不能将自己设为审批人"
+  },
+  {
+    "at": "2026-11-12T19:14:19.517041",
+    "method": "POST",
+    "path": "/sales/contracts/34817a9e-a058-4438-ba51-3e8b311bda58/approve",
+    "status": 422,
+    "request_id": "da9b318ed9c9edbb874eb519e82b791a",
+    "error": "只有已提交合同可以审批"
+  },
+  {
+    "at": "2026-11-12T19:14:19.526733",
+    "method": "POST",
+    "path": "/sales/contracts/34817a9e-a058-4438-ba51-3e8b311bda58/approve",
+    "status": 422,
+    "request_id": "5c785ddd855a577474cbbd65d35ea367",
+    "error": "只有已提交合同可以审批"
+  },
+  {
+    "at": "2026-11-12T19:14:40.093316",
+    "method": "POST",
+    "path": "/sales/contracts/34817a9e-a058-4438-ba51-3e8b311bda58/submit",
+    "status": 200,
+    "request_id": "13c5e97c4bfa512279dd801a4a7e6db6",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:14:40.122708",
+    "method": "POST",
+    "path": "/sales/contracts/34817a9e-a058-4438-ba51-3e8b311bda58/approve",
+    "status": 200,
+    "request_id": "c0fc8feac27a444450a5ca97f99727bd",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:14:40.133146",
+    "method": "POST",
+    "path": "/purchase/contracts/56cd6434-f367-4553-8caf-092a96ab097d/submit",
+    "status": 422,
+    "request_id": "b29d14ab0347ef775ac5d19d85442b22",
+    "error": "只有草稿采购合同可以提交"
+  },
+  {
+    "at": "2026-11-12T19:14:40.177213",
+    "method": "POST",
+    "path": "/purchase/contracts/56cd6434-f367-4553-8caf-092a96ab097d/approve",
+    "status": 200,
+    "request_id": "59ba288c8637f2dc5d43f4952b4a92ca",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:14:40.191506",
+    "method": "GET",
+    "path": "/quality/inspections",
+    "status": 200,
+    "request_id": "2cac248f019d6bb9f34bbf04bf6480ad",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:14:40.203874",
+    "method": "GET",
+    "path": "/warehouse/inbound-plans",
+    "status": 200,
+    "request_id": "7b4b2d6c2725ba3276b4308a012f93dc",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:14:40.217303",
+    "method": "GET",
+    "path": "/followup/plans",
+    "status": 200,
+    "request_id": "9a29fc621e0ef7fdfb618643e5a374db",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:16:07.386683",
+    "method": "GET",
+    "path": "/quality/inspections",
+    "status": 200,
+    "request_id": "cb67a6919061c83a8999f83a3f84e86c",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:20.098963",
+    "method": "GET",
+    "path": "/warehouse/inbound-plans",
+    "status": 200,
+    "request_id": "08b00a25dfe6eefa4bb63fe06fcd293f",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:20.126336",
+    "method": "POST",
+    "path": "/warehouse/inbound-orders/from-plan",
+    "status": 201,
+    "request_id": "7aa6a4af15b42047c6d9dca5ab5d883f",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:20.154421",
+    "method": "POST",
+    "path": "/warehouse/inbound-orders/5bf1413c-53e6-466a-805d-199a515a81aa/submit",
+    "status": 200,
+    "request_id": "606669fdc3dd7d1a9a65d2732a9c6469",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:20.169054",
+    "method": "POST",
+    "path": "/warehouse/inbound-orders/5bf1413c-53e6-466a-805d-199a515a81aa/approve",
+    "status": 422,
+    "request_id": "8d399ab25cd60fe2cba8f509d345a60e",
+    "error": "货物检验全部通过后才能正式入库"
+  },
+  {
+    "at": "2026-11-12T19:17:20.208174",
+    "method": "PUT",
+    "path": "/quality/inspections/f2276b75-242c-4f11-a075-42924404b134",
+    "status": 200,
+    "request_id": "940f852bf8916fe2859f5573fbb212df",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:20.240465",
+    "method": "PUT",
+    "path": "/quality/inspections/f2276b75-242c-4f11-a075-42924404b134",
+    "status": 200,
+    "request_id": "a4965a766752ee09b235bd839066c091",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:20.277240",
+    "method": "POST",
+    "path": "/warehouse/inbound-orders/5bf1413c-53e6-466a-805d-199a515a81aa/approve",
+    "status": 200,
+    "request_id": "83b60189e274036539432bd1a424ed9c",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:20.300750",
+    "method": "POST",
+    "path": "/sales/shipments/from-contracts",
+    "status": 201,
+    "request_id": "b1faaf4d480e9dd94f559a2cb35e0644",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:20.316282",
+    "method": "POST",
+    "path": "/sales/shipments/d6fc976b-09f5-41e4-a3b3-7aba1f636621/submit",
+    "status": 200,
+    "request_id": "a64e2a1837ee9e9d293cbcd1f1dbe7ad",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:20.337090",
+    "method": "POST",
+    "path": "/sales/shipments/d6fc976b-09f5-41e4-a3b3-7aba1f636621/approve",
+    "status": 200,
+    "request_id": "8aff7a1e424243884525987c69ce47b5",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:20.359771",
+    "method": "POST",
+    "path": "/finance/receipts",
+    "status": 201,
+    "request_id": "3926d61d0c959cb1f064ca86cca76903",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:20.376067",
+    "method": "POST",
+    "path": "/finance/receipts/50b2abe7-16ec-489d-830f-c09d7e8572d6/claim",
+    "status": 200,
+    "request_id": "109ec22911be0f2085dcec6492948fd2",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:20.383077",
+    "method": "POST",
+    "path": "/finance/receipts/50b2abe7-16ec-489d-830f-c09d7e8572d6/allocations",
+    "status": 422,
+    "request_id": "6b2673c32fdc6ed137b1097b67460c61",
+    "error": "收款分摊金额不能超过未分摊金额"
+  },
+  {
+    "at": "2026-11-12T19:17:20.387138",
+    "method": "GET",
+    "path": "/warehouse/inventory",
+    "status": 401,
+    "request_id": "29193fc7cf8bc0cef0027c97ddca57dc",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:20.396602",
+    "method": "GET",
+    "path": "/warehouse/inbound-orders",
+    "status": 200,
+    "request_id": "9b6aad397f8a9000266a0e79a9be285b",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:20.406008",
+    "method": "GET",
+    "path": "/warehouse/outbound-plans",
+    "status": 200,
+    "request_id": "4a795734cd1fb6baabcd3bb0ec86c13f",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:20.418457",
+    "method": "GET",
+    "path": "/quality/inspections",
+    "status": 200,
+    "request_id": "dfb8c9a84d7a39603cb6c67df2c18ccd",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:20.428606",
+    "method": "GET",
+    "path": "/followup/plans",
+    "status": 200,
+    "request_id": "10ff7164bc080736579b741d526f9023",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:42.090859",
+    "method": "POST",
+    "path": "/finance/receipts/50b2abe7-16ec-489d-830f-c09d7e8572d6/allocations",
+    "status": 201,
+    "request_id": "230a7a1fc2fe91c124287c54b3e4b7d9",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:42.096002",
+    "method": "POST",
+    "path": "/finance/receipts/50b2abe7-16ec-489d-830f-c09d7e8572d6/allocations",
+    "status": 201,
+    "request_id": "2c6bd876c02be52ff00cbd001d1f7180",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:42.099239",
+    "method": "GET",
+    "path": "/finance/receipts/50b2abe7-16ec-489d-830f-c09d7e8572d6",
+    "status": 401,
+    "request_id": "e3fc4c86ed1c84604255fad9da5c685a",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:17:57.735877",
+    "method": "GET",
+    "path": "/finance/receipts",
+    "status": 200,
+    "request_id": "7320ee337d52d854a6ec53779b1cf094",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:18:52.424819",
+    "method": "POST",
+    "path": "/warehouse/outbound-plans/from-shipment",
+    "status": 422,
+    "request_id": "7830ab1b92f2f653bf0700f32677002e",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:18:52.446031",
+    "method": "GET",
+    "path": "/warehouse/inbound-orders/inventory-balances?product_id=cc65c401-22e4-4a77-8b77-eab59be3e228",
+    "status": 200,
+    "request_id": "743e9213d1e60698b6e88cb2aec119f8",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:18:52.460819",
+    "method": "GET",
+    "path": "/warehouse/inbound-orders/inventory-ledgers?product_id=cc65c401-22e4-4a77-8b77-eab59be3e228",
+    "status": 200,
+    "request_id": "b1ad1e3d7816d3fffb6ae65e005a1923",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:18:52.491383",
+    "method": "POST",
+    "path": "/warehouse/stocktakes",
+    "status": 201,
+    "request_id": "3fb4dafcff822c469c56501e68a214b8",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:18:52.527524",
+    "method": "POST",
+    "path": "/warehouse/stocktakes/baf4fb86-410e-4f0c-8d9c-7bd518f29553/submit",
+    "status": 200,
+    "request_id": "6da0c8524abf15d652c222ae89e6d516",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:18:52.545131",
+    "method": "POST",
+    "path": "/warehouse/stocktakes/baf4fb86-410e-4f0c-8d9c-7bd518f29553/approve",
+    "status": 200,
+    "request_id": "947c0217bcd8042e92c0f59c97c29264",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:20:19.607761",
+    "method": "POST",
+    "path": "/warehouse/outbound-plans/from-shipment",
+    "status": 201,
+    "request_id": "49679b6bcb66a14845f82950f27d4abe",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:20:19.647877",
+    "method": "POST",
+    "path": "/warehouse/outbound-orders/from-plan",
+    "status": 201,
+    "request_id": "9a00505bf06bd88314ff41a5c3319329",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:20:19.670716",
+    "method": "POST",
+    "path": "/warehouse/outbound-orders/d720a3af-84c3-40ee-b51c-e896fb43e75c/submit",
+    "status": 200,
+    "request_id": "2ece36b8aef33a9855fdc1fefbee4d32",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:20:19.702983",
+    "method": "POST",
+    "path": "/warehouse/outbound-orders/d720a3af-84c3-40ee-b51c-e896fb43e75c/approve",
+    "status": 200,
+    "request_id": "25d6de3817ebfc2f4dc00674089a9313",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:20:19.719398",
+    "method": "GET",
+    "path": "/warehouse/inbound-orders/inventory-balances?product_id=cc65c401-22e4-4a77-8b77-eab59be3e228",
+    "status": 200,
+    "request_id": "087608c94661226d5224b54fae42fff5",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:20:19.728149",
+    "method": "GET",
+    "path": "/warehouse/inbound-orders/inventory-ledgers?product_id=cc65c401-22e4-4a77-8b77-eab59be3e228",
+    "status": 200,
+    "request_id": "73a855a1c9de09440b0ceb016c1ecddf",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:21:20.579567",
+    "method": "GET",
+    "path": "/auth/me",
+    "status": 200,
+    "request_id": "351772278d80bd3fa38ae62b02d46af5",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:21:44.112756",
+    "method": "POST",
+    "path": "/finance/supplier-invoices",
+    "status": 201,
+    "request_id": "6545f94e164b366f53172ed053d9428d",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:21:44.186353",
+    "method": "POST",
+    "path": "/finance/payment-requests",
+    "status": 201,
+    "request_id": "bae35c3f3b2a1563e3a7e0877499cd3c",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:21:44.258102",
+    "method": "POST",
+    "path": "/finance/payment-requests",
+    "status": 201,
+    "request_id": "7db0a3da46a38027267d1f81f21a5117",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:21:44.365245",
+    "method": "POST",
+    "path": "/finance/payment-requests/30f75bb5-d709-496f-8f76-4d1be7652914/approve",
+    "status": 200,
+    "request_id": "d943a97124163e81618cc48b9d5b6944",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:21:44.386950",
+    "method": "POST",
+    "path": "/finance/payment-requests/46c941cf-01bf-4a0f-8715-ca697f2dafab/approve",
+    "status": 200,
+    "request_id": "273026d2c379310295df8d302a6010fb",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:21:44.419485",
+    "method": "GET",
+    "path": "/finance/supplier-invoices",
+    "status": 200,
+    "request_id": "ce5f64376eac5fc07b5e8ca9b9bd2a14",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:24:51.234962",
+    "method": "POST",
+    "path": "/sample/requests",
+    "status": 201,
+    "request_id": "961ac7c4966a06c4bf52d38f022155c2",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:24:51.251394",
+    "method": "POST",
+    "path": "/sample/requests/9c10a3ed-91e4-4823-9087-690dd887451d/progress",
+    "status": 201,
+    "request_id": "f8c7cf8bfa6d7497e3d51cdb0e86214c",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:24:51.258728",
+    "method": "POST",
+    "path": "/sample/requests/9c10a3ed-91e4-4823-9087-690dd887451d/sample-record",
+    "status": 422,
+    "request_id": "06235515db48a40478c5f130425ec780",
+    "error": "打样完成后才能转为样品登记"
+  },
+  {
+    "at": "2026-11-12T19:24:51.295790",
+    "method": "POST",
+    "path": "/sample/records",
+    "status": 201,
+    "request_id": "22d4969de4782436a253d4b569599e5f",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:24:51.307419",
+    "method": "POST",
+    "path": "/sample/records/46e58577-8651-45a6-b60d-984d2ab9be83/stock-events",
+    "status": 422,
+    "request_id": "397883ebdd241cef1927ea6c957132b2",
+    "error": "样品留样数量不足"
+  },
+  {
+    "at": "2026-11-12T19:24:51.329390",
+    "method": "POST",
+    "path": "/sample/deliveries",
+    "status": 201,
+    "request_id": "547ddd22f3e1aa3b5fe3c9fcec68c82a",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:24:51.349854",
+    "method": "POST",
+    "path": "/sample/deliveries/06a298c2-6b07-4263-9ddc-1e67db6f6067/submit",
+    "status": 200,
+    "request_id": "3a1b99fecb405d1de08b675814209b67",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:24:51.365542",
+    "method": "POST",
+    "path": "/sample/deliveries/06a298c2-6b07-4263-9ddc-1e67db6f6067/approve",
+    "status": 200,
+    "request_id": "eac67177a94adaa7958ce3f3d0700c60",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:24:51.371118",
+    "method": "POST",
+    "path": "/sample/deliveries/06a298c2-6b07-4263-9ddc-1e67db6f6067/approve",
+    "status": 422,
+    "request_id": "1b7c9a53cf29ec1b81d8709da30cf542",
+    "error": "只有已提交寄样单可以审核"
+  },
+  {
+    "at": "2026-11-12T19:26:14.288329",
+    "method": "POST",
+    "path": "/masterdata/partners",
+    "status": 201,
+    "request_id": "34d88c23a4fb56679f56dbfba567ae03",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:26:14.315641",
+    "method": "POST",
+    "path": "/masterdata/document-parties",
+    "status": 201,
+    "request_id": "9d99652cfbb140a8df4fd4dff37c0275",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:26:14.380628",
+    "method": "POST",
+    "path": "/finance/partner-fee-invoices",
+    "status": 201,
+    "request_id": "380733b840bce79d7728ccb1cff4d4fb",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:26:14.413664",
+    "method": "POST",
+    "path": "/finance/fee-payment-requests",
+    "status": 201,
+    "request_id": "f1ca8d39991c15840ccfd044c65c45f0",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:26:14.431608",
+    "method": "POST",
+    "path": "/finance/fee-payment-requests/9e779acb-18a4-4bf4-a846-78d826e47e6c/approve",
+    "status": 422,
+    "request_id": "58c1e08697d8f4aab78bb8883ccf8e86",
+    "error": "审批金额不能超过申请金额"
+  },
+  {
+    "at": "2026-11-12T19:26:14.457446",
+    "method": "POST",
+    "path": "/finance/fee-payment-requests/9e779acb-18a4-4bf4-a846-78d826e47e6c/approve",
+    "status": 200,
+    "request_id": "c50bac109fadfb73183e63450b7f5453",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:26:14.474593",
+    "method": "POST",
+    "path": "/finance/misc-fee-items",
+    "status": 201,
+    "request_id": "91cd542d6a04aadcfbc8ffd9fe78aac0",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:26:14.501989",
+    "method": "POST",
+    "path": "/finance/misc-fee-allocations",
+    "status": 201,
+    "request_id": "819f4cf2af1f3e4c2b330aabca695f54",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:26:14.541643",
+    "method": "POST",
+    "path": "/finance/reimbursements",
+    "status": 201,
+    "request_id": "755588cd1d03ab40d545500ebac2a5fb",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:26:14.566953",
+    "method": "POST",
+    "path": "/finance/reimbursements/da3c19a0-0f43-4f42-838d-5d39868269c9/pay",
+    "status": 422,
+    "request_id": "81a9f075e827cea97ec6a2711ae5f205",
+    "error": "只有已审批通过的报销单可以付款"
+  },
+  {
+    "at": "2026-11-12T19:26:14.619677",
+    "method": "POST",
+    "path": "/finance/reimbursements/da3c19a0-0f43-4f42-838d-5d39868269c9/approve",
+    "status": 200,
+    "request_id": "1e7ea7a4fb00a86658553c7a1821745d",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:26:14.680357",
+    "method": "POST",
+    "path": "/finance/reimbursements/da3c19a0-0f43-4f42-838d-5d39868269c9/pay",
+    "status": 200,
+    "request_id": "47eeb5c163a806bc10145fafa542ef24",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:26:14.703654",
+    "method": "POST",
+    "path": "/finance/reimbursements/da3c19a0-0f43-4f42-838d-5d39868269c9/pay",
+    "status": 422,
+    "request_id": "997417ad6a4114249fc1573f1d9ec859",
+    "error": "只有已审批通过的报销单可以付款"
+  },
+  {
+    "at": "2026-11-12T19:26:14.729649",
+    "method": "POST",
+    "path": "/finance/verification-documents",
+    "status": 201,
+    "request_id": "f903a30d710a1b94c9c5d7027e2741a9",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:26:14.747610",
+    "method": "POST",
+    "path": "/finance/verification-documents/a62d4ddc-3045-4d8f-9678-1d204e74d3ac/tax-refunds",
+    "status": 422,
+    "request_id": "24042e8ed794f6c8763ab54814de71fb",
+    "error": "核销登记后才能登记退税"
+  },
+  {
+    "at": "2026-11-12T19:26:14.771974",
+    "method": "POST",
+    "path": "/finance/verification-documents/a62d4ddc-3045-4d8f-9678-1d204e74d3ac/customs-receipt",
+    "status": 200,
+    "request_id": "1a8e11f3a66185645a695230121ee9ff",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:26:14.794551",
+    "method": "POST",
+    "path": "/finance/verification-documents/a62d4ddc-3045-4d8f-9678-1d204e74d3ac/verify",
+    "status": 200,
+    "request_id": "a11d2ba3e86e2460649d73b601af08dc",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:26:14.808839",
+    "method": "POST",
+    "path": "/finance/verification-documents/a62d4ddc-3045-4d8f-9678-1d204e74d3ac/tax-refunds",
+    "status": 422,
+    "request_id": "f27dacea33fe251655df4cbc926d325a",
+    "error": "退税金额不能超过未退税金额"
+  },
+  {
+    "at": "2026-11-12T19:26:14.843160",
+    "method": "POST",
+    "path": "/finance/verification-documents/a62d4ddc-3045-4d8f-9678-1d204e74d3ac/tax-refunds",
+    "status": 201,
+    "request_id": "487ee42bf2cfa2abaff1309717fee54a",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:26:14.865542",
+    "method": "POST",
+    "path": "/finance/port-import-batches",
+    "status": 422,
+    "request_id": "0a41f05804787ff0d2d6818669340816",
+    "error": "导入批次记录数和明细数量不一致"
+  },
+  {
+    "at": "2026-11-12T19:26:14.928086",
+    "method": "POST",
+    "path": "/finance/settlements",
+    "status": 201,
+    "request_id": "b36133d54961b2acf5a7afded4096334",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:26:14.948690",
+    "method": "POST",
+    "path": "/finance/settlements",
+    "status": 422,
+    "request_id": "2abf3b724821cd82d07cc9fc2da5afb8",
+    "error": "该出运单已经生成财务结算"
+  },
+  {
+    "at": "2026-11-12T19:26:14.977135",
+    "method": "POST",
+    "path": "/finance/settlements/16224733-261c-4ae4-aad2-dfc01b8a2441/manual-costs",
+    "status": 201,
+    "request_id": "73cb16145ef2d3d4344dea5a357da125",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:28:02.354181",
+    "method": "POST",
+    "path": "/sales/quotations",
+    "status": 201,
+    "request_id": "124d01d44c97db02d78c34c73374847f",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:28:02.395894",
+    "method": "POST",
+    "path": "/sales/quotations/ccdbe6c2-efee-40ca-be09-fc4ee1092365/submit",
+    "status": 200,
+    "request_id": "3ba745534d11448437e9d96c52c70f6e",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:28:02.435548",
+    "method": "POST",
+    "path": "/sales/quotations/ccdbe6c2-efee-40ca-be09-fc4ee1092365/reject",
+    "status": 200,
+    "request_id": "3678c0359cfcc21fb3d3c5c01b250042",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:28:02.448590",
+    "method": "POST",
+    "path": "/sales/quotations/ccdbe6c2-efee-40ca-be09-fc4ee1092365/submit",
+    "status": 422,
+    "request_id": "86106320fd7666075069c491c2494feb",
+    "error": "只有草稿报价可以提交"
+  },
+  {
+    "at": "2026-11-12T19:28:02.463281",
+    "method": "POST",
+    "path": "/sales/quotations/ccdbe6c2-efee-40ca-be09-fc4ee1092365/approve",
+    "status": 422,
+    "request_id": "2aae6dfb119cad7a69fcb7b6401bf2da",
+    "error": "只有已提交报价可以审批"
+  },
+  {
+    "at": "2026-11-12T19:28:02.478599",
+    "method": "POST",
+    "path": "/sales/quotations/ccdbe6c2-efee-40ca-be09-fc4ee1092365/confirm-contract",
+    "status": 422,
+    "request_id": "d05690a0f46e0196ea8c81c4bacc6c9c",
+    "error": "只有已审批报价可以生成出口合同"
+  },
+  {
+    "at": "2026-11-12T19:28:02.528333",
+    "method": "POST",
+    "path": "/purchase/inquiries",
+    "status": 201,
+    "request_id": "a7d7dedb988f4a1c7f43bab69eb73fc5",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:28:02.562836",
+    "method": "POST",
+    "path": "/purchase/inquiries/b4d57828-d264-489d-b196-989d07d911d0/quotations",
+    "status": 201,
+    "request_id": "51656fe7687954db4612dbdcba932f9e",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:28:02.577688",
+    "method": "POST",
+    "path": "/sample/requests/9c10a3ed-91e4-4823-9087-690dd887451d/progress",
+    "status": 422,
+    "request_id": "17abc99d888e3497747cb6ffd4d28b34",
+    "error": "只有客户确认阶段才能完成打样"
+  },
+  {
+    "at": "2026-11-12T19:28:02.590804",
+    "method": "POST",
+    "path": "/sample/requests/9c10a3ed-91e4-4823-9087-690dd887451d/sample-record",
+    "status": 422,
+    "request_id": "6f0965d5c0fce960b853b53ee05f85bc",
+    "error": "打样完成后才能转为样品登记"
+  },
+  {
+    "at": "2026-11-12T19:28:02.611917",
+    "method": "POST",
+    "path": "/sample/deliveries/06a298c2-6b07-4263-9ddc-1e67db6f6067/tracking",
+    "status": 200,
+    "request_id": "841614480995e9423946ecd535fb5e5f",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:28:02.627048",
+    "method": "POST",
+    "path": "/todos",
+    "status": 201,
+    "request_id": "02d5c48fa931151985e02a52dc9d0bde",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:28:02.703467",
+    "method": "POST",
+    "path": "/schedules",
+    "status": 422,
+    "request_id": "fcb6d5e91b0a8df457e42b0ebd8975c0",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T19:28:02.721827",
+    "method": "POST",
+    "path": "/schedules",
+    "status": 201,
+    "request_id": "6c4c7122b8a458d24ba5a6728da634bd",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:28:02.736559",
+    "method": "POST",
+    "path": "/finance/port-import-batches",
+    "status": 201,
+    "request_id": "192b620b8c62d3a4159f44596042d949",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:28:55.218140",
+    "method": "PUT",
+    "path": "/sales/quotations/ccdbe6c2-efee-40ca-be09-fc4ee1092365",
+    "status": 200,
+    "request_id": "5958e532102e0ea643b50dc5a830a070",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:28:55.232867",
+    "method": "POST",
+    "path": "/sales/quotations/ccdbe6c2-efee-40ca-be09-fc4ee1092365/submit",
+    "status": 200,
+    "request_id": "edf843e1bf9e44628fd3d0874fc111d5",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:28:55.246004",
+    "method": "POST",
+    "path": "/sales/quotations/ccdbe6c2-efee-40ca-be09-fc4ee1092365/approve",
+    "status": 200,
+    "request_id": "cc722df16de6c1392788a2ead6306901",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:28:55.266950",
+    "method": "POST",
+    "path": "/sales/quotations/ccdbe6c2-efee-40ca-be09-fc4ee1092365/confirm-contract",
+    "status": 200,
+    "request_id": "84a0023d9b263096abef42f6c25a3215",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:28:55.278523",
+    "method": "POST",
+    "path": "/sample/requests/9c10a3ed-91e4-4823-9087-690dd887451d/progress",
+    "status": 201,
+    "request_id": "490d5d4ba77a0369c6aa77790638e531",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:28:55.296907",
+    "method": "POST",
+    "path": "/sample/requests/9c10a3ed-91e4-4823-9087-690dd887451d/sample-record",
+    "status": 201,
+    "request_id": "7d075c8fdf8647eb04128b05a5f8cf75",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T19:28:55.304564",
+    "method": "POST",
+    "path": "/masterdata/products",
+    "status": 403,
+    "request_id": "b317f6a8a5533037aa423b5903c8c229",
+    "error": "缺少商品权限"
+  },
+  {
+    "at": "2026-11-12T19:28:55.310349",
+    "method": "POST",
+    "path": "/masterdata/products",
+    "status": 403,
+    "request_id": "ec71f1c3a7c559cb03c22e4773e960b2",
+    "error": "缺少商品权限"
+  },
+  {
+    "at": "2026-11-12T19:28:55.315578",
+    "method": "POST",
+    "path": "/masterdata/products",
+    "status": 403,
+    "request_id": "47a19667e1aa62d29a381a92d78d76ac",
+    "error": "缺少商品权限"
+  },
+  {
+    "at": "2026-11-12T20:06:01.386966",
+    "method": "POST",
+    "path": "/organization/departments",
+    "status": 201,
+    "request_id": "c04a225280caa79d21cb401b23b36918",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T20:06:01.398912",
+    "method": "POST",
+    "path": "/organization/roles",
+    "status": 422,
+    "request_id": "aa79c425e7e07460c4c28646910f22e8",
+    "error": "请求参数校验失败"
+  },
+  {
+    "at": "2026-11-12T20:11:18.773232",
+    "method": "GET",
+    "path": "/purchase/contracts?supplier_id=c6d43566-694f-41d0-85f0-6631c6478d52",
+    "status": 200,
+    "request_id": "7f593db5e4f291d5ade02ea264eb06f8",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T20:11:18.791665",
+    "method": "GET",
+    "path": "/purchase/contracts?supplier_id=QA261112-S01",
+    "status": 200,
+    "request_id": "e0081f92466bf09c7a8450a3a673b1b2",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T20:11:18.810379",
+    "method": "GET",
+    "path": "/warehouse/inbound-plans?supplier_id=c6d43566-694f-41d0-85f0-6631c6478d52",
+    "status": 200,
+    "request_id": "6dd1165739546e61e458b0273ca5ec36",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T20:11:18.821216",
+    "method": "GET",
+    "path": "/warehouse/inbound-plans?supplier_id=QA261112-S01",
+    "status": 200,
+    "request_id": "d5af3438b2de5fe228660a5c90dd7727",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T20:11:18.844634",
+    "method": "GET",
+    "path": "/finance/supplier-invoices?supplier_id=c6d43566-694f-41d0-85f0-6631c6478d52",
+    "status": 200,
+    "request_id": "6f61176a486fc18a3dc791a4b9957810",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T20:11:18.852948",
+    "method": "GET",
+    "path": "/finance/supplier-invoices?supplier_id=QA261112-S01",
+    "status": 200,
+    "request_id": "d37859c8393ce7ab6e9cfccc045690e0",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T20:11:18.866852",
+    "method": "GET",
+    "path": "/finance/receipts?customer_id=9d46eb62-a60a-49c1-92e2-bf4f4240884d",
+    "status": 200,
+    "request_id": "446e83ce903e8d4969439ac7497c2d59",
+    "error": null
+  },
+  {
+    "at": "2026-11-12T20:11:18.875438",
+    "method": "GET",
+    "path": "/finance/receipts?customer_id=QA261112-C01",
+    "status": 200,
+    "request_id": "0f3b1ff97853ef31aaa147effcf5eb3c",
+    "error": null
+  }
+]

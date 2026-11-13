@@ -1,13 +1,16 @@
+import logging
 from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Select, case, func, or_, select
+from sqlalchemy import Select, case, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.finance.receipts.models import BankReceipt, ReceiptAllocation, ReceiptClaim
 from app.modules.sales.contracts.models import ExportContract
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -258,8 +261,32 @@ class ReceiptRepository:
         await self.session.flush()
         return self._map_allocation(allocation)
 
+    async def try_reserve_allocation(
+        self,
+        *,
+        receipt_id: str,
+        amount: Decimal | str,
+    ) -> bool:
+        """在同一事务内原子占用分摊额度；返回是否占用成功。
+
+        条件更新是并发正确性的唯一依据：``allocated_amount + amount <= amount``
+        必须在数据库里判定，避免“先读余额再写入”被两个请求同时通过。
+        """
+
+        value = Decimal(str(amount))
+        result = await self.session.execute(
+            update(BankReceipt)
+            .where(
+                BankReceipt.id == receipt_id,
+                BankReceipt.status != "unclaimed",
+                BankReceipt.allocated_amount + value <= BankReceipt.amount,
+            )
+            .values(allocated_amount=BankReceipt.allocated_amount + value)
+        )
+        return (result.rowcount or 0) == 1
+
     async def refresh_receipt_status(self, receipt_id: str) -> BankReceiptRow | None:
-        receipt = await self.session.get(BankReceipt, receipt_id)
+        receipt = await self.session.get(BankReceipt, receipt_id, populate_existing=True)
         if receipt is None:
             return None
         allocated_amount = await self.session.scalar(
@@ -271,7 +298,19 @@ class ReceiptRepository:
             select(func.count(ReceiptClaim.id)).where(ReceiptClaim.receipt_id == receipt_id)
         )
         receipt.allocated_amount = Decimal(str(allocated_amount or 0))
-        if receipt.allocated_amount >= receipt.amount:
+        if receipt.allocated_amount > receipt.amount:
+            # 历史脏数据只记录，不在这里静默改写为“已分满”。
+            logger.warning(
+                "receipt allocation exceeds amount",
+                extra={
+                    "event": "receipt_allocation_overflow",
+                    "receipt_id": receipt_id,
+                    "amount": str(receipt.amount),
+                    "allocated_amount": str(receipt.allocated_amount),
+                },
+            )
+            receipt.status = "allocated"
+        elif receipt.allocated_amount >= receipt.amount:
             receipt.status = "allocated"
         elif receipt.allocated_amount > 0:
             receipt.status = "partially_allocated"

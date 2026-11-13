@@ -1,0 +1,634 @@
+[
+  {
+    "path": "/health",
+    "admin_status": 200,
+    "anonymous_status": 200,
+    "admin_error": null,
+    "anonymous_allowed": true
+  },
+  {
+    "path": "/auth/me",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/auth/users",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/system/i18n",
+    "admin_status": 200,
+    "anonymous_status": 200,
+    "admin_error": null,
+    "anonymous_allowed": true
+  },
+  {
+    "path": "/system/menus",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/system/mcp",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/audit-logs",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/audit-logs/export",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/organization/options",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/organization/users",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/organization/company",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/dashboard",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/notifications",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/masterdata/products",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/masterdata/products/export",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/masterdata/customers",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/masterdata/suppliers",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/masterdata/partners",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/masterdata/document-parties",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/masterdata/document-parties/lookup",
+    "admin_status": 422,
+    "anonymous_status": 401,
+    "admin_error": {
+      "code": "VALIDATION_ERROR",
+      "message": "请求参数校验失败",
+      "details": [
+        {
+          "field": "party_type",
+          "message": "为必填项",
+          "type": "missing"
+        }
+      ]
+    },
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/sample/requests",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/sample/records",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/sample/records/export",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/sample/deliveries",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/sample/deliveries/fee-statistics",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/sample/deliveries/statistics",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/sample/deliveries/export",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/sample/deliveries/quote-history",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/sales/quotations",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/sales/quotations/history",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/sales/quotations/purchase-references",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/sales/contracts",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/sales/shipments",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/sales/shipments/reminders",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/overview",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/receipts",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/receivables",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/supplier-invoices",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/payment-requests",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/payables",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/partner-fee-invoices",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/fee-payment-requests",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/fee-payables",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/misc-fee-items",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/misc-fee-allocations",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/misc-fee-allocations/summary",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/settlements",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/profit-calculations",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/verification-documents",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/verification-usage",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/reimbursements",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/port-import-batches",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/customs-declaration-records",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/reports/receipt-usage",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/reports/receipt-usage/export",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/reports/bank-receipt-summary",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/reports/bank-receipt-summary/export",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/reports/goods-payment",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/reports/goods-payment/export",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/reports/fee-payment",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/reports/fee-payment/export",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/reports/customs-receipt-collection",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/reports/customs-receipt-collection/export",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/reports/tax-refund-statistics",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/finance/reports/tax-refund-statistics/export",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/reporting/approvals",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/reporting/statistics",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/purchase/inquiries",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/purchase/inquiries/references",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/purchase/inquiries/supplier-samples",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/purchase/contracts",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/purchase/contracts/reminders",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/purchase/invoice-notices",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/purchase/invoice-notices/reminders",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/followup/templates",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/followup/plans",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/followup/overdue-nodes",
+    "admin_status": 422,
+    "anonymous_status": 401,
+    "admin_error": {
+      "code": "VALIDATION_ERROR",
+      "message": "请求参数校验失败",
+      "details": [
+        {
+          "field": "as_of",
+          "message": "为必填项",
+          "type": "missing"
+        }
+      ]
+    },
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/quality/inspections",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/quality/inspections/inbound-eligibility",
+    "admin_status": 422,
+    "anonymous_status": 401,
+    "admin_error": {
+      "code": "VALIDATION_ERROR",
+      "message": "请求参数校验失败",
+      "details": [
+        {
+          "field": "purchase_contract_id",
+          "message": "为必填项",
+          "type": "missing"
+        }
+      ]
+    },
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/warehouse/inbound-plans",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/warehouse/inbound-orders",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/warehouse/inbound-orders/inventory-balances",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/warehouse/inbound-orders/inventory-ledgers",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/warehouse/outbound-plans",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/warehouse/outbound-orders",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  },
+  {
+    "path": "/warehouse/stocktakes",
+    "admin_status": 200,
+    "anonymous_status": 401,
+    "admin_error": null,
+    "anonymous_allowed": false
+  }
+]

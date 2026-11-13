@@ -979,6 +979,7 @@
         "typeFilter": "Inbound type",
         "allTypes": "All types",
         "supplierFilter": "Supplier",
+        "supplierFilterAria": "Supplier filter",
         "supplierFilterPlaceholder": "Enter supplier code or name",
         "contractFilter": "Purchase contract ID",
         "contractFilterPlaceholder": "Enter purchase contract no.",
@@ -2548,7 +2549,10 @@
         "invoiceStatus": "Payment Status",
         "allStatuses": "All Statuses",
         "payableSearch": "Payable Search",
-        "payableStatus": "Payable Status"
+        "payableStatus": "Payable Status",
+        "supplierPlaceholder": "Enter supplier code or name",
+        "invoiceSupplierAria": "Invoice supplier filter",
+        "payableSupplierAria": "Payable supplier filter"
       },
       "action": {
         "search": "Search",
@@ -4103,7 +4107,7 @@
       "panel": {
         "listTitle": "QC Task List",
         "listEmptyTitle": "No QC tasks yet",
-        "listEmptyDescription": "QC tasks are created automatically after a purchase contract is approved, or click \"New QC task\" to create one manually",
+        "listEmptyDescription": "Create a QC task here after the purchase contract is approved, or click \"New QC task\" to create one manually",
         "detailTitle": "QC Task Details",
         "linesTitle": "Product Inspection Lines",
         "issuesTitle": "Issues",

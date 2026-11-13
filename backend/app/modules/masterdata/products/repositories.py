@@ -222,7 +222,7 @@ class ProductRepository:
         return self._map_product(product)
 
     async def get_product_by_code(self, code: str) -> ProductRow | None:
-        product = await self.session.scalar(select(Product).where(Product.code == code))
+        product = await self.session.scalar(select(Product).where(Product.code == code.strip()))
         if product is None:
             return None
         return self._map_product(product)
@@ -478,11 +478,11 @@ class ProductRepository:
             statement = statement.where(condition)
             count_statement = count_statement.where(condition)
 
-        statement = (
-            statement.order_by(Product.created_at.desc(), Product.code.asc())
-            .limit(resolve_limit(limit))
-            .offset(resolve_offset(offset))
-        )
+        statement = statement.order_by(Product.created_at.desc(), Product.code.asc())
+        limit_value = resolve_limit(limit)
+        if limit_value is not None:
+            statement = statement.limit(limit_value)
+        statement = statement.offset(resolve_offset(offset))
         rows = await self._scalars(statement)
         total = await self.session.scalar(count_statement)
         return [self._map_product(row) for row in rows], int(total or 0)
