@@ -42,10 +42,10 @@ body {
   background: var(--erp-bg);
 }
 
+/* 首页外壳：侧栏固定，主工作区随内容纵向滚动，不再做一屏裁切。 */
 .react-shell-home {
-  height: 100vh;
-  min-height: 0;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow: visible;
 }
 
 .react-sidebar {
@@ -104,14 +104,13 @@ body {
 }
 
 .react-shell-home .react-workspace {
-  height: 100vh;
-  min-height: 0;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow: visible;
   padding-bottom: 24px;
 }
 
 .react-shell-home .react-nav {
-  overflow: hidden;
+  overflow: auto;
 }
 
 .react-topbar {
