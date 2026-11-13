@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-13",
+  "mode": "read-only UI and isolated offline tests",
+  "base_head": "6b897f7fd93283c48196bb54c0693b69ec6a6398",
+  "dirty_worktree": true,
+  "counts": {
+    "product": 3,
+    "forms": 33,
+    "home_and_popover": 3,
+    "purchase_detail": 3,
+    "navigation": 1
+  },
+  "original_fixes": {
+    "passed": [
+      "UIR-01",
+      "UIR-02",
+      "UIR-03",
+      "UIR-05",
+      "UIR-06",
+      "UIR-07",
+      "UIR-08"
+    ],
+    "partial": [
+      "UIR-04"
+    ]
+  },
+  "remaining": [
+    "UIR-04-B",
+    "UIR-09",
+    "UIR-10",
+    "UIR-11",
+    "UIR-12"
+  ],
+  "blocked_requests": 0,
+  "business_submissions": false,
+  "offline_tests": {
+    "frontend": 7,
+    "backend": 1
+  },
+  "limits": "Original reproduction points only; broader findings recorded separately; not full-system certification"
+}
