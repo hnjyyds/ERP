@@ -299,8 +299,10 @@
 
 .entity-detail-hero span {
   color: var(--erp-accent);
-  font-size: 0.85rem;
+  font-size: 13px;
   font-weight: 780;
+  line-height: 18px;
+  letter-spacing: 0.2px;
 }
 
 .entity-detail-hero h2 {
@@ -396,33 +398,71 @@
   padding: 16px;
 }
 
-.product-photo {
-  display: grid;
+/* 商品详情图片区：多图缩略图网格，点击放大预览 */
+.product-gallery {
+  display: flex;
   width: 100%;
-  height: clamp(260px, 24vw, 380px);
-  place-items: center;
-  overflow: hidden;
+  min-width: 0;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
   border: 1px solid #E0E3E8;
   border-radius: 8px;
   background: #FAFBFC;
-  color: #BFC2CC;
 }
 
-.product-photo .ant-image {
+.product-gallery-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--erp-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.product-gallery-head span:last-child {
+  color: var(--erp-faint);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.product-gallery-grid {
   display: grid;
-  position: relative;
-  width: 100% !important;
-  height: 100% !important;
-  min-height: 0;
-  place-items: center;
-  overflow: hidden;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 10px;
 }
 
-.product-photo .ant-image-img {
-  position: absolute;
-  inset: 0;
+.product-gallery-item {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1;
+  border: 1px solid var(--erp-border);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.product-gallery-item.is-primary {
+  border-color: color-mix(in srgb, var(--erp-primary) 45%, var(--erp-border));
+}
+
+.product-gallery-item .ant-image,
+.product-gallery-item .ant-image-img {
+  display: block;
   width: 100% !important;
   height: 100% !important;
-  object-fit: contain;
+}
+
+.product-gallery-item .ant-image-img {
+  object-fit: cover;
   cursor: zoom-in;
+}
+
+.product-gallery-empty {
+  display: grid;
+  min-height: 140px;
+  place-items: center;
+  border-radius: 8px;
+  background: #fff;
+  color: #BFC2CC;
 }

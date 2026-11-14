@@ -92,6 +92,7 @@ class ProductService:
         if await self._repository.get_product_by_code(payload.code) is not None:
             raise ValueError("商品编码已存在")
         async with UnitOfWork(self._repository.session):
+            image_urls = payload.image_urls
             product = await self._repository.create_product(
                 code=payload.code,
                 cn_name=payload.cn_name,
@@ -103,8 +104,13 @@ class ProductService:
                 rebate_rate=payload.rebate_rate,
                 package_info=payload.package_info,
                 unit=payload.unit,
-                image_url=payload.image_url,
+                image_url=(
+                    image_urls[0]
+                    if image_urls
+                    else (payload.image_url if image_urls is None else None)
+                ),
                 status=payload.status,
+                image_urls=image_urls,
             )
             accessories = [
                 await self._repository.add_accessory(
@@ -135,6 +141,7 @@ class ProductService:
         if existing is not None and existing.id != product_id:
             raise ValueError("商品编码已存在")
         async with UnitOfWork(self._repository.session):
+            image_urls = payload.image_urls
             product = await self._repository.update_product(
                 product_id=product_id,
                 code=payload.code,
@@ -147,8 +154,13 @@ class ProductService:
                 rebate_rate=payload.rebate_rate,
                 package_info=payload.package_info,
                 unit=payload.unit,
-                image_url=payload.image_url,
+                image_url=(
+                    payload.image_url
+                    if image_urls is None
+                    else (image_urls[0] if image_urls else None)
+                ),
                 status=payload.status,
+                image_urls=image_urls,
             )
             if product is None:
                 raise ProductNotFoundError
@@ -510,6 +522,7 @@ class ProductService:
             package_info=product.package_info,
             unit=product.unit,
             image_url=product.image_url,
+            image_urls=product.image_urls,
             status=product.status,
             accessories=[self._accessory_response(item) for item in accessories],
         )

@@ -1,13 +1,14 @@
 // 商品资料：新增/编辑商品弹窗
 
 import { Input, InputNumber, Modal, Select } from 'antd'
-import { ImagePlus } from 'lucide-react'
-import type { ChangeEvent, FormEvent } from 'react'
+import { ImagePlus, X } from 'lucide-react'
+import { useEffect, useRef, type FormEvent } from 'react'
 
 import { t } from '@/app/appI18n'
 import {
   accessoryRuleOptions,
   productStatusOptions,
+  type ProductFormError,
   type ProductFormState,
 } from '../productHelpers'
 
@@ -16,9 +17,15 @@ type Props = {
   form: ProductFormState
   setForm: (form: ProductFormState) => void
   submitting: boolean
+  error: ProductFormError | null
+  imageErrors: Record<number, string>
+  addImageError: string
+  imageUploading: boolean
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
   onCancel: () => void
-  onImageFileChange: (event: ChangeEvent<HTMLInputElement>) => void
+  onAddImageFiles: (files: File[]) => void
+  onReplaceImageFile: (index: number, file: File) => void
+  onRemoveImage: (index: number) => void
 }
 
 function rateToPercent(value: string): number | null {
@@ -35,32 +42,99 @@ export function ProductFormModal({
   form,
   setForm,
   submitting,
+  error,
+  imageErrors,
+  addImageError,
+  imageUploading,
   onSubmit,
   onCancel,
-  onImageFileChange,
+  onAddImageFiles,
+  onReplaceImageFile,
+  onRemoveImage,
 }: Props) {
+  // 用户补填对应字段后立即收起该字段的错误，不必再次提交才消失。
+  const activeError = error && !form[error.field].trim() ? error : null
+
+  // 表单自身是滚动容器；关闭后再次打开必须回到顶部，
+  // 否则会沿用上次的滚动位置，把编号、名称等首行字段藏在标题下。
+  const formRef = useRef<HTMLFormElement>(null)
+
+  useEffect(() => {
+    if (!mode) return
+    if (formRef.current) formRef.current.scrollTop = 0
+  }, [mode])
+
+  useEffect(() => {
+    if (!activeError) return
+    document.getElementById(`product-field-${activeError.field}`)?.focus()
+  }, [activeError])
+
+  const fieldError = (field: ProductFormError['field']) =>
+    activeError?.field === field ? (
+      <span className="form-field-error" id={`product-field-${field}-error`}>
+        {activeError.message}
+      </span>
+    ) : null
+
+  const invalid = (field: ProductFormError['field']) => ({
+    'aria-invalid': activeError?.field === field,
+    'aria-describedby': activeError?.field === field ? `product-field-${field}-error` : undefined,
+  })
+
   return (
     <Modal
       centered
+      destroyOnHidden
       footer={null}
       open={Boolean(mode)}
       title={mode === 'edit' ? t('masterdata.product.edit') : t('masterdata.product.create')}
       width={1040}
+      afterOpenChange={(open) => {
+        // 打开动画结束后再复位一次，避免弹窗恢复焦点时带回旧滚动位置。
+        if (open && formRef.current) formRef.current.scrollTop = 0
+      }}
       onCancel={onCancel}
     >
-      <form className="record-form entity-modal-form" onSubmit={onSubmit}>
+      <form className="record-form entity-modal-form" ref={formRef} onSubmit={onSubmit}>
         <div className="entity-modal-grid">
           <label>
-            {t('masterdata.product.field.productCode')}
-            <Input value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
+            <span className="form-field-label">
+              {t('masterdata.product.field.productCode')}
+              <span className="form-required-mark">*</span>
+            </span>
+            <Input
+              id="product-field-code"
+              value={form.code}
+              onChange={(event) => setForm({ ...form, code: event.target.value })}
+              {...invalid('code')}
+            />
+            {fieldError('code')}
           </label>
           <label>
-            {t('masterdata.product.field.productUnit')}
-            <Input value={form.unit} onChange={(event) => setForm({ ...form, unit: event.target.value })} />
+            <span className="form-field-label">
+              {t('masterdata.product.field.productUnit')}
+              <span className="form-required-mark">*</span>
+            </span>
+            <Input
+              id="product-field-unit"
+              value={form.unit}
+              onChange={(event) => setForm({ ...form, unit: event.target.value })}
+              {...invalid('unit')}
+            />
+            {fieldError('unit')}
           </label>
           <label>
-            {t('masterdata.product.field.cnName')}
-            <Input value={form.cn_name} onChange={(event) => setForm({ ...form, cn_name: event.target.value })} />
+            <span className="form-field-label">
+              {t('masterdata.product.field.cnName')}
+              <span className="form-required-mark">*</span>
+            </span>
+            <Input
+              id="product-field-cn_name"
+              value={form.cn_name}
+              onChange={(event) => setForm({ ...form, cn_name: event.target.value })}
+              {...invalid('cn_name')}
+            />
+            {fieldError('cn_name')}
           </label>
           <label>
             {t('masterdata.product.field.enName')}
@@ -78,24 +152,23 @@ export function ProductFormModal({
             <Input value={form.model} onChange={(event) => setForm({ ...form, model: event.target.value })} />
           </label>
           <label>
-            {t('masterdata.product.field.customsCode')}
+            <span className="form-field-label">
+              {t('masterdata.product.field.customsCode')}
+              <span className="form-required-mark">*</span>
+            </span>
             <Input
+              id="product-field-customs_code"
               value={form.customs_code}
               onChange={(event) => setForm({ ...form, customs_code: event.target.value })}
+              {...invalid('customs_code')}
             />
+            {fieldError('customs_code')}
           </label>
-          <label>
-            {t('masterdata.product.field.status')}
-            <Select
-              options={productStatusOptions()}
-              value={form.status}
-              onChange={(value) => setForm({ ...form, status: value })}
-            />
-          </label>
-          <label>
+          <label className="product-rate-field">
             {t('masterdata.product.field.taxRate')}
             <InputNumber
-              addonAfter="%"
+              className="product-rate-input"
+              suffix="%"
               max={100}
               min={0}
               precision={2}
@@ -105,10 +178,11 @@ export function ProductFormModal({
             />
             <span className="field-hint">{t('masterdata.product.rateHint')}</span>
           </label>
-          <label>
+          <label className="product-rate-field">
             {t('masterdata.product.field.rebateRate')}
             <InputNumber
-              addonAfter="%"
+              className="product-rate-input"
+              suffix="%"
               max={100}
               min={0}
               precision={2}
@@ -118,43 +192,83 @@ export function ProductFormModal({
             />
             <span className="field-hint">{t('masterdata.product.rateHint')}</span>
           </label>
+          <label>
+            {t('masterdata.product.field.status')}
+            <Select
+              options={productStatusOptions()}
+              value={form.status}
+              onChange={(value) => setForm({ ...form, status: value })}
+            />
+          </label>
           <div className="entity-modal-span product-image-field">
             <span className="product-image-field-label">
               {t('masterdata.product.field.image')}
+              <span className="product-image-count">
+                {t('masterdata.product.imageCount', { count: form.images.length })}
+              </span>
             </span>
-            <div className="product-image-uploader">
-              {form.image_url ? (
-                <div className="product-image-preview">
-                  <img src={form.image_url} alt={t('masterdata.product.imagePreviewAlt')} />
+            <div className="product-image-grid">
+              {form.images.map((url, index) => (
+                <div className="product-image-item" key={`${url}-${index}`}>
+                  <label className="product-image-thumb" title={t('masterdata.product.changeImage')}>
+                    <input
+                      accept="image/*"
+                      aria-label={t('masterdata.product.changeImageAria')}
+                      className="product-image-file-input"
+                      disabled={imageUploading}
+                      type="file"
+                      onChange={(event) => {
+                        const file = event.target.files?.[0]
+                        event.target.value = ''
+                        if (file) onReplaceImageFile(index, file)
+                      }}
+                    />
+                    <img src={url} alt={t('masterdata.product.imagePreviewAlt')} />
+                    <span className="product-image-thumb-mask">
+                      {imageUploading
+                        ? t('masterdata.product.imageUploading')
+                        : t('masterdata.product.changeImage')}
+                    </span>
+                  </label>
+                  {index === 0 ? (
+                    <span className="product-image-primary">
+                      {t('masterdata.product.primaryImage')}
+                    </span>
+                  ) : null}
                   <button
-                    className="product-image-remove"
+                    aria-label={t('masterdata.product.removeImage')}
+                    className="product-image-delete"
+                    title={t('masterdata.product.removeImage')}
                     type="button"
-                    onClick={() => setForm({ ...form, image_url: '' })}
+                    onClick={() => onRemoveImage(index)}
                   >
-                    {t('masterdata.product.removeImage')}
+                    <X size={13} />
                   </button>
+                  {imageErrors[index] ? (
+                    <span className="form-field-error">{imageErrors[index]}</span>
+                  ) : null}
                 </div>
-              ) : null}
-              <label className="product-image-upload">
+              ))}
+              <label className="product-image-add" title={t('masterdata.product.addImage')}>
                 <input
                   accept="image/*"
-                  aria-label={
-                    form.image_url
-                      ? t('masterdata.product.changeImageAria')
-                      : t('masterdata.product.uploadImageAria')
-                  }
+                  aria-label={t('masterdata.product.addImage')}
+                  className="product-image-file-input"
+                  disabled={imageUploading}
+                  multiple
                   type="file"
-                  onChange={onImageFileChange}
+                  onChange={(event) => {
+                    const files = Array.from(event.target.files ?? [])
+                    event.target.value = ''
+                    if (files.length > 0) onAddImageFiles(files)
+                  }}
                 />
-                <ImagePlus size={18} />
-                <span>
-                  {form.image_url
-                    ? t('masterdata.product.changeImage')
-                    : t('masterdata.product.uploadImage')}
-                </span>
+                <ImagePlus size={20} />
+                <span>{t('masterdata.product.addImage')}</span>
               </label>
-              <p className="product-image-hint">{t('masterdata.product.imageHint')}</p>
             </div>
+            {addImageError ? <span className="form-field-error">{addImageError}</span> : null}
+            <p className="product-image-hint">{t('masterdata.product.imageHint')}</p>
           </div>
           <label className="entity-modal-span">
             {t('masterdata.product.field.packageInfo')}

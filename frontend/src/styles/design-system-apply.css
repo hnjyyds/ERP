@@ -623,6 +623,18 @@ body textarea.ant-input:focus {
   outline: 0;
 }
 
+/* 旧表单规则用 outline 表达聚焦，优先级高于上面的 outline: 0；
+   在复合控件内部会再画一圈，形成"框套框"，也会在错误态把红框外圈染蓝。
+   这里统一清除，聚焦只保留设计系统的边框 + 2px 光圈。 */
+body .record-form input:not(.ant-select-input):focus,
+body .record-form select:focus,
+body .record-form textarea:focus,
+body .search-form input:focus,
+body .inline-filters select:focus,
+body .inline-filters input:focus {
+  outline: 0 !important;
+}
+
 /* 浏览器自动填充：用表面色内阴影盖住浏览器默认的蓝/黄底，
    文字与光标统一取设计 token，填充态与普通态保持同色。
    选择器显式提高权重，避免被组件库的 input:focus { box-shadow: none } 覆盖。 */
@@ -670,6 +682,16 @@ body .ant-input[aria-invalid='true'],
 body .ant-input-affix-wrapper:has(> input[aria-invalid='true']) {
   border-color: var(--ui-danger) !important;
   background: var(--ui-bg-surface) !important;
+}
+
+/* 实体弹窗的聚焦样式优先级较高，错误态必须显式覆盖聚焦主色。 */
+body .record-form.entity-modal-form .ant-input[aria-invalid='true'] {
+  border-color: var(--ui-danger) !important;
+}
+
+body .record-form.entity-modal-form .ant-input[aria-invalid='true']:focus {
+  border-color: var(--ui-danger) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ui-danger) 16%, transparent) !important;
 }
 
 /* 禁用态显式取设计 token，不依赖浏览器或组件库的默认表现。 */
@@ -890,6 +912,15 @@ body .ant-select-dropdown {
 
   body .record-form .boolean-segmented {
     min-height: var(--ui-touch-height);
+  }
+
+  /* 商品图片删除入口在手机上使用 44px 触摸目标，并保持正圆。 */
+  body .product-image-delete {
+    top: -10px;
+    right: -10px;
+    width: 44px;
+    height: 44px;
+    min-height: 44px !important;
   }
 
   body .record-form .boolean-segmented .ant-segmented-item-label {
@@ -1449,6 +1480,20 @@ body .entity-modal-form label {
   align-content: start;
 }
 
+/* 商品图片格是上传控件而不是字段标签：上面把 record-form label 设成 Grid，
+   会把图标和文字拆成上下两行并靠左上。这里恢复图片格自己的居中布局。 */
+body .record-form label.product-image-thumb {
+  display: block;
+}
+
+body .record-form label.product-image-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
 /* 多行输入：独立高度规格，保持可读行数并允许纵向调整。 */
 body textarea.ant-input,
 body .record-form textarea,
@@ -1490,6 +1535,45 @@ body .ant-input-number-group-wrapper .ant-input-number-group-addon {
   background: var(--ui-bg-muted);
 }
 
+/* 商品税率使用 AntD v6 内部后缀：只保留数字控件外框，
+   清除通用 record-form 给内层 input 重复绘制的边框、轮廓和焦点光圈。
+   内层 input 的 outline 来自高优先级的旧聚焦规则，必须显式清除，
+   否则会在控件内部再画一圈，形成"框套框"。 */
+body .record-form.entity-modal-form label > .product-rate-input {
+  width: 100%;
+  max-width: none;
+}
+
+body .record-form.entity-modal-form label > .product-rate-input > input.ant-input-number-input,
+body .record-form.entity-modal-form label > .product-rate-input > input.ant-input-number-input:focus {
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* 实体弹窗内所有控件共用设计系统的控件圆角。
+   文本输入此前是 5px，而数字/下拉控件被旧样式设为 10px，
+   同一表单出现两种圆角，这里统一回退到 token。 */
+body .record-form.entity-modal-form label > .ant-input,
+body .record-form.entity-modal-form label > .ant-input-affix-wrapper,
+body .record-form.entity-modal-form label > .ant-input-number,
+body .record-form.entity-modal-form label > .ant-select,
+body .record-form.entity-modal-form label > .ant-picker,
+body .record-form.entity-modal-form label > textarea {
+  border-radius: var(--ui-radius-control) !important;
+}
+
+body .record-form.entity-modal-form label > .product-rate-input.ant-input-number-focused {
+  border-color: var(--ui-primary) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ui-primary) 14%, transparent) !important;
+}
+
+body .record-form.entity-modal-form .product-rate-input .ant-input-number-suffix {
+  color: var(--ui-text-muted);
+}
+
 /* 列表筛选内的操作按钮按内容定宽并靠右，不参与字段列均分。 */
 body .inline-filters > .ant-btn {
   justify-self: end;
@@ -1497,4 +1581,160 @@ body .inline-filters > .ant-btn {
   width: auto;
   min-width: 0;
   min-height: var(--ui-control-height);
+}
+
+/* 审计日志筛选工具栏：字段 + 查询/重置 共用一条 flex 工具栏。
+   字段按内容分配宽度并允许拉伸，宽屏时字段吃掉剩余空间，操作组自然落在
+   最右侧；宽度不足时整体换行，操作组跟随最后一个字段从左排列，
+   不会再出现“第二行只有按钮、左侧大片空白”的断行。 */
+body .audit-page .audit-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--ui-space-3);
+  margin-bottom: var(--ui-space-4);
+}
+
+/* 标题默认带 14px 下外边距，与同排的导出按钮基线错开；
+   这里归零并改为垂直居中，使“导出 CSV”与列表标题在同一水平线上。 */
+body .audit-page .toolbar-heading {
+  align-items: center;
+}
+
+body .audit-page .toolbar-heading .panel-title {
+  margin-bottom: 0;
+}
+
+body .audit-page .audit-filters > label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-1);
+  min-width: 0;
+  color: var(--ui-text-secondary);
+  font-size: var(--ui-font-label);
+  font-weight: var(--ui-weight-semibold);
+  line-height: 18px;
+}
+
+body .audit-page .audit-filters > label > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body .audit-page .audit-filter-actor {
+  flex: 1 1 150px;
+}
+
+body .audit-page .audit-filter-resource {
+  flex: 1 1 140px;
+}
+
+body .audit-page .audit-filter-action {
+  flex: 1 1 120px;
+}
+
+body .audit-page .audit-filter-keyword {
+  flex: 1 1 180px;
+}
+
+body .audit-page .audit-filter-range {
+  flex: 1.2 1 240px;
+}
+
+/* 控件外框统一 36px；内层输入铺满并使文字垂直居中，
+   避免只对齐外框、文字基线偏移。 */
+body .audit-page .audit-filters > label > .ant-input,
+body .audit-page .audit-filters > label > .ant-input-affix-wrapper,
+body .audit-page .audit-filters > label > .ant-select,
+body .audit-page .audit-filters > label > .ant-picker {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  height: var(--ui-control-height);
+  min-height: var(--ui-control-height);
+}
+
+body .audit-page .audit-filters .ant-input-affix-wrapper {
+  display: inline-flex;
+  align-items: center;
+  padding-block: 0;
+  padding-inline: var(--ui-control-padding-inline);
+}
+
+body .audit-page .audit-filters .ant-input-affix-wrapper > input.ant-input {
+  height: calc(var(--ui-control-height) - 2px);
+  min-height: 0 !important;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+body .audit-page .audit-filters .ant-select-single {
+  width: 100%;
+}
+
+body .audit-page .audit-filters .ant-picker-range {
+  display: inline-flex;
+  align-items: center;
+  padding-block: 0;
+  padding-inline: var(--ui-control-padding-inline);
+}
+
+body .audit-page .audit-filters .ant-picker-input {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+body .audit-page .audit-filters .ant-picker-input > input {
+  height: 100%;
+  padding: 0;
+}
+
+/* 占位提示使用 muted 而不是 AntD 默认 25% 黑，
+   日期框不再呈现“禁用”观感；清空/日历图标与文字取同一档灰度。 */
+body .audit-page .audit-filters input::placeholder {
+  color: var(--ui-text-muted);
+  opacity: 1;
+}
+
+body .audit-page .audit-filters .ant-select-placeholder {
+  color: var(--ui-text-muted);
+}
+
+body .audit-page .audit-filters .ant-picker-separator,
+body .audit-page .audit-filters .ant-picker-suffix {
+  color: var(--ui-text-muted);
+}
+
+body .audit-page .audit-filters > .filter-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--ui-space-2);
+  margin-left: 0;
+  grid-column: auto;
+}
+
+body .audit-page .audit-filters > .filter-actions .ant-btn {
+  height: var(--ui-control-height);
+  min-height: var(--ui-control-height);
+  padding-inline: var(--ui-space-4);
+}
+
+/* 手机上输入框、日期框和按钮已是 44px 触摸高度，
+   下拉框没有 AntD v6 的 selector 节点，需要在这里同步，避免同排控件高低不一。 */
+@media (max-width: 768px) {
+  body .audit-page .audit-filters > label > .ant-select {
+    height: var(--ui-touch-height);
+    min-height: var(--ui-touch-height);
+  }
+
+  body .audit-page .audit-filters > label > .ant-select .ant-select-content {
+    height: calc(var(--ui-touch-height) - 10px);
+    min-height: calc(var(--ui-touch-height) - 10px);
+  }
 }

@@ -1,5 +1,5 @@
 import { Alert, Modal } from 'antd'
-import type { ChangeEvent, FormEvent } from 'react'
+import type { FormEvent } from 'react'
 import { useState } from 'react'
 
 import {
@@ -39,6 +39,7 @@ import {
   readFileAsDataUrl,
   validateProductForm,
   type ProductAccessoryFormState,
+  type ProductFormError,
   type ProductFormState,
 } from './products/productHelpers'
 
@@ -63,9 +64,20 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
   const [importModalOpen, setImportModalOpen] = useState(false)
   const [importResult, setImportResult] = useState<ProductImportResult | null>(null)
   const [importing, setImporting] = useState(false)
+  const [formError, setFormError] = useState<ProductFormError | null>(null)
+  const [imageErrors, setImageErrors] = useState<Record<number, string>>({})
+  const [addImageError, setAddImageError] = useState('')
+  const [imageUploading, setImageUploading] = useState(false)
+
+  function resetImageState() {
+    setImageErrors({})
+    setAddImageError('')
+  }
 
   function openCreateProduct() {
     setForm(initialProductForm())
+    setFormError(null)
+    resetImageState()
     setProductModalMode('create')
     setExportResult(null)
   }
@@ -73,6 +85,8 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
   function openEditProduct() {
     if (!model.selectedProduct) return
     setForm(productToForm(model.selectedProduct))
+    setFormError(null)
+    resetImageState()
     setProductModalMode('edit')
     setExportResult(null)
   }
@@ -81,9 +95,12 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
     event.preventDefault()
     const missing = validateProductForm(form)
     if (missing) {
-      showWarningDialog(missing)
+      // 字段旁同步保留错误提示，避免只依赖 3 秒后消失的顶部提示。
+      setFormError(missing)
+      showWarningDialog(missing.message)
       return
     }
+    setFormError(null)
     setProductSubmitting(true)
     setMessage('')
     setExportResult(null)
@@ -107,28 +124,82 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
     }
   }
 
-  function handleImageFileChange(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0]
-    event.target.value = ''
-    if (!file) return
-    if (!file.type.startsWith('image/')) {
-      showWarningDialog(t('masterdata.product.imageTypeInvalid'))
-      return
-    }
-    if (file.size > maxProductImageBytes) {
-      showWarningDialog(t('masterdata.product.imageTooLarge'))
-      return
-    }
-    void (async () => {
-      try {
-        const dataUrl = await readFileAsDataUrl(file)
-        // 上传到对象存储，表单保存返回的可访问 URL（而非 base64）。
-        const uploaded = await uploadImage(file.name, dataUrl)
-        setForm((current) => ({ ...current, image_url: uploaded.url }))
-      } catch (caught) {
-        showError(caught, t('masterdata.product.imageUploadFailed'))
+  function imageFileError(file: File): string | null {
+    if (!file.type.startsWith('image/')) return t('masterdata.product.imageTypeInvalid')
+    if (file.size > maxProductImageBytes) return t('masterdata.product.imageTooLarge')
+    return null
+  }
+
+  async function uploadProductImage(file: File): Promise<string> {
+    const dataUrl = await readFileAsDataUrl(file)
+    // 上传到对象存储，表单保存返回的可访问 URL（而非 base64）。
+    const uploaded = await uploadImage(file.name, dataUrl)
+    return uploaded.url
+  }
+
+  async function addProductImages(files: File[]) {
+    if (files.length === 0 || imageUploading) return
+    setImageUploading(true)
+    setAddImageError('')
+    const uploadedUrls: string[] = []
+    let failure = ''
+    for (const file of files) {
+      const invalid = imageFileError(file)
+      if (invalid) {
+        failure = invalid
+        continue
       }
-    })()
+      try {
+        uploadedUrls.push(await uploadProductImage(file))
+      } catch {
+        failure = t('masterdata.product.imageUploadFailed')
+      }
+    }
+    if (uploadedUrls.length > 0) {
+      setForm((current) => ({ ...current, images: [...current.images, ...uploadedUrls] }))
+    }
+    setAddImageError(failure)
+    setImageUploading(false)
+  }
+
+  async function replaceProductImage(index: number, file: File) {
+    if (imageUploading) return
+    const invalid = imageFileError(file)
+    if (invalid) {
+      setImageErrors((current) => ({ ...current, [index]: invalid }))
+      return
+    }
+    setImageUploading(true)
+    setImageErrors((current) => {
+      const next = { ...current }
+      delete next[index]
+      return next
+    })
+    try {
+      const url = await uploadProductImage(file)
+      // 仅在替换成功后改写该位置，失败时保留原图。
+      setForm((current) => {
+        const images = [...current.images]
+        if (index < images.length) images[index] = url
+        return { ...current, images }
+      })
+    } catch {
+      setImageErrors((current) => ({
+        ...current,
+        [index]: t('masterdata.product.imageReplaceFailed'),
+      }))
+    } finally {
+      setImageUploading(false)
+    }
+  }
+
+  function removeProductImage(index: number) {
+    setForm((current) => ({
+      ...current,
+      images: current.images.filter((_, position) => position !== index),
+    }))
+    // 删除后下标会前移，清空旧错误避免挂到其他图片上。
+    setImageErrors({})
   }
 
   async function submitImport(file: File) {
@@ -311,17 +382,22 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
 
   return (
     <section className="masterdata-page product-page">
-      <div className="summary-strip" aria-label={t('masterdata.product.overviewAria')}>
-        <Metric label={t('masterdata.product.metric.products')} value={model.total} />
-        <Metric
-          label={t('masterdata.product.metric.accessories')}
-          value={model.summary.accessory_count}
-        />
-        <Metric
-          label={t('masterdata.product.metric.withImage')}
-          value={model.summary.with_image_count}
-        />
-      </div>
+      {/* 统计条只服务列表筛选；详情页改为在图片区显示当前商品的图片数量。 */}
+      {!detailId ? (
+        <div className="summary-strip" aria-label={t('masterdata.product.overviewAria')}>
+          <Metric label={t('masterdata.product.metric.products')} value={model.total} />
+          <Metric
+            label={t('masterdata.product.metric.accessories')}
+            value={model.summary.accessory_count}
+          />
+          <Metric
+            label={t('masterdata.product.metric.withImage')}
+            value={t('masterdata.product.metric.withImageValue', {
+              count: model.summary.with_image_count,
+            })}
+          />
+        </div>
+      ) : null}
 
       {message ? <Alert className="workspace-alert" title={message} type="success" showIcon /> : null}
 
@@ -363,12 +439,22 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
       </section>
 
       <ProductFormModal
+        addImageError={addImageError}
+        error={formError}
         form={form}
+        imageErrors={imageErrors}
+        imageUploading={imageUploading}
         mode={productModalMode}
         setForm={setForm}
         submitting={productSubmitting}
+        onAddImageFiles={(files) => {
+          void addProductImages(files)
+        }}
         onCancel={() => setProductModalMode(null)}
-        onImageFileChange={handleImageFileChange}
+        onRemoveImage={removeProductImage}
+        onReplaceImageFile={(index, file) => {
+          void replaceProductImage(index, file)
+        }}
         onSubmit={submitProduct}
       />
 

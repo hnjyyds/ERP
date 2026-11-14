@@ -1,7 +1,7 @@
-import { Button, DatePicker, Input, Select, Space, Table, Tag } from 'antd'
+import { Button, DatePicker, Input, Select, Table, Tag } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import type { Dayjs } from 'dayjs'
-import { ScrollText } from 'lucide-react'
+import { Download, ScrollText } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { exportAuditLogs, listAuditLogs, type AuditLogItem, type AuditLogQuery } from '@/api'
@@ -179,32 +179,45 @@ export function AuditLogsPage() {
   )
 
   return (
-    <ListPageShell icon={<ScrollText size={18} />} title={t('auditLogs.title')}>
+    <ListPageShell
+      className="audit-page"
+      icon={<ScrollText size={18} />}
+      title={t('auditLogs.title')}
+      toolbar={
+        <Button
+          disabled={exporting}
+          icon={<Download size={16} />}
+          onClick={() => void exportCsv()}
+        >
+          {t('auditLogs.filter.export')}
+        </Button>
+      }
+    >
       <p style={{ margin: '0 0 var(--ui-space-3)', color: 'var(--ui-text-secondary)' }}>
         {t('auditLogs.description')}
       </p>
 
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          gap: 'var(--ui-space-3)',
-          marginBottom: 'var(--ui-space-3)',
+      <form
+        className="audit-filters"
+        onSubmit={(event) => {
+          event.preventDefault()
+          search()
         }}
       >
-        <Space wrap size={12}>
+        <label className="audit-filter-field audit-filter-actor">
+          <span>{t('auditLogs.filter.actor')}</span>
           <Input
             allowClear
             placeholder={t('auditLogs.filter.actorPlaceholder')}
-            style={{ width: 180 }}
-            value={filters.actor}
+            value={filters.actor ?? ''}
             onChange={(event) => setFilters({ ...filters, actor: event.target.value })}
           />
+        </label>
+        <label className="audit-filter-field audit-filter-resource">
+          <span>{t('auditLogs.filter.resource')}</span>
           <Select
             allowClear
             placeholder={t('auditLogs.filter.resourcePlaceholder')}
-            style={{ width: 160 }}
             value={filters.resourceType}
             options={RESOURCE_OPTIONS.map(({ value, labelKey }) => ({
               value,
@@ -212,10 +225,12 @@ export function AuditLogsPage() {
             }))}
             onChange={(value?: string) => setFilters({ ...filters, resourceType: value })}
           />
+        </label>
+        <label className="audit-filter-field audit-filter-action">
+          <span>{t('auditLogs.filter.action')}</span>
           <Select
             allowClear
             placeholder={t('auditLogs.filter.actionPlaceholder')}
-            style={{ width: 140 }}
             value={filters.action}
             options={ACTION_OPTIONS.map(({ value, labelKey }) => ({
               value,
@@ -223,28 +238,30 @@ export function AuditLogsPage() {
             }))}
             onChange={(value?: string) => setFilters({ ...filters, action: value })}
           />
+        </label>
+        <label className="audit-filter-field audit-filter-keyword">
+          <span>{t('auditLogs.filter.keyword')}</span>
           <Input
             allowClear
             placeholder={t('auditLogs.filter.keywordPlaceholder')}
-            style={{ width: 200 }}
-            value={filters.keyword}
+            value={filters.keyword ?? ''}
             onChange={(event) => setFilters({ ...filters, keyword: event.target.value })}
           />
+        </label>
+        <label className="audit-filter-field audit-filter-range">
+          <span>{t('auditLogs.filter.dateRange')}</span>
           <DatePicker.RangePicker
             value={filters.range}
             onChange={(range) => setFilters({ ...filters, range })}
           />
-        </Space>
-        <Space size={8} style={{ marginLeft: 'auto' }}>
-          <Button type="primary" loading={loading} onClick={search}>
+        </label>
+        <div className="filter-actions">
+          <Button htmlType="submit" loading={loading} type="primary">
             {t('auditLogs.filter.search')}
           </Button>
           <Button onClick={reset}>{t('auditLogs.filter.reset')}</Button>
-          <Button disabled={exporting} onClick={() => void exportCsv()}>
-            {t('auditLogs.filter.export')}
-          </Button>
-        </Space>
-      </div>
+        </div>
+      </form>
 
       <Table<AuditLogItem>
         columns={columns}

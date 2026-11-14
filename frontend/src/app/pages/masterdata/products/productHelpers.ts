@@ -21,7 +21,7 @@ export type ProductFormState = {
   rebate_rate: string
   package_info: string
   unit: string
-  image_url: string
+  images: string[]
   status: string
   accessory_name: string
   accessory_unit_consumption: string
@@ -66,11 +66,24 @@ export function accessoryRuleOptions() {
   ]
 }
 
-export function validateProductForm(form: ProductFormState): string | null {
-  if (!form.code.trim()) return t('masterdata.product.validation.codeRequired')
-  if (!form.cn_name.trim()) return t('masterdata.product.validation.cnNameRequired')
-  if (!form.customs_code.trim()) return t('masterdata.product.validation.customsCodeRequired')
-  if (!form.unit.trim()) return t('masterdata.product.validation.unitRequired')
+export type ProductFormError = {
+  field: 'code' | 'cn_name' | 'customs_code' | 'unit'
+  message: string
+}
+
+export function validateProductForm(form: ProductFormState): ProductFormError | null {
+  if (!form.code.trim()) {
+    return { field: 'code', message: t('masterdata.product.validation.codeRequired') }
+  }
+  if (!form.cn_name.trim()) {
+    return { field: 'cn_name', message: t('masterdata.product.validation.cnNameRequired') }
+  }
+  if (!form.customs_code.trim()) {
+    return { field: 'customs_code', message: t('masterdata.product.validation.customsCodeRequired') }
+  }
+  if (!form.unit.trim()) {
+    return { field: 'unit', message: t('masterdata.product.validation.unitRequired') }
+  }
   return null
 }
 
@@ -86,7 +99,7 @@ export function initialProductForm(): ProductFormState {
     rebate_rate: '0.09',
     package_info: '',
     unit: 'pcs',
-    image_url: '',
+    images: [],
     status: 'active',
     accessory_name: '',
     accessory_unit_consumption: '1',
@@ -118,7 +131,7 @@ export function productToForm(product: Product): ProductFormState {
     rebate_rate: product.rebate_rate,
     package_info: product.package_info,
     unit: product.unit,
-    image_url: product.image_url ?? '',
+    images: productImages(product),
     status: product.status,
     accessory_name: '',
     accessory_unit_consumption: '1',
@@ -126,6 +139,14 @@ export function productToForm(product: Product): ProductFormState {
     accessory_supplier: '',
     accessory_rule: 'by_supplier',
   }
+}
+
+export function productImages(
+  product: Pick<Product, 'image_url' | 'image_urls'>,
+): string[] {
+  const urls = product.image_urls?.filter((url) => Boolean(url)) ?? []
+  if (urls.length > 0) return urls
+  return product.image_url ? [product.image_url] : []
 }
 
 export function productPayload(form: ProductFormState): ProductCreatePayload {
@@ -141,7 +162,8 @@ export function productPayload(form: ProductFormState): ProductCreatePayload {
     rebate_rate: form.rebate_rate,
     package_info: form.package_info.trim(),
     unit: form.unit.trim(),
-    image_url: emptyToNull(form.image_url),
+    image_url: form.images[0] ?? null,
+    image_urls: form.images,
     status: form.status,
     accessories: accessory.accessory_name ? [accessory] : [],
   }
@@ -159,7 +181,8 @@ export function productUpdatePayload(form: ProductFormState): ProductUpdatePaylo
     rebate_rate: form.rebate_rate,
     package_info: form.package_info.trim(),
     unit: form.unit.trim(),
-    image_url: emptyToNull(form.image_url),
+    image_url: form.images[0] ?? null,
+    image_urls: form.images,
     status: form.status,
   }
 }

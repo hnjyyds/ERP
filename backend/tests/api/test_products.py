@@ -196,6 +196,71 @@ async def test_product_can_be_updated_and_deactivated(
     assert list_response.json()["data"]["total"] == 0
 
 
+async def test_product_keeps_image_order_and_primary_image(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    payload = _product_payload(code="P-IMG-001")
+    first = "https://example.com/images/front.png"
+    second = "https://example.com/images/side.png"
+    payload["image_urls"] = [first, second]
+
+    create_response = await api_client.post(
+        "/api/v1/masterdata/products", headers=headers, json=payload
+    )
+    assert create_response.status_code == 201
+    product = create_response.json()["data"]
+    assert product["image_urls"] == [first, second]
+    assert product["image_url"] == first
+
+    detail_response = await api_client.get(
+        f"/api/v1/masterdata/products/{product['id']}", headers=headers
+    )
+    assert detail_response.json()["data"]["image_urls"] == [first, second]
+
+    # 删除主图后，原第二张成为主图，顺序保持不变。
+    update_payload = _product_payload(code="P-IMG-001")
+    update_payload.pop("accessories")
+    update_payload["image_urls"] = [second]
+    update_response = await api_client.put(
+        f"/api/v1/masterdata/products/{product['id']}", headers=headers, json=update_payload
+    )
+    assert update_response.status_code == 200
+    updated = update_response.json()["data"]
+    assert updated["image_urls"] == [second]
+    assert updated["image_url"] == second
+
+
+async def test_product_update_without_image_urls_preserves_images(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    payload = _product_payload(code="P-IMG-002")
+    first = "https://example.com/images/front.png"
+    second = "https://example.com/images/side.png"
+    payload["image_urls"] = [first, second]
+    created = await api_client.post(
+        "/api/v1/masterdata/products", headers=headers, json=payload
+    )
+    product = created.json()["data"]
+
+    # 未显式提交 image_urls 的调用方（如导入）不应清空已有图片。
+    update_payload = _product_payload(code="P-IMG-002")
+    update_payload.pop("accessories")
+    update_payload["image_url"] = product["image_url"]
+    update_response = await api_client.put(
+        f"/api/v1/masterdata/products/{product['id']}", headers=headers, json=update_payload
+    )
+    assert update_response.status_code == 200
+    updated = update_response.json()["data"]
+    assert updated["image_urls"] == [first, second]
+    assert updated["image_url"] == first
+
+
 async def test_product_accessory_can_be_updated_and_deleted(
     api_client: AsyncClient,
     seeded_system: None,

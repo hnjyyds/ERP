@@ -23,6 +23,7 @@ export interface Product {
   package_info: string
   unit: string
   image_url: string | null
+  image_urls?: string[]
   status: string
   accessories: ProductAccessory[]
 }
@@ -58,6 +59,7 @@ export interface ProductCreatePayload {
   package_info: string
   unit: string
   image_url?: string | null
+  image_urls?: string[]
   status?: string
   accessories: ProductAccessoryPayload[]
 }

@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
@@ -12,6 +13,27 @@ from app.modules.purchase.inquiries.models import PurchaseInquiry, PurchaseInqui
 from app.modules.sales.contracts.models import ExportContract, ExportContractLine
 from app.modules.sales.quotations.models import ExportQuotation, ExportQuotationLine
 from app.modules.sales.shipments.models import ShipmentLine, ShipmentPlan
+
+
+def _encode_image_urls(urls: list[str] | None) -> str | None:
+    """把有序图片 URL 列表存为 JSON 文本；空列表存 NULL。"""
+    if not urls:
+        return None
+    return json.dumps(urls, ensure_ascii=False)
+
+
+def _decode_image_urls(raw: str | None, fallback: str | None) -> list[str]:
+    """读取图片列表；历史数据只有 image_url 时回退为单图。"""
+    if raw:
+        try:
+            parsed = json.loads(raw)
+        except (TypeError, ValueError):
+            parsed = None
+        if isinstance(parsed, list):
+            urls = [item for item in parsed if isinstance(item, str) and item]
+            if urls:
+                return urls
+    return [fallback] if fallback else []
 
 
 @dataclass(frozen=True)
@@ -50,6 +72,7 @@ class ProductRow:
     package_info: str
     unit: str
     image_url: str | None
+    image_urls: list[str]
     status: str
     created_at: datetime
 
@@ -85,6 +108,7 @@ class ProductRepository:
         unit: str,
         image_url: str | None,
         status: str = "active",
+        image_urls: list[str] | None = None,
     ) -> ProductRow:
         product = Product(
             code=code,
@@ -98,6 +122,9 @@ class ProductRepository:
             package_info=package_info,
             unit=unit,
             image_url=image_url,
+            image_urls=_encode_image_urls(image_urls)
+            if image_urls is not None
+            else _encode_image_urls([image_url] if image_url else None),
             status=status,
         )
         self.session.add(product)
@@ -120,6 +147,7 @@ class ProductRepository:
         unit: str,
         image_url: str | None,
         status: str,
+        image_urls: list[str] | None = None,
     ) -> ProductRow | None:
         product = await self.session.scalar(select(Product).where(Product.id == product_id))
         if product is None:
@@ -135,6 +163,10 @@ class ProductRepository:
         product.package_info = package_info
         product.unit = unit
         product.image_url = image_url
+        # image_urls 为 None 表示调用方没有管理图片集合（如导入），保留原有多图；
+        # 传空数组则明确清空。
+        if image_urls is not None:
+            product.image_urls = _encode_image_urls(image_urls)
         product.status = status
         await self.session.flush()
         return self._map_product(product)
@@ -546,6 +578,7 @@ class ProductRepository:
             package_info=product.package_info,
             unit=product.unit,
             image_url=product.image_url,
+            image_urls=_decode_image_urls(product.image_urls, product.image_url),
             status=product.status,
             created_at=product.created_at,
         )

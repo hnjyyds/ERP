@@ -152,8 +152,13 @@ class ProductCreate(BaseModel):
     image_url: str | None = Field(
         default=None,
         max_length=2000,
-        description="商品图片 URL；没有图片时可不填。",
+        description="商品主图 URL；没有图片时可不填。",
         examples=["https://example.com/products/bag-40.jpg"],
+    )
+    image_urls: list[str] | None = Field(
+        default=None,
+        max_length=20,
+        description="商品图片 URL 列表，顺序即展示顺序，第一张为主图。",
     )
     status: str = Field(
         default="active",
@@ -185,6 +190,15 @@ class ProductCreate(BaseModel):
     @classmethod
     def _normalize_optional_text(cls, value: object) -> object:
         return normalize_optional_text(value)
+
+    @field_validator("image_urls", mode="before")
+    @classmethod
+    def _normalize_image_urls(cls, value: object) -> object:
+        if value is None:
+            return None
+        if not isinstance(value, list):
+            return value
+        return [item.strip() for item in value if isinstance(item, str) and item.strip()]
 
 
 class ProductUpdate(BaseModel):
@@ -225,7 +239,12 @@ class ProductUpdate(BaseModel):
     image_url: str | None = Field(
         default=None,
         max_length=2000,
-        description="商品图片 URL；没有图片时可不填。",
+        description="商品主图 URL；没有图片时可不填。",
+    )
+    image_urls: list[str] | None = Field(
+        default=None,
+        max_length=20,
+        description="商品图片 URL 列表；不传表示保留现有图片，传空数组表示清空。",
     )
     status: str = Field(
         default="active",
@@ -252,6 +271,15 @@ class ProductUpdate(BaseModel):
     @classmethod
     def _normalize_optional_text(cls, value: object) -> object:
         return normalize_optional_text(value)
+
+    @field_validator("image_urls", mode="before")
+    @classmethod
+    def _normalize_image_urls(cls, value: object) -> object:
+        if value is None:
+            return None
+        if not isinstance(value, list):
+            return value
+        return [item.strip() for item in value if isinstance(item, str) and item.strip()]
 
 
 class ProductAccessoryResponse(BaseModel):
@@ -284,7 +312,11 @@ class ProductResponse(BaseModel):
     rebate_rate: Decimal = Field(description="出口退税率，使用 0 到 1 的小数。")
     package_info: str = Field(description="包装方式、装箱数量等包装信息。")
     unit: str = Field(description="商品默认计量单位。")
-    image_url: str | None = Field(description="商品图片 URL。")
+    image_url: str | None = Field(description="商品主图 URL。")
+    image_urls: list[str] = Field(
+        default_factory=list,
+        description="商品图片 URL 列表，顺序即展示顺序，第一张为主图。",
+    )
     status: str = Field(description="商品状态。")
     accessories: list[ProductAccessoryResponse] = Field(description="商品配件清单。")
 

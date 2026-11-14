@@ -17,6 +17,7 @@ import type { FormEvent, MouseEvent } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { showError, showWarningDialog } from '@/shared/errors'
+import { listAssignableUsers } from '@/api'
 import { useFormModal } from '@/shared/useFormModal'
 import {
   ListPageShell,
@@ -142,6 +143,7 @@ export function TradingPartnerPage({
     parsePageParam(urlQuery.params),
   )
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [ownerNames, setOwnerNames] = useState<Record<string, string>>({})
   const [transactions, setTransactions] = useState<PartnerTransaction[]>([])
   const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
   const [country, setCountry] = useState(() => urlQuery.params.get('country') ?? '')
@@ -314,6 +316,24 @@ export function TradingPartnerPage({
 
   useEffect(() => {
     void loadRows()
+  }, [])
+
+  // 详情里的负责人字段只存内部用户 ID，这里换成可读姓名；目录不可用时回退原值。
+  useEffect(() => {
+    let active = true
+    listAssignableUsers()
+      .then((response) => {
+        if (!active) return
+        setOwnerNames(
+          Object.fromEntries(response.users.map((user) => [user.id, user.display_name])),
+        )
+      })
+      .catch(() => {
+        /* 保留当前值 */
+      })
+    return () => {
+      active = false
+    }
   }, [])
 
   useEffect(() => {
@@ -881,7 +901,7 @@ export function TradingPartnerPage({
                 ) : null}
                 <div>
                   <dt>{t('masterdata.field.owner')}</dt>
-                  <dd>{selected.owner_user_id}</dd>
+                  <dd>{ownerNames[selected.owner_user_id] ?? selected.owner_user_id}</dd>
                 </div>
               </dl>
 

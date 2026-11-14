@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { act, render, screen, waitFor, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
 
@@ -12,6 +12,7 @@ vi.mock('@/api', async (importOriginal) => {
     listProductTransactions: vi.fn().mockResolvedValue({ items: [], total: 0 }),
     createProduct: vi.fn(),
     updateProduct: vi.fn(),
+    uploadImage: vi.fn(),
   }
 })
 
@@ -28,6 +29,7 @@ import {
   listProductTransactions,
   listProducts,
   updateProduct,
+  uploadImage,
   type Product,
   type ProductCustomer,
   type ProductTransaction,
@@ -207,12 +209,12 @@ describe('ProductsPage', () => {
     const dialog = await screen.findByRole('dialog')
 
     await user.click(within(dialog).getByRole('button', { name: '新增商品' }))
-    expect(await screen.findByText('请填写商品编号')).toBeInTheDocument()
+    expect(await within(dialog).findByText('请填写商品编号')).toBeInTheDocument()
     expect(createProduct).not.toHaveBeenCalled()
 
-    await user.type(within(dialog).getByLabelText('产品编号'), 'P-200')
-    await user.type(within(dialog).getByLabelText('中文名称'), '新商品')
-    await user.type(within(dialog).getByLabelText('海关编码'), '8481804090')
+    await user.type(within(dialog).getByLabelText(/产品编号/), 'P-200')
+    await user.type(within(dialog).getByLabelText(/中文名称/), '新商品')
+    await user.type(within(dialog).getByLabelText(/海关编码/), '8481804090')
     await user.click(within(dialog).getByRole('button', { name: '新增商品' }))
 
     await waitFor(() => {
@@ -230,6 +232,84 @@ describe('ProductsPage', () => {
     await waitFor(() => {
       expect(listProducts).toHaveBeenLastCalledWith({ q: undefined, limit: 50, offset: 0 })
     })
+  })
+
+  it('多选上传图片后按顺序保存 image_urls，并标出主图与添加格', async () => {
+    const user = userEvent.setup()
+    vi.mocked(uploadImage).mockImplementation(async (filename: string) => ({
+      url: `https://example.test/${filename}`,
+      filename,
+      content_type: 'image/png',
+      size: 1,
+    }))
+    vi.mocked(createProduct).mockResolvedValue({
+      ...productFixture,
+      id: 'product-img',
+      code: 'P-300',
+    })
+
+    render(<ProductsPage detailId={null} onNavigate={onNavigate} />)
+    await waitFor(() => expect(listProducts).toHaveBeenCalled())
+    await user.click(screen.getByRole('button', { name: '新增商品' }))
+    const dialog = await screen.findByRole('dialog')
+
+    fireEvent.change(within(dialog).getByLabelText('添加图片'), {
+      target: {
+        files: [
+          new File(['a'], 'front.png', { type: 'image/png' }),
+          new File(['b'], 'side.png', { type: 'image/png' }),
+        ],
+      },
+    })
+
+    await waitFor(() => expect(within(dialog).getAllByAltText('商品图片预览')).toHaveLength(2))
+    expect(within(dialog).getByText('主图')).toBeInTheDocument()
+    expect(within(dialog).getByText('共 2 张')).toBeInTheDocument()
+
+    await user.type(within(dialog).getByLabelText(/产品编号/), 'P-300')
+    await user.type(within(dialog).getByLabelText(/中文名称/), '带图商品')
+    await user.type(within(dialog).getByLabelText(/海关编码/), '8481804090')
+    await user.click(within(dialog).getByRole('button', { name: '新增商品' }))
+
+    await waitFor(() => {
+      expect(createProduct).toHaveBeenCalledWith(
+        expect.objectContaining({
+          image_url: 'https://example.test/front.png',
+          image_urls: ['https://example.test/front.png', 'https://example.test/side.png'],
+        }),
+      )
+    })
+  })
+
+  it('替换图片失败时保留原图，并在该图片位置显示错误', async () => {
+    const user = userEvent.setup()
+    vi.mocked(uploadImage).mockResolvedValueOnce({
+      url: 'https://example.test/front.png',
+      filename: 'front.png',
+      content_type: 'image/png',
+      size: 1,
+    })
+
+    render(<ProductsPage detailId={null} onNavigate={onNavigate} />)
+    await waitFor(() => expect(listProducts).toHaveBeenCalled())
+    await user.click(screen.getByRole('button', { name: '新增商品' }))
+    const dialog = await screen.findByRole('dialog')
+
+    fireEvent.change(within(dialog).getByLabelText('添加图片'), {
+      target: { files: [new File(['a'], 'front.png', { type: 'image/png' })] },
+    })
+    await waitFor(() => expect(within(dialog).getAllByAltText('商品图片预览')).toHaveLength(1))
+
+    vi.mocked(uploadImage).mockRejectedValueOnce(new Error('upload failed'))
+    fireEvent.change(within(dialog).getByLabelText('更换商品图片'), {
+      target: { files: [new File(['c'], 'broken.png', { type: 'image/png' })] },
+    })
+
+    expect(await within(dialog).findByText('更换失败，已保留原图')).toBeInTheDocument()
+    expect(within(dialog).getAllByAltText('商品图片预览')[0]).toHaveAttribute(
+      'src',
+      'https://example.test/front.png',
+    )
   })
 
   it('导出：未选行导出当前页全部，选中后只导出选中行', async () => {
@@ -294,7 +374,7 @@ describe('ProductsPage', () => {
 
     await user.click(screen.getByRole('button', { name: '编辑商品' }))
     const dialog = await screen.findByRole('dialog')
-    const cnNameInput = within(dialog).getByLabelText('中文名称')
+    const cnNameInput = within(dialog).getByLabelText(/中文名称/)
     await user.clear(cnNameInput)
     await user.type(cnNameInput, '改名商品')
     await user.click(within(dialog).getByRole('button', { name: '保存商品' }))

@@ -11,7 +11,7 @@ import type {
 } from '@/api'
 import { t } from '@/app/appI18n'
 import { PanelTitle } from '@/shared/ui'
-import { accessoryRuleLabel, productTransactionSourceLabel } from '../productHelpers'
+import { accessoryRuleLabel, productImages, productTransactionSourceLabel } from '../productHelpers'
 import { formatRatePercent } from '../formatters'
 
 type Props = {
@@ -41,6 +41,8 @@ export function ProductDetailView({
   onEditAccessory,
   onDeleteAccessory,
 }: Props) {
+  const images = product ? productImages(product) : []
+
   return (
     <section className="workspace-panel detail-panel product-standalone-detail">
       <div className="panel-heading toolbar-heading">
@@ -62,17 +64,37 @@ export function ProductDetailView({
       {product ? (
         <>
           <div className="product-detail-layout">
-            <div className="product-photo">
-              {product.image_url ? (
-                <Image
-                  alt={t('masterdata.product.imageAlt', { name: product.cn_name })}
-                  height="100%"
-                  preview={{ mask: t('masterdata.product.viewLargeImage') }}
-                  src={product.image_url}
-                  width="100%"
-                />
+            <div className="product-gallery">
+              <div className="product-gallery-head">
+                <span>{t('masterdata.product.field.image')}</span>
+                <span>
+                  {t('masterdata.product.imageCount', { count: images.length })}
+                </span>
+              </div>
+              {images.length > 0 ? (
+                <Image.PreviewGroup>
+                  <div className="product-gallery-grid">
+                    {images.map((url, index) => (
+                      <div
+                        className={`product-gallery-item${index === 0 ? ' is-primary' : ''}`}
+                        key={`${url}-${index}`}
+                      >
+                        <Image
+                          alt={t('masterdata.product.imageAlt', { name: product.cn_name })}
+                          preview={{ mask: t('masterdata.product.viewLargeImage') }}
+                          src={url}
+                        />
+                        {index === 0 ? (
+                          <span className="product-image-primary">
+                            {t('masterdata.product.primaryImage')}
+                          </span>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                </Image.PreviewGroup>
               ) : (
-                <span>{t('masterdata.product.noImage')}</span>
+                <div className="product-gallery-empty">{t('masterdata.product.noImage')}</div>
               )}
             </div>
             <dl className="detail-list">
