@@ -9,6 +9,7 @@ import {
   type TaxRefundCurrencyTotal,
 } from '@/api'
 import { FormSelect, PanelTitle } from '@/shared/ui'
+import { allocationTypeLabel } from '@/app/pages/finance/forms/receiptForms'
 import { formatFinanceAmount, nullableText } from '@/app/pages/appHelpers'
 import { t, type TranslationKey } from '@/app/appI18n'
 import type { ReportsModel } from '@/app/pages/finance/hooks/useReportsModule'
@@ -250,7 +251,11 @@ export function ReportsView({ model, shell }: Props) {
               { title: t('finance.report.table.receiptNo'), dataIndex: 'receipt_no' },
               { title: t('finance.report.table.receivedAt'), dataIndex: 'received_at' },
               { title: t('finance.report.table.payerName'), dataIndex: 'payer_name' },
-              { title: t('finance.report.table.allocationType'), dataIndex: 'allocation_type' },
+              {
+                title: t('finance.report.table.allocationType'),
+                dataIndex: 'allocation_type',
+                render: (value: string) => allocationTypeLabel(value),
+              },
               {
                 title: t('finance.report.table.contractNo'),
                 dataIndex: 'contract_no',

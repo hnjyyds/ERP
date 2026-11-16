@@ -1,8 +1,9 @@
 import { Alert } from 'antd'
 
-import type { CurrentUser } from '@/api'
+import type { CurrentUser, QualityInspection } from '@/api'
 import { Metric } from '@/shared/ui'
 import { t } from '@/app/appI18n'
+import { moduleDetailPath, qualityInspectionPath } from '@/app/routes'
 
 import { useQualityTasksList } from './hooks/useQualityTasksList'
 import { useQualityTaskWorkflow } from './hooks/useQualityTaskWorkflow'
@@ -10,15 +11,19 @@ import { QualityTaskActionModal } from './views/QualityTaskActionModal'
 import { QualityTaskCompletionModal } from './views/QualityTaskCompletionModal'
 import { QualityTaskListPanel } from './views/QualityTaskListPanel'
 
-type Props = { currentUser: CurrentUser }
+type Props = { currentUser: CurrentUser; onNavigate?: (path: string) => void }
 
-export function MyQualityTasksPage({ currentUser }: Props) {
+export function MyQualityTasksPage({ currentUser, onNavigate }: Props) {
   const list = useQualityTasksList({ currentUser })
   const workflow = useQualityTaskWorkflow({
     reloadTasks: list.loadTasks,
     upsertTask: list.upsertTask,
   })
   const { pending_count, in_progress_count, completed_count, overdue_count } = list.summary
+
+  function openTaskDetail(task: QualityInspection) {
+    onNavigate?.(moduleDetailPath(qualityInspectionPath, task.id))
+  }
 
   return (
     <section className="quality-inspection-page">
@@ -46,7 +51,7 @@ export function MyQualityTasksPage({ currentUser }: Props) {
         <Alert className="workspace-alert" title={workflow.message} type="success" showIcon />
       ) : null}
 
-      <QualityTaskListPanel model={list} workflow={workflow} />
+      <QualityTaskListPanel model={list} workflow={workflow} onOpenDetail={openTaskDetail} />
       <QualityTaskCompletionModal workflow={workflow} />
       <QualityTaskActionModal workflow={workflow} />
     </section>

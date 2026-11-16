@@ -3,6 +3,7 @@ import {
   CalendarClock,
   CheckCircle2,
   ClipboardCheck,
+  Eye,
   Play,
   Search,
   XCircle,
@@ -26,9 +27,10 @@ import type { useQualityTasksList } from '../hooks/useQualityTasksList'
 type Props = {
   model: ReturnType<typeof useQualityTasksList>
   workflow: ReturnType<typeof useQualityTaskWorkflow>
+  onOpenDetail?: (task: QualityInspection) => void
 }
 
-export function QualityTaskListPanel({ model, workflow }: Props) {
+export function QualityTaskListPanel({ model, workflow, onOpenDetail }: Props) {
   return (
     <ListPageShell
       className="product-list-panel"
@@ -109,9 +111,16 @@ export function QualityTaskListPanel({ model, workflow }: Props) {
           {
             title: t('quality.task.table.operation'),
             key: 'actions',
-            width: 340,
+            width: 420,
             render: (_: unknown, task) => (
               <div className="table-actions">
+                <Button
+                  icon={<Eye size={15} />}
+                  size="small"
+                  onClick={() => onOpenDetail?.(task)}
+                >
+                  {t('quality.task.action.viewDetail')}
+                </Button>
                 {task.status === 'pending' ? (
                   <Button
                     icon={<Play size={15} />}

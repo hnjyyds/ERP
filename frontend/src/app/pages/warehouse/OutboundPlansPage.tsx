@@ -162,7 +162,9 @@ function outboundPlanSourceTypeLabel(value: string): string {
 function outboundPlanLineStatusLabel(value: string): string {
   if (value === 'pending') return t('warehouse.outboundPlan.detail.lineStatusPending')
   if (value === 'partial') return t('warehouse.outboundPlan.detail.lineStatusPartial')
-  if (value === 'completed') return t('warehouse.outboundPlan.detail.lineStatusCompleted')
+  if (value === 'completed' || value === 'shipped') {
+    return t('warehouse.outboundPlan.detail.lineStatusCompleted')
+  }
   if (value === 'cancelled') return t('warehouse.outboundPlan.detail.lineStatusCancelled')
   return value
 }
@@ -901,7 +903,11 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                 </dl>
 
                 <div className="accessory-heading">
-                  <strong>{t('warehouse.outboundPlan.detail.linesTitle')}</strong>
+                  <strong>
+                    {selectedPlan.status === 'closed'
+                      ? t('warehouse.outboundPlan.detail.linesTitleClosed')
+                      : t('warehouse.outboundPlan.detail.linesTitle')}
+                  </strong>
                   <span>
                     {t('warehouse.outboundPlan.detail.lineCount', {
                       count: selectedPlan.lines.length,

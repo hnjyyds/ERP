@@ -3,6 +3,7 @@ import { Plus, Search } from 'lucide-react'
 
 import type { PurchaseInquiry } from '@/api'
 import { ListPageShell, FormSelect } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { formatDate, formatMoney } from '@/app/pages/appHelpers'
 import { t } from '@/app/appI18n'
 import { purchaseInquiryStatusOptions } from '@/shared/formOptions'
@@ -67,12 +68,14 @@ export function PurchaseInquiryListPanel({ model, onCreate }: Props) {
               onChange={(event) => model.setSupplierFilter(event.target.value)}
             />
           </label>
-          <Button htmlType="submit" icon={<Search size={16} />}>
-            {t('purchase.inquiry.list.query')}
-          </Button>
-          <Button htmlType="button" icon={<Plus size={16} />} onClick={onCreate}>
-            {t('purchase.inquiry.list.create')}
-          </Button>
+          <div className="filter-actions">
+            <Button htmlType="submit" icon={<Search size={16} />}>
+              {t('purchase.inquiry.list.query')}
+            </Button>
+            <Button htmlType="button" icon={<Plus size={16} />} onClick={onCreate}>
+              {t('purchase.inquiry.list.create')}
+            </Button>
+          </div>
         </form>
       }
     >
@@ -134,6 +137,23 @@ export function PurchaseInquiryListPanel({ model, onCreate }: Props) {
           },
         ]}
         dataSource={model.inquiries}
+        locale={{
+          emptyText: (
+            <ListEmptyState
+              createLabel={t('purchase.inquiry.list.create')}
+              emptyDescription={t('purchase.inquiry.list.emptyDescription')}
+              emptyTitle={t('purchase.inquiry.list.emptyTitle')}
+              filtered={
+                Boolean(model.search.trim()) ||
+                Boolean(model.statusFilter) ||
+                Boolean(model.productFilter.trim()) ||
+                Boolean(model.supplierFilter.trim())
+              }
+              onCreate={onCreate}
+              onClearFilters={model.clearFilters}
+            />
+          ),
+        }}
         loading={model.loading}
         pagination={{
           ...model.pagination,

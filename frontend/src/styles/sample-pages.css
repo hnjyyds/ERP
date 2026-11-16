@@ -351,3 +351,25 @@
 .sample-delivery-grid {
   grid-template-columns: minmax(0, 1fr);
 }
+
+.sample-record-image-preview {
+  display: grid;
+  gap: 4px;
+  width: 72px;
+  color: var(--ui-text-secondary);
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+
+.sample-record-image-preview img {
+  display: block;
+  width: 64px;
+  height: 64px;
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.sample-record-image-preview:hover span {
+  color: var(--ui-accent);
+}

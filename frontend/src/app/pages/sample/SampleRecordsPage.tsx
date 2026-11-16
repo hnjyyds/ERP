@@ -41,6 +41,7 @@ import {
   sampleRecordPayload,
   type SampleRecordFormState,
 } from './sampleRecordFormHelpers'
+import { SampleImageUploadFields } from './views/SampleImageUploadFields'
 import { SampleRecordFormModal } from './views/SampleRecordFormModal'
 
 type SampleRecordImageFormState = {
@@ -470,20 +471,22 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                     onChange={(event) => setPurchaseContractFilter(event.target.value)}
                   />
                 </label>
-                <Button htmlType="submit" icon={<Search size={16} />}>
-                  {t('sample.record.action.query')}
-                </Button>
-                <Button loading={submitting} onClick={() => void downloadRecordExport()}>
-                  {t('sample.record.action.export')}
-                </Button>
-                <Button
-                  htmlType="button"
-                  type="primary"
-                  icon={<Plus size={16} />}
-                  onClick={openCreateRecord}
-                >
-                  {t('sample.record.action.create')}
-                </Button>
+                <div className="filter-actions">
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    {t('sample.record.action.query')}
+                  </Button>
+                  <Button loading={submitting} onClick={() => void downloadRecordExport()}>
+                    {t('sample.record.action.export')}
+                  </Button>
+                  <Button
+                    htmlType="button"
+                    type="primary"
+                    icon={<Plus size={16} />}
+                    onClick={openCreateRecord}
+                  >
+                    {t('sample.record.action.create')}
+                  </Button>
+                </div>
             </form>}
 
           >
@@ -651,9 +654,27 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                 <Table<SampleRecordImage>
                   className="compact-section"
                   columns={[
+                    {
+                      title: t('sample.record.table.imagePreview'),
+                      dataIndex: 'url',
+                      width: 96,
+                      render: (value: string, image: SampleRecordImage) =>
+                        value ? (
+                          <a
+                            className="sample-record-image-preview"
+                            href={value}
+                            rel="noreferrer"
+                            target="_blank"
+                            title={image.filename}
+                          >
+                            <img alt={image.filename} src={value} />
+                            <span>{t('sample.record.action.viewOriginal')}</span>
+                          </a>
+                        ) : (
+                          nullableText(value)
+                        ),
+                    },
                     { title: t('sample.record.table.imageFile'), dataIndex: 'filename' },
-                    { title: t('sample.record.table.fileId'), dataIndex: 'file_id' },
-                    { title: t('sample.record.table.imageUrl'), dataIndex: 'url' },
                     { title: t('sample.record.table.note'), dataIndex: 'caption', render: nullableText },
                     {
                       title: t('sample.record.table.primary'),
@@ -688,42 +709,10 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                 <div className="sample-record-actions compact-section">
                   <form className="record-form" onSubmit={submitImage}>
                     <div className="form-divider">{t('sample.record.panel.appendImage')}</div>
-                    <label>
-                      {t('sample.record.field.imageFileId')}
-                      <Input
-                        value={imageForm.file_id}
-                        onChange={(event) =>
-                          setImageForm({ ...imageForm, file_id: event.target.value })
-                        }
-                      />
-                    </label>
-                    <label>
-                      {t('sample.record.field.imageFilename')}
-                      <Input
-                        value={imageForm.filename}
-                        onChange={(event) =>
-                          setImageForm({ ...imageForm, filename: event.target.value })
-                        }
-                      />
-                    </label>
-                    <label>
-                      {t('sample.record.field.imageUrl')}
-                      <Input
-                        value={imageForm.url}
-                        onChange={(event) =>
-                          setImageForm({ ...imageForm, url: event.target.value })
-                        }
-                      />
-                    </label>
-                    <label>
-                      {t('sample.record.field.imageCaption')}
-                      <Input
-                        value={imageForm.caption}
-                        onChange={(event) =>
-                          setImageForm({ ...imageForm, caption: event.target.value })
-                        }
-                      />
-                    </label>
+                    <SampleImageUploadFields
+                      value={imageForm}
+                      onChange={(patch) => setImageForm({ ...imageForm, ...patch })}
+                    />
                     <Button htmlType="submit" loading={submitting}>
                       {t('sample.record.action.addImage')}
                     </Button>

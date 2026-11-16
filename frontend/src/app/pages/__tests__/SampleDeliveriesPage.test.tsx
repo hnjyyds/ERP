@@ -78,6 +78,25 @@ describe('SampleDeliveriesPage', () => {
       emptyDeliveryStatistics as never,
     )
     vi.spyOn(api, 'listSampleRecords').mockResolvedValue({ items: [], total: 0 } as never)
+    vi.spyOn(api, 'listCustomers').mockResolvedValue({
+      items: [
+        {
+          id: 'c-1',
+          code: 'C-001',
+          cn_name: '客户A',
+          en_name: 'Customer A',
+          country: 'CN',
+        },
+        {
+          id: 'c-2',
+          code: 'C-002',
+          cn_name: '客户B',
+          en_name: 'Customer B',
+          country: 'CN',
+        },
+      ],
+      total: 2,
+    } as never)
     vi.spyOn(api, 'listExportQuotations').mockResolvedValue({
       items: [],
       total: 0,
@@ -205,7 +224,9 @@ describe('SampleDeliveriesPage', () => {
 
     await userEvent.click(screen.getByRole('button', { name: '新增寄样单' }))
     const dialog = await screen.findByRole('dialog')
-    await userEvent.type(within(dialog).getByLabelText('客户名称'), '客户B')
+    await userEvent.click(within(dialog).getByLabelText('客户'))
+    const customerOption = await screen.findByText('客户B')
+    await userEvent.click(customerOption)
     await userEvent.click(within(dialog).getByLabelText('样品登记'))
     await userEvent.click(await screen.findByText('S-001 / 样品杯'))
     await userEvent.click(within(dialog).getByRole('button', { name: '新增寄样单' }))
@@ -308,9 +329,9 @@ describe('SampleDeliveriesPage', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: '编辑草稿' }))
     const dialog = await screen.findByRole('dialog')
-    const customerInput = within(dialog).getByLabelText('客户名称')
-    await userEvent.clear(customerInput)
-    await userEvent.type(customerInput, '客户B')
+    await userEvent.click(within(dialog).getByLabelText('客户'))
+    const customerOptions = await screen.findAllByText('客户B')
+    await userEvent.click(customerOptions[0])
     await userEvent.click(within(dialog).getByRole('button', { name: '保存草稿编辑' }))
 
     await waitFor(() => {

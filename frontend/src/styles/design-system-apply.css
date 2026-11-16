@@ -394,6 +394,24 @@ body section[class*="-page"] .inline-filters .filter-actions .ant-btn {
   min-height: var(--ui-control-height);
 }
 
+/* 手机端操作组等宽单行：查询/导出/新增不再按内容宽度阶梯式换行。 */
+@media (max-width: 768px) {
+  body section[class*="-page"] .inline-filters .filter-actions {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    width: 100%;
+    gap: var(--ui-space-2);
+  }
+
+  body section[class*="-page"] .inline-filters .filter-actions .ant-btn {
+    width: 100%;
+    padding-inline: 6px;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+}
+
 body section.masterdata-page.product-page .inline-filters.product-list-filters {
   grid-template-columns: minmax(280px, 1fr) auto;
 }

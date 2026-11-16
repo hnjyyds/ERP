@@ -15,8 +15,10 @@ import { t } from '@/app/appI18n'
 import { todayInputValue } from '@/app/pages/appHelpers'
 import { ApprovalAssigneeSelect } from '@/app/components/ApprovalAssigneeSelect'
 import { showError, showSuccess } from '@/shared/errors'
-import { ListPageShell, PanelTitle } from '@/shared/ui'
+import { FormSelect, ListPageShell, PanelTitle } from '@/shared/ui'
 import { useTablePagination } from '@/shared/useTablePagination'
+
+import { inboundWarehouseOptions, locationIdFromName } from './inboundOrderHelpers'
 
 type Props = { currentUser: CurrentUser }
 
@@ -395,38 +397,39 @@ export function StocktakesPage({ currentUser }: Props) {
       >
         <div className="form-grid">
           <label>
-            <span className="required-label">{t('warehouse.stocktake.create.warehouseId')}</span>
-            <Input
+            <span className="required-label">{t('warehouse.stocktake.create.warehouse')}</span>
+            <FormSelect
               value={createForm.warehouse_id}
-              onChange={(event) =>
-                setCreateForm((current) => ({ ...current, warehouse_id: event.target.value }))
-              }
-            />
+              onChange={(event) => {
+                const option = inboundWarehouseOptions.find(
+                  (item) => item.value === event.target.value,
+                )
+                setCreateForm((current) => ({
+                  ...current,
+                  warehouse_id: event.target.value,
+                  warehouse_name: option ? t(option.labelKey) : '',
+                }))
+              }}
+            >
+              <option value="">{t('common.form.selectPlaceholder')}</option>
+              {inboundWarehouseOptions.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {t(item.labelKey)}
+                </option>
+              ))}
+            </FormSelect>
           </label>
           <label>
-            <span className="required-label">{t('warehouse.stocktake.create.warehouseName')}</span>
+            <span className="required-label">{t('warehouse.stocktake.create.location')}</span>
             <Input
-              value={createForm.warehouse_name}
-              onChange={(event) =>
-                setCreateForm((current) => ({ ...current, warehouse_name: event.target.value }))
-              }
-            />
-          </label>
-          <label>
-            <span className="required-label">{t('warehouse.stocktake.create.locationId')}</span>
-            <Input
-              value={createForm.location_id}
-              onChange={(event) =>
-                setCreateForm((current) => ({ ...current, location_id: event.target.value }))
-              }
-            />
-          </label>
-          <label>
-            <span className="required-label">{t('warehouse.stocktake.create.locationName')}</span>
-            <Input
+              placeholder={t('warehouse.inboundOrder.form.locationPlaceholder')}
               value={createForm.location_name}
               onChange={(event) =>
-                setCreateForm((current) => ({ ...current, location_name: event.target.value }))
+                setCreateForm((current) => ({
+                  ...current,
+                  location_name: event.target.value,
+                  location_id: locationIdFromName(event.target.value),
+                }))
               }
             />
           </label>

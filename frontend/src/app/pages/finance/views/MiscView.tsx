@@ -136,19 +136,21 @@ export function MiscView({ model, shell }: Props) {
                     ))}
                   </FormSelect>
                 </label>
-                <Button htmlType="submit" icon={<Search size={16} />}>
-                  {t('finance.misc.action.search')}
-                </Button>
-                <Button
-                  type="primary"
-                  icon={<Plus size={16} />}
-                  onClick={() => {
-                    setMiscFeeItemCodeError('')
-                    setMiscItemModalOpen(true)
-                  }}
-                >
-                  {t('finance.misc.action.createMisc')}
-                </Button>
+                <div className="filter-actions">
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    {t('finance.misc.action.search')}
+                  </Button>
+                  <Button
+                    type="primary"
+                    icon={<Plus size={16} />}
+                    onClick={() => {
+                      setMiscFeeItemCodeError('')
+                      setMiscItemModalOpen(true)
+                    }}
+                  >
+                    {t('finance.misc.action.createMisc')}
+                  </Button>
+                </div>
               </form>
             </div>
             <Table<MiscFeeItem>

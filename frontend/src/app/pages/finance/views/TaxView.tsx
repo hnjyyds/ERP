@@ -166,16 +166,18 @@ export function TaxView({ model, shell }: Props) {
                     onChange={(event) => setVerificationShipmentFilter(event.target.value)}
                   />
                 </label>
-                <Button htmlType="submit" icon={<Search size={16} />}>
-                  {t('finance.tax.action.search')}
-                </Button>
-                <Button
-                  type="primary"
-                  icon={<Plus size={16} />}
-                  onClick={() => setTaxDocumentModalOpen(true)}
-                >
-                  {t('finance.tax.action.issueDocument')}
-                </Button>
+                <div className="filter-actions">
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    {t('finance.tax.action.search')}
+                  </Button>
+                  <Button
+                    type="primary"
+                    icon={<Plus size={16} />}
+                    onClick={() => setTaxDocumentModalOpen(true)}
+                  >
+                    {t('finance.tax.action.issueDocument')}
+                  </Button>
+                </div>
               </form>
             </div>
             <Table<VerificationDocument>

@@ -1,0 +1,10 @@
+{
+  "before": "http://localhost:8080/quality/tasks",
+  "after": "http://localhost:8080/quality/tasks",
+  "rows": [
+    {
+      "text": "QC-8TXV57\tPC-HR36RU\tQA261112 测试供应商\t2026/11/13 09:00\t已完成\t通过\t",
+      "links": 0
+    }
+  ]
+}

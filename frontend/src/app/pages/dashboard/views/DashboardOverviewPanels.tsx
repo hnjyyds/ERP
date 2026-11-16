@@ -80,7 +80,7 @@ export function DashboardTodoPreviewPanel({
         {previewTodos.length ? (
           previewTodos.map((todo) => {
             const targetPath = todoTargetPath(todo)
-            const dueState = todoDueState(todo.due_at)
+            const dueState = todoDueState(todo.due_at, todo.is_overdue)
 
             return (
               <article className={`dashboard-task is-${dueState}`} key={todo.id}>

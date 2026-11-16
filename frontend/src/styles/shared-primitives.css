@@ -402,7 +402,7 @@ h2 {
 }
 
 .search-form input:not(.ant-select-input),
-.record-form input:not(.ant-select-input),
+.record-form input:not([type='checkbox']):not([type='radio']):not(.ant-select-input),
 .record-form textarea,
 .record-form select {
   width: 100%;
@@ -413,7 +413,7 @@ h2 {
 }
 
 .search-form input:not(.ant-select-input),
-.record-form input:not(.ant-select-input),
+.record-form input:not([type='checkbox']):not([type='radio']):not(.ant-select-input),
 .record-form select {
   min-height: var(--ui-control-height);
   padding: 0 10px;
@@ -524,7 +524,8 @@ h2 {
   min-height: 16px;
 }
 
-.record-form .checkbox-label {
+.record-form .checkbox-label,
+.record-form .checkbox-line {
   /* 记录表单的 label 默认被设为栅格，复选框与文字会各占一行；
      这里恢复为单行水平排列，避免勾选框与文案上下错位。 */
   display: flex;
@@ -534,9 +535,11 @@ h2 {
   align-items: center;
 }
 
-.record-form .checkbox-label input {
+.record-form .checkbox-label input,
+.record-form .checkbox-line input {
   width: 16px;
   min-width: 16px;
+  height: 16px;
   min-height: 16px;
   accent-color: #4F6EF7;
 }

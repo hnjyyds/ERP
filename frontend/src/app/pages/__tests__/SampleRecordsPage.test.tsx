@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import * as api from '@/api'
 import type { SampleRecord } from '@/api'
@@ -256,6 +256,12 @@ describe('SampleRecordsPage', () => {
 
   it('详情页追加样品图片提交图片信息', async () => {
     vi.spyOn(api, 'listSampleRecords').mockResolvedValue({ items: [record], total: 1 })
+    vi.spyOn(api, 'uploadImage').mockResolvedValue({
+      url: 'https://example.com/img.png',
+      filename: 'img.png',
+      content_type: 'image/png',
+      size: 128,
+    })
     const imageSpy = vi.spyOn(api, 'addSampleRecordImage').mockResolvedValue({
       id: 'img-1',
       record_id: 'rec-1',
@@ -267,14 +273,25 @@ describe('SampleRecordsPage', () => {
 
     render(<SampleRecordsPage detailId="rec-1" onNavigate={onNavigate} />)
 
-    await userEvent.type(await screen.findByLabelText('图片文件标识'), 'file-9')
-    await userEvent.type(screen.getByLabelText('图片文件名'), 'img.png')
+    const fileInput = await screen.findByLabelText('上传图片')
+    fireEvent.change(fileInput, {
+      target: { files: [new File(['fake'], 'img.png', { type: 'image/png' })] },
+    })
+    await waitFor(() => expect(api.uploadImage).toHaveBeenCalledTimes(1))
+    await screen.findByText('img.png')
     await userEvent.click(screen.getByRole('button', { name: '追加样品图片' }))
 
     await waitFor(() => expect(imageSpy).toHaveBeenCalledTimes(1))
     expect(imageSpy.mock.calls[0][0]).toBe('rec-1')
-    expect(imageSpy.mock.calls[0][1]).toMatchObject({ file_id: 'file-9', filename: 'img.png' })
+    expect(imageSpy.mock.calls[0][1]).toMatchObject({
+      file_id: 'https://example.com/img.png',
+      filename: 'img.png',
+      url: 'https://example.com/img.png',
+    })
     expect(await screen.findByText('已追加样品图片 img.png')).toBeTruthy()
+    const preview = screen.getByTitle('img.png')
+    expect(preview.getAttribute('href')).toBe('https://example.com/img.png')
+    expect(within(preview).getByText('查看原图')).toBeTruthy()
   })
 
   it('详情页登记样品数量提交库存事件', async () => {

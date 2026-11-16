@@ -1,0 +1,13 @@
+{
+  "zh_headings": [
+    "出库计划",
+    "出库计划明细"
+  ],
+  "zh_line_title": "已出库商品",
+  "status": "已关闭",
+  "pending_qty": "0.00",
+  "en_heading": "Outbound Plan Detail",
+  "en_line_title": "Outbound items",
+  "restored_zh_heading": "出库计划明细",
+  "business_writes": false
+}

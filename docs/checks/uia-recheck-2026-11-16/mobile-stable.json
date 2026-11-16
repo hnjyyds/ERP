@@ -1,0 +1,58 @@
+[
+  {
+    "route": "/purchase/inquiries",
+    "width": 390,
+    "doc": 390,
+    "buttons": [
+      {
+        "text": "查询",
+        "h": 44,
+        "w": 158
+      },
+      {
+        "text": "新增采购询价",
+        "h": 44,
+        "w": 158
+      }
+    ]
+  },
+  {
+    "route": "/sample/records",
+    "width": 390,
+    "doc": 390,
+    "buttons": [
+      {
+        "text": "查询",
+        "h": 44,
+        "w": 84.5234375
+      },
+      {
+        "text": "导出台账",
+        "h": 44,
+        "w": 87.046875
+      },
+      {
+        "text": "新增样品",
+        "h": 44,
+        "w": 111.046875
+      }
+    ]
+  },
+  {
+    "route": "/purchase/invoice-notices",
+    "width": 390,
+    "doc": 390,
+    "buttons": [
+      {
+        "text": "查询",
+        "h": 44,
+        "w": 158
+      },
+      {
+        "text": "生成开票通知",
+        "h": 44,
+        "w": 158
+      }
+    ]
+  }
+]

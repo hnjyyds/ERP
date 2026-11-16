@@ -10,6 +10,7 @@ import {
 } from '@/shared/formOptions'
 import { useSampleFormOptions } from '../hooks/useSampleFormOptions'
 import type { SampleRecordFormState } from '../sampleRecordFormHelpers'
+import { SampleImageUploadFields } from './SampleImageUploadFields'
 
 type Props = {
   open: boolean
@@ -262,34 +263,23 @@ export function SampleRecordFormModal({
           />
         </label>
         <div className="form-divider">{t('sample.record.modal.imageSection')}</div>
-        <label>
-          {t('sample.record.field.imageFileId')}
-          <Input
-            value={form.image_file_id}
-            onChange={(event) => onFormChange({ ...form, image_file_id: event.target.value })}
-          />
-        </label>
-        <label>
-          {t('sample.record.field.imageFilename')}
-          <Input
-            value={form.image_filename}
-            onChange={(event) => onFormChange({ ...form, image_filename: event.target.value })}
-          />
-        </label>
-        <label>
-          {t('sample.record.field.imageUrl')}
-          <Input
-            value={form.image_url}
-            onChange={(event) => onFormChange({ ...form, image_url: event.target.value })}
-          />
-        </label>
-        <label>
-          {t('sample.record.field.imageCaption')}
-          <Input
-            value={form.image_caption}
-            onChange={(event) => onFormChange({ ...form, image_caption: event.target.value })}
-          />
-        </label>
+        <SampleImageUploadFields
+          value={{
+            file_id: form.image_file_id,
+            filename: form.image_filename,
+            url: form.image_url,
+            caption: form.image_caption,
+          }}
+          onChange={(patch) =>
+            onFormChange({
+              ...form,
+              image_file_id: patch.file_id ?? form.image_file_id,
+              image_filename: patch.filename ?? form.image_filename,
+              image_url: patch.url ?? form.image_url,
+              image_caption: patch.caption ?? form.image_caption,
+            })
+          }
+        />
         <div className="modal-actions">
           <button className="secondary-inline" type="button" onClick={onClose}>
             {t('sample.record.action.cancel')}

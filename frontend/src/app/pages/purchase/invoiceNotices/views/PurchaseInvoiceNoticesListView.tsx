@@ -95,12 +95,14 @@ export function PurchaseInvoiceNoticesListView({ model }: Props) {
               onChange={(event) => setCustomsFilter(event.target.value)}
             />
           </label>
-          <Button htmlType="submit" icon={<Search size={16} />}>
-            {t('purchase.invoiceNotice.list.query')}
-          </Button>
-          <Button htmlType="button" icon={<Plus size={16} />} onClick={openGenerateModal}>
-            {t('purchase.invoiceNotice.list.generate')}
-          </Button>
+          <div className="filter-actions">
+            <Button htmlType="submit" icon={<Search size={16} />}>
+              {t('purchase.invoiceNotice.list.query')}
+            </Button>
+            <Button htmlType="button" icon={<Plus size={16} />} onClick={openGenerateModal}>
+              {t('purchase.invoiceNotice.list.generate')}
+            </Button>
+          </div>
         </form>
       }
     >

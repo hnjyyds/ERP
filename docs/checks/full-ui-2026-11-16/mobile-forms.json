@@ -1,0 +1,1175 @@
+[
+  {
+    "route": "/purchase/inquiries",
+    "button": "新增采购询价",
+    "viewport": [
+      390,
+      844
+    ],
+    "docW": 390,
+    "y": 0,
+    "title": "采购询价",
+    "dialog": [
+      {
+        "x": 8,
+        "y": 28.0625,
+        "w": 374,
+        "h": 787.8828125,
+        "right": 382,
+        "bottom": 815.9453125
+      }
+    ],
+    "fields": [
+      {
+        "tag": "INPUT",
+        "placeholder": "系统自动生成",
+        "x": 60,
+        "y": -263.9921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": -219.9921875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": -185.9921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": -141.9921875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": -107.9921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": -63.9921875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": -29.9921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": 14.0078125
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": 107.859375,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": 151.859375
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": 185.859375,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": 229.859375
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": 263.859375,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": 307.859375
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": 341.859375,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": 385.859375
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": 419.859375,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": 463.859375
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": 497.859375,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": 541.859375
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": 575.859375,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": 619.859375
+      },
+      {
+        "tag": "TEXTAREA",
+        "placeholder": null,
+        "x": 60,
+        "y": 653.859375,
+        "w": 270,
+        "h": 58.296875,
+        "right": 330,
+        "bottom": 712.15625
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Close",
+        "x": 318,
+        "y": 46.0625,
+        "w": 44,
+        "h": 44,
+        "right": 362,
+        "bottom": 90.0625
+      },
+      {
+        "text": "新增采购询价",
+        "x": 60,
+        "y": 728.15625,
+        "w": 117.5625,
+        "h": 44,
+        "right": 177.5625,
+        "bottom": 772.15625
+      }
+    ],
+    "scrolls": [
+      {
+        "tag": "HTML",
+        "cls": "",
+        "top": 0,
+        "max": 268,
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 844,
+        "right": 390,
+        "bottom": 844
+      },
+      {
+        "tag": "DIV",
+        "cls": "workflow-modal-content entity-modal-form",
+        "top": 416.5,
+        "max": 417,
+        "x": 60,
+        "y": 130.5078125,
+        "w": 270,
+        "h": 641.4375,
+        "right": 330,
+        "bottom": 771.9453125
+      }
+    ],
+    "blocked": []
+  },
+  {
+    "route": "/warehouse/stocktakes",
+    "button": "新建盘点单",
+    "viewport": [
+      390,
+      844
+    ],
+    "docW": 390,
+    "y": 0,
+    "title": "库存盘点",
+    "dialog": [
+      {
+        "x": 8,
+        "y": -192,
+        "w": 374,
+        "h": 1036,
+        "right": 382,
+        "bottom": 844
+      }
+    ],
+    "fields": [
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 32,
+        "y": -116,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": -72
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 32,
+        "y": -36,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 8
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 32,
+        "y": 44,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 88
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 32,
+        "y": 124,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 168
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 32,
+        "y": 204,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 248
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 32,
+        "y": 284,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 328
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 32,
+        "y": 364,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 408
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": "商品",
+        "x": 32,
+        "y": 464,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 508
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": "商品编码",
+        "x": 32,
+        "y": 516,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 560
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": "单位",
+        "x": 32,
+        "y": 568,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 612
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": "实盘数",
+        "x": 44,
+        "y": 621,
+        "w": 302,
+        "h": 42,
+        "right": 346,
+        "bottom": 663
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Close",
+        "x": 326,
+        "y": -180,
+        "w": 44,
+        "h": 44,
+        "right": 370,
+        "bottom": -136
+      },
+      {
+        "text": "",
+        "x": 322,
+        "y": 672,
+        "w": 36,
+        "h": 44,
+        "right": 358,
+        "bottom": 716
+      },
+      {
+        "text": "添加明细",
+        "x": 32,
+        "y": 724,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 768
+      },
+      {
+        "text": "取 消",
+        "x": 222.296875,
+        "y": 780,
+        "w": 63.8515625,
+        "h": 44,
+        "right": 286.1484375,
+        "bottom": 824
+      },
+      {
+        "text": "创 建",
+        "x": 294.1484375,
+        "y": 780,
+        "w": 63.8515625,
+        "h": 44,
+        "right": 358,
+        "bottom": 824
+      }
+    ],
+    "scrolls": [
+      {
+        "tag": "HTML",
+        "cls": "",
+        "top": 0,
+        "max": 11,
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 844,
+        "right": 390,
+        "bottom": 844
+      }
+    ],
+    "blocked": []
+  },
+  {
+    "route": "/finance/receipts",
+    "button": "水单录入",
+    "viewport": [
+      390,
+      844
+    ],
+    "docW": 390,
+    "y": 0,
+    "title": "收款管理",
+    "dialog": [
+      {
+        "x": 8,
+        "y": -156.5,
+        "w": 374,
+        "h": 992.296875,
+        "right": 382,
+        "bottom": 835.796875
+      }
+    ],
+    "fields": [
+      {
+        "tag": "INPUT",
+        "placeholder": "保存后自动生成",
+        "x": 32,
+        "y": -82.5,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": -38.5
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 32,
+        "y": -4.5,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 39.5
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 32,
+        "y": 73.5,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 117.5
+      },
+      {
+        "tag": "DIV",
+        "placeholder": null,
+        "x": 32,
+        "y": 151.5,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 195.5
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 43,
+        "y": 156.5,
+        "w": 286,
+        "h": 34,
+        "right": 329,
+        "bottom": 190.5
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": "选择客户后自动带出",
+        "x": 32,
+        "y": 229.5,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 273.5
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 32,
+        "y": 307.5,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 351.5
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 32,
+        "y": 385.5,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 429.5
+      },
+      {
+        "tag": "DIV",
+        "placeholder": null,
+        "x": 32,
+        "y": 463.5,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 507.5
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 43,
+        "y": 468.5,
+        "w": 286,
+        "h": 34,
+        "right": 329,
+        "bottom": 502.5
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 32,
+        "y": 541.5,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 585.5
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 32,
+        "y": 619.5,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 663.5
+      },
+      {
+        "tag": "TEXTAREA",
+        "placeholder": null,
+        "x": 32,
+        "y": 697.5,
+        "w": 326,
+        "h": 58.296875,
+        "right": 358,
+        "bottom": 755.796875
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Close",
+        "x": 326,
+        "y": -144.5,
+        "w": 44,
+        "h": 44,
+        "right": 370,
+        "bottom": -100.5
+      },
+      {
+        "text": "取消",
+        "x": 190.3125,
+        "y": 771.796875,
+        "w": 62.5625,
+        "h": 44,
+        "right": 252.875,
+        "bottom": 815.796875
+      },
+      {
+        "text": "保存水单",
+        "x": 260.875,
+        "y": 771.796875,
+        "w": 97.125,
+        "h": 44,
+        "right": 358,
+        "bottom": 815.796875
+      }
+    ],
+    "scrolls": [
+      {
+        "tag": "HTML",
+        "cls": "",
+        "top": 0,
+        "max": 746,
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 844,
+        "right": 390,
+        "bottom": 844
+      }
+    ],
+    "blocked": []
+  },
+  {
+    "route": "/finance/misc",
+    "button": "新增杂费",
+    "viewport": [
+      390,
+      844
+    ],
+    "docW": 390,
+    "y": 0,
+    "title": "杂费管理",
+    "dialog": [
+      {
+        "x": 8,
+        "y": 130,
+        "w": 374,
+        "h": 584,
+        "right": 382,
+        "bottom": 714
+      }
+    ],
+    "fields": [
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 32,
+        "y": 204,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 248
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 32,
+        "y": 282,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 326
+      },
+      {
+        "tag": "DIV",
+        "placeholder": null,
+        "x": 32,
+        "y": 360,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 404
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 43,
+        "y": 365,
+        "w": 286,
+        "h": 34,
+        "right": 329,
+        "bottom": 399
+      },
+      {
+        "tag": "DIV",
+        "placeholder": null,
+        "x": 32,
+        "y": 438,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 482
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 43,
+        "y": 443,
+        "w": 286,
+        "h": 34,
+        "right": 329,
+        "bottom": 477
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 32,
+        "y": 590,
+        "w": 326,
+        "h": 44,
+        "right": 358,
+        "bottom": 634
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Close",
+        "x": 326,
+        "y": 142,
+        "w": 44,
+        "h": 44,
+        "right": 370,
+        "bottom": 186
+      },
+      {
+        "text": "取消",
+        "x": 190.3125,
+        "y": 650,
+        "w": 62.5625,
+        "h": 44,
+        "right": 252.875,
+        "bottom": 694
+      },
+      {
+        "text": "保存项目",
+        "x": 260.875,
+        "y": 650,
+        "w": 97.125,
+        "h": 44,
+        "right": 358,
+        "bottom": 694
+      }
+    ],
+    "scrolls": [
+      {
+        "tag": "HTML",
+        "cls": "",
+        "top": 0,
+        "max": 767,
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 844,
+        "right": 390,
+        "bottom": 844
+      }
+    ],
+    "blocked": []
+  },
+  {
+    "route": "/sample/records",
+    "button": "新增样品",
+    "viewport": [
+      390,
+      844
+    ],
+    "docW": 390,
+    "y": 0,
+    "title": "样品登记",
+    "dialog": [
+      {
+        "x": 8,
+        "y": 28.0625,
+        "w": 374,
+        "h": 787.8828125,
+        "right": 382,
+        "bottom": 815.9453125
+      }
+    ],
+    "fields": [
+      {
+        "tag": "INPUT",
+        "placeholder": "系统自动生成",
+        "x": 60,
+        "y": -1063.4921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": -1019.4921875
+      },
+      {
+        "tag": "DIV",
+        "placeholder": null,
+        "x": 60,
+        "y": -985.4921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": -941.4921875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 71,
+        "y": -980.4921875,
+        "w": 230,
+        "h": 34,
+        "right": 301,
+        "bottom": -946.4921875
+      },
+      {
+        "tag": "DIV",
+        "placeholder": null,
+        "x": 60,
+        "y": -907.4921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": -863.4921875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 71,
+        "y": -902.4921875,
+        "w": 230,
+        "h": 34,
+        "right": 301,
+        "bottom": -868.4921875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": -829.4921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": -785.4921875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": -751.4921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": -707.4921875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": -673.4921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": -629.4921875
+      },
+      {
+        "tag": "DIV",
+        "placeholder": null,
+        "x": 60,
+        "y": -595.4921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": -551.4921875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 71,
+        "y": -590.4921875,
+        "w": 230,
+        "h": 34,
+        "right": 301,
+        "bottom": -556.4921875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": -517.4921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": -473.4921875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": -439.4921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": -395.4921875
+      },
+      {
+        "tag": "DIV",
+        "placeholder": null,
+        "x": 60,
+        "y": -361.4921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": -317.4921875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 71,
+        "y": -356.4921875,
+        "w": 230,
+        "h": 34,
+        "right": 301,
+        "bottom": -322.4921875
+      },
+      {
+        "tag": "DIV",
+        "placeholder": null,
+        "x": 60,
+        "y": -283.4921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": -239.4921875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 71,
+        "y": -278.4921875,
+        "w": 230,
+        "h": 34,
+        "right": 301,
+        "bottom": -244.4921875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": -205.4921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": -161.4921875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": -127.4921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": -83.4921875
+      },
+      {
+        "tag": "DIV",
+        "placeholder": null,
+        "x": 60,
+        "y": -49.4921875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": -5.4921875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 71,
+        "y": -44.4921875,
+        "w": 230,
+        "h": 34,
+        "right": 301,
+        "bottom": -10.4921875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": 28.5078125,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": 72.5078125
+      },
+      {
+        "tag": "TEXTAREA",
+        "placeholder": null,
+        "x": 60,
+        "y": 106.5078125,
+        "w": 270,
+        "h": 78.4453125,
+        "right": 330,
+        "bottom": 184.953125
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": 278.8046875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": 322.8046875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": 356.8046875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": 400.8046875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": 434.8046875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": 478.8046875
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 60,
+        "y": 512.8046875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": 556.8046875
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Close",
+        "x": 318,
+        "y": 46.0625,
+        "w": 44,
+        "h": 44,
+        "right": 362,
+        "bottom": 90.0625
+      },
+      {
+        "text": "取消",
+        "x": 60,
+        "y": 611.8046875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": 655.8046875
+      },
+      {
+        "text": "按当前表单导入",
+        "x": 60,
+        "y": 667.8046875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": 711.8046875
+      },
+      {
+        "text": "新增样品",
+        "x": 60,
+        "y": 723.8046875,
+        "w": 270,
+        "h": 44,
+        "right": 330,
+        "bottom": 767.8046875
+      }
+    ],
+    "scrolls": [
+      {
+        "tag": "HTML",
+        "cls": "",
+        "top": 0,
+        "max": 179,
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 844,
+        "right": 390,
+        "bottom": 844
+      },
+      {
+        "tag": "FORM",
+        "cls": "record-form entity-modal-form sample-modal-form",
+        "top": 1216,
+        "max": 1216,
+        "x": 60,
+        "y": 130.5078125,
+        "w": 270,
+        "h": 641.4375,
+        "right": 330,
+        "bottom": 771.9453125
+      }
+    ],
+    "blocked": []
+  },
+  {
+    "route": "/",
+    "button": "新增待办",
+    "viewport": [
+      390,
+      844
+    ],
+    "docW": 390,
+    "y": 0,
+    "title": "工作台",
+    "dialog": [
+      {
+        "x": 8,
+        "y": 126.3515625,
+        "w": 374,
+        "h": 591.296875,
+        "right": 382,
+        "bottom": 717.6484375
+      }
+    ],
+    "fields": [
+      {
+        "tag": "INPUT",
+        "placeholder": "标题",
+        "x": 33,
+        "y": 185.3515625,
+        "w": 324,
+        "h": 62,
+        "right": 357,
+        "bottom": 247.3515625
+      },
+      {
+        "tag": "TEXTAREA",
+        "placeholder": "内容",
+        "x": 33,
+        "y": 247.3515625,
+        "w": 324,
+        "h": 260,
+        "right": 357,
+        "bottom": 507.3515625
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "x": 33,
+        "y": 531.2265625,
+        "w": 324,
+        "h": 38.421875,
+        "right": 357,
+        "bottom": 569.6484375
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Close",
+        "x": 326,
+        "y": 138.3515625,
+        "w": 44,
+        "h": 44,
+        "right": 370,
+        "bottom": 182.3515625
+      },
+      {
+        "text": "指派人",
+        "x": 305,
+        "y": 580.6484375,
+        "w": 38,
+        "h": 44,
+        "right": 343,
+        "bottom": 624.6484375
+      },
+      {
+        "text": "取消",
+        "x": 190.3125,
+        "y": 653.6484375,
+        "w": 62.5625,
+        "h": 44,
+        "right": 252.875,
+        "bottom": 697.6484375
+      },
+      {
+        "text": "新增待办",
+        "x": 260.875,
+        "y": 653.6484375,
+        "w": 97.125,
+        "h": 44,
+        "right": 358,
+        "bottom": 697.6484375
+      }
+    ],
+    "scrolls": [
+      {
+        "tag": "HTML",
+        "cls": "",
+        "top": 0,
+        "max": 1357,
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 844,
+        "right": 390,
+        "bottom": 844
+      }
+    ],
+    "blocked": []
+  }
+]

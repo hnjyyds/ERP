@@ -165,7 +165,12 @@ export function PortDataView({ model, shell }: Props) {
               { title: t('finance.portData.table.source'), dataIndex: 'source' },
               { title: t('finance.portData.table.importedAt'), dataIndex: 'imported_at' },
               { title: t('finance.portData.table.recordCount'), dataIndex: 'record_count' },
-              { title: t('finance.field.status'), dataIndex: 'status' },
+              {
+                title: t('finance.field.status'),
+                dataIndex: 'status',
+                render: (value: string) =>
+                  value === 'imported' ? t('finance.portData.status.imported') : value,
+              },
             ]}
             dataSource={portImportBatches}
             loading={loadingPortBatches}

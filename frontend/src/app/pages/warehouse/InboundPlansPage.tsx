@@ -138,7 +138,9 @@ function inboundPlanStatusLabel(value: string): string {
 function inboundPlanLineStatusLabel(value: string): string {
   if (value === 'pending') return t('warehouse.inboundPlan.detail.lineStatusPending')
   if (value === 'partial') return t('warehouse.inboundPlan.detail.lineStatusPartial')
-  if (value === 'completed') return t('warehouse.inboundPlan.detail.lineStatusCompleted')
+  if (value === 'completed' || value === 'closed') {
+    return t('warehouse.inboundPlan.detail.lineStatusCompleted')
+  }
   if (value === 'cancelled') return t('warehouse.inboundPlan.detail.lineStatusCancelled')
   return value
 }
@@ -795,7 +797,11 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                 </dl>
 
                 <div className="accessory-heading">
-                  <strong>{t('warehouse.inboundPlan.detail.linesTitle')}</strong>
+                  <strong>
+                    {selectedPlan.status === 'closed'
+                      ? t('warehouse.inboundPlan.detail.linesTitleClosed')
+                      : t('warehouse.inboundPlan.detail.linesTitle')}
+                  </strong>
                   <span>
                     {t('warehouse.inboundPlan.detail.lineCount', {
                       count: selectedPlan.lines.length,

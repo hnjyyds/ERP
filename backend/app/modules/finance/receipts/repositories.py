@@ -479,7 +479,8 @@ class ReceiptRepository:
             customer_name=receipt.customer_name,
             amount=self._money(amount),
             allocated_amount=self._money(allocated_amount),
-            unallocated_amount=self._money(max(amount - allocated_amount, Decimal("0"))),
+            # 保留负值以暴露超额分摊：与列表汇总口径保持一致，由前端标记异常。
+            unallocated_amount=self._money(amount - allocated_amount),
             currency=receipt.currency,
             bank_account=receipt.bank_account,
             reference_no=receipt.reference_no,

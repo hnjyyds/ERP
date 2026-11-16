@@ -327,7 +327,9 @@ const pageRenderers: Partial<Record<RouteKey, PageRenderer>> = {
       onNavigate={context.onNavigate}
     />
   ),
-  myQualityTasks: (context) => <MyQualityTasksPage currentUser={context.session.user} />,
+  myQualityTasks: (context) => (
+    <MyQualityTasksPage currentUser={context.session.user} onNavigate={context.onNavigate} />
+  ),
   qualityInspection: (context) => (
     <QualityInspectionsPage
       currentUser={context.session.user}

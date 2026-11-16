@@ -1,5 +1,8 @@
 import { Button, Input, Modal } from 'antd'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
+import { listAssignableUsers, listProducts, type AssignableUser, type Product } from '@/api'
+import { FormSelect, RemoteSelect } from '@/shared/ui'
 import { t } from '@/app/appI18n'
 
 import type { usePurchaseInquiryWorkflow } from '../hooks/usePurchaseInquiryWorkflow'
@@ -10,6 +13,52 @@ type Props = {
 
 export function PurchaseInquiryFormModal({ workflow }: Props) {
   const { inquiryForm: form, setInquiryForm: setForm } = workflow
+  const [buyers, setBuyers] = useState<AssignableUser[]>([])
+  const buyersLoadedRef = useRef(false)
+  const productCache = useRef(new Map<string, Product>())
+
+  useEffect(() => {
+    if (!workflow.inquiryModalOpen || buyersLoadedRef.current) return
+    buyersLoadedRef.current = true
+    listAssignableUsers('purchase:inquiry:edit')
+      .then((result) => setBuyers(result.users ?? []))
+      .catch(() => setBuyers([]))
+  }, [workflow.inquiryModalOpen])
+
+  const fetchProductOptions = useMemo(
+    () => async (query: string) => {
+      const result = await listProducts({
+        q: query.trim() || undefined,
+        status: 'active',
+        limit: 20,
+        offset: 0,
+      })
+      result.items.forEach((item) => productCache.current.set(item.id, item))
+      return result.items.map((item) => ({
+        label: `${item.code} / ${item.cn_name}`,
+        value: item.id,
+        description: [item.specification, item.model].filter(Boolean).join(' · '),
+      }))
+    },
+    [],
+  )
+
+  function selectProduct(productId: string) {
+    const product = productCache.current.get(productId)
+    if (!product) {
+      setForm({ ...form, product_id: productId })
+      return
+    }
+    setForm({
+      ...form,
+      product_id: product.id,
+      product_code: product.code,
+      product_name: product.cn_name,
+      specification: product.specification ?? '',
+      model: product.model ?? '',
+      unit: product.unit,
+    })
+  }
 
   return (
     <Modal
@@ -46,43 +95,59 @@ export function PurchaseInquiryFormModal({ workflow }: Props) {
           </div>
           <div className="form-pair two">
             <label>
-              {t('purchase.inquiry.field.buyerId')}
-              <Input
-                value={form.buyer_user_id}
-                onChange={(event) => setForm({ ...form, buyer_user_id: event.target.value })}
-              />
-            </label>
-            <label>
               {t('purchase.inquiry.field.buyer')}
-              <Input
-                value={form.buyer_user_name}
-                onChange={(event) => setForm({ ...form, buyer_user_name: event.target.value })}
-              />
-            </label>
-          </div>
-          <div className="form-divider">{t('purchase.inquiry.form.productSection')}</div>
-          <div className="form-pair two">
-            <label>
-              {t('purchase.inquiry.field.productId')}
-              <Input
-                value={form.product_id}
-                onChange={(event) => setForm({ ...form, product_id: event.target.value })}
-              />
+              <FormSelect
+                value={form.buyer_user_id}
+                onChange={(event) => {
+                  const buyer = buyers.find((item) => item.id === event.target.value)
+                  setForm({
+                    ...form,
+                    buyer_user_id: event.target.value,
+                    buyer_user_name: buyer?.display_name ?? '',
+                  })
+                }}
+              >
+                <option value="">{t('common.form.selectPlaceholder')}</option>
+                {form.buyer_user_id && !buyers.some((buyer) => buyer.id === form.buyer_user_id) ? (
+                  <option value={form.buyer_user_id}>
+                    {form.buyer_user_name || form.buyer_user_id}
+                  </option>
+                ) : null}
+                {buyers.map((buyer) => (
+                  <option key={buyer.id} value={buyer.id}>
+                    {buyer.display_name}
+                    {buyer.department_name ? `（${buyer.department_name}）` : ''}
+                  </option>
+                ))}
+              </FormSelect>
             </label>
             <label>
               {t('purchase.inquiry.field.productCode')}
-              <Input
-                value={form.product_code}
-                onChange={(event) => setForm({ ...form, product_code: event.target.value })}
-              />
+              <Input readOnly value={form.product_code} />
             </label>
           </div>
+          <div className="form-divider">{t('purchase.inquiry.form.productSection')}</div>
+          <label>
+            {t('purchase.inquiry.field.product')}
+            <RemoteSelect
+              ariaLabel={t('purchase.inquiry.field.product')}
+              fetchOptions={fetchProductOptions}
+              initialOption={
+                form.product_id
+                  ? {
+                      label: `${form.product_code} / ${form.product_name}`,
+                      value: form.product_id,
+                    }
+                  : undefined
+              }
+              onChange={selectProduct}
+              placeholder={t('purchase.inquiry.form.productPlaceholder')}
+              value={form.product_id}
+            />
+          </label>
           <label>
             {t('purchase.inquiry.field.productName')}
-            <Input
-              value={form.product_name}
-              onChange={(event) => setForm({ ...form, product_name: event.target.value })}
-            />
+            <Input readOnly value={form.product_name} />
           </label>
           <div className="form-pair two">
             <label>

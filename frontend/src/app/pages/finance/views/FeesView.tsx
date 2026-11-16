@@ -168,16 +168,18 @@ export function FeesView({ model, shell }: Props) {
                     onChange={(event) => setFeeInvoiceShipmentFilter(event.target.value)}
                   />
                 </label>
-                <Button htmlType="submit" icon={<Search size={16} />}>
-                  {t('finance.fee.action.search')}
-                </Button>
-                <Button
-                  type="primary"
-                  icon={<Plus size={16} />}
-                  onClick={() => setFeeInvoiceModalOpen(true)}
-                >
-                  {t('finance.fee.action.registerInvoice')}
-                </Button>
+                <div className="filter-actions">
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    {t('finance.fee.action.search')}
+                  </Button>
+                  <Button
+                    type="primary"
+                    icon={<Plus size={16} />}
+                    onClick={() => setFeeInvoiceModalOpen(true)}
+                  >
+                    {t('finance.fee.action.registerInvoice')}
+                  </Button>
+                </div>
               </form>
             </div>
             <Table<PartnerFeeInvoice>

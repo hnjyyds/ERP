@@ -51,7 +51,8 @@ export function formatPercent(value?: string | null): string {
   if (!value) return '-'
   const numeric = Number(value)
   if (!Number.isFinite(numeric)) return value
-  return `${(numeric * 100).toFixed(1)}%`
+  // 后端利润率为已乘以 100 的百分数（如 102.44），这里只负责格式化，不能再次放大。
+  return `${numeric.toFixed(1)}%`
 }
 
 export function partnerTypeLabel(value: string): string {

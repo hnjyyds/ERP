@@ -1,0 +1,12 @@
+[
+  {
+    "name": "inbound",
+    "route": "/warehouse/inbound-plans/0f1e8d8b-f7cc-4745-bf89-4062e8153de5",
+    "text": "业务模块\n\n入库计划\n1\n入库计划\n1\n待安排\n0\n已排库位\n0\n待入库数量\n0.00\n入库类型\n1\n计划明细\n返回列表\n采购合同\nPC-HR36RU\n供应商\nQA261112 测试供应商\n入库类型\n采购入库\n计划状态\n已关闭\n计划入库日\n2026-11-12\n库位\n未安排 / 未安排\n已入库商品\n1 条\n商品\t规格\t计划数量\t已入库\t状态\nQA261112-P01 QA261112 验收测试围巾\t180×70cm / 含中文与符号\t100 pcs\t100 pcs\t已入库"
+  },
+  {
+    "name": "outbound",
+    "route": "/warehouse/outbound-plans/ed854737-58ac-45de-8c22-39d2b51e8f57",
+    "text": "业务模块\n\n出库计划\n1\n出库计划\n1\n待安排\n0\n已排库位\n0\n待出库数量\n0.00\n发货来源\n1\n待出库清单\n返回列表\n来源单据\n发货计划 / SP-DAEPEG\n客户\nQA261112 测试客户\n出库类型\n成品出库\n计划状态\n已关闭\n计划出库日\n2026-11-12\n库位\n未安排 / 未安排\n已出库商品\n1 条\n商品\t规格\t计划数量\t已出库\t状态\nQA261112-P01 QA261112 验收测试围巾\t未设置\t20 pcs\t20 pcs\t已出库"
+  }
+]

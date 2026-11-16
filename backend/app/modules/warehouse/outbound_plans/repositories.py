@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Select, func, or_, select
+from sqlalchemy import Select, case, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.pagination import resolve_limit, resolve_offset
@@ -209,10 +209,18 @@ class OutboundPlanRepository:
             .select_from(OutboundPlan)
             .group_by(OutboundPlan.status)
         )
+        # 待出库数量按剩余量统计：已完成计划不再计入，避免顶部指标与完成状态冲突。
+        remaining_quantity = OutboundPlanLine.planned_quantity - OutboundPlanLine.outbound_quantity
         quantity_statement = (
-            select(func.coalesce(func.sum(OutboundPlanLine.planned_quantity), 0))
+            select(
+                func.coalesce(
+                    func.sum(case((remaining_quantity > 0, remaining_quantity), else_=0)),
+                    0,
+                )
+            )
             .select_from(OutboundPlan)
             .join(OutboundPlanLine, OutboundPlanLine.plan_id == OutboundPlan.id)
+            .where(OutboundPlan.status != "cancelled")
         )
         shipment_statement = (
             select(func.count())

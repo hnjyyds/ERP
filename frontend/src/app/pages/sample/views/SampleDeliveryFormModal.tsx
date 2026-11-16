@@ -32,11 +32,30 @@ export function SampleDeliveryFormModal({
   onCreate,
   onSaveDraft,
 }: Props) {
-  const { fetchQuotations, fetchSampleRecords, getQuotation, getSampleRecord } =
-    useSampleFormOptions(form.customer_id)
+  const {
+    fetchCustomers,
+    fetchQuotations,
+    fetchSampleRecords,
+    getCustomer,
+    getQuotation,
+    getSampleRecord,
+  } = useSampleFormOptions(form.customer_id)
   const [selectedRecord, setSelectedRecord] = useState<
     ReturnType<typeof getSampleRecord>
   >(null)
+
+  function handleCustomerChange(value: string) {
+    const customer = getCustomer(value)
+    onFormChange({
+      ...form,
+      customer_id: value,
+      customer_name: customer
+        ? customer.cn_name || customer.en_name || customer.code
+        : value
+          ? form.customer_name
+          : '',
+    })
+  }
 
   function handleQuotationChange(value: string) {
     if (!value) {
@@ -124,22 +143,22 @@ export function SampleDeliveryFormModal({
             />
           </label>
         </div>
-        <div className="form-pair two">
-          <label>
-            {t('sample.delivery.field.customerId')}
-            <Input
-              value={form.customer_id}
-              onChange={(event) => onFormChange({ ...form, customer_id: event.target.value })}
-            />
-          </label>
-          <label>
-            {t('sample.delivery.field.customerName')}
-            <Input
-              value={form.customer_name}
-              onChange={(event) => onFormChange({ ...form, customer_name: event.target.value })}
-            />
-          </label>
-        </div>
+        <label>
+          {t('sample.delivery.field.customer')}
+          <RemoteSelect
+            ariaLabel={t('sample.delivery.field.customer')}
+            fetchOptions={fetchCustomers}
+            initialOption={
+              form.customer_id
+                ? { label: form.customer_name || form.customer_id, value: form.customer_id }
+                : undefined
+            }
+            onChange={handleCustomerChange}
+            placeholder={t('sample.delivery.form.customerPlaceholder')}
+            required
+            value={form.customer_id}
+          />
+        </label>
         <div className="form-pair two">
           <label>
             {t('sample.delivery.field.supplier')}

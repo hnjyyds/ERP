@@ -45,7 +45,7 @@ export function initialPurchaseInquiryForm(): PurchaseInquiryFormState {
   return {
     code: '',
     inquiry_date: todayInputValue(),
-    buyer_user_id: 'u-001',
+    buyer_user_id: '',
     buyer_user_name: '',
     remarks: '',
     product_id: '',

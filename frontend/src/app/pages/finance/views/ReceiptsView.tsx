@@ -1,4 +1,4 @@
-import { Button, Input, Modal, Table } from 'antd'
+import { Button, Input, Modal, Table, Tag } from 'antd'
 import { ArrowLeft, Plus, Search, CheckCircle2, Save, ShieldCheck } from 'lucide-react'
 import { useCallback, useRef } from 'react'
 
@@ -165,16 +165,18 @@ export function ReceiptsView({ model, shell }: Props) {
                     onChange={setReceiptCustomerFilter}
                   />
                 </label>
-                <Button htmlType="submit" icon={<Search size={16} />}>
-                  {t('finance.receipt.action.search')}
-                </Button>
-                <Button
-                  type="primary"
-                  icon={<Plus size={16} />}
-                  onClick={() => setReceiptModalOpen(true)}
-                >
-                  {t('finance.receipt.action.registerReceipt')}
-                </Button>
+                <div className="filter-actions">
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    {t('finance.receipt.action.search')}
+                  </Button>
+                  <Button
+                    type="primary"
+                    icon={<Plus size={16} />}
+                    onClick={() => setReceiptModalOpen(true)}
+                  >
+                    {t('finance.receipt.action.registerReceipt')}
+                  </Button>
+                </div>
               </form>
             </div>
 
@@ -213,7 +215,16 @@ export function ReceiptsView({ model, shell }: Props) {
                 {
                   title: t('finance.receipt.field.unallocatedAmount'),
                   dataIndex: 'unallocated_amount',
-                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                  render: (value: string, record) => (
+                    <>
+                      {formatFinanceAmount(value, record.currency)}
+                      {Number(value) < 0 ? (
+                        <Tag color="red" style={{ marginLeft: 8 }}>
+                          {t('finance.receipt.tag.overAllocated')}
+                        </Tag>
+                      ) : null}
+                    </>
+                  ),
                 },
               ]}
               dataSource={receipts}
@@ -412,6 +423,11 @@ export function ReceiptsView({ model, shell }: Props) {
                         selectedReceipt.unallocated_amount,
                         selectedReceipt.currency,
                       )}
+                      {Number(selectedReceipt.unallocated_amount) < 0 ? (
+                        <Tag color="red" style={{ marginLeft: 8 }}>
+                          {t('finance.receipt.tag.overAllocated')}
+                        </Tag>
+                      ) : null}
                     </dd>
                   </div>
                 </dl>

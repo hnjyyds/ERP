@@ -1,7 +1,14 @@
 import { Button, Descriptions, Input, Modal, Table } from 'antd'
 import { ArrowLeft, Plus, Search, CheckCircle2, PackagePlus, Save, Wallet } from 'lucide-react'
-import { type FinancialSettlement, type ProfitCostItem } from '@/api'
-import { FormSelect, PanelTitle } from '@/shared/ui'
+import { useMemo, useRef } from 'react'
+
+import {
+  listShipments,
+  type FinancialSettlement,
+  type ProfitCostItem,
+  type ShipmentPlan,
+} from '@/api'
+import { FormSelect, PanelTitle, RemoteSelect } from '@/shared/ui'
 import { formatDate, formatFinanceAmount, formatPercent, nullableText } from '@/app/pages/appHelpers'
 import {
   initialManualProfitCostForm,
@@ -19,6 +26,33 @@ type Props = {
 }
 
 export function SettlementView({ model, shell }: Props) {
+  const shipmentCache = useRef(new Map<string, ShipmentPlan>())
+  const fetchShipmentOptions = useMemo(
+    () => async (query: string) => {
+      const result = await listShipments({
+        q: query.trim() || undefined,
+        limit: 20,
+        offset: 0,
+      })
+      result.items.forEach((item) => shipmentCache.current.set(item.id, item))
+      return result.items.map((item) => ({
+        label: `${item.code} / ${item.customer_name}`,
+        value: item.id,
+        description: item.shipment_date || item.planned_ship_date,
+      }))
+    },
+    [],
+  )
+
+  function selectShipment(shipmentId: string) {
+    const shipment = shipmentCache.current.get(shipmentId)
+    model.setSettlementForm({
+      ...model.settlementForm,
+      shipment_plan_id: shipmentId,
+      shipment_no: shipment?.code ?? model.settlementForm.shipment_no,
+    })
+  }
+
   const {
     changeFinancialSettlementsPage,
     changeProfitCalculationsPage,
@@ -242,22 +276,14 @@ export function SettlementView({ model, shell }: Props) {
                 />
               </label>
               <label>
-                {t('finance.settlement.field.shipmentPlanId')}
-                <Input
+                {t('finance.settlement.field.shipmentNo')}
+                <RemoteSelect
+                  ariaLabel={t('finance.settlement.field.shipmentNo')}
+                  fetchOptions={fetchShipmentOptions}
+                  onChange={selectShipment}
+                  placeholder={t('finance.settlement.form.shipmentPlaceholder')}
                   required
                   value={settlementForm.shipment_plan_id}
-                  onChange={(event) =>
-                    setSettlementForm({ ...settlementForm, shipment_plan_id: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                {t('finance.settlement.field.shipmentNo')}
-                <Input
-                  value={settlementForm.shipment_no}
-                  onChange={(event) =>
-                    setSettlementForm({ ...settlementForm, shipment_no: event.target.value })
-                  }
                 />
               </label>
               <label>

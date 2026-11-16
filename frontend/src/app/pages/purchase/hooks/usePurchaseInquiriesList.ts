@@ -193,6 +193,22 @@ export function usePurchaseInquiriesList({ detailId, onNavigate }: Params) {
     void loadInquiries(undefined, 1)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setProductFilter('')
+    setSupplierFilter('')
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      q: null,
+      status: null,
+      product: null,
+      supplier: null,
+      page: null,
+    })
+    void loadInquiries(undefined, 1, pageSize, { q: '', status: '', product: '', supplier: '' })
+  }
+
   function changeListPage(nextPage: number, nextPageSize: number) {
     const next = changePage(nextPage, nextPageSize)
     appliedUrlSearchRef.current = urlQuery.update({
@@ -226,6 +242,7 @@ export function usePurchaseInquiriesList({ detailId, onNavigate }: Params) {
     openInquiryDetail,
     stopAndOpenInquiryDetail,
     submitFilters,
+    clearFilters,
     changeListPage,
   }
 }

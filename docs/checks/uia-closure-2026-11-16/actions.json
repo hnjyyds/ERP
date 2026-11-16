@@ -1,0 +1,119 @@
+[
+  {
+    "viewport": [
+      1440,
+      900
+    ],
+    "docWidth": 1440,
+    "buttons": [
+      {
+        "text": "查询",
+        "x": 1098.3828125,
+        "y": 257.4453125,
+        "w": 84.5234375,
+        "h": 36,
+        "scrollWidth": 83,
+        "clientWidth": 83,
+        "hit": true
+      },
+      {
+        "text": "导出台账",
+        "x": 1190.90625,
+        "y": 257.4453125,
+        "w": 87.046875,
+        "h": 36,
+        "scrollWidth": 85,
+        "clientWidth": 85,
+        "hit": true
+      },
+      {
+        "text": "新增样品",
+        "x": 1285.953125,
+        "y": 257.4453125,
+        "w": 111.046875,
+        "h": 36,
+        "scrollWidth": 109,
+        "clientWidth": 109,
+        "hit": true
+      }
+    ]
+  },
+  {
+    "viewport": [
+      1280,
+      720
+    ],
+    "docWidth": 1280,
+    "buttons": [
+      {
+        "text": "查询",
+        "x": 938.3828125,
+        "y": 305.4453125,
+        "w": 84.5234375,
+        "h": 36,
+        "scrollWidth": 83,
+        "clientWidth": 83,
+        "hit": true
+      },
+      {
+        "text": "导出台账",
+        "x": 1030.90625,
+        "y": 305.4453125,
+        "w": 87.046875,
+        "h": 36,
+        "scrollWidth": 85,
+        "clientWidth": 85,
+        "hit": true
+      },
+      {
+        "text": "新增样品",
+        "x": 1125.953125,
+        "y": 305.4453125,
+        "w": 111.046875,
+        "h": 36,
+        "scrollWidth": 109,
+        "clientWidth": 109,
+        "hit": true
+      }
+    ]
+  },
+  {
+    "viewport": [
+      390,
+      844
+    ],
+    "docWidth": 390,
+    "buttons": [
+      {
+        "text": "查询",
+        "x": 33.0078125,
+        "y": 605.2890625,
+        "w": 102.6640625,
+        "h": 44,
+        "scrollWidth": 101,
+        "clientWidth": 101,
+        "hit": true
+      },
+      {
+        "text": "导出台账",
+        "x": 143.671875,
+        "y": 605.2890625,
+        "w": 102.6640625,
+        "h": 44,
+        "scrollWidth": 101,
+        "clientWidth": 101,
+        "hit": true
+      },
+      {
+        "text": "新增样品",
+        "x": 254.3359375,
+        "y": 605.2890625,
+        "w": 102.6640625,
+        "h": 44,
+        "scrollWidth": 101,
+        "clientWidth": 101,
+        "hit": true
+      }
+    ]
+  }
+]

@@ -224,6 +224,28 @@ describe('PurchaseInquiriesPage', () => {
       total: 1,
       summary: emptySummary,
     })
+    vi.spyOn(api, 'listProducts').mockResolvedValue({
+      items: [
+        {
+          id: 'p-9',
+          code: 'P-009',
+          cn_name: '测试商品',
+          en_name: 'Test Product',
+          specification: '500ml',
+          model: 'M-1',
+          customs_code: '1234567890',
+          tax_rate: '13',
+          rebate_rate: '13',
+          package_info: '1pc/box',
+          unit: 'pcs',
+          image_url: null,
+          status: 'active',
+          accessories: [],
+        },
+      ],
+      total: 1,
+      summary: { with_image_count: 0, accessory_count: 0 },
+    })
     const createSpy = vi.spyOn(api, 'createPurchaseInquiry').mockResolvedValue(created)
 
     render(<PurchaseInquiriesPage detailId={null} onNavigate={onNavigate} />)
@@ -231,7 +253,9 @@ describe('PurchaseInquiriesPage', () => {
 
     await userEvent.click(screen.getByRole('button', { name: '新增采购询价' }))
     const dialog = await screen.findByRole('dialog')
-    await userEvent.type(within(dialog).getByLabelText('商品名称'), '测试商品')
+    await userEvent.click(within(dialog).getByLabelText('商品'))
+    const productOptions = await screen.findAllByText('P-009 / 测试商品')
+    await userEvent.click(productOptions[0])
     await userEvent.click(within(dialog).getByRole('button', { name: '新增采购询价' }))
 
     await waitFor(() => expect(createSpy).toHaveBeenCalledTimes(1))

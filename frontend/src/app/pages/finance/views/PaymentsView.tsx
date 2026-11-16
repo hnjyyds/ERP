@@ -149,19 +149,21 @@ export function PaymentsView({ model, shell }: Props) {
                     onChange={(event) => setInvoiceContractFilter(event.target.value)}
                   />
                 </label>
-                <Button htmlType="submit" icon={<Search size={16} />}>
-                  {t('finance.payment.action.search')}
-                </Button>
-                <Button
-                  type="primary"
-                  icon={<Plus size={16} />}
-                  onClick={() => {
-                    setSupplierInvoiceNoError('')
-                    setInvoiceModalOpen(true)
-                  }}
-                >
-                  {t('finance.payment.action.registerInvoice')}
-                </Button>
+                <div className="filter-actions">
+                  <Button htmlType="submit" icon={<Search size={16} />}>
+                    {t('finance.payment.action.search')}
+                  </Button>
+                  <Button
+                    type="primary"
+                    icon={<Plus size={16} />}
+                    onClick={() => {
+                      setSupplierInvoiceNoError('')
+                      setInvoiceModalOpen(true)
+                    }}
+                  >
+                    {t('finance.payment.action.registerInvoice')}
+                  </Button>
+                </div>
               </form>
             </div>
             <Table<SupplierInvoice>

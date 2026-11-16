@@ -1,0 +1,24 @@
+[
+  {
+    "selector": "loc=css:.sample-record-image-preview img",
+    "url": "http://localhost:8080/uploads/images/b6c7ee8e2bd7403896b42a971e5f7b04-3dd95070b17c5fb4.png",
+    "image": [
+      {
+        "width": 640,
+        "height": 640,
+        "complete": true
+      }
+    ]
+  },
+  {
+    "selector": "text=\"查看原图\"",
+    "url": "http://localhost:8080/uploads/images/b6c7ee8e2bd7403896b42a971e5f7b04-3dd95070b17c5fb4.png",
+    "image": [
+      {
+        "width": 640,
+        "height": 640,
+        "complete": true
+      }
+    ]
+  }
+]
