@@ -85,10 +85,14 @@ vi.mock('@/shared/ui', () => {
   }
 })
 
-vi.mock('@/shared/errors', () => ({
-  showError: vi.fn(),
-  showWarningDialog: vi.fn(),
-}))
+vi.mock('@/shared/errors', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/shared/errors')>()
+  return {
+    ...actual,
+    showError: vi.fn(),
+    showWarningDialog: vi.fn(),
+  }
+})
 
 vi.mock('@/shared/print', () => ({
   downloadCsv: vi.fn(),
