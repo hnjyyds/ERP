@@ -2,6 +2,7 @@ import { Alert, Button, Descriptions, Input, Modal, Table } from 'antd'
 import { Plus, Search, ClipboardCheck, Receipt, Save } from 'lucide-react'
 import { type Reimbursement } from '@/api'
 import { FormSelect, PanelTitle } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { canApproveAssignedRecord, formatFinanceAmount } from '@/app/pages/appHelpers'
 import { reimbursementCategoryLabel, reimbursementStatusTag } from '@/app/pages/finance/financeHelpers'
 import { ApprovalAssigneeSelect } from '@/app/components/ApprovalAssigneeSelect'
@@ -17,6 +18,7 @@ type Props = {
 export function ReimbursementsView({ model, shell }: Props) {
   const {
     changeReimbursementsPage,
+    clearReimbursementFilters,
     handleReimbursementApprove,
     handleReimbursementPay,
     loadingReimbursements,
@@ -117,6 +119,19 @@ export function ReimbursementsView({ model, shell }: Props) {
             </form>
           </div>
           <Table<Reimbursement>
+            locale={{
+              emptyText: (
+                <ListEmptyState
+                  emptyTitle={t('common.empty.noDataTitle')}
+                  filtered={
+                    Boolean(reimbursementSearch.trim()) ||
+                    Boolean(reimbursementStatusFilter) ||
+                    Boolean(reimbursementCategoryFilter)
+                  }
+                  onClearFilters={() => void clearReimbursementFilters()}
+                />
+              ),
+            }}
             columns={[
               {
                 title: t('finance.reimbursement.table.reimbursementNo'),

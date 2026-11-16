@@ -29,6 +29,7 @@ import { useFormModal } from '@/shared/useFormModal'
 import { useTablePagination } from '@/shared/useTablePagination'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { t } from '@/app/appI18n'
 import { documentPartyPath, moduleDetailPath } from '@/app/routes'
 
@@ -197,6 +198,23 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
     }
   }
 
+  function clearFilters() {
+    setSearch('')
+    setTypeFilter('')
+    setStatusFilter('')
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      q: null,
+      party_type: null,
+      status: null,
+      page: null,
+    })
+    void loadParties({
+      pageOverride: 1,
+      filters: { q: '', party_type: '', status: '' },
+    })
+  }
+
   function closePartyForm() {
     setEditingPartyId(null)
     closePartyModal()
@@ -340,6 +358,17 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
 
           >
             <Table<DocumentParty>
+            locale={{
+              emptyText: (
+                <ListEmptyState
+                  emptyTitle={t('common.empty.noDataTitle')}
+                  filtered={
+                    Boolean(search.trim()) || Boolean(typeFilter) || Boolean(statusFilter)
+                  }
+                  onClearFilters={clearFilters}
+                />
+              ),
+            }}
             columns={[
               {
                 title: t('masterdata.field.code'),

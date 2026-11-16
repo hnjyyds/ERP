@@ -235,6 +235,22 @@ export function usePortDataModule(
     await loadPortImportBatches(next.page, next.pageSize)
   }
 
+  async function clearCustomsRecordFilters() {
+    const filters: CustomsRecordFilters = { declaration: '', receipt: '', tradeType: '' }
+    setCustomsRecordFilters(filters)
+    recordsPager.setPage(1)
+    const nextSearch = urlQuery.update({
+      port_records_page: null,
+      port_records_q: null,
+      port_records_receipt: null,
+      port_records_trade_type: null,
+    })
+    appliedCustomsRecordSignatureRef.current = customsRecordSignature(
+      new URLSearchParams(nextSearch),
+    )
+    await loadCustomsRecords(1, recordsPager.pageSize, filters)
+  }
+
   useEffect(() => {
     const signature = customsRecordSignature(urlQuery.params)
     if (appliedCustomsRecordSignatureRef.current === signature) return
@@ -258,6 +274,7 @@ export function usePortDataModule(
     autoMatchPortCustomsReceipts,
     changeCustomsRecordsPage,
     changePortImportBatchesPage,
+    clearCustomsRecordFilters,
     customsDeclarationFilter: customsRecordFilters.declaration,
     customsReceiptFilter: customsRecordFilters.receipt,
     customsRecords,

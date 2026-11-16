@@ -9,6 +9,7 @@ import {
   type ShipmentPlan,
 } from '@/api'
 import { FormSelect, PanelTitle, RemoteSelect } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { formatDate, formatFinanceAmount, formatPercent, nullableText } from '@/app/pages/appHelpers'
 import {
   initialManualProfitCostForm,
@@ -56,6 +57,8 @@ export function SettlementView({ model, shell }: Props) {
   const {
     changeFinancialSettlementsPage,
     changeProfitCalculationsPage,
+    clearProfitFilters,
+    clearSettlementFilters,
     financialSettlements,
     financialSettlementsPagination,
     financialSettlementsTotal,
@@ -171,6 +174,18 @@ export function SettlementView({ model, shell }: Props) {
               </span>
             </div>
             <Table<FinancialSettlement>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={
+                      Boolean(settlementSearch.trim()) ||
+                      Boolean(settlementShipmentFilter.trim())
+                    }
+                    onClearFilters={() => void clearSettlementFilters()}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('finance.settlement.table.settlementNo'),
@@ -534,6 +549,18 @@ export function SettlementView({ model, shell }: Props) {
               <span>{t('finance.settlement.metric.profitHint')}</span>
             </div>
             <Table<FinancialSettlement>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={
+                      Boolean(profitCalculationSearch.trim()) ||
+                      Boolean(profitCalculationShipmentFilter.trim())
+                    }
+                    onClearFilters={() => void clearProfitFilters()}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('finance.settlement.table.settlementNo'),

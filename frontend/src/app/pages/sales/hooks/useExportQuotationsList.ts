@@ -220,6 +220,20 @@ export function useExportQuotationsList({ detailId, onNavigate }: Params) {
     void loadQuotations(undefined, 1)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setCustomerFilter('')
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      q: null,
+      status: null,
+      customer: null,
+      page: null,
+    })
+    void loadQuotations(undefined, 1, pageSize, { q: '', status: '', customer: '' })
+  }
+
   function changeListPage(nextPage: number, nextPageSize: number) {
     const next = changePage(nextPage, nextPageSize)
     appliedUrlSearchRef.current = urlQuery.update({
@@ -275,6 +289,7 @@ export function useExportQuotationsList({ detailId, onNavigate }: Params) {
     total,
     pagination,
     submitFilters,
+    clearFilters,
     changeListPage,
     loadQuotations,
     upsertQuotation,

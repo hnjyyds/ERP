@@ -136,6 +136,14 @@ export function supplierInvoiceStatusLabel(value: string): string {
   return optionLabel(supplierInvoiceStatusOptions, value)
 }
 
+/** 已付款超过发票金额的部分；未超付返回 0。 */
+export function overpaidAmount(totalAmount: string, paidAmount: string): number {
+  const total = Number(totalAmount)
+  const paid = Number(paidAmount)
+  if (!Number.isFinite(total) || !Number.isFinite(paid)) return 0
+  return Math.max(paid - total, 0)
+}
+
 export function supplierInvoiceStatusTag(value: string): ReactNode {
   const color = value === 'paid' ? 'success' : value === 'partial' ? 'warning' : 'default'
   return <Tag color={color}>{supplierInvoiceStatusLabel(value)}</Tag>

@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { type VerificationDocument, type VerificationUsageItem } from '@/api'
 import { FormSelect, PanelTitle } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { t } from '@/app/appI18n'
 import {
   verificationDocumentStatusOptions,
@@ -34,6 +35,8 @@ export function TaxView({ model, shell }: Props) {
   const {
     applyVerificationUsageFilters,
     changeVerificationDocumentsPage,
+    clearDocumentFilters,
+    clearUsageFilters,
     customsReceiptErrors,
     customsReceiptForm,
     loadingVerificationDocuments,
@@ -181,6 +184,21 @@ export function TaxView({ model, shell }: Props) {
               </form>
             </div>
             <Table<VerificationDocument>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={
+                      Boolean(verificationSearch.trim()) ||
+                      Boolean(verificationStatusFilter) ||
+                      Boolean(verificationReminderFilter) ||
+                      Boolean(verificationOwnerFilter.trim()) ||
+                      Boolean(verificationShipmentFilter.trim())
+                    }
+                    onClearFilters={() => void clearDocumentFilters()}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('finance.tax.table.document'),
@@ -719,6 +737,20 @@ export function TaxView({ model, shell }: Props) {
               </form>
             </div>
             <Table<VerificationUsageItem>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={
+                      Boolean(verificationUsageSearch.trim()) ||
+                      Boolean(verificationUsageStatusFilter) ||
+                      Boolean(verificationUsageReminderFilter) ||
+                      Boolean(verificationUsageShipmentFilter.trim())
+                    }
+                    onClearFilters={() => void clearUsageFilters()}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('finance.tax.table.document'),

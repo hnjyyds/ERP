@@ -177,6 +177,27 @@ export function useFollowupWorkspace({
     void loadFollowupWorkspace(undefined, undefined, 1)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setSupplierFilter('')
+    setContractFilter('')
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      q: null,
+      status: null,
+      supplier: null,
+      contract: null,
+      page: null,
+    })
+    void loadFollowupWorkspace(undefined, undefined, 1, pageSize, {
+      q: '',
+      status: '',
+      supplier: '',
+      contract: '',
+    })
+  }
+
   function changeListPage(nextPage: number, nextPageSize: number) {
     const next = changePage(nextPage, nextPageSize)
     appliedUrlSearchRef.current = urlQuery.update({
@@ -220,6 +241,7 @@ export function useFollowupWorkspace({
     setSupplierFilter,
     statusFilter,
     submitFilters,
+    clearFilters,
     summary,
     supplierFilter,
     templates,

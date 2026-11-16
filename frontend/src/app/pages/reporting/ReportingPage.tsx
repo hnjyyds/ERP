@@ -13,13 +13,14 @@ import {
   listReportingStatistics,
 } from '@/api'
 import { showError } from '@/shared/errors'
-import { t } from '@/app/appI18n'
+import { t, type TranslationKey } from '@/app/appI18n'
 import {
   exportContractStatusOptions,
   reportingDocumentTypeOptions,
   reportingStatusOptions,
 } from '@/shared/formOptions'
 import { FormSelect, Metric, PanelTitle } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { Button, Input, Table, Tag } from 'antd'
 import {
   ArrowRight,
@@ -66,15 +67,46 @@ function approvalDocumentTypeTag(value: string): ReactNode {
   return <Tag color={color}>{approvalDocumentTypeLabel(value)}</Tag>
 }
 
-function approvalStatusTag(value: string): ReactNode {
-  const color = value === 'approved' ? 'success' : value === 'submitted' ? 'warning' : 'default'
-  const option = reportingStatusOptions.find((item) => item.value === value)
-  const label = option ? t(option.labelKey) : value
-  return <Tag color={color}>{label}</Tag>
+const REPORTING_STATUS_LABEL_KEYS: Record<string, TranslationKey> = {
+  draft: 'finance.report.status.draft',
+  submitted: 'finance.report.status.submitted',
+  approved: 'finance.report.status.approved',
+  rejected: 'finance.report.status.rejected',
+  cancelled: 'finance.report.status.cancelled',
 }
 
-function sourcePathTag(value: string): ReactNode {
-  return <Tag color="default">{value}</Tag>
+function reportingStatusLabel(value: string): string {
+  const labelKey = REPORTING_STATUS_LABEL_KEYS[value]
+  return labelKey ? t(labelKey) : value
+}
+
+function reportingStatusColor(value: string): string {
+  if (value === 'approved') return 'success'
+  if (value === 'submitted') return 'warning'
+  if (value === 'rejected') return 'error'
+  return 'default'
+}
+
+function approvalStatusTag(value: string): ReactNode {
+  return <Tag color={reportingStatusColor(value)}>{reportingStatusLabel(value)}</Tag>
+}
+
+const SOURCE_PATH_LABEL_KEYS: Array<[string, TranslationKey]> = [
+  ['/sales/contracts', 'reporting.statistics.drilldown.exportContract'],
+  ['/purchase/contracts', 'reporting.statistics.drilldown.purchaseContract'],
+  ['/sales/shipments', 'reporting.statistics.drilldown.shipment'],
+]
+
+function sourcePathLink(value: string, onNavigate: (path: string) => void): ReactNode {
+  const matched = SOURCE_PATH_LABEL_KEYS.find(([prefix]) => value.startsWith(prefix))
+  if (!matched) {
+    return <span className="muted-text">{t('reporting.table.unsupported')}</span>
+  }
+  return (
+    <Button type="link" size="small" onClick={() => onNavigate(value)}>
+      {t(matched[1])}
+    </Button>
+  )
 }
 
 function approvalDocumentPath(document: ApprovalDocument): string | null {
@@ -243,6 +275,21 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
 
   const items = approvals?.items ?? []
   const statisticsSummary = statistics?.summary
+  const approvalFiltered = Boolean(
+    documentTypeFilter ||
+      applicantUserFilter.trim() ||
+      dateFromFilter ||
+      dateToFilter ||
+      statusFilter !== 'submitted',
+  )
+  const statisticsFiltered = Boolean(
+    statisticsDateFromFilter ||
+      statisticsDateToFilter ||
+      statisticsStatusFilter ||
+      statisticsCustomerFilter.trim() ||
+      statisticsSupplierFilter.trim() ||
+      statisticsSalesFilter.trim(),
+  )
 
   return (
     <section className="reporting-page">
@@ -337,6 +384,15 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
           </form>
 
           <Table<ApprovalDocument>
+            locale={{
+              emptyText: (
+                <ListEmptyState
+                  emptyTitle={t('common.empty.noDataTitle')}
+                  filtered={approvalFiltered}
+                  onClearFilters={resetFilters}
+                />
+              ),
+            }}
             columns={[
               {
                 title: t('reporting.table.documentNo'),
@@ -416,6 +472,15 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
             title={t('reporting.panel.typeSummaryTitle')}
           />
           <Table<ApprovalTypeSummary>
+            locale={{
+              emptyText: (
+                <ListEmptyState
+                  emptyTitle={t('common.empty.noDataTitle')}
+                  filtered={approvalFiltered}
+                  onClearFilters={resetFilters}
+                />
+              ),
+            }}
             columns={[
               {
                 title: t('reporting.metric.documentTypes'),
@@ -544,6 +609,15 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
           </div>
 
           <Table<CustomerShipmentStatistic>
+            locale={{
+              emptyText: (
+                <ListEmptyState
+                  emptyTitle={t('common.empty.noDataTitle')}
+                  filtered={statisticsFiltered}
+                  onClearFilters={resetStatisticsFilters}
+                />
+              ),
+            }}
             columns={[
               { title: t('reporting.table.customer'), dataIndex: 'customer_name' },
               { title: t('reporting.table.shipmentCount'), dataIndex: 'shipment_count' },
@@ -560,7 +634,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
               {
                 title: t('reporting.table.drilldown'),
                 dataIndex: 'source_path',
-                render: sourcePathTag,
+                render: (value: string) => sourcePathLink(value, onNavigate),
               },
             ]}
             dataSource={statistics?.customer_shipments ?? []}
@@ -577,6 +651,15 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
             title={t('reporting.statistics.salesMonthlyTitle')}
           />
           <Table<SalesMonthlyShipmentStatistic>
+            locale={{
+              emptyText: (
+                <ListEmptyState
+                  emptyTitle={t('common.empty.noDataTitle')}
+                  filtered={statisticsFiltered}
+                  onClearFilters={resetStatisticsFilters}
+                />
+              ),
+            }}
             columns={[
               { title: t('reporting.table.period'), dataIndex: 'period' },
               {
@@ -610,6 +693,15 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
             <div>
               <strong>{t('reporting.statistics.metric.exportContract')}</strong>
               <Table<StatusAmountStatistic>
+                locale={{
+                  emptyText: (
+                    <ListEmptyState
+                      emptyTitle={t('common.empty.noDataTitle')}
+                      filtered={statisticsFiltered}
+                      onClearFilters={resetStatisticsFilters}
+                    />
+                  ),
+                }}
                 columns={[
                   {
                     title: t('reporting.table.status'),
@@ -633,6 +725,15 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
             <div>
               <strong>{t('reporting.statistics.metric.purchaseContract')}</strong>
               <Table<StatusAmountStatistic>
+                locale={{
+                  emptyText: (
+                    <ListEmptyState
+                      emptyTitle={t('common.empty.noDataTitle')}
+                      filtered={statisticsFiltered}
+                      onClearFilters={resetStatisticsFilters}
+                    />
+                  ),
+                }}
                 columns={[
                   {
                     title: t('reporting.table.status'),
@@ -663,6 +764,15 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
           />
           <div className="reporting-drilldown-stack">
             <Table<ShipmentStatisticItem>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={statisticsFiltered}
+                    onClearFilters={resetStatisticsFilters}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('reporting.table.shipmentNo'),
@@ -693,7 +803,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
                 {
                   title: t('reporting.table.drilldown'),
                   dataIndex: 'source_path',
-                  render: sourcePathTag,
+                  render: (value: string) => sourcePathLink(value, onNavigate),
                 },
               ]}
               dataSource={statistics?.shipment_items ?? []}
@@ -703,6 +813,15 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
               size="small"
             />
             <Table<ReportDocumentStatistic>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={statisticsFiltered}
+                    onClearFilters={resetStatisticsFilters}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('reporting.table.exportContractNo'),
@@ -728,7 +847,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
                 {
                   title: t('reporting.table.drilldown'),
                   dataIndex: 'source_path',
-                  render: sourcePathTag,
+                  render: (value: string) => sourcePathLink(value, onNavigate),
                 },
               ]}
               dataSource={statistics?.export_contract_items ?? []}

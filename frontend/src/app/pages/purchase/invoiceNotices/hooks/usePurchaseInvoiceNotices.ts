@@ -76,6 +76,7 @@ export type PurchaseInvoiceNoticesModel = {
   pagination: ReturnType<typeof useTablePagination>['pagination']
   goToPage: (nextPage: number, nextPageSize: number) => void
   submitSearch: () => void
+  clearFilters: () => void
   openGenerateModal: () => void
   closeGenerateModal: () => void
   generateFromCustoms: (event: FormEvent<HTMLFormElement>) => Promise<void>
@@ -341,6 +342,27 @@ export function usePurchaseInvoiceNotices({
     void loadNotices(undefined, undefined, 1)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setSupplierFilter('')
+    setCustomsFilter('')
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      q: null,
+      status: null,
+      supplier: null,
+      customs: null,
+      page: null,
+    })
+    void loadNotices(undefined, undefined, 1, pageSize, {
+      q: '',
+      status: '',
+      supplier: '',
+      customs: '',
+    })
+  }
+
   function goToPage(nextPage: number, nextPageSize: number) {
     const next = changePage(nextPage, nextPageSize)
     appliedUrlSearchRef.current = urlQuery.update({
@@ -383,6 +405,7 @@ export function usePurchaseInvoiceNotices({
     pagination,
     goToPage,
     submitSearch,
+    clearFilters,
     openGenerateModal,
     closeGenerateModal,
     generateFromCustoms,

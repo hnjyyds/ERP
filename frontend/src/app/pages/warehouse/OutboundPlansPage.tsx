@@ -24,6 +24,7 @@ import {
 } from '@/api'
 import { warehouseOutboundPlanPath, moduleDetailPath } from '@/app/routes'
 import { FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { useTablePagination } from '@/shared/useTablePagination'
 import { useFormModal } from '@/shared/useFormModal'
@@ -401,6 +402,33 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
     openOutboundPlanDetail(plan)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setTypeFilter('')
+    setSourceFilter('')
+    setCustomerFilter('')
+    setSourceIdFilter('')
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      q: null,
+      status: null,
+      type: null,
+      source: null,
+      customer: null,
+      source_id: null,
+      page: null,
+    })
+    void loadOutboundPlans(undefined, undefined, 1, pageSize, {
+      q: '',
+      status: '',
+      type: '',
+      source: '',
+      customer: '',
+      sourceId: '',
+    })
+  }
+
   async function generateOutboundPlan(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setMessage('')
@@ -610,6 +638,22 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
             >
 
             <Table<OutboundPlan>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={
+                      Boolean(search.trim()) ||
+                      Boolean(statusFilter) ||
+                      Boolean(typeFilter) ||
+                      Boolean(sourceFilter) ||
+                      Boolean(customerFilter.trim()) ||
+                      Boolean(sourceIdFilter.trim())
+                    }
+                    onClearFilters={clearFilters}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('warehouse.outboundPlan.field.code'),

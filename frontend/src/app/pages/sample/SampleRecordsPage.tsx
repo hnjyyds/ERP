@@ -19,6 +19,7 @@ import {
 import { sampleRecordPath, moduleDetailPath } from '@/app/routes'
 import { t } from '@/app/appI18n'
 import { FormSelect, ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { useTablePagination } from '@/shared/useTablePagination'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { showError } from '@/shared/errors'
@@ -272,6 +273,30 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
     }
   }
 
+  function clearFilters() {
+    setSearch('')
+    setTypeFilter('')
+    setCustomerFilter('')
+    setPurchaseContractFilter('')
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      q: null,
+      sample_type: null,
+      customer_id: null,
+      purchase_contract_id: null,
+      page: null,
+    })
+    void loadRecords(undefined, {
+      pageOverride: 1,
+      filters: {
+        q: '',
+        sample_type: '',
+        customer_id: '',
+        purchase_contract_id: '',
+      },
+    })
+  }
+
   function openCreateRecord() {
     setForm(initialSampleRecordForm())
     setRecordModalOpen(true)
@@ -491,6 +516,20 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
 
           >
             <Table<SampleRecord>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={
+                      Boolean(search.trim()) ||
+                      Boolean(typeFilter) ||
+                      Boolean(customerFilter.trim()) ||
+                      Boolean(purchaseContractFilter.trim())
+                    }
+                    onClearFilters={clearFilters}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('sample.record.table.code'),

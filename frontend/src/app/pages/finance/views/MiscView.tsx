@@ -2,6 +2,7 @@ import { Button, Input, Modal, Table } from 'antd'
 import { ArrowLeft, LayoutDashboard, Plus, Search, Save, ShieldCheck, Wallet } from 'lucide-react'
 import { type MiscFeeAllocation, type MiscFeeItem } from '@/api'
 import { FormSelect, PanelTitle } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import {
   miscFeeCategoryOptions,
   miscFeeAllocationMethodOptions,
@@ -28,6 +29,8 @@ export function MiscView({ model, shell }: Props) {
   const {
     changeMiscFeeAllocationsPage,
     changeMiscFeeItemsPage,
+    clearMiscAllocationFilters,
+    clearMiscItemFilters,
     loadingMiscFeeAllocations,
     loadingMiscFeeItems,
     loadingMiscFeeSummary,
@@ -154,6 +157,19 @@ export function MiscView({ model, shell }: Props) {
               </form>
             </div>
             <Table<MiscFeeItem>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={
+                      Boolean(miscFeeItemSearch.trim()) ||
+                      Boolean(miscFeeItemCategoryFilter) ||
+                      Boolean(miscFeeItemStatusFilter)
+                    }
+                    onClearFilters={() => void clearMiscItemFilters()}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('finance.misc.table.code'),
@@ -591,6 +607,20 @@ export function MiscView({ model, shell }: Props) {
               <span>{t('finance.misc.metric.allocationHint')}</span>
             </div>
             <Table<MiscFeeAllocation>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={
+                      Boolean(miscFeeAllocationSearch.trim()) ||
+                      Boolean(miscFeeAllocationCategoryFilter) ||
+                      Boolean(miscFeeAllocationShipmentFilter.trim()) ||
+                      Boolean(miscFeeAllocationSalesFilter.trim())
+                    }
+                    onClearFilters={() => void clearMiscAllocationFilters()}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('finance.misc.table.allocationNo'),

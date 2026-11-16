@@ -421,6 +421,50 @@ export function useFeesModule(env: FinanceModuleEnv) {
     await loadFeePayables(next.page, next.pageSize, feePayableFilters)
   }
 
+  async function clearFeeInvoiceFilters() {
+    const filters: FeeInvoiceFilters = {
+      q: '',
+      status: '',
+      type: '',
+      partner: '',
+      shipment: '',
+    }
+    setFeeInvoiceFilters(filters)
+    partnerFeeInvoicesPager.setPage(1)
+    const nextSearch = urlQuery.update({
+      fee_invoices_page: null,
+      fee_invoices_q: null,
+      fee_invoices_status: null,
+      fee_invoices_type: null,
+      fee_invoices_partner: null,
+      fee_invoices_shipment: null,
+    })
+    appliedFeeInvoiceSignatureRef.current = feeInvoiceSignature(new URLSearchParams(nextSearch))
+    await loadPartnerFeeInvoices(undefined, 1, partnerFeeInvoicesPager.pageSize, filters)
+  }
+
+  async function clearFeePayableFilters() {
+    const filters: FeePayableFilters = {
+      q: '',
+      status: '',
+      type: '',
+      partner: '',
+      shipment: '',
+    }
+    setFeePayableFilters(filters)
+    feePayablesPager.setPage(1)
+    const nextSearch = urlQuery.update({
+      fee_payables_page: null,
+      fee_payables_q: null,
+      fee_payables_status: null,
+      fee_payables_type: null,
+      fee_payables_partner: null,
+      fee_payables_shipment: null,
+    })
+    appliedFeePayableSignatureRef.current = feePayableSignature(new URLSearchParams(nextSearch))
+    await loadFeePayables(1, feePayablesPager.pageSize, filters)
+  }
+
   useEffect(() => {
     const signature = feeInvoiceSignature(urlQuery.params)
     if (appliedFeeInvoiceSignatureRef.current === signature) return
@@ -460,6 +504,8 @@ export function useFeesModule(env: FinanceModuleEnv) {
     changeFeePayablesPage,
     changeFeePaymentRequestsPage,
     changePartnerFeeInvoicesPage,
+    clearFeeInvoiceFilters,
+    clearFeePayableFilters,
     feeInvoiceModalOpen: feeInvoiceModal.open,
     feeInvoicePartnerFilter: feeInvoiceFilters.partner,
     feeInvoiceSearch: feeInvoiceFilters.q,

@@ -5,6 +5,7 @@ import type { MouseEvent } from 'react'
 import type { SampleDelivery } from '@/api'
 import { t } from '@/app/appI18n'
 import { FormSelect, ListPageShell } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { formatMoney, nullableText } from '@/app/pages/appHelpers'
 import { sampleDeliveryStatusOptions } from '@/shared/formOptions'
 import { sampleDeliveryStatusLabel } from '../sampleDeliveryHelpers'
@@ -20,6 +21,8 @@ type Props = {
   expressFilter: string
   dateFromFilter: string
   dateToFilter: string
+  filtered: boolean
+  onClearFilters: () => void
   onSearchChange: (value: string) => void
   onStatusChange: (value: string) => void
   onCustomerChange: (value: string) => void
@@ -47,6 +50,8 @@ export function SampleDeliveryListView({
   expressFilter,
   dateFromFilter,
   dateToFilter,
+  filtered,
+  onClearFilters,
   onSearchChange,
   onStatusChange,
   onCustomerChange,
@@ -147,6 +152,15 @@ export function SampleDeliveryListView({
       }
     >
       <Table<SampleDelivery>
+        locale={{
+          emptyText: (
+            <ListEmptyState
+              emptyTitle={t('common.empty.noDataTitle')}
+              filtered={filtered}
+              onClearFilters={onClearFilters}
+            />
+          ),
+        }}
         columns={[
           {
             title: t('sample.delivery.table.code'),

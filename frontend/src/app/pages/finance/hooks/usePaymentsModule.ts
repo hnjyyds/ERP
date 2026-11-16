@@ -386,6 +386,36 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     await loadPayables(next.page, next.pageSize, payableFilters)
   }
 
+  async function clearInvoiceFilters() {
+    const empty: InvoiceFilters = { q: '', status: '', supplier: '', contract: '' }
+    setInvoiceFilters(empty)
+    supplierInvoicesPager.setPage(1)
+    const nextSearch = urlQuery.update({
+      supplier_invoices_page: null,
+      supplier_invoices_q: null,
+      supplier_invoices_status: null,
+      supplier_invoices_supplier: null,
+      supplier_invoices_contract: null,
+    })
+    appliedInvoiceSignatureRef.current = invoiceSignature(new URLSearchParams(nextSearch))
+    await loadSupplierInvoices(undefined, 1, supplierInvoicesPager.pageSize, empty)
+  }
+
+  async function clearPayableFilters() {
+    const empty: PayableFilters = { q: '', status: '', supplier: '', contract: '' }
+    setPayableFilters(empty)
+    payablesPager.setPage(1)
+    const nextSearch = urlQuery.update({
+      payables_page: null,
+      payables_q: null,
+      payables_status: null,
+      payables_supplier: null,
+      payables_contract: null,
+    })
+    appliedPayableSignatureRef.current = payableSignature(new URLSearchParams(nextSearch))
+    await loadPayables(1, payablesPager.pageSize, empty)
+  }
+
   useEffect(() => {
     const signature = invoiceSignature(urlQuery.params)
     if (appliedInvoiceSignatureRef.current === signature) return
@@ -425,6 +455,8 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     changePayablesPage,
     changePaymentRequestsPage,
     changeSupplierInvoicesPage,
+    clearInvoiceFilters,
+    clearPayableFilters,
     invoiceContractFilter: invoiceFilters.contract,
     invoiceModalOpen: invoiceModal.open,
     invoiceSearch: invoiceFilters.q,

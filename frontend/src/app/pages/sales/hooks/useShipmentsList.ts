@@ -172,6 +172,27 @@ export function useShipmentsList({ detailId, onNavigate }: Params) {
     void loadShipments(undefined, 1)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setCustomerFilter('')
+    setContractFilter('')
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      q: null,
+      status: null,
+      customer: null,
+      contract: null,
+      page: null,
+    })
+    void loadShipments(undefined, 1, pageSize, {
+      q: '',
+      status: '',
+      customer: '',
+      contract: '',
+    })
+  }
+
   function changeListPage(nextPage: number, nextPageSize: number) {
     const next = changePage(nextPage, nextPageSize)
     appliedUrlSearchRef.current = urlQuery.update({
@@ -204,6 +225,7 @@ export function useShipmentsList({ detailId, onNavigate }: Params) {
     openShipmentDetail,
     stopAndOpenShipmentDetail,
     submitFilters,
+    clearFilters,
     changeListPage,
   }
 }

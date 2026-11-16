@@ -1729,6 +1729,7 @@
         "noAmount": "No amount",
         "progressTitle": "Progress overview",
         "unreceivedCount": "{count} unreceived",
+        "paymentScopeHint": "Paid/unpaid amounts are recorded on the purchase contract itself and exclude payments made after supplier invoices are registered. See Payments for invoice-level payments.",
         "globalRemindersTitle": "All purchase reminders",
         "noReminders": "No purchase reminders",
         "emptyTitle": "No purchase contracts",
@@ -2550,6 +2551,7 @@
         "currentInvoice": "Current Invoice",
         "paid": "Paid",
         "unpaid": "Unpaid",
+        "overpaid": "Overpaid",
         "requestNo": "Payment Request No.",
         "supplierInvoiceId": "Supplier Invoice ID",
         "paymentType": "Payment Type",
@@ -2605,7 +2607,8 @@
         "paymentApprovalFailed": "Failed to approve payment",
         "noSupplierInvoice": "No supplier invoice",
         "waitingApproval": "Pending approval by {reviewer}",
-        "designatedReviewer": "Designated Approver"
+        "designatedReviewer": "Designated Approver",
+        "overpaidHint": "Paid amount exceeds the invoice amount by {amount}. The payable balance is shown as 0; please reconcile the overpayment in payment allocations."
       },
       "validation": {
         "reviewerRequired": "Please select an approver",
@@ -3342,8 +3345,11 @@
         "purchaseContract": "Purchase Contract"
       },
       "status": {
+        "draft": "Draft",
         "submitted": "Pending Approval",
-        "approved": "Approved"
+        "approved": "Approved",
+        "rejected": "Returned",
+        "cancelled": "Cancelled"
       },
       "costType": {
         "salesIncome": "Sales Income",
@@ -4708,7 +4714,8 @@
       "outbound_order": "Outbound Order",
       "payment_request": "Payment",
       "fee_payment_request": "Fee Payment",
-      "reimbursement": "Reimbursement"
+      "reimbursement": "Reimbursement",
+      "stocktake_order": "Stocktake"
     },
     "action": {
       "create": "Create",
@@ -4901,7 +4908,12 @@
       },
       "salesMonthlyTitle": "Monthly Shipments by Salesperson",
       "contractStatusTitle": "Contract Amount by Status",
-      "drilldownTitle": "Source Document Traceability"
+      "drilldownTitle": "Source Document Traceability",
+      "drilldown": {
+        "exportContract": "View Export Contract",
+        "purchaseContract": "View Purchase Contract",
+        "shipment": "View Shipment Details"
+      }
     },
     "module": {
       "ready": "React workspace entry is ready"

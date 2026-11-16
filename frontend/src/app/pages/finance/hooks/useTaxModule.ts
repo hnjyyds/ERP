@@ -203,6 +203,46 @@ export function useTaxModule(env: FinanceModuleEnv) {
     await loadVerificationDocuments(undefined, next.page, next.pageSize, documentFilters)
   }
 
+  async function clearDocumentFilters() {
+    const filters: DocumentFilters = {
+      q: '',
+      status: '',
+      reminder: '',
+      owner: '',
+      shipment: '',
+    }
+    setDocumentFilters(filters)
+    verificationDocumentsPager.setPage(1)
+    const nextSearch = urlQuery.update({
+      documents_page: null,
+      documents_q: null,
+      documents_status: null,
+      documents_reminder: null,
+      documents_owner: null,
+      documents_shipment: null,
+    })
+    appliedDocumentSignatureRef.current = documentSignature(new URLSearchParams(nextSearch))
+    await loadVerificationDocuments(
+      undefined,
+      1,
+      verificationDocumentsPager.pageSize,
+      filters,
+    )
+  }
+
+  async function clearUsageFilters() {
+    const filters: UsageFilters = { q: '', status: '', reminder: '', shipment: '' }
+    setUsageFilters(filters)
+    const nextSearch = urlQuery.update({
+      usage_q: null,
+      usage_status: null,
+      usage_reminder: null,
+      usage_shipment: null,
+    })
+    appliedUsageSignatureRef.current = usageSignature(new URLSearchParams(nextSearch))
+    await loadVerificationUsage(filters)
+  }
+
   useEffect(() => {
     const signature = documentSignature(urlQuery.params)
     if (appliedDocumentSignatureRef.current === signature) return
@@ -371,6 +411,8 @@ export function useTaxModule(env: FinanceModuleEnv) {
   return {
     applyVerificationUsageFilters,
     changeVerificationDocumentsPage,
+    clearDocumentFilters,
+    clearUsageFilters,
     customsReceiptErrors,
     customsReceiptForm,
     loadVerificationDocuments,

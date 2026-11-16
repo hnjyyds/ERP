@@ -22,6 +22,7 @@ import {
 } from '@/api'
 import { warehouseInboundPlanPath, moduleDetailPath } from '@/app/routes'
 import { FormSelect, ListPageShell, Metric, PanelTitle, RemoteSelect } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { fetchSupplierSelectOptions } from '@/shared/entityOptions'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { useTablePagination } from '@/shared/useTablePagination'
@@ -336,6 +337,30 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
     }
   }
 
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setTypeFilter('')
+    setSupplierFilter('')
+    setContractFilter('')
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      q: null,
+      status: null,
+      type: null,
+      supplier: null,
+      contract: null,
+      page: null,
+    })
+    void loadInboundPlans(undefined, 1, pageSize, {
+      q: '',
+      status: '',
+      type: '',
+      supplier: '',
+      contract: '',
+    })
+  }
+
   async function generateInboundPlan(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setMessage('')
@@ -523,6 +548,21 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
             >
 
             <Table<InboundPlan>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={
+                      Boolean(search.trim()) ||
+                      Boolean(statusFilter) ||
+                      Boolean(typeFilter) ||
+                      Boolean(supplierFilter) ||
+                      Boolean(contractFilter.trim())
+                    }
+                    onClearFilters={clearFilters}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('warehouse.inboundPlan.field.code'),

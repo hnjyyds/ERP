@@ -7,6 +7,7 @@ import {
   outboundPlanTypeOptions,
 } from '@/shared/formOptions'
 import { FormSelect, ListPageShell } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { formatDate, nullableText } from '@/app/pages/appHelpers'
 import { t } from '@/app/appI18n'
 import type { OutboundOrder } from '@/api'
@@ -119,6 +120,22 @@ export function OutboundOrderListPanel({ model, onOpenModal }: Props) {
       }
     >
       <Table<OutboundOrder>
+        locale={{
+          emptyText: (
+            <ListEmptyState
+              emptyTitle={t('common.empty.noDataTitle')}
+              filtered={
+                Boolean(model.search.trim()) ||
+                Boolean(model.statusFilter) ||
+                Boolean(model.modeFilter) ||
+                Boolean(model.typeFilter) ||
+                Boolean(model.customerFilter.trim()) ||
+                Boolean(model.sourceIdFilter.trim())
+              }
+              onClearFilters={model.clearFilters}
+            />
+          ),
+        }}
         columns={[
           {
             title: t('warehouse.outboundOrder.field.code'),

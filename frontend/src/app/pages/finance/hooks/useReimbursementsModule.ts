@@ -217,6 +217,22 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
     await loadReimbursements(undefined, next.page, next.pageSize, reimbursementFilters)
   }
 
+  async function clearReimbursementFilters() {
+    const filters: ReimbursementFilters = { q: '', status: '', category: '' }
+    setReimbursementFilters(filters)
+    reimbursementsPager.setPage(1)
+    const nextSearch = urlQuery.update({
+      reimbursements_page: null,
+      reimbursements_q: null,
+      reimbursements_status: null,
+      reimbursements_category: null,
+    })
+    appliedReimbursementSignatureRef.current = reimbursementSignature(
+      new URLSearchParams(nextSearch),
+    )
+    await loadReimbursements(undefined, 1, reimbursementsPager.pageSize, filters)
+  }
+
   useEffect(() => {
     const signature = reimbursementSignature(urlQuery.params)
     if (appliedReimbursementSignatureRef.current === signature) return
@@ -230,6 +246,7 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
 
   return {
     changeReimbursementsPage,
+    clearReimbursementFilters,
     handleReimbursementApprove,
     handleReimbursementPay,
     loadReimbursements,

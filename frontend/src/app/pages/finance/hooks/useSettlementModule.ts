@@ -261,6 +261,32 @@ export function useSettlementModule(env: FinanceModuleEnv) {
     await loadProfitCalculations(next.page, next.pageSize, profitFilters)
   }
 
+  async function clearSettlementFilters() {
+    const filters: SettlementFilters = { q: '', shipment: '' }
+    setSettlementFilters(filters)
+    settlementsPager.setPage(1)
+    const nextSearch = urlQuery.update({
+      settlements_page: null,
+      settlements_q: null,
+      settlements_shipment: null,
+    })
+    appliedSettlementSignatureRef.current = settlementSignature(new URLSearchParams(nextSearch))
+    await loadFinancialSettlements(undefined, 1, settlementsPager.pageSize, filters)
+  }
+
+  async function clearProfitFilters() {
+    const filters: ProfitFilters = { q: '', shipment: '' }
+    setProfitFilters(filters)
+    profitsPager.setPage(1)
+    const nextSearch = urlQuery.update({
+      profits_page: null,
+      profits_q: null,
+      profits_shipment: null,
+    })
+    appliedProfitSignatureRef.current = profitSignature(new URLSearchParams(nextSearch))
+    await loadProfitCalculations(1, profitsPager.pageSize, filters)
+  }
+
   useEffect(() => {
     const signature = settlementSignature(urlQuery.params)
     if (appliedSettlementSignatureRef.current === signature) return
@@ -286,6 +312,8 @@ export function useSettlementModule(env: FinanceModuleEnv) {
   return {
     changeFinancialSettlementsPage,
     changeProfitCalculationsPage,
+    clearProfitFilters,
+    clearSettlementFilters,
     financialSettlements,
     financialSettlementsPagination: settlementsPager.pagination,
     financialSettlementsTotal: settlementsPager.total,

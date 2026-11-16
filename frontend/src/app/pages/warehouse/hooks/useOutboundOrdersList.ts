@@ -237,6 +237,26 @@ export function useOutboundOrdersList({
     void loadOutboundOrders(undefined, undefined, undefined, 1, pageSize, filters)
   }
 
+  async function clearFilters() {
+    const filters: Filters = {
+      q: '',
+      status: '',
+      mode: '',
+      type: '',
+      customer: '',
+      sourceId: '',
+    }
+    setSearch('')
+    setStatusFilter('')
+    setModeFilter('')
+    setTypeFilter('')
+    setCustomerFilter('')
+    setSourceIdFilter('')
+    setPage(1)
+    appliedUrlSearchRef.current = writeFiltersToUrl(filters)
+    await loadOutboundOrders(undefined, undefined, undefined, 1, pageSize, filters)
+  }
+
   function changeListPage(nextPage: number, nextPageSize: number) {
     const next = changePage(nextPage, nextPageSize)
     appliedUrlSearchRef.current = urlQuery.update({
@@ -320,6 +340,7 @@ export function useOutboundOrdersList({
     total,
     pagination,
     submitFilters,
+    clearFilters,
     changeListPage,
     loadOutboundOrders,
     openOutboundOrderDetail,

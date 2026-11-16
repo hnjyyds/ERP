@@ -210,6 +210,10 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.finance-payment-detail-list + .workspace-alert {
+  margin-top: 12px;
+}
+
 .finance-allocation-history {
   display: grid;
   gap: 10px;

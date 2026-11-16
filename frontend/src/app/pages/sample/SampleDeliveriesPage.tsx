@@ -474,6 +474,36 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
     void loadDeliveries(undefined, { pageOverride: 1 })
   }
 
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setCustomerFilter('')
+    setExpressFilter('')
+    setDateFromFilter('')
+    setDateToFilter('')
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      q: null,
+      status: null,
+      customer_id: null,
+      express_company: null,
+      date_from: null,
+      date_to: null,
+      page: null,
+    })
+    void loadDeliveries(undefined, {
+      pageOverride: 1,
+      filters: {
+        q: '',
+        status: '',
+        customer_id: '',
+        express_company: '',
+        date_from: '',
+        date_to: '',
+      },
+    })
+  }
+
   async function downloadDeliveryExport() {
     setSubmitting(true)
     setMessage('')
@@ -535,6 +565,15 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
             expressFilter={expressFilter}
             dateFromFilter={dateFromFilter}
             dateToFilter={dateToFilter}
+            filtered={
+              Boolean(search.trim()) ||
+              Boolean(statusFilter) ||
+              Boolean(customerFilter.trim()) ||
+              Boolean(expressFilter.trim()) ||
+              Boolean(dateFromFilter) ||
+              Boolean(dateToFilter)
+            }
+            onClearFilters={clearFilters}
             onSearchChange={setSearch}
             onStatusChange={setStatusFilter}
             onCustomerChange={setCustomerFilter}

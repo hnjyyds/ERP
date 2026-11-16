@@ -11,6 +11,7 @@ import {
 
 import type { QualityInspection, QualityInspectionStatus } from '@/api'
 import { FormSelect, ListPageShell } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { t } from '@/app/appI18n'
 
 import {
@@ -75,6 +76,15 @@ export function QualityTaskListPanel({ model, workflow, onOpenDetail }: Props) {
       </form>
 
       <Table<QualityInspection>
+        locale={{
+          emptyText: (
+            <ListEmptyState
+              emptyTitle={t('common.empty.noDataTitle')}
+              filtered={Boolean(model.search.trim()) || Boolean(model.statusFilter)}
+              onClearFilters={model.clearFilters}
+            />
+          ),
+        }}
         columns={[
           { title: t('quality.task.table.code'), dataIndex: 'code' },
           { title: t('quality.task.table.contract'), dataIndex: 'purchase_contract_no' },

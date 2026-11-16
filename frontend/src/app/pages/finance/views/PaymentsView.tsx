@@ -6,6 +6,7 @@ import {
   type SupplierPaymentRequest,
 } from '@/api'
 import { FormSelect, PanelTitle, RemoteSelect } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { fetchSupplierSelectOptions } from '@/shared/entityOptions'
 import { supplierInvoiceStatusOptions, paymentTypeOptions } from '@/shared/formOptions'
 import { formatFinanceAmount, nullableText } from '@/app/pages/appHelpers'
@@ -17,6 +18,7 @@ import {
   supplierInvoiceStatusTag,
   paymentRequestStatusTag,
   paymentTypeLabel,
+  overpaidAmount,
 } from '@/app/pages/finance/financeHelpers'
 import { ApprovalAssigneeSelect } from '@/app/components/ApprovalAssigneeSelect'
 import type { PaymentsModel } from '@/app/pages/finance/hooks/usePaymentsModule'
@@ -31,6 +33,8 @@ export function PaymentsView({ model, shell }: Props) {
   const {
     changePayablesPage,
     changeSupplierInvoicesPage,
+    clearInvoiceFilters,
+    clearPayableFilters,
     invoiceContractFilter,
     invoiceModalOpen,
     invoiceSearch,
@@ -78,6 +82,15 @@ export function PaymentsView({ model, shell }: Props) {
     supplierInvoices,
   } = model
   const { detailId, goModule, goDetail, moduleAlerts, moduleHeader, currentUser } = shell
+  const selectedInvoiceOverpaid = selectedSupplierInvoice
+    ? overpaidAmount(selectedSupplierInvoice.total_amount, selectedSupplierInvoice.paid_amount)
+    : 0
+  const selectedInvoiceOverpaidText = selectedSupplierInvoice
+    ? formatFinanceAmount(
+        selectedInvoiceOverpaid.toFixed(2),
+        selectedSupplierInvoice.currency,
+      )
+    : '-'
 
   return (
     <section className={detailId ? 'finance-page finance-detail-page' : 'finance-page'}>
@@ -167,6 +180,20 @@ export function PaymentsView({ model, shell }: Props) {
               </form>
             </div>
             <Table<SupplierInvoice>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={Boolean(
+                      invoiceSearch.trim() ||
+                        invoiceStatusFilter ||
+                        invoiceSupplierFilter ||
+                        invoiceContractFilter.trim(),
+                    )}
+                    onClearFilters={() => void clearInvoiceFilters()}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('finance.payment.table.supplierInvoice'),
@@ -186,9 +213,24 @@ export function PaymentsView({ model, shell }: Props) {
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
                 },
                 {
+                  title: t('finance.payment.field.paid'),
+                  dataIndex: 'paid_amount',
+                  render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+                {
                   title: t('finance.payment.field.unpaid'),
                   dataIndex: 'unpaid_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+                {
+                  title: t('finance.payment.field.overpaid'),
+                  dataIndex: 'paid_amount',
+                  render: (value: string, record) => {
+                    const overpaid = overpaidAmount(record.total_amount, value)
+                    return overpaid > 0
+                      ? formatFinanceAmount(overpaid.toFixed(2), record.currency)
+                      : '-'
+                  },
                 },
               ]}
               dataSource={supplierInvoices}
@@ -413,7 +455,8 @@ export function PaymentsView({ model, shell }: Props) {
           <section className="workspace-panel finance-payment-request-panel">
             <PanelTitle icon={<CheckCircle2 size={18} />} title={t('finance.payment.panel.paymentRequests')} />
             {selectedSupplierInvoice ? (
-              <dl className="detail-list finance-payment-detail-list">
+              <>
+                <dl className="detail-list finance-payment-detail-list">
                 <div>
                   <dt>{t('finance.payment.field.currentInvoice')}</dt>
                   <dd>{selectedSupplierInvoice.invoice_no}</dd>
@@ -440,7 +483,22 @@ export function PaymentsView({ model, shell }: Props) {
                     )}
                   </dd>
                 </div>
+                <div>
+                  <dt>{t('finance.payment.field.overpaid')}</dt>
+                  <dd>{selectedInvoiceOverpaidText}</dd>
+                </div>
               </dl>
+              {selectedInvoiceOverpaid > 0 ? (
+                <Alert
+                  className="workspace-alert"
+                  showIcon
+                  type="warning"
+                  message={t('finance.payment.message.overpaidHint', {
+                    amount: selectedInvoiceOverpaidText,
+                  })}
+                />
+              ) : null}
+              </>
             ) : (
               <div className="module-state">{t('finance.payment.message.noSupplierInvoice')}</div>
             )}
@@ -736,6 +794,20 @@ export function PaymentsView({ model, shell }: Props) {
               </form>
             </div>
             <Table<PayableItem>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={Boolean(
+                      payableSearch.trim() ||
+                        payableStatusFilter ||
+                        payableSupplierFilter ||
+                        payableContractFilter.trim(),
+                    )}
+                    onClearFilters={() => void clearPayableFilters()}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('finance.payment.table.supplierInvoice'),
@@ -758,6 +830,16 @@ export function PaymentsView({ model, shell }: Props) {
                   title: t('finance.payment.table.payableBalance'),
                   dataIndex: 'payable_amount',
                   render: (value: string, record) => formatFinanceAmount(value, record.currency),
+                },
+                {
+                  title: t('finance.payment.field.overpaid'),
+                  dataIndex: 'paid_amount',
+                  render: (value: string, record) => {
+                    const overpaid = overpaidAmount(record.total_amount, value)
+                    return overpaid > 0
+                      ? formatFinanceAmount(overpaid.toFixed(2), record.currency)
+                      : '-'
+                  },
                 },
                 { title: t('finance.field.status'), dataIndex: 'status', render: supplierInvoiceStatusTag },
               ]}

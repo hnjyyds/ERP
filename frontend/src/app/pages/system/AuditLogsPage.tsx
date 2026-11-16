@@ -10,6 +10,7 @@ import { formatDateTime } from '@/app/pages/appHelpers'
 import { showError, showSuccess } from '@/shared/errors'
 import { downloadCsv } from '@/shared/print'
 import { ListPageShell } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { useTablePagination } from '@/shared/useTablePagination'
 
 type AuditFilters = {
@@ -37,6 +38,7 @@ const RESOURCE_OPTIONS = [
   { value: 'payment_request', labelKey: 'auditLogs.resource.payment_request' },
   { value: 'fee_payment_request', labelKey: 'auditLogs.resource.fee_payment_request' },
   { value: 'reimbursement', labelKey: 'auditLogs.resource.reimbursement' },
+  { value: 'stocktake_order', labelKey: 'auditLogs.resource.stocktake_order' },
 ] as const
 
 const ACTION_OPTIONS = [
@@ -262,6 +264,21 @@ export function AuditLogsPage() {
       </form>
 
       <Table<AuditLogItem>
+        locale={{
+          emptyText: (
+            <ListEmptyState
+              emptyTitle={t('common.empty.noDataTitle')}
+              filtered={Boolean(
+                appliedFilters.actor?.trim() ||
+                  appliedFilters.resourceType ||
+                  appliedFilters.action ||
+                  appliedFilters.keyword?.trim() ||
+                  appliedFilters.range,
+              )}
+              onClearFilters={reset}
+            />
+          ),
+        }}
         columns={columns}
         dataSource={items}
         loading={loading}

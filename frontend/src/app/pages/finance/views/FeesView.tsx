@@ -6,6 +6,7 @@ import {
   type PartnerFeeInvoice,
 } from '@/api'
 import { FormSelect, PanelTitle } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import {
   partnerFeeInvoiceStatusOptions,
   feeTypeOptions,
@@ -33,6 +34,8 @@ export function FeesView({ model, shell }: Props) {
   const {
     changeFeePayablesPage,
     changePartnerFeeInvoicesPage,
+    clearFeeInvoiceFilters,
+    clearFeePayableFilters,
     feeInvoiceModalOpen,
     feeInvoicePartnerFilter,
     feeInvoiceSearch,
@@ -183,6 +186,21 @@ export function FeesView({ model, shell }: Props) {
               </form>
             </div>
             <Table<PartnerFeeInvoice>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={
+                      Boolean(feeInvoiceSearch.trim()) ||
+                      Boolean(feeInvoiceStatusFilter) ||
+                      Boolean(feeInvoiceTypeFilter) ||
+                      Boolean(feeInvoicePartnerFilter.trim()) ||
+                      Boolean(feeInvoiceShipmentFilter.trim())
+                    }
+                    onClearFilters={() => void clearFeeInvoiceFilters()}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('finance.fee.table.feeInvoice'),
@@ -797,6 +815,21 @@ export function FeesView({ model, shell }: Props) {
               </form>
             </div>
             <Table<FeePayableItem>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={
+                      Boolean(feePayableSearch.trim()) ||
+                      Boolean(feePayableStatusFilter) ||
+                      Boolean(feePayableTypeFilter) ||
+                      Boolean(feePayablePartnerFilter.trim()) ||
+                      Boolean(feePayableShipmentFilter.trim())
+                    }
+                    onClearFilters={() => void clearFeePayableFilters()}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('finance.fee.table.feeInvoice'),

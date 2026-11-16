@@ -114,6 +114,7 @@ export function PurchaseContractDetailTables({ contract, reminders }: Props) {
           </tr>
         </tbody>
       </table>
+      <p className="panel-subtitle">{t('purchase.contract.detail.paymentScopeHint')}</p>
 
       <div className="accessory-heading">
         <strong>{t('purchase.contract.detail.globalRemindersTitle')}</strong>

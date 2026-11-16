@@ -98,6 +98,18 @@ export function useQualityTasksList({ currentUser }: Params) {
     void loadTasks(1, pageSize)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      q: null,
+      status: null,
+      page: null,
+    })
+    void loadTasks(1, pageSize, { q: undefined, status: undefined })
+  }
+
   function changeListPage(nextPage: number, nextPageSize: number) {
     const next = changePage(nextPage, nextPageSize)
     appliedUrlSearchRef.current = urlQuery.update({
@@ -119,6 +131,7 @@ export function useQualityTasksList({ currentUser }: Params) {
     loadTasks,
     upsertTask,
     submitFilters,
+    clearFilters,
     changeListPage,
   }
 }

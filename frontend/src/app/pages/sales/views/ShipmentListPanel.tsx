@@ -3,6 +3,7 @@ import { Plus, Search } from 'lucide-react'
 
 import type { ShipmentPlan } from '@/api'
 import { FormSelect, ListPageShell } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { formatDate, formatMoney } from '@/app/pages/appHelpers'
 import { t } from '@/app/appI18n'
 import { shipmentStatusOptions } from '@/shared/formOptions'
@@ -79,6 +80,20 @@ export function ShipmentListPanel({ model, onGenerate }: Props) {
       }
     >
       <Table<ShipmentPlan>
+        locale={{
+          emptyText: (
+            <ListEmptyState
+              emptyTitle={t('common.empty.noDataTitle')}
+              filtered={
+                Boolean(model.search.trim()) ||
+                Boolean(model.statusFilter) ||
+                Boolean(model.customerFilter.trim()) ||
+                Boolean(model.contractFilter.trim())
+              }
+              onClearFilters={model.clearFilters}
+            />
+          ),
+        }}
         columns={[
           {
             title: t('sales.shipment.field.code'),

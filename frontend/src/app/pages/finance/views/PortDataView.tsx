@@ -2,6 +2,7 @@ import { Button, Input, Table, Tag } from 'antd'
 import { FileText, Plus, Search, RefreshCw, Save, Ship } from 'lucide-react'
 import { type PortImportBatch, type CustomsDeclarationRecord } from '@/api'
 import { FormSelect, PanelTitle } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { formatFinanceAmount, nullableText } from '@/app/pages/appHelpers'
 import { t } from '@/app/appI18n'
 import type { PortDataModel } from '@/app/pages/finance/hooks/usePortDataModule'
@@ -17,6 +18,7 @@ export function PortDataView({ model, shell }: Props) {
     autoMatchPortCustomsReceipts,
     changeCustomsRecordsPage,
     changePortImportBatchesPage,
+    clearCustomsRecordFilters,
     customsDeclarationFilter,
     customsReceiptFilter,
     customsRecords,
@@ -96,6 +98,19 @@ export function PortDataView({ model, shell }: Props) {
             </form>
           </div>
           <Table<CustomsDeclarationRecord>
+            locale={{
+              emptyText: (
+                <ListEmptyState
+                  emptyTitle={t('common.empty.noDataTitle')}
+                  filtered={
+                    Boolean(customsDeclarationFilter.trim()) ||
+                    Boolean(customsReceiptFilter.trim()) ||
+                    Boolean(customsTradeTypeFilter)
+                  }
+                  onClearFilters={() => void clearCustomsRecordFilters()}
+                />
+              ),
+            }}
             columns={[
               { title: t('finance.portData.table.declarationNo'), dataIndex: 'declaration_no' },
               {

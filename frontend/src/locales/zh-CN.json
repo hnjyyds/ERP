@@ -1729,6 +1729,7 @@
         "noAmount": "无金额",
         "progressTitle": "进度概览",
         "unreceivedCount": "{count} 未收",
+        "paymentScopeHint": "已付/未付为采购合同自身记录的金额，不含供应商发票登记后的付款；发票维度的付款请查看付款管理。",
         "globalRemindersTitle": "全局采购提醒",
         "noReminders": "暂无采购提醒",
         "emptyTitle": "暂无采购合同",
@@ -2550,6 +2551,7 @@
         "currentInvoice": "当前发票",
         "paid": "已付",
         "unpaid": "未付",
+        "overpaid": "超付",
         "requestNo": "付款申请号",
         "supplierInvoiceId": "供应商发票标识",
         "paymentType": "付款类别",
@@ -2605,7 +2607,8 @@
         "paymentApprovalFailed": "付款审批失败",
         "noSupplierInvoice": "暂无供应商发票",
         "waitingApproval": "等待 {reviewer} 审批",
-        "designatedReviewer": "指定审批人"
+        "designatedReviewer": "指定审批人",
+        "overpaidHint": "该发票已付款超过发票金额 {amount}，应付余额按 0 显示；超付部分请在付款分配中核对。"
       },
       "validation": {
         "reviewerRequired": "请选择审批人",
@@ -3342,8 +3345,11 @@
         "purchaseContract": "采购合同"
       },
       "status": {
+        "draft": "草稿",
         "submitted": "待审批",
-        "approved": "已审批"
+        "approved": "已审批",
+        "rejected": "已退回",
+        "cancelled": "已作废"
       },
       "costType": {
         "salesIncome": "销售收入",
@@ -4708,7 +4714,8 @@
       "outbound_order": "出库",
       "payment_request": "付款",
       "fee_payment_request": "付费",
-      "reimbursement": "报销"
+      "reimbursement": "报销",
+      "stocktake_order": "盘点单"
     },
     "action": {
       "create": "新增",
@@ -4901,7 +4908,12 @@
       },
       "salesMonthlyTitle": "业务员月度出货",
       "contractStatusTitle": "合同状态金额",
-      "drilldownTitle": "原始单据追溯"
+      "drilldownTitle": "原始单据追溯",
+      "drilldown": {
+        "exportContract": "查看出口合同",
+        "purchaseContract": "查看采购合同",
+        "shipment": "查看出货明细"
+      }
     },
     "module": {
       "ready": "React 工作台入口已就绪"

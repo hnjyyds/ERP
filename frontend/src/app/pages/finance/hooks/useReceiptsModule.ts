@@ -270,6 +270,34 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
     await loadReceivables(next.page, next.pageSize, receivableFilters)
   }
 
+  async function clearReceiptFilters() {
+    const filters: ReceiptFilters = { q: '', status: '', customer: '' }
+    setReceiptFilters(filters)
+    receiptsPager.setPage(1)
+    const nextSearch = urlQuery.update({
+      receipts_page: null,
+      receipts_q: null,
+      receipts_status: null,
+      receipts_customer: null,
+    })
+    appliedReceiptsSignatureRef.current = receiptSignature(new URLSearchParams(nextSearch))
+    await loadReceipts(undefined, 1, receiptsPager.pageSize, filters)
+  }
+
+  async function clearReceivableFilters() {
+    const filters: ReceivableFilters = { q: '', contract: '', invoice: '' }
+    setReceivableFilters(filters)
+    receivablesPager.setPage(1)
+    const nextSearch = urlQuery.update({
+      receivables_page: null,
+      receivables_q: null,
+      receivables_contract: null,
+      receivables_invoice: null,
+    })
+    appliedReceivablesSignatureRef.current = receivableSignature(new URLSearchParams(nextSearch))
+    await loadReceivables(1, receivablesPager.pageSize, filters)
+  }
+
   useEffect(() => {
     const signature = receiptSignature(urlQuery.params)
     if (appliedReceiptsSignatureRef.current === signature) return
@@ -311,6 +339,8 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
     changeReceiptsPage,
     changeReceivablesPage,
     claimForm,
+    clearReceiptFilters,
+    clearReceivableFilters,
     loadReceipts,
     loadReceivables,
     loadingReceipts,

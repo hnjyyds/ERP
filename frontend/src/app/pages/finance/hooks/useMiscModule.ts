@@ -236,6 +236,43 @@ export function useMiscModule(env: FinanceModuleEnv) {
     await loadMiscFeeAllocationSummary(miscAllocationFilters)
   }
 
+  async function clearMiscItemFilters() {
+    const filters: MiscItemFilters = { q: '', category: '', status: '' }
+    setMiscItemFilters(filters)
+    miscFeeItemsPager.setPage(1)
+    const nextSearch = urlQuery.update({
+      misc_items_page: null,
+      misc_items_q: null,
+      misc_items_category: null,
+      misc_items_status: null,
+    })
+    appliedMiscItemsSignatureRef.current = miscItemSignature(new URLSearchParams(nextSearch))
+    await loadMiscFeeItems(undefined, 1, miscFeeItemsPager.pageSize, filters)
+  }
+
+  async function clearMiscAllocationFilters() {
+    const filters: MiscAllocationFilters = {
+      q: '',
+      category: '',
+      shipment: '',
+      sales: '',
+    }
+    setMiscAllocationFilters(filters)
+    miscFeeAllocationsPager.setPage(1)
+    const nextSearch = urlQuery.update({
+      misc_allocations_page: null,
+      misc_allocations_q: null,
+      misc_allocations_category: null,
+      misc_allocations_shipment: null,
+      misc_allocations_sales: null,
+    })
+    appliedMiscAllocationsSignatureRef.current = miscAllocationSignature(
+      new URLSearchParams(nextSearch),
+    )
+    await loadMiscFeeAllocations(1, miscFeeAllocationsPager.pageSize, filters)
+    await loadMiscFeeAllocationSummary(filters)
+  }
+
   useEffect(() => {
     const signature = miscItemSignature(urlQuery.params)
     if (appliedMiscItemsSignatureRef.current === signature) return
@@ -307,6 +344,8 @@ export function useMiscModule(env: FinanceModuleEnv) {
   return {
     changeMiscFeeAllocationsPage,
     changeMiscFeeItemsPage,
+    clearMiscAllocationFilters,
+    clearMiscItemFilters,
     loadMiscFeeAllocationSummary,
     loadMiscFeeAllocations,
     loadMiscFeeItems,

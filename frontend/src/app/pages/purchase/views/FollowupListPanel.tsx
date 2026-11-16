@@ -4,6 +4,7 @@ import type { MouseEvent } from 'react'
 
 import { followupStatusOptions } from '@/shared/formOptions'
 import { FormSelect, ListPageShell } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { formatDate } from '@/app/pages/appHelpers'
 import { t } from '@/app/appI18n'
 import type { PurchaseFollowPlan } from '@/api'
@@ -85,6 +86,20 @@ export function FollowupListPanel({
       }
     >
       <Table<PurchaseFollowPlan>
+        locale={{
+          emptyText: (
+            <ListEmptyState
+              emptyTitle={t('common.empty.noDataTitle')}
+              filtered={
+                Boolean(model.search.trim()) ||
+                Boolean(model.statusFilter) ||
+                Boolean(model.supplierFilter.trim()) ||
+                Boolean(model.contractFilter.trim())
+              }
+              onClearFilters={model.clearFilters}
+            />
+          ),
+        }}
         columns={[
           {
             title: t('purchase.followup.field.purchaseContract'),

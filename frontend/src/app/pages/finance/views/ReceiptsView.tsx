@@ -4,6 +4,7 @@ import { useCallback, useRef } from 'react'
 
 import { listCustomers, type BankReceipt, type ReceivableItem } from '@/api'
 import { FormSelect, PanelTitle, RemoteSelect } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { fetchCustomerSelectOptions } from '@/shared/entityOptions'
 import {
   receiptStatusOptions,
@@ -34,6 +35,8 @@ export function ReceiptsView({ model, shell }: Props) {
     changeReceiptsPage,
     changeReceivablesPage,
     claimForm,
+    clearReceiptFilters,
+    clearReceivableFilters,
     loadingReceipts,
     loadingReceivables,
     receiptCurrency,
@@ -192,6 +195,19 @@ export function ReceiptsView({ model, shell }: Props) {
             </div>
 
             <Table<BankReceipt>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={
+                      Boolean(receiptSearch.trim()) ||
+                      Boolean(receiptStatusFilter) ||
+                      Boolean(receiptCustomerFilter)
+                    }
+                    onClearFilters={() => void clearReceiptFilters()}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('finance.receipt.table.receiptNo'),
@@ -674,6 +690,19 @@ export function ReceiptsView({ model, shell }: Props) {
               </strong>
             </div>
             <Table<ReceivableItem>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={
+                      Boolean(receivableSearch.trim()) ||
+                      Boolean(receivableContractFilter.trim()) ||
+                      Boolean(receivableInvoiceFilter.trim())
+                    }
+                    onClearFilters={() => void clearReceivableFilters()}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('finance.receipt.table.exportContract'),

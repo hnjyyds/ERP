@@ -16,6 +16,7 @@ import {
 import { sampleRequestPath, moduleDetailPath } from '@/app/routes'
 import { t } from '@/app/appI18n'
 import { FormSelect, ListPageShell, Metric, RemoteSelect } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import { showError } from '@/shared/errors'
 import { useFormModal } from '@/shared/useFormModal'
 import { useTablePagination } from '@/shared/useTablePagination'
@@ -42,6 +43,14 @@ import { SampleRequestDetailPanel } from '@/app/pages/sample/views/SampleRequest
 import { useSampleFormOptions } from '@/app/pages/sample/hooks/useSampleFormOptions'
 
 type Props = RoutedDetailPageProps & { currentUser: CurrentUser }
+
+type SampleRequestFilters = {
+  q: string
+  status: string
+  customer: string
+  dateFrom: string
+  dateTo: string
+}
 
 export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props) {
   const [requests, setRequests] = useState<SampleRequest[]>([])
@@ -105,17 +114,23 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
     preferredId?: string,
     pageOverride?: number,
     pageSizeOverride?: number,
+    filtersOverride?: SampleRequestFilters,
   ) {
     const resolvedPage = pageOverride ?? page
     const resolvedPageSize = pageSizeOverride ?? pageSize
+    const resolvedQ = filtersOverride?.q ?? search
+    const resolvedStatus = filtersOverride?.status ?? statusFilter
+    const resolvedCustomer = filtersOverride?.customer ?? customerFilter
+    const resolvedDateFrom = filtersOverride?.dateFrom ?? dateFromFilter
+    const resolvedDateTo = filtersOverride?.dateTo ?? dateToFilter
     setLoading(true)
     try {
       const result = await listSampleRequests({
-        q: search.trim() || undefined,
-        status: statusFilter || undefined,
-        customer_id: customerFilter.trim() || undefined,
-        date_from: dateFromFilter || undefined,
-        date_to: dateToFilter || undefined,
+        q: resolvedQ.trim() || undefined,
+        status: resolvedStatus || undefined,
+        customer_id: resolvedCustomer.trim() || undefined,
+        date_from: resolvedDateFrom || undefined,
+        date_to: resolvedDateTo || undefined,
         limit: resolvedPageSize,
         offset: (resolvedPage - 1) * resolvedPageSize,
       })
@@ -124,7 +139,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
       if (result.items.length === 0 && resolvedPage > 1) {
         const prevPage = resolvedPage - 1
         setPage(prevPage)
-        await loadRequests(preferredId, prevPage, resolvedPageSize)
+        await loadRequests(preferredId, prevPage, resolvedPageSize, filtersOverride)
         return
       }
       setRequests(result.items)
@@ -139,6 +154,22 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
     } finally {
       setLoading(false)
     }
+  }
+
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setCustomerFilter('')
+    setDateFromFilter('')
+    setDateToFilter('')
+    setPage(1)
+    void loadRequests(undefined, 1, undefined, {
+      q: '',
+      status: '',
+      customer: '',
+      dateFrom: '',
+      dateTo: '',
+    })
   }
 
   function openCreateRequest() {
@@ -437,6 +468,21 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
             }
           >
             <Table<SampleRequest>
+              locale={{
+                emptyText: (
+                  <ListEmptyState
+                    emptyTitle={t('common.empty.noDataTitle')}
+                    filtered={
+                      Boolean(search.trim()) ||
+                      Boolean(statusFilter) ||
+                      Boolean(customerFilter.trim()) ||
+                      Boolean(dateFromFilter) ||
+                      Boolean(dateToFilter)
+                    }
+                    onClearFilters={clearFilters}
+                  />
+                ),
+              }}
               columns={[
                 {
                   title: t('sample.request.table.code'),

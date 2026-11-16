@@ -412,6 +412,23 @@ body section[class*="-page"] .inline-filters .filter-actions .ant-btn {
   }
 }
 
+/* QC 中心操作组按钮较多，手机端不再强制单行等宽，
+   为主操作保留文字宽度并允许整组换行，避免「新增 QC 单」被裁切。 */
+@media (max-width: 768px) {
+  body section.quality-inspection-page .inline-filters .filter-actions {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  body section.quality-inspection-page .inline-filters .filter-actions .ant-btn {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: max-content;
+    padding-inline: 12px;
+    white-space: nowrap;
+  }
+}
+
 body section.masterdata-page.product-page .inline-filters.product-list-filters {
   grid-template-columns: minmax(280px, 1fr) auto;
 }

@@ -9,6 +9,7 @@ import { t } from '@/app/appI18n'
 import { formatMoney } from '@/app/pages/appHelpers'
 import { purchaseInvoiceNoticeStatusOptions } from '@/shared/formOptions'
 import { FormSelect, ListPageShell } from '@/shared/ui'
+import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import {
   purchaseInvoiceNoticeStatusLabel,
 } from '../invoiceNoticeHelpers'
@@ -33,6 +34,7 @@ export function PurchaseInvoiceNoticesListView({ model }: Props) {
     setCustomsFilter,
     pagination,
     submitSearch,
+    clearFilters,
     goToPage,
     openGenerateModal,
     openInvoiceNoticeDetail,
@@ -107,6 +109,20 @@ export function PurchaseInvoiceNoticesListView({ model }: Props) {
       }
     >
       <Table<PurchaseInvoiceNotice>
+        locale={{
+          emptyText: (
+            <ListEmptyState
+              emptyTitle={t('common.empty.noDataTitle')}
+              filtered={
+                Boolean(search.trim()) ||
+                Boolean(statusFilter) ||
+                Boolean(supplierFilter.trim()) ||
+                Boolean(customsFilter.trim())
+              }
+              onClearFilters={clearFilters}
+            />
+          ),
+        }}
         columns={[
           {
             title: t('purchase.invoiceNotice.field.noticeCode'),
