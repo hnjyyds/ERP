@@ -96,21 +96,22 @@ export function RemoteSelect({
       onChange={(nextValue) => onChange?.(nextValue ?? '')}
       onSearch={(query) => void loadOptions(query)}
       optionLabelProp="label"
+      optionRender={(option) => {
+        const item = option.data as RemoteSelectOption
+        return (
+          <div className="remote-select-option">
+            <span className="remote-select-option-title">{item.label}</span>
+            {item.description ? (
+              <span className="remote-select-option-desc">{item.description}</span>
+            ) : null}
+          </div>
+        )
+      }}
+      options={resolvedOptions}
       placeholder={placeholder}
       showSearch
       status={status}
       value={value || undefined}
-    >
-      {resolvedOptions.map((option) => (
-        <Select.Option key={option.value} label={option.label} value={option.value}>
-          <div className="remote-select-option">
-            <span className="remote-select-option-title">{option.label}</span>
-            {option.description ? (
-              <span className="remote-select-option-desc">{option.description}</span>
-            ) : null}
-          </div>
-        </Select.Option>
-      ))}
-    </Select>
+    />
   )
 }
