@@ -25,7 +25,7 @@ function filtersFromParams(params: URLSearchParams): Filters {
   return {
     q: params.get('q') ?? '',
     status: params.get('status') ?? '',
-    customer: params.get('customer') ?? '',
+    customer: params.get('customer_id') ?? params.get('customer') ?? '',
     contract: params.get('contract') ?? '',
   }
 }
@@ -165,7 +165,8 @@ export function useShipmentsList({ detailId, onNavigate }: Params) {
     appliedUrlSearchRef.current = urlQuery.update({
       q: search.trim(),
       status: statusFilter,
-      customer: customerFilter,
+      customer_id: customerFilter,
+      customer: null,
       contract: contractFilter,
       page: null,
     })
@@ -181,6 +182,7 @@ export function useShipmentsList({ detailId, onNavigate }: Params) {
     appliedUrlSearchRef.current = urlQuery.update({
       q: null,
       status: null,
+      customer_id: null,
       customer: null,
       contract: null,
       page: null,

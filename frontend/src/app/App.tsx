@@ -20,6 +20,7 @@ import {
 } from '@/api'
 import { canAccessPath, dashboardPath, loginPath } from './routes'
 import { showError, showSuccess } from '@/shared/errors'
+import { notifyUrlQueryChange } from '@/shared/useUrlQuery'
 import { EmptyState, type UserAvatarPickerValue } from '@/shared/ui'
 import { fallbackI18nConfig, normalizeSettings, t } from './appI18n'
 import { setRuntimeSettings, type AppSettings } from './pages/appHelpers'
@@ -94,9 +95,14 @@ export default function App() {
   }
 
   function navigate(path: string) {
-    if (path === activePath) return
-    window.history.pushState({}, '', path)
-    setActivePath(path)
+    const target = new URL(path, window.location.origin)
+    const nextPath = target.pathname
+    const nextUrl = `${nextPath}${target.search}`
+    const currentUrl = `${window.location.pathname}${window.location.search}`
+    if (nextUrl === currentUrl) return
+    window.history.pushState({}, '', nextUrl)
+    setActivePath(nextPath)
+    notifyUrlQueryChange()
   }
 
   function redirectToLogin(message?: string) {

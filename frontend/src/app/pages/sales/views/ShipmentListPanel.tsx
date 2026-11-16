@@ -2,8 +2,9 @@ import { Button, Input, Table } from 'antd'
 import { Plus, Search } from 'lucide-react'
 
 import type { ShipmentPlan } from '@/api'
-import { FormSelect, ListPageShell } from '@/shared/ui'
+import { FormSelect, ListPageShell, RemoteSelect } from '@/shared/ui'
 import { ListEmptyState } from '@/shared/ui/ListEmptyState'
+import { fetchCustomerSelectOptions } from '@/shared/entityOptions'
 import { formatDate, formatMoney } from '@/app/pages/appHelpers'
 import { t } from '@/app/appI18n'
 import { shipmentStatusOptions } from '@/shared/formOptions'
@@ -17,6 +18,10 @@ type Props = {
 }
 
 export function ShipmentListPanel({ model, onGenerate }: Props) {
+  const selectedCustomerName = model.shipments.find(
+    (shipment) => shipment.customer_id === model.customerFilter,
+  )?.customer_name
+
   return (
     <ListPageShell
       className="product-list-panel"
@@ -54,10 +59,21 @@ export function ShipmentListPanel({ model, onGenerate }: Props) {
           </label>
           <label>
             {t('sales.shipment.list.customerFilter')}
-            <Input
-              value={model.customerFilter}
+            <RemoteSelect
+              allowClear
+              ariaLabel={t('sales.shipment.list.customerFilter')}
+              fetchOptions={fetchCustomerSelectOptions}
+              initialOption={
+                model.customerFilter
+                  ? {
+                      value: model.customerFilter,
+                      label: selectedCustomerName || model.customerFilter,
+                    }
+                  : undefined
+              }
+              onChange={model.setCustomerFilter}
               placeholder={t('sales.shipment.list.customerFilterPlaceholder')}
-              onChange={(event) => model.setCustomerFilter(event.target.value)}
+              value={model.customerFilter}
             />
           </label>
           <label>
