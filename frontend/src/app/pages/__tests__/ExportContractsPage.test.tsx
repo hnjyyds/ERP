@@ -110,6 +110,7 @@ vi.mock('@/shared/formOptions', () => ({
 
 // Import after all mocks
 import { ExportContractsPage } from '@/app/pages/sales/ExportContractsPage'
+import { openExportContractPrint } from '@/shared/print'
 import type { ExportContract } from '@/api'
 // Re-import mocked modules to get typed references
 const api = await vi.importMock<Record<string, ReturnType<typeof vi.fn>>>('@/api')
@@ -414,6 +415,30 @@ describe('ExportContractsPage', () => {
     const dialog = await screen.findByTestId('form-modal')
     return { user, dialog }
   }
+
+  it('导出 PDF 时打开打印视图而不是只生成文本预览', async () => {
+    const contract = makeExportContract()
+    api.listExportContracts.mockResolvedValue({
+      items: [contract],
+      total: 1,
+      summary: emptyContractSummary,
+    })
+    vi.mocked(openExportContractPrint).mockResolvedValue(undefined)
+    const user = userEvent.setup()
+
+    render(
+      <ExportContractsPage
+        currentUser={currentUser}
+        detailId={contract.id}
+        onNavigate={onNavigate}
+      />,
+    )
+
+    await user.click(await screen.findByRole('button', { name: '导出 PDF' }))
+
+    expect(openExportContractPrint).toHaveBeenCalledWith(contract.id)
+    expect(api.exportExportContract).not.toHaveBeenCalled()
+  })
 
   it('blocks cancelling a draft contract without a reason and never calls the API', async () => {
     const contract = makeExportContract()

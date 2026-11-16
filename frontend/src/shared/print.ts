@@ -12,13 +12,14 @@ function tr(key: TranslationKey) {
  * 在新窗口写入并触发浏览器打印（可另存为 PDF）。
  */
 export async function openExportContractPrint(contractId: string): Promise<void> {
+  // 先同步打开窗口，避免等待接口后丢失用户手势而被浏览器拦截。
+  const printWindow = window.open('', '_blank')
+  if (!printWindow) {
+    showError(new Error(tr('common.print.popupBlocked')), tr('common.print.allowPopups'))
+    return
+  }
   try {
     const document_ = await printExportContract(contractId)
-    const printWindow = window.open('', '_blank')
-    if (!printWindow) {
-      showError(new Error(tr('common.print.popupBlocked')), tr('common.print.allowPopups'))
-      return
-    }
     printWindow.document.open()
     printWindow.document.write(document_.html)
     printWindow.document.close()
@@ -26,6 +27,7 @@ export async function openExportContractPrint(contractId: string): Promise<void>
     // 等待样式与内容渲染后触发打印。
     printWindow.setTimeout(() => printWindow.print(), 300)
   } catch (caught) {
+    printWindow.close()
     showError(caught, tr('common.print.exportContractFailed'))
   }
 }

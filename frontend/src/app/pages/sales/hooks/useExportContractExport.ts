@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { exportExportContract, type ExportContract } from '@/api'
 import { showError } from '@/shared/errors'
+import { downloadCsv, openExportContractPrint } from '@/shared/print'
 import { t } from '@/app/appI18n'
 
 type Options = {
@@ -19,9 +20,13 @@ export function useExportContractExport({ contract, setMessage }: Options) {
     setSubmitting(true)
     setMessage('')
     try {
+      if (format === 'pdf') {
+        // 后端未生成二进制 PDF，复用合同打印视图，由浏览器打印/另存为 PDF。
+        await openExportContractPrint(contract.id)
+        return
+      }
       const result = await exportExportContract(contract.id, format)
-      setExportPreview(result.content.split('\n').slice(0, 14).join('\n'))
-      setMessage(t('sales.contract.message.exportPreview', { filename: result.filename }))
+      downloadCsv(result.filename, result.content)
     } catch (caught) {
       showError(caught, t('sales.contract.message.exportFailed'))
     } finally {
