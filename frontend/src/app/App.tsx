@@ -1,6 +1,8 @@
 import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { ConfigProvider, Empty, Skeleton } from 'antd'
 import { Inbox } from 'lucide-react'
+import dayjs from 'dayjs'
+import 'dayjs/locale/zh-cn'
 import enUS from 'antd/locale/en_US'
 import zhCN from 'antd/locale/zh_CN'
 
@@ -76,6 +78,9 @@ export default function App() {
   const [savingSettingsAvatar, setSavingSettingsAvatar] = useState(false)
 
   const antdLocale = appSettings.language === 'en-US' ? enUS : zhCN
+  // rc-picker 的月份缩写与星期名来自 dayjs 语言包；
+  // 只切 antd locale 会出现“2026年Nov”“Su/Mo”。
+  dayjs.locale(appSettings.language === 'en-US' ? 'en' : 'zh-cn')
 
   useEffect(() => {
     localStorage.setItem(settingsStorageKey, JSON.stringify(appSettings))

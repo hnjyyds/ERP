@@ -37,6 +37,17 @@ function percentToRate(value: number | null): string {
   return value === null ? '' : String(Number((value / 100).toFixed(4)))
 }
 
+// 弹窗可能是 form、ant-modal-body 或 ant-modal-wrap 在滚动，
+// 三处一起复位，重新打开时编号、名称等首行字段必须可见。
+function resetModalScroll(form: HTMLFormElement | null) {
+  if (!form) return
+  form.scrollTop = 0
+  const body = form.closest('.ant-modal-body')
+  const wrap = form.closest('.ant-modal-wrap')
+  if (body instanceof HTMLElement) body.scrollTop = 0
+  if (wrap instanceof HTMLElement) wrap.scrollTop = 0
+}
+
 export function ProductFormModal({
   mode,
   form,
@@ -61,7 +72,10 @@ export function ProductFormModal({
 
   useEffect(() => {
     if (!mode) return
-    if (formRef.current) formRef.current.scrollTop = 0
+    resetModalScroll(formRef.current)
+    // 打开动画与自动聚焦可能再次滚动容器，下一帧再复位一次。
+    const frame = requestAnimationFrame(() => resetModalScroll(formRef.current))
+    return () => cancelAnimationFrame(frame)
   }, [mode])
 
   useEffect(() => {
@@ -91,7 +105,8 @@ export function ProductFormModal({
       width={1040}
       afterOpenChange={(open) => {
         // 打开动画结束后再复位一次，避免弹窗恢复焦点时带回旧滚动位置。
-        if (open && formRef.current) formRef.current.scrollTop = 0
+        if (!open) return
+        requestAnimationFrame(() => resetModalScroll(formRef.current))
       }}
       onCancel={onCancel}
     >

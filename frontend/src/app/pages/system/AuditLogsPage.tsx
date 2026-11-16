@@ -193,9 +193,7 @@ export function AuditLogsPage() {
         </Button>
       }
     >
-      <p style={{ margin: '0 0 var(--ui-space-3)', color: 'var(--ui-text-secondary)' }}>
-        {t('auditLogs.description')}
-      </p>
+      <p className="panel-subtitle">{t('auditLogs.description')}</p>
 
       <form
         className="audit-filters"

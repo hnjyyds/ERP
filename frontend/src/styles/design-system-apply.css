@@ -575,6 +575,51 @@ body .ant-picker {
   padding-inline: var(--ui-control-padding-inline) !important;
 }
 
+/* 日期范围控件：开始/结束输入、分隔箭头、日历图标共享同一条水平中线。
+   AntD 的分隔符是 inline-block + vertical-align: top 的 16px 盒，
+   缺少这组规则时在部分页面会低于两侧文字。 */
+body .ant-picker-range {
+  display: inline-flex;
+  align-items: center;
+  padding-block: 0 !important;
+}
+
+body .ant-picker-range .ant-picker-input {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+body .ant-picker-range .ant-picker-input > input {
+  height: 100%;
+  padding-block: 0 !important;
+}
+
+body .ant-picker-range .ant-picker-separator,
+body .ant-picker-range .ant-picker-suffix,
+body .ant-picker-range .ant-picker-clear {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  height: auto;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+body .ant-picker-range .ant-picker-separator > svg,
+body .ant-picker-range .ant-picker-suffix > svg {
+  display: block;
+}
+
+/* 带前后缀的输入框统一按外框中心对齐：
+   AntD 默认给外框 4px 上下内边距，而内层 input 又被固定为 36px，
+   内层溢出到外框下方，表现为图标偏上、文字偏下。 */
+body .ant-input-affix-wrapper {
+  display: inline-flex;
+  align-items: center;
+  padding-block: 0 !important;
+}
+
 body .ant-input-affix-wrapper > input.ant-input,
 body .ant-input-number-input-wrap > input.ant-input-number-input,
 body .ant-picker-input > input {
@@ -671,7 +716,9 @@ body textarea.ant-input:-internal-autofill-previewed {
   caret-color: var(--ui-text-primary) !important;
 }
 
-/* 校验错误只用危险色边框和提示文字，不铺底色。 */
+/* 校验错误只用危险色边框和提示文字，不铺底色。
+   表单内 input 的通用规则带三层 :not()，特异性高于基础错误选择器，
+   这里用同样的结构补齐，否则红框会被灰色边框覆盖。 */
 body .ant-form-item-has-error .ant-input,
 body .ant-form-item-has-error .ant-input-affix-wrapper,
 body .ant-form-item-has-error .ant-input-number,
@@ -679,16 +726,19 @@ body .ant-form-item-has-error .ant-picker,
 body .ant-form-item-has-error .ant-select,
 body .ant-form-item-has-error textarea.ant-input,
 body .ant-input[aria-invalid='true'],
+body .record-form input:not([type="checkbox"]):not([type="radio"]):not(.ant-select-input)[aria-invalid='true'],
 body .ant-input-affix-wrapper:has(> input[aria-invalid='true']) {
   border-color: var(--ui-danger) !important;
   background: var(--ui-bg-surface) !important;
 }
 
 /* 实体弹窗的聚焦样式优先级较高，错误态必须显式覆盖聚焦主色。 */
+body .record-form.entity-modal-form input:not([type="checkbox"]):not([type="radio"]):not(.ant-select-input)[aria-invalid='true'],
 body .record-form.entity-modal-form .ant-input[aria-invalid='true'] {
   border-color: var(--ui-danger) !important;
 }
 
+body .record-form.entity-modal-form input:not([type="checkbox"]):not([type="radio"]):not(.ant-select-input)[aria-invalid='true']:focus,
 body .record-form.entity-modal-form .ant-input[aria-invalid='true']:focus {
   border-color: var(--ui-danger) !important;
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--ui-danger) 16%, transparent) !important;
@@ -914,13 +964,42 @@ body .ant-select-dropdown {
     min-height: var(--ui-touch-height);
   }
 
-  /* 商品图片删除入口在手机上使用 44px 触摸目标，并保持正圆。 */
+  /* 商品图片删除入口：44×44 方形命中区；圆形圆角会切掉四角命中像素，
+     所以视觉圆改用 ::before 绘制，图标保持小尺寸。 */
   body .product-image-delete {
     top: -10px;
     right: -10px;
-    width: 44px;
-    height: 44px;
-    min-height: 44px !important;
+    width: var(--ui-touch-height);
+    height: var(--ui-touch-height);
+    min-width: var(--ui-touch-height);
+    min-height: var(--ui-touch-height) !important;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  body .product-image-delete::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: var(--erp-danger);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  }
+
+  body .product-image-delete:hover {
+    background: transparent;
+  }
+
+  body .product-image-delete:hover::before {
+    background: color-mix(in srgb, var(--erp-danger) 82%, #000);
+  }
+
+  body .product-image-delete svg {
+    position: relative;
+    z-index: 1;
   }
 
   body .record-form .boolean-segmented .ant-segmented-item-label {
@@ -1623,23 +1702,23 @@ body .audit-page .audit-filters > label > span {
 }
 
 body .audit-page .audit-filter-actor {
-  flex: 1 1 150px;
-}
-
-body .audit-page .audit-filter-resource {
   flex: 1 1 140px;
 }
 
-body .audit-page .audit-filter-action {
+body .audit-page .audit-filter-resource {
   flex: 1 1 120px;
 }
 
+body .audit-page .audit-filter-action {
+  flex: 1 1 105px;
+}
+
 body .audit-page .audit-filter-keyword {
-  flex: 1 1 180px;
+  flex: 1 1 165px;
 }
 
 body .audit-page .audit-filter-range {
-  flex: 1.2 1 240px;
+  flex: 1.2 1 200px;
 }
 
 /* 控件外框统一 36px；内层输入铺满并使文字垂直居中，
@@ -1734,6 +1813,81 @@ body .audit-page .audit-filters > .filter-actions .ant-btn {
   }
 
   body .audit-page .audit-filters > label > .ant-select .ant-select-content {
+    height: calc(var(--ui-touch-height) - 10px);
+    min-height: calc(var(--ui-touch-height) - 10px);
+  }
+}
+
+/* 列表页辅助说明：与标题、筛选栏拉开层级和间距，不再和主内容同权重。 */
+body .panel-subtitle {
+  margin: 0 0 var(--ui-space-4);
+  color: var(--ui-text-muted);
+  font-size: var(--ui-font-label);
+  font-weight: var(--ui-weight-regular);
+  line-height: 18px;
+}
+
+/* 带说明文字的标题不再叠加标题自身的 14px 下外边距，
+   标题 → 说明固定为 12px，说明 → 筛选 → 表格各 16px。 */
+body .toolbar-heading:has(+ .panel-subtitle) {
+  margin-bottom: var(--ui-space-3);
+  align-items: center;
+}
+
+body .toolbar-heading:has(+ .panel-subtitle) .panel-title {
+  margin-bottom: 0;
+}
+
+/* 共享筛选栏：搜索框、下拉、查询按钮同排居中，固定 12px 间距。
+   页面只需使用 `.list-filters`，不再各自写内联样式。 */
+body .list-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ui-space-3);
+  margin-bottom: var(--ui-space-4);
+}
+
+body .list-filters > .ant-input,
+body .list-filters > .ant-input-affix-wrapper {
+  flex: 1 1 220px;
+  width: auto;
+  max-width: 320px;
+  height: var(--ui-control-height);
+  min-height: var(--ui-control-height);
+}
+
+body .list-filters > .ant-select {
+  flex: 0 0 150px;
+  width: 150px;
+  max-width: none;
+  height: var(--ui-control-height);
+  min-height: var(--ui-control-height);
+}
+
+body .list-filters > .ant-btn {
+  flex: 0 0 auto;
+  height: var(--ui-control-height);
+  min-height: var(--ui-control-height);
+  padding-inline: var(--ui-space-4);
+}
+
+@media (max-width: 640px) {
+  body .list-filters > .ant-input,
+  body .list-filters > .ant-input-affix-wrapper,
+  body .list-filters > .ant-select {
+    flex: 1 1 100%;
+    width: 100%;
+    max-width: none;
+  }
+
+  /* 输入框和按钮在手机上已是 44px，下拉框没有 selector 节点，需要显式同步。 */
+  body .list-filters > .ant-select {
+    height: var(--ui-touch-height);
+    min-height: var(--ui-touch-height);
+  }
+
+  body .list-filters > .ant-select .ant-select-content {
     height: calc(var(--ui-touch-height) - 10px);
     min-height: calc(var(--ui-touch-height) - 10px);
   }
