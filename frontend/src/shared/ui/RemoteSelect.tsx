@@ -95,8 +95,8 @@ export function RemoteSelect({
       }
       onChange={(nextValue, option) => {
         const raw = Array.isArray(option) ? option[0] : option
-        const data = (raw as { data?: RemoteSelectOption } | null | undefined)?.data
-        onChange?.(nextValue ?? '', data ?? null)
+        const rawOption = raw as RemoteSelectOption & { data?: RemoteSelectOption } | null | undefined
+        onChange?.(nextValue ?? '', rawOption?.data ?? rawOption ?? null)
       }}
       onSearch={(query) => void loadOptions(query)}
       optionLabelProp="label"
