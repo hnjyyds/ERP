@@ -900,6 +900,12 @@ body .ant-tag {
   padding-inline: 7px;
 }
 
+/* 预设绿色标签默认 #52c41a 对浅绿背景仅约 2.2:1，改为可读的深绿。 */
+body .ant-tag-success,
+body .ant-tag-green {
+  color: #17603c !important;
+}
+
 body .ant-modal-content,
 body .ant-dropdown,
 body .ant-select-dropdown {
