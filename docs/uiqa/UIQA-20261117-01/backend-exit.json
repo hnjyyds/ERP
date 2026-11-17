@@ -1,0 +1,1 @@
+{"command": ".venv/bin/python -m pytest tests/api/test_shipments.py tests/repositories/test_shipment_repository.py -q", "exit": 0}

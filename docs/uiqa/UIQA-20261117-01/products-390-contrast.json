@@ -1,0 +1,44 @@
+{
+  "url": "http://localhost:8080/masterdata/products",
+  "viewport": [
+    390,
+    844
+  ],
+  "tags": [
+    {
+      "text": "启用",
+      "color": "rgb(23, 96, 60)",
+      "background": "rgb(246, 255, 237)",
+      "opacity": "1",
+      "ratio": 7.368184180027188
+    },
+    {
+      "text": "启用",
+      "color": "rgb(23, 96, 60)",
+      "background": "rgb(246, 255, 237)",
+      "opacity": "1",
+      "ratio": 7.368184180027188
+    },
+    {
+      "text": "启用",
+      "color": "rgb(23, 96, 60)",
+      "background": "rgb(246, 255, 237)",
+      "opacity": "1",
+      "ratio": 7.368184180027188
+    },
+    {
+      "text": "启用",
+      "color": "rgb(23, 96, 60)",
+      "background": "rgb(246, 255, 237)",
+      "opacity": "1",
+      "ratio": 7.368184180027188
+    },
+    {
+      "text": "启用",
+      "color": "rgb(23, 96, 60)",
+      "background": "rgb(246, 255, 237)",
+      "opacity": "1",
+      "ratio": 7.368184180027188
+    }
+  ]
+}

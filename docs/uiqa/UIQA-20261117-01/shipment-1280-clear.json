@@ -1,0 +1,990 @@
+{
+  "time": "2026-11-17T03:42:07.286Z",
+  "url": "http://localhost:8080/sales/shipments",
+  "viewport": [
+    1280,
+    720
+  ],
+  "scripts": [
+    "http://localhost:8080/assets/index-BAg6ml7C.js"
+  ],
+  "language": "zh-CN",
+  "timeZone": "Asia/Shanghai",
+  "scroll": [
+    0,
+    0,
+    1280,
+    720
+  ],
+  "focus": "<body>\n    <div id=\"app\"><main class=\"react-shell\"><aside class=\"react-sidebar\"><div class=\"sidebar-header\"><div class=\"brand\" aria-label=\"新裴贸易 业务管理系统\"><div class=\"brand-wordmark\" aria-label=\"D-DUTCH\">D-DUTCH</div><div><strong>新裴贸易</strong><span>业务管理系统</span></div></div><button aria-controls=\"app-primary-navigation\" aria-expanded=\"false\" aria-label=\"业务导航\" class=\"mobile-nav-toggle\" type=\"button\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-menu\" aria-hidden=\"true\"><path d=\"M4 5h16\"></path><path d=\"M4 12h16\"></path><path d=\"M4 19h16\"></path></svg><span>导航</span></button></div><nav id=\"app-primary-navigation\" class=\"react-nav\" aria-label=\"主导航\"><a class=\"nav-link nav-dashboard\" href=\"/\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-layout-dashboard nav-link-icon\" aria-hidden=\"true\"><rect width=\"7\" height=\"9\" x=\"3\" y=\"3\" rx=\"1\"></rect><rect width=\"7\" height=\"5\" x=\"14\" y=\"3\" rx=\"1\"></rect><rect width=\"7\" height=\"9\" x=\"14\" y=\"12\" rx=\"1\"></rect><rect width=\"7\" height=\"5\" x=\"3\" y=\"16\" rx=\"1\"></rect></svg><span>工作台</span></a><div class=\"nav-groups\" aria-label=\"业务模块\"><details class=\"nav-group\"><summary class=\"nav-group-summary\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-package\" aria-hidden=\"true\"><path d=\"M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z\"></path><path d=\"M12 22V12\"></path><polyline points=\"3.29 7 12 12 20.71 7\"></polyline><path d=\"m7.5 4.27 9 5.15\"></path></svg><span>基础资料</span><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-down nav-group-chevron\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"></path></svg></summary><div class=\"nav-group-items\"><a class=\"nav-link\" href=\"/masterdata/products\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-package nav-link-icon\" aria-hidden=\"true\"><path d=\"M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z\"></path><path d=\"M12 22V12\"></path><polyline points=\"3.29 7 12 12 20.71 7\"></polyline><path d=\"m7.5 4.27 9 5.15\"></path></svg><span>商品资料</span></a><a class=\"nav-link\" href=\"/masterdata/suppliers\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-factory nav-link-icon\" aria-hidden=\"true\"><path d=\"M12 16h.01\"></path><path d=\"M16 16h.01\"></path><path d=\"M3 19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5a.5.5 0 0 0-.769-.422l-4.462 2.844A.5.5 0 0 1 15 10.5v-2a.5.5 0 0 0-.769-.422L9.77 10.922A.5.5 0 0 1 9 10.5V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z\"></path><path d=\"M8 16h.01\"></path></svg><span>供应商资料</span></a><a class=\"nav-link\" href=\"/masterdata/customers\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-users nav-link-icon\" aria-hidden=\"true\"><path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"></path><path d=\"M16 3.128a4 4 0 0 1 0 7.744\"></path><path d=\"M22 21v-2a4 4 0 0 0-3-3.87\"></path><circle cx=\"9\" cy=\"7\" r=\"4\"></circle></svg><span>客户资料</span></a><a class=\"nav-link\" href=\"/masterdata/partners\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-handshake nav-link-icon\" aria-hidden=\"true\"><path d=\"m11 17 2 2a1 1 0 1 0 3-3\"></path><path d=\"m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4\"></path><path d=\"m21 3 1 11h-2\"></path><path d=\"M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3\"></path><path d=\"M3 4h8\"></path></svg><span>合作伙伴</span></a><a class=\"nav-link\" href=\"/masterdata/document-parties\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file-stack nav-link-icon\" aria-hidden=\"true\"><path d=\"M11 21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1\"></path><path d=\"M16 16a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1\"></path><path d=\"M21 6a2 2 0 0 0-.586-1.414l-2-2A2 2 0 0 0 17 2h-3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1z\"></path></svg><span>单证资料</span></a></div></details><details class=\"nav-group\" open=\"\"><summary class=\"nav-group-summary\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-clipboard-check\" aria-hidden=\"true\"><rect width=\"8\" height=\"4\" x=\"8\" y=\"2\" rx=\"1\" ry=\"1\"></rect><path d=\"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2\"></path><path d=\"m9 14 2 2 4-4\"></path></svg><span>订单流程</span><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-down nav-group-chevron\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"></path></svg></summary><div class=\"nav-group-items\"><a class=\"nav-link\" href=\"/sales/contracts\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file-text nav-link-icon\" aria-hidden=\"true\"><path d=\"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z\"></path><path d=\"M14 2v5a1 1 0 0 0 1 1h5\"></path><path d=\"M10 9H8\"></path><path d=\"M16 13H8\"></path><path d=\"M16 17H8\"></path></svg><span>出口合同</span></a><a class=\"nav-link\" href=\"/purchase/contracts\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file-text nav-link-icon\" aria-hidden=\"true\"><path d=\"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z\"></path><path d=\"M14 2v5a1 1 0 0 0 1 1h5\"></path><path d=\"M10 9H8\"></path><path d=\"M16 13H8\"></path><path d=\"M16 17H8\"></path></svg><span>采购合同</span></a><a class=\"nav-link\" href=\"/sales/quotations\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file-pen-line nav-link-icon\" aria-hidden=\"true\"><path d=\"m18.226 5.226-2.52-2.52A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-.351\"></path><path d=\"M21.378 12.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z\"></path><path d=\"M8 18h1\"></path></svg><span>出口报价</span></a><a aria-current=\"page\" class=\"nav-link active\" href=\"/sales/shipments\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-send nav-link-icon\" aria-hidden=\"true\"><path d=\"M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z\"></path><path d=\"m21.854 2.147-10.94 10.939\"></path></svg><span>出货明细</span></a></div></details><details class=\"nav-group\"><summary class=\"nav-group-summary\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-shield-check\" aria-hidden=\"true\"><path d=\"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z\"></path><path d=\"m9 12 2 2 4-4\"></path></svg><span>QC / 跟单</span><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-down nav-group-chevron\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"></path></svg></summary><div class=\"nav-group-items\"><a class=\"nav-link\" href=\"/quality/inspections\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-clipboard-check nav-link-icon\" aria-hidden=\"true\"><rect width=\"8\" height=\"4\" x=\"8\" y=\"2\" rx=\"1\" ry=\"1\"></rect><path d=\"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2\"></path><path d=\"m9 14 2 2 4-4\"></path></svg><span>QC 中心</span></a><a class=\"nav-link\" href=\"/quality/tasks\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-clipboard-check nav-link-icon\" aria-hidden=\"true\"><rect width=\"8\" height=\"4\" x=\"8\" y=\"2\" rx=\"1\" ry=\"1\"></rect><path d=\"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2\"></path><path d=\"m9 14 2 2 4-4\"></path></svg><span>我的 QC 任务</span></a><a class=\"nav-link\" href=\"/purchase/followup\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-circle-check-big nav-link-icon\" aria-hidden=\"true\"><path d=\"M21.801 10A10 10 0 1 1 17 3.335\"></path><path d=\"m9 11 3 3L22 4\"></path></svg><span>跟单中心</span></a><a class=\"nav-link\" href=\"/sample/records\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-images nav-link-icon\" aria-hidden=\"true\"><path d=\"m22 11-1.296-1.296a2.4 2.4 0 0 0-3.408 0L11 16\"></path><path d=\"M4 8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2\"></path><circle cx=\"13\" cy=\"7\" r=\"1\" fill=\"currentColor\"></circle><rect x=\"8\" y=\"2\" width=\"14\" height=\"14\" rx=\"2\"></rect></svg><span>样品登记</span></a><a class=\"nav-link\" href=\"/sample/requests\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-flask-conical nav-link-icon\" aria-hidden=\"true\"><path d=\"M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2\"></path><path d=\"M6.453 15h11.094\"></path><path d=\"M8.5 2h7\"></path></svg><span>打样管理</span></a><a class=\"nav-link\" href=\"/sample/deliveries\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-send nav-link-icon\" aria-hidden=\"true\"><path d=\"M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z\"></path><path d=\"m21.854 2.147-10.94 10.939\"></path></svg><span>寄样管理</span></a></div></details><details class=\"nav-group\"><summary class=\"nav-group-summary\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-warehouse\" aria-hidden=\"true\"><path d=\"M18 21V10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v11\"></path><path d=\"M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 1.132-1.803l7.95-3.974a2 2 0 0 1 1.837 0l7.948 3.974A2 2 0 0 1 22 8z\"></path><path d=\"M6 13h12\"></path><path d=\"M6 17h12\"></path></svg><span>仓库</span><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-down nav-group-chevron\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"></path></svg></summary><div class=\"nav-group-items\"><a class=\"nav-link\" href=\"/warehouse/inbound-orders\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-warehouse nav-link-icon\" aria-hidden=\"true\"><path d=\"M18 21V10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v11\"></path><path d=\"M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 1.132-1.803l7.95-3.974a2 2 0 0 1 1.837 0l7.948 3.974A2 2 0 0 1 22 8z\"></path><path d=\"M6 13h12\"></path><path d=\"M6 17h12\"></path></svg><span>入仓</span></a><a class=\"nav-link\" href=\"/warehouse/inbound-plans\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-warehouse nav-link-icon\" aria-hidden=\"true\"><path d=\"M18 21V10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v11\"></path><path d=\"M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 1.132-1.803l7.95-3.974a2 2 0 0 1 1.837 0l7.948 3.974A2 2 0 0 1 22 8z\"></path><path d=\"M6 13h12\"></path><path d=\"M6 17h12\"></path></svg><span>入库计划</span></a><a class=\"nav-link\" href=\"/warehouse/outbound-plans\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-send nav-link-icon\" aria-hidden=\"true\"><path d=\"M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z\"></path><path d=\"m21.854 2.147-10.94 10.939\"></path></svg><span>出库计划</span></a><a class=\"nav-link\" href=\"/warehouse/outbound-orders\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-send nav-link-icon\" aria-hidden=\"true\"><path d=\"M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z\"></path><path d=\"m21.854 2.147-10.94 10.939\"></path></svg><span>货物出库</span></a><a class=\"nav-link\" href=\"/warehouse/stocktakes\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-layout-dashboard nav-link-icon\" aria-hidden=\"true\"><rect width=\"7\" height=\"9\" x=\"3\" y=\"3\" rx=\"1\"></rect><rect width=\"7\" height=\"5\" x=\"14\" y=\"3\" rx=\"1\"></rect><rect width=\"7\" height=\"9\" x=\"14\" y=\"12\" rx=\"1\"></rect><rect width=\"7\" height=\"5\" x=\"3\" y=\"16\" rx=\"1\"></rect></svg><span>库存盘点</span></a></div></details><details class=\"nav-group\"><summary class=\"nav-group-summary\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chart-column\" aria-hidden=\"true\"><path d=\"M3 3v16a2 2 0 0 0 2 2h16\"></path><path d=\"M18 17V9\"></path><path d=\"M13 17V5\"></path><path d=\"M8 17v-3\"></path></svg><span>财务经营</span><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-down nav-group-chevron\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"></path></svg></summary><div class=\"nav-group-items\"><details class=\"nav-submenu\"><summary class=\"nav-link nav-link-parent\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-wallet nav-link-icon\" aria-hidden=\"true\"><path d=\"M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1\"></path><path d=\"M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4\"></path></svg><span>财务摘要</span><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right nav-submenu-chevron\" aria-hidden=\"true\"><path d=\"m9 18 6-6-6-6\"></path></svg></summary><div class=\"nav-submenu-items\"><a class=\"nav-link nav-child\" href=\"/finance/overview\"><span>经营总览</span></a><a class=\"nav-link nav-child\" href=\"/finance/receipts\"><span>收款管理</span></a><a class=\"nav-link nav-child\" href=\"/finance/payments\"><span>付款管理</span></a><a class=\"nav-link nav-child\" href=\"/finance/fees\"><span>付费管理</span></a><a class=\"nav-link nav-child\" href=\"/finance/tax\"><span>核销退税</span></a><a class=\"nav-link nav-child\" href=\"/finance/misc\"><span>杂费管理</span></a><a class=\"nav-link nav-child\" href=\"/finance/settlement\"><span>结算核算</span></a><a class=\"nav-link nav-child\" href=\"/finance/reimbursements\"><span>报销管理</span></a><a class=\"nav-link nav-child\" href=\"/finance/port-data\"><span>口岸数据</span></a><a class=\"nav-link nav-child\" href=\"/finance/reports\"><span>财务报表</span></a></div></details><a class=\"nav-link\" href=\"/reporting\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chart-column nav-link-icon\" aria-hidden=\"true\"><path d=\"M3 3v16a2 2 0 0 0 2 2h16\"></path><path d=\"M18 17V9\"></path><path d=\"M13 17V5\"></path><path d=\"M8 17v-3\"></path></svg><span>老板看板</span></a></div></details><details class=\"nav-group\"><summary class=\"nav-group-summary\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-settings\" aria-hidden=\"true\"><path d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle></svg><span>系统设置</span><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-down nav-group-chevron\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"></path></svg></summary><div class=\"nav-group-items\"><a class=\"nav-link\" href=\"/organization/users\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-users nav-link-icon\" aria-hidden=\"true\"><path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"></path><path d=\"M16 3.128a4 4 0 0 1 0 7.744\"></path><path d=\"M22 21v-2a4 4 0 0 0-3-3.87\"></path><circle cx=\"9\" cy=\"7\" r=\"4\"></circle></svg><span>组织管理</span></a><a class=\"nav-link\" href=\"/system/mcp\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-settings nav-link-icon\" aria-hidden=\"true\"><path d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle></svg><span>MCP 接入</span></a><a class=\"nav-link\" href=\"/system/audit-logs\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-layout-dashboard nav-link-icon\" aria-hidden=\"true\"><rect width=\"7\" height=\"9\" x=\"3\" y=\"3\" rx=\"1\"></rect><rect width=\"7\" height=\"5\" x=\"14\" y=\"3\" rx=\"1\"></rect><rect width=\"7\" height=\"9\" x=\"14\" y=\"12\" rx=\"1\"></rect><rect width=\"7\" height=\"5\" x=\"3\" y=\"16\" rx=\"1\"></rect></svg><span>审计日志</span></a></div></details><details class=\"nav-group\"><summary class=\"nav-group-summary\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-clipboard-check\" aria-hidden=\"true\"><rect width=\"8\" height=\"4\" x=\"8\" y=\"2\" rx=\"1\" ry=\"1\"></rect><path d=\"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2\"></path><path d=\"m9 14 2 2 4-4\"></path></svg><span>采购单据</span><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-down nav-group-chevron\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"></path></svg></summary><div class=\"nav-group-items\"><a class=\"nav-link\" href=\"/purchase/inquiries\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-search nav-link-icon\" aria-hidden=\"true\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg><span>采购询价</span></a><a class=\"nav-link\" href=\"/purchase/invoice-notices\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file-pen-line nav-link-icon\" aria-hidden=\"true\"><path d=\"m18.226 5.226-2.52-2.52A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-.351\"></path><path d=\"M21.378 12.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z\"></path><path d=\"M8 18h1\"></path></svg><span>开票通知</span></a></div></details></div></nav></aside><section class=\"react-workspace\"><header class=\"react-topbar\"><div><p class=\"eyebrow\">业务模块</p><h1>出货明细</h1></div><div class=\"react-topbar-actions\"><button aria-label=\"通知\" class=\"topbar-settings-button topbar-bell-button\" title=\"通知\" type=\"button\"><span class=\"ant-badge css-xsuzon css-var-root\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-bell\" aria-hidden=\"true\"><path d=\"M10.268 21a2 2 0 0 0 3.464 0\"></path><path d=\"M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326\"></path></svg><sup data-show=\"true\" class=\"ant-scroll-number ant-badge-count ant-badge-count-sm\" title=\"2\" style=\"margin-top: 2px; inset-inline-end: 2px;\"><bdi><span class=\"ant-scroll-number-only\" style=\"transition: none;\"><span class=\"ant-scroll-number-only-unit current\">2</span></span></bdi></sup></span></button><button aria-label=\"系统设置\" class=\"topbar-settings-button\" title=\"系统设置\" type=\"button\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-settings\" aria-hidden=\"true\"><path d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle></svg></button></div></header><section class=\"shipment-page\"><div class=\"summary-strip\" aria-label=\"出货明细概览\"><div class=\"metric-cell normal\"><span class=\"metric-label\">出货单</span><strong class=\"metric-value\">1</strong></div><div class=\"metric-cell normal is-zero\"><span class=\"metric-label\">待审批</span><strong class=\"metric-value\">0</strong></div><div class=\"metric-cell normal\"><span class=\"metric-label\">已审批</span><strong class=\"metric-value\">1</strong></div><div class=\"metric-cell normal\"><span class=\"metric-label\">应收金额</span><strong class=\"metric-value\">USD 205.00</strong></div><div class=\"metric-cell normal\"><span class=\"metric-label\">预计利润</span><strong class=\"metric-value\">USD 210.00</strong></div></div><section class=\"business-grid shipment-grid\"><section class=\"workspace-panel list-panel product-list-panel\"><div class=\"panel-heading toolbar-heading\"><div class=\"panel-title\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-search\" aria-hidden=\"true\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg><h2 class=\"ant-typography css-xsuzon css-var-root\">出货计划列表</h2></div><form class=\"inline-filters\"><label>出货搜索<input placeholder=\"出货单 / 客户 / 合同 / 港口\" class=\"ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"text\" value=\"\"></label><label>审批状态<div class=\"ant-select ant-select-outlined css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow\"><div class=\"ant-select-content ant-select-content-has-value\" title=\"全部状态\">全部状态<input id=\"_r_c_\" readonly=\"\" autocomplete=\"off\" class=\"ant-select-input\" role=\"combobox\" aria-expanded=\"false\" aria-haspopup=\"listbox\" aria-autocomplete=\"list\" type=\"search\" value=\"\"></div><div class=\"ant-select-suffix\"><span role=\"img\" aria-label=\"down\" class=\"anticon anticon-down\"><svg viewBox=\"64 64 896 896\" focusable=\"false\" data-icon=\"down\" width=\"1em\" height=\"1em\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z\"></path></svg></span></div></div></label><label>客户编号<div class=\"ant-select ant-select-outlined css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow ant-select-show-search\"><div class=\"ant-select-content\"><div class=\"ant-select-placeholder\" style=\"visibility: visible;\">输入客户编号</div><input id=\"_r_e_\" aria-label=\"客户编号\" autocomplete=\"off\" class=\"ant-select-input\" role=\"combobox\" aria-expanded=\"false\" aria-haspopup=\"listbox\" aria-autocomplete=\"list\" type=\"search\" value=\"\"></div><div class=\"ant-select-suffix\"><span role=\"img\" aria-label=\"down\" class=\"anticon anticon-down\"><svg viewBox=\"64 64 896 896\" focusable=\"false\" data-icon=\"down\" width=\"1em\" height=\"1em\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z\"></path></svg></span></div></div></label><label>出口合同编号<input placeholder=\"输入出口合同编号\" class=\"ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"text\" value=\"\"></label><div class=\"filter-actions\"><button type=\"submit\" class=\"ant-btn css-xsuzon css-var-root ant-btn-default ant-btn-color-default ant-btn-variant-outlined\"><div style=\"position: absolute; left: 0px; top: 0px;\"><div class=\"ant-wave css-xsuzon wave-motion-appear wave-motion-appear-active wave-motion\" style=\"left: -1px; top: -1px; width: 85px; height: 36px; border-radius: 5px; --ant-wave-color: oklab(0.709756 -0.00221118 -0.0975734);\"></div></div><span class=\"ant-btn-icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-search\" aria-hidden=\"true\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></span><span>查询</span></button><button type=\"button\" class=\"ant-btn css-xsuzon css-var-root ant-btn-primary ant-btn-color-primary ant-btn-variant-solid\"><span class=\"ant-btn-icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-plus\" aria-hidden=\"true\"><path d=\"M5 12h14\"></path><path d=\"M12 5v14\"></path></svg></span><span>生成出货明细</span></button></div></form></div><div class=\"css-var-root ant-table-css-var ant-table-wrapper css-xsuzon\"><div class=\"ant-spin css-xsuzon css-var-root\" aria-live=\"polite\" aria-busy=\"false\"><div class=\"ant-spin-container\"><div class=\"ant-table ant-table-small css-var-root ant-table-css-var css-xsuzon\"><div class=\"ant-table-container\"><div class=\"ant-table-content\"><table style=\"table-layout: auto;\"><colgroup><col><col><col><col><col><col><col style=\"width: 110px;\"></colgroup><thead class=\"ant-table-thead\"><tr><th class=\"ant-table-cell\" scope=\"col\">出货单号</th><th class=\"ant-table-cell\" scope=\"col\">状态</th><th class=\"ant-table-cell\" scope=\"col\">客户</th><th class=\"ant-table-cell\" scope=\"col\">出货日期</th><th class=\"ant-table-cell\" scope=\"col\">计划出运日</th><th class=\"ant-table-cell\" scope=\"col\">应收</th><th class=\"ant-table-cell\" scope=\"col\">入口</th></tr></thead><tbody class=\"ant-table-tbody\"><tr class=\"ant-table-row ant-table-row-level-0 selected-row\" data-row-key=\"d6fc976b-09f5-41e4-a3b3-7aba1f636621\"><td class=\"ant-table-cell\"><button class=\"row-button\" type=\"button\">SP-DAEPEG</button></td><td class=\"ant-table-cell\">已审批</td><td class=\"ant-table-cell\">QA261112 测试客户</td><td class=\"ant-table-cell\">2026-11-12</td><td class=\"ant-table-cell\">2026-11-25</td><td class=\"ant-table-cell\">USD 205.00</td><td class=\"ant-table-cell\"><button type=\"button\" class=\"ant-btn css-xsuzon css-var-root ant-btn-default ant-btn-color-default ant-btn-variant-outlined ant-btn-sm\"><span>查看详情</span></button></td></tr></tbody></table></div></div></div><ul class=\"ant-pagination ant-pagination-small ant-pagination-mini ant-table-pagination ant-table-pagination-end css-xsuzon css-var-root\"><li class=\"ant-pagination-total-text\">共 1 条</li><li title=\"上一页\" class=\"ant-pagination-prev ant-pagination-disabled\" aria-disabled=\"true\"><button class=\"ant-pagination-item-link\" type=\"button\" tabindex=\"-1\" disabled=\"\"><span role=\"img\" aria-label=\"left\" class=\"anticon anticon-left\"><svg viewBox=\"64 64 896 896\" focusable=\"false\" data-icon=\"left\" width=\"1em\" height=\"1em\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z\"></path></svg></span></button></li><li title=\"1\" class=\"ant-pagination-item ant-pagination-item-1 ant-pagination-item-active\" tabindex=\"0\"><a rel=\"nofollow\">1</a></li><li title=\"下一页\" class=\"ant-pagination-next ant-pagination-disabled\" aria-disabled=\"true\"><button class=\"ant-pagination-item-link\" type=\"button\" tabindex=\"-1\" disabled=\"\"><span role=\"img\" aria-label=\"right\" class=\"anticon anticon-right\"><svg viewBox=\"64 64 896 896\" focusable=\"false\" data-icon=\"right\" width=\"1em\" height=\"1em\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z\"></path></svg></span></button></li><li class=\"ant-pagination-options\"><div class=\"ant-select ant-select-sm ant-select-outlined ant-pagination-options-size-changer css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow ant-select-show-search\"><div class=\"ant-select-content ant-select-content-has-value\" title=\"50 条/页\">50 条/页<input id=\"_r_i_\" aria-label=\"页码\" autocomplete=\"off\" class=\"ant-select-input\" role=\"combobox\" aria-expanded=\"false\" aria-haspopup=\"listbox\" aria-autocomplete=\"list\" type=\"search\" value=\"\"></div><div class=\"ant-select-suffix\"><span role=\"img\" aria-label=\"down\" class=\"anticon anticon-down\"><svg viewBox=\"64 64 896 896\" focusable=\"false\" data-icon=\"down\" width=\"1em\" height=\"1em\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z\"></path></svg></span></div></div></li></ul></div></div></div></section></section></section></section></main></div>\n  \n\n</body>",
+  "controls": [
+    {
+      "tag": "BUTTON",
+      "text": "导航",
+      "label": "业务导航",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(239, 239, 239)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "工作台",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        12,
+        76.6953125,
+        211,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        155.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        195.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        235.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        275.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        315.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "出口合同",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        197.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "采购合同",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        237.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "出口报价",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        277.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "出货明细",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        317.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(40, 76, 184)",
+      "background": "rgb(237, 242, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        405.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        445.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        485.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        525.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        565.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        605.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        447.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        487.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        527.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        567.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        607.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        527.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        564.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        601.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        638.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        675.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        712.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        749.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        786.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        823.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        860.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        529.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        531.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        571.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        611.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        573.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        613.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "2",
+      "label": "通知",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1180,
+        16.3203125,
+        38,
+        38
+      ],
+      "color": "rgb(140, 143, 156)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "系统设置",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1218,
+        16.3203125,
+        38,
+        38
+      ],
+      "color": "rgb(140, 143, 156)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": "出货单 / 客户 / 合同 / 港口",
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        281,
+        267.4453125,
+        223.71875,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "search",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        527.71875,
+        272.4453125,
+        112.0703125,
+        26
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": "客户编号",
+      "placeholder": null,
+      "type": "search",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        691.7890625,
+        272.4453125,
+        112.0625,
+        26
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": "输入出口合同编号",
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        844.8515625,
+        267.4453125,
+        152.0625,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查询",
+      "label": null,
+      "placeholder": null,
+      "type": "submit",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1008.9140625,
+        267.4453125,
+        84.5234375,
+        36
+      ],
+      "color": "rgb(40, 75, 179)",
+      "background": "rgb(247, 248, 250)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "生成出货明细",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1101.4375,
+        267.4453125,
+        137.5625,
+        36
+      ],
+      "color": "rgb(255, 255, 255)",
+      "background": "rgb(49, 91, 214)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "SP-DAEPEG",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        289,
+        380.4453125,
+        76.1796875,
+        18.84375
+      ],
+      "color": "rgb(49, 91, 214)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看详情",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1137,
+        380.4453125,
+        67.015625,
+        28
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "12px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": true,
+      "rect": [
+        1066.9375,
+        439.4453125,
+        24,
+        24
+      ],
+      "color": "rgba(0, 0, 0, 0.25)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "12px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "1",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        1095.9375,
+        440.4453125,
+        22,
+        22
+      ],
+      "color": "rgb(22, 119, 255)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "14px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": true,
+      "rect": [
+        1122.9375,
+        439.4453125,
+        24,
+        24
+      ],
+      "color": "rgba(0, 0, 0, 0.25)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "12px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": "页码",
+      "placeholder": null,
+      "type": "search",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1159.9375,
+        438.4453125,
+        50.0625,
+        26
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    }
+  ],
+  "tables": [
+    "出货单号\t状态\t客户\t出货日期\t计划出运日\t应收\t入口\nSP-DAEPEG\t已审批\tQA261112 测试客户\t2026-11-12\t2026-11-25\tUSD 205.00\t\n查看详情"
+  ],
+  "scrollables": []
+}

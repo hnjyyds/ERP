@@ -1,0 +1,1722 @@
+{
+  "time": "2026-11-17T03:56:15.443Z",
+  "url": "http://localhost:8080/purchase/invoice-notices",
+  "viewport": [
+    1440,
+    900
+  ],
+  "scripts": [
+    "http://localhost:8080/assets/index-BAg6ml7C.js"
+  ],
+  "language": "zh-CN",
+  "timeZone": "Asia/Shanghai",
+  "scroll": [
+    0,
+    0,
+    1440,
+    900
+  ],
+  "focus": "<button type=\"submit\" class=\"ant-btn css-xsuzon css-var-root ant-btn-primary ant-btn-color-primary ant-btn-variant-solid ant-btn-loading\"><div style=\"position: absolute; left: 0px; top: 0px;\"><div class=\"ant-wave css-xsuzon wave-motion-appear wave-motion-appear-active wave-motion\" style=\"left: -1px; top: -1px; width: 139px; height: 36px; border-radius: 8px; --ant-wave-color: rgb(40, 76, 184);\"></div></div><span class=\"ant-btn-icon ant-btn-loading-icon\" style=\"\"><span role=\"img\" aria-label=\"loading\" class=\"anticon anticon-loading anticon-spin\"><svg viewBox=\"0 0 1024 1024\" focusable=\"false\" data-icon=\"loading\" width=\"1em\" height=\"1em\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M988 548c-19.9 0-36-16.1-36-36 0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 00-94.3-139.9 437.71 437.71 0 00-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.3C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3.1 19.9-16 36-35.9 36z\"></path></svg></span></span><span>生成开票通知</span></button>",
+  "controls": [
+    {
+      "tag": "BUTTON",
+      "text": "导航",
+      "label": "业务导航",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(239, 239, 239)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "工作台",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        12,
+        76.6953125,
+        211,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        155.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        195.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        235.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        275.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        315.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        197.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        237.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        277.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        317.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        239.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        279.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        319.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        359.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        399.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        439.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        281.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        321.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        361.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        401.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        441.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        361.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        398.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        435.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        472.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        509.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        546.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        583.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        620.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        657.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        694.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        363.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        365.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        405.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        445.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "采购询价",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        407.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "开票通知",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        447.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(40, 76, 184)",
+      "background": "rgb(237, 242, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "2",
+      "label": "通知",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1340,
+        16.3203125,
+        38,
+        38
+      ],
+      "color": "rgb(140, 143, 156)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "系统设置",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1378,
+        16.3203125,
+        38,
+        38
+      ],
+      "color": "rgb(140, 143, 156)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": "通知号 / 供应商 / 品名",
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        283,
+        339.4453125,
+        282.21875,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "search",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        588.21875,
+        344.4453125,
+        144.5703125,
+        26
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": "输入供应商编号或名称",
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        773.7890625,
+        339.4453125,
+        184.5625,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": "输入报关单证编号",
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        970.3515625,
+        339.4453125,
+        184.5625,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查询",
+      "label": null,
+      "placeholder": null,
+      "type": "submit",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1166.9140625,
+        339.4453125,
+        84.5234375,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "生成开票通知",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1259.4375,
+        339.4453125,
+        137.5625,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "PIN-UIQA-20261117-02-01",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        291,
+        452.4453125,
+        172.609375,
+        18.84375
+      ],
+      "color": "rgb(49, 91, 214)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看详情",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1295,
+        452.4453125,
+        67.015625,
+        28
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "PIN-UIQA-20261117-02-02",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        291,
+        497.4453125,
+        174.3359375,
+        18.84375
+      ],
+      "color": "rgb(49, 91, 214)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看详情",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1295,
+        497.4453125,
+        67.015625,
+        28
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": true,
+      "rect": [
+        1224.9375,
+        556.4453125,
+        24,
+        24
+      ],
+      "color": "rgba(0, 0, 0, 0.25)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "1",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        1253.9375,
+        557.4453125,
+        22,
+        22
+      ],
+      "color": "rgb(22, 119, 255)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "14px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": true,
+      "rect": [
+        1280.9375,
+        556.4453125,
+        24,
+        24
+      ],
+      "color": "rgba(0, 0, 0, 0.25)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": "页码",
+      "placeholder": null,
+      "type": "search",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1317.9375,
+        555.4453125,
+        50.0625,
+        26
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Close",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1327.869873046875,
+        248.09423828125,
+        7.32421875,
+        7.32415771484375
+      ],
+      "color": "rgb(140, 143, 156)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "14px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        179.41607666015625,
+        120.3253173828125,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "UIQA-20261117-02",
+      "disabled": false,
+      "rect": [
+        1206.498291015625,
+        179.41607666015625,
+        120.3253173828125,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "date",
+      "value": "2026-11-17",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        197.7264404296875,
+        78.8204345703125,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "date",
+      "value": "2026-11-17",
+      "disabled": false,
+      "rect": [
+        1164.993408203125,
+        197.7264404296875,
+        78.822509765625,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "CNY",
+      "disabled": false,
+      "rect": [
+        1248.0010986328125,
+        197.7264404296875,
+        78.822509765625,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "UIQA-20261117-02 测试样本，仅验证开票通知选择回填；零金额草稿，不发送、不收票。",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        216.03680419921875,
+        244.8358154296875,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        250.0029296875,
+        120.3253173828125,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "UIQA-20261117-02 测试供应商A",
+      "disabled": false,
+      "rect": [
+        1206.498291015625,
+        250.0029296875,
+        120.3253173828125,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        268.31329345703125,
+        120.3253173828125,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "UIQA-TEST-A",
+      "disabled": false,
+      "rect": [
+        1206.498291015625,
+        268.31329345703125,
+        120.3253173828125,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "pc-pack-a",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        305.757568359375,
+        5.7547607421875,
+        9.416778564453125
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "product-bag",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        330.3457946777344,
+        5.7547607421875,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "UIQA测试样品A",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        286.6236572265625,
+        78.8204345703125,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "UIQA测试品名A",
+      "disabled": false,
+      "rect": [
+        1164.993408203125,
+        286.6236572265625,
+        78.822509765625,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "UIQA测试开票品名A",
+      "disabled": false,
+      "rect": [
+        1248.0010986328125,
+        286.6236572265625,
+        78.822509765625,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "number",
+      "value": "1",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        304.93402099609375,
+        78.8204345703125,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "pcs",
+      "disabled": false,
+      "rect": [
+        1164.993408203125,
+        304.93402099609375,
+        78.822509765625,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "number",
+      "value": "0",
+      "disabled": false,
+      "rect": [
+        1248.0010986328125,
+        304.93402099609375,
+        78.822509765625,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "仅测试选择回填，非真实交易",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        323.244384765625,
+        244.8358154296875,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        357.21051025390625,
+        120.3253173828125,
+        9.416778564453125
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "UIQA-20261117-02 测试供应商B",
+      "disabled": false,
+      "rect": [
+        1206.498291015625,
+        357.21051025390625,
+        120.3253173828125,
+        9.416778564453125
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        375.5208740234375,
+        120.3253173828125,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "UIQA-TEST-B",
+      "disabled": false,
+      "rect": [
+        1206.498291015625,
+        375.5208740234375,
+        120.3253173828125,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "pc-label-a",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        305.757568359375,
+        5.7547607421875,
+        9.416778564453125
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "product-label",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        330.3457946777344,
+        5.7547607421875,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "UIQA测试样品B",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        393.83123779296875,
+        78.8204345703125,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "UIQA测试品名B",
+      "disabled": false,
+      "rect": [
+        1164.993408203125,
+        393.83123779296875,
+        78.822509765625,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "UIQA测试开票品名B",
+      "disabled": false,
+      "rect": [
+        1248.0010986328125,
+        393.83123779296875,
+        78.822509765625,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "number",
+      "value": "1",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        412.1416015625,
+        78.8204345703125,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "pcs",
+      "disabled": false,
+      "rect": [
+        1164.993408203125,
+        412.1416015625,
+        78.822509765625,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "number",
+      "value": "0",
+      "disabled": false,
+      "rect": [
+        1248.0010986328125,
+        412.1416015625,
+        78.822509765625,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "仅测试选择回填，非真实交易",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        430.45196533203125,
+        244.8358154296875,
+        9.416748046875
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "生成开票通知",
+      "label": null,
+      "placeholder": null,
+      "type": "submit",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1081.98779296875,
+        444.053955078125,
+        36.2447509765625,
+        9.416748046875
+      ],
+      "color": "rgb(255, 255, 255)",
+      "background": "rgb(40, 76, 184)",
+      "opacity": "0.65",
+      "fontSize": "13px",
+      "hit": false
+    }
+  ],
+  "tables": [
+    "开票通知\t状态\t供应商\t报关单\t金额\t提醒\t入口\nPIN-UIQA-20261117-02-01\t草稿\tUIQA-20261117-02 测试供应商A\tUIQA-20261117-02\tCNY 0.00\t0 个\t\n查看详情\n\nPIN-UIQA-20261117-02-02\t草稿\tUIQA-20261117-02 测试供应商B\tUIQA-20261117-02\tCNY 0.00\t0 个\t\n查看详情"
+  ],
+  "scrollables": [
+    {
+      "tag": "DIV",
+      "class": "workflow-modal-content entity-modal-form",
+      "x": 0,
+      "y": 411,
+      "w": 936,
+      "h": 684,
+      "sw": 936,
+      "sh": 1112,
+      "rect": "{\"x\":1081.98779296875,\"y\":270.18316650390625,\"width\":244.8358154296875,\"height\":178.91839599609375,\"top\":270.18316650390625,\"right\":1326.8236083984375,\"bottom\":449.1015625,\"left\":1081.98779296875}"
+    }
+  ]
+}

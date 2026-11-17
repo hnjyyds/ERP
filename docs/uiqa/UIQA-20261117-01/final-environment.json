@@ -1,0 +1,13 @@
+{
+  "url": "http://localhost:8080/sales/shipments?contract=EC-F8D7RX",
+  "scripts": [
+    "http://localhost:8080/assets/index-BAg6ml7C.js"
+  ],
+  "viewport": [
+    390,
+    844
+  ],
+  "time": "2026-11-17T03:49:12.314Z",
+  "language": "zh-CN",
+  "timeZone": "Asia/Shanghai"
+}

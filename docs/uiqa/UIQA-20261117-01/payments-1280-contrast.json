@@ -1,0 +1,23 @@
+{
+  "url": "http://localhost:8080/finance/payments",
+  "viewport": [
+    1280,
+    720
+  ],
+  "tags": [
+    {
+      "text": "已付清",
+      "color": "rgb(23, 96, 60)",
+      "background": "rgb(246, 255, 237)",
+      "opacity": "1",
+      "ratio": 7.368184180027188
+    },
+    {
+      "text": "已付清",
+      "color": "rgb(23, 96, 60)",
+      "background": "rgb(246, 255, 237)",
+      "opacity": "1",
+      "ratio": 7.368184180027188
+    }
+  ]
+}

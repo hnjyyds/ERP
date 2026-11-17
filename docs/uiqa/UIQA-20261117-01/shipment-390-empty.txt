@@ -1,0 +1,116 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易修复独立验收"(2): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=382, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "出货明细"
+        container
+          button "通知" [ref=359, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "2"
+          button "系统设置" [ref=360, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "出货明细概览"
+          container
+            text "出货单"
+            text "0"
+          container
+            text "待审批"
+            text "0"
+          container
+            text "已审批"
+            text "0"
+          container
+            text "应收金额"
+            text "USD 0.00"
+          container
+            text "预计利润"
+            text "USD 0.00"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "出货计划列表"
+            form
+              container
+                text "出货搜索"
+                textbox [ref=361, loc=css:input[placeholder="出货单 / 客户 / 合同 / 港口"]]
+                  text "出货单 / 客户 / 合同 / 港口"
+              container
+                text "审批状态"
+                container
+                  container
+                    text "全部状态"
+                    comboboxgrouping [ref=362]
+                  image "down"
+                    svg_root
+              container
+                text "客户编号"
+                container
+                  container
+                    text "输入客户编号"
+                    comboboxgrouping "客户编号" [ref=363, loc=css:input[aria-label="客户编号"]]
+                  image "down"
+                    svg_root
+              container
+                text "出口合同编号"
+                textbox [ref=364, loc=css:input[placeholder="输入出口合同编号"]]
+                  text "ACCEPT-NOMATCH"
+              container
+                button [ref=365]
+                  svg_root
+                  text "查询"
+                button [ref=366]
+                  svg_root
+                  text "生成出货明细"
+          container
+            table
+              table_row
+                table_cell
+            container [ref=367]
+              table
+                table_row
+                  table_cell
+                    text "出货单号"
+                  table_cell
+                    text "状态"
+                  table_cell
+                    text "客户"
+                  table_cell
+                    text "出货日期"
+                  table_cell
+                    text "计划出运日"
+                  table_cell
+                    text "应收"
+                  table_cell
+                    text "入口"
+                table_row
+                  table_cell
+                    paragraph
+                      text "没有匹配的结果"
+                    paragraph
+                      text "请调整关键词或筛选条件后再试"
+                    button [ref=385]
+                      text "清空筛选"
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

@@ -1,0 +1,11 @@
+{
+  "url": "http://localhost:8080/purchase/invoice-notices",
+  "scripts": [
+    "http://localhost:8080/assets/index-BAg6ml7C.js"
+  ],
+  "time": "2026-11-17T04:00:23.156Z",
+  "viewport": [
+    1440,
+    900
+  ]
+}

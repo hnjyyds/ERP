@@ -1,0 +1,301 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易测试数据补充"(4): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=262, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "付款管理"
+          container
+            button "通知" [ref=218, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "2"
+            button "系统设置" [ref=219, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container "付款管理"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "供应商发票列表"
+              form
+                container
+                  text "发票搜索"
+                  textbox [ref=220]
+                container
+                  text "付款状态"
+                  container
+                    container
+                      text "全部状态"
+                      comboboxgrouping [ref=221]
+                    image "down"
+                      svg_root
+                container
+                  text "供应商"
+                  container
+                    container
+                      text "输入供应商编号或名称"
+                      comboboxgrouping "发票供应商筛选" [ref=222, loc=css:input[aria-label="发票供应商筛选"]]
+                    image "down"
+                      svg_root
+                container
+                  text "采购合同号"
+                  textbox [ref=223]
+                container
+                  button [ref=224]
+                    svg_root
+                    text "查询"
+                  button [ref=225]
+                    svg_root
+                    text "发票登记"
+            container [ref=263]
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=226]
+                  container [ref=264]
+                    table
+                      table_row
+                        table_cell
+                          text "供应商发票"
+                        table_cell
+                          text "状态"
+                        table_cell
+                          text "供应商"
+                        table_cell
+                          text "采购合同"
+                        table_cell
+                          text "发票金额"
+                        table_cell
+                          text "已付"
+                        table_cell
+                          text "未付"
+                        table_cell
+                          text "超付"
+                      table_row
+                        table_cell
+                          button [ref=227]
+                            text "QA261112-INV01"
+                        table_cell
+                          text "已付清"
+                        table_cell
+                          text "QA261112 测试供应商"
+                        table_cell
+                          text "PC-HR36RU"
+                        table_cell
+                          text "RMB 100.00"
+                        table_cell
+                          text "RMB 120.00"
+                        table_cell
+                          text "RMB 0.00"
+                        table_cell
+                          text "RMB 20.00"
+                unordered_list
+                  list_item
+                    text "共 1 条"
+                  list_item
+                    button [ref=228]
+                      image "left"
+                        svg_root
+                  list_item [ref=229]
+                    anchor [ref=230]
+                      text "1"
+                  list_item
+                    button [ref=231]
+                      image "right"
+                        svg_root
+              table
+                table_row
+                  table_cell
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "应付账款查询"
+              form
+                container
+                  text "应付搜索"
+                  textbox [ref=233]
+                container
+                  text "应付状态"
+                  container
+                    text "全部状态"
+                    comboboxgrouping [ref=234]
+                    svg_root
+                container
+                  text "供应商"
+                  container
+                    text "输入供应商编号或名称"
+                    comboboxgrouping "应付供应商筛选" [ref=235, loc=css:input[aria-label="应付供应商筛选"]]
+                    svg_root
+                container
+                  text "采购合同号"
+                  textbox [ref=236]
+                button [ref=237]
+                  svg_root
+                  text "查询"
+            container [ref=265]
+              table
+                table_row
+                  table_cell
+              container [ref=238]
+                container [ref=266]
+                  table
+                    table_row
+                      table_cell
+                        text "供应商发票"
+                      table_cell
+                        text "供应商"
+                      table_cell
+                        text "采购合同"
+                      table_cell
+                        text "发票金额"
+                      table_cell
+                        text "已付款"
+                      table_cell
+                        text "应付余额"
+                      table_cell
+                        text "超付"
+                      table_cell
+                        text "状态"
+                    table_row
+                      table_cell
+                        text "QA261112-INV01"
+                      table_cell
+                        text "QA261112 测试供应商"
+                      table_cell
+                        text "PC-HR36RU"
+                      table_cell
+                        text "RMB 100.00"
+                      table_cell
+                        text "RMB 120.00"
+                      table_cell
+                        text "RMB 0.00"
+                      table_cell
+                        text "RMB 20.00"
+                      table_cell
+                        text "已付清"
+              unordered_list
+                list_item
+                  text "共 1 条"
+                list_item
+                  button [ref=239]
+                    image "left"
+                      svg_root
+                list_item [ref=240]
+                  anchor [ref=241]
+                    text "1"
+                list_item
+                  button [ref=242]
+                    image "right"
+                      svg_root
+              table
+                table_row
+                  table_cell
+    dialog "供应商发票登记"
+      button "Close" [ref=244, loc=css:button[aria-label="Close"]]
+        container "关闭"
+          image "close"
+            svg_root
+      text "供应商发票登记"
+      form
+        container
+          container
+            text "供应商发票号"
+            textbox [ref=245]
+          container
+            text "发票日期"
+            textbox [ref=246]
+              spinbutton "年" [ref=247]
+                text "2026"
+              text "/"
+              spinbutton "月" [ref=248]
+                text "11"
+              text "/"
+              spinbutton "日" [ref=249]
+                text "17"
+        container
+          container
+            text "供应商"
+            container
+              container
+                text "输入供应商编号或名称"
+                comboboxgrouping "供应商" [ref=250, loc=css:input[aria-label="供应商"]]
+              image "down"
+                svg_root
+          container
+            text "开票通知"
+            container
+              comboboxgrouping "开票通知" [ref=251, loc=css:input[aria-label="开票通知"]]
+                text "UIQA-20261117-02"
+              image "search"
+                svg_root
+              image "close-circle"
+                svg_root
+          container
+            text "采购合同"
+            container
+              container
+                text "输入关键词搜索"
+                comboboxgrouping "采购合同" [ref=252, loc=css:input[aria-label="采购合同"]]
+              image "down"
+                svg_root
+        container
+          container
+            text "发票金额"
+            textbox [ref=253]
+          container
+            text "币种"
+            textbox [ref=254]
+              text "CNY"
+          container
+            text "到期日"
+            textbox [ref=255]
+              spinbutton "年" [ref=256]
+                text "2026"
+              text "/"
+              spinbutton "月" [ref=257]
+                text "12"
+              text "/"
+              spinbutton "日" [ref=258]
+                text "17"
+        container
+          text "备注"
+          textbox [ref=259]
+        container
+          button [ref=260]
+            text "取消"
+          button [ref=261]
+            text "登记供应商发票"
+    container
+      listbox
+        listboxoption "PIN-UIQA-20261117-02-01"
+          text "013f0a7e-f0ad-4d1f-93f4-4f0fd2774dc0"
+        listboxoption "PIN-UIQA-20261117-02-02"
+          text "4b72e0ac-a9fe-493c-8d8b-d2ac95a9bf3f"
+      container
+        container
+          text "PIN-UIQA-20261117-02-01"
+          text "UIQA-20261117-02 测试供应商A"
+        container
+          text "PIN-UIQA-20261117-02-02"
+          text "UIQA-20261117-02 测试供应商B"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

@@ -1,0 +1,15 @@
+﻿缺陷,视口,场景,结果,部署,证据
+Q06-01,1440×900,商品5→0→5恢复,通过,index-BAg6ml7C.js,products-1440-restored.json
+Q06-04-products,1440×900,启用对比度7.368:1,通过,index-BAg6ml7C.js,products-1440-contrast.json
+Q06-04-payments,1440×900,已付清对比度7.368:1,通过,index-BAg6ml7C.js,payments-1440-contrast.json
+Q06-05,1440×900,合同编号命中/刷新/清空,通过,index-BAg6ml7C.js,shipment-1440-hit.json
+Q06-01,1280×720,商品5→0→5恢复,通过,index-BAg6ml7C.js,products-1280-restored.json
+Q06-04-products,1280×720,启用对比度7.368:1,通过,index-BAg6ml7C.js,products-1280-contrast.json
+Q06-04-payments,1280×720,已付清对比度7.368:1,通过,index-BAg6ml7C.js,payments-1280-contrast.json
+Q06-05,1280×720,合同编号命中/刷新/清空,通过,index-BAg6ml7C.js,shipment-1280-hit.json
+Q06-01,390×844,商品5→0→5恢复,通过,index-BAg6ml7C.js,products-390-restored.json
+Q06-04-products,390×844,启用对比度7.368:1,通过,index-BAg6ml7C.js,products-390-contrast.json
+Q06-04-payments,390×844,已付清对比度7.368:1,通过,index-BAg6ml7C.js,payments-390-contrast.json
+Q06-05,390×844,合同编号命中/刷新/清空,通过,index-BAg6ml7C.js,shipment-390-hit.json
+Q06-02-R1,隔离组件测试；UI三档仅作入口证据,业务选项回传,失败,index-BAg6ml7C.js对应源码,option-contract-test.log
+Q06-02,三档,开票通知选择和回填,未测,index-BAg6ml7C.js,DATA：无开票通知候选，见form-1440-notice.json

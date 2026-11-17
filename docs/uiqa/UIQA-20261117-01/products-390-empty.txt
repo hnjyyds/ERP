@@ -1,0 +1,108 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易修复独立验收"(2): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=150, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "商品资料"
+          container
+            button "通知" [ref=12, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "2"
+            button "系统设置" [ref=13, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "商品资料概览"
+            container
+              text "商品"
+              text "0"
+            container
+              text "配件明细"
+              text "0"
+            container
+              text "有图商品"
+              text "0 件"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "商品资料"
+              form
+                container
+                  text "搜索"
+                  textbox [ref=80, loc=css:input[placeholder="编号 / 中文 / 英文 / 海关编码"]]
+                    text "ACCEPT-NOMATCH-20261117"
+                container
+                  button "查询商品" [ref=81, loc=css:button[aria-label="查询商品"]]
+                    svg_root
+                  button [ref=82]
+                    svg_root
+                    text "新增商品"
+                  button "导入商品" [ref=83, loc=css:button[aria-label="导入商品"]]
+                    svg_root
+                    text "导入"
+                  button "导出全部商品" [ref=84, loc=css:button[aria-label="导出全部商品"]]
+                    svg_root
+                    text "导出"
+                  button "设置列视图" [ref=85, loc=css:button[aria-label="设置列视图"]]
+                    svg_root
+            container
+              table
+                table_row
+                  table_cell
+              container [ref=86]
+                container [ref=151]
+                  table
+                    table_row
+                      table_cell
+                        checkbox "Select all" [ref=87, loc=css:input[aria-label="Select all"]]
+                        table
+                          table_row
+                            table_cell
+                      table_cell
+                        text "编号"
+                      table_cell
+                        text "中文名称"
+                      table_cell
+                        text "英文名称"
+                      table_cell
+                        text "海关编码"
+                      table_cell
+                        text "单位"
+                      table_cell
+                        text "状态"
+                      table_cell
+                        text "配件"
+                      table_cell
+                        text "入口"
+                    table_row
+                      table_cell
+                        paragraph
+                          text "没有匹配的结果"
+                        paragraph
+                          text "请调整关键词或筛选条件后再试"
+                        button [ref=152]
+                          text "清空筛选"
+              table
+                table_row
+                  table_cell
+    tooltip
+      text "查询商品"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

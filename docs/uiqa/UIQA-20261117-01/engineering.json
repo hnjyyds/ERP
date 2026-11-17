@@ -1,0 +1,17 @@
+[
+  {
+    "command": "npm run test",
+    "exit": 0,
+    "log": "test.log"
+  },
+  {
+    "command": "npm run lint",
+    "exit": 0,
+    "log": "lint.log"
+  },
+  {
+    "command": "npm run build",
+    "exit": 0,
+    "log": "build.log"
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "w": 1440,
+    "suffix": "01",
+    "viewport": [
+      1440,
+      900
+    ],
+    "selected": "PIN-UIQA-20261117-02-01"
+  },
+  {
+    "w": 1440,
+    "suffix": "02",
+    "viewport": [
+      1440,
+      900
+    ],
+    "selected": "PIN-UIQA-20261117-02-02"
+  },
+  {
+    "w": 1280,
+    "suffix": "01",
+    "viewport": [
+      1280,
+      720
+    ],
+    "selected": "PIN-UIQA-20261117-02-01"
+  },
+  {
+    "w": 1280,
+    "suffix": "02",
+    "viewport": [
+      1280,
+      720
+    ],
+    "selected": "PIN-UIQA-20261117-02-02"
+  },
+  {
+    "w": 390,
+    "suffix": "01",
+    "viewport": [
+      390,
+      844
+    ],
+    "selected": "PIN-UIQA-20261117-02-01"
+  },
+  {
+    "w": 390,
+    "suffix": "02",
+    "viewport": [
+      390,
+      844
+    ],
+    "selected": "PIN-UIQA-20261117-02-02"
+  }
+]
