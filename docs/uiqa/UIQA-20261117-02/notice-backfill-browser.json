@@ -1,0 +1,43 @@
+{
+  "at": "2026-11-17T04:15:03.919Z",
+  "bundle": "index-By6s5oGf.js",
+  "results": [
+    {
+      "viewport": "1440",
+      "labels": [
+        "PIN-UIQA-20261117-02-01\nUIQA-20261117-02 测试供应商A",
+        "PIN-UIQA-20261117-02-02\nUIQA-20261117-02 测试供应商B"
+      ],
+      "picked": [
+        "PIN-UIQA-20261117-02-01",
+        "PIN-UIQA-20261117-02-02"
+      ],
+      "ok": true
+    },
+    {
+      "viewport": "1280",
+      "labels": [
+        "PIN-UIQA-20261117-02-01\nUIQA-20261117-02 测试供应商A",
+        "PIN-UIQA-20261117-02-02\nUIQA-20261117-02 测试供应商B"
+      ],
+      "picked": [
+        "PIN-UIQA-20261117-02-01",
+        "PIN-UIQA-20261117-02-02"
+      ],
+      "ok": true
+    },
+    {
+      "viewport": "390",
+      "labels": [
+        "PIN-UIQA-20261117-02-01\nUIQA-20261117-02 测试供应商A",
+        "PIN-UIQA-20261117-02-02\nUIQA-20261117-02 测试供应商B"
+      ],
+      "picked": [
+        "PIN-UIQA-20261117-02-01",
+        "PIN-UIQA-20261117-02-02"
+      ],
+      "ok": true
+    }
+  ],
+  "consoleErrors": []
+}
