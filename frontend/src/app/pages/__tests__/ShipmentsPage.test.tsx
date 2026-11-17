@@ -171,7 +171,7 @@ describe('ShipmentsPage', () => {
           q: 'S-1',
           approval_status: 'submitted',
           customer_id: 'c-1',
-          contract_id: 'ec-1',
+          contract_no: 'ec-1',
           limit: 50,
           offset: 50,
         }),

@@ -31,6 +31,7 @@ async def list_shipments(
     approval_status: Annotated[str | None, Query(max_length=40)] = None,
     customer_id: Annotated[str | None, Query(max_length=36)] = None,
     contract_id: Annotated[str | None, Query(max_length=36)] = None,
+    contract_no: Annotated[str | None, Query(max_length=80)] = None,
 ) -> ApiResponse[ShipmentPlanListResponse]:
     shipments = await service.list_shipments(
         current_user=user,
@@ -38,6 +39,7 @@ async def list_shipments(
         approval_status=approval_status,
         customer_id=customer_id,
         contract_id=contract_id,
+        contract_no=contract_no,
     )
     return ApiResponse(data=shipments)
 

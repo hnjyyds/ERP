@@ -131,6 +131,7 @@ class ShipmentPlanService:
         approval_status: str | None,
         customer_id: str | None,
         contract_id: str | None,
+        contract_no: str | None,
     ) -> ShipmentPlanListResponse:
         self._require(current_user, "sales:shipment:view")
         if approval_status is not None:
@@ -143,6 +144,7 @@ class ShipmentPlanService:
             approval_status=approval_status,
             customer_id=customer_id,
             contract_id=contract_id,
+            contract_no=contract_no,
             owner_user_ids=owner_user_ids,
         )
         summary = await self._repository.summarize_shipments(
@@ -150,6 +152,7 @@ class ShipmentPlanService:
             approval_status=approval_status,
             customer_id=customer_id,
             contract_id=contract_id,
+            contract_no=contract_no,
             owner_user_ids=owner_user_ids,
         )
         return ShipmentPlanListResponse(

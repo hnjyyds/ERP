@@ -680,7 +680,7 @@ export function listShipments(filters: {
   q?: string
   approval_status?: string
   customer_id?: string
-  contract_id?: string
+  contract_no?: string
   limit?: number
   offset?: number
 } = {}): Promise<ShipmentPlanList> {
@@ -688,7 +688,7 @@ export function listShipments(filters: {
   if (filters.q) params.set('q', filters.q)
   if (filters.approval_status) params.set('approval_status', filters.approval_status)
   if (filters.customer_id) params.set('customer_id', filters.customer_id)
-  if (filters.contract_id) params.set('contract_id', filters.contract_id)
+  if (filters.contract_no) params.set('contract_no', filters.contract_no)
   if (filters.limit !== undefined) params.set('limit', String(filters.limit))
   if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''

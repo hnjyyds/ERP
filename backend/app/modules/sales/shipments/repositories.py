@@ -206,6 +206,7 @@ class ShipmentPlanRepository:
         approval_status: str | None = None,
         customer_id: str | None = None,
         contract_id: str | None = None,
+        contract_no: str | None = None,
         owner_user_ids: list[str] | None = None,
         limit: int = 50,
         offset: int = 0,
@@ -217,6 +218,7 @@ class ShipmentPlanRepository:
             approval_status=approval_status,
             customer_id=customer_id,
             contract_id=contract_id,
+            contract_no=contract_no,
             owner_user_ids=owner_user_ids,
         )
         for condition in conditions:
@@ -238,6 +240,7 @@ class ShipmentPlanRepository:
         approval_status: str | None = None,
         customer_id: str | None = None,
         contract_id: str | None = None,
+        contract_no: str | None = None,
         owner_user_ids: list[str] | None = None,
     ) -> dict[str, object]:
         conditions = self._shipment_conditions(
@@ -245,6 +248,7 @@ class ShipmentPlanRepository:
             approval_status=approval_status,
             customer_id=customer_id,
             contract_id=contract_id,
+            contract_no=contract_no,
             owner_user_ids=owner_user_ids,
         )
         status_rows = await self.session.execute(
@@ -280,6 +284,7 @@ class ShipmentPlanRepository:
         approval_status: str | None,
         customer_id: str | None,
         contract_id: str | None,
+        contract_no: str | None,
         owner_user_ids: list[str] | None,
     ) -> list[object]:
         conditions = []
@@ -319,6 +324,14 @@ class ShipmentPlanRepository:
                 .exists()
             )
             conditions.append(contract_exists)
+        if contract_no:
+            contract_no_exists = (
+                select(ShipmentLine.id)
+                .where(ShipmentLine.shipment_id == ShipmentPlan.id)
+                .where(ShipmentLine.contract_no.ilike(f"%{contract_no}%"))
+                .exists()
+            )
+            conditions.append(contract_no_exists)
         if owner_user_ids is not None:
             conditions.append(ShipmentPlan.owner_user_id.in_(owner_user_ids))
         return conditions

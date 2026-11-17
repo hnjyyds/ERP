@@ -102,7 +102,7 @@ export function useShipmentsList({ detailId, onNavigate }: Params) {
         q: resolvedQ.trim() || undefined,
         approval_status: resolvedStatus || undefined,
         customer_id: resolvedCustomer.trim() || undefined,
-        contract_id: resolvedContract.trim() || undefined,
+        contract_no: resolvedContract.trim() || undefined,
         limit: resolvedPageSize,
         offset: (resolvedPage - 1) * resolvedPageSize,
       })

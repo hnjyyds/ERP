@@ -149,6 +149,22 @@ async def test_shipment_flow_from_contracts_approval_reminder_and_contract_write
     assert list_response.status_code == 200
     assert list_response.json()["data"]["total"] == 1
 
+    by_contract_no_response = await api_client.get(
+        "/api/v1/sales/shipments",
+        headers={"Authorization": f"Bearer {token}"},
+        params={"contract_no": contract_a["code"]},
+    )
+    assert by_contract_no_response.status_code == 200
+    assert by_contract_no_response.json()["data"]["total"] == 1
+
+    missing_contract_no_response = await api_client.get(
+        "/api/v1/sales/shipments",
+        headers={"Authorization": f"Bearer {token}"},
+        params={"contract_no": "EC-SHIP-API-MISSING"},
+    )
+    assert missing_contract_no_response.status_code == 200
+    assert missing_contract_no_response.json()["data"]["total"] == 0
+
     submit_response = await api_client.post(
         f"/api/v1/sales/shipments/{shipment_id}/submit",
         headers={"Authorization": f"Bearer {token}"},
