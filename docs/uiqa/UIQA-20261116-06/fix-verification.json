@@ -1,0 +1,234 @@
+{
+  "at": "2026-11-17T03:23:56.956Z",
+  "bundle": "index-BAg6ml7C.js",
+  "results": [
+    {
+      "item": "Q06-01",
+      "viewport": "1440",
+      "ok": true,
+      "detail": {
+        "before": 5,
+        "after": 5,
+        "emptyVisible": 0,
+        "inputValue": ""
+      },
+      "at": "2026-11-17T03:23:34.611Z"
+    },
+    {
+      "item": "Q06-04-products",
+      "viewport": "1440",
+      "ok": true,
+      "detail": {
+        "color": "rgb(23, 96, 60)",
+        "background": "rgb(246, 255, 237)",
+        "ratio": 7.37
+      },
+      "at": "2026-11-17T03:23:34.613Z"
+    },
+    {
+      "item": "Q06-02",
+      "viewport": "1440",
+      "ok": true,
+      "detail": {
+        "供应商": {
+          "present": true,
+          "optionCount": 2,
+          "optionLabels": [
+            "演示供应商｜江南织造\nUI261114-S01",
+            "QA261112 测试供应商\nQA261112-S01"
+          ],
+          "selected": "演示供应商｜江南织造"
+        },
+        "开票通知": {
+          "present": true,
+          "optionCount": 0,
+          "optionLabels": [],
+          "selected": null
+        },
+        "采购合同": {
+          "present": true,
+          "optionCount": 1,
+          "optionLabels": [
+            "PC-HR36RU\nQA261112 测试供应商"
+          ],
+          "selected": "PC-HR36RU"
+        }
+      },
+      "at": "2026-11-17T03:23:39.322Z"
+    },
+    {
+      "item": "Q06-04-payments",
+      "viewport": "1440",
+      "ok": true,
+      "detail": {
+        "color": "rgb(23, 96, 60)",
+        "background": "rgb(246, 255, 237)",
+        "ratio": 7.37
+      },
+      "at": "2026-11-17T03:23:39.653Z"
+    },
+    {
+      "item": "Q06-05",
+      "viewport": "1440",
+      "ok": true,
+      "detail": {
+        "hit": true,
+        "emptyText": 0,
+        "rows": 1
+      },
+      "at": "2026-11-17T03:23:41.446Z"
+    },
+    {
+      "item": "Q06-01",
+      "viewport": "1280",
+      "ok": true,
+      "detail": {
+        "before": 5,
+        "after": 5,
+        "emptyVisible": 0,
+        "inputValue": ""
+      },
+      "at": "2026-11-17T03:23:42.905Z"
+    },
+    {
+      "item": "Q06-04-products",
+      "viewport": "1280",
+      "ok": true,
+      "detail": {
+        "color": "rgb(23, 96, 60)",
+        "background": "rgb(246, 255, 237)",
+        "ratio": 7.37
+      },
+      "at": "2026-11-17T03:23:42.906Z"
+    },
+    {
+      "item": "Q06-02",
+      "viewport": "1280",
+      "ok": true,
+      "detail": {
+        "供应商": {
+          "present": true,
+          "optionCount": 2,
+          "optionLabels": [
+            "演示供应商｜江南织造\nUI261114-S01",
+            "QA261112 测试供应商\nQA261112-S01"
+          ],
+          "selected": "演示供应商｜江南织造"
+        },
+        "开票通知": {
+          "present": true,
+          "optionCount": 0,
+          "optionLabels": [],
+          "selected": null
+        },
+        "采购合同": {
+          "present": true,
+          "optionCount": 1,
+          "optionLabels": [
+            "PC-HR36RU\nQA261112 测试供应商"
+          ],
+          "selected": "PC-HR36RU"
+        }
+      },
+      "at": "2026-11-17T03:23:46.750Z"
+    },
+    {
+      "item": "Q06-04-payments",
+      "viewport": "1280",
+      "ok": true,
+      "detail": {
+        "color": "rgb(23, 96, 60)",
+        "background": "rgb(246, 255, 237)",
+        "ratio": 7.37
+      },
+      "at": "2026-11-17T03:23:47.075Z"
+    },
+    {
+      "item": "Q06-05",
+      "viewport": "1280",
+      "ok": true,
+      "detail": {
+        "hit": true,
+        "emptyText": 0,
+        "rows": 1
+      },
+      "at": "2026-11-17T03:23:48.817Z"
+    },
+    {
+      "item": "Q06-01",
+      "viewport": "390",
+      "ok": true,
+      "detail": {
+        "before": 5,
+        "after": 5,
+        "emptyVisible": 0,
+        "inputValue": ""
+      },
+      "at": "2026-11-17T03:23:50.187Z"
+    },
+    {
+      "item": "Q06-04-products",
+      "viewport": "390",
+      "ok": true,
+      "detail": {
+        "color": "rgb(23, 96, 60)",
+        "background": "rgb(246, 255, 237)",
+        "ratio": 7.37
+      },
+      "at": "2026-11-17T03:23:50.190Z"
+    },
+    {
+      "item": "Q06-02",
+      "viewport": "390",
+      "ok": true,
+      "detail": {
+        "供应商": {
+          "present": true,
+          "optionCount": 2,
+          "optionLabels": [
+            "演示供应商｜江南织造\nUI261114-S01",
+            "QA261112 测试供应商\nQA261112-S01"
+          ],
+          "selected": "演示供应商｜江南织造"
+        },
+        "开票通知": {
+          "present": true,
+          "optionCount": 0,
+          "optionLabels": [],
+          "selected": null
+        },
+        "采购合同": {
+          "present": true,
+          "optionCount": 1,
+          "optionLabels": [
+            "PC-HR36RU\nQA261112 测试供应商"
+          ],
+          "selected": "PC-HR36RU"
+        }
+      },
+      "at": "2026-11-17T03:23:54.831Z"
+    },
+    {
+      "item": "Q06-04-payments",
+      "viewport": "390",
+      "ok": true,
+      "detail": {
+        "color": "rgb(23, 96, 60)",
+        "background": "rgb(246, 255, 237)",
+        "ratio": 7.37
+      },
+      "at": "2026-11-17T03:23:55.161Z"
+    },
+    {
+      "item": "Q06-05",
+      "viewport": "390",
+      "ok": true,
+      "detail": {
+        "hit": true,
+        "emptyText": 0,
+        "rows": 1
+      },
+      "at": "2026-11-17T03:23:56.956Z"
+    }
+  ]
+}
