@@ -226,7 +226,7 @@ export function useProductsPage({ detailId, onNavigate }: ProductsPageArgs): Pro
     setSearch(query)
     setPage(1)
     appliedUrlSearchRef.current = urlQuery.update({ q: query, page: null })
-    void loadProducts(undefined, 1)
+    void loadProducts(undefined, 1, undefined, query)
   }
 
   function goToPage(nextPage: number, nextPageSize: number) {

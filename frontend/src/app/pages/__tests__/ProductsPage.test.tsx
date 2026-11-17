@@ -164,6 +164,44 @@ describe('ProductsPage', () => {
     expect(screen.getByPlaceholderText('编号 / 中文 / 英文 / 海关编码')).toHaveValue('BBB')
   })
 
+  it('无匹配后清空筛选，立即按空关键字恢复列表', async () => {
+    const user = userEvent.setup()
+    vi.mocked(listProducts)
+      .mockResolvedValueOnce({
+        items: [productFixture],
+        total: 1,
+        summary: { with_image_count: 0, accessory_count: 0 },
+      })
+      .mockResolvedValueOnce({
+        items: [],
+        total: 0,
+        summary: { with_image_count: 0, accessory_count: 0 },
+      })
+      .mockResolvedValue({
+        items: [productFixture],
+        total: 1,
+        summary: { with_image_count: 0, accessory_count: 0 },
+      })
+
+    render(<ProductsPage detailId={null} onNavigate={onNavigate} />)
+    await waitFor(() => expect(listProducts).toHaveBeenCalledTimes(1))
+
+    await user.type(
+      screen.getByPlaceholderText('编号 / 中文 / 英文 / 海关编码'),
+      'UIQA-NOMATCH',
+    )
+    await user.click(screen.getByRole('button', { name: '查询商品' }))
+
+    expect(await screen.findByText('没有匹配的结果')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: '清空筛选' }))
+
+    await waitFor(() => {
+      expect(listProducts).toHaveBeenLastCalledWith({ q: undefined, limit: 50, offset: 0 })
+    })
+    expect(await screen.findByText('P-001')).toBeInTheDocument()
+    expect(currentQuery().get('q')).toBeNull()
+  })
+
   afterEach(() => {
     setRuntimeSettings({ language: 'zh-CN', timeZone: 'Asia/Shanghai' })
   })
