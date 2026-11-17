@@ -7,7 +7,11 @@ import {
 } from '@/api'
 import { FormSelect, PanelTitle, RemoteSelect } from '@/shared/ui'
 import { ListEmptyState } from '@/shared/ui/ListEmptyState'
-import { fetchSupplierSelectOptions } from '@/shared/entityOptions'
+import {
+  fetchPurchaseContractOptions,
+  fetchPurchaseInvoiceNoticeOptions,
+  fetchSupplierSelectOptions,
+} from '@/shared/entityOptions'
 import { supplierInvoiceStatusOptions, paymentTypeOptions } from '@/shared/formOptions'
 import { formatFinanceAmount, nullableText } from '@/app/pages/appHelpers'
 import { t } from '@/app/appI18n'
@@ -305,79 +309,49 @@ export function PaymentsView({ model, shell }: Props) {
                   />
                 </label>
               </div>
-              <div className="form-pair two">
+              <div className="form-pair three">
                 <label>
                   {t('finance.payment.field.supplierId')}
-                  <Input
-                    value={supplierInvoiceForm.supplier_id}
-                    onChange={(event) =>
+                  <RemoteSelect
+                    ariaLabel={t('finance.payment.field.supplierId')}
+                    fetchOptions={fetchSupplierSelectOptions}
+                    placeholder={t('finance.payment.filter.supplierPlaceholder')}
+                    value={supplierInvoiceForm.supplier_id || null}
+                    onChange={(value, option) =>
                       setSupplierInvoiceForm({
                         ...supplierInvoiceForm,
-                        supplier_id: event.target.value,
+                        supplier_id: value,
+                        supplier_name: option?.label ?? '',
                       })
                     }
                   />
                 </label>
-                <label>
-                  {t('finance.payment.field.supplierName')}
-                  <Input
-                    value={supplierInvoiceForm.supplier_name}
-                    onChange={(event) =>
-                      setSupplierInvoiceForm({
-                        ...supplierInvoiceForm,
-                        supplier_name: event.target.value,
-                      })
-                    }
-                  />
-                </label>
-              </div>
-              <div className="form-pair two">
                 <label>
                   {t('finance.payment.field.invoiceNoticeId')}
-                  <Input
-                    value={supplierInvoiceForm.purchase_invoice_notice_id}
-                    onChange={(event) =>
+                  <RemoteSelect
+                    ariaLabel={t('finance.payment.field.invoiceNoticeId')}
+                    fetchOptions={fetchPurchaseInvoiceNoticeOptions}
+                    value={supplierInvoiceForm.purchase_invoice_notice_id || null}
+                    onChange={(value, option) =>
                       setSupplierInvoiceForm({
                         ...supplierInvoiceForm,
-                        purchase_invoice_notice_id: event.target.value,
+                        purchase_invoice_notice_id: value,
+                        purchase_invoice_notice_code: option?.label ?? '',
                       })
                     }
                   />
                 </label>
-                <label>
-                  {t('finance.payment.field.invoiceNoticeCode')}
-                  <Input
-                    value={supplierInvoiceForm.purchase_invoice_notice_code}
-                    onChange={(event) =>
-                      setSupplierInvoiceForm({
-                        ...supplierInvoiceForm,
-                        purchase_invoice_notice_code: event.target.value,
-                      })
-                    }
-                  />
-                </label>
-              </div>
-              <div className="form-pair two">
                 <label>
                   {t('finance.payment.field.purchaseContractId')}
-                  <Input
-                    value={supplierInvoiceForm.purchase_contract_id}
-                    onChange={(event) =>
+                  <RemoteSelect
+                    ariaLabel={t('finance.payment.field.purchaseContractId')}
+                    fetchOptions={fetchPurchaseContractOptions}
+                    value={supplierInvoiceForm.purchase_contract_id || null}
+                    onChange={(value, option) =>
                       setSupplierInvoiceForm({
                         ...supplierInvoiceForm,
-                        purchase_contract_id: event.target.value,
-                      })
-                    }
-                  />
-                </label>
-                <label>
-                  {t('finance.payment.field.purchaseContractNo')}
-                  <Input
-                    value={supplierInvoiceForm.purchase_contract_no}
-                    onChange={(event) =>
-                      setSupplierInvoiceForm({
-                        ...supplierInvoiceForm,
-                        purchase_contract_no: event.target.value,
+                        purchase_contract_id: value,
+                        purchase_contract_no: option?.label ?? '',
                       })
                     }
                   />

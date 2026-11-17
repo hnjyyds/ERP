@@ -1,4 +1,9 @@
-import { listCustomers, listSuppliers } from '@/api'
+import {
+  listCustomers,
+  listPurchaseContracts,
+  listPurchaseInvoiceNotices,
+  listSuppliers,
+} from '@/api'
 import type { RemoteSelectOption } from '@/shared/ui'
 
 /** 供应商搜索选项：提交 UUID，编号与名称均可命中。 */
@@ -18,5 +23,27 @@ export async function fetchCustomerSelectOptions(query: string): Promise<RemoteS
     value: customer.id,
     label: customer.cn_name || customer.en_name || customer.code,
     description: customer.code,
+  }))
+}
+
+/** 开票通知选项：提交 UUID，展示通知编号与供应商名称。 */
+export async function fetchPurchaseInvoiceNoticeOptions(
+  query: string,
+): Promise<RemoteSelectOption[]> {
+  const result = await listPurchaseInvoiceNotices({ q: query.trim() || undefined, limit: 20 })
+  return result.items.map((notice) => ({
+    value: notice.id,
+    label: notice.code,
+    description: notice.supplier_name,
+  }))
+}
+
+/** 采购合同选项：提交 UUID，展示合同编号与供应商名称。 */
+export async function fetchPurchaseContractOptions(query: string): Promise<RemoteSelectOption[]> {
+  const result = await listPurchaseContracts({ q: query.trim() || undefined, limit: 20 })
+  return result.items.map((contract) => ({
+    value: contract.id,
+    label: contract.code,
+    description: contract.supplier_name,
   }))
 }

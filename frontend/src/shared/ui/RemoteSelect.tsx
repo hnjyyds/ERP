@@ -19,7 +19,7 @@ type RemoteSelectProps = {
   id?: string
   /** 编辑旧单时回填已选值，避免停用数据搜不到时只显示 ID。 */
   initialOption?: RemoteSelectOption
-  onChange?: (value: string) => void
+  onChange?: (value: string, option: RemoteSelectOption | null) => void
   placeholder?: string
   required?: boolean
   status?: 'error' | 'warning'
@@ -93,7 +93,11 @@ export function RemoteSelect({
       notFoundContent={
         loading ? t('common.remoteSelect.searching') : t('common.remoteSelect.noResults')
       }
-      onChange={(nextValue) => onChange?.(nextValue ?? '')}
+      onChange={(nextValue, option) => {
+        const raw = Array.isArray(option) ? option[0] : option
+        const data = (raw as { data?: RemoteSelectOption } | null | undefined)?.data
+        onChange?.(nextValue ?? '', data ?? null)
+      }}
       onSearch={(query) => void loadOptions(query)}
       optionLabelProp="label"
       optionRender={(option) => {
